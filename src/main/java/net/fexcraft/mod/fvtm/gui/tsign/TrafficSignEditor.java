@@ -48,13 +48,15 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	@Override
 	protected void init(){
 		int black = MapColor.BLACK.colorIndex;
-		int lightgray = MapColor.SILVER.colorValue;
+		//int lightgray = MapColor.SILVER.colorValue;
 		int darkgray = MapColor.GRAY.colorValue;
 		buttons.put("prev", prev = new TSEButton("prev", guiLeft + 7, guiTop + 7, 135, 7, 12, 12, true));
 		buttons.put("next", next = new TSEButton("next", guiLeft + 237, guiTop + 7, 365, 7, 12, 12, true));
 		buttons.put("search", search = new TSEButton("search", guiLeft + 21, guiTop + 7, 149, 7, 12, 12, true));
-		fields.put("search", new TextField(0, fontRenderer, guiLeft + 33, guiTop + 7, 202, 12, false));
+		fields.put("search", new TextField(0, fontRenderer, guiLeft + 34, guiTop + 8, 200, 10, true));
 		texts.put("title", title = new BasicText(guiLeft + 35, guiTop + 9, 198, black, "< selected title here >").autoscale());
+		fields.get("search").setEnabled(false);
+		fields.get("search").setVisible(false);
 		//
 		buttons.put("lup", lup = new TSEButton("lup", guiLeft - 96, guiTop + 201, 32, 201, 10, 10, true));
 		buttons.put("ldw", ldw = new TSEButton("ldw", guiLeft - 84, guiTop + 201, 44, 201, 10, 10, true));
@@ -78,7 +80,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		//
 		for(int i = 0; i < 15; i++){
 			buttons.put("list_r_" + i, new TSEButton("lr" + i, guiLeft + 251, guiTop + 21 + i * 12, 379, 21 + i * 12, 110, 10, true));
-			texts.put("list_r_" + i, new BasicText(guiLeft + 253, guiTop + 23 + i * 12, 106, lightgray, "R" + i).autoscale());
+			texts.put("list_r_" + i, new BasicText(guiLeft + 253, guiTop + 23 + i * 12, 106, darkgray, "R" + i).autoscale());
 			//
 			buttons.put("list_l_" + i, new TSEButton("ll" + i, guiLeft - 105, guiTop + 21 + i * 12, 0, 334 + i * 12, 110, 10, true));
 			texts.put("list_l_" + i, new BasicText(guiLeft - 103, guiTop + 23 + i * 12, 106, darkgray, "L" + i).autoscale());
@@ -196,14 +198,16 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(key.equals("search")){
 			TextField field = fields.get("search");
-			if(field.getVisible()){
-				field.setText("");
-				field.setVisible(false);
-				title.visible = true;
+			if(title.visible){
+				field.setVisible(true);
+				field.setEnabled(true);
+				title.visible = false;
 			}
 			else{
-				field.setVisible(true);
-				title.visible = false;
+				field.setText("");
+				field.setVisible(false);
+				field.setEnabled(false);
+				title.visible = true;
 			}
 		}
 		return false;

@@ -30,10 +30,15 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton cm_b, cm_c, cm_f, cm_p;
 	private TSEButton c_up, c_dw, c_lr, c_rg;
 	private TSEButton cancel, confirm;
+	private TSEButton[] llist = new TSEButton[15];
+	private TSEButton[] rlist = new TSEButton[15];
+	private TSEButton[] rlistR = new TSEButton[15];
+	private TSEButton[] rlistC = new TSEButton[15];
+	private TSEButton[] rlistE = new TSEButton[15];
 	private BasicText title;
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BASE;
-	private static int left_scroll, right_scroll;
+	private static int left_scroll, right_scroll, right_selected;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -79,17 +84,27 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("c_rg", c_rg = new TSEButton("crg", guiLeft + 83, guiTop + 203, 211, 203, 12, 12, true));
 		//
 		for(int i = 0; i < 15; i++){
-			buttons.put("list_r_" + i, new TSEButton("lr" + i, guiLeft + 251, guiTop + 21 + i * 12, 379, 21 + i * 12, 110, 10, true));
+			buttons.put("list_r_" + i, rlist[i] = new TSEButton("lr" + i, guiLeft + 251, guiTop + 21 + i * 12, 379, 21 + i * 12, 110, 10, true));
 			texts.put("list_r_" + i, new BasicText(guiLeft + 253, guiTop + 23 + i * 12, 106, darkgray, "R" + i).autoscale());
+			rlist[i].rgb_hover = TSEButton.light;
 			//
-			buttons.put("list_l_" + i, new TSEButton("ll" + i, guiLeft - 105, guiTop + 21 + i * 12, 0, 334 + i * 12, 110, 10, true));
+			buttons.put("lrr_" + i, rlistR[i] = new TSEButton("lrr" + i, guiLeft + 334, guiTop + 22 + i * 12, 462, 4, 8, 8, true));
+			buttons.put("lrc_" + i, rlistC[i] = new TSEButton("lrc" + i, guiLeft + 343, guiTop + 22 + i * 12, 471, 4, 8, 8, true));
+			buttons.put("lre_" + i, rlistE[i] = new TSEButton("lre" + i, guiLeft + 352, guiTop + 22 + i * 12, 480, 4, 8, 8, true));
+			rlistR[i].visible = rlistC[i].visible = rlistE[i].visible = false;
+			//
+			buttons.put("list_l_" + i, llist[i] = new TSEButton("ll" + i, guiLeft - 105, guiTop + 21 + i * 12, 0, 334 + i * 12, 110, 10, true));
 			texts.put("list_l_" + i, new BasicText(guiLeft - 103, guiTop + 23 + i * 12, 106, darkgray, "L" + i).autoscale());
 		}
 		//
+		tabmode.apply(this);
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
+		for(int i = 0; i < 15; i++){
+			rlistR[i].visible = rlistC[i].visible = rlistE[i].visible = rlist[i].hovered;
+		}
 		EntityLivingBase ent = mc.player;
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
@@ -138,14 +153,14 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		drawRect(guiLeft - 99, guiTop + 206, 29, 206, 28, 8);
 		drawRect(guiLeft + 327, guiTop + 206, 455, 206, 28, 8);
 		switch(tabmode){
-			case COLOR:
-				drawRect(guiLeft - 105, guiTop + 21, 0, 112, 110, 178);
-				break;
-			case EDIT:
-				drawRect(guiLeft - 105, guiTop + 21, 0, 224, 110, 178);
-				break;
 			case LIST:
 				drawRect(guiLeft - 105, guiTop + 21, 0, 334, 110, 178);
+				break;
+			case COLOR:
+				drawRect(guiLeft - 105, guiTop + 21, 112, 334, 110, 178);
+				break;
+			case EDIT:
+				drawRect(guiLeft - 105, guiTop + 21, 224, 334, 110, 178);
 				break;
 			default:
 				break;
@@ -183,7 +198,10 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(c_rg.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_right"));
 		//
 		for(int i = 0; i < 15; i++){
-			if(buttons.get("list_r_" + i).hovered(mouseX, mouseY)) ttip.add(texts.get("list_r_" + i).string);
+			if(rlist[i].hovered(mouseX, mouseY)) ttip.add(texts.get("list_r_" + i).string);
+			if(rlistR[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.remove"));
+			if(rlistC[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.color"));
+			if(rlistE[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.edit"));
 		}
 		if(tabmode.list()){
 			for(int i = 0; i < 15; i++){
@@ -210,6 +228,22 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				title.visible = true;
 			}
 		}
+		else if(key.startsWith("list_r_")){
+			int index = Integer.parseInt(key.replace("list_r_", ""));
+			right_selected = index + right_scroll;
+			if(rlistR[index].hovered){
+				//TODO remove
+			}
+			else if(rlistC[index].hovered){
+				(tabmode = TabMode.COLOR).apply(this);
+			}
+			else if(rlistE[index].hovered){
+				(tabmode = TabMode.EDIT).apply(this);
+			}
+			else{
+				//
+			}
+		}
 		return false;
 	}
 
@@ -234,8 +268,26 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		
 		LIST, COLOR, EDIT;
 
-		public boolean list() {
+		public boolean list(){
 			return this == LIST;
+		}
+
+		public boolean color(){
+			return this == COLOR;
+		}
+
+		public boolean edit(){
+			return this == EDIT;
+		}
+
+		public void apply(TrafficSignEditor gui){
+			boolean list = list();
+			boolean color = color();
+			boolean edit = edit();
+			for(int i = 0; i < 15; i++){
+				gui.llist[i].visible = list;
+				gui.texts.get("list_l_" + i).visible = list;
+			}
 		}
 		
 	}
@@ -263,6 +315,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	}
 	
 	private static class TSEButton extends BasicButton {
+		
+		private static RGB light = new RGB(255, 246, 199, 0.5f);
 
 		public TSEButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, boolean enabled) {
 			super(name, x, y, tx, ty, sizex, sizey, enabled);

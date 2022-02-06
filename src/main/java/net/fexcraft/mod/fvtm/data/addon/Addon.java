@@ -175,6 +175,8 @@ public class Addon extends TypeCore<Addon> {
 					lib.fonts.put(elm.getKey(), elm.getValue().getAsJsonObject());
 				}
 			}
+			TrafficSignLibrary.LIBRARIES.put(lib.id, lib);
+			lib.load();
 		}
 		return this;
 	}

@@ -2,14 +2,16 @@ package net.fexcraft.mod.fvtm.sys.tsign;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.model.FRLModel;
+import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -18,13 +20,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TrafficSignLibrary extends DetachedSystem {
 
-	public static HashMap<String, Object> PRESETS = new HashMap<>();
-	public static HashMap<String, String> BACKGROUNDS = new HashMap<>();
-	public static HashMap<String, String> COMPONENTS = new HashMap<>();
-	public static HashMap<String, Object> FONTS = new HashMap<>();
-	public static HashMap<String, Library> LIBRARIES = new HashMap<>();
+	public static HashMap<String, Object> PRESETS = new LinkedHashMap<>();
+	public static HashMap<String, String> BACKGROUNDS = new LinkedHashMap<>();
+	public static HashMap<String, String> COMPONENTS = new LinkedHashMap<>();
+	public static HashMap<String, Object> FONTS = new LinkedHashMap<>();
+	public static HashMap<String, Library> LIBRARIES = new LinkedHashMap<>();
 	
-	public static final HashMap<String, FRLModel> MODELS = new HashMap<>();
+	public static final HashMap<String, TrafficSignModel> MODELS = new HashMap<>();
 	private static Side side;
 	public static File CACHE;
 
@@ -51,7 +53,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 				COMPONENTS.clear();
 				FONTS.clear();
 				for(Library lib : LIBRARIES.values()) lib.load();
-				if(side.isClient()){
+				if(reload && side.isClient()){
 					loadModels();
 				}
 				Print.log("Stopping TrafficSign Loader Thread");
@@ -60,11 +62,23 @@ public class TrafficSignLibrary extends DetachedSystem {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	protected static void loadModels(){
-		//
+	public static void loadModels(){
+		for(Entry<String, String> entry : BACKGROUNDS.entrySet()){
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
+			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getKey(), model);
+		}
+		for(Entry<String, String> entry : COMPONENTS.entrySet()){
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
+			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getKey(), model);
+		}
 	}
 
 	public static class Library {
+		
+		public HashMap<String, JsonObject> presets = new HashMap<>();
+		public HashMap<String, String> backgrounds = new HashMap<>();
+		public HashMap<String, String> components = new HashMap<>();
+		public HashMap<String, JsonObject> fonts = new HashMap<>();
 		
 		public final String id, adress;
 		public final boolean external;
@@ -82,11 +96,6 @@ public class TrafficSignLibrary extends DetachedSystem {
 	}
 	
 	public static class AddonLib extends Library {
-		
-		public HashMap<String, JsonObject> presets = new HashMap<>();
-		public HashMap<String, String> backgrounds = new HashMap<>();
-		public HashMap<String, String> components = new HashMap<>();
-		public HashMap<String, JsonObject> fonts = new HashMap<>();
 
 		public AddonLib(String id){
 			super(id, null, false);

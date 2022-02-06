@@ -590,6 +590,7 @@ public class Resources {
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		if(clazz == WireModel.class) return WireModel.EMPTY;
+		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
 		return null;
 	}
 

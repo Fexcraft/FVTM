@@ -160,6 +160,7 @@ public class FVTM {
 			Resources.RAILGAUGES.getValuesCollection().forEach(gauge -> gauge.loadModel());
 			Resources.CLOTHES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			Resources.WIRES.getValuesCollection().forEach(cloth -> cloth.loadModel());
+			TrafficSignLibrary.loadModels();
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:trafficsign"), TrafficSignModel.EMPTY);
 			Resources.clearObjModelCache();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);

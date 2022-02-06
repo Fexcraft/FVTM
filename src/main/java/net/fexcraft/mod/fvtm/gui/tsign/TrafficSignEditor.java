@@ -1,9 +1,16 @@
 package net.fexcraft.mod.fvtm.gui.tsign;
 
+import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.BACKGROUNDS;
+import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.COMPONENTS;
+import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.FONTS;
+import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.LIBRARIES;
+import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.PRESETS;
+
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.Library;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -36,9 +43,15 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton[] rlistC = new TSEButton[15];
 	private TSEButton[] rlistE = new TSEButton[15];
 	private BasicText title;
+	private BasicText[] lList = new BasicText[15];
+	private BasicText[] rList = new BasicText[15];
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BASE;
-	private static int left_scroll, right_scroll, right_selected;
+	private static int pack_scroll = -1, left_scroll, right_scroll, right_selected;
+	private ArrayList<Library> libraries = new ArrayList<>();
+	private ArrayList<String> leftlist = new ArrayList<>();
+	private Library selectedlib;
+	private boolean nolibs;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -55,11 +68,28 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		int black = MapColor.BLACK.colorIndex;
 		//int lightgray = MapColor.SILVER.colorValue;
 		int darkgray = MapColor.GRAY.colorValue;
-		buttons.put("prev", prev = new TSEButton("prev", guiLeft + 7, guiTop + 7, 135, 7, 12, 12, true));
-		buttons.put("next", next = new TSEButton("next", guiLeft + 237, guiTop + 7, 365, 7, 12, 12, true));
+		libraries.addAll(LIBRARIES.values());
+		nolibs = libraries.size() == 0;
+		buttons.put("prev", prev = new TSEButton("prev", guiLeft + 7, guiTop + 7, 135, 7, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				packscroll(-1);
+				return true;
+			}
+		});
+		buttons.put("next", next = new TSEButton("next", guiLeft + 237, guiTop + 7, 365, 7, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				packscroll(1);
+				return true;
+			}
+		});
 		buttons.put("search", search = new TSEButton("search", guiLeft + 21, guiTop + 7, 149, 7, 12, 12, true));
 		fields.put("search", new TextField(0, fontRenderer, guiLeft + 34, guiTop + 8, 200, 10, true));
-		texts.put("title", title = new BasicText(guiLeft + 35, guiTop + 9, 198, black, "< selected title here >").autoscale());
+		texts.put("title", title = new BasicText(guiLeft + 35, guiTop + 9, 198, black, "< selected title here >", true, black){
+			public boolean scrollwheel(int a, int x, int y){
+				packscroll(-a);
+				return true;
+			}
+		}.autoscale());
 		fields.get("search").setEnabled(false);
 		fields.get("search").setVisible(false);
 		//
@@ -85,7 +115,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		//
 		for(int i = 0; i < 15; i++){
 			buttons.put("list_r_" + i, rlist[i] = new TSEButton("lr" + i, guiLeft + 251, guiTop + 21 + i * 12, 379, 21 + i * 12, 110, 10, true));
-			texts.put("list_r_" + i, new BasicText(guiLeft + 253, guiTop + 23 + i * 12, 106, darkgray, "R" + i).autoscale());
+			texts.put("list_r_" + i, rList[i] = new BasicText(guiLeft + 253, guiTop + 23 + i * 12, 106, darkgray, "R" + i).autoscale());
 			rlist[i].rgb_hover = TSEButton.light;
 			//
 			buttons.put("lrr_" + i, rlistR[i] = new TSEButton("lrr" + i, guiLeft + 334, guiTop + 22 + i * 12, 462, 4, 8, 8, true));
@@ -94,16 +124,61 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			rlistR[i].visible = rlistC[i].visible = rlistE[i].visible = false;
 			//
 			buttons.put("list_l_" + i, llist[i] = new TSEButton("ll" + i, guiLeft - 105, guiTop + 21 + i * 12, 0, 334 + i * 12, 110, 10, true));
-			texts.put("list_l_" + i, new BasicText(guiLeft - 103, guiTop + 23 + i * 12, 106, darkgray, "L" + i).autoscale());
+			texts.put("list_l_" + i, lList[i] = new BasicText(guiLeft - 103, guiTop + 23 + i * 12, 106, darkgray, "L" + i).autoscale());
 		}
 		//
 		tabmode.apply(this);
+	}
+
+	protected void packscroll(int a){
+		pack_scroll += a;
+		if(pack_scroll < -1) pack_scroll = libraries.size() - 1;
+		if(pack_scroll >= libraries.size() || nolibs) pack_scroll = -1;
+		updatelist();
+	}
+
+	private void updatelist(){
+		leftlist.clear();
+		boolean all = pack_scroll == -1;
+		selectedlib = all ? null : libraries.get(pack_scroll);
+		switch(commode){
+			case BASE:{
+				if(all) leftlist.addAll(BACKGROUNDS.keySet());
+				else leftlist.addAll(selectedlib.backgrounds.keySet());
+				break;
+			}
+			case COMPONENT:{
+				if(all) leftlist.addAll(COMPONENTS.keySet());
+				else leftlist.addAll(selectedlib.components.keySet());
+				break;
+			}
+			case FONT:{
+				if(all) leftlist.addAll(FONTS.keySet());
+				else leftlist.addAll(selectedlib.fonts.keySet());
+				break;
+			}
+			case PRESET:{
+				if(all) leftlist.addAll(PRESETS.keySet());
+				else leftlist.addAll(selectedlib.presets.keySet());
+				break;
+			}
+			default: break;
+		}
+		if(all) title.string = I18n.format("gui.fvtm.trafficsigneditor.title.all_packs");
+		else title.string = I18n.format("fvtm.sign_library." + (selectedlib == null ? "error" : selectedlib.id));
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		for(int i = 0; i < 15; i++){
 			rlistR[i].visible = rlistC[i].visible = rlistE[i].visible = rlist[i].hovered;
+		}
+		if(tabmode.list()){
+			for(int i = 0; i < 15; i++){
+				int j = i + left_scroll;
+				lList[i].string = j >= leftlist.size() ? "" : I18n.format("fvtm.traffic_sign." + (selectedlib == null ? "" : selectedlib.id + ":") + leftlist.get(j));
+			}
+			//TODO to be replaced with on scroll update
 		}
 		EntityLivingBase ent = mc.player;
         GlStateManager.enableColorMaterial();
@@ -170,8 +245,14 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	@Override
 	protected void drawlast(float pticks, int mouseX, int mouseY){
 	    ttip.clear();
-		if(prev.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.prev") + " //TODO");
-		if(next.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.next") + " //TODO");
+		if(prev.hovered(mouseX, mouseY)){
+			String str = nolibs ? "fvtm.sign_library.none" : pack_scroll == 0 ? "gui.fvtm.trafficsigneditor.title.all_packs" : pack_scroll == -1 ? "fvtm.sign_library." + libraries.get(libraries.size() - 1).id : "fvtm.sign_library." + libraries.get(pack_scroll - 1).id;
+			ttip.add(I18n.format("gui.fvtm.trafficsigneditor.prev") + I18n.format(str));
+		}
+		if(next.hovered(mouseX, mouseY)){
+			String str = nolibs ? "fvtm.sign_library.none" : pack_scroll == libraries.size() - 1 ? "gui.fvtm.trafficsigneditor.title.all_packs" : "fvtm.sign_library." + libraries.get(pack_scroll + 1).id;
+			ttip.add(I18n.format("gui.fvtm.trafficsigneditor.next") + I18n.format(str));
+		}
 		if(search.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.search_" + (title.visible ? "off" : "on")));
 		if(title.hovered(mouseX, mouseY)) ttip.add(title.string);
 		//
@@ -198,14 +279,14 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(c_rg.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_right"));
 		//
 		for(int i = 0; i < 15; i++){
-			if(rlist[i].hovered(mouseX, mouseY)) ttip.add(texts.get("list_r_" + i).string);
+			if(rlist[i].hovered(mouseX, mouseY)) ttip.add(rList[i].string);
 			if(rlistR[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.remove"));
 			if(rlistC[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.color"));
 			if(rlistE[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.edit"));
 		}
 		if(tabmode.list()){
 			for(int i = 0; i < 15; i++){
-				if(buttons.get("list_l_" + i).hovered(mouseX, mouseY)) ttip.add(texts.get("list_l_" + i).string);
+				if(llist[i].hovered(mouseX, mouseY)) ttip.add(lList[i].string);
 			}
 		}
 		//
@@ -286,8 +367,10 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			boolean edit = edit();
 			for(int i = 0; i < 15; i++){
 				gui.llist[i].visible = list;
-				gui.texts.get("list_l_" + i).visible = list;
+				gui.lList[i].visible = list;
 			}
+			//
+			gui.updatelist();
 		}
 		
 	}

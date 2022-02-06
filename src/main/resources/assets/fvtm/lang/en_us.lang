@@ -117,6 +117,11 @@ gui.fvtm.trafficsigneditor.move_right=Move View Right
 gui.fvtm.trafficsigneditor.list.remove=Remove
 gui.fvtm.trafficsigneditor.list.color=Set Color
 gui.fvtm.trafficsigneditor.list.edit=Edit
+gui.fvtm.trafficsigneditor.title.all_packs=All Packs
+
+
+fvtm.sign_library.none=No Sign Libraries Installed
+fvtm.sign_library.error=ERROR - LIB IS NULL
 //
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.

@@ -13,6 +13,9 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
@@ -57,6 +60,12 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		if(hasprog) for(Program program : programs) program.preRender(this, tile, data, cache);
 		if(visible) for(ModelRendererTurbo turbo : this) turbo.render(scale);
 		if(hasprog) for(Program program : programs) program.postRender(this, tile, data, cache);
+	}
+
+	public void renderTrafficSign(CompDataRoot data, String key, TrafficSignEntity ent, RenderCache cache){
+		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, cache);
+		if(visible) for(ModelRendererTurbo turbo : this) turbo.render(scale);
+		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, cache);
 	}
 
 	public void renderPlain(){
@@ -139,6 +148,12 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		
 		/** Block Specific */
 		public default void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
+
+		/** TrafficSign Specific */
+		public default void preRender(TurboList list, @Nullable TrafficSignEntity tile, TrafficSignData.CompDataRoot data, @Nullable RenderCache cache){}
+		
+		/** TrafficSign Specific */
+		public default void postRender(TurboList list, @Nullable TrafficSignEntity tile, TrafficSignData.CompDataRoot data, @Nullable RenderCache cache){}
 
 		/** For creating instances from JTMT/OBJ/FMF if necessary. */
 		public default Program parse(JsonElement elm){ return this; }

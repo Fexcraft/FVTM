@@ -127,7 +127,7 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
             return true;
         }
         if(stack.isEmpty()){
-        	player.openGui(FVTM.getInstance(), TSEDITOR, world, (int)posX, (int)posY, (int)posZ);
+        	player.openGui(FVTM.getInstance(), TSEDITOR, world, getEntityId(), 0, 0);
         	return true;
         }
         return false;

@@ -8,13 +8,15 @@ import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class TrafficSignModel extends GenericModel<TrafficSignEntity, Object> implements FCLItemModel {
+public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot, String> implements FCLItemModel {
 
 	public static final TrafficSignModel EMPTY = new TrafficSignModel();
 	
@@ -32,13 +34,13 @@ public class TrafficSignModel extends GenericModel<TrafficSignEntity, Object> im
 	public TrafficSignModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 
 	@Override
-	public void render(TrafficSignEntity data, Object key){
-		for(TurboList list : groups) list.renderPlain();
+	public void render(CompDataRoot data, String key){
+		for(TurboList list : groups) list.renderTrafficSign(data, key, null, null);
 	}
 
 	@Override
-	public void render(TrafficSignEntity data, Object key, Entity ent, RenderCache cache){
-		for(TurboList list : groups) list.renderPlain();
+	public void render(CompDataRoot data, String key, Entity ent, RenderCache cache){
+		for(TurboList list : groups) list.renderTrafficSign(data, key, (TrafficSignEntity)ent, cache);
 	}
 	
 	@Override

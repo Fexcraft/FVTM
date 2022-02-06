@@ -54,6 +54,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		if(!DefaultPrograms.DIDLOAD){
 			DefaultPrograms.init();
 			WirePrograms.init();
+			TrafficSignPrograms.init();
 		}
 	}
 

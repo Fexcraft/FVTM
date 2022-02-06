@@ -27,6 +27,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 	public static HashMap<String, Library> LIBRARIES = new LinkedHashMap<>();
 	
 	public static final HashMap<String, TrafficSignModel> MODELS = new HashMap<>();
+	private static boolean initload = false;
 	private static Side side;
 	public static File CACHE;
 
@@ -38,6 +39,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 	}
 
 	public static void load(boolean reload){
+		if(!initload && reload) return;
 		new Thread("TrafficSign-Loader"){
 			@Override
 			public void run(){
@@ -65,12 +67,13 @@ public class TrafficSignLibrary extends DetachedSystem {
 	public static void loadModels(){
 		for(Entry<String, String> entry : BACKGROUNDS.entrySet()){
 			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
-			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getKey(), model);
+			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		for(Entry<String, String> entry : COMPONENTS.entrySet()){
 			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
-			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getKey(), model);
+			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
+		initload = true;
 	}
 
 	public static class Library {

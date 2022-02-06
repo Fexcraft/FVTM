@@ -20,4 +20,8 @@ public interface TrafficSigns {
 
 	public Map<BlockPos, TrafficSignData> getSigns();
 
+	public TrafficSignData getSign(BlockPos pos, boolean create);
+
+	public TrafficSignData getSign(int x, int y, int z, boolean create);
+
 }

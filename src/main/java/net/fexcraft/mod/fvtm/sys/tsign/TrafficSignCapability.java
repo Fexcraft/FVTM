@@ -42,7 +42,7 @@ public class TrafficSignCapability implements TrafficSigns {
 		for(NBTBase base : list){
 			NBTTagCompound com = (NBTTagCompound)base;
 			BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
-			TrafficSignData data = new TrafficSignData(com);
+			TrafficSignData data = new TrafficSignData().read(com);
 			signs.put(pos, data);
 		}
 	}
@@ -65,6 +65,19 @@ public class TrafficSignCapability implements TrafficSigns {
 	
 	public Chunk getChunk(){
 		return chunk;
+	}
+
+	@Override
+	public TrafficSignData getSign(BlockPos pos, boolean create){
+		if(create && !signs.contains(pos)){
+			signs.put(pos, new TrafficSignData());
+		}
+		return signs.get(pos);
+	}
+
+	@Override
+	public TrafficSignData getSign(int x, int y, int z, boolean create){
+		return getSign(new BlockPos(x, y, z), create);
 	}
 
 }

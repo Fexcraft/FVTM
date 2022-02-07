@@ -117,8 +117,20 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("rup", rup = new TSEButton("rup", guiLeft + 330, guiTop + 201, 458, 201, 10, 10, true));
 		buttons.put("rdw", rdw = new TSEButton("rdw", guiLeft + 342, guiTop + 201, 470, 201, 10, 10, true));
 		//
-		buttons.put("zoom_in", zoom_in = new TSEButton("z+", guiLeft + 18, guiTop + 203, 146, 203, 12, 12, true));
-		buttons.put("zoom_out", zoom_out = new TSEButton("z-", guiLeft + 31, guiTop + 203, 159, 203, 12, 12, true));
+		buttons.put("zoom_in", zoom_in = new TSEButton("z+", guiLeft + 18, guiTop + 203, 146, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				scale *= 2f;
+				if(scale > 1024) scale = 1024;
+				return true;
+			}
+		});
+		buttons.put("zoom_out", zoom_out = new TSEButton("z-", guiLeft + 31, guiTop + 203, 159, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				scale *= 0.5f;
+				if(scale < 1) scale = 1;
+				return true;
+			}
+		});
 		buttons.put("confirm", confirm = new TSEButton("confirm", guiLeft + 226, guiTop + 203, 354, 203, 12, 12, true));
 		buttons.put("cancel", cancel = new TSEButton("cancel", guiLeft + 213, guiTop + 203, 341, 203, 12, 12, true){
 			public boolean onclick(int x, int y, int b){

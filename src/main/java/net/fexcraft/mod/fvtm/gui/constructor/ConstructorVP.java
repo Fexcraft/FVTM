@@ -46,8 +46,8 @@ public class ConstructorVP extends ConstructorGui {
 		this.buttons.put("icon_remove", new IconButton("icon_remove", 10, 0, false, ICON_REMOVE));
 		this.buttons.put("icon_type_prev", new IconButton("icon_type_prev", 11, 1, false, ICON_LEFT));
 		this.buttons.put("icon_type_next", new IconButton("icon_type_next", 11, 0, false, ICON_RIGHT));
-		this.buttons.put("spectrum", spectrum = new Spectrum(2, 20 + (5 * buttonheight), xSize - 4));
-		this.buttons.put("palette", palette = new Palette(2, 20 + (6 * buttonheight), xSize - 4));
+		this.buttons.put("spectrum", spectrum = new Spectrum(2, 20 + (5 * buttonheight), xSize - 4, buttonheight - 2, (xSize - 4) / 2));
+		this.buttons.put("palette", palette = new Palette(2, 20 + (6 * buttonheight), 8, buttonheight, 4, buttonheight - 2));
 		this.buttons.put("preview", new Preview(2, 20 + (4 * buttonheight), xSize - 4));
 		this.fields.put("rgb", rgb = cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10));
 		this.fields.put("hex", hex = cfields[3] = new TextField(2, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10));
@@ -153,12 +153,12 @@ public class ConstructorVP extends ConstructorGui {
 
 	public static class Spectrum extends BasicButton {
 
-		private RGB[] rgbs = new RGB[32];
+		private RGB[] rgbs;
 		private int size;
 
-		public Spectrum(int x, int y, int width){
-			super("spectrum", x, y, 0, 0, width, buttonheight - 2, true);
-			size = width / rgbs.length;
+		public Spectrum(int x, int y, int width, int height, int length){
+			super("spectrum", x, y, 0, 0, width, height, true);
+			size = width / (rgbs = new RGB[length]).length;
 			for(int i = 0; i < rgbs.length; i++){
 				float c = i * (1f / rgbs.length);
 				int r, g, b;
@@ -216,7 +216,7 @@ public class ConstructorVP extends ConstructorGui {
 
 		public RGB getColorAt(int mouseX){
 			int i = (mouseX - x) / size;
-			if(i < 0 || i >= 32) return current;
+			if(i < 0 || i >= rgbs.length) return current;
 			return rgbs[i];
 		}
 
@@ -224,21 +224,22 @@ public class ConstructorVP extends ConstructorGui {
 
 	public static class Palette extends BasicButton {
 
-		private RGB[][] rgbs = new RGB[8][4];
+		private RGB[][] rgbs;
 		private int wx, hy;
 
-		public Palette(int x, int y, int width){
-			super("palette", x, y, 0, 0, width, (4 * buttonheight) - 2, true);
-			wx = sizex / 8;
-			hy = sizey / 4;
+		public Palette(int x, int y, int columns, int width, int rows, int height){
+			super("palette", x, y, 0, 0, (columns * width), (rows * height), true);
+			rgbs = new RGB[columns][rows];
+			wx = width;
+			hy = height;
 		}
 
 		@Override
 		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 			if(!visible) return;
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			for(int i = 0; i < 8; i++){
-				for(int j = 0; j < 4; j++){
+			for(int i = 0; i < rgbs.length; i++){
+				for(int j = 0; j < rgbs[i].length; j++){
 					rgbs[i][j].glColorApply();
 					gui.drawTexturedModalRect(x + (i * wx), y + (j * hy), 1, 1, wx, hy);
 					RGB.glColorReset();
@@ -247,13 +248,13 @@ public class ConstructorVP extends ConstructorGui {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		}
 
-		protected void recalc(){
+		public void recalc(RGB current){
 			byte[] arr = current.toByteArray();
 			int[] err = new int[] { arr[0] + 128, arr[1] + 128, arr[2] + 128 };
-			for(int x = 0; x < 8; x++){
-				for(int z = 0; z < 4; z++){
-					int y = x * 8 + z;
-					float e = (1f / (8 * 4) * y), f = (1f / 8) * z, h = (255 / 8) * x;
+			for(int x = 0; x < rgbs.length; x++){
+				for(int z = 0; z < rgbs[x].length; z++){
+					int y = x * rgbs.length + z;
+					float e = (1f / (rgbs.length * rgbs[x].length) * y), f = (1f / rgbs.length) * z, h = (255 / rgbs.length) * x;
 					int r = (int)Math.abs((e * err[0]) + ((1 - f) * h));
 					int g = (int)Math.abs((e * err[1]) + ((1 - f) * h));
 					int l = (int)Math.abs((e * err[2]) + ((1 - f) * h));
@@ -264,7 +265,7 @@ public class ConstructorVP extends ConstructorGui {
 
 		public RGB getColorAt(int mouseX, int mouseY){
 			int xx = (mouseX - x) / wx, yy = (mouseY - y) / hy;
-			if(xx < 0 || xx >= 8 || yy < 0 || yy >= 4) return current;
+			if(xx < 0 || xx >= rgbs.length|| yy < 0 || yy >= rgbs[xx].length) return current;
 			return rgbs[xx][yy];
 		}
 
@@ -293,7 +294,7 @@ public class ConstructorVP extends ConstructorGui {
 		cfields[3].setText("#" + Integer.toHexString(current.packed));
 		byte[] arr = rgb.toByteArray();
 		cfields[1].setText((arr[0] + 128) + ", " + (arr[1] + 128) + ", " + (arr[2] + 128));
-		if(update_pallet) palette.recalc();
+		if(update_pallet) palette.recalc(current);
 	}
 
 }

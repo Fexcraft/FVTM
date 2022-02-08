@@ -106,4 +106,20 @@ public class TrafficSignData {
 		
 	}
 
+	public CompDataRoot getCompData(ComponentType type, int index){
+		if(type == null || index < 0) return null;
+		switch(type){
+			case BASE:
+				if(index >= backgrounds.size()) return null;
+				else return backgrounds.get(index);
+			case COMPONENT:
+				if(index >= components.size()) return null;
+				else return components.get(index);
+			case FONT:
+				if(index >= fonts.size()) return null;
+				else return fonts.get(index);
+			default: return null;
+		}
+	}
+
 }

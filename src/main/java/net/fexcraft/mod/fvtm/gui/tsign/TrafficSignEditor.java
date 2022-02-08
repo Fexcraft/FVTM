@@ -13,9 +13,12 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentData;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentType;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.Library;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -46,12 +49,19 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton[] rlistR = new TSEButton[15];
 	private TSEButton[] rlistC = new TSEButton[15];
 	private TSEButton[] rlistE = new TSEButton[15];
+	private TSEButton[] colorchannels = new TSEButton[9];
+	private TSEButton rgb_confirm, hex_confirm;
+	private TSEButton[] tabclose = new TSEButton[2];
+	private ConstructorVP.Spectrum spectrum;
+	private ConstructorVP.Palette palette;
 	private BasicText title;
 	private BasicText[] lList = new BasicText[15];
 	private BasicText[] rList = new BasicText[15];
+	private TextField rgb_field, hex_field;
+	private RGB current_color = RGB.BLUE;
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BACKGROUND;
-	private static int pack_scroll = -1, left_scroll, right_scroll, right_selected = -1;
+	private static int pack_scroll = -1, left_scroll, right_scroll, right_selected = -1, channel_selected;
 	private int cam_scroll_x, cam_scroll_y;
 	private ArrayList<Library> libraries = new ArrayList<>();
 	private ArrayList<String> leftlist = new ArrayList<>(), rightlist = new ArrayList<>();;
@@ -269,8 +279,95 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			texts.put("list_l_" + i, lList[i] = new BasicText(guiLeft - 103, guiTop + 23 + i * 12, 106, darkgray, "L" + i).autoscale());
 		}
 		//
+		for(int i = 0; i < 9; i++){
+			int I = i;
+			buttons.put("color_channel" + i, colorchannels[i] = new TSEButton("cc" + i, guiLeft - 95 + i * 10, guiTop + 137, 122 + i * 10, 450, 10, 10, true){
+				public void draw(GenericGui<?> g, float pticks, int mouseX, int mouseY){
+					if(!visible) return;
+					rgb = hovered || channel_selected == I? rgb_hover : rgb_none;
+					RGB.glColorReset();
+		            rgb.glColorApply();
+		            ris.drawRect(x, y, tx, ty, sizex, sizey);
+		            RGB.glColorReset();
+				}
+				public boolean onclick(int x, int y, int b){
+					channel_selected = I;
+					setcolor(null);
+					return true;
+				}
+			});
+		}
+		buttons.put("rgb_confirm", rgb_confirm = new TSEButton("rgbconfirm", guiLeft - 6, guiTop + 158, 211, 471, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				try{
+					String[] str = rgb_field.getText().trim().replace(" ", "").split(",");
+					rgb = new RGB(Integer.parseInt(str[0]), Integer.parseInt(str[1]), Integer.parseInt(str[2]));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+		buttons.put("hex_confirm", hex_confirm = new TSEButton("hexconfirm", guiLeft - 6, guiTop + 178, 211, 491, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				try{
+					setcolor(new RGB(rgb_field.getText()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+		fields.put("rgb_field", rgb_field = new TextField(1, fontRenderer, guiLeft - 103, guiTop + 159, 95, 8, false));
+		fields.put("hex_field", hex_field = new TextField(2, fontRenderer, guiLeft - 103, guiTop + 179, 95, 8, false));
+		buttons.put("tab_close_color", tabclose[0] = new TSEButton("tbcl0", guiLeft - 3, guiTop + 191, 214, 504, 8, 8, true){
+			public boolean onclick(int x, int y, int b){
+				(gui.tabmode = TabMode.LIST).apply(gui);
+				return true;
+			}
+		});
+		buttons.put("spectrum", spectrum = new ConstructorVP.Spectrum(guiLeft - 105, guiTop + 125, 110, 10, 55){
+			public boolean onclick(int x, int y, int b){
+				setcolor(getColorAt(x));
+				return true;
+			}
+		});
+		buttons.put("palette", palette = new ConstructorVP.Palette(guiLeft - 100, guiTop + 23, 10, 10, 10, 10){
+			public boolean onclick(int x, int y, int b){
+				setcolor(getColorAt(x, y));
+				return true;
+			}
+		});
+		//
+		buttons.put("tab_close_edit", tabclose[1] = new TSEButton("tbcl1", guiLeft - 3, guiTop + 191, 214, 504, 8, 8, true){
+			public boolean onclick(int x, int y, int b){
+				(gui.tabmode = TabMode.LIST).apply(gui);
+				return true;
+			}
+		});
+		//
 		tabmode.apply(this);
 		commode.apply(this);
+	}
+
+	protected void setcolor(RGB color){
+		CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+		if(comp == null){
+			if(color == null) color = RGB.BLUE;
+		}
+		else if(color == null){
+			color = comp.channels[channel_selected];
+		}
+		else{
+			comp.channels[channel_selected].packed = color.packed;
+		}
+		current_color = color;
+		palette.recalc(color);
+		byte[] arr = color.toByteArray();
+		rgb_field.setText((arr[0] + 128) + ", " + (arr[1] + 128) + ", " + (arr[2] + 128));
+		hex_field.setText("#" + Integer.toHexString(color.packed));
 	}
 
 	protected void packscroll(int a){
@@ -388,48 +485,48 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	@Override
 	protected void drawlast(float pticks, int mouseX, int mouseY){
 	    ttip.clear();
-		if(prev.hovered(mouseX, mouseY)){
+		if(prev.hovered){
 			String str = nolibs ? "fvtm.sign_library.none" : pack_scroll == 0 ? "gui.fvtm.trafficsigneditor.title.all_packs" : pack_scroll == -1 ? "fvtm.sign_library." + libraries.get(libraries.size() - 1).id : "fvtm.sign_library." + libraries.get(pack_scroll - 1).id;
 			ttip.add(I18n.format("gui.fvtm.trafficsigneditor.prev") + I18n.format(str));
 		}
-		if(next.hovered(mouseX, mouseY)){
+		if(next.hovered){
 			String str = nolibs ? "fvtm.sign_library.none" : pack_scroll == libraries.size() - 1 ? "gui.fvtm.trafficsigneditor.title.all_packs" : "fvtm.sign_library." + libraries.get(pack_scroll + 1).id;
 			ttip.add(I18n.format("gui.fvtm.trafficsigneditor.next") + I18n.format(str));
 		}
-		if(search.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.search_" + (title.visible ? "off" : "on")));
-		if(title.hovered(mouseX, mouseY)) ttip.add(title.string);
+		if(search.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.search_" + (title.visible ? "off" : "on")));
+		if(title.hovered) ttip.add(title.string);
 		//
 		if(tabmode.list()){
-			if(lup.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.left_up"));
-			if(ldw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.left_down"));
+			if(lup.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.left_up"));
+			if(ldw.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.left_down"));
 		}
-		if(rup.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.right_up"));
-		if(rdw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.right_down"));
+		if(rup.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.right_up"));
+		if(rdw.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.right_down"));
 		//
-		if(zoom_in.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.zoom_in"));
-		if(zoom_out.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.zoom_out"));
-		if(confirm.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.confirm"));
-		if(cancel.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.cancel"));
+		if(zoom_in.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.zoom_in"));
+		if(zoom_out.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.zoom_out"));
+		if(confirm.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.confirm"));
+		if(cancel.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.cancel"));
 		//
-		if(cm_b.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.base() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_base"));
-		if(cm_c.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.component() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_component"));
-		if(cm_f.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.font() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_font"));
-		if(cm_p.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.preset() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_preset"));
+		if(cm_b.hovered) ttip.add(I18n.format(commode.base() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_base"));
+		if(cm_c.hovered) ttip.add(I18n.format(commode.component() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_component"));
+		if(cm_f.hovered) ttip.add(I18n.format(commode.font() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_font"));
+		if(cm_p.hovered) ttip.add(I18n.format(commode.preset() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_preset"));
 		//
-		if(c_up.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_up"));
-		if(c_dw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_down"));
-		if(c_lr.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_left"));
-		if(c_rg.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_right"));
+		if(c_up.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_up"));
+		if(c_dw.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_down"));
+		if(c_lr.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_left"));
+		if(c_rg.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_right"));
 		//
 		for(int i = 0; i < 15; i++){
-			if(rlist[i].hovered(mouseX, mouseY)) ttip.add(rList[i].string);
-			if(rlistR[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.remove"));
-			if(rlistC[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.color"));
-			if(rlistE[i].hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.edit"));
+			if(rlist[i].hovered) ttip.add(rList[i].string);
+			if(rlistR[i].hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.remove"));
+			if(rlistC[i].hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.color"));
+			if(rlistE[i].hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.list.edit"));
 		}
 		if(tabmode.list()){
 			for(int i = 0; i < 15; i++){
-				if(llist[i].hovered(mouseX, mouseY)) ttip.add(lList[i].string);
+				if(llist[i].hovered) ttip.add(lList[i].string);
 			}
 		}
 		//
@@ -495,19 +592,21 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 
 	private void addComponent(int index){
 		String str = null;
+		index += left_scroll;
+		if(index < 0 || index >= leftlist.size()) return;
 		switch(commode){
 			case BACKGROUND:
-				str = leftlist.get(index + left_scroll);
+				str = leftlist.get(index);
 				data.backgrounds.add((BaseData)new BaseData(selectedlib == null ? str : selectedlib + ":" + str).linkModel());
 				rightlist.add(str);
 				break;
 			case COMPONENT:
-				str = leftlist.get(index + left_scroll);
+				str = leftlist.get(index);
 				data.components.add((ComponentData)new ComponentData(selectedlib == null ? str : selectedlib + ":" + str).linkModel());
 				rightlist.add(str);
 				break;
 			case FONT:
-				str = leftlist.get(index + left_scroll);
+				str = leftlist.get(index);
 				data.fonts.add((FontData)new FontData(selectedlib == null ? str : selectedlib + ":" + str).linkModel());
 				rightlist.add(str);
 				break;
@@ -549,12 +648,26 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 
 		public void apply(TrafficSignEditor gui){
 			boolean list = list();
-			boolean color = color();
-			boolean edit = edit();
 			for(int i = 0; i < 15; i++){
 				gui.llist[i].visible = list;
 				gui.lList[i].visible = list;
 			}
+			//
+			boolean color = color();
+			for(int i = 0; i < 9; i++){
+				gui.colorchannels[i].visible = color;
+			}
+			gui.rgb_confirm.visible = color;
+			gui.hex_confirm.visible = color;
+			gui.rgb_field.setVisible(color);
+			gui.hex_field.setVisible(color);
+			gui.tabclose[0].visible = color;
+			gui.spectrum.visible = color;
+			gui.palette.visible = color;
+			gui.palette.recalc(gui.current_color);
+			//
+			boolean edit = edit();
+			gui.tabclose[1].visible = edit;
 			//
 			gui.updateleftlist();
 		}
@@ -589,6 +702,17 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			right_selected = -1;
 			gui.updateleftlist();
 			gui.updaterightlist();
+		}
+
+		public ComponentType toType(){
+			switch(this){
+				case BACKGROUND: return ComponentType.BASE;
+				case COMPONENT: return ComponentType.COMPONENT;
+				case FONT: return ComponentType.FONT;
+				case PRESET:
+				default: return null;
+			
+			}
 		}
 		
 	}

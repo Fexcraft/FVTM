@@ -51,7 +51,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private BasicText[] rList = new BasicText[15];
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BACKGROUND;
-	private static int pack_scroll = -1, left_scroll, right_scroll, right_selected;
+	private static int pack_scroll = -1, left_scroll, right_scroll, right_selected = -1;
+	private int cam_scroll_x, cam_scroll_y;
 	private ArrayList<Library> libraries = new ArrayList<>();
 	private ArrayList<String> leftlist = new ArrayList<>(), rightlist = new ArrayList<>();;
 	private Library selectedlib;
@@ -64,6 +65,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	public TrafficSignEditor(EntityPlayer player, int x, int y, int z){
 		super(texture, new TrafficSignEditorContainer(player, x, y, z), player);
 		this.deftexrect = false;
+		this.defbackground = false;
 		this.xSize = 256;
 		this.ySize = 206;
 		entity = (TrafficSignEntity)player.world.getEntityByID(x);
@@ -114,8 +116,18 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				return true;
 			}
 		});
-		buttons.put("rup", rup = new TSEButton("rup", guiLeft + 330, guiTop + 201, 458, 201, 10, 10, true));
-		buttons.put("rdw", rdw = new TSEButton("rdw", guiLeft + 342, guiTop + 201, 470, 201, 10, 10, true));
+		buttons.put("rup", rup = new TSEButton("rup", guiLeft + 330, guiTop + 201, 458, 201, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				updaterightlist(-1);
+				return true;
+			}
+		});
+		buttons.put("rdw", rdw = new TSEButton("rdw", guiLeft + 342, guiTop + 201, 470, 201, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				updaterightlist(1);
+				return true;
+			}
+		});
 		//
 		buttons.put("zoom_in", zoom_in = new TSEButton("z+", guiLeft + 18, guiTop + 203, 146, 203, 12, 12, true){
 			public boolean onclick(int x, int y, int b){
@@ -164,10 +176,46 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			}
 		});
 		//
-		buttons.put("c_up", c_up = new TSEButton("cup", guiLeft + 44, guiTop + 203, 172, 203, 12, 12, true));
-		buttons.put("c_dw", c_dw = new TSEButton("cdw", guiLeft + 57, guiTop + 203, 185, 203, 12, 12, true));
-		buttons.put("c_lr", c_lr = new TSEButton("clr", guiLeft + 70, guiTop + 203, 198, 203, 12, 12, true));
-		buttons.put("c_rg", c_rg = new TSEButton("crg", guiLeft + 83, guiTop + 203, 211, 203, 12, 12, true));
+		buttons.put("c_up", c_up = new TSEButton("cup", guiLeft + 44, guiTop + 203, 172, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				cam_scroll_y--;
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				cam_scroll_y += a;
+				return true;
+			}
+		});
+		buttons.put("c_dw", c_dw = new TSEButton("cdw", guiLeft + 57, guiTop + 203, 185, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				cam_scroll_y++;
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				cam_scroll_y += a;
+				return true;
+			}
+		});
+		buttons.put("c_lr", c_lr = new TSEButton("clr", guiLeft + 70, guiTop + 203, 198, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				cam_scroll_x--;
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				cam_scroll_x += a;
+				return true;
+			}
+		});
+		buttons.put("c_rg", c_rg = new TSEButton("crg", guiLeft + 83, guiTop + 203, 211, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				cam_scroll_x++;
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				cam_scroll_x += a;
+				return true;
+			}
+		});
 		//
 		for(int i = 0; i < 15; i++){
 			int I = i;
@@ -175,7 +223,22 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				public boolean onclick(int x, int y, int b){
 					right_selected = I + right_scroll;
 					if(rlistR[I].hovered(x, y)){
-						//TODO remove
+						if(right_selected < 0) return true;
+						switch(commode){
+							case BACKGROUND:
+								if(right_selected < data.backgrounds.size()) data.backgrounds.remove(right_selected);
+								break;
+							case COMPONENT:
+								if(right_selected < data.components.size()) data.components.remove(right_selected);
+								break;
+							case FONT:
+								if(right_selected < data.fonts.size()) data.fonts.remove(right_selected);
+								break;
+							default:
+								break;
+						}
+						right_selected = -1;
+						updaterightlist();
 					}
 					else if(rlistC[I].hovered(x, y)){
 						(tabmode = TabMode.COLOR).apply(gui);
@@ -280,10 +343,10 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		}
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
-        GlStateManager.translate(guiLeft + 128, guiTop + 103, 50.0F);
+        GlStateManager.translate(guiLeft + 127 + (cam_scroll_x * 16), guiTop + 110 + (cam_scroll_y * 16), -200);
         GlStateManager.scale(-scale, scale, scale);
-        GlStateManager.rotate(180.0F, 0, 0, 1);
-        GlStateManager.rotate(180.0F, 0, 1, 0);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(180, 0, 1, 0);
         //
         ModelBase.bindTexture(Resources.WHITE_TEXTURE);
         for(BaseData comp : data.backgrounds){
@@ -523,6 +586,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		}
 
 		public void apply(TrafficSignEditor gui){
+			right_selected = -1;
+			gui.updateleftlist();
 			gui.updaterightlist();
 		}
 		

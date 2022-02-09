@@ -8,6 +8,8 @@ import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.PRESETS;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.tmt.ModelBase;
@@ -52,12 +54,15 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton[] colorchannels = new TSEButton[9];
 	private TSEButton rgb_confirm, hex_confirm;
 	private TSEButton[] tabclose = new TSEButton[2];
+	private TSEButton[] editorconfirm = new TSEButton[6];
 	private ConstructorVP.Spectrum spectrum;
 	private ConstructorVP.Palette palette;
 	private BasicText title;
 	private BasicText[] lList = new BasicText[15];
 	private BasicText[] rList = new BasicText[15];
+	private BasicText[] editor = new BasicText[5];
 	private TextField rgb_field, hex_field;
+	private TextField font, rot, zpos, xpos, ypos, scal;
 	private RGB current_color = RGB.BLUE;
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BACKGROUND;
@@ -259,6 +264,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 					else{
 						//
 					}
+					setcolor(null);
+					updateeditor();
 					return true;
 				}
 			});
@@ -301,7 +308,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			public boolean onclick(int x, int y, int b){
 				try{
 					String[] str = rgb_field.getText().trim().replace(" ", "").split(",");
-					rgb = new RGB(Integer.parseInt(str[0]), Integer.parseInt(str[1]), Integer.parseInt(str[2]));
+					setcolor(new RGB(Integer.parseInt(str[0]), Integer.parseInt(str[1]), Integer.parseInt(str[2])));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -312,7 +319,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("hex_confirm", hex_confirm = new TSEButton("hexconfirm", guiLeft - 6, guiTop + 178, 211, 491, 10, 10, true){
 			public boolean onclick(int x, int y, int b){
 				try{
-					setcolor(new RGB(rgb_field.getText()));
+					setcolor(new RGB(hex_field.getText()));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -341,6 +348,120 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			}
 		});
 		//
+		texts.put("font_text", editor[0] = new BasicText(guiLeft - 103, guiTop + 23, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.font_text")));
+		texts.put("sign_sides", editor[1] = new BasicText(guiLeft - 103, guiTop + 51, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.sign_sides")));
+		texts.put("position", editor[2] = new BasicText(guiLeft - 103, guiTop + 109, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.position")));
+		texts.put("rotation", editor[3] = new BasicText(guiLeft - 103, guiTop + 137, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.rotation")));
+		texts.put("scale", editor[4] = new BasicText(guiLeft - 103, guiTop + 165, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.scale")));
+		buttons.put("fonttext", editorconfirm[0] = new TSEButton("fonttext", guiLeft - 6, guiTop + 36, 323, 349, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				if(!gui.commode.font()) return true;
+				//TODO
+				return true;
+			}
+		});
+		buttons.put("xpos", editorconfirm[3] = new TSEButton("xpos", guiLeft - 62, guiTop + 122, 323, 349, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.xoff = xpos.getValue();
+					updateeditor();
+				}
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.xoff -= a;
+					updateeditor();
+				}
+				return true;
+			}
+		});
+		buttons.put("ypos", editorconfirm[4] = new TSEButton("ypos", guiLeft - 6, guiTop + 122, 323, 349, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.yoff = ypos.getValue();
+					updateeditor();
+				}
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.yoff -= a;
+					updateeditor();
+				}
+				return true;
+			}
+		});
+		buttons.put("rot", editorconfirm[1] = new TSEButton("rot", guiLeft - 62, guiTop + 150, 323, 349, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					int val = rot.getIntegerValue();
+					if(val < -180) val = -180;
+					if(val > 180) val = 180;
+					comp.rotation = val;
+					updateeditor();
+				}
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					int val = rot.getIntegerValue() - a;
+					if(val < -180) val = -180;
+					if(val > 180) val = 180;
+					comp.rotation = val;
+					updateeditor();
+				}
+				return true;
+			}
+		});
+		buttons.put("zpos", editorconfirm[2] = new TSEButton("zpos", guiLeft - 6, guiTop + 150, 323, 349, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.zoff = zpos.getIntegerValue();
+					updateeditor();
+				}
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.zoff -= a;
+					updateeditor();
+				}
+				return true;
+			}
+		});
+		buttons.put("scale", editorconfirm[5] = new TSEButton("scale", guiLeft - 62, guiTop + 178, 323, 349, 10, 10, true){
+			public boolean onclick(int x, int y, int b){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.scale = scal.getValue();
+					updateeditor();
+				}
+				return true;
+			}
+			public boolean scrollwheel(int a, int x, int y){
+				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+				if(comp != null){
+					comp.scale -= a;
+					updateeditor();
+				}
+				return true;
+			}
+		});
+		fields.put("font", font = new TextField(3, fontRenderer, guiLeft - 103, guiTop + 37, 95, 8, false));
+		fields.put("xpos", xpos = new NumberField(6, fontRenderer, guiLeft - 103, guiTop + 123, 39, 8, false));
+		fields.put("ypos", ypos = new NumberField(7, fontRenderer, guiLeft - 47, guiTop + 123, 39, 8, false));
+		fields.put("rot", rot = new NumberField(4, fontRenderer, guiLeft - 103, guiTop + 151, 39, 8, false));
+		fields.put("zpos", zpos = new NumberField(5, fontRenderer, guiLeft - 47, guiTop + 151, 39, 8, false));
+		fields.put("scale", scal = new NumberField(8, fontRenderer, guiLeft - 103, guiTop + 179, 39, 8, false));
 		buttons.put("tab_close_edit", tabclose[1] = new TSEButton("tbcl1", guiLeft - 3, guiTop + 191, 214, 504, 8, 8, true){
 			public boolean onclick(int x, int y, int b){
 				(gui.tabmode = TabMode.LIST).apply(gui);
@@ -350,6 +471,16 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		//
 		tabmode.apply(this);
 		commode.apply(this);
+	}
+
+	protected void updateeditor(){
+		CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
+		font.setText(commode.font() ? comp == null ? "text" : ((FontData)comp).text : I18n.format("gui.fvtm.trafficsigneditor.tab_editor.not_font"));
+		rot.setText("" + (comp == null ? 0 : comp.rotation));
+		zpos.setText("" + (comp == null ? 0 : comp.zoff));
+		xpos.setText("" + (comp == null ? 0 : comp.xoff));
+		ypos.setText("" + (comp == null ? 0 : comp.yoff));
+		scal.setText("" + (comp == null ? 0 : comp.scale));
 	}
 
 	protected void setcolor(RGB color){
@@ -442,14 +573,36 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         GlStateManager.pushMatrix();
         GlStateManager.translate(guiLeft + 127 + (cam_scroll_x * 16), guiTop + 110 + (cam_scroll_y * 16), -200);
         GlStateManager.scale(-scale, scale, scale);
-        GlStateManager.rotate(180, 0, 0, 1);
+        //GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.rotate(180, 0, 1, 0);
         //
         ModelBase.bindTexture(Resources.WHITE_TEXTURE);
         for(BaseData comp : data.backgrounds){
-        	if(comp.model != null) comp.model.render(comp, comp.comp, entity, null);
+        	if(comp.model == null) continue;
+        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	GL11.glTranslatef(comp.xoff, comp.yoff, comp.zoff * 0.1f);
+        	if(comp.scale != 0f){
+        		GL11.glPushMatrix();
+        		GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	}
+        	comp.model.render(comp, comp.comp, entity, null);
+        	if(comp.scale != 0f) GL11.glPopMatrix();
+        	GL11.glTranslatef(-comp.xoff, -comp.yoff, -comp.zoff * 0.1f);
+        	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
-        for(ComponentData comp : data.components) comp.model.render(comp, comp.comp, entity, null);
+        for(ComponentData comp : data.components){
+        	if(comp.model == null) continue;
+        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	GL11.glTranslatef(comp.xoff, comp.yoff, comp.zoff * 0.1f);
+        	if(comp.scale != 0f){
+        		GL11.glPushMatrix();
+        		GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	}
+        	comp.model.render(comp, comp.comp, entity, null);
+        	if(comp.scale != 0f) GL11.glPopMatrix();
+        	GL11.glTranslatef(-comp.xoff, -comp.yoff, -comp.zoff * 0.1f);
+        	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
+        }
         //
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
@@ -588,6 +741,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			int j = i + right_scroll;
 			rList[i].string = j >= rightlist.size() ? "" : I18n.format("fvtm.traffic_sign." + commode.lcname() + "." + (selectedlib == null ? "" : selectedlib.id + ":") + rightlist.get(j));
 		}
+		updateeditor();
 	}
 
 	private void addComponent(int index){
@@ -654,9 +808,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			}
 			//
 			boolean color = color();
-			for(int i = 0; i < 9; i++){
-				gui.colorchannels[i].visible = color;
-			}
+			for(int i = 0; i < gui.colorchannels.length; i++) gui.colorchannels[i].visible = color;
 			gui.rgb_confirm.visible = color;
 			gui.hex_confirm.visible = color;
 			gui.rgb_field.setVisible(color);
@@ -667,6 +819,14 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			gui.palette.recalc(gui.current_color);
 			//
 			boolean edit = edit();
+			for(int i = 0; i < gui.editor.length; i++) gui.editor[i].visible = edit;
+			for(int i = 0; i < gui.editorconfirm.length; i++) gui.editorconfirm[i].visible = edit;
+			gui.font.setVisible(edit);
+			gui.rot.setVisible(edit);
+			gui.zpos.setVisible(edit);
+			gui.xpos.setVisible(edit);
+			gui.ypos.setVisible(edit);
+			gui.scal.setVisible(edit);
 			gui.tabclose[1].visible = edit;
 			//
 			gui.updateleftlist();

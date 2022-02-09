@@ -46,12 +46,15 @@ public class TrafficSignData {
 		public final ComponentType type;
 		public String comp;
 		public RGB[] channels = new RGB[9];
+		public int rotation, zoff;
+		public float xoff, yoff;
+		public float scale;
 		
 		public CompDataRoot(String str, ComponentType type){
 			this.type = type;
 			comp = str;
 			for(int i = 0; i < 9; i++) channels[i] = RGB.WHITE.copy();
-			channels[0].packed = RGB.GREEN.packed;
+			//channels[0].packed = RGB.GREEN.packed;
 		}
 		
 		public CompDataRoot read(NBTTagCompound com){
@@ -99,6 +102,8 @@ public class TrafficSignData {
 	}
 	
 	public static class FontData extends CompDataRoot {
+
+		public String text = "text";
 
 		public FontData(String str){
 			super(str, ComponentType.FONT);

@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -24,17 +26,17 @@ public class G_4ROT_TE extends BlockBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", "facing=" + state.getValue(FACING).getName());
+        return type.getAABB("default", "facing=" + state.getValue(FACING).getName())[0];
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName()).offset(pos);
+        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName())[0].offset(pos);
     }
     
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName());
+        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName())[0];
     }
 
     @Override
@@ -68,6 +70,13 @@ public class G_4ROT_TE extends BlockBase {
     public void breakBlock(World world, BlockPos pos, IBlockState state){
         super.breakBlock(world, pos, state);
     }
+
+	@Override
+	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
+		for(AxisAlignedBB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName())){
+			addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		}
+	}
 
 }
 

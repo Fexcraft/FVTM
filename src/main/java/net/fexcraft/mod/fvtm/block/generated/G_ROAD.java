@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import java.util.List;
 import java.util.Random;
 
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -103,5 +104,10 @@ public class G_ROAD extends PlainBase {
     public boolean isReplaceable(IBlockAccess world, BlockPos pos){
         return false;
     }
+
+	@Override
+	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
+		addCollisionBoxToList(pos, entitybox, boxes, Asphalt.BOUNDING_BOXES[state.getValue(Asphalt.HEIGHT)]);
+	}
 
 }

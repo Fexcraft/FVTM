@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -37,6 +38,8 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed {
 	
+	public static final AxisAlignedBB[] FULL_BLOCK_AABB_ARRAY = new AxisAlignedBB[]{ net.minecraft.block.Block.FULL_BLOCK_AABB };
+	//
 	protected List<NamedResourceLocation> textures;
 	protected BlockItem item;
 	protected net.minecraft.block.Block block;
@@ -46,7 +49,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected boolean plain_model, hideitem;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected byte maxstacksize;
-	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
+	protected TreeMap<String, AxisAlignedBB[]> aabbs = new TreeMap<>();
 	protected BlockType blocktype;
 	protected int burntime;
 	protected String oredict;
@@ -107,8 +110,21 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			obj.get("AABBs").getAsJsonObject().entrySet().forEach(entry -> {
 				try{
 					JsonArray array = entry.getValue().getAsJsonArray();
-					aabbs.put(entry.getKey(), new AxisAlignedBB(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble(),
-						array.get(3).getAsDouble(), array.get(4).getAsDouble(), array.get(5).getAsDouble()));
+					if(array.get(0).isJsonArray()){
+						ArrayList<AxisAlignedBB> list = new ArrayList<>();
+						for(JsonElement elm : array){
+							JsonArray arr = elm.getAsJsonArray();
+							list.add(new AxisAlignedBB(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble(),
+								arr.get(3).getAsDouble(), arr.get(4).getAsDouble(), arr.get(5).getAsDouble()));
+						}
+						aabbs.put(entry.getKey(), list.toArray(new AxisAlignedBB[0]));
+					}
+					else{
+						aabbs.put(entry.getKey(), new AxisAlignedBB[]{
+							new AxisAlignedBB(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble(),
+							array.get(3).getAsDouble(), array.get(4).getAsDouble(), array.get(5).getAsDouble())
+						});
+					}
 				}
 				catch(Exception e){
 					e.printStackTrace(); Print.log("Failed to load AABB for block '" + this.registryname.toString() + "' with JSON: " + entry.toString());
@@ -207,11 +223,11 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return plain_model;
 	}
 	
-	public TreeMap<String, AxisAlignedBB> getAABBs(){
+	public TreeMap<String, AxisAlignedBB[]> getAABBs(){
 		return aabbs;
 	}
 	
-	public AxisAlignedBB getAABB(String type, String state){
+	public AxisAlignedBB[] getAABB(String type, String state){
 		if(type.equals("selection")){
 			if(aabbs.containsKey("selection#" + state)) return aabbs.get("selection#" + state);
 			if(aabbs.containsKey("selection#normal")) return aabbs.get("selection#normal");
@@ -220,7 +236,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			if(aabbs.containsKey("collision#" + state)) return aabbs.get("collision#" + state);
 			if(aabbs.containsKey("collision#normal")) return aabbs.get("collision#normal");
 		}
-		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : net.minecraft.block.Block.FULL_BLOCK_AABB;
+		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : FULL_BLOCK_AABB_ARRAY;
 	}
 
 	public Material getMaterial(){

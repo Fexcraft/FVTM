@@ -23,7 +23,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockBase extends PlainBase implements ITileEntityProvider {
+public abstract class BlockBase extends PlainBase implements ITileEntityProvider {
 	
 	public BlockBase(Block type){
 		super(type);

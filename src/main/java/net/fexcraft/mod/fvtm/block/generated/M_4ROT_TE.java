@@ -225,7 +225,8 @@ public class M_4ROT_TE extends BlockBase {
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
 		for(AxisAlignedBB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName())){
-			addCollisionBoxToList(pos, entitybox, boxes, aabb);
+			if(entitybox == null) boxes.add(aabb);
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
 		}
 	}
 

@@ -76,7 +76,8 @@ public class G_16ROT extends PlainBase {
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
 		for(AxisAlignedBB aabb : type.getAABB("collision", "rotation=" + state.getValue(ROTATION))){
-			addCollisionBoxToList(pos, entitybox, boxes, aabb);
+			if(entitybox == null) boxes.add(aabb);
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
 		}
 	}
 

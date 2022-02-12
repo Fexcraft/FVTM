@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
-
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.minecraft.block.state.IBlockState;
@@ -62,19 +60,20 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end){
-		List<RayTraceResult> list = Lists.<RayTraceResult>newArrayList();
+		ArrayList<RayTraceResult> list = new ArrayList<>();
 		ArrayList<AxisAlignedBB> aabbs = new ArrayList<>();
-		this.addCollisionsToList(state, world, pos, aabb, aabbs);
-		for(AxisAlignedBB aabb : aabbs) list.add(rayTrace(pos, start, end, aabb.offset(pos)));
+		this.addCollisionsToList(state, world, pos, null, aabbs);
+		for(AxisAlignedBB aabb : aabbs){
+			RayTraceResult res = rayTrace(pos, start, end, aabb);
+			if(res != null) list.add(res);
+		}
 		RayTraceResult result = null;
 		double v = 0;
 		for(RayTraceResult sub : list){
-			if(sub != null){
-				double d = sub.hitVec.squareDistanceTo(end);
-				if(d > v){
-					result = sub;
-					v = d;
-				}
+			double d = sub.hitVec.squareDistanceTo(end);
+			if(d > v){
+				result = sub;
+				v = d;
 			}
 		}
 		return result;
@@ -86,7 +85,5 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	}
 	
 	protected abstract void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes);
-
-	public static final AxisAlignedBB aabb = new AxisAlignedBB(0, 0, 0, 0.25, 1, 0.15);
 
 }

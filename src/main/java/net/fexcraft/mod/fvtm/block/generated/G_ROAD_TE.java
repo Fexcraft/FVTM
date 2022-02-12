@@ -107,7 +107,8 @@ public class G_ROAD_TE extends BlockBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		addCollisionBoxToList(pos, entitybox, boxes, Asphalt.BOUNDING_BOXES[state.getValue(Asphalt.HEIGHT)]);
+		if(entitybox == null) boxes.add(Asphalt.BOUNDING_BOXES[state.getValue(Asphalt.HEIGHT)]);
+		else addCollisionBoxToList(pos, entitybox, boxes, Asphalt.BOUNDING_BOXES[state.getValue(Asphalt.HEIGHT)]);
 	}
 
 }

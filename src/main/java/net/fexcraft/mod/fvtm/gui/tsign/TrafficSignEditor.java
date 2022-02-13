@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.tsign;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.BACKGROUNDS;
 import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.COMPONENTS;
 import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.FONTS;
@@ -450,7 +451,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			public boolean scrollwheel(int a, int x, int y){
 				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
 				if(comp != null){
-					comp.scale -= a;
+					comp.scale -= a * sixteenth;
 					updateeditor();
 				}
 				return true;
@@ -579,28 +580,22 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         ModelBase.bindTexture(Resources.WHITE_TEXTURE);
         for(BaseData comp : data.backgrounds){
         	if(comp.model == null) continue;
+    		GL11.glPushMatrix();
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
+        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
-        	GL11.glTranslatef(comp.xoff, comp.yoff, comp.zoff * 0.1f);
-        	if(comp.scale != 0f){
-        		GL11.glPushMatrix();
-        		GL11.glScalef(comp.scale, comp.scale, comp.scale);
-        	}
         	comp.model.render(comp, comp.comp, entity, null);
-        	if(comp.scale != 0f) GL11.glPopMatrix();
-        	GL11.glTranslatef(-comp.xoff, -comp.yoff, -comp.zoff * 0.1f);
+        	GL11.glPopMatrix();
         	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
         for(ComponentData comp : data.components){
         	if(comp.model == null) continue;
+    		GL11.glPushMatrix();
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
+        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
-        	GL11.glTranslatef(comp.xoff, comp.yoff, comp.zoff * 0.1f);
-        	if(comp.scale != 0f){
-        		GL11.glPushMatrix();
-        		GL11.glScalef(comp.scale, comp.scale, comp.scale);
-        	}
         	comp.model.render(comp, comp.comp, entity, null);
-        	if(comp.scale != 0f) GL11.glPopMatrix();
-        	GL11.glTranslatef(-comp.xoff, -comp.yoff, -comp.zoff * 0.1f);
+        	GL11.glPopMatrix();
         	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
         //

@@ -229,34 +229,10 @@ public class Resources {
 				}
 			}
 		}
-		File packfolder = new File(configroot, "packs/");
-		if(!packfolder.exists()) packfolder.mkdir();
-		for(File file : packfolder.listFiles()){
-			if(file.isHidden()) continue;
-			if(file.isDirectory()){
-				File assets = new File(file, "assets/");
-				if(assets.exists()){
-					for(File fl : assets.listFiles()){
-						if(!fl.isDirectory()) continue;
-						File dec = new File(fl, "addonpack.fvtm");
-						if(dec.exists()){
-							ADDONS.register(new Addon(ContainerType.DIR, file, true).parse(JsonUtil.get(dec)));
-						}
-					}
-				}
-			}
-			else if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
-				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
-				JsonObject obj = array.get(0).getAsJsonObject();
-				if(array.size() > 0){
-					Addon addon = new Addon(ContainerType.JAR, file, true).parse(obj);
-					ADDONS.register(addon);
-					if(file.getName().endsWith(".jar") || (obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean())){
-						addToClassPath(addon, file);
-					}
-				}
-			}
+		else{
+			searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), false);
 		}
+		searchAddonsInForlder(new File(configroot, "packs/"), true);
 		//
 		//TODO check addon on/off state
 		//
@@ -276,6 +252,39 @@ public class Resources {
 		searchInAddonsFor(DataType.VEHICLE);
 	}
 	
+	private void searchAddonsInForlder(File packfolder, boolean create){
+		if(!packfolder.exists()){
+			if(!create) return;
+			packfolder.mkdir();
+		}
+		for(File file : packfolder.listFiles()){
+			if(file.isHidden()) continue;
+			if(file.isDirectory()){
+				File assets = new File(file, "assets/");
+				if(assets.exists()){
+					for(File fl : assets.listFiles()){
+						if(!fl.isDirectory()) continue;
+						File dec = new File(fl, "addonpack.fvtm");
+						if(dec.exists()){
+							ADDONS.register(new Addon(ContainerType.DIR, file, true).parse(JsonUtil.get(dec)));
+						}
+					}
+				}
+			}
+			else if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
+				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
+				if(array.size() > 0){
+					JsonObject obj = array.get(0).getAsJsonObject();
+					Addon addon = new Addon(ContainerType.JAR, file, true).parse(obj);
+					ADDONS.register(addon);
+					if(file.getName().endsWith(".jar") || (obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean())){
+						addToClassPath(addon, file);
+					}
+				}
+			}
+		}
+	}
+
 	private static Method cl_method;
 
 	private void addToClassPath(Addon addon, File file){

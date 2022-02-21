@@ -587,7 +587,6 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
-        	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
         for(ComponentData comp : data.components){
         	if(comp.model == null) continue;
@@ -597,7 +596,6 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
-        	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
         for(FontData comp : data.fonts){
         	if(comp.model == null) continue;
@@ -607,7 +605,6 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
-        	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
         //
         GlStateManager.popMatrix();

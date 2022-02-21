@@ -62,6 +62,9 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
     public void onLoad(){
         IBlockState state = world.getBlockState(pos);
         meta = (byte)state.getBlock().getMetaFromState(state);
+        if(data.getType().canBeWired() && SystemManager.active(Systems.WIRE)){
+        	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
+        }
     }
 
     @Override

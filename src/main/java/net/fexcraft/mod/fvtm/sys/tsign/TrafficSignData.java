@@ -1,9 +1,14 @@
 package net.fexcraft.mod.fvtm.sys.tsign;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
+import net.fexcraft.mod.fvtm.model.TrafficSignModel.CharModelData;
+import net.fexcraft.mod.fvtm.model.TrafficSignModel.FontModelData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -77,7 +82,7 @@ public class TrafficSignData {
 					model = TrafficSignLibrary.MODELS.get(TrafficSignLibrary.COMPONENTS.get(comp));
 					break;
 				case FONT:
-					//TODO
+					model = TrafficSignLibrary.MODELS.get(TrafficSignLibrary.FONTS.get(comp));
 					break;
 			}
 			return this;
@@ -104,9 +109,62 @@ public class TrafficSignData {
 	public static class FontData extends CompDataRoot {
 
 		public String text = "text";
+		private ArrayList<FontOffset> chars = new ArrayList<>();
 
 		public FontData(String str){
 			super(str, ComponentType.FONT);
+		}
+
+		public ArrayList<FontOffset> text(){
+			return chars;
+		}
+
+		public void text(String str){
+			chars = null;
+			text = str;
+		}
+
+		public void init(FontModelData fontdata){
+			chars = new ArrayList<>();
+			char[] textchars = text.toCharArray();
+			char[] upperchars = text.toUpperCase().toCharArray();
+			char[] lowerchars = text.toLowerCase().toCharArray();
+			float passed = 0;
+			for(int i = 0; i < textchars.length; i++){
+				if(textchars[i] == ' '){
+					passed += fontdata.space_width + fontdata.letter_spacing;
+					continue;
+				}
+				Object[] cher = findChar(fontdata.chars, textchars[i], lowerchars[i], upperchars[i]);
+				if(cher == null){
+					passed += fontdata.space_width + fontdata.letter_spacing;
+					Print.log("Model for char '" + textchars[i] + "'/#" + Integer.toHexString(textchars[i]) + " not found!");
+					continue;
+				}
+				chars.add(new FontOffset((char)cher[0], (CharModelData)cher[1], passed * Static.sixteenth));
+				passed += ((CharModelData)cher[1]).width + fontdata.letter_spacing;
+			}
+		}
+
+		private static Object[] findChar(HashMap<Character, CharModelData> chars, char c, char l, char u){
+			if(chars.containsKey(c)) return new Object[]{ c, chars.get(c) };
+			if(chars.containsKey(l)) return new Object[]{ l, chars.get(l) };
+			if(chars.containsKey(u)) return new Object[]{ u, chars.get(u) };
+			return null;
+		}
+		
+	}
+	
+	public static class FontOffset {
+		
+		public char id;
+		public float offset;
+		public CharModelData data;
+		
+		public FontOffset(char c, CharModelData data, float passed){
+			id = c;
+			offset = passed;
+			this.data = data;
 		}
 		
 	}

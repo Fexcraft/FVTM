@@ -23,7 +23,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 	public static HashMap<String, Object> PRESETS = new LinkedHashMap<>();
 	public static HashMap<String, String> BACKGROUNDS = new LinkedHashMap<>();
 	public static HashMap<String, String> COMPONENTS = new LinkedHashMap<>();
-	public static HashMap<String, Object> FONTS = new LinkedHashMap<>();
+	public static HashMap<String, String> FONTS = new LinkedHashMap<>();
 	public static HashMap<String, Library> LIBRARIES = new LinkedHashMap<>();
 	
 	public static final HashMap<String, TrafficSignModel> MODELS = new HashMap<>();
@@ -73,6 +73,10 @@ public class TrafficSignLibrary extends DetachedSystem {
 			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
+		for(Entry<String, String> entry : FONTS.entrySet()){
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
+			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
+		}
 		initload = true;
 	}
 
@@ -81,7 +85,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 		public HashMap<String, JsonObject> presets = new HashMap<>();
 		public HashMap<String, String> backgrounds = new HashMap<>();
 		public HashMap<String, String> components = new HashMap<>();
-		public HashMap<String, JsonObject> fonts = new HashMap<>();
+		public HashMap<String, String> fonts = new HashMap<>();
 		
 		public final String id, adress;
 		public final boolean external;
@@ -109,7 +113,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 			for(Entry<String, JsonObject> entry : presets.entrySet()) PRESETS.put(id + ":" + entry.getKey(), entry.getValue());
 			for(Entry<String, String> entry : backgrounds.entrySet()) BACKGROUNDS.put(id + ":" + entry.getKey(), entry.getValue());
 			for(Entry<String, String> entry : components.entrySet()) COMPONENTS.put(id + ":" + entry.getKey(), entry.getValue());
-			for(Entry<String, JsonObject> entry : fonts.entrySet()) FONTS.put(id + ":" + entry.getKey(), entry.getValue());
+			for(Entry<String, String> entry : fonts.entrySet()) FONTS.put(id + ":" + entry.getKey(), entry.getValue());
 		}
 		
 	}

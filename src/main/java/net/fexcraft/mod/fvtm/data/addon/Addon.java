@@ -167,12 +167,12 @@ public class Addon extends TypeCore<Addon> {
 			}
 			if(tsn.has("fonts")){
 				for(Entry<String, JsonElement> elm : tsn.get("fonts").getAsJsonObject().entrySet()){
-					lib.fonts.put(elm.getKey(), elm.getValue().getAsJsonObject());
+					lib.fonts.put(elm.getKey(), elm.getValue().getAsString());
 				}
 			}
 			if(tsn.has("presets")){
 				for(Entry<String, JsonElement> elm : tsn.get("presets").getAsJsonObject().entrySet()){
-					lib.fonts.put(elm.getKey(), elm.getValue().getAsJsonObject());
+					lib.fonts.put(elm.getKey(), elm.getValue().getAsString());
 				}
 			}
 			TrafficSignLibrary.LIBRARIES.put(lib.id, lib);

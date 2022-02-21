@@ -357,7 +357,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("fonttext", editorconfirm[0] = new TSEButton("fonttext", guiLeft - 6, guiTop + 36, 323, 349, 10, 10, true){
 			public boolean onclick(int x, int y, int b){
 				if(!gui.commode.font()) return true;
-				//TODO
+				FontData comp = (FontData)data.getCompData(commode.toType(), right_selected);
+				comp.text(font.getText());
 				return true;
 			}
 		});
@@ -589,6 +590,16 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
         }
         for(ComponentData comp : data.components){
+        	if(comp.model == null) continue;
+    		GL11.glPushMatrix();
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
+        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	comp.model.render(comp, comp.comp, entity, null);
+        	GL11.glPopMatrix();
+        	if(comp.rotation != 0) GL11.glRotatef(-comp.rotation, 0, 0, 1);
+        }
+        for(FontData comp : data.fonts){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);

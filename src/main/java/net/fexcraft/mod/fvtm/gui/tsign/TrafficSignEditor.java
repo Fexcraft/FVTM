@@ -9,13 +9,9 @@ import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.PRESETS;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.tmt.ModelBase;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
@@ -33,7 +29,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	
@@ -72,7 +70,6 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private Library selectedlib;
 	private boolean nolibs;
 	private TrafficSignData data;
-	private TrafficSignEntity entity;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -82,8 +79,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		this.defbackground = false;
 		this.xSize = 256;
 		this.ySize = 206;
-		entity = (TrafficSignEntity)player.world.getEntityByID(x);
-		data = player.world.getChunk(player.chunkCoordX, player.chunkCoordZ).getCapability(Capabilities.TRAFFIC_SIGNS, null).getSign(entity.getPosition(), true);
+		data = new TrafficSignData().read(container.data.write());
 		ris = this;
 	}
 	
@@ -157,7 +153,14 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				return true;
 			}
 		});
-		buttons.put("confirm", confirm = new TSEButton("confirm", guiLeft + 226, guiTop + 203, 354, 203, 12, 12, true));
+		buttons.put("confirm", confirm = new TSEButton("confirm", guiLeft + 226, guiTop + 203, 354, 203, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setTag("signdata", data.write());
+				container.send(Side.SERVER, compound);
+				return true;
+			}
+		});
 		buttons.put("cancel", cancel = new TSEButton("cancel", guiLeft + 213, guiTop + 203, 341, 203, 12, 12, true){
 			public boolean onclick(int x, int y, int b){
 				player.closeScreen();
@@ -576,33 +579,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         GlStateManager.rotate(180, 0, 1, 0);
         //
         ModelBase.bindTexture(Resources.WHITE_TEXTURE);
-        for(BaseData comp : data.backgrounds){
-        	if(comp.model == null) continue;
-    		GL11.glPushMatrix();
-        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
-        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
-        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
-        	comp.model.render(comp, comp.comp, entity, null);
-        	GL11.glPopMatrix();
-        }
-        for(ComponentData comp : data.components){
-        	if(comp.model == null) continue;
-    		GL11.glPushMatrix();
-        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
-        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
-        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
-        	comp.model.render(comp, comp.comp, entity, null);
-        	GL11.glPopMatrix();
-        }
-        for(FontData comp : data.fonts){
-        	if(comp.model == null) continue;
-    		GL11.glPushMatrix();
-        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
-        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
-        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
-        	comp.model.render(comp, comp.comp, entity, null);
-        	GL11.glPopMatrix();
-        }
+        data.render(mc.world, container.entity, pticks);
         //
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();

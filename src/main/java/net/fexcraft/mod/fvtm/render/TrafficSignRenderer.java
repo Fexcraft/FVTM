@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -31,7 +32,9 @@ public class TrafficSignRenderer {
         		//check frustrum //if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(<AABB>)) continue;
             	GL11.glPushMatrix();
             	GL11.glTranslatef(entry.getKey().getX() + 0.5f, entry.getKey().getY() + 0.5f, entry.getKey().getZ() + 0.5f);
-            	entry.getValue().render(world, partialticks);
+                GlStateManager.rotate(180, 0, 1, 0);
+                GlStateManager.rotate(180, 0, 0, 1);
+            	entry.getValue().render(world, null, partialticks);
             	GL11.glPopMatrix();
         	}
         }

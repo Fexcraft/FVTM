@@ -1,15 +1,22 @@
 package net.fexcraft.mod.fvtm.sys.tsign;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.CharModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.FontModelData;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,17 +32,73 @@ public class TrafficSignData {
 	}
 	
 	public TrafficSignData read(NBTTagCompound com){
-		//
+		backgrounds.clear();
+		components.clear();
+		fonts.clear();
+		if(com.hasKey("backgrounds")){
+			NBTTagList list = (NBTTagList)com.getTag("backgrounds");
+			for(NBTBase base : list){
+				backgrounds.add(new BaseData((NBTTagCompound)base));
+			}
+		}
+		if(com.hasKey("components")){
+			NBTTagList list = (NBTTagList)com.getTag("components");
+			for(NBTBase base : list){
+				components.add(new ComponentData((NBTTagCompound)base));
+			}
+		}
+		if(com.hasKey("fonts")){
+			NBTTagList list = (NBTTagList)com.getTag("fonts");
+			for(NBTBase base : list){
+				fonts.add(new FontData((NBTTagCompound)base));
+			}
+		}
 		return this;
 	}
 
 	public NBTTagCompound write(){
-		//
-		return new NBTTagCompound();
+		NBTTagCompound compound = new NBTTagCompound();
+		NBTTagList list = new NBTTagList();
+		for(BaseData data : backgrounds) list.appendTag(data.write());
+		compound.setTag("backgrounds", list);
+		list = new NBTTagList();
+		for(ComponentData data : components) list.appendTag(data.write());
+		compound.setTag("components", list);
+		list = new NBTTagList();
+		for(FontData data : fonts) list.appendTag(data.write());
+		compound.setTag("fonts", list);
+		return compound;
 	}
 
-	public void render(World world, float partialticks){
-		//
+	@SideOnly(Side.CLIENT)
+	public void render(World world, TrafficSignEntity entity, float partialticks){
+        for(BaseData comp : backgrounds){
+        	if(comp.model == null) continue;
+    		GL11.glPushMatrix();
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
+        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	comp.model.render(comp, comp.comp, entity, null);
+        	GL11.glPopMatrix();
+        }
+        for(ComponentData comp : components){
+        	if(comp.model == null) continue;
+    		GL11.glPushMatrix();
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
+        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	comp.model.render(comp, comp.comp, entity, null);
+        	GL11.glPopMatrix();
+        }
+        for(FontData comp : fonts){
+        	if(comp.model == null) continue;
+    		GL11.glPushMatrix();
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
+        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	comp.model.render(comp, comp.comp, entity, null);
+        	GL11.glPopMatrix();
+        }
 	}
 	
 	public static enum ComponentType {
@@ -58,18 +121,41 @@ public class TrafficSignData {
 		public CompDataRoot(String str, ComponentType type){
 			this.type = type;
 			comp = str;
-			for(int i = 0; i < 9; i++) channels[i] = RGB.WHITE.copy();
+			for(int i = 0; i < channels.length; i++) channels[i] = RGB.WHITE.copy();
 			//channels[0].packed = RGB.GREEN.packed;
 		}
 		
+		public CompDataRoot(NBTTagCompound com){
+			this(com.getString("comp"), ComponentType.valueOf(com.getString("type")));
+			read(com);
+		}
+		
 		public CompDataRoot read(NBTTagCompound com){
-			//
+			if(com == null) return this;
+			if(com.hasKey("rot")) rotation = com.getInteger("rot");
+			if(com.hasKey("zoff")) zoff = com.getInteger("zoff");
+			if(com.hasKey("xoff")) xoff = com.getFloat("xoff");
+			if(com.hasKey("yoff")) yoff = com.getFloat("yoff");
+			if(com.hasKey("scale")) scale = com.getFloat("scale");
+			for(int i = 0; i < channels.length; i++){
+				if(com.hasKey("rgb" + i)) channels[i].packed = com.getInteger("rgb" + i);
+			}
 			return this;
 		}
 
 		public NBTTagCompound write(){
-			//
-			return new NBTTagCompound();
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("comp", comp);
+			compound.setString("type", type.name());
+			if(rotation != 0) compound.setInteger("rot", rotation);
+			if(zoff != 0) compound.setInteger("zoff", zoff);
+			if(xoff != 0f) compound.setFloat("xoff", xoff);
+			if(yoff != 0f) compound.setFloat("yoff", yoff);
+			if(scale != 0f) compound.setFloat("scale", scale);
+			for(int i = 0; i < channels.length; i++){
+				if(channels[i].packed != RGB.WHITE.packed) compound.setInteger("rgb" + i, channels[i].packed);
+			}
+			return compound;
 		}
 
 		@SideOnly(Side.CLIENT)
@@ -91,9 +177,36 @@ public class TrafficSignData {
 	}
 	
 	public static class BaseData extends CompDataRoot {
+		
+		public boolean[] sides = new boolean[4];
 
 		public BaseData(String str){
 			super(str, ComponentType.BASE);
+			for(int i = 0; i < sides.length; i++) sides[i] = true;
+		}
+		
+		public BaseData(NBTTagCompound com){
+			super(com);
+		}
+
+		@Override
+		public CompDataRoot read(NBTTagCompound com){
+			super.read(com);
+			if(com.hasKey("border_top")) sides[0] = com.getBoolean("border_top");
+			if(com.hasKey("border_left")) sides[1] = com.getBoolean("border_left");
+			if(com.hasKey("border_right")) sides[2] = com.getBoolean("border_right");
+			if(com.hasKey("border_bot")) sides[3] = com.getBoolean("border_bot");
+			return this;
+		}
+
+		@Override
+		public NBTTagCompound write(){
+			NBTTagCompound compound = super.write();
+			if(!sides[0]) compound.setBoolean("border_top", sides[0]);
+			if(!sides[1]) compound.setBoolean("border_left", sides[1]);
+			if(!sides[2]) compound.setBoolean("border_right", sides[2]);
+			if(!sides[3]) compound.setBoolean("border_bot", sides[3]);
+			return compound;
 		}
 		
 	}
@@ -102,6 +215,10 @@ public class TrafficSignData {
 
 		public ComponentData(String str){
 			super(str, ComponentType.COMPONENT);
+		}
+		
+		public ComponentData(NBTTagCompound com){
+			super(com);
 		}
 		
 	}
@@ -113,6 +230,10 @@ public class TrafficSignData {
 
 		public FontData(String str){
 			super(str, ComponentType.FONT);
+		}
+		
+		public FontData(NBTTagCompound com){
+			super(com);
 		}
 
 		public ArrayList<FontOffset> text(){
@@ -151,6 +272,20 @@ public class TrafficSignData {
 			if(chars.containsKey(l)) return new Object[]{ l, chars.get(l) };
 			if(chars.containsKey(u)) return new Object[]{ u, chars.get(u) };
 			return null;
+		}
+		
+		@Override
+		public CompDataRoot read(NBTTagCompound com){
+			super.read(com);
+			if(com.hasKey("text")) text(com.getString("text"));
+			return this;
+		}
+
+		@Override
+		public NBTTagCompound write(){
+			NBTTagCompound compound = super.write();
+			if(text != null) compound.setString("text", text);
+			return compound;
 		}
 		
 	}

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -55,7 +56,7 @@ public class TrafficSignCapability implements TrafficSigns {
 	@Override
 	public ItemStack signToItem(BlockPos position){
 		//
-		return null;
+		return new ItemStack(Blocks.STONE);
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class TrafficSignCapability implements TrafficSigns {
 
 	@Override
 	public TrafficSignData getSign(BlockPos pos, boolean create){
-		if(create && !signs.contains(pos)){
+		if(create && !signs.containsKey(pos)){
 			signs.put(pos, new TrafficSignData());
 		}
 		return signs.get(pos);
@@ -78,6 +79,11 @@ public class TrafficSignCapability implements TrafficSigns {
 	@Override
 	public TrafficSignData getSign(int x, int y, int z, boolean create){
 		return getSign(new BlockPos(x, y, z), create);
+	}
+
+	@Override
+	public TrafficSignData remove(BlockPos pos){
+		return signs.remove(pos);
 	}
 
 }

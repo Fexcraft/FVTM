@@ -24,4 +24,6 @@ public interface TrafficSigns {
 
 	public TrafficSignData getSign(int x, int y, int z, boolean create);
 
+	public TrafficSignData remove(BlockPos pos);
+
 }

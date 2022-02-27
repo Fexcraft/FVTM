@@ -26,6 +26,7 @@ public class TrafficSignData {
 	public ArrayList<BaseData> backgrounds = new ArrayList<>();
 	public ArrayList<ComponentData> components = new ArrayList<>();
 	public ArrayList<FontData> fonts = new ArrayList<>();
+	private boolean linked;
 
 	public TrafficSignData(){
 		//
@@ -53,6 +54,7 @@ public class TrafficSignData {
 				fonts.add(new FontData((NBTTagCompound)base));
 			}
 		}
+		linked = false;
 		return this;
 	}
 
@@ -72,6 +74,7 @@ public class TrafficSignData {
 
 	@SideOnly(Side.CLIENT)
 	public void render(World world, TrafficSignEntity entity, float partialticks){
+		if(!linked) linkModels();
         for(BaseData comp : backgrounds){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
@@ -101,6 +104,13 @@ public class TrafficSignData {
         }
 	}
 	
+	public void linkModels(){
+		for(CompDataRoot data : backgrounds) data.linkModel();
+		for(CompDataRoot data : components) data.linkModel();
+		for(CompDataRoot data : fonts) data.linkModel();
+		linked = true;
+	}
+
 	public static enum ComponentType {
 		
 		BASE, COMPONENT, FONT
@@ -127,7 +137,6 @@ public class TrafficSignData {
 		
 		public CompDataRoot(NBTTagCompound com){
 			this(com.getString("comp"), ComponentType.valueOf(com.getString("type")));
-			read(com);
 		}
 		
 		public CompDataRoot read(NBTTagCompound com){
@@ -187,6 +196,7 @@ public class TrafficSignData {
 		
 		public BaseData(NBTTagCompound com){
 			super(com);
+			read(com);
 		}
 
 		@Override
@@ -219,6 +229,7 @@ public class TrafficSignData {
 		
 		public ComponentData(NBTTagCompound com){
 			super(com);
+			read(com);
 		}
 		
 	}
@@ -234,6 +245,7 @@ public class TrafficSignData {
 		
 		public FontData(NBTTagCompound com){
 			super(com);
+			read(com);
 		}
 
 		public ArrayList<FontOffset> text(){

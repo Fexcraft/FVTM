@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -144,7 +145,11 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
                 return true;
             }
         	ItemStack stack = this.getPickedResult(null);
-            entityDropItem(stack, 0.5F); this.setDead();
+            entityDropItem(stack, 0.5F);
+            setDead();
+            BlockPos pos = getPosition();
+            TrafficSigns cap = world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
+            if(cap != null) cap.remove(pos);
         }
         return true;
     }

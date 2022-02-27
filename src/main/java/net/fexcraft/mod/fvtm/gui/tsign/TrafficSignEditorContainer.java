@@ -18,7 +18,7 @@ public class TrafficSignEditorContainer extends GenericContainer {
 	public TrafficSignEditorContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
 		entity = (TrafficSignEntity)player.world.getEntityByID(x);
-		data = player.world.getChunk(player.chunkCoordX, player.chunkCoordZ).getCapability(Capabilities.TRAFFIC_SIGNS, null).getSign(entity.getPosition(), true);
+		data = player.world.getChunk(entity.chunkCoordX, entity.chunkCoordZ).getCapability(Capabilities.TRAFFIC_SIGNS, null).getSign(entity.getPosition(), true);
 	}
 
 	@Override
@@ -30,7 +30,10 @@ public class TrafficSignEditorContainer extends GenericContainer {
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 		if(!packet.hasKey("signdata")) return;
 		data.read(packet.getCompoundTag("signdata"));
-		if(side == Side.SERVER) send(Side.CLIENT, packet);
+		if(side == Side.SERVER){
+			send(Side.CLIENT, packet);
+			player.closeScreen();
+		}
 	}
 
 	@Override

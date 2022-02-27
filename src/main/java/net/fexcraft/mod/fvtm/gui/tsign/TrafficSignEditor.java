@@ -80,6 +80,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		this.xSize = 256;
 		this.ySize = 206;
 		data = new TrafficSignData().read(container.data.write());
+		data.linkModels();
 		ris = this;
 	}
 	
@@ -361,7 +362,10 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			public boolean onclick(int x, int y, int b){
 				if(!gui.commode.font()) return true;
 				FontData comp = (FontData)data.getCompData(commode.toType(), right_selected);
-				comp.text(font.getText());
+				if(comp != null){
+					comp.text(font.getText());
+					updateeditor();
+				}
 				return true;
 			}
 		});

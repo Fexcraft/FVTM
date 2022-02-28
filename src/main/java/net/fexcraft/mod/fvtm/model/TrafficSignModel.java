@@ -59,6 +59,9 @@ public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot,
 				if(arr[0].startsWith("U+")){
 					data.id = (char)Integer.parseInt(arr[0].substring(2), 16);
 				}
+				else if(arr[0].startsWith("u") && arr[0].length() > 1){
+					data.id = (char)Integer.parseInt(arr[0].substring(1), 16);
+				}
 				else{
 					data.id = arr[0].toCharArray()[0];
 				}

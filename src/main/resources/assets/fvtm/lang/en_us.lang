@@ -124,6 +124,11 @@ gui.fvtm.trafficsigneditor.tab_editor.position=Position (Offset)
 gui.fvtm.trafficsigneditor.tab_editor.rotation=Rotation / Z-Offset
 gui.fvtm.trafficsigneditor.tab_editor.scale=Scale
 gui.fvtm.trafficsigneditor.tab_editor.not_font=unavailable
+gui.fvtm.trafficsigneditor.tab_editor.border_top=Sign Top Border
+gui.fvtm.trafficsigneditor.tab_editor.border_bottom=Sign Bottom Border
+gui.fvtm.trafficsigneditor.tab_editor.border_right=Sign Right Border
+gui.fvtm.trafficsigneditor.tab_editor.border_left=Sign Left Border
+gui.fvtm.trafficsigneditor.tab_editor.base=Sign Base
 
 fvtm.sign_library.none=No Sign Libraries Installed
 fvtm.sign_library.error=ERROR - LIB IS NULL

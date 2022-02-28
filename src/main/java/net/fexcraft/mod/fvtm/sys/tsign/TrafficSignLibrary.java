@@ -82,10 +82,10 @@ public class TrafficSignLibrary extends DetachedSystem {
 
 	public static class Library {
 		
-		public HashMap<String, JsonObject> presets = new HashMap<>();
-		public HashMap<String, String> backgrounds = new HashMap<>();
-		public HashMap<String, String> components = new HashMap<>();
-		public HashMap<String, String> fonts = new HashMap<>();
+		public HashMap<String, JsonObject> presets = new LinkedHashMap<>();
+		public HashMap<String, String> backgrounds = new LinkedHashMap<>();
+		public HashMap<String, String> components = new LinkedHashMap<>();
+		public HashMap<String, String> fonts = new LinkedHashMap<>();
 		
 		public final String id, adress;
 		public final boolean external;

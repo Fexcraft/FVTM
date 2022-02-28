@@ -78,8 +78,8 @@ public class TrafficSignData {
         for(BaseData comp : backgrounds){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
-        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
-        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
+        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
@@ -87,8 +87,8 @@ public class TrafficSignData {
         for(ComponentData comp : components){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
-        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
-        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
+        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
@@ -96,8 +96,8 @@ public class TrafficSignData {
         for(FontData comp : fonts){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
-        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * 0.1f);
-        	if(comp.scale != 0f) GL11.glScalef(comp.scale, comp.scale, comp.scale);
+        	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
+        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
@@ -126,7 +126,7 @@ public class TrafficSignData {
 		public RGB[] channels = new RGB[9];
 		public int rotation, zoff;
 		public float xoff, yoff;
-		public float scale;
+		public float scale0 = 1, scale1 = 1;
 		
 		public CompDataRoot(String str, ComponentType type){
 			this.type = type;
@@ -145,7 +145,8 @@ public class TrafficSignData {
 			if(com.hasKey("zoff")) zoff = com.getInteger("zoff");
 			if(com.hasKey("xoff")) xoff = com.getFloat("xoff");
 			if(com.hasKey("yoff")) yoff = com.getFloat("yoff");
-			if(com.hasKey("scale")) scale = com.getFloat("scale");
+			if(com.hasKey("scale_x")) scale0 = com.getFloat("scale_x");
+			if(com.hasKey("scale_y")) scale1 = com.getFloat("scale_y");
 			for(int i = 0; i < channels.length; i++){
 				if(com.hasKey("rgb" + i)) channels[i].packed = com.getInteger("rgb" + i);
 			}
@@ -160,7 +161,8 @@ public class TrafficSignData {
 			if(zoff != 0) compound.setInteger("zoff", zoff);
 			if(xoff != 0f) compound.setFloat("xoff", xoff);
 			if(yoff != 0f) compound.setFloat("yoff", yoff);
-			if(scale != 0f) compound.setFloat("scale", scale);
+			if(scale0 != 1f) compound.setFloat("scale_x", scale0);
+			if(scale1 != 1f) compound.setFloat("scale_y", scale1);
 			for(int i = 0; i < channels.length; i++){
 				if(channels[i].packed != RGB.WHITE.packed) compound.setInteger("rgb" + i, channels[i].packed);
 			}
@@ -188,6 +190,7 @@ public class TrafficSignData {
 	public static class BaseData extends CompDataRoot {
 		
 		public boolean[] sides = new boolean[4];
+		public boolean base = true;
 
 		public BaseData(String str){
 			super(str, ComponentType.BASE);
@@ -206,16 +209,18 @@ public class TrafficSignData {
 			if(com.hasKey("border_left")) sides[1] = com.getBoolean("border_left");
 			if(com.hasKey("border_right")) sides[2] = com.getBoolean("border_right");
 			if(com.hasKey("border_bot")) sides[3] = com.getBoolean("border_bot");
+			if(com.hasKey("base")) base = com.getBoolean("base");
 			return this;
 		}
 
 		@Override
 		public NBTTagCompound write(){
 			NBTTagCompound compound = super.write();
-			if(!sides[0]) compound.setBoolean("border_top", sides[0]);
-			if(!sides[1]) compound.setBoolean("border_left", sides[1]);
-			if(!sides[2]) compound.setBoolean("border_right", sides[2]);
-			if(!sides[3]) compound.setBoolean("border_bot", sides[3]);
+			compound.setBoolean("border_top", sides[0]);
+			compound.setBoolean("border_left", sides[1]);
+			compound.setBoolean("border_right", sides[2]);
+			compound.setBoolean("border_bot", sides[3]);
+			compound.setBoolean("base", base);
 			return compound;
 		}
 		

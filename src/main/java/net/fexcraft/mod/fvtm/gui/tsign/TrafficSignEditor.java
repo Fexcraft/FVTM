@@ -500,7 +500,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("bt", border[0] = new TSEButton("bt", guiLeft - 83, guiTop + 64, 246, 377, 64, 8, true){
 			public boolean onclick(int x, int y, int b){
 				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
-				if(comp != null){
+				if(comp != null && commode.base()){
 					BaseData base = (BaseData)comp;
 					base.sides[0] = !base.sides[0];
 					updateeditor();
@@ -511,7 +511,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("bb", border[1] = new TSEButton("bb", guiLeft - 83, guiTop + 96, 246, 409, 64, 8, true){
 			public boolean onclick(int x, int y, int b){
 				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
-				if(comp != null){
+				if(comp != null && commode.base()){
 					BaseData base = (BaseData)comp;
 					base.sides[3] = !base.sides[3];
 					updateeditor();
@@ -522,7 +522,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("bl", border[2] = new TSEButton("bl", guiLeft - 91, guiTop + 72, 238, 385, 8, 24, true){
 			public boolean onclick(int x, int y, int b){
 				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
-				if(comp != null){
+				if(comp != null && commode.base()){
 					BaseData base = (BaseData)comp;
 					base.sides[1] = !base.sides[1];
 					updateeditor();
@@ -533,7 +533,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("br", border[3] = new TSEButton("br", guiLeft - 19, guiTop + 72, 310, 385, 8, 24, true){
 			public boolean onclick(int x, int y, int b){
 				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
-				if(comp != null){
+				if(comp != null && commode.base()){
 					BaseData base = (BaseData)comp;
 					base.sides[2] = !base.sides[2];
 					updateeditor();
@@ -544,7 +544,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("bs", border[4] = new TSEButton("bs", guiLeft - 83, guiTop + 72, 246, 385, 64, 24, true){
 			public boolean onclick(int x, int y, int b){
 				CompDataRoot comp = data.getCompData(commode.toType(), right_selected);
-				if(comp != null){
+				if(comp != null && commode.base()){
 					BaseData base = (BaseData)comp;
 					base.base = !base.base;
 					updateeditor();

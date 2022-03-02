@@ -8,11 +8,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.relauncher.Side;
@@ -139,6 +142,14 @@ public class TrafficSignLibrary extends DetachedSystem {
 	@Override
 	public void onChunkLoad(Chunk chunk){
 		CHUNKS.add(chunk);
+		if(side.isClient()){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("target_listener", "fvtm:utils");
+			compound.setString("task", "ts_ck_sync");
+			compound.setInteger("x", chunk.x);
+			compound.setInteger("z", chunk.z);
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+		}
 	}
 
 	@Override
@@ -152,7 +163,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 	}
 
 	@Override
-	public void onClientTick() {
+	public void onClientTick(){
 		//
 	}
 

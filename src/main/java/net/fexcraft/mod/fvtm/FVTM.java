@@ -35,7 +35,6 @@ import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
-import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
@@ -161,7 +160,6 @@ public class FVTM {
 			Resources.CLOTHES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			Resources.WIRES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			TrafficSignLibrary.loadModels();
-			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:trafficsign"), TrafficSignModel.EMPTY);
 			Resources.clearObjModelCache();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}

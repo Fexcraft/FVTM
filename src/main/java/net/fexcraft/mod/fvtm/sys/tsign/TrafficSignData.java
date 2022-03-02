@@ -14,9 +14,11 @@ import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.CharModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.FontModelData;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,10 +28,13 @@ public class TrafficSignData {
 	public ArrayList<BaseData> backgrounds = new ArrayList<>();
 	public ArrayList<ComponentData> components = new ArrayList<>();
 	public ArrayList<FontData> fonts = new ArrayList<>();
+	public TrafficSignEntity entity;
+	private final BlockPos pos;
 	private boolean linked;
+	private long scd;
 
-	public TrafficSignData(){
-		//
+	public TrafficSignData(BlockPos pos){
+		this.pos = pos;
 	}
 	
 	public TrafficSignData read(NBTTagCompound com){
@@ -73,8 +78,14 @@ public class TrafficSignData {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void render(World world, TrafficSignEntity entity, float partialticks){
+	public void render(World world, boolean withent, float partialticks){
 		if(!linked) linkModels();
+		if(withent && entity != null){
+			GL11.glPushMatrix();
+			GL11.glRotatef(entity.rotation, 0, 1, 0);
+			GL11.glTranslatef(0, 0, -entity.offset - 0.00625f);
+		}
+		else withent = false;
         for(BaseData comp : backgrounds){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
@@ -102,6 +113,7 @@ public class TrafficSignData {
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
         }
+        if(withent) GL11.glPopMatrix();
 	}
 	
 	public void linkModels(){
@@ -243,6 +255,7 @@ public class TrafficSignData {
 
 		public String text = "text";
 		private ArrayList<FontOffset> chars = new ArrayList<>();
+		private boolean centered;
 
 		public FontData(String str){
 			super(str, ComponentType.FONT);
@@ -264,10 +277,15 @@ public class TrafficSignData {
 
 		public void init(FontModelData fontdata){
 			chars = new ArrayList<>();
+			if(text.startsWith("!")){
+				centered = true;
+				text = text.substring(1);
+			}
+			if(text.length() == 0) return;
 			char[] textchars = text.toCharArray();
 			char[] upperchars = text.toUpperCase().toCharArray();
 			char[] lowerchars = text.toLowerCase().toCharArray();
-			float passed = 0;
+			float passed = 0, last = 0;
 			for(int i = 0; i < textchars.length; i++){
 				if(textchars[i] == ' '){
 					passed += fontdata.space_width + fontdata.letter_spacing;
@@ -280,7 +298,13 @@ public class TrafficSignData {
 					continue;
 				}
 				chars.add(new FontOffset((char)cher[0], (CharModelData)cher[1], passed * Static.sixteenth));
-				passed += ((CharModelData)cher[1]).width + fontdata.letter_spacing;
+				passed += last = ((CharModelData)cher[1]).width + fontdata.letter_spacing;
+			}
+			if(centered){
+				passed = (passed - last) * 0.5f * Static.sixteenth;
+				for(FontOffset offset : chars){
+					offset.offset -= passed;
+				}
 			}
 		}
 
@@ -295,6 +319,7 @@ public class TrafficSignData {
 		public CompDataRoot read(NBTTagCompound com){
 			super.read(com);
 			if(com.hasKey("text")) text(com.getString("text"));
+			if(com.hasKey("centered")) centered = com.getBoolean("centered");
 			return this;
 		}
 
@@ -302,6 +327,7 @@ public class TrafficSignData {
 		public NBTTagCompound write(){
 			NBTTagCompound compound = super.write();
 			if(text != null) compound.setString("text", text);
+			if(centered) compound.setBoolean("centered", centered);
 			return compound;
 		}
 		
@@ -335,6 +361,21 @@ public class TrafficSignData {
 				else return fonts.get(index);
 			default: return null;
 		}
+	}
+
+	public void searchEntity(World world){
+		if(scd > 0){
+			scd--;
+			return;
+		}
+		for(Entity ent : world.loadedEntityList){
+			if(ent instanceof TrafficSignEntity == false) continue;
+			if(ent.getPosition().equals(pos)){
+				entity = (TrafficSignEntity)ent;
+				return;
+			}
+		}
+		scd = 240;
 	}
 
 }

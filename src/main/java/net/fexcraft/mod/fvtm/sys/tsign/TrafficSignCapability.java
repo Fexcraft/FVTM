@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -24,7 +26,7 @@ public class TrafficSignCapability implements TrafficSigns {
 	}
 
 	@Override
-	public NBTBase write(EnumFacing side){
+	public NBTTagCompound write(EnumFacing side){
 		NBTTagCompound compound = new NBTTagCompound();
 		NBTTagList list = new NBTTagList();
 		for(Entry<BlockPos, TrafficSignData> entry : signs.entrySet()){
@@ -33,7 +35,7 @@ public class TrafficSignCapability implements TrafficSigns {
 			list.appendTag(com);
 		}
 		compound.setTag("signs", list);
-		return new NBTTagCompound();
+		return compound;
 	}
 
 	@Override
@@ -43,14 +45,9 @@ public class TrafficSignCapability implements TrafficSigns {
 		for(NBTBase base : list){
 			NBTTagCompound com = (NBTTagCompound)base;
 			BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
-			TrafficSignData data = new TrafficSignData().read(com);
+			TrafficSignData data = new TrafficSignData(pos).read(com);
 			signs.put(pos, data);
 		}
-	}
-
-	@Override
-	public void sync(boolean side){
-		//
 	}
 
 	@Override
@@ -71,7 +68,7 @@ public class TrafficSignCapability implements TrafficSigns {
 	@Override
 	public TrafficSignData getSign(BlockPos pos, boolean create){
 		if(create && !signs.containsKey(pos)){
-			signs.put(pos, new TrafficSignData());
+			signs.put(pos, new TrafficSignData(pos));
 		}
 		return signs.get(pos);
 	}
@@ -83,7 +80,15 @@ public class TrafficSignCapability implements TrafficSigns {
 
 	@Override
 	public TrafficSignData remove(BlockPos pos){
-		return signs.remove(pos);
+		TrafficSignData data = signs.remove(pos);
+		if(data != null && !chunk.getWorld().isRemote){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("target_listener", "fvtm:utils");
+			compound.setString("task", "ts_removed");
+			compound.setLong("pos", pos.toLong());
+			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+		}
+		return data;
 	}
 
 }

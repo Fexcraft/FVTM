@@ -7,10 +7,15 @@ import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.FONTS;
 import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.LIBRARIES;
 import static net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.PRESETS;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.NBTToJson;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
@@ -19,6 +24,7 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentType;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.Library;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.material.MapColor;
@@ -29,6 +35,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,7 +52,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton zoom_in, zoom_out;
 	private TSEButton cm_b, cm_c, cm_f, cm_p;
 	private TSEButton c_up, c_dw, c_lr, c_rg;
-	private TSEButton cancel, confirm;
+	private TSEButton cancel, confirm, copy, paste, export, impart;
 	private TSEButton[] llist = new TSEButton[15];
 	private TSEHButton[] rlist = new TSEHButton[15];
 	private TSEButton rlistR, rlistC, rlistE;
@@ -71,6 +79,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private Library selectedlib;
 	private boolean nolibs;
 	private TrafficSignData data;
+	private static NBTTagCompound clipboard;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -80,7 +89,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		this.defbackground = false;
 		this.xSize = 256;
 		this.ySize = 206;
-		data = new TrafficSignData().read(container.data.write());
+		data = new TrafficSignData(container.entity.getPosition()).read(container.data.write());
 		data.linkModels();
 		ris = this;
 	}
@@ -553,6 +562,45 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			}
 		});
 		//
+		buttons.put("copy", copy = new TSEButton("copy", guiLeft + 276, guiTop + 10, 404, 10, 8, 8, true){
+			public boolean onclick(int x, int y, int b){
+				clipboard = data.write();
+				return true;
+			}
+		});
+		buttons.put("paste", paste = new TSEButton("paste", guiLeft + 285, guiTop + 10, 413, 10, 8, 8, true){
+			public boolean onclick(int x, int y, int b){
+				if(clipboard != null) data.read(clipboard);
+				return true;
+			}
+		});
+		buttons.put("export", export = new TSEButton("export", guiLeft + 294, guiTop + 10, 422, 10, 8, 8, true){
+			public boolean onclick(int x, int y, int b){
+        		try{
+    				StringSelection stringSelection = new StringSelection(NBTToJson.getJsonFromTag(data.write()).toString());
+            		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+    				Print.chat(player, "sign -> clipboard");
+        		}
+        		catch(Exception e){
+        			e.printStackTrace();
+        		}
+				return true;
+			}
+		});
+		buttons.put("import", impart = new TSEButton("import", guiLeft + 303, guiTop + 10, 431, 10, 8, 8, true){
+			public boolean onclick(int x, int y, int b){
+				try{
+					data.read(JsonToNBT.getTagFromJson(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor).toString()));
+					Print.chat(player, "clipboard -> sign");
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+		//
+		//
 		tabmode.apply(this);
 		commode.apply(this);
 	}
@@ -659,7 +707,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         GlStateManager.rotate(180, 0, 1, 0);
         //
         ModelBase.bindTexture(Resources.WHITE_TEXTURE);
-        data.render(mc.world, container.entity, pticks);
+        data.render(mc.world, false, pticks);
         //
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
@@ -677,7 +725,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		drawRect(guiLeft + 173, guiTop + 206, 301, 206, 72, 16);
 		drawRect(guiLeft - 99, guiTop + 206, 29, 206, 28, 8);
 		drawRect(guiLeft + 327, guiTop + 206, 455, 206, 28, 8);
-		drawRect(guiLeft + 321, guiTop + 7, 449, 7, 36, 7);
+		drawRect(guiLeft + 271, guiTop + 7, 399, 7, 86, 7);
 		switch(tabmode){
 			case LIST:
 				drawRect(guiLeft - 105, guiTop + 21, 0, 334, 110, 178);
@@ -746,6 +794,11 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(border[2].hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tab_editor.border_left"));
 		if(border[3].hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tab_editor.border_right"));
 		if(border[4].hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tab_editor.base"));
+		//
+		if(copy.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tool.copy"));
+		if(paste.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tool.paste"));
+		if(export.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tool.export"));
+		if(impart.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tool.import"));
 		//
 	    if(ttip.size() > 0) this.drawHoveringText(ttip, mouseX, mouseY, mc.fontRenderer);
 	}
@@ -829,7 +882,12 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				rightlist.add(str);
 				break;
 			case PRESET:
-				//TODO
+				try {
+					data.read(JsonToNBT.getTagFromJson(TrafficSignLibrary.PRESETS.get(leftlist.get(index)).toString()));
+				}
+				catch(NBTException e){
+					e.printStackTrace();
+				}
 				break;
 			default: return;
 		}

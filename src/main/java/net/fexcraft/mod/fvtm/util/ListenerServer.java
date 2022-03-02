@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,6 +59,12 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 					compound.setString("task", "update_vehicledata");
 					PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity.getEntity(), compound), Resources.getTargetPoint(entity.getEntity()));
 				}
+				return;
+			}
+			case "ts_ck_sync":{
+				TrafficSigns signs = player.world.getChunk(packet.nbt.getInteger("x"), packet.nbt.getInteger("z")).getCapability(Capabilities.TRAFFIC_SIGNS, null);
+				packet.nbt.setTag("signs", signs.write(null));
+				PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(packet.nbt), player);
 				return;
 			}
 			default: return;

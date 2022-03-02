@@ -34,7 +34,8 @@ public class TrafficSignRenderer {
             	GL11.glTranslatef(entry.getKey().getX() + 0.5f, entry.getKey().getY() + 0.5f, entry.getKey().getZ() + 0.5f);
                 GlStateManager.rotate(180, 0, 1, 0);
                 GlStateManager.rotate(180, 0, 0, 1);
-            	entry.getValue().render(world, null, partialticks);
+                if(entry.getValue().entity == null) entry.getValue().searchEntity(world);
+            	entry.getValue().render(world, true, partialticks);
             	GL11.glPopMatrix();
         	}
         }

@@ -4,10 +4,12 @@ import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
 
 public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 
@@ -39,6 +41,17 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null || ent instanceof VehicleEntity) return;
 				((VehicleEntity)ent).getVehicleData().setLocked(packet.nbt.getBoolean("state"));
+				return;
+			}
+			case "ts_ck_sync":{
+				TrafficSigns signs = player.world.getChunk(packet.nbt.getInteger("x"), packet.nbt.getInteger("z")).getCapability(Capabilities.TRAFFIC_SIGNS, null);
+				if(signs != null) signs.read(null, packet.nbt.getCompoundTag("signs"));
+				return;
+			}
+			case "ts_removed":{
+				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
+				if(signs != null) signs.remove(pos);
 				return;
 			}
 			default: return;

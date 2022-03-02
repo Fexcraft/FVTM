@@ -50,7 +50,6 @@ public class TrafficSignCapHandler implements ICapabilitySerializable<NBTBase> {
 			if(nbt instanceof NBTTagCompound){
 				instance.read(side, (NBTTagCompound)nbt);
 			}
-			instance.sync(false);
 		}
 		
 	}

@@ -129,6 +129,10 @@ gui.fvtm.trafficsigneditor.tab_editor.border_bottom=Sign Bottom Border
 gui.fvtm.trafficsigneditor.tab_editor.border_right=Sign Right Border
 gui.fvtm.trafficsigneditor.tab_editor.border_left=Sign Left Border
 gui.fvtm.trafficsigneditor.tab_editor.base=Sign Base
+gui.fvtm.trafficsigneditor.tool.copy=Copy (Local NBT)
+gui.fvtm.trafficsigneditor.tool.paste=Paste (Local NBT)
+gui.fvtm.trafficsigneditor.tool.export=Export (JSON)
+gui.fvtm.trafficsigneditor.tool.import=Import (JSON)
 
 fvtm.sign_library.none=No Sign Libraries Installed
 fvtm.sign_library.error=ERROR - LIB IS NULL

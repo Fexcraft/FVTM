@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +52,12 @@ public class StreetSignItem extends Item {
     		Entity entity = null;
     		switch(enttype){
 				case 0: entity = new StreetSign(world, side); break;
-				case 1: entity = new TrafficSignEntity(world, side.getHorizontalAngle()); break;
+				case 1:{
+					aabb = state.getBoundingBox(world, pos);
+					float off = (float)(side.getAxis() == Axis.X ? aabb.maxX - aabb.minX : aabb.maxZ - aabb.minZ);
+					entity = new TrafficSignEntity(world, side.getHorizontalAngle(), off * 0.5f);
+					break;
+				}
 				default: Print.bar(player, "ERROR, Invalid Entity Type in ITEM."); return false;
 			}
     		entity.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);

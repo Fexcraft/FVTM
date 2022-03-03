@@ -7,10 +7,10 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -163,7 +163,7 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
     public ItemStack getPickedResult(RayTraceResult target){
     	Chunk chunk = world.getChunk(getPosition());
     	TrafficSigns cap = chunk == null ? null : chunk.getCapability(Capabilities.TRAFFIC_SIGNS, null);
-        return cap == null ? new ItemStack(Items.FEATHER) : cap.signToItem(getPosition());
+        return cap == null ? new ItemStack(TrafficSignItem.INSTANCE) : cap.signToItem(getPosition());
     }
 
 }

@@ -90,8 +90,8 @@ public class TrafficSignData {
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
-        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	//GL11.glScalef(comp.scale0, comp.scale1, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
         }
@@ -99,8 +99,8 @@ public class TrafficSignData {
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
-        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
         }
@@ -108,8 +108,8 @@ public class TrafficSignData {
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
-        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
+        	GL11.glScalef(comp.scale0, comp.scale1, 1);
         	comp.model.render(comp, comp.comp, entity, null);
         	GL11.glPopMatrix();
         }

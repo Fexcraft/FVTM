@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonElement;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -100,11 +102,21 @@ public class TrafficSignPrograms {
 		
 		@Override
 		public void preRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
-			list.visible = ((BaseData)data).sides[index];
+			if(!(list.visible = ((BaseData)data).sides[index])) return;
+			GL11.glPushMatrix();
+			switch(index){
+				case 0: GL11.glTranslatef(0, -(data.scale1 - 1) * 0.5f, 0); break;
+				case 1: GL11.glTranslatef(-(data.scale0 - 1) * 0.5f, 0, 0); break;
+				case 2: GL11.glTranslatef((data.scale0 - 1) * 0.5f, 0, 0); break;
+				case 3: GL11.glTranslatef(0, (data.scale1 - 1) * 0.5f, 0); break;
+			}
 		}
 		
 		@Override
 		public void postRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+			if(list.visible){
+				GL11.glPopMatrix();
+			}
 			list.visible = true;
 		}
 		
@@ -147,19 +159,20 @@ public class TrafficSignPrograms {
 		
 		public static SignBorderEdge[] inst = new SignBorderEdge[4];
 		
-		private int idx0, idx1;
+		private int idx0, idx1, idx2;
 		
 		public SignBorderEdge(boolean init){
 			if(!init) return;
-			inst[0] = new SignBorderEdge(false).index(0, 1);
-			inst[1] = new SignBorderEdge(false).index(0, 2);
-			inst[2] = new SignBorderEdge(false).index(2, 3);
-			inst[3] = new SignBorderEdge(false).index(1, 3);
+			inst[0] = new SignBorderEdge(false).index(0, 1, 0);
+			inst[1] = new SignBorderEdge(false).index(0, 2, 1);
+			inst[2] = new SignBorderEdge(false).index(2, 3, 2);
+			inst[3] = new SignBorderEdge(false).index(1, 3, 3);
 		}
 		
-		private SignBorderEdge index(int idx2, int idx3){
-			idx0 = idx2;
-			idx1 = idx3;
+		private SignBorderEdge index(int idx3, int idx4, int idx5){
+			idx0 = idx3;
+			idx1 = idx4;
+			idx2 = idx5;
 			return this;
 		}
 
@@ -172,10 +185,21 @@ public class TrafficSignPrograms {
 		public void preRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			BaseData base = (BaseData)data;
 			if(!base.sides[idx0] || !base.sides[idx1]) list.visible = false;
+			if(!list.visible) return;
+			GL11.glPushMatrix();
+			switch(idx2){
+				case 0: GL11.glTranslatef(-(data.scale0 - 1) * 0.5f, -(data.scale1 - 1) * 0.5f, 0); break;
+				case 1: GL11.glTranslatef((data.scale0 - 1) * 0.5f, -(data.scale1 - 1) * 0.5f, 0); break;
+				case 2: GL11.glTranslatef((data.scale0 - 1) * 0.5f, (data.scale1 - 1) * 0.5f, 0); break;
+				case 3: GL11.glTranslatef(-(data.scale0 - 1) * 0.5f, (data.scale1 - 1) * 0.5f, 0); break;
+			}
 		}
 		
 		@Override
 		public void postRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+			if(list.visible){
+				GL11.glPopMatrix();
+			}
 			list.visible = true;
 		}
 		

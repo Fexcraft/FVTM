@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.minecraft.init.Blocks;
+import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -53,7 +53,7 @@ public class TrafficSignCapability implements TrafficSigns {
 	@Override
 	public ItemStack signToItem(BlockPos position){
 		//
-		return new ItemStack(Blocks.STONE);
+		return new ItemStack(TrafficSignItem.INSTANCE);
 	}
 
 	@Override

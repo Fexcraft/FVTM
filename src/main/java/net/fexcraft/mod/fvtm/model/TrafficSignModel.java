@@ -12,6 +12,10 @@ import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
+import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBase;
+import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorder;
+import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorderEdge;
+import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
@@ -22,7 +26,9 @@ import net.minecraft.util.ResourceLocation;
 public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot, String> {
 
 	public static final TrafficSignModel EMPTY = new TrafficSignModel();
+	private ArrayList<TurboList> base, vert, hori, other;
 	public FontModelData fontdata;
+	private boolean signbase;
 	
 	////-///---/---///-////
 	
@@ -32,12 +38,53 @@ public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot,
 	
 	@Override
 	public TrafficSignModel parse(Object[] stream, String type){
-		return super.parse(stream, type);
+		super.parse(stream, type);
+		checkifsignbase();
+		return this; 
 	}
 	
+	private void checkifsignbase(){
+		for(TurboList list : groups){
+			if(signbase) break;
+			for(Program prog : list.programs){
+				if(prog instanceof SignBase || prog instanceof SignBorder || prog instanceof SignBorderEdge){
+					signbase = true;
+					break;
+				}
+			}
+		}
+		if(!signbase) return;
+		base = new ArrayList<>();
+		vert = new ArrayList<>();
+		hori = new ArrayList<>();
+		other = new ArrayList<>();
+		for(TurboList list : groups){
+			boolean found = false;
+			for(Program prog : list.programs){
+				if(prog instanceof SignBase){
+					base.add(list);
+					found = true;
+					break;
+				}
+				else if(prog instanceof SignBorder){
+					if(prog == SignBorder.inst[0] || prog == SignBorder.inst[3]){
+						hori.add(list);
+					}
+					else vert.add(list);
+					found = true;
+					break;
+				}
+			}
+			if(!found) other.add(list);
+		}
+	}
+
 	public TrafficSignModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups, boolean exclude){
 		super(loc, objdata, objgroups, exclude);
-		if(!Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "Font:"))) return;
+		if(!Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "Font:"))){
+			checkifsignbase();
+			return;
+		}
 		fontdata = new FontModelData();
 		//
 		String space = ObjParser.getCommentValue(objdata, "SpaceWidth:");
@@ -112,6 +159,32 @@ public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot,
 			}
 			return;
 		}
+		else if(signbase){
+			GL11.glPushMatrix();
+			GL11.glScalef(data.scale0, data.scale1, 1);
+			for(TurboList list : base){
+				list.renderTrafficSign(data, key, null, null);
+			}
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			GL11.glScalef(data.scale0, 1, 1);
+			for(TurboList list : hori){
+				list.renderTrafficSign(data, key, null, null);
+			}
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			GL11.glScalef(1, data.scale1, 1);
+			for(TurboList list : vert){
+				list.renderTrafficSign(data, key, null, null);
+			}
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			for(TurboList list : other){
+				list.renderTrafficSign(data, key, null, null);
+			}
+			GL11.glPopMatrix();
+			return;
+		}
 		for(TurboList list : groups) list.renderTrafficSign(data, key, null, null);
 	}
 
@@ -125,6 +198,34 @@ public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot,
 				for(TurboList list : offset.data.groups) list.renderTrafficSign(data, key, null, null);
 				GL11.glTranslatef(-offset.offset, 0, 0);
 			}
+			return;
+		}
+		else if(signbase){
+			TrafficSignEntity tse = (TrafficSignEntity)ent;
+			GL11.glPushMatrix();
+			GL11.glScalef(data.scale0, data.scale1, 1);
+			for(TurboList list : base){
+				list.renderTrafficSign(data, key, tse, cache);
+			}
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			GL11.glScalef(data.scale0, 1, 1);
+			for(TurboList list : hori){
+				list.renderTrafficSign(data, key, tse, cache);
+			}
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			GL11.glScalef(1, data.scale1, 1);
+			for(TurboList list : vert){
+				list.renderTrafficSign(data, key, tse, cache);
+			}
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			//TODO offset
+			for(TurboList list : other){
+				list.renderTrafficSign(data, key, tse, cache);
+			}
+			GL11.glPopMatrix();
 			return;
 		}
 		for(TurboList list : groups) list.renderTrafficSign(data, key, (TrafficSignEntity)ent, cache);

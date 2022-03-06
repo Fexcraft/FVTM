@@ -233,6 +233,7 @@ public class Resources {
 			searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), false);
 		}
 		searchAddonsInForlder(new File(configroot, "packs/"), true);
+		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), false);
 		//
 		//TODO check addon on/off state
 		//
@@ -252,7 +253,7 @@ public class Resources {
 		searchInAddonsFor(DataType.VEHICLE);
 	}
 	
-	private void searchAddonsInForlder(File packfolder, boolean create){
+	public static void searchAddonsInForlder(File packfolder, boolean create){
 		if(!packfolder.exists()){
 			if(!create) return;
 			packfolder.mkdir();
@@ -287,7 +288,7 @@ public class Resources {
 
 	private static Method cl_method;
 
-	private void addToClassPath(Addon addon, File file){
+	private static void addToClassPath(Addon addon, File file){
 		if(file.isDirectory()) return;
 		try{
 			cl_method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
@@ -298,7 +299,7 @@ public class Resources {
 			Print.log("LiteAddon JavaModel loading will be skipped.");
 		}
 		try {
-			ClassLoader loader = this.getClass().getClassLoader();
+			ClassLoader loader = Resources.class.getClassLoader();
 			cl_method.invoke(loader, file.toURI().toURL());
 			FCLRegistry.scanForModels(file, loader);
 		}

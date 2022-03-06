@@ -2,11 +2,14 @@ package net.fexcraft.mod.fvtm.gui.tsign;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class TrafficSignEditorContainer extends GenericContainer {
@@ -31,7 +34,12 @@ public class TrafficSignEditorContainer extends GenericContainer {
 		if(!packet.hasKey("signdata")) return;
 		data.read(packet.getCompoundTag("signdata"));
 		if(side == Side.SERVER){
-			send(Side.CLIENT, packet);
+			//send(Side.CLIENT, packet);
+			NBTTagCompound com = packet.copy();
+			com.setString("target_listener", "fvtm:utils");
+			com.setString("task", "ts_update");
+			com.setLong("pos", entity.getPosition().toLong());
+			PacketHandler.getInstance().sendToAllTracking(new PacketNBTTagCompound(com), new TargetPoint(player.dimension, entity.posX, entity.posY, entity.posZ, 0));
 			player.closeScreen();
 		}
 	}

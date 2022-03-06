@@ -4,6 +4,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -52,6 +53,14 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
 				if(signs != null) signs.remove(pos);
+				return;
+			}
+			case "ts_update":{
+				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
+				if(signs == null) return;
+				TrafficSignData data = signs.getSign(pos, true);
+				data.read(packet.nbt.getCompoundTag("signdata"));
 				return;
 			}
 			default: return;

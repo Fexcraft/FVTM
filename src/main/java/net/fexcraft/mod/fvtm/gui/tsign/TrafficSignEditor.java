@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -67,7 +68,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private BasicText[] lList = new BasicText[15];
 	private BasicText[] rList = new BasicText[15];
 	private BasicText[] editor = new BasicText[5];
-	private TextField rgb_field, hex_field;
+	private TextField rgb_field, hex_field, searchfield;
 	private TextField font, rot, zpos, xpos, ypos, scal0, scal1;
 	private RGB current_color = RGB.BLUE;
 	private TabMode tabmode = TabMode.LIST;
@@ -80,6 +81,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private boolean nolibs;
 	private TrafficSignData data;
 	private static NBTTagCompound clipboard;
+	private static String lasttext = "";
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -114,8 +116,23 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				return true;
 			}
 		});
-		buttons.put("search", search = new TSEButton("search", guiLeft + 21, guiTop + 7, 149, 7, 12, 12, true));
-		fields.put("search", new TextField(0, fontRenderer, guiLeft + 34, guiTop + 8, 200, 10, true));
+		buttons.put("search", search = new TSEButton("search", guiLeft + 21, guiTop + 7, 149, 7, 12, 12, true){
+			public boolean onclick(int x, int y, int b){
+				if(title.visible){
+					searchfield.setVisible(true);
+					searchfield.setEnabled(true);
+					title.visible = false;
+				}
+				else{
+					searchfield.setText("");
+					searchfield.setVisible(false);
+					searchfield.setEnabled(false);
+					title.visible = true;
+				}
+				return true;
+			}
+		});
+		fields.put("search", searchfield = new TextField(0, fontRenderer, guiLeft + 34, guiTop + 8, 200, 10, true));
 		texts.put("title", title = new BasicText(guiLeft + 35, guiTop + 9, 198, black, "< selected title here >", true, black){
 			public boolean scrollwheel(int a, int x, int y){
 				packscroll(-a);
@@ -645,24 +662,29 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		leftlist.clear();
 		boolean all = pack_scroll == -1;
 		selectedlib = all ? null : libraries.get(pack_scroll);
+		boolean search = searchfield.getVisible() && lasttext.length() > 0;
 		switch(commode){
 			case BACKGROUND:{
-				if(all) leftlist.addAll(BACKGROUNDS.keySet());
+				if(search) leftlist.addAll(search(all ? BACKGROUNDS.keySet() : selectedlib.backgrounds.keySet()));
+				else if(all) leftlist.addAll(BACKGROUNDS.keySet());
 				else leftlist.addAll(selectedlib.backgrounds.keySet());
 				break;
 			}
 			case COMPONENT:{
-				if(all) leftlist.addAll(COMPONENTS.keySet());
+				if(search) leftlist.addAll(search(all ? COMPONENTS.keySet() : selectedlib.components.keySet()));
+				else if(all) leftlist.addAll(COMPONENTS.keySet());
 				else leftlist.addAll(selectedlib.components.keySet());
 				break;
 			}
 			case FONT:{
-				if(all) leftlist.addAll(FONTS.keySet());
+				if(search) leftlist.addAll(search(all ? FONTS.keySet() : selectedlib.fonts.keySet()));
+				else if(all) leftlist.addAll(FONTS.keySet());
 				else leftlist.addAll(selectedlib.fonts.keySet());
 				break;
 			}
 			case PRESET:{
-				if(all) leftlist.addAll(PRESETS.keySet());
+				if(search) leftlist.addAll(search(all ? PRESETS.keySet() : selectedlib.presets.keySet()));
+				else if(all) leftlist.addAll(PRESETS.keySet());
 				else leftlist.addAll(selectedlib.presets.keySet());
 				break;
 			}
@@ -671,6 +693,14 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(all) title.string = I18n.format("gui.fvtm.trafficsigneditor.title.all_packs");
 		else title.string = I18n.format("fvtm.sign_library." + (selectedlib == null ? "error" : selectedlib.id));
 		updateleftlist(0);
+	}
+
+	private Collection<? extends String> search(Collection<String> keys){
+		ArrayList<String> list = new ArrayList<>();
+		for(String str : keys){
+			if(str.contains(lasttext) || I18n.format("fvtm.traffic_sign." + commode.lcname() + "." + (selectedlib == null ? "" : selectedlib.id + ":") + str).contains(str)) list.add(str);
+		}
+		return list;
 	}
 
 	private void updaterightlist(){
@@ -714,6 +744,11 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GlStateManager.disableTexture2D();
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        //
+        if(searchfield.getVisible() && !searchfield.getText().equals(lasttext)){
+        	lasttext = searchfield.getText();
+        	updateleftlist();
+        }
 	}
 
 	@Override
@@ -801,25 +836,6 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(impart.hovered) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.tool.import"));
 		//
 	    if(ttip.size() > 0) this.drawHoveringText(ttip, mouseX, mouseY, mc.fontRenderer);
-	}
-
-	@Override
-	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(key.equals("search")){
-			TextField field = fields.get("search");
-			if(title.visible){
-				field.setVisible(true);
-				field.setEnabled(true);
-				title.visible = false;
-			}
-			else{
-				field.setText("");
-				field.setVisible(false);
-				field.setEnabled(false);
-				title.visible = true;
-			}
-		}
-		return false;
 	}
 
 	@Override

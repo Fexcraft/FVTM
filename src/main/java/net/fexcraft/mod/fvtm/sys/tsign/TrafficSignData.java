@@ -92,7 +92,7 @@ public class TrafficSignData {
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	//GL11.glScalef(comp.scale0, comp.scale1, 1);
-        	comp.model.render(comp, comp.comp, entity, null);
+        	comp.model.render(comp, comp.comp);//, entity, null);
         	GL11.glPopMatrix();
         }
         for(ComponentData comp : components){
@@ -101,7 +101,7 @@ public class TrafficSignData {
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	GL11.glScalef(comp.scale0, comp.scale1, 1);
-        	comp.model.render(comp, comp.comp, entity, null);
+        	comp.model.render(comp, comp.comp);//, entity, null);
         	GL11.glPopMatrix();
         }
         for(FontData comp : fonts){
@@ -110,7 +110,7 @@ public class TrafficSignData {
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	GL11.glScalef(comp.scale0, comp.scale1, 1);
-        	comp.model.render(comp, comp.comp, entity, null);
+        	comp.model.render(comp, comp.comp);//, entity, null);
         	GL11.glPopMatrix();
         }
         if(withent) GL11.glPopMatrix();
@@ -376,6 +376,10 @@ public class TrafficSignData {
 			}
 		}
 		scd = 240;
+	}
+
+	public boolean isEmpty(){
+		return backgrounds.size() == 0 && components.size() == 0 && fonts.size() == 0;
 	}
 
 }

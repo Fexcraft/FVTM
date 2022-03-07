@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +26,7 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
 	
     private boolean locked = false;
     public float rotation, offset;
+	public TrafficSignData data;
 
     public TrafficSignEntity(World world){
         super(world);

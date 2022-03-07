@@ -4,8 +4,10 @@ import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.StreetPost;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.state.IBlockState;
@@ -39,13 +41,16 @@ public class StreetSignItem extends Item {
 
 	public static boolean tryPlace(EntityPlayer player, World world, BlockPos pos, EnumFacing side, ItemStack stack, int enttype){
 		IBlockState state = world.getBlockState(pos);
-		if(!(state.getBlock() instanceof StreetPost || state.getBlock() instanceof BlockFence || state.getBlock() instanceof BlockWall)){
-    		Print.bar(player, "invalid position for sign"); return false;
+		if(enttype != 1 && !(state.getBlock() instanceof StreetPost || state.getBlock() instanceof BlockFence || state.getBlock() instanceof BlockWall)){
+    		Print.bar(player, "invalid position for sign");
+    		return false;
 		}
-		AxisAlignedBB aabb = new AxisAlignedBB(pos); boolean found = false;
+		AxisAlignedBB aabb = new AxisAlignedBB(pos);
+		boolean found = false;
 		for(Entity e : world.loadedEntityList){
 			if((e instanceof StreetSign || e instanceof TrafficSignEntity) && e.getEntityBoundingBox().intersects(aabb)){
-				found = true; break;
+				found = true;
+				break;
 			}
 		}
     	if(!found){
@@ -55,7 +60,16 @@ public class StreetSignItem extends Item {
 				case 1:{
 					aabb = state.getBoundingBox(world, pos);
 					float off = (float)(side.getAxis() == Axis.X ? aabb.maxX - aabb.minX : aabb.maxZ - aabb.minZ);
-					entity = new TrafficSignEntity(world, side.getHorizontalAngle(), off * 0.5f);
+					boolean full = off >= 1f;
+					if(full){
+						//Print.bar(player, "cannot be placed on full width blocks");
+						//return false;
+						pos = pos.add(side.getDirectionVec());
+						off = -1;
+					}
+					entity = new TrafficSignEntity(world, player.isSneaking() && !full ? player.rotationYaw % 360 / 16 : side.getHorizontalAngle(), off * 0.5f);
+					TrafficSigns signs = world.getCapability(Capabilities.TRAFFIC_SIGNS, null);
+					if(signs != null) signs.addSignAt(pos, world.isRemote);
 					break;
 				}
 				default: Print.bar(player, "ERROR, Invalid Entity Type in ITEM."); return false;

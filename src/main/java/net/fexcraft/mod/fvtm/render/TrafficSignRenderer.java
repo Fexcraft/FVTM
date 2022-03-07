@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
@@ -30,14 +29,14 @@ public class TrafficSignRenderer {
         	TrafficSigns cap = chunk.getCapability(Capabilities.TRAFFIC_SIGNS, null);
         	if(cap == null) continue;
         	for(Entry<BlockPos, TrafficSignData> entry : cap.getSigns().entrySet()){
-        		//check frustrum //if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(<AABB>)) continue;
+        		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(entry.getValue().getBB())) continue;
+                //if(entry.getValue().entity == null) continue;
+                if(entry.getValue().isEmpty()) continue;
             	GL11.glPushMatrix();
             	GL11.glTranslatef(entry.getKey().getX() + 0.5f, entry.getKey().getY() + 0.5f, entry.getKey().getZ() + 0.5f);
                 GlStateManager.rotate(180, 0, 1, 0);
                 GlStateManager.rotate(180, 0, 0, 1);
-                if(entry.getValue().entity == null) entry.getValue().searchEntity(world);
-                if(entry.getValue().isEmpty()) DebugModels.HOTINSTALLCUBE.render(0.5f);
-                else entry.getValue().render(world, true, partialticks);
+                entry.getValue().render(world, true, partialticks);
             	GL11.glPopMatrix();
         	}
         }

@@ -91,4 +91,18 @@ public class TrafficSignCapability implements TrafficSigns {
 		return data;
 	}
 
+	@Override
+	public void addSignAt(BlockPos pos, boolean client){
+		if(!signs.containsKey(pos)){
+			signs.put(pos, new TrafficSignData(pos));
+		}
+		else return;
+		if(client) return;
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("target_listener", "fvtm:utils");
+		compound.setString("task", "ts_added");
+		compound.setLong("pos", pos.toLong());
+		PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+	}
+
 }

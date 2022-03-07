@@ -14,10 +14,11 @@ import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.CharModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.FontModelData;
-import net.minecraft.entity.Entity;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,10 +29,10 @@ public class TrafficSignData {
 	public ArrayList<BaseData> backgrounds = new ArrayList<>();
 	public ArrayList<ComponentData> components = new ArrayList<>();
 	public ArrayList<FontData> fonts = new ArrayList<>();
+	protected AxisAlignedBB boundingbox = Block.FULL_BLOCK_AABB;
 	public TrafficSignEntity entity;
-	private final BlockPos pos;
 	private boolean linked;
-	private long scd;
+	private BlockPos pos;
 
 	public TrafficSignData(BlockPos pos){
 		this.pos = pos;
@@ -60,6 +61,14 @@ public class TrafficSignData {
 			}
 		}
 		linked = false;
+		float largest = 0.5f;
+		for(BaseData data : backgrounds){
+			float abs = Math.abs(data.scale0);
+			if(abs > largest) largest = data.scale0;
+			abs = Math.abs(data.scale1);
+			if(abs > largest) largest = data.scale1;
+		}
+		boundingbox = new AxisAlignedBB(-largest, -largest, -largest, largest, largest, largest).offset(pos);
 		return this;
 	}
 
@@ -363,23 +372,12 @@ public class TrafficSignData {
 		}
 	}
 
-	public void searchEntity(World world){
-		if(scd > 0){
-			scd--;
-			return;
-		}
-		for(Entity ent : world.loadedEntityList){
-			if(ent instanceof TrafficSignEntity == false) continue;
-			if(ent.getPosition().equals(pos)){
-				entity = (TrafficSignEntity)ent;
-				return;
-			}
-		}
-		scd = 240;
-	}
-
 	public boolean isEmpty(){
 		return backgrounds.size() == 0 && components.size() == 0 && fonts.size() == 0;
+	}
+
+	public AxisAlignedBB getBB(){
+		return boundingbox;
 	}
 
 }

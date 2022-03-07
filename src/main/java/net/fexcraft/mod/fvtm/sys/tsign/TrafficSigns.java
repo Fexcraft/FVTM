@@ -23,4 +23,6 @@ public interface TrafficSigns {
 
 	public TrafficSignData remove(BlockPos pos);
 
+	public void addSignAt(BlockPos pos, boolean client);
+
 }

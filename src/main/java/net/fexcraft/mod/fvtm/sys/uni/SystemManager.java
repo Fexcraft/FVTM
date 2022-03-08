@@ -34,14 +34,14 @@ public class SystemManager {
 	public static void onServerTick(World world){
 		if(world == null || !SYSTEMS_DIM.containsKey(world.provider.getDimension())) return;
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
-			sys.onServerTick();
+			sys.onServerTick(world);
 		}
 	}
 
 	public static void onClientTick(World world){
 		if(world == null || !SYSTEMS_DIM.containsKey(world.provider.getDimension())) return;
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
-			sys.onClientTick();
+			sys.onClientTick(world);
 		}
 	}
 

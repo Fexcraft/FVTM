@@ -269,7 +269,7 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onServerTick(){
+	public void onServerTick(World world){
 		/*if(remote && !Region.clientqueue.isEmpty()){
 			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
@@ -466,7 +466,7 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onClientTick(){
+	public void onClientTick(World world){
 		//unused
 	}
 

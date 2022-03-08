@@ -1,10 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -24,16 +21,7 @@ public class RenderTrafficSign extends Render<TrafficSignEntity> implements IRen
 
     @Override
     public void doRender(TrafficSignEntity entity, double x, double y, double z, float entity_yaw, float ticks){
-    	if(entity.data == null || !entity.data.isEmpty()) return;
-        GL11.glPushMatrix();
-        GL11.glTranslated(x, y + 0.5f, z);
-        //GL11.glRotatef(180, 1f, 0f, 0f);
-        //GL11.glRotatef(entity.rotation, 0f, 1f, 0f);
-        //GL11.glPushMatrix();
-        bindTexture(getEntityTexture(entity));
-        DebugModels.HOTINSTALLCUBE.render(0.5f);
-        //GL11.glPopMatrix();
-        GL11.glPopMatrix();
+    	return;
     }
 
     @Override

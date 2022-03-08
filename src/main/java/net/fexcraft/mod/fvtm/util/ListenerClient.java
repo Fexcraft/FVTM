@@ -59,14 +59,14 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
 				if(signs == null) return;
-				TrafficSignData data = signs.getSign(pos, true);
-				data.read(packet.nbt.getCompoundTag("signdata"));
+				TrafficSignData data = signs.getSign(pos);
+				if(data != null) data.read(packet.nbt.getCompoundTag("signdata"));
 				return;
 			}
 			case "ts_added":{
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-				if(signs != null) signs.addSignAt(pos, true);
+				if(signs != null) signs.addSignAt(pos, packet.nbt.getFloat("rotation"), packet.nbt.getFloat("offset"), true);
 				return;
 			}
 			default: return;

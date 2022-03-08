@@ -21,7 +21,7 @@ public class TrafficSignEditorContainer extends GenericContainer {
 	public TrafficSignEditorContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
 		entity = (TrafficSignEntity)player.world.getEntityByID(x);
-		data = player.world.getChunk(entity.chunkCoordX, entity.chunkCoordZ).getCapability(Capabilities.TRAFFIC_SIGNS, null).getSign(entity.getPosition(), true);
+		data = player.world.getChunk(entity.chunkCoordX, entity.chunkCoordZ).getCapability(Capabilities.TRAFFIC_SIGNS, null).getSign(entity.getPosition());//, true);
 	}
 
 	@Override

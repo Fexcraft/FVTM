@@ -158,12 +158,12 @@ public class TrafficSignLibrary extends DetachedSystem {
 	}
 
 	@Override
-	public void onServerTick(){
+	public void onServerTick(World world){
 		//
 	}
 
 	@Override
-	public void onClientTick(){
+	public void onClientTick(World world){
 		//
 	}
 

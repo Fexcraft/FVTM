@@ -190,7 +190,7 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onServerTick(){
+	public void onServerTick(World world){
 		for(WireRegion region : regions.values()) region.updateTick();
 	}
 
@@ -334,7 +334,7 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onClientTick(){
+	public void onClientTick(World world){
 		//unused
 	}
 

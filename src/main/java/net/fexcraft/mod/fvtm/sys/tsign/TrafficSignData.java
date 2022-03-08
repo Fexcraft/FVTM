@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.CharModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel.FontModelData;
@@ -30,12 +29,18 @@ public class TrafficSignData {
 	public ArrayList<ComponentData> components = new ArrayList<>();
 	public ArrayList<FontData> fonts = new ArrayList<>();
 	protected AxisAlignedBB boundingbox = Block.FULL_BLOCK_AABB;
-	public TrafficSignEntity entity;
+    public float rotation, offset;
 	private boolean linked;
 	private BlockPos pos;
 
 	public TrafficSignData(BlockPos pos){
 		this.pos = pos;
+	}
+
+	public TrafficSignData(BlockPos pos, float rot, float off){
+		this.pos = pos;
+		rotation = rot;
+		offset = off;
 	}
 	
 	public TrafficSignData read(NBTTagCompound com){
@@ -60,6 +65,8 @@ public class TrafficSignData {
 				fonts.add(new FontData((NBTTagCompound)base));
 			}
 		}
+		rotation = com.getFloat("rotation");
+		offset = com.getFloat("offset");
 		linked = false;
 		float largest = 0.5f;
 		for(BaseData data : backgrounds){
@@ -83,18 +90,19 @@ public class TrafficSignData {
 		list = new NBTTagList();
 		for(FontData data : fonts) list.appendTag(data.write());
 		compound.setTag("fonts", list);
+		compound.setFloat("rotation", rotation);
+		compound.setFloat("offset", offset);
 		return compound;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void render(World world, boolean withent, float partialticks){
+	public void render(World world, boolean asent, float partialticks){
 		if(!linked) linkModels();
-		if(withent && entity != null){
+		if(asent){
 			GL11.glPushMatrix();
-			GL11.glRotatef(entity.rotation, 0, 1, 0);
-			GL11.glTranslatef(0, 0, -entity.offset - 0.00625f);
+			GL11.glRotatef(rotation, 0, 1, 0);
+			GL11.glTranslatef(0, 0, -offset - 0.00625f);
 		}
-		else withent = false;
         for(BaseData comp : backgrounds){
         	if(comp.model == null) continue;
     		GL11.glPushMatrix();
@@ -122,7 +130,7 @@ public class TrafficSignData {
         	comp.model.render(comp, comp.comp);//, entity, null);
         	GL11.glPopMatrix();
         }
-        if(withent) GL11.glPopMatrix();
+        if(asent) GL11.glPopMatrix();
 	}
 	
 	public void linkModels(){

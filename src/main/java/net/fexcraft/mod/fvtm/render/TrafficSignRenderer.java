@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
@@ -36,7 +37,8 @@ public class TrafficSignRenderer {
             	GL11.glTranslatef(entry.getKey().getX() + 0.5f, entry.getKey().getY() + 0.5f, entry.getKey().getZ() + 0.5f);
                 GlStateManager.rotate(180, 0, 1, 0);
                 GlStateManager.rotate(180, 0, 0, 1);
-                entry.getValue().render(world, true, partialticks);
+                if(entry.getValue().isEmpty()) DebugModels.TRAFFICSIGNCUBE.render(0.5f);
+                else entry.getValue().render(world, true, partialticks);
             	GL11.glPopMatrix();
         	}
         }

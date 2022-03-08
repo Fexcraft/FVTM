@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -66,16 +67,16 @@ public class TrafficSignCapability implements TrafficSigns {
 	}
 
 	@Override
-	public TrafficSignData getSign(BlockPos pos, boolean create){
-		if(create && !signs.containsKey(pos)){
+	public TrafficSignData getSign(BlockPos pos){
+		/*if(create && !signs.containsKey(pos)){
 			signs.put(pos, new TrafficSignData(pos));
-		}
+		}*/
 		return signs.get(pos);
 	}
 
 	@Override
-	public TrafficSignData getSign(int x, int y, int z, boolean create){
-		return getSign(new BlockPos(x, y, z), create);
+	public TrafficSignData getSign(int x, int y, int z){
+		return getSign(new BlockPos(x, y, z));
 	}
 
 	@Override
@@ -92,9 +93,10 @@ public class TrafficSignCapability implements TrafficSigns {
 	}
 
 	@Override
-	public void addSignAt(BlockPos pos, boolean client){
+	public void addSignAt(BlockPos pos, float rot, float off, boolean client){
+		Print.debug(pos, rot, off, client);
 		if(!signs.containsKey(pos)){
-			signs.put(pos, new TrafficSignData(pos));
+			signs.put(pos, new TrafficSignData(pos, rot, off));
 		}
 		else return;
 		if(client) return;
@@ -102,6 +104,8 @@ public class TrafficSignCapability implements TrafficSigns {
 		compound.setString("target_listener", "fvtm:utils");
 		compound.setString("task", "ts_added");
 		compound.setLong("pos", pos.toLong());
+		compound.setFloat("rotation", rot);
+		compound.setFloat("offset", off);
 		PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
 	}
 

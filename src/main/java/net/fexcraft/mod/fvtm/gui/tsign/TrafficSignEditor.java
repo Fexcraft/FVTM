@@ -899,7 +899,11 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				break;
 			case PRESET:
 				try {
+					float rot = data.rotation;
+					float off = data.offset;
 					data.read(JsonToNBT.getTagFromJson(TrafficSignLibrary.PRESETS.get(leftlist.get(index)).toString()));
+					data.rotation = rot;
+					data.offset = off;
 				}
 				catch(NBTException e){
 					e.printStackTrace();

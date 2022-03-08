@@ -67,9 +67,9 @@ public class StreetSignItem extends Item {
 						pos = pos.add(side.getDirectionVec());
 						off = -1;
 					}
-					entity = new TrafficSignEntity(world, player.isSneaking() && !full ? player.rotationYaw % 360 / 16 : side.getHorizontalAngle(), off * 0.5f);
-					TrafficSigns signs = world.getCapability(Capabilities.TRAFFIC_SIGNS, null);
-					if(signs != null) signs.addSignAt(pos, world.isRemote);
+					entity = new TrafficSignEntity(world);
+					TrafficSigns signs = world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
+					signs.addSignAt(pos, side.getHorizontalAngle(), off * 0.5f, world.isRemote);
 					break;
 				}
 				default: Print.bar(player, "ERROR, Invalid Entity Type in ITEM."); return false;

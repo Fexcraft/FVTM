@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,8 +24,6 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnData {
 	
     private boolean locked = false;
-    public float rotation, offset;
-	public TrafficSignData data;
 
     public TrafficSignEntity(World world){
         super(world);
@@ -35,17 +32,9 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
         locked = false;
     }
 
-    public TrafficSignEntity(World world, float rotation, float offset){
-        this(world);
-        this.rotation = rotation;
-        this.offset = offset;
-    }
-
     @Override
     public void writeSpawnData(ByteBuf buffer){
     	try{
-            buffer.writeFloat(rotation);
-            buffer.writeFloat(offset);
             buffer.writeBoolean(locked);
     	}
     	catch(Exception e){
@@ -56,8 +45,6 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     public void readSpawnData(ByteBuf buffer){
     	try{
-        	rotation = buffer.readFloat();
-        	offset = buffer.readFloat();
         	locked = buffer.readBoolean();
     	}
     	catch(Exception e){
@@ -67,16 +54,12 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
 
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
-    	rotation = compound.getFloat("rotation");
         locked = compound.getBoolean("locked");
-        offset = compound.getFloat("offset");
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound){
-    	compound.setFloat("rotation", rotation);
     	compound.setBoolean("locked", locked);
-    	compound.setFloat("offset", offset);
     }
     
 	@Override

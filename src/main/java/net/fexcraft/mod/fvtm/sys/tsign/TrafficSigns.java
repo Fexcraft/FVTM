@@ -17,12 +17,12 @@ public interface TrafficSigns {
 
 	public Map<BlockPos, TrafficSignData> getSigns();
 
-	public TrafficSignData getSign(BlockPos pos, boolean create);
+	public TrafficSignData getSign(BlockPos pos);
 
-	public TrafficSignData getSign(int x, int y, int z, boolean create);
+	public TrafficSignData getSign(int x, int y, int z);
 
 	public TrafficSignData remove(BlockPos pos);
 
-	public void addSignAt(BlockPos pos, boolean client);
+	public void addSignAt(BlockPos pos, float rot, float off, boolean client);
 
 }

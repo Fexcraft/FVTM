@@ -771,7 +771,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
-		SystemManager.onAttachWorldCapabilities(event);
+		SystemManager.onAttachWorldCapabilities(event.getObject());
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -28,8 +28,8 @@ public class EntitySystem extends DetachedSystem {
 	private boolean run = true;
 	private float accumulator, delta;
 	//
-	public ArrayList<ParticleEntity> particles = new ArrayList<>();
-	public ArrayList<ParticleEntity> expired = new ArrayList<>();
+	public ConcurrentLinkedQueue<ParticleEntity> particles = new ConcurrentLinkedQueue<>();
+	public ConcurrentLinkedQueue<ParticleEntity> expired = new ConcurrentLinkedQueue<>();
 
 	public EntitySystem(World world){
 		super(world);
@@ -155,7 +155,7 @@ public class EntitySystem extends DetachedSystem {
 			speed = edata.speed == null ? edata.particle.speed : edata.speed;
 		}
 
-		public boolean invalid(ArrayList<ParticleEntity> particles, int mul){
+		public boolean invalid(Collection<ParticleEntity> particles, int mul){
 			if(edata.getConditional() == null || edata.getConditional().isMet(vehicle, null, vehicle.getVehicleData(), null, null, data, part, null, null)){
 				cool++;
 				if(cool >= freq * mul){

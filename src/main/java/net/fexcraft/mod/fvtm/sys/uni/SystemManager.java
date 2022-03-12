@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
@@ -16,7 +17,6 @@ import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
@@ -30,6 +30,7 @@ public class SystemManager {
 	public static boolean SINGLEPLAYER, PLAYERON;
 	private static ConcurrentHashMap<Systems, ConcurrentHashMap<Integer, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
 	private static ConcurrentHashMap<Integer, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
 	
 	public static void onServerTick(World world){
 		if(world == null || !SYSTEMS_DIM.containsKey(world.provider.getDimension())) return;
@@ -46,6 +47,7 @@ public class SystemManager {
 	}
 
 	public static void onChunkLoad(World world, Chunk chunk){
+		if(!loaded(world.provider.getDimension())) onAttachWorldCapabilities(world);
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
 			sys.onChunkLoad(chunk);
 		}
@@ -67,35 +69,43 @@ public class SystemManager {
 		return (T)SYSTEMS.get(sysid).get(world.provider.getDimension());
 	}
 
-	public static void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
+	private static boolean loaded(int dimension){
+		Boolean bool = LOADED_DIM.get(dimension);
+		return bool != null && bool;
+	}
+
+	public static void onAttachWorldCapabilities(World world){
+		if(loaded(world.provider.getDimension())) return;
 		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
-		int dim = event.getObject().provider.getDimension();
+		int dim = world.provider.getDimension();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
-		if(event.getObject().isRemote){
+		Print.debug("dimension remote = " + world.isRemote + "/" + SINGLEPLAYER);
+		if(world.isRemote || SINGLEPLAYER){
 			if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new ConcurrentHashMap<>());
-			EntitySystem ensys = new EntitySystem(event.getObject());
+			EntitySystem ensys = new EntitySystem(world);
 			SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
 			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);
 		}
-		if(!event.getObject().isRemote || !SINGLEPLAYER){
-			if(!Config.DISABLE_RAILS){
-				if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new ConcurrentHashMap<>());
-				RailSystem sys = new RailSystem(event.getObject());
-				SYSTEMS.get(Systems.RAIL).put(dim, sys);
-				SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
-			}
-			if(!Config.DISABLE_WIRES){
-				if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
-				WireSystem sys = new WireSystem(event.getObject());
-				SYSTEMS.get(Systems.WIRE).put(dim, sys);
-				SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
-			}
+		//
+		if(!Config.DISABLE_RAILS){
+			if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new ConcurrentHashMap<>());
+			RailSystem sys = new RailSystem(world);
+			SYSTEMS.get(Systems.RAIL).put(dim, sys);
+			SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
 		}
-		
+		//
+		if(!Config.DISABLE_WIRES){
+			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
+			WireSystem sys = new WireSystem(world);
+			SYSTEMS.get(Systems.WIRE).put(dim, sys);
+			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
+		}
+		//
 		if(!SYSTEMS.containsKey(Systems.TRAFFICSIGN)) SYSTEMS.put(Systems.TRAFFICSIGN, new ConcurrentHashMap<>());
-		TrafficSignLibrary tsys = new TrafficSignLibrary(event.getObject());
+		TrafficSignLibrary tsys = new TrafficSignLibrary(world);
 		SYSTEMS.get(Systems.TRAFFICSIGN).put(dim, tsys);
 		SYSTEMS_DIM.get(dim).put(Systems.TRAFFICSIGN, tsys);
+		LOADED_DIM.put(dim, true);
 	}
 	
 	private static long getDate(){
@@ -130,6 +140,7 @@ public class SystemManager {
 		}
 		SYSTEMS.clear();
 		SYSTEMS_DIM.clear();
+		LOADED_DIM.clear();
 	}
 
 	/** Called client side. */
@@ -141,6 +152,7 @@ public class SystemManager {
 			SYSTEMS.get(sys.getKey()).remove(dim);
 		}
 		SYSTEMS_DIM.remove(dim);
+		LOADED_DIM.remove(dim);
 	}
 	
 	public static enum Systems {

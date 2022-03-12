@@ -18,11 +18,12 @@ public class ParticleRenderer {
 	private static final ArrayList<ParticleEntity> ents = new ArrayList<>();
 
 	public static void renderParticles(World world, double cx, double cy, double cz, float ticks){
+        EntitySystem sys = SystemManager.get(Systems.ENTITY, world);
+        if(sys == null) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-cx, -cy, -cz);
         Minecraft.getMinecraft().renderEngine.bindTexture(Resources.WHITE_TEXTURE);
-        EntitySystem sys = SystemManager.get(Systems.ENTITY, world);
         ents.addAll(sys.particles);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

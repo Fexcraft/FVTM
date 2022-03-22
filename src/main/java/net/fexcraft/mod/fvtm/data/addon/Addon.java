@@ -62,24 +62,25 @@ public class Addon extends TypeCore<Addon> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
-	protected boolean enabled = true, lite, generatelang, generatejson, generateicon;
+	protected boolean enabled = true, generatelang, generatejson, generateicon;
 	protected File file, lang;
 	protected ContainerType contype;
 	protected HashMap<String, ArmorMaterial> armats = new HashMap<>();
 	protected LinkedHashMap<String, TextureSupply> supp_tex = new LinkedHashMap<>();
+	protected AddonLocation loc;
 	//
 	@SideOnly(Side.CLIENT)
 	protected HashMap<String, CreativeTabs> creativetabs;
 	protected AutoRegisterer registerer;
 	
 	public Addon(ContainerType type, File file){
-		this(type, file, false);
+		this(type, file, AddonLocation.MODJAR);
 	}
 	
-	public Addon(ContainerType type, File file, boolean lite){
+	public Addon(ContainerType type, File file, AddonLocation loc){
 		this.contype = type;
 		this.file = file;
-		this.lite = lite;
+		this.loc = loc;
 	}
 
 	@Override
@@ -320,7 +321,7 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	private void checkLangFile(TypeCore<?> core){
-		if(lang == null) lang = new File((isLitePack() ? file : file.getParentFile()), (isLitePack() ? "" : "/src/main/resources") + "/assets/" + registryname.getPath() + "/lang/en_us.lang");
+		if(lang == null) lang = new File((loc.isLitePack() ? file : file.getParentFile()), (loc.isLitePack() ? "" : "/src/main/resources") + "/assets/" + registryname.getPath() + "/lang/en_us.lang");
 		String regname = (core instanceof Block ? "tile." : "item.") + core.getRegistryName().toString() + ".name=";
 		if(!containsLangEntry(regname)){
 			try{
@@ -334,7 +335,7 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	private void checkItemJson(TypeCore<?> core, DataType data){
-		File json = new File((isLitePack() ? file : file.getParentFile()), (isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
+		File json = new File((loc.isLitePack() ? file : file.getParentFile()), (loc.isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
 		if(!json.exists()){
 			if(!json.getParentFile().exists()) json.getParentFile().mkdirs();
 			JsonObject obj = new JsonObject();
@@ -353,7 +354,7 @@ public class Addon extends TypeCore<Addon> {
 	private static BufferedImage img, img_veh, img_part;
 
 	private void checkItemIcon(TypeCore<?> core, DataType data){
-		File icon = new File((isLitePack() ? file : file.getParentFile()), (isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");;
+		File icon = new File((loc.isLitePack() ? file : file.getParentFile()), (loc.isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");;
 		if(!icon.exists()){
 			if(!icon.getParentFile().exists()) icon.getParentFile().mkdirs();
 			BufferedImage image = null;
@@ -399,7 +400,7 @@ public class Addon extends TypeCore<Addon> {
 		return false;
 	}
 
-	private ArrayList<File> findFiles(File file, String suffix){
+	public static ArrayList<File> findFiles(File file, String suffix){
 		ArrayList<File> result = new ArrayList<>();
 		if(file.isDirectory()){
 			for(File sub : file.listFiles()){
@@ -526,8 +527,8 @@ public class Addon extends TypeCore<Addon> {
 		return armats;
 	}
 	
-	public boolean isLitePack(){
-		return lite;
+	public AddonLocation getLoc(){
+		return loc;
 	}
 
 	public LinkedHashMap<String, TextureSupply> getTextureSuppliers(){

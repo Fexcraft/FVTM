@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -53,6 +54,7 @@ import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
+import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -108,6 +110,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
@@ -118,6 +121,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -230,10 +234,10 @@ public class Resources {
 			}
 		}
 		else{
-			searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), false);
+			searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
 		}
-		searchAddonsInForlder(new File(configroot, "packs/"), true);
-		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), false);
+		searchAddonsInForlder(new File(configroot, "packs/"), AddonLocation.LITEPACK, true);
+		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
 		//
 		//TODO check addon on/off state
 		//
@@ -253,7 +257,7 @@ public class Resources {
 		searchInAddonsFor(DataType.VEHICLE);
 	}
 	
-	public static void searchAddonsInForlder(File packfolder, boolean create){
+	public static void searchAddonsInForlder(File packfolder, AddonLocation loc, boolean create){
 		if(!packfolder.exists()){
 			if(!create) return;
 			packfolder.mkdir();
@@ -267,7 +271,7 @@ public class Resources {
 						if(!fl.isDirectory()) continue;
 						File dec = new File(fl, "addonpack.fvtm");
 						if(dec.exists()){
-							ADDONS.register(new Addon(ContainerType.DIR, file, true).parse(JsonUtil.get(dec)));
+							ADDONS.register(new Addon(ContainerType.DIR, file, loc).parse(JsonUtil.get(dec)));
 						}
 					}
 				}
@@ -276,7 +280,7 @@ public class Resources {
 				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
 				if(array.size() > 0){
 					JsonObject obj = array.get(0).getAsJsonObject();
-					Addon addon = new Addon(ContainerType.JAR, file, true).parse(obj);
+					Addon addon = new Addon(ContainerType.JAR, file, loc).parse(obj);
 					ADDONS.register(addon);
 					if(file.getName().endsWith(".jar") || (obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean())){
 						addToClassPath(addon, file);
@@ -323,7 +327,7 @@ public class Resources {
 			ResourceLocation resloc = new ResourceLocation(str + ":addonpack.fvtm");
 			if(pack.resourceExists(resloc)){
 				try {
-					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack), true);
+					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack), AddonLocation.RESOURCEPACK);
 					JsonObject obj = JsonUtil.getObjectFromInputStream(pack.getInputStream(resloc));
 					if(obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean() && !addon.getFile().isDirectory()){
 						addToClassPath(addon, addon.getFile());
@@ -478,7 +482,7 @@ public class Resources {
 		if(stream != null) return new Object[]{ stream };
 		try{
 			Addon addon = getAddon(resloc.getNamespace());
-			if(addon != null && addon.isLitePack()){
+			if(addon != null && addon.getLoc().isLitePack()){
 				if(addon.getContainerType() == ContainerType.DIR){
 					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
 					if(file.exists()) stream = new FileInputStream(file);
@@ -715,7 +719,7 @@ public class Resources {
 	public static void resetFlight(EntityPlayerMP passenger){
 		if(flightdata == null && !flightdata_failed){
 			try{
-				flightdata = ReflectionHelper.findField(NetHandlerPlayServer.class, "floatingTickCount", "field_147365_f");
+				flightdata = ObfuscationReflectionHelper.findField(NetHandlerPlayServer.class, "field_147365_f");
 			}
 			catch(Exception e){
 				Print.log("Failed to get field. [FLIGHTDATA:ERR:0]");
@@ -1082,6 +1086,70 @@ public class Resources {
 		if(array.size() > 2) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
 		if(array.size() > 3) model.decotype(array.get(3).getAsString());
 		WireModel.DECOS.put(key, model.key(key));
+	}
+	
+	private static Field i18n_locale;
+	private static Method locale_load_is, locale_check_uni;
+
+	@SideOnly(Side.CLIENT)
+	public static void loadLitePackResources() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
+		ArrayList<Addon> lites = new ArrayList<>();
+		for(Addon addon : ADDONS.getValuesCollection()){
+			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
+		}
+		if(lites.size() == 0) return;
+		i18n_locale = ObfuscationReflectionHelper.findField(net.minecraft.client.resources.I18n.class, "field_135054_a");
+		i18n_locale.setAccessible(true);
+		locale_load_is = ObfuscationReflectionHelper.findMethod(net.minecraft.client.resources.Locale.class, "func_135021_a", Void.TYPE, InputStream.class);
+		locale_load_is.setAccessible(true);
+		locale_check_uni = ObfuscationReflectionHelper.findMethod(net.minecraft.client.resources.Locale.class, "func_135024_b", Void.TYPE);
+		locale_check_uni.setAccessible(true);
+		String code = net.minecraft.client.Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().toLowerCase();
+		boolean nonus = !code.equals("en_us");
+		//
+		for(Addon addon : lites){
+			if(addon.getContainerType() == ContainerType.DIR){
+				if(!addon.getFile().isDirectory()) return;
+				//
+				File folder = new File(addon.getFile(), "assets/" + addon.getRegistryName().getPath() + "/lang/");
+				if(!folder.exists()) folder.mkdirs();
+				for(File file : folder.listFiles()){
+					if(file.getName().toLowerCase().equals("en_us.lang")){
+						locale_load_is.invoke(i18n_locale.get(null), new FileInputStream(file));
+						LanguageMap.inject(new FileInputStream(file));
+					}
+					else if(nonus && file.getName().toLowerCase().equals(code + ".lang")){
+						locale_load_is.invoke(i18n_locale.get(null), new FileInputStream(file));
+						LanguageMap.inject(new FileInputStream(file));
+					}
+				}
+			}
+			else{
+				String path = "assets/" + addon.getRegistryName().getPath() + "/lang/", extension = ".lang";
+				try{
+					ZipFile zip = new ZipFile(addon.getFile());
+					ZipInputStream stream = new ZipInputStream(new FileInputStream(addon.getFile()));
+					while(true){
+						ZipEntry entry = stream.getNextEntry();
+						if(entry == null) break;
+						if(entry.getName().equals(path + "en_us" + extension)){
+							locale_load_is.invoke(i18n_locale.get(null), zip.getInputStream(entry));
+							LanguageMap.inject(zip.getInputStream(entry));
+						}
+						if(nonus && entry.getName().equals(path + code + extension)){
+							locale_load_is.invoke(i18n_locale.get(null), zip.getInputStream(entry));
+							LanguageMap.inject(zip.getInputStream(entry));
+						}
+					}
+					zip.close();
+					stream.close();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		locale_check_uni.invoke(i18n_locale.get(null));
 	}
 
 }

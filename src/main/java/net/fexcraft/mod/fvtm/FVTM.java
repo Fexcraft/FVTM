@@ -1,11 +1,15 @@
 package net.fexcraft.mod.fvtm;
 
+import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -188,6 +192,13 @@ public class FVTM {
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
+			}
+			try{
+				Resources.loadLitePackResources();
+			}
+			catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | FileNotFoundException e){
+				e.printStackTrace();
+				Static.stop();
 			}
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());

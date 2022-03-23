@@ -25,7 +25,6 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -39,6 +38,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
@@ -1500,7 +1500,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			ModelBase.bindTexture(resloc);
+			TexUtil.bindTexture(resloc);
 		}
 
 		@Override
@@ -1510,7 +1510,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			ModelBase.bindTexture(resloc);
+			TexUtil.bindTexture(resloc);
 		}
 		
 		@Override
@@ -1539,7 +1539,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			ModelBase.bindTexture(part == null ? data.getCurrentTexture() : data.getPart(part).getCurrentTexture());
+			TexUtil.bindTexture(part == null ? data.getCurrentTexture() : data.getPart(part).getCurrentTexture());
 		}
 
 		@Override
@@ -1549,7 +1549,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			ModelBase.bindTexture(data.getCurrentTexture());
+			TexUtil.bindTexture(data.getCurrentTexture());
 		}
 		
 		@Override

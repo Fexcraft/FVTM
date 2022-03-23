@@ -10,7 +10,6 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
@@ -25,6 +24,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -168,14 +168,14 @@ public class RailRenderer {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-cx, -cy, -cz);
-        //ModelBase.bindTexture(Resources.NULL_TEXTURE);
+        //TexUtil.bindTexture(Resources.NULL_TEXTURE);
         for(Region reg : raildata.getRegions().values()){
         	//if(reg.READING) continue;
         	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
         	for(int i = 0; i < junctions.length; i++){
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
             	GL11.glPushMatrix();
-            	ModelBase.bindTexture(WOOLTEX);
+            	TexUtil.bindTexture(WOOLTEX);
             	GL11.glTranslatef(junctions[i].getVec3f().x, junctions[i].getVec3f().y, junctions[i].getVec3f().z);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
@@ -199,11 +199,11 @@ public class RailRenderer {
 		            GL11.glRotatef(180f, 0f, 0f, 1f);
 		            Model<VehicleData, Object> modVehicle = entities[i].vehdata.getType().getModel();
 		            if(modVehicle != null){
-		                ModelBase.bindTexture(entities[i].vehdata.getTexture());
+		                TexUtil.bindTexture(entities[i].vehdata.getTexture());
 		                modVehicle.render(entities[i].vehdata, null);
 		                if(entities[i].vehdata.getParts().size() > 0){
 		                	for(java.util.Map.Entry<String, PartData> entry : entities[i].vehdata.getParts().entrySet()){
-		                    	ModelBase.bindTexture(entry.getValue().getTexture());
+		                    	TexUtil.bindTexture(entry.getValue().getTexture());
 		                    	entry.getValue().getInstalledPos().translate();
 		                        entry.getValue().getType().getModel().render(entities[i].vehdata, entry.getKey());
 		                        entry.getValue().getInstalledPos().translateR();
@@ -270,11 +270,11 @@ public class RailRenderer {
         		if(value.tracks.get(i).isOppositeCopy()) continue;
         		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
         		if(track.railmodel == null){ generateTrackModel(track, model); }
-        		ModelBase.bindTexture(track.gauge.getRailTexture());
+        		TexUtil.bindTexture(track.gauge.getRailTexture());
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.disableCull();
         		track.railmodel.render();
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.enableCull();
-        		ModelBase.bindTexture(track.gauge.getTiesTexture());
+        		TexUtil.bindTexture(track.gauge.getTiesTexture());
         		track.restmodel.render();
         	}
         	if(Command.OTHER){
@@ -312,7 +312,7 @@ public class RailRenderer {
     				value.signalpos1 = vec0.add(VecUtil.rotByRad(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
     				value.signalrot1 = (float)Math.toDegrees(value.signalrot1);
     			}
-    			ModelBase.bindTexture(value.tracks.get(0).gauge.getModelTexture());
+    			TexUtil.bindTexture(value.tracks.get(0).gauge.getModelTexture());
     			if(value.signalpos0 != null){
         			GL11.glPushMatrix();
         			GL11.glTranslatef(value.signalpos0.x, value.signalpos0.y, value.signalpos0.z);

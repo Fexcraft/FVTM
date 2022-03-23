@@ -11,12 +11,12 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -127,13 +127,13 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 			buffer_track = new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(0, 0, 0)) }, new Vec316f(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
 		}
 		if(buffer_track.railmodel == null){ RailRenderer.generateTrackModel(buffer_track, this); }
-		ModelBase.bindTexture(buffer_track.gauge.getModelTexture());
+		TexUtil.bindTexture(buffer_track.gauge.getModelTexture());
 		GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(180, 0, 1, 0);
 		groups.get("buffer").renderPlain();
 		GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(-90, 0, 1, 0);
-		ModelBase.bindTexture(buffer_track.gauge.getTiesTexture());
+		TexUtil.bindTexture(buffer_track.gauge.getTiesTexture());
 		buffer_track.restmodel.renderPlain();
-		ModelBase.bindTexture(buffer_track.gauge.getRailTexture());
+		TexUtil.bindTexture(buffer_track.gauge.getRailTexture());
 		buffer_track.railmodel.renderPlain();
 	}
 	

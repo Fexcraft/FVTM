@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -11,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -55,11 +55,11 @@ public class VehicleRenderer {
 	            GL11.glRotatef(180f, 0f, 0f, 1f);
 	            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();
 	            if(modVehicle != null){
-	                ModelBase.bindTexture(vehicle.getVehicleData().getCurrentTexture());
+	                TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
 	                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache);
 	                if(vehicle.getVehicleData().getParts().size() > 0){
 	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
-	                    	ModelBase.bindTexture(entry.getValue().getCurrentTexture());
+	                    	TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 	                    		GL11.glPushMatrix();
 	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);

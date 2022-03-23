@@ -5,9 +5,9 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.entity.RailTestEntity;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +23,7 @@ public class RenderRailTestEnt extends Render<RailTestEntity> implements IRender
     }
 
     public void bindTexture(ResourceLocation rs){
-        ModelBase.bindTexture(rs);
+        TexUtil.bindTexture(rs);
     }
 
     @Override

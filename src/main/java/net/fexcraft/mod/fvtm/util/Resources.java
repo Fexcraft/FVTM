@@ -1123,6 +1123,8 @@ public class Resources {
 						LanguageMap.inject(new FileInputStream(file));
 					}
 				}
+				//
+				TexUtil.searchIn(addon, new File(addon.getFile(), "assets/" + addon.getRegistryName().getPath() + "/textures/"), null);
 			}
 			else{
 				String path = "assets/" + addon.getRegistryName().getPath() + "/lang/", extension = ".lang";
@@ -1147,6 +1149,7 @@ public class Resources {
 				catch(Exception e){
 					e.printStackTrace();
 				}
+				TexUtil.searchInZip(addon);
 			}
 		}
 		locale_check_uni.invoke(i18n_locale.get(null));

@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -11,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.math.Vec3d;
@@ -36,7 +36,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
             VehicleData vehicledata = te.getVehicleData();
             Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
             if(modvec != null){
-                ModelBase.bindTexture(vehicledata.getCurrentTexture());
+                TexUtil.bindTexture(vehicledata.getCurrentTexture());
                 if(!vehicledata.getWheelPositions().isEmpty()){
                 	for(Vec3d vec : vehicledata.getWheelPositions().values()){
                 		heightoffset += -vec.y;
@@ -46,7 +46,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 GL11.glTranslated(0, -heightoffset, 0);
                 modvec.render(vehicledata, null, null, cache);
                 vehicledata.getParts().forEach((key, partdata) -> {
-                    ModelBase.bindTexture(partdata.getCurrentTexture());
+                    TexUtil.bindTexture(partdata.getCurrentTexture());
                 	if(partdata.isInstalledOnSwivelPoint()){
                 		GL11.glPushMatrix();
                 		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);

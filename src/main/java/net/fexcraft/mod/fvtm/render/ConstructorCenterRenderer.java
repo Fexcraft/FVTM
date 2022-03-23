@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -15,6 +14,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +30,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
     public void render(ConstCenterEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-        ModelBase.bindTexture(lifttexture);
+        TexUtil.bindTexture(lifttexture);
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         Float offrot = 60f;
@@ -47,7 +47,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             if(tile.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	GL11.glPushMatrix();
             	tile.updateLiftState();
-            	ModelBase.bindTexture(lifttexture);
+            	TexUtil.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
             	for(ConstructorLiftModel model : tile.models) model.render(tile, partialticks);
                 GL11.glPopMatrix();
@@ -63,7 +63,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	else l = Math.abs(tile.track.gauge.width()) / 16 * 4;
             	//
             	GL11.glRotated(180, 0, 0, 1);
-        		ModelBase.bindTexture(tile.track.gauge.getRailTexture());
+        		TexUtil.bindTexture(tile.track.gauge.getRailTexture());
         		GL11.glPushMatrix();
             	GL11.glTranslatef(-l, 0, 0);
             	for(int i = l * 2 + 1; i > 0; i--){
@@ -72,7 +72,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	}
             	GL11.glPopMatrix();
             	//
-        		ModelBase.bindTexture(tile.track.gauge.getTiesTexture());
+        		TexUtil.bindTexture(tile.track.gauge.getTiesTexture());
         		GL11.glPushMatrix();
             	GL11.glTranslatef(-l, 0, 0);
             	for(int i = l * 2 + 1; i > 0; i--){
@@ -91,7 +91,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
             try{
                 if(modvec != null){
-                    ModelBase.bindTexture(vehicledata.getCurrentTexture());
+                    TexUtil.bindTexture(vehicledata.getCurrentTexture());
                     float[] heightoffset = { 0 };
                     if(vehicledata.getType().getVehicleType().isRailVehicle() && !vehicledata.getWheelPositions().isEmpty()){
                     	vehicledata.getWheelPositions().values().forEach(cons -> {
@@ -103,7 +103,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     GL11.glTranslated(0, heightoffset[0], 0);
                     modvec.render(vehicledata, null, null, null);
                     vehicledata.getParts().forEach((key, partdata) -> {
-                        ModelBase.bindTexture(partdata.getCurrentTexture());
+                        TexUtil.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
                     		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
@@ -129,15 +129,15 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             //GL11.glTranslated(0, 1.5F, 0);
             Model<ContainerData, Object> model = tile.getContainerData().getType().getModel();
             if(model != null){
-                ModelBase.bindTexture(tile.getContainerData().getCurrentTexture());
+                TexUtil.bindTexture(tile.getContainerData().getCurrentTexture());
                 model.render(tile.getContainerData(), null);
-                //ModelBase.bindTexture(lifttexture);
+                //TexUtil.bindTexture(lifttexture);
             }
         }
         else if(tile.getBlockData() != null){
         	Model<BlockData, TileEntity> model = tile.getBlockData().getType().getModel();
         	if(model != null){
-                ModelBase.bindTexture(tile.getBlockData().getCurrentTexture());
+                TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
                 model.render(tile.getBlockData(), null);
         	}
         }

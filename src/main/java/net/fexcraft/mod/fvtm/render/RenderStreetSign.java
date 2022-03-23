@@ -2,8 +2,8 @@ package net.fexcraft.mod.fvtm.render;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,7 +20,7 @@ public class RenderStreetSign extends Render<StreetSign> implements IRenderFacto
     }
 
     public void bindTexture(ResourceLocation rs){
-        ModelBase.bindTexture(rs);
+        TexUtil.bindTexture(rs);
     }
 
     @Override

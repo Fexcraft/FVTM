@@ -13,7 +13,6 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.WireModel;
@@ -28,6 +27,7 @@ import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,7 @@ public class WireRenderer {
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB())) continue;
                 	GL11.glPushMatrix();
-                	ModelBase.bindTexture(Resources.NULL_TEXTURE);
+                	TexUtil.bindTexture(Resources.NULL_TEXTURE);
                 	GL11.glTranslatef(relay.pos.x, relay.pos.y, relay.pos.z);
                 	if(Command.OTHER){// && relays[i].wires.isEmpty()){
                 		model.render();
@@ -130,11 +130,11 @@ public class WireRenderer {
         		Wire wire = relay.wires.get(i);
         		if(wire.vecpath == null || wire.getWireType() == null) continue;
         		if(wire.wiremodel == null) generateWireModel(wire);
-        		ModelBase.bindTexture(wire.getWireType().getWireTexture());
+        		TexUtil.bindTexture(wire.getWireType().getWireTexture());
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.disableCull();
         		wire.wiremodel.render();
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.enableCull();
-        		ModelBase.bindTexture(wire.getWireType().getModelTexture());
+        		TexUtil.bindTexture(wire.getWireType().getModelTexture());
         		if(relay.getTile() != null){
         			CURRENT = wire;
     				ANGLE = wire.model_end_angle;
@@ -179,10 +179,10 @@ public class WireRenderer {
                             			GL11.glRotated(180, 0, 0, 1);
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
-                    	        		ModelBase.bindTexture(wm.texture());
+                    	        		TexUtil.bindTexture(wm.texture());
                     					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
                     					if(tlist != null){
-                    		        		ModelBase.bindTexture(wire.getWireType().getWireTexture());
+                    		        		TexUtil.bindTexture(wire.getWireType().getWireTexture());
                     						tlist.get(didx++).render();
                     					}
                     					wm.transforms.deapply();
@@ -195,7 +195,7 @@ public class WireRenderer {
                         			GL11.glRotated(180, 0, 0, 1);
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
-                	        		ModelBase.bindTexture(wm.texture());
+                	        		TexUtil.bindTexture(wm.texture());
                 					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();

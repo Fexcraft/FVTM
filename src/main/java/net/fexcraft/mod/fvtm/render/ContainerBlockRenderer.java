@@ -4,10 +4,10 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.registry.fTESR;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
@@ -20,7 +20,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         if(!te.isCore() || te.getContainerData() == null){ return; }
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-        //ModelBase.bindTexture(ModelConstructorCenter.getTexture());
+        //TexUtil.bindTexture(ModelConstructorCenter.getTexture());
         GL11.glPushMatrix(); off = te.getContainerData().getContainerType().isEven() ? 0.5 : 0;
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         switch(te.getBlockMetadata()){
@@ -54,7 +54,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         ContainerData condata = te.getContainerData();
         if(condata != null){
             if(condata.getType().getModel() != null){
-                ModelBase.bindTexture(condata.getCurrentTexture());
+                TexUtil.bindTexture(condata.getCurrentTexture());
                 condata.getType().getModel().render(condata, null, null, te.getCapability(Capabilities.RENDERCACHE, null));
             }
         }

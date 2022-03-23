@@ -4,13 +4,13 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,7 +25,7 @@ public class TrafficSignRenderer {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-cx, -cy, -cz);
-    	ModelBase.bindTexture(Resources.WHITE_TEXTURE);
+    	TexUtil.bindTexture(Resources.WHITE_TEXTURE);
         for(Chunk chunk : TrafficSignLibrary.CHUNKS){
         	TrafficSigns cap = chunk.getCapability(Capabilities.TRAFFIC_SIGNS, null);
         	if(cap == null) continue;

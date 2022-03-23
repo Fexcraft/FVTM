@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -11,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -24,11 +24,11 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
     }
 
     public void bindTexture(LandVehicle ent){
-        ModelBase.bindTexture(this.getEntityTexture(ent));
+        TexUtil.bindTexture(this.getEntityTexture(ent));
     }
 
     public void bindTexture(ResourceLocation rs){
-        ModelBase.bindTexture(rs);
+        TexUtil.bindTexture(rs);
     }
     
     //private static final ModelRendererTurbo turbo = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-2, -2, -2, 4, 4, 4);
@@ -57,7 +57,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache);
 	                if(vehicle.getVehicleData().getParts().size() > 0){
 	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
-	                    	ModelBase.bindTexture(entry.getValue().getCurrentTexture());
+	                    	TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 	                    		GL11.glPushMatrix();
 	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);

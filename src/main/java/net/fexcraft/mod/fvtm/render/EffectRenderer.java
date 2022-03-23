@@ -13,7 +13,6 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -36,6 +35,7 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
@@ -80,7 +80,7 @@ public class EffectRenderer {
     	if(Config.DISABLE_LIGHT_BEAMS) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ModelBase.bindTexture(LIGHT_TEXTURE);
+		TexUtil.bindTexture(LIGHT_TEXTURE);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDepthMask(false);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -91,12 +91,12 @@ public class EffectRenderer {
         	VehicleEntity veh = LIGHTRAYVEHS.get(i);
         	if(light.tex != null){
         		if(last == null || !last.equals(light.tex)){
-        			ModelBase.bindTexture(last = light.tex);
+        			TexUtil.bindTexture(last = light.tex);
         		}
         	}
         	else if(last != null){
         		last = null;
-        		ModelBase.bindTexture(LIGHT_TEXTURE);
+        		TexUtil.bindTexture(LIGHT_TEXTURE);
         	}
         	double[] vehpos = RENDER_VEHPOS.get(veh.getEntity().getEntityId());
             GL11.glPushMatrix();
@@ -141,12 +141,12 @@ public class EffectRenderer {
             	TileEntity tile = BLOCK_LIGHTRAYTILES.get(i);
             	if(light.tex != null){
             		if(last == null || !last.equals(light.tex)){
-            			ModelBase.bindTexture(last = light.tex);
+            			TexUtil.bindTexture(last = light.tex);
             		}
             	}
             	else if(last != null){
             		last = null;
-            		ModelBase.bindTexture(LIGHT_TEXTURE);
+            		TexUtil.bindTexture(LIGHT_TEXTURE);
             	}
                 GL11.glPushMatrix();
                 GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);

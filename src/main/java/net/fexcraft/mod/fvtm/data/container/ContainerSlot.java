@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
@@ -137,7 +138,7 @@ public class ContainerSlot {
 			if(containers[i] != null){
 				// Print.debug("Rendering Slot Sub " + i);
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(renderoffset[i], 0, 0);
-				net.fexcraft.lib.tmt.ModelBase.bindTexture(containers[i].getTexture().getTexture());
+				TexUtil.bindTexture(containers[i].getTexture().getTexture());
 				containers[i].getType().getModel().render(containers[i], null, entity, entity.getCapability(Capabilities.RENDERCACHE, null));
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
 			}

@@ -24,11 +24,11 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
 
@@ -402,7 +402,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	}
 
 	public void bindTexture(ResourceLocation texture){
-		ModelBase.bindTexture(texture);
+		TexUtil.bindTexture(texture);
 	}
 	
 	public static void fixRotations(TurboList group){

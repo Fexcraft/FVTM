@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -52,7 +53,7 @@ public class MRWrapper extends ModelRenderer {
     	int deftex = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
     	RenderCache cache = entity.getCapability(Capabilities.RENDERCACHE, null);
 		for(int i = 0; i < cloth_items.size(); i++){
-			net.fexcraft.lib.tmt.ModelBase.bindTexture(cloth_items.get(i).getType().getTexture());
+			TexUtil.bindTexture(cloth_items.get(i).getType().getTexture());
 			if(cloth_groups.get(i).startsWith("skirt")){
 				GL11.glPushMatrix();
 				if(id.contains("right")) GL11.glTranslatef(0, 0, 0.25f);

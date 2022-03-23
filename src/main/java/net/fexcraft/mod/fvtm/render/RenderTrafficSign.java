@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +16,7 @@ public class RenderTrafficSign extends Render<TrafficSignEntity> implements IRen
     }
 
     public void bindTexture(ResourceLocation rs){
-        ModelBase.bindTexture(rs);
+        TexUtil.bindTexture(rs);
     }
 
     @Override

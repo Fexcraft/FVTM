@@ -24,7 +24,7 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 	protected float def_slack;
 	protected boolean customisable;
 	protected WireItem item;
-	protected ResourceLocation wire_texture, model_texture;
+	protected ResourceLocation texture;
 	//
 	protected String modelid, ctab;
 	protected WireModel model;
@@ -59,8 +59,13 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 		this.type = JsonUtil.getIfExists(obj, "Type", "universal");
 		this.def_slack = JsonUtil.getIfExists(obj, "Slack", Static.sixteenth).floatValue();
 		this.customisable = JsonUtil.getIfExists(obj, "Customisable", true);
-		this.wire_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "WireTexture", "minecraft:textures/blocks/anvil_base.png"));
-		this.model_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "ModelTexture", "fvtm:textures/entity/null.png"));
+		if(obj.has("WireTexture")){
+			this.texture = new ResourceLocation(obj.get("WireTexture").getAsString());
+		}
+		else if(obj.has("Texture")){
+			this.texture = new ResourceLocation(obj.get("Texture").getAsString());
+		}
+		else texture = Resources.WHITE_TEXTURE;
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
@@ -108,12 +113,8 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 		this.model = (WireModel)Resources.getModel(modelid, WireModel.class);
 	}
 	
-	public ResourceLocation getWireTexture(){
-		return wire_texture;
-	}
-	
-	public ResourceLocation getModelTexture(){
-		return model_texture;
+	public ResourceLocation getTexture(){
+		return texture;
 	}
 
 	@Override

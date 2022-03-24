@@ -226,7 +226,7 @@ public class WireRelayContainer extends GenericContainer {
 		int idx = modelkeys.indexOf(CURRDECO);
 		if(idx < 0 || idx >= modelkeys.size() - 1) idx = 0;
 		else idx++;
-		CURRDECO = modelkeys.get(idx);
+		CURRDECO = modelkeys.size() == 0 ? "relay" : modelkeys.get(idx);
 	}
 
 	public String currdeconame(){

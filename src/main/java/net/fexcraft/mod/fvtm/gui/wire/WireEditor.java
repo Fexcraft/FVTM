@@ -131,6 +131,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 		}
 		else if(button.name.startsWith("b")){
 			int index = Integer.parseInt(button.name.substring(1));
+			if(index >= container.models.size() || container.models.size() == 0) return true;
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "select_deco");
 			compound.setString("type", WireRelayContainer.CURRDECO);

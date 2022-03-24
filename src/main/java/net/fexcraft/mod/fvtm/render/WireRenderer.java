@@ -130,11 +130,10 @@ public class WireRenderer {
         		Wire wire = relay.wires.get(i);
         		if(wire.vecpath == null || wire.getWireType() == null) continue;
         		if(wire.wiremodel == null) generateWireModel(wire);
-        		TexUtil.bindTexture(wire.getWireType().getWireTexture());
+        		TexUtil.bindTexture(wire.getWireType().getTexture());
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.disableCull();
         		wire.wiremodel.render();
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.enableCull();
-        		TexUtil.bindTexture(wire.getWireType().getModelTexture());
         		if(relay.getTile() != null){
         			CURRENT = wire;
     				ANGLE = wire.model_end_angle;
@@ -145,6 +144,7 @@ public class WireRenderer {
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
+    	        		TexUtil.bindTexture(wire.deco_s.texture());
             			wire.deco_s.render(relay.getTile().getBlockData(), relay.getTile());
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
@@ -159,6 +159,7 @@ public class WireRenderer {
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
+    	        		TexUtil.bindTexture(wire.deco_e.texture());
             			wire.deco_e.render(relay.getTile().getBlockData(), relay.getTile());
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			//RGB.glColorReset();
@@ -182,7 +183,7 @@ public class WireRenderer {
                     	        		TexUtil.bindTexture(wm.texture());
                     					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
                     					if(tlist != null){
-                    		        		TexUtil.bindTexture(wire.getWireType().getWireTexture());
+                    		        		TexUtil.bindTexture(wire.getWireType().getTexture());
                     						tlist.get(didx++).render();
                     					}
                     					wm.transforms.deapply();

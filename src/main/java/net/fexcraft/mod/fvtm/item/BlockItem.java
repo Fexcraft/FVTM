@@ -67,6 +67,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
         BlockData data = cache.getBlockData();
         if(data == null) return;
         if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+        if(type.getModel() == null) return;
         if(type.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
             for(String str : type.getModel().getCreators()){

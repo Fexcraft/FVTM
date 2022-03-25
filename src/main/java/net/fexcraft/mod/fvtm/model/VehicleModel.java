@@ -111,12 +111,12 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		float[] val = new float[3];
 		boolean set = split[0].toLowerCase().equals("set");
 		if(split.length == 3){
-			val[0] = val[1] = val[2] = Float.parseFloat(split[1]);
+			val[0] = val[1] = val[2] = Float.parseFloat(split[2]);
 		}
 		else{
-			val[0] = Float.parseFloat(split[1]);
-			val[1] = Float.parseFloat(split[2]);
-			val[2] = Float.parseFloat(split[3]);
+			val[0] = Float.parseFloat(split[2]);
+			val[1] = Float.parseFloat(split[3]);
+			val[2] = Float.parseFloat(split[4]);
 		}
 		if(split[1].equals("all")){
 			switch(type){

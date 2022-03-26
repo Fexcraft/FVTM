@@ -7,5 +7,9 @@ public enum AddonLocation {
 	public boolean isLitePack(){
 		return this != MODJAR;
 	}
+	
+	public boolean isFullLite(){
+		return this == LITEPACK;
+	}
 
 }

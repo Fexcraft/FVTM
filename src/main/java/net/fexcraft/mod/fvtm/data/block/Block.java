@@ -16,6 +16,7 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -36,7 +37,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed {
+public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed, ItemTextureable {
 	
 	public static final AxisAlignedBB[] FULL_BLOCK_AABB_ARRAY = new AxisAlignedBB[]{ net.minecraft.block.Block.FULL_BLOCK_AABB };
 	//
@@ -45,6 +46,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected net.minecraft.block.Block block;
 	protected String modelid, ctab;
 	protected Model<BlockData, TileEntity> model;
+	protected ResourceLocation itemloc;
+	protected boolean no3ditem;
 	//
 	protected boolean plain_model, hideitem;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
@@ -150,6 +153,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.invisible = JsonUtil.getIfExists(obj, "Invisible", false);
 		this.hideitem = JsonUtil.getIfExists(obj, "HideItem", false);
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+        this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
@@ -348,6 +353,16 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	
 	public RelayData getRelayData(){
 		return relaydata;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
+	}
+	
+	@Override
+	public boolean no3DItemModel(){
+		return no3ditem;
 	}
 
 }

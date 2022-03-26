@@ -194,7 +194,7 @@ public class FVTM {
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
 			}
 			try{
-				Resources.loadLitePackResources();
+				Resources.loadLitePackLang();
 			}
 			catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | FileNotFoundException e){
 				e.printStackTrace();

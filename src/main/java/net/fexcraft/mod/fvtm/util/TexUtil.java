@@ -130,4 +130,16 @@ public class TexUtil {
 		return null;
 	}
 
+	public static boolean isMissing(ResourceLocation resloc){
+		if(TexUtil.litex.containsKey(resloc)) return false;
+		try{
+			IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resloc);
+			return res == null;
+		}
+		catch(IOException e){
+			//e.printStackTrace();
+			return true;
+		}
+	}
+
 }

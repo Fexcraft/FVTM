@@ -36,6 +36,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
+import net.fexcraft.mod.fvtm.model.ItemPlaceholderModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
@@ -275,8 +276,11 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.BLOCK){
 						Block block = (Block)core;
-						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS){
+						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
+						}
+						else if(loc.isFullLite() || isItemModelMissing(core)){
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
 						}
 					}
 				}
@@ -311,12 +315,26 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.BLOCK){
 						Block block = (Block)core;
-						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS){
+						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
+						}
+						else if(loc.isFullLite() || isItemModelMissing(core)){
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
 						}
 					}
 				}
 			}
+		}
+	}
+
+	private boolean isItemModelMissing(TypeCore<?> type){
+		try{
+			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getRegistryName().getNamespace(), "textures/iterms/" + type.getRegistryName().getPath() + ".png"));
+			return res == null;
+		}
+		catch(IOException e){
+			//e.printStackTrace();
+			return true;
 		}
 	}
 

@@ -240,6 +240,9 @@ public class Resources {
 		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
 		//
 		//TODO check addon on/off state
+		if(event.getSide().isClient()){
+			loadLitePackTextureLocations();
+		}
 		//
 		registerAttributeTypes();
 		registerModifierImpls();
@@ -1092,7 +1095,7 @@ public class Resources {
 	private static Method locale_load_is, locale_check_uni;
 
 	@SideOnly(Side.CLIENT)
-	public static void loadLitePackResources() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
+	public static void loadLitePackLang() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
 		ArrayList<Addon> lites = new ArrayList<>();
 		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
@@ -1123,8 +1126,6 @@ public class Resources {
 						LanguageMap.inject(new FileInputStream(file));
 					}
 				}
-				//
-				TexUtil.searchIn(addon, new File(addon.getFile(), "assets/" + addon.getRegistryName().getPath() + "/textures/"), null);
 			}
 			else{
 				String path = "assets/" + addon.getRegistryName().getPath() + "/lang/", extension = ".lang";
@@ -1149,10 +1150,27 @@ public class Resources {
 				catch(Exception e){
 					e.printStackTrace();
 				}
-				TexUtil.searchInZip(addon);
 			}
 		}
 		locale_check_uni.invoke(i18n_locale.get(null));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static void loadLitePackTextureLocations(){
+		ArrayList<Addon> lites = new ArrayList<>();
+		for(Addon addon : ADDONS.getValuesCollection()){
+			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
+		}
+		if(lites.size() == 0) return;
+		for(Addon addon : lites){
+			if(addon.getContainerType() == ContainerType.DIR){
+				if(!addon.getFile().isDirectory()) return;
+				TexUtil.searchIn(addon, new File(addon.getFile(), "assets/" + addon.getRegistryName().getPath() + "/textures/"), null);
+			}
+			else{
+				TexUtil.searchInZip(addon);
+			}
+		}
 	}
 
 }

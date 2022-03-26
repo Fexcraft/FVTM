@@ -16,6 +16,8 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
@@ -34,7 +36,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
+public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, ItemTex<Block> {
 	
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs tab;
@@ -160,5 +162,10 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
             return true;
         }
     }
+
+	@Override
+	public TypeCore<Block> getDataType(){
+		return type;
+	}
 
 }

@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Cloth;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -20,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ClothItem extends ItemArmor {
+public class ClothItem extends ItemArmor implements ItemTex<Cloth> {
 	
 	private Cloth type;
 	
@@ -59,5 +61,10 @@ public class ClothItem extends ItemArmor {
         tooltip.add(Formatter.format("&9Worn: &7" + net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.format((stack.getItemDamage() / (float)stack.getMaxDamage()) * 100) + "%"));
         super.addInformation(stack, world, tooltip, flag);
     }
+
+	@Override
+	public TypeCore<Cloth> getDataType(){
+		return type;
+	}
 
 }

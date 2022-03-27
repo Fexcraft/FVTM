@@ -13,6 +13,8 @@ import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
@@ -26,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartData> {
+public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartData>, ItemTex<Part> {
 
     public PartItem(Part core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
@@ -115,5 +117,10 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
     		items.add(type.newItemStack());
     	}
     }
+
+	@Override
+	public TypeCore<Part> getDataType(){
+		return type;
+	}
 
 }

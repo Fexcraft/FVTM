@@ -38,7 +38,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, Tabbed {
+public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, Tabbed, ItemTextureable {
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
@@ -59,6 +59,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected ResourceLocation keytype;
 	protected int maxkeys;
 	protected PartSlots partslots;
+	protected ResourceLocation itemloc;
+	protected boolean no3ditem;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -185,6 +187,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.overlayid = obj.has("Overlay") ? obj.get("Overlay").getAsString() : "default";
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+        this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new VehicleItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.VehicleCreated(this, obj));
 		return this;
@@ -326,6 +330,16 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	public PartSlots getPartSlots(){
 		return partslots;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
+	}
+	
+	@Override
+	public boolean no3DItemModel(){
+		return no3ditem;
 	}
 
 }

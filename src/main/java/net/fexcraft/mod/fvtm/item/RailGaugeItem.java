@@ -10,6 +10,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -38,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem {
+public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem, ItemTex<RailGauge> {
 
     public RailGaugeItem(RailGauge core){
 		super(core);
@@ -189,6 +191,11 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	@Override
 	public boolean hasVectors(){
 		return true;
+	}
+
+	@Override
+	public TypeCore<RailGauge> getDataType(){
+		return type;
 	}
 
 }

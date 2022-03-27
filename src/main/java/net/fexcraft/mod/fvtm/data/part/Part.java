@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
@@ -46,7 +47,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, Tabbed {
+public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, Tabbed, ItemTextureable {
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
@@ -62,6 +63,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected ArrayList<JsonElement> scripts_data = new ArrayList<>();
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
+	protected ResourceLocation itemloc;
+	protected boolean no3ditem;
 	
 	public Part(){}
 
@@ -199,6 +202,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+        this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new PartItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.PartCreated(this, obj));
 		return this;
@@ -312,6 +317,16 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	@Override
 	public String getCreativeTab(){
 		return ctab;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
+	}
+	
+	@Override
+	public boolean no3DItemModel(){
+		return no3ditem;
 	}
 
 }

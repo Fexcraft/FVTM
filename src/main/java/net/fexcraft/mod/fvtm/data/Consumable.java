@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
@@ -16,7 +17,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Consumable extends TypeCore<Consumable> implements Tabbed {
+public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemTextureable {
 	
 	protected byte maxStackSize;
 	protected ConsumableItem item;
@@ -25,6 +26,7 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed {
     private int healamount, useduration;
     private float saturation;
     private boolean wolffood, drinkable, alwaysedible;
+	protected ResourceLocation itemloc;
 	
 	public Consumable(){}
 
@@ -64,6 +66,7 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed {
         this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
 		this.item = new ConsumableItem(this); return this;
 	}
 
@@ -140,6 +143,11 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed {
 	@Override
 	public String getCreativeTab(){
 		return ctab;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
 	}
 
 }

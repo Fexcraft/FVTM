@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
@@ -36,7 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<VehicleData>, JunctionGridItem  {
+public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<VehicleData>, JunctionGridItem, ItemTex<Vehicle>  {
 
     public VehicleItem(Vehicle core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
@@ -139,5 +141,10 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public boolean showJunctionGrid(){
     	return type.getVehicleType().isRailVehicle();
     }
+
+	@Override
+	public TypeCore<Vehicle> getDataType(){
+		return type;
+	}
 
 }

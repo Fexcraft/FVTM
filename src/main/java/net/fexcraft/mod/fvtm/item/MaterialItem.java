@@ -8,7 +8,9 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
@@ -27,7 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO eventually a capability storing cached fuel data.
-public class MaterialItem extends TypeCoreItem<Material> {
+public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Material> {
 
     public MaterialItem(Material material){
 		super(material); this.setHasSubtypes(true);
@@ -118,6 +120,11 @@ public class MaterialItem extends TypeCoreItem<Material> {
 		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setInteger("StoredFuelAmount", stack.getTagCompound().getInteger("StoredFuelAmount") + stored);
 		if(stack.getTagCompound().getInteger("StoredFuelAmount") > type.getFuelCapacity()) stack.getTagCompound().setInteger("StoredFuelAmount", type.getFuelCapacity());
+	}
+
+	@Override
+	public TypeCore<Material> getDataType(){
+		return type;
 	}
 
 }

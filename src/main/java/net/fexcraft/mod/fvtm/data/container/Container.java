@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
@@ -36,7 +37,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  * 
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed {
+public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed, ItemTextureable {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected List<NamedResourceLocation> textures;
@@ -49,6 +50,8 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected String modelid, ctab;
 	protected int capacity;
 	protected Fluid fluid;
+	protected ResourceLocation itemloc;
+	protected boolean no3ditem;
 
 	@Override
 	public Container setRegistryName(ResourceLocation name){
@@ -100,6 +103,8 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+        this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new ContainerItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.ContainerCreated(this, obj));
 		return this;
@@ -178,6 +183,16 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	
 	public ResourceLocation getKeyType(){
 		return keytype;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
+	}
+	
+	@Override
+	public boolean no3DItemModel(){
+		return no3ditem;
 	}
 
 }

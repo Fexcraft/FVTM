@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Consumable;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -23,7 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ConsumableItem extends ItemFood {
+public class ConsumableItem extends ItemFood implements ItemTex<Consumable> {
 	
 	private Consumable type;
 
@@ -109,6 +111,11 @@ public class ConsumableItem extends ItemFood {
             }
         //}
     }
+
+	@Override
+	public TypeCore<Consumable> getDataType(){
+		return type;
+	}
 
     /*@Override
     public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity){

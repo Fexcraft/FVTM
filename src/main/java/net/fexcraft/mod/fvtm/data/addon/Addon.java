@@ -29,6 +29,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -293,17 +294,23 @@ public class Addon extends TypeCore<Addon> {
 				Block block = (Block)core;
 				if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
+					return;
 				}
 				break;
 			}
 			case CONTAINER:{
-				net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
+				Container con = (Container)core;
+				if(!con.no3DItemModel()){
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
+					return;
+				}
 				break;
 			}
 			case PART:{
 				Part part = (Part)core;
 				if(!part.no3DItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
+					return;
 				}
 				break;
 			}
@@ -311,6 +318,7 @@ public class Addon extends TypeCore<Addon> {
 				Vehicle veh = (Vehicle)core;
 				if(Config.RENDER_VEHILE_MODELS_AS_ITEMS && !veh.no3DItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
+					return;
 				}
 				break;
 			}

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
@@ -22,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Cloth extends TypeCore<Cloth> implements Tabbed {
+public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	
 	protected short maxHealth;
 	protected ClothItem item;
@@ -31,6 +32,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 	protected ArmorMaterial material;
 	protected ClothModel model;
 	protected ResourceLocation texture;
+	protected ResourceLocation itemloc;
 	
 	public Cloth(){}
 
@@ -65,6 +67,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 		this.texture = new NamedResourceLocation(JsonUtil.getIfExists(obj, "Texture", Resources.NULL_TEXTURE.toString()));
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
 		this.item = new ClothItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.ClothCreated(this, obj));
 		return this;
@@ -134,6 +137,11 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 	
 	public ResourceLocation getTexture(){
 		return texture;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
 	}
 
 }

@@ -261,31 +261,8 @@ public class Addon extends TypeCore<Addon> {
 					continue;
 				}
 				data.register(core); Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
-				if(Static.side().isClient() && data.has3DItemModel()){
-					if(data == DataType.VEHICLE && Config.RENDER_VEHILE_MODELS_AS_ITEMS){
-						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
-					}
-					else if(data == DataType.CONTAINER){
-						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
-					}
-					else if(data == DataType.PART){
-						Part part = (Part)core;
-						if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0 && !part.no3DItemModel()){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
-						}
-						else if(loc.isFullLite() || isItemModelMissing(core)){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
-						}
-					}
-					else if(data == DataType.BLOCK){
-						Block block = (Block)core;
-						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
-						}
-						else if(loc.isFullLite() || isItemModelMissing(core)){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
-						}
-					}
+				if(Static.side().isClient()){
+					checkIfHasCustomModel(data, core);
 				}
 				if(Static.dev()){
 					if(generatelang) checkLangFile(core);
@@ -303,33 +280,44 @@ public class Addon extends TypeCore<Addon> {
 					continue;
 				}
 				data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-				if(Static.side().isClient() && data.has3DItemModel()){
-					if(data == DataType.VEHICLE && Config.RENDER_VEHILE_MODELS_AS_ITEMS){
-						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
-					}
-					else if(data == DataType.CONTAINER){
-						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
-					}
-					else if(data == DataType.PART){
-						Part part = (Part)core;
-						if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0 && !part.no3DItemModel()){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
-						}
-						else if(loc.isFullLite() || isItemModelMissing(core)){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
-						}
-					}
-					else if(data == DataType.BLOCK){
-						Block block = (Block)core;
-						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
-						}
-						else if(loc.isFullLite() || isItemModelMissing(core)){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
-						}
-					}
+				if(Static.side().isClient()){
+					checkIfHasCustomModel(data, core);
 				}
 			}
+		}
+	}
+
+	private void checkIfHasCustomModel(DataType data, TypeCore<?> core){
+		switch(data){
+			case BLOCK:{
+				Block block = (Block)core;
+				if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
+				}
+				break;
+			}
+			case CONTAINER:{
+				net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
+				break;
+			}
+			case PART:{
+				Part part = (Part)core;
+				if(!part.no3DItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
+				}
+				break;
+			}
+			case VEHICLE:{
+				Vehicle veh = (Vehicle)core;
+				if(Config.RENDER_VEHILE_MODELS_AS_ITEMS && !veh.no3DItemModel()){
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
+				}
+				break;
+			}
+			default: return;
+		}
+		if(loc.isFullLite() || isItemModelMissing(core)){
+			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
 		}
 	}
 

@@ -84,6 +84,7 @@ public enum DataType {
 		}
 	}
 
+	@Deprecated
 	public boolean has3DItemModel(){
 		return this == VEHICLE || this == CONTAINER || this == PART/* depends on part function */ || this == BLOCK/** depends on block */;
 	}

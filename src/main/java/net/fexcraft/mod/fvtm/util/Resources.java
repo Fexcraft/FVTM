@@ -463,17 +463,17 @@ public class Resources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static InputStream getModelInputStream(String string){
-		return getModelInputStream(new ResourceLocation(string));
+	public static InputStream getModelInputStream(String string, boolean log){
+		return getModelInputStream(new ResourceLocation(string), log);
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static InputStream getModelInputStream(ResourceLocation resloc){
+	public static InputStream getModelInputStream(ResourceLocation resloc, boolean log){
 		try{
 			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(resloc).getInputStream();
 		}
 		catch(IOException e){
-			e.printStackTrace();
+			if(log) e.printStackTrace();
 			return null;
 		}
 	}
@@ -481,7 +481,7 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static Object[] getModelInputStreamWithFallback(ResourceLocation resloc){
 		Closeable[] close = null;
-		InputStream stream = getModelInputStream(resloc);
+		InputStream stream = getModelInputStream(resloc, false);
 		if(stream != null) return new Object[]{ stream };
 		try{
 			Addon addon = getAddon(resloc.getNamespace());
@@ -507,7 +507,7 @@ public class Resources {
 			}
 		}
 		catch(Throwable e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return close == null ? new Object[]{ stream } : new Object[]{ stream, close};
 	}
@@ -545,7 +545,7 @@ public class Resources {
 					model = (Model<T, K>)clasz.newInstance();
 					break;
 				case "jtmt":
-					JsonObject obj = JsonUtil.getObjectFromInputStream(getModelInputStream(new ResourceLocation(name)));
+					JsonObject obj = JsonUtil.getObjectFromInputStream(getModelInputStream(new ResourceLocation(name), true));
 					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
 					break;
 				case "json":

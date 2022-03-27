@@ -12,6 +12,8 @@ import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.WireType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -33,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem {
+public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem, ItemTex<WireType> {
 
     public WireItem(WireType core){
 		super(core);
@@ -107,6 +109,11 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
 	@Override
 	public boolean hasVectors(){
 		return true;
+	}
+
+	@Override
+	public TypeCore<WireType> getDataType(){
+		return type;
 	}
 
 }

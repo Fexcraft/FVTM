@@ -322,7 +322,7 @@ public class Addon extends TypeCore<Addon> {
 				}
 				break;
 			}
-			default: return;
+			default: break;
 		}
 		if(loc.isFullLite() || isItemModelMissing(core)){
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);

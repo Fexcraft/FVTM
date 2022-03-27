@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
@@ -19,7 +20,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Material extends TypeCore<Material> implements Tabbed {
+public class Material extends TypeCore<Material> implements Tabbed, ItemTextureable {
 	
 	protected byte maxStackSize;
 	protected short maxHealth;
@@ -27,6 +28,7 @@ public class Material extends TypeCore<Material> implements Tabbed {
 	protected String oreDict, container, fuelgroup, ctab;
 	protected int burntime, fuel_capacity;
 	protected boolean isVehicleKey, isFuelContainer;
+	protected ResourceLocation itemloc;
 	protected Fuel fuel;
 	
 	public Material(){}
@@ -67,6 +69,7 @@ public class Material extends TypeCore<Material> implements Tabbed {
 		this.fuelgroup = obj.has("FuelGroup") ? obj.get("FuelGroup").getAsString() : null;
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
 		this.item = new MaterialItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.MaterialCreated(this, obj));
 		return this;
@@ -160,6 +163,11 @@ public class Material extends TypeCore<Material> implements Tabbed {
 	@Override
 	public String getCreativeTab(){
 		return ctab;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
 	}
 
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -18,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WireType extends TypeCore<WireType> implements Tabbed {
+public class WireType extends TypeCore<WireType> implements Tabbed, ItemTextureable {
 	
 	protected String type;
 	protected float def_slack;
@@ -28,6 +29,7 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 	//
 	protected String modelid, ctab;
 	protected WireModel model;
+	protected ResourceLocation itemloc;
 	
 	public WireType(){}
 
@@ -69,6 +71,7 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
 		this.item = new WireItem(this);
 		return this;
 	}
@@ -124,6 +127,11 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 
 	public WireModel getModel(){
 		return model;
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
 	}
 
 }

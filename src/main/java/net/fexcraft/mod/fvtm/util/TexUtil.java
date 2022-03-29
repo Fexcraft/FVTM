@@ -28,8 +28,10 @@ public class TexUtil {
 	
 	public static final HashMap<ResourceLocation, Object> litex = new HashMap<>(); 
 	public static final Minecraft mc = Minecraft.getMinecraft();
+	//private static int curr;
 	
 	public static void bindTexture(ResourceLocation loc){
+		//curr = GL11.glGetInteger(GL11.GL_TEXTURE_2D);
 		ITextureObject obj = mc.getTextureManager().getTexture(loc);
 		if(obj == null){
 			Object res = litex.get(loc);
@@ -43,6 +45,7 @@ public class TexUtil {
 	            mc.getTextureManager().loadTexture(loc, obj);
 			}
 		}
+		//if(curr == obj.getGlTextureId()) return;
 		GlStateManager.bindTexture(obj.getGlTextureId());
 	}
 

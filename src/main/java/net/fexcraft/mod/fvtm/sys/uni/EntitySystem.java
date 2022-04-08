@@ -24,9 +24,9 @@ public class EntitySystem extends DetachedSystem {
 	public static final int TARGET_TICKS = 20;
 	public static final float RATE = 1f / (TARGET_TICKS + 1);
 	private ConcurrentLinkedQueue<Emitter> emitters = new ConcurrentLinkedQueue<>();
-	private TTimer timer = new TTimer();
-	private boolean run = true;
-	private float accumulator, delta;
+	//private TTimer timer = new TTimer();
+	//private boolean run = true;
+	//private float accumulator, delta;
 	//
 	public ConcurrentLinkedQueue<ParticleEntity> particles = new ConcurrentLinkedQueue<>();
 	public ConcurrentLinkedQueue<ParticleEntity> expired = new ConcurrentLinkedQueue<>();
@@ -42,7 +42,7 @@ public class EntitySystem extends DetachedSystem {
 
 	@Override
 	public void setupTimer(long time){
-		if(Config.DISABLE_PARTICLES) return;
+		/*if(Config.DISABLE_PARTICLES) return;
 		thread = new Thread(() -> {
 			System.out.println("Starting Entity Logic Thread.");
 			timer.init();
@@ -64,7 +64,7 @@ public class EntitySystem extends DetachedSystem {
 			}
 		});
 		thread.setName("FVTM-EL-DIM" + dimension);
-		thread.start();
+		thread.start();*/
 	}
 
 	private void update(){
@@ -91,8 +91,8 @@ public class EntitySystem extends DetachedSystem {
 
 	@Override
 	public void stopTimer(){
-		System.out.println("Stopping Entity Logic Thread.");
-		run = false;
+		//System.out.println("Stopping Entity Logic Thread.");
+		//run = false;
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class EntitySystem extends DetachedSystem {
 
 	@Override
 	public void onClientTick(World world){
-		//
+		update();
 	}
 
 	public void add(GenericVehicle vehicle){

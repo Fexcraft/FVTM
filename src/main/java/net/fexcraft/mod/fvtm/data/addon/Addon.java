@@ -331,7 +331,7 @@ public class Addon extends TypeCore<Addon> {
 
 	private boolean isItemModelMissing(TypeCore<?> type){
 		try{
-			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getRegistryName().getNamespace(), "textures/iterms/" + type.getRegistryName().getPath() + ".png"));
+			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getRegistryName().getNamespace(), "textures/items/" + type.getRegistryName().getPath() + ".png"));
 			return res == null;
 		}
 		catch(IOException e){

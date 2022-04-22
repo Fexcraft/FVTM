@@ -181,6 +181,12 @@ public class Addon extends TypeCore<Addon> {
 			TrafficSignLibrary.LIBRARIES.put(lib.id, lib);
 			lib.load();
 		}
+		if(obj.has("Decorations")){
+			JsonObject decos = obj.get("Decorations").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : decos.entrySet()){
+				Resources.DECORATIONS.put(getRegistryName().getPath() + ":" + entry.getKey(), entry.getValue().getAsString());
+			}
+		}
 		return this;
 	}
 

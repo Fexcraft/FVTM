@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '3.7.64'
+version = '3.7.64c'
 group = 'net.fexcraft.mod.fvtm'
 archivesBaseName = 'FVTM'
 

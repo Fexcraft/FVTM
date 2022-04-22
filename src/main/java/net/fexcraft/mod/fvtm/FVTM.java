@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
@@ -164,6 +165,7 @@ public class FVTM {
 			Resources.CLOTHES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			Resources.WIRES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			TrafficSignLibrary.loadModels();
+			Resources.loadDecoModels();
 			Resources.clearObjModelCache();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
@@ -189,6 +191,7 @@ public class FVTM {
 			TrainAdjuster.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			DecorationItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();

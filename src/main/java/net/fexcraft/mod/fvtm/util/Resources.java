@@ -166,6 +166,8 @@ public class Resources {
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
 	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
+	public static final HashMap<String, String> DECORATIONS = new HashMap<>();
+	public static final HashMap<String, Model<?, ?>> DECOMODELS = new HashMap<>();
 	//
 	private static Field respackfile = null;
 	private File configroot; 
@@ -1171,6 +1173,11 @@ public class Resources {
 				TexUtil.searchInZip(addon);
 			}
 		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static void loadDecoModels(){
+		//
 	}
 
 }

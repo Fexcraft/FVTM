@@ -294,6 +294,7 @@ item.fvtm:simple_signal.name=Simple Signal (BLOCK)
 item.fvtm:road_tool.name=Road Tool
 item.fvtm:train_adjuster.name=Train Adjuster
 item.fvtm:trafficsign.name=Universal Traffic Sign
+item.fvtm:decoration.name=Decoration (Editor)
 
 
 # Entities

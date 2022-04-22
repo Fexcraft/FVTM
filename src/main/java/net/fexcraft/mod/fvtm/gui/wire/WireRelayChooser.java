@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui.wire;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.minecraft.block.material.MapColor;
@@ -19,6 +20,9 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 	private static BasicText[] t = new BasicText[8];
 	private ArrayList<String> tooltip = new ArrayList<>();
 	private static int scroll;
+	private static boolean filter;
+	private boolean filtered;
+	private static ArrayList<String> conns = new ArrayList<>();
 
 	public WireRelayChooser(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new WireRelayContainer(player, world, x, y, z, true), player);
@@ -31,6 +35,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 
 	@Override
 	protected void init(){
+		buttons.put("filter", new BasicButton("filter", guiLeft + 168, guiTop + 6, 168, 6, 8, 8, true));
 		buttons.put("prev", new BasicButton("prev", guiLeft + 177, guiTop + 6, 177, 6, 8, 8, true));
 		buttons.put("next", new BasicButton("next", guiLeft + 186, guiTop + 6, 186, 6, 8, 8, true));
 		texts.put("title", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, "Wire Relay Management"));
@@ -43,21 +48,39 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
+		if(!filtered) filter();
+	}
+
+	private void filter(){
+		conns.clear();
 		ArrayList<String> list = null;
 		WireRelay relay = null;
+		if(filter){
+			for(String str : container.conns){
+				list = container.data.types.get(str);
+				if(list.isEmpty() || list.contains(container.type.wire_type())){
+					conns.add(str);
+				}
+			}
+		}
+		else conns.addAll(container.conns);
 		int l = 0;
 		for(int i = 0; i < 8; i++){
 			int j = i + scroll;
-			if(j >= container.conns.size()){
+			if(j >= conns.size()){
 				t[i].string = "";
 				b0[i].tx = 244;
 				b1[i].tx = 244;
 			}
 			else{
-				t[i].string = container.conns.get(j);
-				list = container.data.types.get(container.conns.get(j));
-				relay = container.holder.get(j);
-				if(list.isEmpty() || list.contains(container.type.wire_type())){
+				t[i].string = conns.get(j);
+				boolean pass = filtered;
+				relay = container.holder.get(conns.get(j));
+				if(!pass){
+					list = container.data.types.get(conns.get(j));
+					pass = list.isEmpty() || list.contains(container.type.wire_type());
+				}
+				if(pass){
 					l = container.data.limits.get(t[i].string);
 					if(relay.size() == 0){
 						b0[i].tx = 202;
@@ -78,6 +101,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 				}
 			}
 		}
+		filtered = true;
 	}
 
 	@Override
@@ -108,6 +132,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 				if(b1[i].tx == 216) tooltip.add("(relay has no wires connected)");
 			}
 		}
+		if(buttons.get("filter").hovered) tooltip.add(Formatter.format("filter: " + (filter ? "&aon" : "&coff")));
 		if(tooltip.size() > 0) drawHoveringText(tooltip, mouseX, mouseY);
 	}
 
@@ -116,9 +141,11 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 		if(button.name.equals("prev")){
 			scroll--;
 			if(scroll < 0 ) scroll = 0;
+			filtered = false;
 		}
 		else if(button.name.equals("next")){
 			scroll++;
+			filtered = false;
 		}
 		else if(button.name.startsWith("idx0")){
 			if(button.tx == 188){
@@ -130,7 +157,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 			else{
 				NBTTagCompound com = new NBTTagCompound();
 				com.setString("cargo", "connect");
-				com.setInteger("index", Integer.parseInt(button.name.substring(4)) + scroll);
+				com.setString("id", conns.get(Integer.parseInt(button.name.substring(4)) + scroll));
 				container.send(Side.SERVER, com);
 			}
 			return true;
@@ -143,6 +170,10 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 			com.setString("cargo", "open_editor");
 			container.send(Side.SERVER, com);
 		}
+		else if(button.name.equals("filter")){
+			filter = !filter;
+			filtered = false;
+		}
 		return false;
 	}
 
@@ -150,6 +181,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 	protected void scrollwheel(int am, int x, int y){
 		scroll += am > 0 ? 1 : -1;
 		if(scroll < 0) scroll = 0;
+		filtered = false;
 	}
 	
 }

@@ -97,9 +97,10 @@ public class WireRelayContainer extends GenericContainer {
 		if(side.isServer()){
 			switch(packet.getString("cargo")){
 				case "connect":{
-					int index = packet.getInteger("index");
-					WireRelay relay = holder.get(index);
-					String relid = conns.get(index);
+					//int index = packet.getInteger("index");
+					String relid = packet.getString("id");
+					WireRelay relay = holder.get(conns.indexOf(relid));
+					//String relid = conns.get(index);
 					ArrayList<String> list = data.types.get(relid);
 					if(!list.isEmpty() && !list.contains(type.wire_type())){
 						Print.chat(player, "&bWire not compatible with relay.");

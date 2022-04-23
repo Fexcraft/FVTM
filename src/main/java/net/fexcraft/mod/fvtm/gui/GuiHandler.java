@@ -58,6 +58,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int WIRE_RELAY_MAIN = 710;
 	public static final int WIRE_RELAY_EDIT = 711;
 	public static final int WIRE_EDIT = 712;
+	public static final int DECORATION_EDITOR = 713;
 	/* 90x - constructor main */
 	public static final int CONSTRUCTOR_MAIN = 900;
 	public static final int CONSTRUCTOR_STATUS = 901;

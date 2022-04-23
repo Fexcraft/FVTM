@@ -57,15 +57,15 @@ public class RailRenderer {
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
-    		Vec316f vec = new Vec316f(event.getPlayer().world, event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
     		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
+    		Vec316f vec = new Vec316f(event.getPlayer().world, event.getTarget().hitVec, jitem.getPlacingGrid());
     		if(jitem.offsetVectors()){
         		vecs = new Vec316f[jitem.getVectors(stack).length];
     			float seg = 360f / jitem.getSegments();
     			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			if(con % seg > seg / 2) con++;
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), Config.RAIL_PLACING_GRID);
+    				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), jitem.getPlacingGrid());
     			}
 				Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}

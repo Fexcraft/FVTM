@@ -26,6 +26,7 @@ import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
@@ -182,9 +183,17 @@ public class Addon extends TypeCore<Addon> {
 			lib.load();
 		}
 		if(obj.has("Decorations")){
-			JsonObject decos = obj.get("Decorations").getAsJsonObject();
-			for(Entry<String, JsonElement> entry : decos.entrySet()){
-				Resources.DECORATIONS.put(getRegistryName().getPath() + ":" + entry.getKey(), entry.getValue().getAsString());
+			JsonObject cats = obj.get("Decorations").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : cats.entrySet()){
+				String category = entry.getKey();
+				JsonObject decos = entry.getValue().getAsJsonObject();
+				for(Entry<String, JsonElement> entr : decos.entrySet()){
+					String key = getRegistryName().getPath() + ":" + entr.getKey();
+					Resources.DECORATIONS.put(key, new DecorationData(key, category, entr.getValue()));
+				}
+				if(decos.size() > 0 && !Resources.DECORATION_CATEGORIES.contains(category)){
+					Resources.DECORATION_CATEGORIES.add(category);
+				}
 			}
 		}
 		return this;

@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,8 +50,9 @@ public class DecorationItem extends Item implements JunctionGridItem {
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
 		Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), 16);
-		//
-		Print.log(vector);
+		Decoration decoen = new Decoration(world);
+		decoen.setPosition(vector.vector.x, vector.vector.y, vector.vector.z);
+		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
 		return EnumActionResult.SUCCESS;
 	}

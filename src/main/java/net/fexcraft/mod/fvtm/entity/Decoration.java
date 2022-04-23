@@ -143,7 +143,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
             Print.chat(player, "Sign is locked.");
             return true;
         }
-        if(stack.isEmpty()){
+        if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
         	player.openGui(FVTM.getInstance(), DECORATION_EDITOR, world, getEntityId(), 0, 0);
         	return true;
         }

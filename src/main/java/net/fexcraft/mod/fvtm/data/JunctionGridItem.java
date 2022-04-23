@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.item.ItemStack;
 
 public interface JunctionGridItem {
@@ -23,5 +24,7 @@ public interface JunctionGridItem {
 	public default boolean offsetVectors(){ return false; }
 	
 	public default int getSegments(){ return 4; }
+
+	public default int getPlacingGrid(){ return Config.RAIL_PLACING_GRID; };
 
 }

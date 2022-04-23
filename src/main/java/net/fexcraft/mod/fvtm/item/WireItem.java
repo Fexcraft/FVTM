@@ -116,4 +116,9 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
 		return type;
 	}
 
+	@Override
+	public int getPlacingGrid(){
+		return 16;
+	}
+
 }

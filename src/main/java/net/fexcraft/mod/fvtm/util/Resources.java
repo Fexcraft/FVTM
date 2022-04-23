@@ -47,6 +47,7 @@ import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.Consumable;
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -166,8 +167,8 @@ public class Resources {
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
 	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
-	public static final HashMap<String, String> DECORATIONS = new HashMap<>();
-	public static final HashMap<String, Model<?, ?>> DECOMODELS = new HashMap<>();
+	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
+	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	private File configroot; 
@@ -610,6 +611,7 @@ public class Resources {
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		if(clazz == WireModel.class) return WireModel.EMPTY;
 		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
+		if(clazz == DecoModel.class) return DecoModel.EMPTY;
 		return null;
 	}
 
@@ -1177,7 +1179,10 @@ public class Resources {
 
 	@SideOnly(Side.CLIENT)
 	public static void loadDecoModels(){
-		//
+		for(DecorationData deco : DECORATIONS.values()){
+			DecoModel model = (DecoModel)Resources.getModel(deco.modelid, DecoModel.class);
+			if(model != null && model != DecoModel.EMPTY) MODELS.put(deco.modelid, model);
+		}
 	}
 
 }

@@ -3,13 +3,13 @@ package net.fexcraft.mod.fvtm.entity;
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.DECORATION_EDITOR;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
@@ -18,17 +18,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class Decoration extends Entity implements IEntityAdditionalSpawnData {
 	
-	private ArrayList<String> decos = new ArrayList<>();
+	public ArrayList<DecorationData> decos = new ArrayList<>();
 	private boolean locked;
 	private int size = 4;
 
@@ -44,9 +44,8 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     		buffer.writeBoolean(locked);
     		buffer.writeInt(size);
     		buffer.writeInt(decos.size());
-    		for(String str : decos){
-    			buffer.writeInt(str.length());
-    			buffer.writeCharSequence(str, StandardCharsets.UTF_8);
+    		for(DecorationData deco : decos){
+    			ByteBufUtils.writeTag(buffer, deco.write());
     		}
     	}
     	catch(Exception e){
@@ -62,7 +61,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         	decos.clear();
         	int amount = buffer.readInt();
         	for(int i = 0; i < amount; i++){
-        		decos.add(buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString());
+        		decos.add(new DecorationData(ByteBufUtils.readTag(buffer), world.isRemote));
         	}
     	}
     	catch(Exception e){
@@ -76,7 +75,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         decos.clear();
         if(compound.hasKey("decorations")){
         	NBTTagList list = (NBTTagList)compound.getTag("decorations");
-        	for(int i = 0; i < list.tagCount(); i++) decos.add(list.getStringTagAt(i));
+        	for(int i = 0; i < list.tagCount(); i++) decos.add(new DecorationData(list.getCompoundTagAt(i), world.isRemote));
         }
     }
 
@@ -84,7 +83,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     protected void writeEntityToNBT(NBTTagCompound compound){
     	compound.setInteger("size", size);
     	NBTTagList list = new NBTTagList();
-    	for(String str : decos) list.appendTag(new NBTTagString(str));
+    	for(DecorationData deco : decos) list.appendTag(deco.write());
     	if(list.tagCount() > 0) compound.setTag("decorations", list);
     }
     

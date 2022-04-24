@@ -155,7 +155,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
-        this.randomrot = JsonUtil.getIfExists(obj, "RandomRotation", true);
+        this.randomrot = JsonUtil.getIfExists(obj, "RandomRotation", false);
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}

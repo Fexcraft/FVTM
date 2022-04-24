@@ -62,7 +62,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
-	protected boolean isweblike, fullblock, fullcube, opaque, cutout, invisible;
+	protected boolean isweblike, fullblock, fullcube, opaque, cutout, invisible, randomrot;
 	//
 	protected MultiBlock multiblock;
 	protected RelayData relaydata;
@@ -155,6 +155,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
+        this.randomrot = JsonUtil.getIfExists(obj, "RandomRotation", true);
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
@@ -363,6 +364,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	@Override
 	public boolean no3DItemModel(){
 		return no3ditem;
+	}
+
+	public boolean getRandomRot(){
+		return randomrot;
 	}
 
 }

@@ -1,0 +1,61 @@
+package net.fexcraft.mod.fvtm.render;
+
+import org.lwjgl.opengl.GL11;
+
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.model.DebugModels;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
+
+public class DecorationRenderer {
+
+	public static void renderDecorations(World world, double cx, double cy, double cz, float partialticks){
+		GL11.glPushMatrix();
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glTranslated(-cx, -cy, -cz);
+		TexUtil.bindTexture(Resources.WHITE_TEXTURE);
+		for(Entity ent : world.loadedEntityList){
+			if(ent instanceof Decoration == false) continue;
+			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;
+			Decoration deco = (Decoration)ent;
+			GL11.glPushMatrix();
+			GL11.glTranslated(ent.posX, ent.posY, ent.posZ);
+			GlStateManager.rotate(180, 0, 1, 0);
+			GlStateManager.rotate(180, 0, 0, 1);
+			if(deco.decos.size() == 0){
+				DebugModels.TRAFFICSIGNCUBE.render(0.5f);
+				RGB.glColorReset();
+			}
+			else{
+				RenderCache cache = ent.getCapability(Capabilities.RENDERCACHE, null);
+				for(DecorationData data : deco.decos){
+					if(data.model == null){
+						DebugModels.HOTINSTALLCUBE.render(0.25f);
+						RGB.glColorReset();
+					}
+					else{
+						GL11.glPushMatrix();
+						data.offset.translate();
+			            if(data.roty != 0f) GL11.glRotatef(data.roty, 0, 1, 0);
+			            if(data.rotz != 0f) GL11.glRotatef(data.rotz, 0, 0, 1);
+			            if(data.rotx != 0f) GL11.glRotatef(data.rotx, 1, 0, 0);
+			            if(data.sclx != 1f || data.scly != 1f || data.sclz != 1f) GL11.glScalef(data.sclx, data.scly, data.sclz);
+						TexUtil.bindTexture(data.textures.get(data.seltex));
+						data.model.render(data, world, ent, cache);
+						GL11.glPopMatrix();
+					}
+				}
+			}
+			GL11.glPopMatrix();
+		}
+		GL11.glPopMatrix();
+	}
+
+}

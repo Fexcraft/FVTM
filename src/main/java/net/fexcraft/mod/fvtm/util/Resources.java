@@ -74,6 +74,7 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.event.OverlayEvent;
 import net.fexcraft.mod.fvtm.event.ResourceEvents;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -809,6 +810,9 @@ public class Resources {
 		if(event.getObject() instanceof EntityLivingBase){
 			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerCapHandler(event.getObject()));
 		}
+		if(event.getObject().world.isRemote && event.getObject() instanceof Decoration){
+			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
+		}
 	}
 	
 	@SubscribeEvent
@@ -1181,7 +1185,7 @@ public class Resources {
 	public static void loadDecoModels(){
 		for(DecorationData deco : DECORATIONS.values()){
 			DecoModel model = (DecoModel)Resources.getModel(deco.modelid, DecoModel.class);
-			if(model != null && model != DecoModel.EMPTY) MODELS.put(deco.modelid, model);
+			if(model != null && model != DecoModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
 		}
 	}
 

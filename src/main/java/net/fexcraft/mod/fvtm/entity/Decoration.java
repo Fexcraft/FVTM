@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,7 +18,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -162,9 +159,6 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         	ItemStack stack = this.getPickedResult(null);
             entityDropItem(stack, 0.5F);
             setDead();
-            BlockPos pos = getPosition();
-            TrafficSigns cap = world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-            if(cap != null) cap.remove(pos);
         }
         return true;
     }

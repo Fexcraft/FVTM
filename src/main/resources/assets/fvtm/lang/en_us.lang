@@ -133,9 +133,14 @@ gui.fvtm.trafficsigneditor.tool.copy=Copy (Local NBT)
 gui.fvtm.trafficsigneditor.tool.paste=Paste (Local NBT)
 gui.fvtm.trafficsigneditor.tool.export=Export (JSON)
 gui.fvtm.trafficsigneditor.tool.import=Import (JSON)
-
+//
 fvtm.sign_library.none=No Sign Libraries Installed
 fvtm.sign_library.error=ERROR - LIB IS NULL
+//
+gui.fvtm.decoration_editor.position=Position Offset
+gui.fvtm.decoration_editor.rotation=Rotation (Degrees)
+gui.fvtm.decoration_editor.scale=Scale
+gui.fvtm.decoration_editor.texture=Texture
 //
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.

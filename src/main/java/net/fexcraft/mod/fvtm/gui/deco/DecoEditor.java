@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.deco;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -21,7 +23,9 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	private static final int rows = 12;
 	private static ArrayList<DecorationData> results = new ArrayList<>();
 	private static boolean listmode = true, search;
-	private int scroll0, scroll1, selected, category = 0;
+	private int scroll0, scroll1;
+	protected int selected = -1;
+	private int category = 0;
 	private String searchstr = "";
 
 	public DecoEditor(EntityPlayer player, World world, int entid){
@@ -37,8 +41,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	
 	@Override
 	protected void init(){
-		int black = MapColor.BLACK.colorIndex;
-		int gray = MapColor.GRAY.colorValue;
+		int black = MapColor.BLACK.colorValue;
 		buttons.put("l_prev", new BasicButton("prev", 2, 2, 2, 2, 12, 12, true){
 			public boolean onclick(int mx, int my, int button){
 				category--;
@@ -102,7 +105,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 			int j  = i;
 			buttons.put("l_entry" + i, new BasicButton("entry" + i, 2, 21 + (i * 14), 2, 21 + (i * 14), 120, 12, true){
 				public boolean onclick(int mx, int my, int button){
-					selected = scroll0 + j;
+					select(selected = scroll0 + j);
 					updateEntries();
 					return true;
 				}
@@ -128,12 +131,89 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 			texts.put("entry" + i, new BasicText(4, 23 + (i * 14), 116, black, "").autoscale());
 		}
 		for(int i = 0; i < 3; i++){
-			buttons.put("r_pos" + i, new BasicButton("pos" + i, width - 105 + (i * 46), 17, 151 + 46, 17, 10, 10, true));
-			buttons.put("r_rot" + i, new BasicButton("rot" + i, width - 105 + (i * 46), 45, 151 + 46, 45, 10, 10, true));
-			buttons.put("r_scl" + i, new BasicButton("scl" + i, width - 105 + (i * 46), 73, 151 + 46, 73, 10, 10, true));
+			int j = i;
+			buttons.put("r_pos" + i, new BasicButton("pos" + i, width - 105 + (i * 46), 17, 151 + 46, 17, 10, 10, true){
+				public boolean onclick(int mx, int my, int button){
+					NBTTagCompound com = new NBTTagCompound();
+					com.setString("cargo", "pos");
+					com.setInteger("axis", j);
+					com.setInteger("idx", selected);
+					com.setFloat("value", fields.get("pos" + j).getValue());
+					container.send(Side.SERVER, com);
+					return true;
+				}
+				public boolean scrollwheel(int am, int x, int y){
+					float val = fields.get("pos" + j).getValue();
+					val += am > 0 ? -1 : 1;
+					fields.get("pos" + j).setText(val + "");
+					onclick(x, y, 0);
+					return true;
+				}
+			});
+			buttons.put("r_rot" + i, new BasicButton("rot" + i, width - 105 + (i * 46), 45, 151 + 46, 45, 10, 10, true){
+				public boolean onclick(int mx, int my, int button){
+					NBTTagCompound com = new NBTTagCompound();
+					com.setString("cargo", "rot");
+					com.setInteger("axis", j);
+					com.setInteger("idx", selected);
+					com.setFloat("value", fields.get("rot" + j).getValue());
+					container.send(Side.SERVER, com);
+					return true;
+				}
+				public boolean scrollwheel(int am, int x, int y){
+					float val = fields.get("rot" + j).getValue();
+					val += am > 0 ? -1 : 1;
+					fields.get("rot" + j).setText(val + "");
+					onclick(x, y, 0);
+					return true;
+				}
+			});
+			buttons.put("r_scl" + i, new BasicButton("scl" + i, width - 105 + (i * 46), 73, 151 + 46, 73, 10, 10, true){
+				public boolean onclick(int mx, int my, int button){
+					NBTTagCompound com = new NBTTagCompound();
+					com.setString("cargo", "scale");
+					com.setInteger("axis", j);
+					com.setInteger("idx", selected);
+					com.setFloat("value", fields.get("scl" + j).getValue());
+					container.send(Side.SERVER, com);
+					return true;
+				}
+				public boolean scrollwheel(int am, int x, int y){
+					float val = fields.get("scl" + j).getValue();
+					val += am > 0 ? -sixteenth : sixteenth;
+					fields.get("scl" + j).setText(val + "");
+					onclick(x, y, 0);
+					return true;
+				}
+			});
+			fields.put("pos" + i, new NumberField(3 + i, fontRenderer, width - 135 + (i * 46), 18, 27, 8, false));
+			fields.put("rot" + i, new NumberField(3 + i, fontRenderer, width - 135 + (i * 46), 46, 27, 8, false));
+			fields.put("scl" + i, new NumberField(3 + i, fontRenderer, width - 135 + (i * 46), 74, 27, 8, false));
 		}
-		buttons.put("r_t-", new BasicButton("t-", width - 25, 101, 231, 101, 10, 10, true));
-		buttons.put("r_t+", new BasicButton("t+", width - 13, 101, 243, 101, 10, 10, true));
+		buttons.put("r_t-", new BasicButton("t-", width - 25, 101, 231, 101, 10, 10, true){
+			public boolean onclick(int mx, int my, int button){
+				if(selected < 0 || selected >= container.entity.decos.size()) return true;
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("cargo", "tex");
+				com.setInteger("idx", selected);
+				DecorationData data = container.entity.decos.get(selected);
+				com.setInteger("sel", data.seltex - 1 < 0 ? data.textures.size() - 1 : data.seltex - 1);
+				container.send(Side.SERVER, com);
+				return true;
+			}
+		});
+		buttons.put("r_t+", new BasicButton("t+", width - 13, 101, 243, 101, 10, 10, true){
+			public boolean onclick(int mx, int my, int button){
+				if(selected < 0 || selected >= container.entity.decos.size()) return true;
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("cargo", "tex");
+				com.setInteger("idx", selected);
+				DecorationData data = container.entity.decos.get(selected);
+				com.setInteger("sel", data.seltex + 1 < data.textures.size() ? data.seltex + 1 : 0);
+				container.send(Side.SERVER, com);
+				return true;
+			}
+		});
 		buttons.put("r_c-", new BasicButton("c-", width - 25, 126, 231, 126, 10, 10, true));
 		buttons.put("r_c+", new BasicButton("c+", width - 13, 126, 243, 126, 10, 10, true){
 			public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
@@ -148,14 +228,27 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 		texts.put("rot", new BasicText(width - 136, 33, 132, black, I18n.format("gui.fvtm.decoration_editor.rotation")));
 		texts.put("scl", new BasicText(width - 136, 61, 132, black, I18n.format("gui.fvtm.decoration_editor.scale")));
 		texts.put("tex", new BasicText(width - 136, 89, 132, black, I18n.format("gui.fvtm.decoration_editor.texture")));
-		texts.put("texc", new BasicText(width - 135, 102, 107, gray, "-"));
-		texts.put("channel", new BasicText(width - 135, 127, 107, gray, "-"));
+		texts.put("texc", new BasicText(width - 135, 102, 107, 0xcfcfcf, "-").autoscale());
+		texts.put("channel", new BasicText(width - 135, 127, 107, 0xcfcfcf, "-").autoscale());
 		fields.put("search", new TextField(1, fontRenderer, 29, 3, 93, 10, true));
 		fields.put("rgb", new TextField(1, fontRenderer, width - 135, guiTop + 147, 107, 8, false));
 		fields.put("hex", new TextField(2, fontRenderer, width - 135, guiTop + 167, 107, 8, false));
 		updateCategorySearch();
 		//updateResults();
 		//updateEntries();
+		select(-1);
+	}
+
+	protected void select(int idx){
+		selected = idx;
+		DecorationData data = idx < 0 || idx >= container.entity.decos.size() ? null : container.entity.decos.get(idx);
+		boolean miss = data == null;
+		for(int i = 0; i < 3; i++){
+			fields.get("pos" + i).setText(miss ? "0" : (i == 0 ? data.offset.x : i == 1 ? data.offset.y : data.offset.z) + "");
+			fields.get("rot" + i).setText(miss ? "0" : (i == 0 ? data.rotx : i == 1 ? data.roty : data.rotz) + "");
+			fields.get("scl" + i).setText(miss ? "0" : (i == 0 ? data.sclx : i == 1 ? data.scly : data.sclz) + "");
+		}
+		texts.get("texc").string = miss ? "" : data.textures.get(data.seltex).getName();
 	}
 	
 	protected void updateCategorySearch(){

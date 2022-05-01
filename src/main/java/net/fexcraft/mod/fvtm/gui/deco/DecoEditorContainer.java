@@ -50,7 +50,7 @@ public class DecoEditorContainer extends GenericContainer {
 				}
 				else{
 					gui.updateEntries();
-					gui.select(-1);
+					gui.select(-1, -1);
 				}
 				break;
 			}
@@ -96,8 +96,17 @@ public class DecoEditorContainer extends GenericContainer {
 					deco.seltex = sel;
 					if(side.isServer()) send(Side.CLIENT, packet);
 					else{
-						gui.select(gui.selected);
+						gui.select(gui.selected, gui.selcol);
 					}
+				}
+				break;
+			}
+			case "color":{
+				DecorationData deco = entity.decos.get(packet.getInteger("idx"));
+				deco.getColorChannel(packet.getString("channel")).packed = packet.getInteger("rgb");
+				if(side.isServer()) send(Side.CLIENT, packet);
+				else{
+					gui.select(gui.selected, gui.selcol);
 				}
 				break;
 			}

@@ -12,7 +12,6 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,7 +55,7 @@ public class DecorationItem extends Item implements JunctionGridItem {
 		Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), 16);
 		Decoration decoen = new Decoration(world);
 		decoen.setPosition(vector.vector.x, vector.vector.y, vector.vector.z);
-		decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
+		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
     	player.openGui(FVTM.getInstance(), DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);

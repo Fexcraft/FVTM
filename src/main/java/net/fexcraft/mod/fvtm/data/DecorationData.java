@@ -91,6 +91,9 @@ public class DecorationData implements Colorable {
 		DecorationData data = Resources.DECORATIONS.get(key);
 		if(data != null) copy(data);
 		if(seltex >= textures.size()) seltex = textures.size() - 1;
+		for(Entry<String, RGB> entry : channels.entrySet()){
+			if(compound.hasKey("color_" + entry.getKey())) entry.getValue().packed = compound.getInteger("color_" + entry.getKey()); 
+		}
 	}
 
 	@Override
@@ -158,6 +161,9 @@ public class DecorationData implements Colorable {
 		if(scly != 1f) compound.setFloat("scly", scly);
 		if(sclz != 1f) compound.setFloat("sclz", sclz);
 		if(seltex != 0) compound.setInteger("seltex", seltex);
+		for(Entry<String, RGB> entry : channels.entrySet()){
+			compound.setInteger("color_" + entry.getKey(), entry.getValue().packed);
+		}
 		return compound;
 	}
 

@@ -168,4 +168,8 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         return new ItemStack(DecorationItem.INSTANCE);
     }
 
+	public void updateClient(){
+		//TODO
+	}
+
 }

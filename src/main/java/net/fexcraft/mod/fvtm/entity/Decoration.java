@@ -60,6 +60,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         	for(int i = 0; i < amount; i++){
         		decos.add(new DecorationData(ByteBufUtils.readTag(buffer), world.isRemote));
         	}
+        	checksize();
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -74,9 +75,19 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         	NBTTagList list = (NBTTagList)compound.getTag("decorations");
         	for(int i = 0; i < list.tagCount(); i++) decos.add(new DecorationData(list.getCompoundTagAt(i), world.isRemote));
         }
+        checksize();
     }
 
-    @Override
+    private void checksize(){
+        for(DecorationData data : decos){
+        	if(data.size > size){
+        		size = data.size;
+        		setSize(size * sixteenth, size * sixteenth);
+        	}
+        }
+	}
+
+	@Override
     protected void writeEntityToNBT(NBTTagCompound compound){
     	compound.setInteger("size", size);
     	NBTTagList list = new NBTTagList();

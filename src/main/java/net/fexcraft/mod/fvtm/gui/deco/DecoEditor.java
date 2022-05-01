@@ -2,7 +2,10 @@ package net.fexcraft.mod.fvtm.gui.deco;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 
+import java.awt.Color;
 import java.util.ArrayList;
+
+import javax.swing.JColorChooser;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -280,6 +283,28 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				}
 				com.setInteger("rgb", rgb.packed);
 				container.send(Side.SERVER, com);
+				return true;
+			}
+		});
+		buttons.put("r_cc", new BasicButton("cc", width - 10, 118, 246, 118, 6, 6, true){
+			public boolean onclick(int mx, int my, int button){
+				if(selected < 0 || selected >= container.entity.decos.size() || colors.isEmpty()) return true;
+				try{
+					new Thread(){
+						@Override
+						public void run(){
+							Color color = JColorChooser.showDialog(null, "select color", new Color(container.entity.decos.get(selected).getColorChannel(colors.get(selcol)).packed));
+							RGB rgb = new RGB(color.getRGB());
+							byte[] ar = rgb.toByteArray();
+							fields.get("rgb").setText((ar[0] + 128) + ", " + (ar[1] + 128) + ", " + (ar[2] + 128));
+							fields.get("hex").setText("#" + Integer.toHexString(rgb.packed));
+						}
+					}.start();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Print.chat(player, e.getMessage());
+				}
 				return true;
 			}
 		});

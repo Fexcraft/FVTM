@@ -4,7 +4,9 @@ import static net.fexcraft.lib.common.Static.sixteenth;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -22,9 +24,10 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	private static final ResourceLocation texr = new ResourceLocation("fvtm:textures/gui/deco_editor_right.png");
 	private static final int rows = 12;
 	private static ArrayList<DecorationData> results = new ArrayList<>();
+	private static ArrayList<String> colors = new ArrayList<>();
 	private static boolean listmode = true, search;
 	private int scroll0, scroll1;
-	protected int selected = -1;
+	protected int selected = -1, selcol;
 	private int category = 0;
 	private String searchstr = "";
 
@@ -105,7 +108,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 			int j  = i;
 			buttons.put("l_entry" + i, new BasicButton("entry" + i, 2, 21 + (i * 14), 2, 21 + (i * 14), 120, 12, true){
 				public boolean onclick(int mx, int my, int button){
-					select(selected = scroll0 + j);
+					select(selected = scroll0 + j, selcol);
 					updateEntries();
 					return true;
 				}
@@ -214,15 +217,72 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				return true;
 			}
 		});
-		buttons.put("r_c-", new BasicButton("c-", width - 25, 126, 231, 126, 10, 10, true));
+		buttons.put("r_c-", new BasicButton("c-", width - 25, 126, 231, 126, 10, 10, true){
+			public boolean onclick(int mx, int my, int button){
+				if(colors.isEmpty()) return true;
+				selcol--;
+				if(selcol < 0) selcol = colors.size() - 1;
+				select(selected, selcol);
+				return true;
+			}
+		});
 		buttons.put("r_c+", new BasicButton("c+", width - 13, 126, 243, 126, 10, 10, true){
 			public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 				TexUtil.bindTexture(texr);
 				super.draw(gui, pticks, mouseX, mouseY);
 			}
+			public boolean onclick(int mx, int my, int button){
+				if(colors.isEmpty()) return true;
+				selcol++;
+				if(selcol >= colors.size()) selcol = 0;
+				select(selected, selcol);
+				return true;
+			}
 		});
-		buttons.put("r_rgb", new BasicButton("rgb", width - 13, 146, 243, 146, 10, 10, true));
-		buttons.put("r_hex", new BasicButton("hex", width - 13, 166, 243, 166, 10, 10, true));
+		buttons.put("r_rgb", new BasicButton("rgb", width - 13, 146, 243, 146, 10, 10, true){
+			public boolean onclick(int mx, int my, int button){
+				if(selected < 0 || selected >= container.entity.decos.size() || colors.isEmpty()) return true;
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("cargo", "color");
+				com.setInteger("idx", selected);
+				com.setString("channel", colors.get(selcol));
+				RGB rgb = RGB.WHITE;
+				try{
+					String[] arr = fields.get("rgb").getText().split("\\,");
+					int r = Integer.parseInt(arr[0].trim());
+					int g = Integer.parseInt(arr[1].trim());
+					int b = Integer.parseInt(arr[2].trim());
+					rgb = new RGB(r, g, b);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Print.chat(player, e.getMessage());
+				}
+				com.setInteger("rgb", rgb.packed);
+				container.send(Side.SERVER, com);
+				return true;
+			}
+		});
+		buttons.put("r_hex", new BasicButton("hex", width - 13, 166, 243, 166, 10, 10, true){
+			public boolean onclick(int mx, int my, int button){
+				if(selected < 0 || selected >= container.entity.decos.size() || colors.isEmpty()) return true;
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("cargo", "color");
+				com.setInteger("idx", selected);
+				com.setString("channel", colors.get(selcol));
+				RGB rgb = RGB.WHITE;
+				try{
+					rgb = new RGB(fields.get("hex").getText());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Print.chat(player, e.getMessage());
+				}
+				com.setInteger("rgb", rgb.packed);
+				container.send(Side.SERVER, com);
+				return true;
+			}
+		});
 		texts.put("cat", new BasicText(30, 4, 91, black, "category").autoscale());
 		texts.put("pos", new BasicText(width - 136, 5, 132, black, I18n.format("gui.fvtm.decoration_editor.position")));
 		texts.put("rot", new BasicText(width - 136, 33, 132, black, I18n.format("gui.fvtm.decoration_editor.rotation")));
@@ -231,16 +291,17 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 		texts.put("texc", new BasicText(width - 135, 102, 107, 0xcfcfcf, "-").autoscale());
 		texts.put("channel", new BasicText(width - 135, 127, 107, 0xcfcfcf, "-").autoscale());
 		fields.put("search", new TextField(1, fontRenderer, 29, 3, 93, 10, true));
-		fields.put("rgb", new TextField(1, fontRenderer, width - 135, guiTop + 147, 107, 8, false));
-		fields.put("hex", new TextField(2, fontRenderer, width - 135, guiTop + 167, 107, 8, false));
+		fields.put("rgb", new TextField(1, fontRenderer, width - 135, 147, 107, 8, false));
+		fields.put("hex", new TextField(2, fontRenderer, width - 135, 167, 107, 8, false));
 		updateCategorySearch();
 		//updateResults();
 		//updateEntries();
-		select(-1);
+		select(-1, -1);
 	}
 
-	protected void select(int idx){
+	protected void select(int idx, int colidx){
 		selected = idx;
+		colors.clear();
 		DecorationData data = idx < 0 || idx >= container.entity.decos.size() ? null : container.entity.decos.get(idx);
 		boolean miss = data == null;
 		for(int i = 0; i < 3; i++){
@@ -249,6 +310,14 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 			fields.get("scl" + i).setText(miss ? "0" : (i == 0 ? data.sclx : i == 1 ? data.scly : data.sclz) + "");
 		}
 		texts.get("texc").string = miss ? "" : data.textures.get(data.seltex).getName();
+		selcol = colidx;
+		if(!miss) colors.addAll(data.getColorChannels().keySet());
+		if(selcol >= colors.size() || selcol < 0) selcol = 0;
+		texts.get("channel").string = miss ? "" : colors.isEmpty() ? I18n.format("gui.fvtm.decoration_editor.no_color_channels") : colors.get(selcol);
+		RGB color = miss || colors.isEmpty() ? RGB.WHITE : data.getColorChannel(colors.get(selcol));
+		byte[] ar = color.toByteArray();
+		fields.get("rgb").setText((ar[0] + 128) + ", " + (ar[1] + 128) + ", " + (ar[2] + 128));
+		fields.get("hex").setText("#" + Integer.toHexString(color.packed));
 	}
 	
 	protected void updateCategorySearch(){

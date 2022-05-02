@@ -6,11 +6,14 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.DECORATION_EDITOR;
 import java.util.ArrayList;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -68,7 +71,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     }
 
 	@Override
-    protected void readEntityFromNBT(NBTTagCompound compound){
+	public void readEntityFromNBT(NBTTagCompound compound){
         size = compound.getInteger("size");
         decos.clear();
         if(compound.hasKey("decorations")){
@@ -107,7 +110,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     protected void entityInit(){
-        //
+    	//
     }
 
     @Override
@@ -180,7 +183,12 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     }
 
 	public void updateClient(){
-		//TODO
+		NBTTagCompound com = new NBTTagCompound();
+		writeEntityToNBT(com);
+		com.setString("task", "deco_update");
+		com.setInteger("entid", getEntityId());
+		com.setString("target_listener", Resources.UTIL_LISTENER);
+		PacketHandler.getInstance().sendToAllTracking(new PacketNBTTagCompound(com), this);
 	}
 
 }

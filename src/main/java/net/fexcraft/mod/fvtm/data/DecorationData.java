@@ -75,6 +75,7 @@ public class DecorationData implements Colorable {
 				}
 			}
 		}
+		if(textures.isEmpty()) textures.add(Resources.WHITE_TEXTURE);
 	}
 	
 	public DecorationData(NBTTagCompound compound, boolean client){
@@ -91,6 +92,7 @@ public class DecorationData implements Colorable {
 		DecorationData data = Resources.DECORATIONS.get(key);
 		if(data != null) copy(data);
 		if(seltex >= textures.size()) seltex = textures.size() - 1;
+		if(seltex < 0) seltex = 0;
 		for(Entry<String, RGB> entry : channels.entrySet()){
 			if(compound.hasKey("color_" + entry.getKey())) entry.getValue().packed = compound.getInteger("color_" + entry.getKey()); 
 		}

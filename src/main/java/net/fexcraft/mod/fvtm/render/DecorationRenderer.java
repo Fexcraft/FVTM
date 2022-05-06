@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -41,6 +42,8 @@ public class DecorationRenderer {
 						RGB.glColorReset();
 					}
 					else{
+						int i = RailRenderer.getBrightness(ent.posX, ent.posY, ent.posZ), j = i % 65536, k = i / 65536;
+						OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0F, k / 1.0F);
 						GL11.glPushMatrix();
 						data.offset.translate();
 			            if(data.roty != 0f) GL11.glRotatef(data.roty, 0, 1, 0);

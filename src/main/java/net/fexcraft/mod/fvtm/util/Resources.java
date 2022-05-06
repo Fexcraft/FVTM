@@ -466,9 +466,21 @@ public class Resources {
 		return BLOCKS.getValue(resloc);
 	}
 
+	@Deprecated
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(String string){
+		return getModelInputStream(new ResourceLocation(string), true);
+	}
+
 	@SideOnly(Side.CLIENT)
 	public static InputStream getModelInputStream(String string, boolean log){
 		return getModelInputStream(new ResourceLocation(string), log);
+	}
+
+	@Deprecated
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(ResourceLocation resloc){
+		return getModelInputStream(resloc, true);
 	}
 
 	@SideOnly(Side.CLIENT)

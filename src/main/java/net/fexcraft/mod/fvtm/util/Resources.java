@@ -278,7 +278,9 @@ public class Resources {
 						if(!fl.isDirectory()) continue;
 						File dec = new File(fl, "addonpack.fvtm");
 						if(dec.exists()){
-							ADDONS.register(new Addon(ContainerType.DIR, file, loc).parse(JsonUtil.get(dec)));
+							JsonObject obj = JsonUtil.get(dec);
+							if(isDuplicate(obj)) continue;
+							ADDONS.register(new Addon(ContainerType.DIR, file, loc).parse(obj));
 						}
 					}
 				}
@@ -287,6 +289,7 @@ public class Resources {
 				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
 				if(array.size() > 0){
 					JsonObject obj = array.get(0).getAsJsonObject();
+					if(isDuplicate(obj)) continue;
 					Addon addon = new Addon(ContainerType.JAR, file, loc).parse(obj);
 					ADDONS.register(addon);
 					if(file.getName().endsWith(".jar") || (obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean())){
@@ -295,6 +298,15 @@ public class Resources {
 				}
 			}
 		}
+	}
+
+	private static boolean isDuplicate(JsonObject obj){
+		if(!obj.has("RegistryName")) return false;
+		String regname = obj.get("RegistryName").getAsString();
+		for(Addon addon : ADDONS.getValuesCollection()){
+			if(addon.getRegistryName().toString().equals(regname)) return true;
+		}
+		return false;
 	}
 
 	private static Method cl_method;

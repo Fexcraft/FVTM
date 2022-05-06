@@ -112,7 +112,7 @@ public class Addon extends TypeCore<Addon> {
 				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 			}
 			else{
-				obj.get("CreativeTabs").getAsJsonArray().forEach(elm ->{
+				obj.get("CreativeTabs").getAsJsonArray().forEach(elm -> {
 					this.creativetabs.put(elm.getAsString(), new AddonTab(this, elm.getAsString()));
 				});
 			}
@@ -230,6 +230,7 @@ public class Addon extends TypeCore<Addon> {
 	
 	public File getFile(){ return file; }
 	public ContainerType getContainerType(){ return contype; }
+	@Override
 	public String getName(){ return name; }
 	public String getVersion(){ return version; }
 	public String getURL(){ return url; }

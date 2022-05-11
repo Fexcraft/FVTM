@@ -1,6 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "fvtm:items/rail_standard.16_straight_slope_down"
-    }
-}

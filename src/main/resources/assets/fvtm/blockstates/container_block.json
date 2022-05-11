@@ -1,9 +1,0 @@
-{
-    "variants": {
-        "normal": { "model": "fcl:placeholder" },
-        "facing=north": { "model": "fcl:placeholder" },
-        "facing=south": { "model": "fcl:placeholder" },
-        "facing=west": { "model": "fcl:placeholder" },
-        "facing=east": { "model": "fcl:placeholder" }
-    }
-}

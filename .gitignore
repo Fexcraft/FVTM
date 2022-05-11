@@ -1,4 +1,4 @@
-# Eclipse
+# eclipse
 bin
 *.launch
 .settings
@@ -6,36 +6,20 @@ bin
 .classpath
 .project
 
-# Idea
+# idea
 out
 *.ipr
 *.iws
 *.iml
 .idea
 
-# Netbeans
-.nb-gradle
-
-# Gradle
+# gradle
 build
 .gradle
-localrepos
 
-# Other
+# other
 eclipse
-old/
-run/*
-!run/addons/
+run
 
-# Yet Other
-src/main/java/com/
-src/main/java/net/fexcraft/mod/addons/manus/models/
-# src/main/java/net/fexcraft/mod/addons/test/models/ #temp
-src/main/java/net/fexcraft/mod/addons/gold/models/
-src/main/java/org/
-src/main/java/net/fexcraft/mod/addons/svm/
-run/addons/Gold's Pack
-src_fmr_test
-run/addons/Xeno's Stuff/
-src/main/java/net/fexcraft/mod/addons/xeno/
-old/
+# Files from Forge MDK
+forge*changelog.txt

@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.test.RenderLast;
 import net.fexcraft.mod.fvtm.test.TestBlock;
 import net.fexcraft.mod.fvtm.test.TestTile;
 import net.fexcraft.mod.fvtm.test.TestTileRenderer;
+import net.fexcraft.mod.fvtm.util.Config;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
@@ -48,7 +49,7 @@ public class FVTM {
     }
 
     private void setup(final FMLCommonSetupEvent event){
-        //preinit
+    	Config.load();
     	MinecraftForge.EVENT_BUS.register(new RenderLast());
     }
 

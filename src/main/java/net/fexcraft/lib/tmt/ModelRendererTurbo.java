@@ -48,8 +48,6 @@ public class ModelRendererTurbo {
     public int texoffx, texoffy;
     public List<ModelRendererTurbo> childModels;
     public String boxName, texName;
-    //
-    public static Renderer RENDERER = new DefaultRenderer();
 	
 	public ModelRendererTurbo(Object modelbase, String s){
 		//super(modelbase, s);
@@ -220,18 +218,6 @@ public class ModelRendererTurbo {
 	    	verts[2] = verts[2].setTexturePosition(x0 / textureWidth + uOffs, y1 / textureHeight - vOffs);
 	    	verts[3] = verts[3].setTexturePosition(x1 / textureWidth - uOffs, y1 / textureHeight - vOffs);
     	}
-    	return new TexturedPolygon(verts);
-    }
-    
-    /** Specifically made for addTexRect() with texpos[x].length > 4 (== 8) */
-    private TexturedPolygon addPolygonReturn(TexturedVertex[] verts, float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3){
-    	if(verts.length < 3){ return null; }
-    	float uOffs = 0;//1.0F / (textureWidth * 10.0F);
-    	float vOffs = 0;//1.0F / (textureHeight * 10.0F);
-    	verts[0] = verts[0].setTexturePosition(x0 / textureWidth - uOffs, y0 / textureHeight + vOffs);
-    	verts[1] = verts[1].setTexturePosition(x1 / textureWidth + uOffs, y1 / textureHeight + vOffs);
-    	verts[2] = verts[2].setTexturePosition(x2 / textureWidth + uOffs, y2 / textureHeight - vOffs);
-    	verts[3] = verts[3].setTexturePosition(x3 / textureWidth - uOffs, y3 / textureHeight - vOffs);
     	return new TexturedPolygon(verts);
     }
     
@@ -1376,26 +1362,6 @@ public class ModelRendererTurbo {
     public ModelRendererTurbo copyTo(java.util.Collection<TexturedPolygon> coll){
     	faces.addAll(coll);
         return this;
-    }
-    
-    /**
-     * Renders the shape. With a scale of 0.0625.
-     */
-    public void render(){ render(0.0625F); }
-    
-    /**
-     * Renders the shape.
-     * @param scale the scale of the shape. Usually is 0.0625.
-     */
-    public void render(float scale){
-        if(!showModel) return;
-        RENDERER.render(this, scale);
-    }
-    
-    public static abstract class Renderer {
-    	
-    	public abstract void render(ModelRendererTurbo mrt, float scale);
-        
     }
 
 	private static RGB red1 = new RGB(138,  65,  92);//new RGB(255, 127, 175);

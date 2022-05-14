@@ -11,7 +11,7 @@ import java.util.Random;
 public class Static {
 
 	public static boolean devmode = false;
-	public static boolean server = false;
+	public static boolean client = false;
 
 	public static final float MODELSCALE = 0.0625F;
 	public static final float PI = 3.14159265358979323846f;
@@ -53,8 +53,8 @@ public class Static {
 		return devmode = bool;
 	}
 
-	public static final boolean setIsServer(boolean bool){
-		return server = bool;
+	public static final boolean setIsClient(boolean bool){
+		return client = bool;
 	}
 
 	public static final void halt(){
@@ -75,11 +75,11 @@ public class Static {
 	}
 
 	public static boolean isServer(){
-		return server;
+		return !client;
 	}
 
 	public static boolean isClient(){
-		return !server;
+		return client;
 	}
 
 	public static InputStream getResource(String str){

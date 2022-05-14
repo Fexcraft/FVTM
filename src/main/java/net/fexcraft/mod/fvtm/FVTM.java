@@ -4,15 +4,18 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.test.RenderLast;
 import net.fexcraft.mod.fvtm.test.TestBlock;
 import net.fexcraft.mod.fvtm.test.TestTile;
 import net.fexcraft.mod.fvtm.test.TestTileRenderer;
 import net.fexcraft.mod.fvtm.util.Config;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -23,6 +26,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -40,6 +45,9 @@ public class FVTM {
     public static final RegistryObject<BlockEntityType<TestTile>> TEST_TILE = TILES.register("test", () -> BlockEntityType.Builder.of(TestTile::new, TEST_BLK.get()).build(null));
 
     public FVTM(){
+    	Static.setIsClient(FMLEnvironment.dist == Dist.CLIENT);
+    	Config.load(FMLPaths.CONFIGDIR.get());
+    	Resources.findAndLoadAddons();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
@@ -49,7 +57,6 @@ public class FVTM {
     }
 
     private void setup(final FMLCommonSetupEvent event){
-    	Config.load();
     	MinecraftForge.EVENT_BUS.register(new RenderLast());
     }
 

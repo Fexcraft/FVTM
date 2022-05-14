@@ -6,7 +6,7 @@ public enum RotationOrder {
 	
 	XYZ {
 		@Override
-		public void rotate(Polyhedron<?> mrt){
+		public void rotate(Polyhedron mrt){
 	        if(mrt.rotX != 0.0F) GL11.glRotatef(mrt.rotX, 1.0F, 0.0F, 0.0F);
 			if(mrt.rotY != 0.0F) GL11.glRotatef(mrt.rotY, 0.0F, 1.0F, 0.0F);
 	        if(mrt.rotZ != 0.0F) GL11.glRotatef(mrt.rotZ, 0.0F, 0.0F, 1.0F);
@@ -14,7 +14,7 @@ public enum RotationOrder {
 	},
 	XZY {
 		@Override
-		public void rotate(Polyhedron<?> mrt){
+		public void rotate(Polyhedron mrt){
 	        if(mrt.rotX != 0.0F) GL11.glRotatef(mrt.rotX, 1.0F, 0.0F, 0.0F);
 	        if(mrt.rotZ != 0.0F) GL11.glRotatef(mrt.rotZ, 0.0F, 0.0F, 1.0F);
 			if(mrt.rotY != 0.0F) GL11.glRotatef(mrt.rotY, 0.0F, 1.0F, 0.0F);
@@ -22,7 +22,7 @@ public enum RotationOrder {
 	},
 	YXZ {
 		@Override
-		public void rotate(Polyhedron<?> mrt){
+		public void rotate(Polyhedron mrt){
 			if(mrt.rotY != 0.0F) GL11.glRotatef(mrt.rotY, 0.0F, 1.0F, 0.0F);
 	        if(mrt.rotX != 0.0F) GL11.glRotatef(mrt.rotX, 1.0F, 0.0F, 0.0F);
 	        if(mrt.rotZ != 0.0F) GL11.glRotatef(mrt.rotZ, 0.0F, 0.0F, 1.0F);
@@ -30,7 +30,7 @@ public enum RotationOrder {
 	},
 	YZX {
 		@Override
-		public void rotate(Polyhedron<?> mrt){
+		public void rotate(Polyhedron mrt){
 			if(mrt.rotY != 0.0F) GL11.glRotatef(mrt.rotY, 0.0F, 1.0F, 0.0F);
 	        if(mrt.rotZ != 0.0F) GL11.glRotatef(mrt.rotZ, 0.0F, 0.0F, 1.0F);
 	        if(mrt.rotX != 0.0F) GL11.glRotatef(mrt.rotX, 1.0F, 0.0F, 0.0F);
@@ -38,7 +38,7 @@ public enum RotationOrder {
 	},
 	ZXY {
 		@Override
-		public void rotate(Polyhedron<?> mrt){
+		public void rotate(Polyhedron mrt){
 	        if(mrt.rotZ != 0.0F) GL11.glRotatef(mrt.rotZ, 0.0F, 0.0F, 1.0F);
 	        if(mrt.rotX != 0.0F) GL11.glRotatef(mrt.rotX, 1.0F, 0.0F, 0.0F);
 			if(mrt.rotY != 0.0F) GL11.glRotatef(mrt.rotY, 0.0F, 1.0F, 0.0F);
@@ -46,7 +46,7 @@ public enum RotationOrder {
 	},
 	ZYX {
 		@Override
-		public void rotate(Polyhedron<?> mrt){
+		public void rotate(Polyhedron mrt){
 	        if(mrt.rotZ != 0.0F) GL11.glRotatef(mrt.rotZ, 0.0F, 0.0F, 1.0F);
 			if(mrt.rotY != 0.0F) GL11.glRotatef(mrt.rotY, 0.0F, 1.0F, 0.0F);
 	        if(mrt.rotX != 0.0F) GL11.glRotatef(mrt.rotX, 1.0F, 0.0F, 0.0F);
@@ -54,6 +54,6 @@ public enum RotationOrder {
 	},
 	;
 
-	public abstract void rotate(Polyhedron<?> mrt);
+	public abstract void rotate(Polyhedron mrt);
 
 }

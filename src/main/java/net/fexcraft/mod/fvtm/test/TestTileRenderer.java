@@ -29,7 +29,7 @@ public class TestTileRenderer implements BlockEntityRenderer<TestTile> {
     	stack.mulPose(Vector3f.ZP.rotationDegrees(180));
         //stack.mulPose(Vector3f.YP.rotationDegrees(1));
         VertexConsumer consumer = buffers.getBuffer(RenderType.entityTranslucent(resloc));
-        for(Polyhedron<?> poli : T1PModel.MODEL.hedrons){
+        for(Polyhedron poli : T1PModel.MODEL.hedrons){
         	stack.pushPose();
         	stack.translate(poli.posX * 0.0625f, poli.posY * 0.0625f, poli.posZ * 0.0625f);
             PoseStack.Pose pose = stack.last();

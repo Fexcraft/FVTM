@@ -21,7 +21,7 @@ public class Generator_Cylinder {
 	
     public static final int FRONT = 0, BACK = 1, LEFT = 2, RIGHT = 3, TOP = 4, BOTTOM = 5;
 
-	public static <GLO> void make(Polyhedron<GLO> poly, ValueMap map){
+	public static void make(Polyhedron poly, ValueMap map){
 		float radius = map.getValue("radius", 1f);
 		float radius2 = map.getValue("radius2", 0f);
 		float length = map.getValue("length", 1f);

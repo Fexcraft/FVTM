@@ -1,7 +1,5 @@
 package net.fexcraft.lib.frl;
 
-import static net.fexcraft.lib.frl.Renderer.RENDERER;
-
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -14,17 +12,17 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class Polyhedron<GLO> {
+public class Polyhedron {
 	
 	public ArrayList<Polygon> polygons = new ArrayList<>();
-	public ArrayList<Polyhedron<GLO>> sub;
+	public ArrayList<Polyhedron> sub;
 	public float rotX, rotY, rotZ;
 	public float posX, posY, posZ;
 	public float texU, texV;
 	public boolean recompile, visible = true;
 	public RotationOrder rotOrder = RotationOrder.YZX;
 	public String name;
-	public GLO glObj;
+	public Object glObj;
 	public Integer glId;
 	
 	public Polyhedron(){}
@@ -33,7 +31,7 @@ public class Polyhedron<GLO> {
 		this.name = name;
 	}
 	
-	public Polyhedron<GLO> rescale(float scale){
+	public Polyhedron rescale(float scale){
 		for(Polygon gon : polygons) gon.rescale(scale);
 		posX *= scale;
 		posY *= scale;
@@ -41,16 +39,12 @@ public class Polyhedron<GLO> {
 		return this;
 	}
 	
-	public Polyhedron<GLO> color(RGB color){
+	public Polyhedron color(RGB color){
 		for(Polygon gon : polygons) gon.color(color);
 		return this;
 	}
-
-	public void render(){
-		RENDERER.render(this);
-	}
 	
-	public Polyhedron<GLO> importMRT(ModelRendererTurbo turbo, boolean insoff, float scale){
+	public Polyhedron importMRT(ModelRendererTurbo turbo, boolean insoff, float scale){
 		this.name = turbo.boxName;
 		for(TexturedPolygon tp : turbo.getFaces()){
 			Vertex[] verts = new Vertex[tp.getVertices().length];
@@ -82,10 +76,9 @@ public class Polyhedron<GLO> {
 	
 	public void clear(){
 		polygons.clear();
-		RENDERER.delete(this);
 	}
 	
-	public Polyhedron<GLO> setGlObj(GLO newobj){
+	public Polyhedron setGlObj(Object newobj){
 		this.glObj = newobj;
 		return this;
 	}

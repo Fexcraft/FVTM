@@ -18,7 +18,7 @@ import net.fexcraft.lib.frl.Vertex;
  */
 public class Generator_Cuboid {
 
-	public static <GLO> void make(Polyhedron<GLO> poly, ValueMap map){
+	public static void make(Polyhedron poly, ValueMap map){
 		boolean shaped = map.has("corners");
 		boolean anyrem = map.has("rem_poly");
 		float[] v0, v1, v2, v3, v4, v5, v6, v7;

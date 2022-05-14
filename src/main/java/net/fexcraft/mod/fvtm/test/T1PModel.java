@@ -15,7 +15,7 @@ public class T1PModel {
 	
 	public static T1PModel MODEL = new T1PModel();
 	public ArrayList<ArrayList<ModelRendererTurbo>> groups = new ArrayList<>();
-	public ArrayList<Polyhedron<?>> hedrons = new ArrayList<>();
+	public ArrayList<Polyhedron> hedrons = new ArrayList<>();
 
 	public T1PModel(){
 		int textureX = 512, textureY = 512;
@@ -999,7 +999,7 @@ public class T1PModel {
 		
 		groups.forEach(group -> {
 			group.forEach(mrt -> {
-				hedrons.add(new Polyhedron<>().importMRT(mrt, false, Static.sixteenth));
+				hedrons.add(new Polyhedron().importMRT(mrt, false, Static.sixteenth));
 			});
 		});
 	}

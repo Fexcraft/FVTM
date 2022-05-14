@@ -12,8 +12,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -37,7 +35,7 @@ public class FVTM {
     
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    public static final RegistryObject<Block> TEST_BLK = BLOCKS.register("test", () -> new TestBlock(Properties.of(Material.STONE)));
+    public static final RegistryObject<Block> TEST_BLK = BLOCKS.register("test", () -> new TestBlock());
     public static final RegistryObject<BlockEntityType<TestTile>> TEST_TILE = TILES.register("test", () -> BlockEntityType.Builder.of(TestTile::new, TEST_BLK.get()).build(null));
 
     public FVTM(){

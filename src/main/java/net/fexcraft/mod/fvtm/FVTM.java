@@ -46,7 +46,7 @@ public class FVTM {
 
     public FVTM(){
     	Static.setIsClient(FMLEnvironment.dist == Dist.CLIENT);
-    	Config.load(FMLPaths.CONFIGDIR.get());
+    	Config.load(FMLPaths.CONFIGDIR.get().toFile());
     	Resources.findAndLoadAddons();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);

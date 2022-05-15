@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -72,6 +73,8 @@ public class Command extends CommandBase {
         switch(args[0]){
             case "help": {
         		Print.chat(sender, "&9Command arguments");
+        		Print.chat(sender, "&7- /fvtm packs");
+        		Print.chat(sender, "&7- /fvtm pack-info <pack_id>");
         		Print.chat(sender, "&7- /fvtm get-key <vehicle/container>");
         		Print.chat(sender, "&7- /fvtm preset <args>");
         		Print.chat(sender, "&7- /fvtm attr <args>");
@@ -83,6 +86,13 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
         		Print.chat(sender, "&7- /fvtm rrs (reload rail sections)");
                 break;
+            }
+            case "packs":{
+            	Print.chat(sender, "&0[&2FVTM Packs&0]&6 = = = = = =");
+            	for(Addon addon : Resources.ADDONS.getValuesCollection()){
+            		Print.chat(sender, "&e" + addon.getRegistryName().getPath() + " &b- &7" + addon.getName());
+            	}
+            	break;
             }
             case "get-key": {
             	EntityPlayer player = (EntityPlayer)sender.getCommandSenderEntity();

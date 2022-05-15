@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonHandler;
@@ -10,9 +9,10 @@ import net.fexcraft.app.json.JsonMap;
 public class Config {
 	
 	public static ArrayList<PackFolder> packfolders = new ArrayList<>();
+	public static boolean LOAD_LITE_FROM_MODS;
 	
-	public static void load(Path path){
-		File file = new File(path.toString(), "/fvtm.json");
+	public static void load(File root){
+		File file = new File(root, "/fvtm.json");
 		JsonMap map = JsonHandler.parse(file);
 		if(map.has("pack_folders")){
 			map.get("pack_folders").asArray().elements().forEach(elm -> {
@@ -22,6 +22,7 @@ public class Config {
 				else packfolders.add(new PackFolder(new File(elm.string_value()), false));
 			});
 		}
+		LOAD_LITE_FROM_MODS = map.getBoolean("load_litepacks_from_mods", true);
 	}
 	
 	public static record PackFolder(File file, boolean mdk){}

@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonHandler;
+import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 
 public class Config {
 	
@@ -13,6 +15,7 @@ public class Config {
 	
 	public static void load(File root){
 		File file = new File(root, "/fvtm.json");
+		if(!file.exists()) JsonHandler.print(file, new JsonMap(), PrintOption.SPACED);
 		JsonMap map = JsonHandler.parse(file);
 		if(map.has("pack_folders")){
 			map.get("pack_folders").asArray().elements().forEach(elm -> {
@@ -25,6 +28,12 @@ public class Config {
 		LOAD_LITE_FROM_MODS = map.getBoolean("load_litepacks_from_mods", true);
 	}
 	
-	public static record PackFolder(File file, boolean mdk){}
+	public static record PackFolder(File file, boolean mdk){
+
+		public AddonLocation addonloc(){
+			return mdk() ? AddonLocation.MDK : AddonLocation.LITEPACK;
+		}
+		
+	}
 
 }

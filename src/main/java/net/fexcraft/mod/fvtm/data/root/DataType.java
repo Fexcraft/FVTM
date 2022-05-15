@@ -1,5 +1,10 @@
 package net.fexcraft.mod.fvtm.data.root;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
+
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.util.Resources;
 
@@ -7,12 +12,12 @@ public enum DataType {
 	
 	ADDON(".fvtm", null, Addon.class),
 	/*PART(".part", "parts", Part.class),
-	VEHICLE(".vehicle", "vehicles", Vehicle.class),
+	VEHICLE(".vehicle", "vehicles", Vehicle.class),*/
 	MATERIAL(".material", "materials", Material.class),
-	CONTAINER(".container", "containers", Container.class),
-	CONSUMABLE(".consumable", "consumables", Consumable.class),
+	/*CONTAINER(".container", "containers", Container.class),
+	CONSUMABLE(".consumable", "consumables", Consumable.class),*/
 	FUEL(".fuel", "fuels", Fuel.class),
-	BLOCK(".block", "blocks", Block.class),
+	/*BLOCK(".block", "blocks", Block.class),
 	RAILGAUGE(".gauge", "railgauges", RailGauge.class),
 	CLOTH(".cloth", "clothes", Cloth.class),
 	WIRE(".wire", "wires", WireType.class),*/
@@ -46,7 +51,7 @@ public enum DataType {
 		switch(this){
 			case ADDON:{ Resources.ADDONS.register((Addon)core); return; }
 			/*case PART:{ Resources.PARTS.register((Part)core); return; }
-			case VEHICLE:{ Resources.VEHICLES.register((Vehicle)core); return; }
+			case VEHICLE:{ Resources.VEHICLES.register((Vehicle)core); return; }*/
 			case MATERIAL:{ Resources.MATERIALS.register((Material)core); return; }
 			case FUEL:{
 				Fuel fuel = (Fuel)core;
@@ -59,7 +64,7 @@ public enum DataType {
 				Resources.FUELS.get(fuel.getPrimaryGroup()).get(fuel.getSecondaryGroup()).add(fuel);
 				Resources.ALLFUELS.register((Fuel)core); return;
 			}
-			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
+			/*case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
 			case RAILGAUGE:{ Resources.RAILGAUGES.register((RailGauge)core); return; }

@@ -34,7 +34,7 @@ public class Addon extends TypeCore<Addon> {
 	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
 	protected boolean enabled = true, generatelang, generatejson, generateicon;
-	protected File configs, assets, lang;
+	protected File configs, lang;
 	protected ContainerType contype;
 	protected HashMap<String, ArmorMaterial> armats = new HashMap<>();
 	protected LinkedHashMap<String, TextureSupply> supp_tex = new LinkedHashMap<>();
@@ -49,15 +49,8 @@ public class Addon extends TypeCore<Addon> {
 	
 	public Addon(ContainerType type, File file, AddonLocation loc){
 		this.contype = type;
-		configs = assets = file;
+		configs = file;
 		this.loc = loc;
-	}
-	
-	public Addon(File conf, File asset){
-		this.contype = ContainerType.DIR;
-		configs = conf;
-		assets = asset;
-		this.loc = AddonLocation.MDK;
 	}
 
 	@Override
@@ -199,10 +192,6 @@ public class Addon extends TypeCore<Addon> {
 	
 	public File getConfigsDir(){
 		return configs;
-	}
-	
-	public File getAssetsDir(){
-		return assets;
 	}
 	
 	public ContainerType getContainerType(){ return contype; }

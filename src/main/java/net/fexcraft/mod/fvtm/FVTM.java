@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.test.RenderLast;
 import net.fexcraft.mod.fvtm.test.TestBlock;
 import net.fexcraft.mod.fvtm.test.TestTile;
@@ -13,6 +15,7 @@ import net.fexcraft.mod.fvtm.util.Config;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +41,7 @@ public class FVTM {
 	public static final String MODID = "fvtm";
 	
     private static final Logger LOGGER = LogUtils.getLogger();
-    
+
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static final RegistryObject<Block> TEST_BLK = BLOCKS.register("test", () -> new TestBlock());
@@ -46,8 +49,10 @@ public class FVTM {
 
     public FVTM(){
     	Static.setIsClient(FMLEnvironment.dist == Dist.CLIENT);
+    	Static.setDevmode(!FMLEnvironment.production);
     	Config.load(FMLPaths.CONFIGDIR.get().toFile());
     	Resources.findAndLoadAddons();
+    	Resources.loadAddonContent();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
@@ -75,6 +80,13 @@ public class FVTM {
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
+    	
+        @SubscribeEvent
+        public static void onItemRegistry(final RegistryEvent.Register<Item> event){
+            for(Material material : Resources.MATERIALS.values()){
+            	event.getRegistry().register(material.setItem(new MaterialItem(material)));
+            }
+        }
     	
         @SubscribeEvent
         public static void onBlockRegistry(final RegistryEvent.Register<Block> event){

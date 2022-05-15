@@ -21,7 +21,11 @@ public abstract class TypeCore<SELF> {
 
 	public String getName(){ return name; }
 
-	public Item getItem(){ return null; }
+	public Item getItem(){ return item; }
+	
+	public Item setItem(TypeCoreItem<?> item){
+		return this.item = item;
+	}
 	
 	public List<String> getDescription(){ return description; }
 	
@@ -36,6 +40,7 @@ public abstract class TypeCore<SELF> {
 	protected List<String> description;
 	protected String name;
 	protected Addon pack;
+	protected TypeCoreItem<?> item;
 	
 	//
 	
@@ -46,6 +51,7 @@ public abstract class TypeCore<SELF> {
 		public TypeCoreItem(Properties prop, SELF core){
 			super(prop);
 			this.type = core;
+			this.setRegistryName(core.getRegistryName());
 		}
 		
 		public SELF getType(){

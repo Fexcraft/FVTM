@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = '4.0.0'
+version = '4.0.1'
 group = 'net.fexcraft.mod.fvtm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'FVTM'
 

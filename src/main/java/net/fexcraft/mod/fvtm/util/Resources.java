@@ -238,10 +238,10 @@ public class Resources {
 			}
 		}
 		else{
-			searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
+			searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
 		}
-		searchAddonsInForlder(new File(configroot, "packs/"), AddonLocation.LITEPACK, true);
-		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInForlder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
+		searchAddonsInFolder(new File(configroot, "packs/"), AddonLocation.LITEPACK, true);
+		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
 		//
 		//TODO check addon on/off state
 		if(event.getSide().isClient()){
@@ -264,7 +264,7 @@ public class Resources {
 		searchInAddonsFor(DataType.VEHICLE);
 	}
 	
-	public static void searchAddonsInForlder(File packfolder, AddonLocation loc, boolean create){
+	public static void searchAddonsInFolder(File packfolder, AddonLocation loc, boolean create){
 		if(!packfolder.exists()){
 			if(!create) return;
 			packfolder.mkdir();

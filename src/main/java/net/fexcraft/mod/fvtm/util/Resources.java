@@ -1,10 +1,14 @@
 package net.fexcraft.mod.fvtm.util;
 
+import java.io.File;
 import java.util.HashMap;
 
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.util.Config.PackFolder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 public class Resources {
 	
@@ -32,6 +36,17 @@ public class Resources {
 
 
 	public static void findAndLoadAddons(){
+		File root = FMLPaths.GAMEDIR.get().toFile();
+		searchAddonsInFolder(new File(root, "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
+		searchAddonsInFolder(new File(root, "/config/fvtm/packs/"), AddonLocation.RESOURCEPACK, false);
+		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInFolder(new File(root, "/mods/"), AddonLocation.RESOURCEPACK, false);
+		for(PackFolder file : Config.packfolders){
+			//TODO se
+		}
+	}
+
+
+	private static void searchAddonsInFolder(File file, AddonLocation resourcepack, boolean b) {
 		// TODO Auto-generated method stub
 		
 	}

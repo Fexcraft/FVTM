@@ -4,11 +4,12 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.HashMap;
+import java.util.UUID;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -88,10 +89,35 @@ public class Command extends CommandBase {
                 break;
             }
             case "packs":{
+            	Print.chat(sender, "");
             	Print.chat(sender, "&0[&2FVTM Packs&0]&6 = = = = = =");
             	for(Addon addon : Resources.ADDONS.getValuesCollection()){
             		Print.chat(sender, "&e" + addon.getRegistryName().getPath() + " &b- &7" + addon.getName());
             	}
+            	break;
+            }
+            case "pack-info":{
+            	Addon addon = Resources.getAddon(args[1]);
+            	if(addon == null){
+            		Print.chat(sender, "not found");
+            		return;
+            	}
+            	Print.chat(sender, "");
+            	Print.chat(sender, "&0[&2FVTM Pack Info&0]&6 = = = = = =");
+            	Print.chat(sender, "&2ID: &7" + addon.getRegistryName().getPath());
+            	Print.chat(sender, "&2Name: &7" + addon.getName());
+            	Print.chat(sender, "&2Version: &7" + addon.getVersion());
+            	if(addon.getAuthors().size() > 0){
+                	Print.chat(sender, "&2Authors:");
+                	for(String str : addon.getAuthors()){
+                		UUID uuid = parseUUID(str);
+                		if(uuid == null) Print.chat(sender, "&7- " + str);
+                		else Print.chat(sender, "&7- " + Static.getPlayerNameByUUID(uuid));
+                	}
+            	}
+            	Print.chat(sender, "&2URL: &7" + addon.getURL());
+            	Print.chat(sender, "&2License: &7" + addon.getLicense());
+            	Print.chat(sender, "&6Type: &7" + addon.getLoc().name().toLowerCase());
             	break;
             }
             case "get-key": {
@@ -391,6 +417,16 @@ public class Command extends CommandBase {
         }
         //
     }
+
+	private UUID parseUUID(String str){
+		try{
+			return UUID.fromString(str);
+		}
+		catch(Exception e){
+			//e.printStackTrace();
+			return null;
+		}
+	}
 
 	private Item giveKeyItem(EntityPlayer player, ResourceLocation keytype, String lockcode){
 		Item ki = Item.REGISTRY.getObject(keytype);

@@ -20,6 +20,11 @@ public class InternalAddon extends Addon {
 		super(ContainerType.ZIP, new File("."), AddonLocation.MODJAR);
 		this.registryname = REGNAME;
 		this.creativetabs = new HashMap<>();
+		this.name = "FVTM Internal Addon";
+		this.version = "universal";
+		this.license = "http://fexcraft.net/license?id=mods";
+		this.url = "http://fexcraft.net/wiki/mod/fvtm";
+		creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 		INSTANCE = this;
 	}
 	
@@ -30,8 +35,6 @@ public class InternalAddon extends Addon {
 	
 	@Override
 	public Addon parse(JsonObject obj){
-		this.name = "FVTM Internal Addon";
-		creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 		return this;
 	}
 

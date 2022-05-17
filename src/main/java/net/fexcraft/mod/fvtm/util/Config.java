@@ -12,6 +12,7 @@ public class Config {
 	
 	public static ArrayList<PackFolder> packfolders = new ArrayList<>();
 	public static boolean LOAD_LITE_FROM_MODS;
+	public static int RAIL_PLACING_GRID = 0;
 	
 	public static void load(File root){
 		File file = new File(root, "/fvtm.json");
@@ -26,6 +27,7 @@ public class Config {
 			});
 		}
 		LOAD_LITE_FROM_MODS = map.getBoolean("load_litepacks_from_mods", true);
+		RAIL_PLACING_GRID = map.getInteger("rail_placing_grid", 2);
 	}
 	
 	public static record PackFolder(File file, boolean mdk){

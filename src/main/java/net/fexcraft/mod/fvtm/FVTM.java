@@ -1,11 +1,14 @@
 package net.fexcraft.mod.fvtm;
 
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.test.RenderLast;
 import net.fexcraft.mod.fvtm.test.TestBlock;
@@ -15,6 +18,7 @@ import net.fexcraft.mod.fvtm.util.Config;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -42,6 +46,7 @@ public class FVTM {
 	
     private static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final HashMap<ResourceLocation, Item> ITEMS = new HashMap<>();
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static final RegistryObject<Block> TEST_BLK = BLOCKS.register("test", () -> new TestBlock());
@@ -83,8 +88,10 @@ public class FVTM {
     	
         @SubscribeEvent
         public static void onItemRegistry(final RegistryEvent.Register<Item> event){
+        	event.getRegistry().register(new DecorationItem());
             for(Material material : Resources.MATERIALS.values()){
             	event.getRegistry().register(material.setItem(new MaterialItem(material)));
+            	ITEMS.put(material.getRegistryName(), material.getItem());
             }
         }
     	

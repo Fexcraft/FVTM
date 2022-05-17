@@ -12,15 +12,18 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.lib.common.utils.ZipUtil;
+import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.Addon.ContainerType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Config.PackFolder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 public class Resources {
@@ -53,6 +56,7 @@ public class Resources {
 
 	public static void findAndLoadAddons(){
 		File root = FMLPaths.GAMEDIR.get().toFile();
+		ADDONS.put(InternalAddon.REGNAME, new InternalAddon());
 		searchAddonsInFolder(new File(root, "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
 		searchAddonsInFolder(new File(root, "/config/fvtm/packs/"), AddonLocation.LITEPACK, true);
 		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInFolder(new File(root, "/mods/"), AddonLocation.MODJAR, false);
@@ -149,6 +153,19 @@ public class Resources {
 
 	public static String getFuelName(ResourceLocation resloc){
 		Fuel fuel = getFuel(resloc); return fuel == null ? "not-found" : fuel.getName();
+	}
+
+	public static CreativeModeTab getCreativeTab(Tabbed type){
+		String tab = type.getCreativeTab();
+		Addon addon = null;
+		if(tab.contains(":")){
+			String[] split = tab.split(":");
+			addon = getAddon(split[0]);
+			if(addon == null) return null;
+			return addon.getCreativeTab(split[1]);
+		}
+		addon = ((TypeCore<?>)type).getAddon();
+		return addon.getDefaultCreativeTab();
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -23,7 +24,7 @@ public class DecorationItem extends Item implements JunctionGridItem {
 	}
 
 	public DecorationItem(){
-		super(new Properties().fireResistant().stacksTo(64));
+		super(new Properties().fireResistant().stacksTo(64).tab(InternalAddon.INSTANCE.getDefaultCreativeTab()));
 		this.setRegistryName("fvtm", "decoration");
 		INSTANCE = this;
 	}

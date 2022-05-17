@@ -1,29 +1,36 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.TreeMap;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-//TODO addon creative tab
-public class AddonTab {}/*extends CreativeTab {
+public class AddonTab extends CreativeModeTab {
 	
     private static TreeMap<ResourceLocation, AddonTab> TABS = new TreeMap<>();
     public static final String DEFAULT = "default";
-    private NonNullList<ItemStack> list;
+    private ArrayList<ItemStack> list;
     private int icon, sec;
 	private Addon addon;
 
 	public AddonTab(Addon addon, String string){
 		super(addon.getRegistryName().toString() + (string.equals(DEFAULT) ? "" : "." + string));
-		TABS.put(new ResourceLocation(super.getTabLabel()), this);
+		TABS.put(new ResourceLocation(addon.getRegistryName().toString() + (string.equals(DEFAULT) ? "" : "." + string)), this);
 		this.addon = addon;
 	}
 
-    @Override
-    public ItemStack createIcon(){
-        return null;
-    }
+	@Override
+	public ItemStack makeIcon(){
+		return new ItemStack(Items.STONE);
+	}
 
-    @SideOnly(Side.CLIENT)
     public String getTranslatedTabLabel(){
         return addon.getName();
     }
@@ -32,13 +39,13 @@ public class AddonTab {}/*extends CreativeTab {
         return addon;
     }
 
-    @Override
+    /*@Override
     public ItemStack getIcon(){
         if(list == null){ list = NonNullList.create(); this.displayAllRelevantItems(list); }
         if(sec != Time.getSecond()){
         	sec = Time.getSecond(); this.icon++; if(icon >= list.size()){ icon = 0; }
         } return icon >= list.size() ? ItemStack.EMPTY : list.get(icon);
-    }
+    }*/
     
     public static final AddonTab getTab(ResourceLocation addonid){
     	return TABS.get(addonid);
@@ -48,4 +55,4 @@ public class AddonTab {}/*extends CreativeTab {
 		return TABS.values();
 	}
 
-}*/
+}

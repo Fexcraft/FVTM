@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.CreativeModeTab;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -41,7 +42,7 @@ public class Addon extends TypeCore<Addon> {
 	protected AddonLocation loc;
 	//
 	//TODO find sided replacement @SideOnly(Side.CLIENT)
-	//TODO creative tabs // protected HashMap<String, CreativeTabs> creativetabs;
+	protected HashMap<String, AddonTab> creativetabs;
 	
 	public Addon(ContainerType type, File file){
 		this(type, file, AddonLocation.MODJAR);
@@ -74,7 +75,7 @@ public class Addon extends TypeCore<Addon> {
 		generateicon = JsonUtil.getIfExists(obj, "GenerateItemIcon", false);
 		//
 		if(Static.isClient()){
-			/*creativetabs = new HashMap<>();
+			creativetabs = new HashMap<>();
 			if(!obj.has("CreativeTabs")){
 				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 			}
@@ -82,8 +83,7 @@ public class Addon extends TypeCore<Addon> {
 				obj.get("CreativeTabs").getAsJsonArray().forEach(elm -> {
 					this.creativetabs.put(elm.getAsString(), new AddonTab(this, elm.getAsString()));
 				});
-			}*///TODO creative tabs
-			Print.log("Creative Tabs are not re-implemented yet. Found entries in '" + this.getRegistryName() + "'.");
+			}
 		}
 		if(obj.has("ClothMaterials")){
 			obj.get("ClothMaterials").getAsJsonObject().entrySet().forEach(entry -> {
@@ -417,20 +417,18 @@ public class Addon extends TypeCore<Addon> {
 		return result;
 	}
 
-	/*@(Side.CLIENT)
-	public CreativeTabs getDefaultCreativeTab(){
+	public CreativeModeTab getDefaultCreativeTab(){
 		if(creativetabs.size() == 0) return null;
 		if(creativetabs.containsKey("default"))
 			return creativetabs.get("default");
-		else return creativetabs.values().toArray(new CreativeTabs[0])[0];
-	}*///TODO creative tabs
+		else return creativetabs.values().toArray(new CreativeModeTab[0])[0];
+	}
 
-	/*@SideOnly(Side.CLIENT)
-	public CreativeTabs getCreativeTab(String id){
+	public CreativeModeTab getCreativeTab(String id){
 		if(creativetabs.containsKey(id))
 			return creativetabs.get(id);
 		else return getDefaultCreativeTab();
-	}*///TODO creative tabs
+	}
 
 	public void loadPresets(){
 		if(!this.isEnabled()){

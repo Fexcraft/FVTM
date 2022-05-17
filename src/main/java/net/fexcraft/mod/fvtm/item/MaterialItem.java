@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 public class MaterialItem extends TypeCoreItem<Material> {
 
 	public MaterialItem(Material core){
-		super(new Properties().stacksTo(core.getMaxStackSize()).durability(core.getMaxDamage()), core);
+		super(new Properties().stacksTo(core.getMaxStackSize()).durability(core.getMaxDamage()).tab(Resources.getCreativeTab(core)), core);
 	}
 
 	@Override

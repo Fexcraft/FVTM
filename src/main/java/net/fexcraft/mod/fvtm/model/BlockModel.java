@@ -30,7 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockModel extends GenericModel<BlockData, TileEntity> implements FCLItemModel, FCLBlockModel {
+public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
     //public static boolean PREVIEW = false;

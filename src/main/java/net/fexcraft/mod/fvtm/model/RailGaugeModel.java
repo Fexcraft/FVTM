@@ -22,7 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-public class RailGaugeModel extends GenericModel<Track, Integer> {
+public class RailGaugeModel extends GenericModel {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();

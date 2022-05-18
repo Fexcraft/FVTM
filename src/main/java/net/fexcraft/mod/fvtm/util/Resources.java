@@ -68,6 +68,8 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -82,6 +84,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.loaders.ClassModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -161,7 +164,7 @@ public class Resources {
 	private static TreeMap<String, ObjModel> OBJ_MODEL_INFO_CACHE = new TreeMap<>();
 	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
-	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
+	public static final HashMap<String, Model> MODELS = new HashMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
@@ -170,6 +173,7 @@ public class Resources {
 	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
 	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
 	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
+	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	private File configroot; 
@@ -262,6 +266,10 @@ public class Resources {
 		searchInAddonsFor(DataType.BLOCK);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
+		//
+		if(event.getSide().isClient()){
+			MODEL_LOADERS.add(new ClassModelLoader());
+		}
 	}
 	
 	public static void searchAddonsInFolder(File packfolder, AddonLocation loc, boolean create){
@@ -537,41 +545,49 @@ public class Resources {
 		catch(Throwable e){
 			//e.printStackTrace();
 		}
-		return close == null ? new Object[]{ stream } : new Object[]{ stream, close};
+		return close == null ? new Object[]{ stream } : new Object[]{ stream, close };
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public static <T, K> Model<T, K> getModel(String name, Class<? extends Model<T, K>> clazz){
+	public static Model getModel(String name, ModelData data, Class<? extends Model> clazz){
 		if(name == null || name.equals("") || name.equals("null")){
-			return (Model<T, K>)getEmptyModelFromClass(clazz);
+			return getEmptyModelFromClass(clazz);
 		}
 		boolean bake = name.startsWith("baked|");
 		if(bake) name = name.substring(6);
-		Model<T, K> model = null;
+		Model model = null;
 		if(MODELS.containsKey(name)){
 			if(bake && getEmptyModelFromClass(clazz) instanceof BlockModel){
-				return (Model<T, K>)getEmptyModelFromClass(clazz);
+				return getEmptyModelFromClass(clazz);
 			}
-			return (Model<T, K>)MODELS.get(name);
+			return MODELS.get(name);
 		}
 		if(FCLRegistry.getModel(name) != null){
 			try{
-				model = (Model<T, K>)((Class<?>)FCLRegistry.getModel(name)).newInstance();
+				model = (Model)((Class<?>)FCLRegistry.getModel(name)).newInstance();
+				model.parse(data).lock();
 			}
 			catch(InstantiationException | IllegalAccessException e){
 				e.printStackTrace();
-				return (Model<T, K>)getEmptyModelFromClass(clazz);
+				return getEmptyModelFromClass(clazz);
 			}
 			MODELS.put(name, model);
 			return model;
 		}
-		String ext = FilenameUtils.getExtension(name);
+		ModelLoader loader = getModelLoader(name, FilenameUtils.getExtension(name));
+		if(loader == null) return getEmptyModelFromClass(clazz);
 		try{
+			Object[] ret = loader.load(name, data);
+			if(ret.length == 0 || ret[0] == null) return getEmptyModelFromClass(clazz);
+			model = (Model) ret[0];
+			if(ret.length > 1) data = (ModelData)ret[1];
+			model.parse(data).lock();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		/*try{
 			switch(ext){
-				case "class":
-					Class<?> clasz = Class.forName(name.replace(".class", ""));
-					model = (Model<T, K>)clasz.newInstance();
-					break;
 				case "jtmt":
 					JsonObject obj = JsonUtil.getObjectFromInputStream(getModelInputStream(new ResourceLocation(name), true));
 					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
@@ -606,26 +622,33 @@ public class Resources {
 				}
 				case "fmf":{
 					Object[] stream = getModelInputStreamWithFallback(new ResourceLocation(name));
-					model = ((GenericModel<T, K>)clazz.getConstructor().newInstance()).parse(stream, ext);
+					model = ((GenericModel)clazz.getConstructor().newInstance()).parse(stream, ext);
 					break;
 				}
-				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
+				case "": default: return (Model)getEmptyModelFromClass(clazz);
 			}
 		}
 		catch(Throwable thr){
 			Print.log("Failed to find/parse model with adress '" + name + "'!");
 			thr.printStackTrace(); //Static.stop();
-			return (Model<T, K>)getEmptyModelFromClass(clazz);
-		}
+			return (Model)getEmptyModelFromClass(clazz);
+		}*/
 		MODELS.put(name, model);
 		if(bake && model instanceof BlockModel){
 			FCLBlockModelLoader.addBlockModel(new ResourceLocation(name), (FCLBlockModel)model);
-			return (Model<T, K>)getEmptyModelFromClass(clazz);
+			return getEmptyModelFromClass(clazz);
 		}
 		return model;
 	}
 
-	private static Model<?, ?> getEmptyModelFromClass(Class<? extends Model<?, ?>> clazz){
+	private static ModelLoader getModelLoader(String name, String extension){
+		for(ModelLoader loader : MODEL_LOADERS){
+			if(loader.accepts(name, extension)) return loader;
+		}
+		return null;
+	}
+
+	private static Model getEmptyModelFromClass(Class<? extends Model> clazz){
 		//if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
 		if(clazz == PartModel.class) return PartModel.EMPTY;

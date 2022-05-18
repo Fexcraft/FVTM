@@ -16,14 +16,13 @@ import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBase;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorder;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorderEdge;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontOffset;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class TrafficSignModel extends GenericModel<TrafficSignData.CompDataRoot, String> {
+public class TrafficSignModel extends GenericModel {
 
 	public static final TrafficSignModel EMPTY = new TrafficSignModel();
 	private ArrayList<TurboList> base, vert, hori, other;

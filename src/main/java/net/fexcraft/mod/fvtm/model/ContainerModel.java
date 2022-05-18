@@ -19,7 +19,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class ContainerModel extends GenericModel<ContainerData, Object> implements FCLItemModel {
+public class ContainerModel extends GenericModel implements FCLItemModel {
 	
 	public static final ContainerModel EMPTY = new ContainerModel();
 	public static final String[] defval = new String[]{ "body", "body_colored_primary", "body_door_open_colored_primary",

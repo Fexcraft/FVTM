@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-public class PartModel extends GenericModel<VehicleData, String> implements FCLItemModel {
+public class PartModel extends GenericModel implements FCLItemModel {
 
 	public static final PartModel EMPTY = new PartModel();
     //public static final RGB windowcolor = new RGB(0x007208).setAlpha(0.3f);

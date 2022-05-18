@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class DecoModel extends GenericModel<DecorationData, Object> {
+public class DecoModel extends GenericModel {
 	
 	public static final DecoModel EMPTY = new DecoModel();
 

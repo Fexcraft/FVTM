@@ -20,7 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class WireModel extends GenericModel<BlockData, TileEntity> {
+public class WireModel extends GenericModel {
 	
 	public static final HashMap<String, WireModel> DECOS = new HashMap<>();
 	public static final WireModel EMPTY = new WireModel();

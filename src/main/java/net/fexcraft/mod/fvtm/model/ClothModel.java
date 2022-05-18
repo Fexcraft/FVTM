@@ -20,7 +20,7 @@ import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class ClothModel extends GenericModel<ClothItem, ArrayList<String>> {
+public class ClothModel extends GenericModel {
 
 	public static final ClothModel EMPTY = new ClothModel();
 	protected TreeMap<String, ArrayList<String>> cloth_groups = new TreeMap<>();

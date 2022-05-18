@@ -27,7 +27,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class VehicleModel extends GenericModel<VehicleData, Object> implements FCLItemModel {
+public class VehicleModel extends GenericModel implements FCLItemModel {
 	
 	public static final VehicleModel EMPTY = new VehicleModel();
 	public static final String[] defval = new String[]{ "chassis", "body", "body_colored_primary", "body_colored_secondary",

@@ -20,7 +20,7 @@ public class DecorationData implements Colorable {
 	
 	private final String key, category;
 	public /*final*/ String modelid;
-	public Model<DecorationData, Object> model;
+	public Model model;
 	public ArrayList<NamedResourceLocation> textures = new ArrayList<>();
 	private TreeMap<String, RGB> channels = new TreeMap<>();
 	public Pos offset = new Pos(0, 0, 0);

@@ -34,20 +34,17 @@ import net.minecraft.util.ResourceLocation;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
- *
- * @param <T>
- * @param <K>
+ * 
  */
-public abstract class GenericModel<T, K> implements Model<T, K> {
+public abstract class GenericModel implements Model {
 	
-	public static final ArrayList<String> defcreemptlist = new ArrayList<>();
-	//
-	//protected GroupMap groups = new GroupMap();
-	public GroupList groups = new GroupList();
-	public Transforms transforms = new Transforms();
+	public static final ArrayList<String> DEF_NO_CREATORS = new ArrayList<>();
 	private ArrayList<String> creators = new ArrayList<>();
+	public Transforms transforms = new Transforms();
+	public GroupList groups = new GroupList();
 	public int textureX, textureY;
 	public boolean smooth_shading;
+	private boolean locked;
 	protected String name;
 	
 	public GenericModel(){
@@ -57,9 +54,23 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			TrafficSignPrograms.init();
 		}
 	}
+	
+	@Override
+	public GenericModel parse(ModelData data){
+		List<String> list = data.values.get("Creators");
+		for(String str : list) this.addToCreators(str);
+		
+		return this;
+	}
+	
+	@Override
+	public void lock(){
+		this.locked = true;
+	}
 
 	public GenericModel(JsonObject obj){
-		this(); if(obj == null){ return; }
+		this();
+		if(obj == null) return;
         creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
         textureX = obj.get("texture_size_x").getAsInt();
         textureY = obj.get("texture_size_y").getAsInt();
@@ -120,7 +131,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		}
 	}
 	
-	public <M extends GenericModel<T, K>> M parse(Object[] stream, String type){
+	public <M extends GenericModel> M parse(Object[] stream, String type){
 		if(!type.equals("fmf")) return (M)this;
 		try{
 			HashMap<String, Object> data = stream[0] instanceof InputStream ? FMFParser.parse(this, (InputStream)stream[0]) : (HashMap<String, Object>)stream[0];
@@ -387,6 +398,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	}
 	
 	public boolean addToCreators(String str){
+		if(locked) return false;
 		return creators.add(str);
 	}
 

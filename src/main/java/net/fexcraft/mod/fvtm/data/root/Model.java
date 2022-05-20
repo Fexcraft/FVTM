@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
@@ -17,6 +18,12 @@ import net.minecraft.tileentity.TileEntity;
  *
  */
 public interface Model {
+	
+	public static final String CREATORS = "Authors";
+	public static final String TEXTURE_WIDTH = "TextureWidth";
+	public static final String TEXTURE_HEIGHT = "TextureHeight";
+	public static final String PROGRAMS = "Programs";
+	public static final String CONDPROGRAMS = "CondPrograms";
 
 	/**  Render call. */
 	public void render(ModelRenderData data);
@@ -54,12 +61,33 @@ public interface Model {
 		public ArrayList<String> filter_groups = new ArrayList<>();
 		public boolean exclude_groups;
 		
+		public ArrayList<String> creators(){
+			if(!values.containsKey("creators")) values.put("creators", new ArrayList<String>());
+			return values.get("creators");
+		}
+		
 	}
 	
 	public static class DataMap extends HashMap<String, Object> {
 		
 		public <T> T get(String key){
 			return (T)super.get(key);
+		}
+		
+		public <T> T get(String key, Supplier<T> ifmissing){
+			if(!containsKey(key)){
+				return (T)set(key, ifmissing.get());
+			}
+			return (T)super.get(key);
+		}
+
+		public <T> T set(String key, T obj){
+			put(key, obj);
+			return obj;
+		}
+
+		public boolean contains(String key){
+			return containsKey(key);
 		}
 		
 	}
@@ -71,7 +99,7 @@ public interface Model {
 		/**
 		 * @param name the model adress/resourcelocation
 		 * @param confdata existing model data from config
-		 * @return the model, with optionally a ModelData object on 2nd index
+		 * @return the model, with optionally a (updated or overridden) ModelData object on 2nd index
 		 */
 		public Object[] load(String name, ModelData confdata) throws Exception;
 		

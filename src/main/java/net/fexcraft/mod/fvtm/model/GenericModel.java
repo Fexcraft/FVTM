@@ -7,16 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.json.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
@@ -36,7 +32,7 @@ import net.minecraft.util.ResourceLocation;
  * @author Ferdinand Calo' (FEX___96)
  * 
  */
-public abstract class GenericModel implements Model {
+public class GenericModel implements Model {
 	
 	public static final ArrayList<String> DEF_NO_CREATORS = new ArrayList<>();
 	private ArrayList<String> creators = new ArrayList<>();
@@ -54,6 +50,11 @@ public abstract class GenericModel implements Model {
 			TrafficSignPrograms.init();
 		}
 	}
+
+	@Override
+	public void render(ModelRenderData data){
+		// TODO Auto-generated method stub
+	}
 	
 	@Override
 	public GenericModel parse(ModelData data){
@@ -67,49 +68,8 @@ public abstract class GenericModel implements Model {
 	public void lock(){
 		this.locked = true;
 	}
-
-	public GenericModel(JsonObject obj){
-		this();
-		if(obj == null) return;
-        creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
-        textureX = obj.get("texture_size_x").getAsInt();
-        textureY = obj.get("texture_size_y").getAsInt();
-        try{
-            if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
-                JsonObject modelobj = obj.get("model").getAsJsonObject();
-                for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-                	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), textureX, textureY)));
-                }
-            }
-            else{
-            	JsonObject modelobj = obj.get("groups").getAsJsonObject();
-                for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-                	JsonObject group = entry.getValue().getAsJsonObject();
-                	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), textureX, textureY)));
-                	if(group.has("fvtm:programs")){
-                		JsonArray array = group.get("fvtm:programs").getAsJsonArray();
-                		for(JsonElement elm : array){
-                			try{
-                    			if(elm.isJsonPrimitive()){
-                        			groups.get(entry.getKey()).addProgram(elm.getAsString());
-                    			}
-                    			else groups.get(entry.getKey()).addProgram(parseProgram(elm));
-                			}
-                			catch(Exception e){
-                				e.printStackTrace();
-                			}
-                		}
-                	}
-                }
-            }
-        }
-        catch(Throwable thr){
-        	thr.printStackTrace();
-        	Static.stop();
-        }
-	}
 	
-	public TurboList.Program parseProgram(JsonElement elm) throws Exception {
+	public static TurboList.Program parseProgram(JsonElement elm) throws Exception {
 		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
 		TurboList.Program prog = TurboList.PROGRAMS.get(id);
 		if(prog == null){
@@ -118,7 +78,7 @@ public abstract class GenericModel implements Model {
 		return prog.parse(elm);
 	}
 	
-	private TurboList.Program parseProgram(String[] args) throws Exception {
+	private static TurboList.Program parseProgram(String[] args) throws Exception {
 		if(args[1].startsWith("[") || args[1].startsWith("{")){
 			return parseProgram(JsonUtil.getFromString(args[1]));
 		}

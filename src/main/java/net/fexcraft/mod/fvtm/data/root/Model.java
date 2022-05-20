@@ -24,6 +24,7 @@ public interface Model {
 	public static final String TEXTURE_HEIGHT = "TextureHeight";
 	public static final String PROGRAMS = "Programs";
 	public static final String CONDPROGRAMS = "CondPrograms";
+	public static final String SMOOTHSHADING = "SmoothShading";
 
 	/**  Render call. */
 	public void render(ModelRenderData data);
@@ -70,10 +71,12 @@ public interface Model {
 	
 	public static class DataMap extends HashMap<String, Object> {
 		
+		/** Gets the specific value based on key, will return null if missing. */
 		public <T> T get(String key){
 			return (T)super.get(key);
 		}
-		
+
+		/** Gets the specific value based on key, uses supplier to fill in value if missing. */
 		public <T> T get(String key, Supplier<T> ifmissing){
 			if(!containsKey(key)){
 				return (T)set(key, ifmissing.get());
@@ -81,9 +84,15 @@ public interface Model {
 			return (T)super.get(key);
 		}
 
+		/** Sets the specific value based on key, returns the set value. */
 		public <T> T set(String key, T obj){
 			put(key, obj);
 			return obj;
+		}
+
+		/** Sets the specific value based on key, if missing. */
+		public <T> void set(String key, Supplier<T> ifmissing){
+			if(!containsKey(key)) set(key, ifmissing.get());
 		}
 
 		public boolean contains(String key){

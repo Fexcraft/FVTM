@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.model.GenericModel;
@@ -33,8 +34,8 @@ public class JTMTModelLoader implements ModelLoader {
 				confdata.creators().add(elm.getAsString());
 			});
 		}
-		int tx = confdata.values.set("TextureWidth", obj.get("texture_size_x").getAsInt());
-		int ty = confdata.values.set("TextureHeight", obj.get("texture_size_y").getAsInt());
+		int tx = confdata.values.set(Model.TEXTURE_WIDTH, obj.get("texture_size_x").getAsInt());
+		int ty = confdata.values.set(Model.TEXTURE_HEIGHT, obj.get("texture_size_y").getAsInt());
         try{
             if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
                 JsonObject modelobj = obj.get("model").getAsJsonObject();

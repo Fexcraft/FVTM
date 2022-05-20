@@ -11,7 +11,7 @@ public class ClassModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public Object[] load(String name, ModelData confdata) throws Exception {
 		Class<?> clasz = Class.forName(name.replace(".class", ""));
 		return new Object[]{ clasz.newInstance() };
 	}

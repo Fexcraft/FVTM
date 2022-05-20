@@ -348,7 +348,7 @@ public class GenericModel implements Model {
 		}
 	}
 
-	private void addGroup(String str, ObjModel objmod){
+	public void addGroup(String str, ObjModel objmod){
 		groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
 	}
 

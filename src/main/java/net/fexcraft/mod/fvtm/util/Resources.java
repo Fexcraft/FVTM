@@ -162,8 +162,6 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	public static HashMap<String, Particle> PARTICLES = new HashMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
-	private static TreeMap<String, ObjModel> OBJ_MODEL_INFO_CACHE = new TreeMap<>();
-	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final HashMap<String, Model> MODELS = new HashMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
@@ -590,38 +588,6 @@ public class Resources {
 		}
 		/*try{
 			switch(ext){
-				case "jtmt":
-					JsonObject obj = JsonUtil.getObjectFromInputStream(getModelInputStream(new ResourceLocation(name), true));
-					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
-					break;
-				case "json":
-					//TODO create a wrapper.
-					break;
-				case "obj":{
-					String[] filter = name.split(";");
-					String id = filter.length > 1 ? filter[filter.length - 1] : name;
-					ResourceLocation loc = new ResourceLocation(id);
-					ObjModel objdata = null;
-					if(OBJ_MODEL_INFO_CACHE.containsKey(id)){
-						objdata = OBJ_MODEL_INFO_CACHE.get(id);
-					}
-					else{
-						Object[] stream = getModelInputStreamWithFallback(loc);
-						objdata = new ObjParser((InputStream)stream[0]).readComments(true).readModel(false).parse();
-						OBJ_MODEL_INFO_CACHE.put(id, objdata);
-						if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
-					}
-					ArrayList<String> groups = new ArrayList<>();
-					boolean exclude = false;
-					if(filter.length > 1){
-						if(filter[0].equals("!") || filter[0].equals("exclude")) exclude = true;
-						if(!exclude || filter.length > 2){
-							for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
-						}
-					}
-					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class, boolean.class).newInstance(loc, objdata, groups, exclude);
-					break;
-				}
 				case "fmf":{
 					Object[] stream = getModelInputStreamWithFallback(new ResourceLocation(name));
 					model = ((GenericModel)clazz.getConstructor().newInstance()).parse(stream, ext);
@@ -994,11 +960,6 @@ public class Resources {
 		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
 		OBJ_MODEL_DATA_CACHE.put(loc, objmod);
 		return objmod;
-	}
-
-	public static void clearObjModelCache(){
-		OBJ_MODEL_INFO_CACHE.clear();
-		OBJ_MODEL_DATA_CACHE.clear();
 	}
 	
 	/*private static final BiConsumer<ArrayList<TileEntity>, Junction> LINK_TO_JUNC = (tiles, junction) -> {

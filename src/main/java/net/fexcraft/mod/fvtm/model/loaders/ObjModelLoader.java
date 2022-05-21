@@ -56,10 +56,11 @@ public class ObjModelLoader implements ModelLoader {
 		boolean flip_f = confdata.values.get("FlipFaces", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipFaces:")));
 		boolean flip_u = confdata.values.get("FlipU", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipU:")));
 		boolean flip_v = confdata.values.get("FlipV", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipV:")));
-		confdata.values.set("SmoothShading", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:")));
+		confdata.values.set(Model.SMOOTHSHADING, () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:")));
 		boolean norm = confdata.values.get("SkipNormals", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:")));
 		addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
-		List<String> include = ObjParser.getCommentValues(objdata, new String[]{ "Include:" }, null);
+		List<String> include = confdata.values.get(Model.OBJ_INCLUDE, () -> new ArrayList<>());
+		include.addAll(ObjParser.getCommentValues(objdata, new String[]{ "Include:" }, null));
 		for(String str : include){
 			filter = str.split(";");
 			loc = new ResourceLocation(filter.length > 1 ? filter[filter.length - 1] : str);

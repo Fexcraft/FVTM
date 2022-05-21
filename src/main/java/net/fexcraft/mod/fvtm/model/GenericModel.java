@@ -23,7 +23,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
@@ -225,7 +225,7 @@ public class GenericModel implements Model {
 		boolean flip_v = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipV:"));
 		this.smooth_shading = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:"));
 		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
-		ObjModel objmod = Resources.getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
+		ObjModel objmod = ObjModelLoader.getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
 		if(objgroups.isEmpty()){
 			for(String str : objmod.polygons.keySet()) addGroup(str, objmod);
 		}

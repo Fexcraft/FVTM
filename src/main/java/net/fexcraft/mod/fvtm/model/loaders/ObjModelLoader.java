@@ -37,19 +37,17 @@ public class ObjModelLoader implements ModelLoader {
 		boolean exclude = false;
 		if(filter.length > 1){
 			if(filter[0].equals("!") || filter[0].equals("exclude")) exclude = true;
-			if(!exclude || filter.length > 2){
-				for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
-			}
+			if(!exclude || filter.length > 2) for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
 		}
 		//
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
 		for(String auth : authors) confdata.creators().add(auth);
-		int tx = 256, ty = 256;
+		//int tx = 256, ty = 256;
 		try{
 			String tex = ObjParser.getCommentValue(objdata, "TextureSizeX:");
 			String tey = ObjParser.getCommentValue(objdata, "TextureSizeY:");
-			tx = confdata.values.get(Model.TEXTURE_WIDTH, () -> tex == null ? 256 : Integer.parseInt(tex));
-			tx = confdata.values.get(Model.TEXTURE_WIDTH, () -> tey == null ? 256 : Integer.parseInt(tex));
+			confdata.values.get(Model.TEXTURE_WIDTH, () -> tex == null ? 256 : Integer.parseInt(tex));
+			confdata.values.get(Model.TEXTURE_WIDTH, () -> tey == null ? 256 : Integer.parseInt(tex));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -60,7 +58,24 @@ public class ObjModelLoader implements ModelLoader {
 		boolean flip_v = confdata.values.get("FlipV", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipV:")));
 		confdata.values.set("SmoothShading", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:")));
 		boolean norm = confdata.values.get("SkipNormals", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:")));
-		ObjModel objmod = Resources.getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
+		addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
+		List<String> include = ObjParser.getCommentValues(objdata, new String[]{ "Include:" }, null);
+		for(String str : include){
+			filter = str.split(";");
+			loc = new ResourceLocation(filter.length > 1 ? filter[filter.length - 1] : str);
+			exclude = false;
+			groups.clear();
+			if(filter.length > 1){
+				if(filter[0].equals("!") || filter[0].equals("exclude")) exclude = true;
+				if(!exclude || filter.length > 2) for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
+			}
+			addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
+		}
+		return new Object[]{ model };
+	}
+
+	private void addObjGroups(GenericModel model, ResourceLocation loc, ArrayList<String> groups, boolean exclude, boolean flip_x, boolean flip_f, boolean flip_u, boolean flip_v, boolean norm){
+		ObjModel objmod = getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
 		if(groups.isEmpty()){
 			for(String str : objmod.polygons.keySet()) model.addGroup(str, objmod);
 		}
@@ -78,7 +93,6 @@ public class ObjModelLoader implements ModelLoader {
 				}
 			}
 		}
-		return new Object[]{ model };
 	}
 
 	private ObjModel loadObjData(ResourceLocation loc) throws IOException {
@@ -93,6 +107,17 @@ public class ObjModelLoader implements ModelLoader {
 			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
 		}
 		return objdata;
+	}
+	
+	public static ObjModel getObjModelFromCache(ResourceLocation loc, boolean flip_x, boolean flip_f, boolean flip_u, boolean flip_v, boolean norm){
+		if(DATA_CACHE.containsKey(loc)){
+			return DATA_CACHE.get(loc);
+		}
+		Object[] stream = Resources.getModelInputStreamWithFallback(loc);
+		ObjModel objmod = new ObjParser((InputStream)stream[0]).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
+		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
+		DATA_CACHE.put(loc, objmod);
+		return objmod;
 	}
 
 	public static void clearCache(){

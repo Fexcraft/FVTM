@@ -230,12 +230,22 @@ public class Resources {
 			if(respackfile != null){
 				if(Config.LOAD_ALL_RESOURCEPACKS){
 					for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntriesAll()){
-						checkEntry(entry.getResourcePack());
+						try{
+							checkEntry(entry.getResourcePack());
+						}
+						catch(Exception e){
+							e.printStackTrace();
+						}
 					}
 				}
 				else{
 					for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()){
-						checkEntry(entry.getResourcePack());
+						try{
+							checkEntry(entry.getResourcePack());
+						}
+						catch(Exception e){
+							e.printStackTrace();
+						}
 					}
 				}
 			}

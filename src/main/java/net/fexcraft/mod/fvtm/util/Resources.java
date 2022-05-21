@@ -26,8 +26,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -949,17 +947,6 @@ public class Resources {
 		boolean bool = Loader.isModLoaded(modid);
 		LOADED_MODS.put(modid, bool);
 		return bool;
-	}
-	
-	public static ObjModel getObjModelFromCache(ResourceLocation loc, boolean flip_x, boolean flip_f, boolean flip_u, boolean flip_v, boolean norm){
-		if(OBJ_MODEL_DATA_CACHE.containsKey(loc)){
-			return OBJ_MODEL_DATA_CACHE.get(loc);
-		}
-		Object[] stream = getModelInputStreamWithFallback(loc);
-		ObjModel objmod = new ObjParser((InputStream)stream[0]).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
-		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
-		OBJ_MODEL_DATA_CACHE.put(loc, objmod);
-		return objmod;
 	}
 	
 	/*private static final BiConsumer<ArrayList<TileEntity>, Junction> LINK_TO_JUNC = (tiles, junction) -> {

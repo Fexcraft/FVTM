@@ -36,6 +36,7 @@ public class JTMTModelLoader implements ModelLoader {
 		}
 		int tx = confdata.values.set(Model.TEXTURE_WIDTH, obj.get("texture_size_x").getAsInt());
 		int ty = confdata.values.set(Model.TEXTURE_HEIGHT, obj.get("texture_size_y").getAsInt());
+		confdata.values.set(Model.SMOOTHSHADING, () -> obj.has("smooth_shading") && obj.get("smooth_shading").getAsBoolean());
         try{
             if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
                 JsonObject modelobj = obj.get("model").getAsJsonObject();

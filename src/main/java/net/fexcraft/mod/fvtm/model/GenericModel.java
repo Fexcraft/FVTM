@@ -23,7 +23,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
-import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
@@ -66,6 +65,9 @@ public class GenericModel implements Model {
 	
 	@Override
 	public void lock(){
+		for(TurboList list : groups){
+			if(list.hasPrograms()) list.initPrograms();
+		}
 		this.locked = true;
 	}
 	
@@ -206,84 +208,6 @@ public class GenericModel implements Model {
 	 * @param groups Empty when no filter been specified, every group is loaded then.
 	 */
 	public GenericModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups, boolean excludeobjs){
-		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
-		for(String auth : authors) this.creators.add(auth);
-		try{
-			String tex = ObjParser.getCommentValue(objdata, "TextureSizeX:");
-			String tey = ObjParser.getCommentValue(objdata, "TextureSizeY:");
-			this.textureX = tex == null ? 256 : Integer.parseInt(tex);
-			this.textureY = tey == null ? 256 : Integer.parseInt(tey);
-		}
-		catch(Exception e){
-			this.textureX = 256;
-			this.textureY = 256;
-			e.printStackTrace();
-		}
-		boolean flip_x = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));
-		boolean flip_f = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipFaces:"));
-		boolean flip_u = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipU:"));
-		boolean flip_v = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipV:"));
-		this.smooth_shading = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:"));
-		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
-		ObjModel objmod = ObjModelLoader.getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
-		if(objgroups.isEmpty()){
-			for(String str : objmod.polygons.keySet()) addGroup(str, objmod);
-		}
-		else{
-			if(excludeobjs){
-				for(String str : objmod.polygons.keySet()){
-					if(objgroups.contains(str) && excludeobjs) continue;
-					addGroup(str, objmod);
-				}
-			}
-			else{
-				for(String str : objgroups){
-					if(!objmod.polygons.containsKey(str)) continue;
-					addGroup(str, objmod);
-				}
-			}
-		}
-		//
-		List<String[]> programs = ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null, null);
-		if(!programs.isEmpty()){
-			for(String[] args : programs){
-				if(!groups.contains(args[0])) continue;
-				try{
-					groups.get(args[0]).addProgram(parseProgram(args));
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		List<String[]> condprograms = ObjParser.getCommentValues(objdata, new String[]{ "CondPrograms:" }, "||", null);
-		if(!condprograms.isEmpty()){
-			for(String[] args : condprograms){
-				if(!groups.contains(args[0])) continue;
-				try{
-					ConditionBased prog = new ConditionBased(args[1]);
-					String[] sub = args[2].split("|");
-					for(String s : sub){
-						prog.add(parseProgram(s.trim().split(" ")));
-					}
-					if(args.length > 3){
-						sub = args[3].split("|");
-						for(String s : sub){
-							prog.addElse(parseProgram(s.trim().split(" ")));
-						}
-					}
-					groups.get(args[0]).addProgram(prog);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		//
-		for(TurboList list : groups){
-			if(list.hasPrograms()) list.initPrograms();
-		}
-		//
 		List<String[]> pivots = ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null, null);
 		if(!pivots.isEmpty()){
 			for(String[] args : pivots){

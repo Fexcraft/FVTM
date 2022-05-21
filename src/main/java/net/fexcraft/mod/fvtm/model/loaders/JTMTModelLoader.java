@@ -49,7 +49,7 @@ public class JTMTModelLoader implements ModelLoader {
                 	JsonObject group = entry.getValue().getAsJsonObject();
                 	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), tx, ty)));
                 	if(group.has("fvtm:programs")){
-                		ArrayList<Object> arr = confdata.values.get("Programs", () -> new ArrayList<>());
+                		ArrayList<Object> arr = confdata.values.get(Model.PROGRAMS, () -> new ArrayList<>());
                 		JsonArray array = group.get("fvtm:programs").getAsJsonArray();
                 		for(JsonElement elm : array){
                 			if(elm.isJsonPrimitive()) arr.add(entry.getKey() + " " + elm.getAsString());

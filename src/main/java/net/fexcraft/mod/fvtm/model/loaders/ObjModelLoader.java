@@ -72,6 +72,23 @@ public class ObjModelLoader implements ModelLoader {
 			}
 			addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
 		}
+		List<String> programs = ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null);
+		ArrayList<Object> progs = confdata.values.get(Model.PROGRAMS, () -> new ArrayList<>());
+		if(!programs.isEmpty()){
+			for(String  str : programs){
+				String[] split = str.split(" ");
+				if(!groups.contains(split[0])) continue;
+				progs.add(str);
+			}
+		}
+		ArrayList<String[]> coprogs = confdata.values.get(Model.CONDPROGRAMS, () -> new ArrayList<>());
+		List<String[]> condprograms = ObjParser.getCommentValues(objdata, new String[]{ "CondPrograms:" }, "||", null);
+		if(!condprograms.isEmpty()){
+			for(String[] args : condprograms){
+				if(!groups.contains(args[0])) continue;
+				coprogs.add(args);
+			}
+		}
 		return new Object[]{ model };
 	}
 

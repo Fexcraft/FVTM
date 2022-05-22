@@ -25,7 +25,8 @@ import net.minecraft.util.ResourceLocation;
  * 
  */
 public class GenericModel implements Model {
-	
+
+	public static final GenericModel EMPTY = new GenericModel();
 	public static final ArrayList<String> DEF_NO_CREATORS = new ArrayList<>();
 	private ArrayList<String> creators = new ArrayList<>();
 	public Transforms transforms = new Transforms();

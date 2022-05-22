@@ -9,18 +9,16 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
-import net.minecraft.entity.Entity;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.1.7 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float> {
+public class ConstructorLiftModel extends GenericModel {
 	
 	public ModelGroup engine;
 	public ModelGroup pillar;
@@ -494,26 +492,22 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 	}
 
 	@Override
-	public void render(ConstCenterEntity tile, Float ticks){
+	public void render(ModelRenderData data){
+		ConstCenterEntity tile = (ConstCenterEntity)data.tile;
 		offset.translate();
-		if(engine != null) engine.renderPlain();
+		if(engine != null) engine.render();
 		GL11.glRotatef(rotation, 0, 1, 0);
-		pillar.renderPlain();
+		pillar.render();
 		float off = (yoff - tile.getLowestLiftPoint());
 		GL11.glTranslatef(0, tile.getRawLiftState() + off + .25f, 0);
-		glider.renderPlain();
-		arm0.renderPlain();
-		arm1.renderPlain();
-		holder0.renderPlain();
-		holder1.renderPlain();
+		glider.render();
+		arm0.render();
+		arm1.render();
+		holder0.render();
+		holder1.render();
 		GL11.glTranslatef(0, -tile.getRawLiftState() - off - .25f, 0);
 		GL11.glRotatef(-rotation, 0, 1, 0);
 		offset.translateR();
-	}
-
-	@Override
-	public void render(ConstCenterEntity tile, Float ticks, Entity ent, RenderCache cache){
-		this.render(tile, ticks);
 	}
 	
 	public static ArrayList<ConstructorLiftModel> setup(VehicleData data){

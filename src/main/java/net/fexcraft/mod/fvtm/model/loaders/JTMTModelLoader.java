@@ -34,21 +34,21 @@ public class JTMTModelLoader implements ModelLoader {
 				confdata.creators().add(elm.getAsString());
 			});
 		}
-		int tx = confdata.values.set(Model.TEXTURE_WIDTH, obj.get("texture_size_x").getAsInt());
-		int ty = confdata.values.set(Model.TEXTURE_HEIGHT, obj.get("texture_size_y").getAsInt());
+		model.textureX = confdata.values.set(Model.TEXTURE_WIDTH, obj.get("texture_size_x").getAsInt());
+		model.textureY = confdata.values.set(Model.TEXTURE_HEIGHT, obj.get("texture_size_y").getAsInt());
 		confdata.values.set(Model.SMOOTHSHADING, () -> obj.has("smooth_shading") && obj.get("smooth_shading").getAsBoolean());
         try{
             if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
                 JsonObject modelobj = obj.get("model").getAsJsonObject();
                 for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-                	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), tx, ty)));
+                	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), model.textureX, model.textureY)));
                 }
             }
             else{
             	JsonObject modelobj = obj.get("groups").getAsJsonObject();
                 for(Entry<String, JsonElement> entry : modelobj.entrySet()){
                 	JsonObject group = entry.getValue().getAsJsonObject();
-                	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), tx, ty)));
+                	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), model.textureX, model.textureY)));
                 	if(group.has("fvtm:programs")){
                 		ArrayList<Object> arr = confdata.values.get(Model.PROGRAMS, () -> new ArrayList<>());
                 		JsonArray array = group.get("fvtm:programs").getAsJsonArray();

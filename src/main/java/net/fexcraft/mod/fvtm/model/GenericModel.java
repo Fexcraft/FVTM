@@ -17,7 +17,6 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -202,74 +201,6 @@ public class GenericModel implements Model {
 			Static.stop();
 		}
 		return (M)this;
-	}
-
-	/**
-	 * @param groups Empty when no filter been specified, every group is loaded then.
-	 */
-	public GenericModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups, boolean excludeobjs){
-		List<String[]> pivots = ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null, null);
-		if(!pivots.isEmpty()){
-			for(String[] args : pivots){
-				if(!groups.contains(args[0])) continue;
-				try{
-					TurboList group = groups.get(args[0]);
-					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-					Vec3f rotation = new Vec3f(
-						args.length > 4 ? Float.parseFloat(args[4]) : 0,
-						args.length > 5 ? Float.parseFloat(args[5]) : 0,
-						args.length > 6 ? Float.parseFloat(args[6]) : 0
-					);
-					for(ModelRendererTurbo turbo : group){
-						for(TexturedPolygon poly : turbo.getFaces()){
-							for(TexturedVertex vert : poly.getVertices()){
-								vert.vector = vert.vector.sub(vector);
-							}
-						}
-						turbo.rotationPointX = vector.x;
-						turbo.rotationPointY = vector.y;
-						turbo.rotationPointZ = vector.z;
-						turbo.rotationAngleX = rotation.x;
-						turbo.rotationAngleY = rotation.y;
-						turbo.rotationAngleZ = rotation.z;
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		List<String[]> offsets = ObjParser.getCommentValues(objdata, new String[]{ "Offset:" }, null, null);
-		if(!offsets.isEmpty()){
-			for(String[] args : offsets){
-				if(!groups.contains(args[0])) continue;
-				try{
-					TurboList group = groups.get(args[0]);
-					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-					for(ModelRendererTurbo turbo : group){
-						for(TexturedPolygon poly : turbo.getFaces()){
-							for(TexturedVertex vert : poly.getVertices()){
-								vert.vector = vert.vector.sub(vector);
-							}
-						}
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		List<String[]> transforms = ObjParser.getCommentValues(objdata, new String[]{ "Transform:" }, null, null);
-		if(!transforms.isEmpty()){
-			for(String[] args : transforms){
-				try{
-					this.transforms.parse(args);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 
 	public void addGroup(String str, ObjModel objmod){

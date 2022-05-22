@@ -56,40 +56,10 @@ public class GenericModel implements Model {
 	
 	@Override
 	public GenericModel parse(ModelData data){
-		List<String> list = data.values.get("Creators");
-		for(String str : list) this.addToCreators(str);
+		smooth_shading = data.get(SMOOTHSHADING);
+		
 		
 		return this;
-	}
-	
-	@Override
-	public void lock(){
-		for(TurboList list : groups){
-			if(list.hasPrograms()) list.initPrograms();
-		}
-		this.locked = true;
-	}
-	
-	public static TurboList.Program parseProgram(JsonElement elm) throws Exception {
-		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
-		TurboList.Program prog = TurboList.PROGRAMS.get(id);
-		if(prog == null){
-			throw new Exception("TL-PROGRAM WITH ID '" + id + "' NOT FOUND!");
-		}
-		return prog.parse(elm);
-	}
-	
-	private static TurboList.Program parseProgram(String[] args) throws Exception {
-		if(args[1].startsWith("[") || args[1].startsWith("{")){
-			return parseProgram(JsonUtil.getFromString(args[1]));
-		}
-		else{
-			TurboList.Program prog = TurboList.PROGRAMS.get(args[1]);
-			if(prog == null){
-				throw new Exception("TL-PROGRAM WITH ID '" + args[1] + "' NOT FOUND!");
-			}
-			return prog.parse(Arrays.copyOfRange(args, 2, args.length));
-		}
 	}
 	
 	public <M extends GenericModel> M parse(Object[] stream, String type){
@@ -201,6 +171,36 @@ public class GenericModel implements Model {
 			Static.stop();
 		}
 		return (M)this;
+	}   
+	
+	@Override
+	public void lock(){
+		for(TurboList list : groups){
+			if(list.hasPrograms()) list.initPrograms();
+		}
+		this.locked = true;
+	}
+	
+	public static TurboList.Program parseProgram(JsonElement elm) throws Exception {
+		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
+		TurboList.Program prog = TurboList.PROGRAMS.get(id);
+		if(prog == null){
+			throw new Exception("TL-PROGRAM WITH ID '" + id + "' NOT FOUND!");
+		}
+		return prog.parse(elm);
+	}
+	
+	private static TurboList.Program parseProgram(String[] args) throws Exception {
+		if(args[1].startsWith("[") || args[1].startsWith("{")){
+			return parseProgram(JsonUtil.getFromString(args[1]));
+		}
+		else{
+			TurboList.Program prog = TurboList.PROGRAMS.get(args[1]);
+			if(prog == null){
+				throw new Exception("TL-PROGRAM WITH ID '" + args[1] + "' NOT FOUND!");
+			}
+			return prog.parse(Arrays.copyOfRange(args, 2, args.length));
+		}
 	}
 
 	public void addGroup(String str, ObjModel objmod){

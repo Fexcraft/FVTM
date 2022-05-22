@@ -54,26 +54,13 @@ public interface Model {
 		public BlockData block;
 		public Colorable color;
 		public PartData part;
-		public String key;
+		public String part_category;
 		
 		public RenderCache cache;
 		
 	}
 	
-	public static class ModelData {
-		
-		public DataMap values = new DataMap();
-		public ArrayList<String> filter_groups = new ArrayList<>();
-		public boolean exclude_groups;
-		
-		public ArrayList<String> creators(){
-			if(!values.containsKey("creators")) values.put("creators", new ArrayList<String>());
-			return values.get("creators");
-		}
-		
-	}
-	
-	public static class DataMap extends HashMap<String, Object> {
+	public static class ModelData extends HashMap<String, Object> {
 		
 		/** Gets the specific value based on key, will return null if missing. */
 		public <T> T get(String key){
@@ -101,6 +88,11 @@ public interface Model {
 
 		public boolean contains(String key){
 			return containsKey(key);
+		}
+		
+		public ArrayList<String> creators(){
+			if(!containsKey("creators")) put("creators", new ArrayList<String>());
+			return get("creators");
 		}
 		
 	}

@@ -1,39 +1,28 @@
 package net.fexcraft.mod.fvtm.model;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.TransformMap;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 public class VehicleModel extends GenericModel implements FCLItemModel {
 	
 	public static final VehicleModel EMPTY = new VehicleModel();
-	public static final String[] defval = new String[]{ "chassis", "body", "body_colored_primary", "body_colored_secondary",
+	@Deprecated public static final String[] defval = new String[]{ "chassis", "body", "body_colored_primary", "body_colored_secondary",
 		"body_door_open", "body_door_close", "body_door_open_colored_primary", "body_door_close_colored_primary",
 		"turret", "steering", "wheels_import"
 	};
+    public static final ModelRenderData RENDERDATA = new ModelRenderData();
 	
 	////-///---/---///-////
 	
@@ -41,68 +30,54 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 	public final TransformMap item_translate = new TransformMap(1);
 	public final TransformMap item_rotate = new TransformMap(2);
 	
-	public VehicleModel(){
-		super();
-	}
-	
-	public VehicleModel(JsonObject obj){
-		super(obj);
-	}
-	
 	@Override
-	public VehicleModel parse(Object[] stream, String type){
-		try{
-			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
-			if(data.containsKey("ItemScale")){
-				Object obj = data.get("ItemScale");
-				if(obj instanceof ArrayList){
-					ArrayList<String> list = (ArrayList<String>)obj;
-					for(String str : list){
-						try{
-							parseItemTransform(0, str);
-						}
-						catch(Exception e){
-							e.printStackTrace();
-						}
-					}
-				}
-				else{
-					try{
-						item_scale.setAll(Float.parseFloat(obj.toString()));
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			}
-			if(data.containsKey("ItemTranslate")){
-				ArrayList<String> list = (ArrayList<String>)data.get("ItemTranslate");
+	public VehicleModel parse(ModelData data){
+		super.parse(data);
+		if(data.contains("ItemScale")){
+			Object obj = data.get("ItemScale");
+			if(obj instanceof ArrayList){
+				ArrayList<String> list = (ArrayList<String>)obj;
 				for(String str : list){
 					try{
-						parseItemTransform(1, str);
+						parseItemTransform(0, str);
 					}
 					catch(Exception e){
 						e.printStackTrace();
 					}
 				}
 			}
-			if(data.containsKey("ItemRotate")){
-				ArrayList<String> list = (ArrayList<String>)data.get("ItemRotate");
-				for(String str : list){
-					try{
-						parseItemTransform(2, str);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
+			else{
+				try{
+					item_scale.setAll(Float.parseFloat(obj.toString()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
 				}
 			}
-			stream[0] = data;
 		}
-		catch(IOException e){
-			e.printStackTrace();
+		if(data.contains("ItemTranslate")){
+			ArrayList<String> list = data.get("ItemTranslate");
+			for(String str : list){
+				try{
+					parseItemTransform(1, str);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
 		}
-		return super.parse(stream, type);
+		if(data.contains("ItemRotate")){
+			ArrayList<String> list = data.get("ItemRotate");
+			for(String str : list){
+				try{
+					parseItemTransform(2, str);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return this;
 	}
 	
 	private void parseItemTransform(int type, String str) throws Exception {
@@ -163,70 +138,6 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 			}
 		}
 	}
-
-	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
-		super(loc, data, objgroups, exclude);
-		try{
-			String val = ObjParser.getCommentValue(data, "ItemScale:");
-			if(val != null){
-				item_scale.setAll(Float.parseFloat(val));
-			}
-			List<String> iscal = ObjParser.getCommentValues(data, new String[]{ "ItemScale:" }, 0);
-			if(iscal.size() > 0){
-				for(String str : iscal){
-					try{
-						if(NumberUtils.isCreatable(str)){
-							item_scale.setAll(Float.parseFloat(str));
-						}
-						else parseItemTransform(0, str);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			}
-			List<String> itrans = ObjParser.getCommentValues(data, new String[]{ "ItemTranslate:" }, 0);
-			if(itrans.size() > 0){
-				for(String str : itrans){
-					try{
-						parseItemTransform(1, str);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			}
-			List<String> irotat = ObjParser.getCommentValues(data, new String[]{ "ItemRotate:" }, 0);
-			if(irotat.size() > 0){
-				for(String str : irotat){
-					try{
-						parseItemTransform(2, str);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void render(VehicleData data, Object key){
-		transforms.apply();
-		for(ModelGroup list : groups) list.render(null, data, data, null, null);
-		transforms.deapply();
-	}
-
-	@Override
-	public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
-		transforms.apply();
-        GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(ModelGroup list : groups) list.render(ent, data, data, null, cache);
-		transforms.deapply();
-	}
 	
 	////-///---/---///-////
 	
@@ -265,18 +176,18 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 			GL11.glPushMatrix();
 			GL11.glRotated(180d, 1, 0, 0);
 			bindTexture(data.getCurrentTexture());
-			model.render(data, null, null, null);
+			model.render(RENDERDATA.set(data, null, null));
 			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				bindTexture(entry.getValue().getCurrentTexture());
             	if(entry.getValue().isInstalledOnSwivelPoint()){
             		GL11.glPushMatrix();
     	            PartModel.translateAndRotatePartOnSwivelPointFast(data, entry.getValue());
-                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null);
+                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey()));
     	            GL11.glPopMatrix();
             	}
             	else{
                 	entry.getValue().getInstalledPos().translate();
-                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null);
+                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey()));
                     entry.getValue().getInstalledPos().translateR();
             	}
 			}

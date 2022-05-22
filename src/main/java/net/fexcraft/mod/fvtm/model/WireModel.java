@@ -4,20 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.model.WirePrograms.DownwardAngled;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class WireModel extends GenericModel {
@@ -31,22 +21,13 @@ public class WireModel extends GenericModel {
 	protected ArrayList<String> accepts = new ArrayList<>();
 	protected String key, decotype = "relay";
 	
-	public WireModel(){ super(); }
-	
-	public WireModel(JsonObject obj){ super(obj); }
-	
 	@Override
-	public WireModel parse(Object[] stream, String type){
-		return super.parse(stream, type);
-	}
-	
-	public WireModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
-		super(loc, data, objgroups, exclude);
-		wire_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "WireCulling:"));
-		List<String[]> wires = ObjParser.getCommentValues(data, new String[]{ "Wire:" }, null, null);
-		if(wires.isEmpty()) return;
+	public WireModel parse(ModelData data){
+		wire_tempcull = data.get("WireCulling", false);
+		List<String> wires = data.getList("Wire");
+		if(wires.isEmpty()) return this;
 		for(int i = 0; i < wires.size(); i++){
-			String[] args = wires.get(i);
+			String[] args = wires.get(i).trim().split(" ");
 			boolean rect = args[0].equals("rect") || args[0].equals("flat");
 			float scale = Float.parseFloat(args[1]);
 			float sx = Float.parseFloat(args[2]);
@@ -62,37 +43,7 @@ public class WireModel extends GenericModel {
 				this.addWireRectShape(i, scale, sx, sy, w, h, tl, tr, bl, br, m);
 			}
 		}
-		/*wires = ObjParser.getCommentValues(data, new String[]{ "WireData:" }, null, null);
-		for(String[] args : wires){
-			int idx = Integer.parseInt(args[0]);
-			if(args.length < 2) continue;
-			Object[] odata = new Object[1];
-			for(int i = 1; i < args.length; i++){
-				String[] split = args[i].split(":");
-				switch(split[0]){
-					case "noslack":{
-						odata[0] = true;
-						break;
-					}
-				}
-			}
-			wire_data.put(idx, odata);
-		}*/
-	}
-
-	@Override
-	public void render(BlockData data, TileEntity tile){
-		transforms.apply();
-		for(ModelGroup list : groups) list.renderBlock(tile, data, null);
-		transforms.deapply();
-	}
-
-	@Override
-	public void render(BlockData data, TileEntity tile, Entity ent, RenderCache cache){
-		transforms.apply();
-		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(ModelGroup list : groups) list.renderBlock(tile, data, cache);
-		transforms.deapply();
+		return this;
 	}
 	
 	public void addWireRect(int idx, float scale, float start_x, float start_y, float width, float height, boolean mirror){
@@ -169,7 +120,7 @@ public class WireModel extends GenericModel {
 	public float getLongestDownward(){
 		float l = 0.01f;
 		for(ModelGroup list : groups){
-			for(Program program : list.programs){
+			for(Program program : list.getAllPrograms()){
 				if(program instanceof DownwardAngled){
 					DownwardAngled prog = (DownwardAngled)program;
 					if(prog.length() > l) l = prog.length();

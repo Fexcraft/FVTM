@@ -42,12 +42,11 @@ public class ObjModelLoader implements ModelLoader {
 		//
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
 		for(String auth : authors) confdata.creators().add(auth);
-		//int tx = 256, ty = 256;
 		try{
 			String tex = ObjParser.getCommentValue(objdata, "TextureSizeX:");
 			String tey = ObjParser.getCommentValue(objdata, "TextureSizeY:");
-			confdata.values.get(Model.TEXTURE_WIDTH, () -> tex == null ? 256 : Integer.parseInt(tex));
-			confdata.values.get(Model.TEXTURE_WIDTH, () -> tey == null ? 256 : Integer.parseInt(tex));
+			model.textureX = confdata.values.get(Model.TEXTURE_WIDTH, () -> tex == null ? 256 : Integer.parseInt(tex));
+			model.textureY = confdata.values.get(Model.TEXTURE_WIDTH, () -> tey == null ? 256 : Integer.parseInt(tex));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -72,24 +71,13 @@ public class ObjModelLoader implements ModelLoader {
 			}
 			addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
 		}
-		List<String> programs = ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null);
-		ArrayList<Object> progs = confdata.values.get(Model.PROGRAMS, () -> new ArrayList<>());
-		if(!programs.isEmpty()){
-			for(String  str : programs){
-				String[] split = str.split(" ");
-				if(!groups.contains(split[0])) continue;
-				progs.add(str);
-			}
-		}
-		ArrayList<String[]> coprogs = confdata.values.get(Model.CONDPROGRAMS, () -> new ArrayList<>());
-		List<String[]> condprograms = ObjParser.getCommentValues(objdata, new String[]{ "CondPrograms:" }, "||", null);
-		if(!condprograms.isEmpty()){
-			for(String[] args : condprograms){
-				if(!groups.contains(args[0])) continue;
-				coprogs.add(args);
-			}
-		}
-		return new Object[]{ model };
+		//
+		confdata.values.get(Model.PROGRAMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null));
+		confdata.values.get(Model.CONDPROGRAMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "CondPrograms:" }, null));
+		confdata.values.get(Model.PIVOTS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null));
+		confdata.values.get(Model.OFFSET, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Offset:" }, null));
+		confdata.values.get(Model.TRANSFORMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Transform:" }, null));
+		return new Object[]{ model, confdata };
 	}
 
 	private void addObjGroups(GenericModel model, ResourceLocation loc, ArrayList<String> groups, boolean exclude, boolean flip_x, boolean flip_f, boolean flip_u, boolean flip_v, boolean norm){

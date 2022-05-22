@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
@@ -42,7 +43,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
-	protected Model<VehicleData, Object> model;
+	protected Model model;
+	protected ModelData modeldata;
 	protected List<NamedResourceLocation> textures;
 	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
@@ -184,7 +186,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? obj.get("PartSlots").getAsJsonArray() : new JsonArray());
 		//
-		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(Static.isClient()){
+			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+			modeldata = DataUtil.getModelData(obj);
+		}
 		this.overlayid = obj.has("Overlay") ? obj.get("Overlay").getAsString() : "default";
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
@@ -217,13 +222,13 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return new ItemStack(item, 1);
 	}
 
-	public Model<VehicleData, Object> getModel(){
+	public Model getModel(){
 		return model;
 	}
 
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, VehicleModel.class);
+		this.model = Resources.getModel(modelid, modeldata, VehicleModel.class);
 	}
 
 	public <ATTR extends Attribute<?>> ATTR getBaseAttribute(String id){

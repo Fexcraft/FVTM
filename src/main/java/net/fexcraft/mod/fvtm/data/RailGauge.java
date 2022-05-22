@@ -15,6 +15,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
@@ -44,6 +45,7 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 	//
 	protected String modelid, ctab;
 	protected RailGaugeModel model;
+	protected ModelData modeldata;
 	protected ArrayList<RailPresetItem> presets;
 	protected ResourceLocation itemloc;
 	
@@ -97,7 +99,10 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 			rail_offsets = new float[]{ -(inner_width / 2), inner_width / 2 }; 
 		}*/
 		this.compatible = DataUtil.getStringArray(obj, "Compatible", false, true);
-		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(Static.isClient()){
+			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+			modeldata = DataUtil.getModelData(obj);
+		}
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
@@ -175,7 +180,7 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 	
 	@Override
 	public void loadModel(){
-		this.model = (RailGaugeModel)Resources.getModel(modelid, RailGaugeModel.class);
+		this.model = (RailGaugeModel)Resources.getModel(modelid, modeldata, RailGaugeModel.class);
 	}
 	
 	public ResourceLocation getRailTexture(){

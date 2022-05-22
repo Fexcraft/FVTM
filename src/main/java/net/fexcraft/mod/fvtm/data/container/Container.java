@@ -10,12 +10,14 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -41,7 +43,8 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected List<NamedResourceLocation> textures;
-	protected Model<ContainerData, Object> model;
+	protected Model model;
+	protected ModelData modeldata;
 	protected ResourceLocation keytype;
 	protected ContentFilter filter;
 	protected InventoryType invtype;
@@ -101,7 +104,10 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
         	this.filter = ContentFilter.FILTER_REGISTRY.get(obj.get("ContentFilter").getAsString());
         }
 		//
-		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(Static.isClient()){
+			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+			modeldata = DataUtil.getModelData(obj);
+		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
@@ -122,7 +128,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, ContainerModel.class);
+		this.model = Resources.getModel(modelid, modeldata, ContainerModel.class);
 	}
 	
 	public ContainerItem getVehicleItem(){
@@ -138,7 +144,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<ContainerData, Object> getModel(){
+	public Model getModel(){
 		return model;
 	}
 

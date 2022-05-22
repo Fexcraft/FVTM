@@ -26,6 +26,9 @@ public interface Model {
 	public static final String CONDPROGRAMS = "CondPrograms";
 	public static final String SMOOTHSHADING = "SmoothShading";
 	public static final String OBJ_INCLUDE = "Include";
+	public static final String PIVOTS = "Pivots";
+	public static final String OFFSET = "Offset";
+	public static final String TRANSFORMS = "Transforms";
 
 	/**  Render call. */
 	public void render(ModelRenderData data);

@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.minecraft.entity.Entity;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
@@ -22,13 +22,13 @@ import net.minecraft.entity.Entity;
  */
 public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float> {
 	
-	public TurboList engine;
-	public TurboList pillar;
-	public TurboList glider;
-	public TurboList holder0;
-	public TurboList holder1;
-	public TurboList arm0;
-	public TurboList arm1;
+	public ModelGroup engine;
+	public ModelGroup pillar;
+	public ModelGroup glider;
+	public ModelGroup holder0;
+	public ModelGroup holder1;
+	public ModelGroup arm0;
+	public ModelGroup arm1;
 	private float rotation, yoff;
 	private Pos offset;
 	private float zoff = 10;
@@ -54,7 +54,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		yoff = point.pos.y16;
 		//
 		if(point.pos.z >= 0){
-			engine = new TurboList("engine");
+			engine = new ModelGroup("engine");
 			engine.add(new ModelRendererTurbo(engine, 25, 16, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 8, 12, 0, 1, 1, 4,
 				null, new boolean[]{ true, true, false, true })
 				.setRotationPoint(0, -15, 5).setRotationAngle(0, 0, 0)
@@ -109,7 +109,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		}
 		else rotation = 180;
 		//
-		pillar = new TurboList("pillar");
+		pillar = new ModelGroup("pillar");
 		pillar.add(new ModelRendererTurbo(pillar, 5, 56, textureX, textureY).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
@@ -424,7 +424,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		);
 		this.groups.add(pillar);
 		//
-		glider = new TurboList("glider");
+		glider = new ModelGroup("glider");
 		glider.add(new ModelRendererTurbo(glider, 25, 60, textureX, textureY)
 			.addShapeBox(0, 0, 0, 8, 2, 2, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-4, -2, -2).setRotationAngle(0, 0, 0)
@@ -433,7 +433,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		this.groups.add(glider);
 		//
 		Vec3f hol0 = new Vec3f(singular ? 3 : dis, -4, -zoff - 1);
-		holder0 = new TurboList("holder0");
+		holder0 = new ModelGroup("holder0");
 		holder0.add(new ModelRendererTurbo(holder0, 48, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
 			.setRotationPoint(hol0.x, hol0.y + 0.5f, hol0.z).setRotationAngle(0, 0, 0)
@@ -447,7 +447,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		this.groups.add(holder0);
 		//
 		Vec3f hol1 = new Vec3f(singular ? -3 : -dis, -4, -zoff - 1);
-		holder1 = new TurboList("holder1");
+		holder1 = new ModelGroup("holder1");
 		holder1.add(new ModelRendererTurbo(holder1, 39, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
 			.setRotationPoint(hol1.x, hol1.y + 0.5f, hol1.z).setRotationAngle(0, 0, 0)
@@ -461,7 +461,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		this.groups.add(holder1);
 		//
 		Vec3f ar0m = new Vec3f(3, -2, -1);
-		arm0 = new TurboList("arm0");
+		arm0 = new ModelGroup("arm0");
 		arm0.add(new ModelRendererTurbo(arm0, 39, 49, textureX, textureY).newBoxBuilder()
 			.setOffset(0, 0, -0.5f).setSize((int)ar0m.dis(hol0) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
@@ -477,7 +477,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		this.groups.add(arm0);
 		//
 		Vec3f ar1m = new Vec3f(-3, -2, -1);
-		arm1 = new TurboList("arm1");
+		arm1 = new ModelGroup("arm1");
 		arm1.add(new ModelRendererTurbo(arm1, 39, 54, textureX, textureY).newBoxBuilder()
 			.setOffset(0, 0, -0.5f).setSize((int)ar1m.dis(hol1) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)

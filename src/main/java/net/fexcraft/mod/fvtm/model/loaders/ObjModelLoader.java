@@ -12,10 +12,12 @@ import java.util.regex.Pattern;
 
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
@@ -125,22 +127,26 @@ public class ObjModelLoader implements ModelLoader {
 	private void addObjGroups(GenericModel model, ResourceLocation loc, ArrayList<String> groups, boolean exclude, boolean flip_x, boolean flip_f, boolean flip_u, boolean flip_v, boolean norm){
 		ObjModel objmod = getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
 		if(groups.isEmpty()){
-			for(String str : objmod.polygons.keySet()) model.addGroup(str, objmod);
+			for(String str : objmod.polygons.keySet()) addGroup(model, str, objmod);
 		}
 		else{
 			if(exclude){
 				for(String str : objmod.polygons.keySet()){
 					if(groups.contains(str) && exclude) continue;
-					model.addGroup(str, objmod);
+					addGroup(model, str, objmod);
 				}
 			}
 			else{
 				for(String str : groups){
 					if(!objmod.polygons.containsKey(str)) continue;
-					model.addGroup(str, objmod);
+					addGroup(model, str, objmod);
 				}
 			}
 		}
+	}
+
+	public void addGroup(GenericModel model, String str, ObjModel objmod){
+		model.groups.add(new ModelGroup(str, new ModelRendererTurbo(null, 0, 0, model.textureX, model.textureY).copyTo(objmod.polygons.get(str))));
 	}
 
 	private ObjModel loadObjData(ResourceLocation loc) throws IOException {

@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.event.ConditionEvent;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -278,7 +278,7 @@ public class Condition {
 	@FunctionalInterface
 	public static interface Conditional {
 		
-		boolean isMet(GenericVehicle ent, BlockTileEntity tile, VehicleData vehdata, ContainerData condata, BlockData blkdata, PartData partdata, String part, TurboList list, RenderCache cache);
+		boolean isMet(GenericVehicle ent, BlockTileEntity tile, VehicleData vehdata, ContainerData condata, BlockData blkdata, PartData partdata, String part, ModelGroup list, RenderCache cache);
 		
 	}
 

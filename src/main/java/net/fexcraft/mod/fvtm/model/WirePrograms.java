@@ -15,7 +15,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
@@ -30,11 +30,11 @@ import net.minecraft.tileentity.TileEntity;
 public class WirePrograms {
 	
 	public static void init(){
-		TurboList.PROGRAMS.add(new RotateY(0));
-		TurboList.PROGRAMS.add(ROTATED);
-		TurboList.PROGRAMS.add(new DownwardAngled(0, false));
-		TurboList.PROGRAMS.add(new SpacedDeco());
-		TurboList.PROGRAMS.add(new CatenaryDropper());
+		ModelGroup.PROGRAMS.add(new RotateY(0));
+		ModelGroup.PROGRAMS.add(ROTATED);
+		ModelGroup.PROGRAMS.add(new DownwardAngled(0, false));
+		ModelGroup.PROGRAMS.add(new SpacedDeco());
+		ModelGroup.PROGRAMS.add(new CatenaryDropper());
 	}
 	
 	public static class RotateY implements Program {
@@ -49,7 +49,7 @@ public class WirePrograms {
 			return "fvtm:wire_rotate_y";
 		}
 		
-		public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 			GL11.glRotatef(deg, 0, 1, 0);
 		}
 
@@ -69,7 +69,7 @@ public class WirePrograms {
 			return "fvtm:wire_rotated";
 		}
 		
-		public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 			GL11.glRotatef(WireRenderer.ANGLE, 0, 1, 0);
 		}
 		
@@ -97,7 +97,7 @@ public class WirePrograms {
 			return "fvtm:wire_downward_angled";
 		}
 		
-		public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 			GL11.glRotatef(WireRenderer.ANGLE_DOWN, 1, 0, 0);
 		}
 
@@ -169,7 +169,7 @@ public class WirePrograms {
 		}
 
 		@SuppressWarnings("rawtypes")
-		public ArrayList generate(WireRelay relay, Wire wire, TurboList group, String decoid, boolean vecs){
+		public ArrayList generate(WireRelay relay, Wire wire, ModelGroup group, String decoid, boolean vecs){
 			ArrayList list = vecs ? new ArrayList<Vec3f>() : new ArrayList<Float>();
 			if(symmetric){
 				int limit = this.limit * 2;
@@ -244,7 +244,7 @@ public class WirePrograms {
 
 		@SuppressWarnings("rawtypes")
 		@Override
-		public ArrayList generate(WireRelay relay, Wire wire, TurboList group, String decoid, boolean bool){
+		public ArrayList generate(WireRelay relay, Wire wire, ModelGroup group, String decoid, boolean bool){
 			ArrayList<Vec3f> veclis = super.generate(relay, wire, group, decoid, true);
 			if(!relay.getKey().equals("contact")) return veclis;
 			WireRelay other = relay.getHolder().relays.get("support");

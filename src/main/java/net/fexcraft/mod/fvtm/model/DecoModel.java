@@ -32,7 +32,7 @@ public class DecoModel extends GenericModel {
 	@Override
 	public void render(DecorationData data, Object obj){
 		transforms.apply();
-		for(TurboList list : groups){
+		for(ModelGroup list : groups){
 			list.render(null, null, data, null, null);
 		}
 		transforms.deapply();
@@ -42,7 +42,7 @@ public class DecoModel extends GenericModel {
 	public void render(DecorationData data, Object obj, Entity ent, RenderCache cache){
 		transforms.apply();
 		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups){
+		for(ModelGroup list : groups){
 			list.render(ent, null, data, null, cache);
 		}
 		transforms.deapply();

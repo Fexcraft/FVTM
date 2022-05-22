@@ -1,11 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -17,8 +13,6 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
@@ -51,25 +45,20 @@ public class GenericModel implements Model {
 
 	@Override
 	public void render(ModelRenderData data){
-		// TODO Auto-generated method stub
+		transforms.apply();
+        GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
+		for(ModelGroup list : groups) list.render(data);
+		transforms.deapply();
 	}
 	
 	@Override
 	public GenericModel parse(ModelData data){
 		smooth_shading = data.get(SMOOTHSHADING);
-		
-		
-		return this;
-	}
-	
-	public <M extends GenericModel> M parse(Object[] stream, String type){
-		if(!type.equals("fmf")) return (M)this;
-		try{
-			HashMap<String, Object> data = stream[0] instanceof InputStream ? FMFParser.parse(this, (InputStream)stream[0]) : (HashMap<String, Object>)stream[0];
-			smooth_shading = data.containsKey("SmoothShading") && Boolean.parseBoolean(data.get("SmoothShading").toString());
-			if(data.containsKey("Programs")){
-				for(String string : ((List<String>)data.get("Programs"))){
-					String[] args = string.trim().split(" ");
+		if(data.contains(PROGRAMS)){
+			ArrayList<Object> programs = data.get(PROGRAMS);
+			for(Object obj : programs){
+				if(obj instanceof String){
+					String[] args = obj.toString().trim().split(" ");
 					if(!groups.contains(args[0])) continue;
 					try{
 						groups.get(args[0]).addProgram(parseProgram(args));
@@ -78,133 +67,128 @@ public class GenericModel implements Model {
 						e.printStackTrace();
 					}
 				}
-				for(TurboList list : groups){
-					if(list.hasPrograms()) list.initPrograms();
+				else{ // most likely JsonElement from JTMT / FRL Json
+					Object[] objs = (Object[])obj;
+					if(!groups.contains(objs[0].toString())) continue;
+					try{
+						groups.get(objs[0].toString()).addProgram(parseProgram((JsonElement)objs[1]));
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 			}
-			if(data.containsKey("CondPrograms")){
-				for(String string : ((List<String>)data.get("CondPrograms"))){
-					String[] args = string.trim().split("||");
-					if(!groups.contains(args[0])) continue;
-					try{
-						ConditionBased prog = new ConditionBased(args[1]);
-						String[] sub = args[2].split("|");
+		}
+		if(data.contains(CONDPROGRAMS)){
+			ArrayList<String> programs = data.get(CONDPROGRAMS);
+			for(String string : programs){
+				String[] args = string.trim().split("||");
+				if(!groups.contains(args[0])) continue;
+				try{
+					ConditionBased prog = new ConditionBased(args[1]);
+					String[] sub = args[2].split("|");
+					for(String s : sub){
+						prog.add(parseProgram(s.trim().split(" ")));
+					}
+					if(args.length > 3){
+						sub = args[3].split("|");
 						for(String s : sub){
-							prog.add(parseProgram(s.trim().split(" ")));
-						}
-						if(args.length > 3){
-							sub = args[3].split("|");
-							for(String s : sub){
-								prog.addElse(parseProgram(s.trim().split(" ")));
-							}
-						}
-						groups.get(args[0]).addProgram(prog);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-				for(TurboList list : groups){
-					if(list.hasPrograms()) list.initPrograms();
-				}
-			}
-			if(data.containsKey("Transforms")){
-				for(String string : ((List<String>)data.get("Transforms"))){
-					transforms.parse(string.trim().split(" "));
-				}
-			}
-			if(data.containsKey("Pivots")){
-				for(String string : ((List<String>)data.get("Pivots"))){
-					String[] args = string.trim().split(" ");
-					if(!groups.contains(args[0])) continue;
-					try{
-						TurboList group = groups.get(args[0]);
-						Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-						Vec3f rotation = new Vec3f(
-							args.length > 4 ? Float.parseFloat(args[4]) : 0,
-							args.length > 5 ? Float.parseFloat(args[5]) : 0,
-							args.length > 6 ? Float.parseFloat(args[6]) : 0
-						);
-						for(ModelRendererTurbo turbo : group){
-							for(TexturedPolygon poly : turbo.getFaces()){
-								for(TexturedVertex vert : poly.getVertices()){
-									vert.vector = vert.vector.sub(vector);
-								}
-							}
-							turbo.rotationPointX = vector.x;
-							turbo.rotationPointY = vector.y;
-							turbo.rotationPointZ = vector.z;
-							turbo.rotationAngleX = rotation.x;
-							turbo.rotationAngleY = rotation.y;
-							turbo.rotationAngleZ = rotation.z;
+							prog.addElse(parseProgram(s.trim().split(" ")));
 						}
 					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
+					groups.get(args[0]).addProgram(prog);
+				}
+				catch(Exception e){
+					e.printStackTrace();
 				}
 			}
-			if(data.containsKey("Offset")){
-				for(String string : ((List<String>)data.get("Offset"))){
-					String[] args = string.trim().split(" ");
-					if(!groups.contains(args[0])) continue;
-					try{
-						TurboList group = groups.get(args[0]);
-						Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-						for(ModelRendererTurbo turbo : group){
-							for(TexturedPolygon poly : turbo.getFaces()){
-								for(TexturedVertex vert : poly.getVertices()){
-									vert.vector = vert.vector.sub(vector);
-								}
-							}
-						}
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			}
-			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
 		}
-		catch(IOException e){
-			e.printStackTrace();
-			Static.stop();
+		if(data.contains(TRANSFORMS)){
+			for(String string : ((List<String>)data.get(TRANSFORMS))){
+				transforms.parse(string.trim().split(" "));
+			}
 		}
-		return (M)this;
-	}   
+		if(data.contains(PIVOTS)){
+			for(String string : ((List<String>)data.get(PIVOTS))){
+				String[] args = string.trim().split(" ");
+				if(!groups.contains(args[0])) continue;
+				try{
+					ModelGroup group = groups.get(args[0]);
+					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					Vec3f rotation = new Vec3f(
+						args.length > 4 ? Float.parseFloat(args[4]) : 0,
+						args.length > 5 ? Float.parseFloat(args[5]) : 0,
+						args.length > 6 ? Float.parseFloat(args[6]) : 0
+					);
+					for(ModelRendererTurbo turbo : group){
+						for(TexturedPolygon poly : turbo.getFaces()){
+							for(TexturedVertex vert : poly.getVertices()){
+								vert.vector = vert.vector.sub(vector);
+							}
+						}
+						turbo.rotationPointX = vector.x;
+						turbo.rotationPointY = vector.y;
+						turbo.rotationPointZ = vector.z;
+						turbo.rotationAngleX = rotation.x;
+						turbo.rotationAngleY = rotation.y;
+						turbo.rotationAngleZ = rotation.z;
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		if(data.contains(OFFSET)){
+			for(String string : ((List<String>)data.get(OFFSET))){
+				String[] args = string.trim().split(" ");
+				if(!groups.contains(args[0])) continue;
+				try{
+					ModelGroup group = groups.get(args[0]);
+					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					for(ModelRendererTurbo turbo : group){
+						for(TexturedPolygon poly : turbo.getFaces()){
+							for(TexturedVertex vert : poly.getVertices()){
+								vert.vector = vert.vector.sub(vector);
+							}
+						}
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return this;
+	}
 	
 	@Override
 	public void lock(){
-		for(TurboList list : groups){
-			if(list.hasPrograms()) list.initPrograms();
-		}
+		if(locked) return;
+		for(ModelGroup list : groups) list.initPrograms();
 		this.locked = true;
 	}
 	
-	public static TurboList.Program parseProgram(JsonElement elm) throws Exception {
+	public static ModelGroup.Program parseProgram(JsonElement elm) throws Exception {
 		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
-		TurboList.Program prog = TurboList.PROGRAMS.get(id);
+		ModelGroup.Program prog = ModelGroup.PROGRAMS.get(id);
 		if(prog == null){
 			throw new Exception("TL-PROGRAM WITH ID '" + id + "' NOT FOUND!");
 		}
 		return prog.parse(elm);
 	}
 	
-	private static TurboList.Program parseProgram(String[] args) throws Exception {
+	private static ModelGroup.Program parseProgram(String[] args) throws Exception {
 		if(args[1].startsWith("[") || args[1].startsWith("{")){
 			return parseProgram(JsonUtil.getFromString(args[1]));
 		}
 		else{
-			TurboList.Program prog = TurboList.PROGRAMS.get(args[1]);
+			ModelGroup.Program prog = ModelGroup.PROGRAMS.get(args[1]);
 			if(prog == null){
 				throw new Exception("TL-PROGRAM WITH ID '" + args[1] + "' NOT FOUND!");
 			}
 			return prog.parse(Arrays.copyOfRange(args, 2, args.length));
 		}
-	}
-
-	public void addGroup(String str, ObjModel objmod){
-		groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
 	}
 
 	@Override
@@ -232,7 +216,7 @@ public class GenericModel implements Model {
 		TexUtil.bindTexture(texture);
 	}
 	
-	public static void fixRotations(TurboList group){
+	public static void fixRotations(ModelGroup group){
         for(ModelRendererTurbo model : group){
             if(model.isShape3D){
                 model.rotationAngleY = -model.rotationAngleY;
@@ -246,31 +230,31 @@ public class GenericModel implements Model {
     }
 	
 	public void add(String key, ModelRendererTurbo[] mrts){
-		this.groups.add(new TurboList(key, mrts));
+		this.groups.add(new ModelGroup(key, mrts));
 	}
 	
-	public TurboList get(String key){
+	public ModelGroup get(String key){
 		return groups.get(key);
 	}
 
-	public TurboList get(String string, boolean allownull){
-		TurboList list = get(string); return list == null ? allownull ? list : TurboList.EMPTY : list;
+	public ModelGroup get(String string, boolean allownull){
+		ModelGroup list = get(string); return list == null ? allownull ? list : ModelGroup.EMPTY : list;
 	}
 	
 	public void render(ModelRendererTurbo[] mrts){
 		for(ModelRendererTurbo mrt : mrts) mrt.render();
 	}
 	
-	public static final class GroupList extends ArrayList<TurboList> {
+	public static final class GroupList extends ArrayList<ModelGroup> {
 		
 		@Override
-		public boolean add(TurboList list){
+		public boolean add(ModelGroup list){
 			list.initPrograms();
 			return super.add(list);
 		}
 
-		public TurboList get(String key){
-			for(TurboList list : this) if(list.name.equals(key)) return list; return null;
+		public ModelGroup get(String key){
+			for(ModelGroup list : this) if(list.name.equals(key)) return list; return null;
 		}
 		
 		public boolean contains(String key){
@@ -279,14 +263,14 @@ public class GenericModel implements Model {
 		
 	}
 
-	public void clearDisplayLists(TurboList list){
+	public void clearDisplayLists(ModelGroup list){
 		for(ModelRendererTurbo turbo : list)
 			if(turbo != null && turbo.displaylist() != null)
 				GL11.glDeleteLists(turbo.displaylist(), 1);
 	}
 
 	public void clearDisplayLists(){
-		for(TurboList list : groups) clearDisplayLists(list);
+		for(ModelGroup list : groups) clearDisplayLists(list);
 	}
 	
 }

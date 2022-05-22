@@ -77,12 +77,12 @@ public class RailGaugeModel extends GenericModel {
 
 	@Override
 	public void render(Track data, Integer index){
-		for(TurboList list : groups){ list.renderPlain(); }
+		for(ModelGroup list : groups){ list.renderPlain(); }
 	}
 
 	@Override
 	public void render(Track data, Integer index, Entity ent, RenderCache cache){
-		for(TurboList list : groups){ list.renderPlain(); }
+		for(ModelGroup list : groups){ list.renderPlain(); }
 	}
 	
 	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror){

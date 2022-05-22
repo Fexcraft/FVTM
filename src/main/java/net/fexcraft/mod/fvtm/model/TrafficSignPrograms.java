@@ -7,17 +7,17 @@ import com.google.gson.JsonElement;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
-import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
 
 public class TrafficSignPrograms {
 
 	public static void init(){
-		TurboList.PROGRAMS.add(new ColorChannel(0));
-		TurboList.PROGRAMS.add(new SignBase());
-		TurboList.PROGRAMS.add(new SignBorder(true));
-		TurboList.PROGRAMS.add(new SignBorderEdge(true));
+		ModelGroup.PROGRAMS.add(new ColorChannel(0));
+		ModelGroup.PROGRAMS.add(new SignBase());
+		ModelGroup.PROGRAMS.add(new SignBorder(true));
+		ModelGroup.PROGRAMS.add(new SignBorderEdge(true));
 	}
 	
 	public static class ColorChannel implements Program {
@@ -34,12 +34,12 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void preRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void preRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			data.channels[channel].glColorApply();
 		}
 		
 		@Override
-		public void postRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void postRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			RGB.glColorReset();
 		}
 		
@@ -65,12 +65,12 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void preRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void preRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			list.visible = ((BaseData)data).base;
 		}
 		
 		@Override
-		public void postRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void postRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			list.visible = true;
 		}
 		
@@ -101,7 +101,7 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void preRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void preRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			if(!(list.visible = ((BaseData)data).sides[index])) return;
 			GL11.glPushMatrix();
 			switch(index){
@@ -113,7 +113,7 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void postRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void postRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			if(list.visible){
 				GL11.glPopMatrix();
 			}
@@ -182,7 +182,7 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void preRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void preRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			BaseData base = (BaseData)data;
 			if(!base.sides[idx0] || !base.sides[idx1]) list.visible = false;
 			if(!list.visible) return;
@@ -196,7 +196,7 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void postRender(TurboList list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
+		public void postRender(ModelGroup list, TrafficSignEntity ent, TrafficSignData.CompDataRoot data, RenderCache cache){
 			if(list.visible){
 				GL11.glPopMatrix();
 			}

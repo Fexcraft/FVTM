@@ -57,7 +57,7 @@ public class FMFParser {
 					break;
 				}
 				case G:{
-					TurboList list = new TurboList(readString(stream));
+					ModelGroup list = new ModelGroup(readString(stream));
 					readPolygons(stream, list, model.textureX, model.textureY);
 					model.groups.add(list);
 					break;
@@ -97,7 +97,7 @@ public class FMFParser {
 		return new String(read(stream), StandardCharsets.UTF_8);
 	}
 	
-	private static void readPolygons(InputStream stream, TurboList list, int tx, int ty) throws IOException {
+	private static void readPolygons(InputStream stream, ModelGroup list, int tx, int ty) throws IOException {
 		int r = -1, tv = 0;
 		ArrayList<TexturedVertex> verts = null;
 		ArrayList<Vec3f> norms = null;

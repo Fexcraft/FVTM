@@ -216,7 +216,7 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 	@Override
 	public void render(VehicleData data, Object key){
 		transforms.apply();
-		for(TurboList list : groups) list.render(null, data, data, null, null);
+		for(ModelGroup list : groups) list.render(null, data, data, null, null);
 		transforms.deapply();
 	}
 
@@ -224,7 +224,7 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 	public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
 		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups) list.render(ent, data, data, null, cache);
+		for(ModelGroup list : groups) list.render(ent, data, data, null, cache);
 		transforms.deapply();
 	}
 	

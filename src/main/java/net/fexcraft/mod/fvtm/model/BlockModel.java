@@ -90,7 +90,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 	@Override
 	public void render(BlockData data, TileEntity tile){
 		transforms.apply();
-		for(TurboList list : groups) list.renderBlock(tile, data, null);
+		for(ModelGroup list : groups) list.renderBlock(tile, data, null);
 		transforms.deapply();
 	}
 
@@ -98,7 +98,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 	public void render(BlockData data, TileEntity tile, Entity ent, RenderCache cache){
 		transforms.apply();
 		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups) list.renderBlock(tile, data, cache);
+		for(ModelGroup list : groups) list.renderBlock(tile, data, cache);
 		transforms.deapply();
 	}
 	
@@ -167,7 +167,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 	@Override
 	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
 		ArrayList<ModelRendererTurbo> list = new ArrayList<>();
-		for(TurboList tlist : groups) list.addAll(tlist);
+		for(ModelGroup tlist : groups) list.addAll(tlist);
 		return list;
 	}
 	

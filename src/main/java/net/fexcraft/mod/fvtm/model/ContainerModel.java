@@ -56,7 +56,7 @@ public class ContainerModel extends GenericModel implements FCLItemModel {
 	public void render(ContainerData data, Object key, Entity ent, RenderCache cache){
 		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
+		for(ModelGroup list : groups){ list.render(ent, null, data, null, cache); }
 		transforms.deapply();
 	}
 	

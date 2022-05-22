@@ -61,7 +61,7 @@ public class PartModel extends GenericModel implements FCLItemModel {
 	@Override
 	public void render(VehicleData data, String key){
 		transforms.apply();
-		for(TurboList list : groups) list.render(null, data, data, key, null);
+		for(ModelGroup list : groups) list.render(null, data, data, key, null);
 		transforms.deapply();
 	}
 
@@ -69,7 +69,7 @@ public class PartModel extends GenericModel implements FCLItemModel {
 	public void render(VehicleData data, String key, Entity ent, RenderCache cache){
 		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups) list.render(ent, data, data, key, cache);
+		for(ModelGroup list : groups) list.render(ent, data, data, key, cache);
 		transforms.deapply();
 	}
 	
@@ -136,7 +136,7 @@ public class PartModel extends GenericModel implements FCLItemModel {
 
 	public void renderItem(ItemStack item, PartData data, WheelData ihdata, EntityLivingBase entity){
 		bindTexture(data.getCurrentTexture());
-		for(TurboList list : groups) list.renderPlain();
+		for(ModelGroup list : groups) list.renderPlain();
 	}
 
 	public static void translateAndRotatePartOnSwivelPoint(VehicleData vehicle, PartData data, float ticks){

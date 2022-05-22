@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
@@ -22,7 +22,7 @@ public class JTMTModelLoader implements ModelLoader {
 
 	@Override
 	public boolean accepts(String name, String suffix){
-		return suffix.equals(".jtmt");
+		return suffix.equals(".jtmt") || suffix.equals(".frlj");
 	}
 
 	@Override
@@ -41,14 +41,14 @@ public class JTMTModelLoader implements ModelLoader {
             if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
                 JsonObject modelobj = obj.get("model").getAsJsonObject();
                 for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-                	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), model.textureX, model.textureY)));
+                	model.groups.add(new ModelGroup(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), model.textureX, model.textureY)));
                 }
             }
             else{
             	JsonObject modelobj = obj.get("groups").getAsJsonObject();
                 for(Entry<String, JsonElement> entry : modelobj.entrySet()){
                 	JsonObject group = entry.getValue().getAsJsonObject();
-                	model.groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), model.textureX, model.textureY)));
+                	model.groups.add(new ModelGroup(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), model.textureX, model.textureY)));
                 	if(group.has("fvtm:programs")){
                 		ArrayList<Object> arr = confdata.get(Model.PROGRAMS, () -> new ArrayList<>());
                 		JsonArray array = group.get("fvtm:programs").getAsJsonArray();

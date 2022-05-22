@@ -80,7 +80,7 @@ public class ClothModel extends GenericModel {
 		setGroupAs(groups.get(group), playermodelpart, x, y, z);
 	}
 	
-	public void setGroupAs(TurboList group, String playermodelpart, float x, float y, float z){
+	public void setGroupAs(ModelGroup group, String playermodelpart, float x, float y, float z){
 		if(cloth_groups.containsKey(playermodelpart)){
 			cloth_groups.get(playermodelpart).add(group.name);
 		}
@@ -96,7 +96,7 @@ public class ClothModel extends GenericModel {
 	@Override
 	public void render(ClothItem item, ArrayList<String> key){
 		transforms.apply();
-		for(TurboList list : groups){
+		for(ModelGroup list : groups){
 			if(!key.contains(list.name)) continue;
 			list.render(null, null, null, null, null);
 		}
@@ -107,7 +107,7 @@ public class ClothModel extends GenericModel {
 	public void render(ClothItem item, ArrayList<String> key, Entity ent, RenderCache cache){
 		transforms.apply();
 		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups){
+		for(ModelGroup list : groups){
 			if(!key.contains(list.name)) continue;
 			list.render(null, null, null, null, null);
 		}

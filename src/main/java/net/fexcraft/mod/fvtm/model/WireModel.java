@@ -13,7 +13,7 @@ import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.model.WirePrograms.DownwardAngled;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
@@ -83,7 +83,7 @@ public class WireModel extends GenericModel {
 	@Override
 	public void render(BlockData data, TileEntity tile){
 		transforms.apply();
-		for(TurboList list : groups) list.renderBlock(tile, data, null);
+		for(ModelGroup list : groups) list.renderBlock(tile, data, null);
 		transforms.deapply();
 	}
 
@@ -91,7 +91,7 @@ public class WireModel extends GenericModel {
 	public void render(BlockData data, TileEntity tile, Entity ent, RenderCache cache){
 		transforms.apply();
 		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups) list.renderBlock(tile, data, cache);
+		for(ModelGroup list : groups) list.renderBlock(tile, data, cache);
 		transforms.deapply();
 	}
 	
@@ -168,7 +168,7 @@ public class WireModel extends GenericModel {
 
 	public float getLongestDownward(){
 		float l = 0.01f;
-		for(TurboList list : groups){
+		for(ModelGroup list : groups){
 			for(Program program : list.programs){
 				if(program instanceof DownwardAngled){
 					DownwardAngled prog = (DownwardAngled)program;

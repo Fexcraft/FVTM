@@ -39,8 +39,10 @@ public interface Model {
 	/** Only in use on Model init/generation. **/
 	public boolean addToCreators(String str);
 
+	/** Reads ModelData other than the polygons/vertices. */
 	public Model parse(ModelData data);
 	
+	/** Locks the model. Adding creators and initialising groups is then disabled. */
 	public void lock();
 	
 	/** Reusable object for rendering. */

@@ -14,7 +14,7 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -170,7 +170,7 @@ public class WireRenderer {
         				WireModel wm;
         				for(Entry<String, WireModel> dm : wire.deco_m.entrySet()){
                 			wm = dm.getValue();
-                			for(TurboList list : wm.groups){
+                			for(ModelGroup list : wm.groups){
                 				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
                 					ArrayList<ModelRendererTurbo> tlist = wire.deco_g.containsKey(dm.getKey()) ? wire.deco_g.get(dm.getKey()).get(list.name) : null;
                 					int didx = 0;
@@ -299,8 +299,8 @@ public class WireRenderer {
 				wire.deco_m.put(entry.getKey(), deco);
 				wire.deco_d.put(entry.getKey(), new HashMap<>());
 				wire.deco_g.put(entry.getKey(), new HashMap<>());
-				for(TurboList list : deco.groups){
-					for(TurboList.Program program : list.programs){
+				for(ModelGroup list : deco.groups){
+					for(ModelGroup.Program program : list.programs){
 						if(program instanceof WirePrograms.SpacedDeco == false) continue;
 						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
 						break;

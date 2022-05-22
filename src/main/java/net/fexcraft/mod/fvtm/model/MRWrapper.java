@@ -65,7 +65,7 @@ public class MRWrapper extends ModelRenderer {
 		cloth_items.clear();
 		cloth_models.clear();
 		cloth_groups.clear();
-    	if(Command.OTHER) DebugModels.center.renderPlain();
+    	if(Command.OTHER) DebugModels.center.render();
     	RGB.glColorReset();
     	GL11.glRotatef(90, 0, -1, 0);
     	GlStateManager.bindTexture(deftex);

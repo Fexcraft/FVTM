@@ -21,7 +21,7 @@ public class FMFModelLoader implements ModelLoader {
 	public Object[] load(String name, ModelData confdata) throws Exception {
 		Object[] stream = Resources.getModelInputStreamWithFallback(new ResourceLocation(name));
 		GenericModel model = new GenericModel();
-		confdata.values.putAll(FMFParser.parse(model, (InputStream)stream[0]));
+		confdata.putAll(FMFParser.parse(model, (InputStream)stream[0]));
 		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
 		return new Object[]{ model, confdata };
 	}

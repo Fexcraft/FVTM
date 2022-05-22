@@ -4,8 +4,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
@@ -20,6 +23,26 @@ public class ObjModelLoader implements ModelLoader {
 	
 	private static TreeMap<String, ObjModel> INFO_CACHE = new TreeMap<>();
 	private static TreeMap<ResourceLocation, ObjModel> DATA_CACHE = new TreeMap<>();
+	public static ArrayList<String> keys = new ArrayList<>();
+	static {
+		keys.add("Creator:");
+		keys.add("Editor:");
+		keys.add("Author:");
+		keys.add("TextureSizeX:");
+		keys.add("TextureSizeY:");
+		keys.add("FlipAxes:");
+		keys.add("FlipFaces:");
+		keys.add("FlipU:");
+		keys.add("FlipV:");
+		keys.add("SmoothShading:");
+		keys.add("SkipNormals:");
+		keys.add("Include:");
+		keys.add("Program:");
+		keys.add("CondPrograms:");
+		keys.add("Pivot:");
+		keys.add("Offset:");
+		keys.add("Transform:");
+	}
 
 	@Override
 	public boolean accepts(String name, String suffix){
@@ -40,26 +63,26 @@ public class ObjModelLoader implements ModelLoader {
 			if(!exclude || filter.length > 2) for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
 		}
 		//
-		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
+		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ keys.get(0), keys.get(1), keys.get(2) }, null);
 		for(String auth : authors) confdata.creators().add(auth);
 		try{
-			String tex = ObjParser.getCommentValue(objdata, "TextureSizeX:");
-			String tey = ObjParser.getCommentValue(objdata, "TextureSizeY:");
-			model.textureX = confdata.values.get(Model.TEXTURE_WIDTH, () -> tex == null ? 256 : Integer.parseInt(tex));
-			model.textureY = confdata.values.get(Model.TEXTURE_WIDTH, () -> tey == null ? 256 : Integer.parseInt(tex));
+			String tex = ObjParser.getCommentValue(objdata, keys.get(3));
+			String tey = ObjParser.getCommentValue(objdata, keys.get(4));
+			model.textureX = confdata.get(Model.TEXTURE_WIDTH, () -> tex == null ? 256 : Integer.parseInt(tex));
+			model.textureY = confdata.get(Model.TEXTURE_WIDTH, () -> tey == null ? 256 : Integer.parseInt(tex));
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		boolean flip_x = confdata.values.get("FlipAxes", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:")));
-		boolean flip_f = confdata.values.get("FlipFaces", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipFaces:")));
-		boolean flip_u = confdata.values.get("FlipU", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipU:")));
-		boolean flip_v = confdata.values.get("FlipV", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipV:")));
-		confdata.values.set(Model.SMOOTHSHADING, () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:")));
-		boolean norm = confdata.values.get("SkipNormals", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:")));
+		boolean flip_x = confdata.get("FlipAxes", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(5))));
+		boolean flip_f = confdata.get("FlipFaces", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(6))));
+		boolean flip_u = confdata.get("FlipU", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(7))));
+		boolean flip_v = confdata.get("FlipV", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(8))));
+		confdata.set(Model.SMOOTHSHADING, () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(9))));
+		boolean norm = confdata.get("SkipNormals", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(10))));
 		addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
-		List<String> include = confdata.values.get(Model.OBJ_INCLUDE, () -> new ArrayList<>());
-		include.addAll(ObjParser.getCommentValues(objdata, new String[]{ "Include:" }, null));
+		List<String> include = confdata.get(Model.OBJ_INCLUDE, () -> new ArrayList<>());
+		include.addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(11) }, null));
 		for(String str : include){
 			filter = str.split(";");
 			loc = new ResourceLocation(filter.length > 1 ? filter[filter.length - 1] : str);
@@ -72,11 +95,30 @@ public class ObjModelLoader implements ModelLoader {
 			addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
 		}
 		//
-		confdata.values.get(Model.PROGRAMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null));
-		confdata.values.get(Model.CONDPROGRAMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "CondPrograms:" }, null));
-		confdata.values.get(Model.PIVOTS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null));
-		confdata.values.get(Model.OFFSET, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Offset:" }, null));
-		confdata.values.get(Model.TRANSFORMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ "Transform:" }, null));
+		confdata.get(Model.PROGRAMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(12) }, null));
+		confdata.get(Model.CONDPROGRAMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(13) }, null));
+		confdata.get(Model.PIVOTS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(14) }, null));
+		confdata.get(Model.OFFSET, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(15) }, null));
+		confdata.get(Model.TRANSFORMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(16) }, null));
+		Pattern pattern = Pattern.compile("# (.+): (.+)");
+		for(String str : objdata.comments){
+			Matcher mat = pattern.matcher(str);
+			if(mat.matches()){
+				String key = mat.group(1);
+				String value = mat.group(2);
+				if(confdata.contains(key)){
+					if(confdata.get(key) instanceof Collection){
+						((Collection<Object>)confdata.get(key)).add(value);
+					}
+					else{
+						ArrayList<String> list = new ArrayList<String>();
+						list.add(confdata.get(key));
+						confdata.set(key, list);
+					}
+				}
+				else confdata.set(key, value);
+			}
+		}
 		return new Object[]{ model, confdata };
 	}
 

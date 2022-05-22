@@ -594,21 +594,6 @@ public class Resources {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		/*try{
-			switch(ext){
-				case "fmf":{
-					Object[] stream = getModelInputStreamWithFallback(new ResourceLocation(name));
-					model = ((GenericModel)clazz.getConstructor().newInstance()).parse(stream, ext);
-					break;
-				}
-				case "": default: return (Model)getEmptyModelFromClass(clazz);
-			}
-		}
-		catch(Throwable thr){
-			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			thr.printStackTrace(); //Static.stop();
-			return (Model)getEmptyModelFromClass(clazz);
-		}*/
 		MODELS.put(name, model);
 		if(bake && model instanceof BlockModel){
 			FCLBlockModelLoader.addBlockModel(new ResourceLocation(name), (FCLBlockModel)model);

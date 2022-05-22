@@ -589,6 +589,7 @@ public class Resources {
 			if(ret.length == 0 || ret[0] == null) return getEmptyModelFromClass(clazz);
 			model = (Model) ret[0];
 			if(ret.length > 1) data = (ModelData)ret[1];
+			data.convert();
 			model.parse(data).lock();
 		}
 		catch(Exception e){
@@ -620,7 +621,7 @@ public class Resources {
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		if(clazz == WireModel.class) return WireModel.EMPTY;
 		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
-		if(clazz == DecoModel.class) return DecoModel.EMPTY;
+		if(clazz == GenericModel.class) return GenericModel.EMPTY;
 		return null;
 	}
 
@@ -1065,7 +1066,7 @@ public class Resources {
 		for(Entry<String, JsonObject> cache : WIRE_DECO_CACHE.entrySet()){
 			for(Entry<String, JsonElement> entry : cache.getValue().entrySet()){
 				if(client){
-					parseWireModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
+					parseWireDecoModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
 				}
 				WIRE_DECOS.add(cache.getKey() + ":" + entry.getKey());
 			}
@@ -1074,7 +1075,7 @@ public class Resources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private static void parseWireModel(String key, JsonElement value){
+	private static void parseWireDecoModel(String key, JsonElement value){
 		String name = null;
 		JsonArray array = null;
 		if(value.isJsonArray()){
@@ -1084,7 +1085,7 @@ public class Resources {
 		else{
 			name = value.getAsString();
 		}
-		WireModel model = (WireModel)getModel(name, WireModel.class);
+		WireModel model = (WireModel)getModel(name, new ModelData(), WireModel.class);
 		if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).getAsString()));
 		if(array.size() > 2) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
 		if(array.size() > 3) model.decotype(array.get(3).getAsString());
@@ -1176,8 +1177,8 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static void loadDecoModels(){
 		for(DecorationData deco : DECORATIONS.values()){
-			DecoModel model = (DecoModel)Resources.getModel(deco.modelid, DecoModel.class);
-			if(model != null && model != DecoModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
+			Model model = Resources.getModel(deco.modelid, deco.modeldata, GenericModel.class);
+			if(model != null && model != GenericModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
 		}
 	}
 

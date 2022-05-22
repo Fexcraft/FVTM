@@ -134,7 +134,7 @@ public class StreetSignCachedModel {
 	}
 
 	public void render(){
-		cachedmodel.renderPlain();
+		cachedmodel.render();
 	}
 
 }

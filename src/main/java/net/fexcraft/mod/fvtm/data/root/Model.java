@@ -3,7 +3,10 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
@@ -56,9 +59,43 @@ public interface Model {
 		public BlockData block;
 		public Colorable color;
 		public PartData part;
-		public String part_category;
+		public String part_category, cloth_group;
 		
 		public RenderCache cache;
+		
+
+		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca){
+			entity = ent;
+			vehicle = data;
+			cache = renca;
+			return this;
+		}
+
+
+		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca, PartData partdata, String key){
+			entity = ent;
+			vehicle = data;
+			part = partdata;
+			part_category = key;
+			cache = renca;
+			return this;
+		}
+
+
+		public ModelRenderData set(ContainerData data, TileEntity tileent, RenderCache renca){
+			container = data;
+			tile = tileent;
+			cache = renca;
+			return this;
+		}
+
+
+		public ModelRenderData set(BlockData data, TileEntity tileent, RenderCache renca){
+			block = data;
+			tile = tileent;
+			cache = renca;
+			return this;
+		}
 		
 	}
 	
@@ -95,6 +132,44 @@ public interface Model {
 		public ArrayList<String> creators(){
 			if(!containsKey("creators")) put("creators", new ArrayList<String>());
 			return get("creators");
+		}
+
+		public void convert(){
+			Collection<String> keys = this.keySet();
+			for(String key : keys){
+				Object obj = get(key);
+				if(obj instanceof String == false) continue;
+				String val = obj.toString();
+				if(val.equals("true") || val.equals("false")){
+					put(key, val.equals("true"));
+					continue;
+				}
+				if(NumberUtils.isCreatable(val)){
+					try{
+						put(key, Float.parseFloat(val));
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		public <T> T get(String key, T def){
+			Object o = super.get(key);
+			return o == null ? def : (T)o;
+		}
+
+		public List<String> getList(String key){
+			Object obj = super.get(key);
+			if(obj == null) return new ArrayList<>();
+			if(obj instanceof List == false){
+				ArrayList<String> list = new ArrayList<>();
+				list.add(obj.toString());
+				put(key, list);
+				return list;
+			}
+			return (List<String>)obj;
 		}
 		
 	}

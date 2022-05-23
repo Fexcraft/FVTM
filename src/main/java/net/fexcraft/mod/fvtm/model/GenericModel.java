@@ -55,7 +55,7 @@ public class GenericModel implements Model {
 	
 	@Override
 	public GenericModel parse(ModelData data){
-		smooth_shading = data.get(SMOOTHSHADING);
+		smooth_shading = data.get(SMOOTHSHADING, false);
 		if(data.contains(PROGRAMS)){
 			ArrayList<Object> programs = data.get(PROGRAMS);
 			for(Object obj : programs){

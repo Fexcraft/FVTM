@@ -31,8 +31,7 @@ import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
@@ -123,20 +122,16 @@ public class DefaultPrograms {
 
 	@SuppressWarnings("deprecation")
 	public static final Program RGB_PRIMARY = new Program(){
-		@Override public String getId(){ return "fvtm:rgb_primary"; }
-		@Override public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ color.getPrimaryColor().glColorApply(); }
-		@Override public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ RGB.glColorReset(); }
-		@Override public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){ data.getPrimaryColor().glColorApply(); }
-		@Override public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){ RGB.glColorReset(); }
+		public String getId(){ return "fvtm:rgb_primary"; }
+		public void preRender(ModelGroup list, ModelRenderData data){ data.color.getPrimaryColor().glColorApply(); }
+		public void postRender(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
 	};
 
 	@SuppressWarnings("deprecation")
 	public static final Program RGB_SECONDARY = new Program(){
-		@Override public String getId(){ return "fvtm:rgb_secondary"; }
-		@Override public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ color.getSecondaryColor().glColorApply(); }
-		@Override public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ RGB.glColorReset(); }
-		@Override public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){ data.getSecondaryColor().glColorApply(); }
-		@Override public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){ RGB.glColorReset(); }
+		public String getId(){ return "fvtm:rgb_secondary"; }
+		public void preRender(ModelGroup list, ModelRenderData data){ data.color.getSecondaryColor().glColorApply(); }
+		public void postRender(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
 	};
 	
 	public static class RGBCustom implements Program {
@@ -157,22 +152,12 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 			this.color.glColorApply();
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			RGB.glColorReset();
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			this.color.glColorApply();
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			RGB.glColorReset();
 		}
 		
@@ -202,22 +187,12 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			color.getColorChannel(channel).glColorApply();
+		public void preRender(ModelGroup list, ModelRenderData data){
+			data.color.getColorChannel(channel).glColorApply();
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			RGB.glColorReset();
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			data.getColorChannel(channel).glColorApply();
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			RGB.glColorReset();
 		}
 		
@@ -234,93 +209,91 @@ public class DefaultPrograms {
 	}
 	
 	public static final Program INVISIBLE = new Program(){
-		@Override public String getId(){ return "fvtm:hide"; }
-		@Override public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ list.visible = false; }
-		@Override public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ list.visible = true; }
-		@Override public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){ list.visible = false; }
-		@Override public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){ list.visible = true; }
+		public String getId(){ return "fvtm:hide"; }
+		public void preRender(ModelGroup list, ModelRenderData data){ list.visible = false; }
+		public void postRender(ModelGroup list, ModelRenderData data){ list.visible = true; }
 	}, HIDE = INVISIBLE;
 	
 	public static final Program ALWAYS_GLOW = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return true; }
-		@Override public String getId(){ return "fvtm:glow"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return true; }
+		public String getId(){ return "fvtm:glow"; }
 	}, GLOW = ALWAYS_GLOW;
 	
 	public static final Program LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState(); }
-		@Override public String getId(){ return "fvtm:lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState(); }
+		public String getId(){ return "fvtm:lights"; }
 	};
 	
 	public static final Program FRONT_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState(); }
-		@Override public String getId(){ return "fvtm:front_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState(); }
+		public String getId(){ return "fvtm:front_lights"; }
 	};
 	
 	public static final Program BACK_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() || data.getThrottle() < -0.01 || (ent != null && ((GenericVehicle)ent).isBraking()); }//TODO rear+brake lights instead
-		@Override public String getId(){ return "fvtm:back_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.entity != null && ((GenericVehicle)data.entity).isBraking()); }//TODO rear+brake lights instead
+		public String getId(){ return "fvtm:back_lights"; }
 	};
 	public static final Program REAR_LIGHTS = BACK_LIGHTS;
 	
 	public static final Program FOG_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getFogLightsState(); }
-		@Override public String getId(){ return "fvtm:fog_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getFogLightsState(); }
+		public String getId(){ return "fvtm:fog_lights"; }
 	};
 	public static final Program LONG_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLongLightsState(); }
-		@Override public String getId(){ return "fvtm:long_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLongLightsState(); }
+		public String getId(){ return "fvtm:long_lights"; }
 	};
 	
 	public static final Program REVERSE_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getThrottle() < -0.01; }
-		@Override public String getId(){ return "fvtm:reverse_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getThrottle() < -0.01; }
+		public String getId(){ return "fvtm:reverse_lights"; }
 	};
 	public static final Program BRAKE_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return (ent != null && ((GenericVehicle)ent).isBraking()); }
-		@Override public String getId(){ return "fvtm:brake_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return (data.entity != null && ((GenericVehicle)data.entity).isBraking()); }
+		public String getId(){ return "fvtm:brake_lights"; }
 	};
 	
 	public static final Program LIGHTS_RAIL_FORWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").boolean_value(); }
-		@Override public String getId(){ return "fvtm:lights_rail_forward"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value(); }
+		public String getId(){ return "fvtm:lights_rail_forward"; }
 	};
 	
 	public static final Program LIGHTS_RAIL_BACKWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").boolean_value(); }
-		@Override public String getId(){ return "fvtm:lights_rail_backward"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value(); }
+		public String getId(){ return "fvtm:lights_rail_backward"; }
 	};
 	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return BLINKER_TOGGLE && (data.getTurnLightLeft() || data.getWarningLights()); }
-		@Override public String getId(){ return "fvtm:turn_signal_left"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()); }
+		public String getId(){ return "fvtm:turn_signal_left"; }
 	};
 	
 	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return BLINKER_TOGGLE && (data.getTurnLightRight() || data.getWarningLights()); }
-		@Override public String getId(){ return "fvtm:turn_signal_right"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()); }
+		public String getId(){ return "fvtm:turn_signal_right"; }
 	};
 	
 	public static final Program WARNING_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return BLINKER_TOGGLE && data.getWarningLights(); }
-		@Override public String getId(){ return "fvtm:warning_lights"; }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && data.vehicle.getWarningLights(); }
+		public String getId(){ return "fvtm:warning_lights"; }
 	};
 	
 	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;
 	
 	public static final Program BACK_LIGHTS_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){
-			if(data.getTurnLightLeft() || data.getWarningLights()) return BLINKER_TOGGLE;
-			else return data.getLightsState() || data.getThrottle() < -0.01;
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
-		@Override public String getId(){ return "fvtm:back_lights_signal_left"; }
+		public String getId(){ return "fvtm:back_lights_signal_left"; }
 	};
 	
 	public static final Program BACK_LIGHTS_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){
-			if(data.getTurnLightRight() || data.getWarningLights()) return BLINKER_TOGGLE;
-			else return data.getLightsState() || data.getThrottle() < -0.01;
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
-		@Override public String getId(){ return "fvtm:back_lights_signal_right"; }
+		public String getId(){ return "fvtm:back_lights_signal_right"; }
 	};
 	
 	public static final Program TAIL_LIGHTS_SIGNAL_LEFT = BACK_LIGHTS_SIGNAL_LEFT;
@@ -329,21 +302,17 @@ public class DefaultPrograms {
 	//
 	
 	public static final Program BASIC_SIGNAL_CLEAR = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(TileEntity tile, BlockData data){
-			return tile != null && ((SignalTileEntity)tile).getSignalState() == 1;
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() == 1;
 		}
-		@Override
 		public String getId(){ return "fvtm:basic_signal_clear"; }
 	};
 	public static final Program BASIC_SIGNAL_GREEN = BASIC_SIGNAL_CLEAR;
 	
 	public static final Program BASIC_SIGNAL_STOP = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(TileEntity tile, BlockData data){
-			return tile == null || ((SignalTileEntity)tile).getSignalState() == 0;
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+			return data.tile == null || ((SignalTileEntity)data.tile).getSignalState() == 0;
 		}
-		@Override
 		public String getId(){ return "fvtm:basic_signal_stop"; }
 	};
 	public static final Program BASIC_SIGNAL_RED = BASIC_SIGNAL_STOP;
@@ -351,7 +320,7 @@ public class DefaultPrograms {
 	//
 	
 	public static final Program TRANSPARENT = new Transparent(63f, 63f){
-		@Override public String getId(){ return "fvtm:transparent"; }
+		public String getId(){ return "fvtm:transparent"; }
 	};
 	
 	public static final Window WINDOW = new Window();
@@ -365,7 +334,7 @@ public class DefaultPrograms {
 		public Window(int color){ this.color = new RGB(color).setAlpha(0.3f); }
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
             GlStateManager.pushMatrix();
             enableBlend();
             GL11.glDepthMask(false);
@@ -374,7 +343,7 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
             RGB.glColorReset();
             disableAlpha();
             GL11.glDepthMask(true);
@@ -404,21 +373,21 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
-		@Override public String getId(){ return "fvtm:wheel_auto_all"; }
+		public String getId(){ return "fvtm:wheel_auto_all"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
-			GL11.glRotatef(data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
-			GL11.glRotatef(-data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
@@ -427,21 +396,21 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
-		@Override public String getId(){ return "fvtm:wheel_auto_all_opposite"; }
+		public String getId(){ return "fvtm:wheel_auto_all_opposite"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
-			GL11.glRotatef(data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
-			GL11.glRotatef(-data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
@@ -450,18 +419,18 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
-		@Override public String getId(){ return "fvtm:wheel_auto_steering"; }
+		public String getId(){ return "fvtm:wheel_auto_steering"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -471,18 +440,18 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
-		@Override public String getId(){ return "fvtm:wheel_auto_steering_opposite"; }
+		public String getId(){ return "fvtm:wheel_auto_steering_opposite"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -490,15 +459,15 @@ public class DefaultPrograms {
 
 	public static final Program BOGIE_AXLE_WHEEL = new Program(){
 		
-		@Override public String getId(){ return "fvtm:bogie_axle_wheel"; }
+		public String getId(){ return "fvtm:bogie_axle_wheel"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 			//
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			//
 		}
 		
@@ -506,64 +475,64 @@ public class DefaultPrograms {
 
 	public static final Program BOGIE_AUTO = new Program(){
 		
-		@Override public String getId(){ return "fvtm:bogie_auto"; }
+		public String getId(){ return "fvtm:bogie_auto"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
 
 	public static final Program BOGIE_AUTO_OPPOSITE = new Program(){
 		
-		@Override public String getId(){ return "fvtm:bogie_auto_opposite"; }
+		public String getId(){ return "fvtm:bogie_auto_opposite"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
 	
 	public static final Program BOGIE_FRONT = new Program(){
 		
-		@Override public String getId(){ return "fvtm:bogie_front"; }
+		public String getId(){ return "fvtm:bogie_front"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(data.vehicle.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(-data.vehicle.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
 	
 	public static final Program BOGIE_REAR = new Program(){
 		
-		@Override public String getId(){ return "fvtm:bogie_rear"; }
+		public String getId(){ return "fvtm:bogie_rear"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(data.vehicle.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(-data.vehicle.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
@@ -601,12 +570,12 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(rotated = data.getAttribute("steering_angle").float_value() * ratio, axis, apply);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			list.rotateAxis(rotated = data.vehicle.getAttribute("steering_angle").float_value() * ratio, axis, apply);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			list.rotateAxis(-rotated, axis, apply);
 		}
 		
@@ -639,13 +608,13 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute("steering_angle").float_value() * ratio, x, y, z);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value() * ratio, x, y, z);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute("steering_angle").float_value() * ratio, x, y, z);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value() * ratio, x, y, z);
 		}
 		
 		@Override
@@ -719,21 +688,21 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return;
-			if((attr = data.getAttribute(attribute)) == null) return;
-			current = cache.getValue(cacheid);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			current = data.cache.getValue(cacheid);
 			if(current == null) current = 0f;
 			current = boolstatebased ? (attr.boolean_value() ? current + step : current - step) : attr.float_value() * step;
 			if(current > max) current = max;
 			if(current < min) current = min;
 			list.rotateAxis(current + defrot, axis, override);
-			cache.setValue(cacheid, current);
+			data.cache.setValue(cacheid, current);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null || attr == null) return;
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || attr == null) return;
 			list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
 			current = 0f;
 		}
@@ -789,10 +758,10 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return;
-			if((attr = data.getAttribute(attribute)) == null) return;
-			current = cache.getValue(cacheid);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			current = data.cache.getValue(cacheid);
 			if(current == null) current = 0f;
 			current = bool ? (attr.boolean_value() ? current + step : current - step) : attr.float_value();
 			if(current > max) current = max; if(current < min) current = min;
@@ -801,12 +770,12 @@ public class DefaultPrograms {
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
 				axis == 2 ? current * Static.sixteenth : 0);
-			cache.setValue(cacheid, current);
+			data.cache.setValue(cacheid, current);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null || attr == null) return;
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || attr == null) return;
 			GL11.glTranslatef(
 				axis == 0 ? current * -Static.sixteenth : 0,
 				axis == 1 ? current * -Static.sixteenth : 0,
@@ -847,16 +816,16 @@ public class DefaultPrograms {
 			this.attribute = attribute; this.ifis = ifis;
 		}
 
-		@Override public String getId(){ return "fvtm:attribute_visible"; }
+		public String getId(){ return "fvtm:attribute_visible"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			attr = data.getAttribute(attribute); if(attr == null) return;
+		public void preRender(ModelGroup list, ModelRenderData data){
+			attr = data.vehicle.getAttribute(attribute); if(attr == null) return;
 			if(attr.boolean_value() != ifis) list.visible = false;
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			list.visible = true;
 		}
 		
@@ -868,29 +837,18 @@ public class DefaultPrograms {
 		
 		public AlwaysGlow(){ super(189f, 4f); }
 		
-		public boolean shouldGlow(Entity ent, VehicleData data){ return true;}
-		
-		public boolean shouldGlow(TileEntity tile, BlockData data){ return true; }
-		//TurboList list, TileEntity ent, BlockData data, RenderCache cache, int meta
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return true; }
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(!(didglow = shouldGlow(ent, data))) return; super.preRender(list, ent, data, color, part, cache);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(!(didglow = shouldGlow(list, data))) return;
+			super.preRender(list, data);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(!didglow) return; super.postRender(list, ent, data, color, part, cache);
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			if(!(didglow = shouldGlow(ent, data))) return; super.preRender(list, null, null, null, null, cache);
-		}
-
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			if(!didglow) return; super.postRender(list, null, null, null, null, cache);
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(!didglow) return;
+			super.postRender(list, data);
 		}
 		
 	}
@@ -902,7 +860,7 @@ public class DefaultPrograms {
 		public Transparent(float mapx, float mapy){ x = mapx; y = mapy; }
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 	        enableBlend();
 	        disableAlphaTest();
 	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_COLOR);
@@ -913,7 +871,7 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
 	        disableBlend();
 	        enableAlphaTest();
@@ -948,12 +906,12 @@ public class DefaultPrograms {
 		public String getId(){ return "fvtm:group_specific"; }
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(!part.equals(group)) list.visible = false;
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(!data.part_category.equals(group)) list.visible = false;
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			list.visible = true;
 		}
 
@@ -966,30 +924,30 @@ public class DefaultPrograms {
 		public IDSpecificArray(String... ids){ this.groups = ids; }
 
 		@Override
-		public String getId(){ return "fvtm:group_specific"; }
+		public String getId(){ return "fvtm:group_specific_array"; }
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			for(String str : groups) if(str.equals(part)) return; list.visible = false;
+		public void preRender(ModelGroup list, ModelRenderData data){
+			for(String str : groups) if(str.equals(data.part_category)) return; list.visible = false;
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			list.visible = true;
 		}
 
 	}
 	
 	public static final Program NO_CULLFACE = new Program(){
-		@Override public String getId(){ return "fvtm:no_cullface"; }
+		public String getId(){ return "fvtm:no_cullface"; }
 		//
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
             GL11.glDisable(GL11.GL_CULL_FACE);
 		}
 		//
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
             GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 	};
@@ -1006,12 +964,13 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glPushMatrix(); GL11.glScalef(scale, scale, scale);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glPushMatrix();
+			GL11.glScalef(scale, scale, scale);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
 		}
 		
@@ -1035,15 +994,16 @@ public class DefaultPrograms {
 		public Scale3D(float x, float y, float z){ this.x = x; this.y = y; this.z = z; }
 
 		@Override
-		public String getId(){ return "fvtm:scale"; }
+		public String getId(){ return "fvtm:scale_3d"; }
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glPushMatrix(); GL11.glScalef(x, y, z);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GL11.glPushMatrix();
+			GL11.glScalef(x, y, z);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
 		}
 		
@@ -1074,11 +1034,19 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null || (predicate != null && !predicate.test(ent, data))) return;
-			EffectRenderer.LIGHTRAYS.add(this);
-			EffectRenderer.LIGHTRAYDATAS.add(data);
-			EffectRenderer.LIGHTRAYVEHS.add((VehicleEntity)ent);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.entity == null){
+				if(data.tile == null || (block_predicate != null && !block_predicate.test(data.tile, data.block))) return;
+				EffectRenderer.BLOCK_LIGHTRAYS.add(this);
+				EffectRenderer.BLOCK_LIGHTRAYDATAS.add(data.block);
+				EffectRenderer.BLOCK_LIGHTRAYTILES.add(data.tile);
+			}
+			else{
+				if(/*data.entity == null ||*/ (predicate != null && !predicate.test(data.entity, data.vehicle))) return;
+				EffectRenderer.LIGHTRAYS.add(this);
+				EffectRenderer.LIGHTRAYDATAS.add(data.vehicle);
+				EffectRenderer.LIGHTRAYVEHS.add((VehicleEntity)data.entity);
+			}
 		}
 		
 		public LightBeam init(ModelRendererTurbo turboobj, Vec3d pos, ResourceLocation texture, BiPredicate<TileEntity, BlockData> predicate){
@@ -1092,14 +1060,6 @@ public class DefaultPrograms {
 		public LightBeam setBlockPredicate(BiPredicate<TileEntity, BlockData> predicate){
 			this.block_predicate = predicate;
 			return this;
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			if(ent == null || (block_predicate != null && !block_predicate.test(ent, data))) return;
-			EffectRenderer.BLOCK_LIGHTRAYS.add(this);
-			EffectRenderer.BLOCK_LIGHTRAYDATAS.add(data);
-			EffectRenderer.BLOCK_LIGHTRAYTILES.add(ent);
 		}
 		
 	}
@@ -1222,9 +1182,8 @@ public class DefaultPrograms {
 	public static AlwaysGlow getCustomLights(String attr_id){
 		if(CUSTOM_LIGHTS.containsKey(attr_id)) return CUSTOM_LIGHTS.get(attr_id);
 		AlwaysGlow glow = new AlwaysGlow(){
-			@Override
-			public boolean shouldGlow(Entity ent, VehicleData data){
-				return data.getAttribute(attr_id).boolean_value();
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getAttribute(attr_id).boolean_value();
 			}
 		};
 		CUSTOM_LIGHTS.put(attr_id, glow);
@@ -1279,10 +1238,10 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if((attr = data.getAttribute(attribute)) == null) return;
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			current = attr.float_value() < minval ? minval : attr.float_value();
-			if(current > maxval(ent, data)) current = maxval;
+			if(current > maxval(data.entity, data.vehicle)) current = maxval;
 			list.rotateAxis(minrot + ((current - minval) / valdiff()) * rotdiff, axis, true);
 		}
 
@@ -1298,7 +1257,7 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			list.rotateAxis(0, axis, true);
 		}
 		
@@ -1378,22 +1337,12 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 			list.rotateAxis(rot + defrot, axis, override);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(override ? defrot : -(rot + defrot), axis, override);
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			list.rotateAxis(rot + defrot, axis, override);
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			list.rotateAxis(override ? defrot : -(rot + defrot), axis, override);
 		}
 		
@@ -1439,24 +1388,13 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 			GL11.glPushMatrix();
 			GL11.glTranslatef(x, y, z);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glPopMatrix();
-		}
-
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			GL11.glPushMatrix();
-			GL11.glTranslatef(x, y, z);
-		}
-
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
 		}
 		
@@ -1499,23 +1437,13 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 			TexUtil.bindTexture(resloc);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			//
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			TexUtil.bindTexture(resloc);
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			//
+		public boolean isPostRender(){
+			return false;
 		}
 		
 		@Override
@@ -1538,23 +1466,13 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			TexUtil.bindTexture(part == null ? data.getCurrentTexture() : data.getPart(part).getCurrentTexture());
+		public void preRender(ModelGroup list, ModelRenderData data){
+			TexUtil.bindTexture(data.texture.getCurrentTexture());
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			//
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			TexUtil.bindTexture(data.getCurrentTexture());
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			//
+		public boolean isPostRender(){
+			return false;
 		}
 		
 	};
@@ -1567,22 +1485,12 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void preRender(ModelGroup list, ModelRenderData data){
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		}
 		
@@ -1655,17 +1563,17 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			//
+		public boolean isPreRender(){
+			return false;
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+		public void postRender(ModelGroup list, ModelRenderData data){
 			if(text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 			if(font_renderer == null) return;
 	        GlStateManager.pushMatrix();
-			if(glow || (attrid != null && attr(data))) super.preRender(list, ent, data, color, part, cache);
+			if(glow || (attrid != null && attr(data.vehicle))) super.preRender(list, data);
 			pos.translate();
 	        RGB.WHITE.glColorApply();
 	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
@@ -1680,42 +1588,13 @@ public class DefaultPrograms {
 	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GlStateManager.depthMask(true);
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			if(glow || (attrid != null && attr(data))) super.postRender(list, ent, data, color, part, cache);
+			if(glow || (attrid != null && attr(data.vehicle))) super.postRender(list, data                                                                                                                    );
 	        GlStateManager.popMatrix();
 		}
 		
 		protected boolean attr(VehicleData data){
 			attr = data.getAttribute(attrid);
 			return attr != null && attr.boolean_value();
-		}
-
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			//
-		}
-		
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			if(text.length() == 0) return;
-			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
-	        GlStateManager.pushMatrix();
-			if(glow) super.preRender(list, ent, data, cache);
-			pos.translate();
-	        RGB.WHITE.glColorApply();
-	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
-	        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
-	        GL11.glRotatef(-90, 0, 1, 0);
-			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
-	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
-	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
-	        GlStateManager.depthMask(false);
-	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        font_renderer.drawString(text, centered ? -font_renderer.getStringWidth(text) / 2 : 0, 0, this.color);
-	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
-	        GlStateManager.depthMask(true);
-	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			if(glow) super.postRender(list, ent, data, cache);
-	        GlStateManager.popMatrix();
 		}
 		
 		@Override
@@ -1770,8 +1649,8 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if((attr = data.getAttribute(attribute)) == null) return;
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			text = attr.string_value();
 		}
 		
@@ -1866,49 +1745,39 @@ public class DefaultPrograms {
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return;
-			current = cache.getValue(cacheid, 0f);
-			dir = cache.getValue(cacheids, step);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			current = data.cache.getValue(cacheid, 0f);
+			dir = data.cache.getValue(cacheids, step);
 			current += dir;
 			if(current > max){
 				if(loop){
 					current = min + (current - max);
-					cache.setValue(cacheids, dir);
+					data.cache.setValue(cacheids, dir);
 				}
 				else{
 					current = max - (current - max);
-					cache.setValue(cacheids, -dir);
+					data.cache.setValue(cacheids, -dir);
 				}
 			}
 			if(current < min){
 				if(loop){
 					current = max + (current - min);
-					cache.setValue(cacheids, dir);
+					data.cache.setValue(cacheids, dir);
 				}
 				else{
 					current = min - (current - min);
-					cache.setValue(cacheids, -dir);
+					data.cache.setValue(cacheids, -dir);
 				}
 			}
 			list.rotateAxis(current + defrot, axis, override);
-			cache.setValue(cacheid, current);
+			data.cache.setValue(cacheid, current);
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return;
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
 			list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			preRender(list, null, null, data, null, cache);
-		}
-
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			postRender(list, null, null, data, null, cache);
 		}
 		
 		@Override
@@ -1967,29 +1836,29 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void preRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return;
-			current = cache.getValue(cacheid, 0f);
-			dir = cache.getValue(cacheids, step);
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			current = data.cache.getValue(cacheid, 0f);
+			dir = data.cache.getValue(cacheids, step);
 			current += dir;
 			if(current > max){
 				if(loop){
 					current = min + (current - max);
-					cache.setValue(cacheids, dir);
+					data.cache.setValue(cacheids, dir);
 				}
 				else{
 					current = max - (current - max);
-					cache.setValue(cacheids, -dir);
+					data.cache.setValue(cacheids, -dir);
 				}
 			}
 			if(current < min){
 				if(loop){
 					current = max + (current - min);
-					cache.setValue(cacheids, dir);
+					data.cache.setValue(cacheids, dir);
 				}
 				else{
 					current = min - (current - min);
-					cache.setValue(cacheids, -dir);
+					data.cache.setValue(cacheids, -dir);
 				}
 			}
 			//GL11.glPushMatrix();
@@ -1997,27 +1866,17 @@ public class DefaultPrograms {
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
 				axis == 2 ? current * Static.sixteenth : 0);
-			cache.setValue(cacheid, current);
+			data.cache.setValue(cacheid, current);
 		}
 
 		@Override
-		public void postRender(ModelGroup list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return;
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
 			GL11.glTranslatef(
 				axis == 0 ? current * -Static.sixteenth : 0,
 				axis == 1 ? current * -Static.sixteenth : 0,
 				axis == 2 ? current * -Static.sixteenth : 0);
 			//GL11.glPopMatrix();
-		}
-		
-		@Override
-		public void preRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			preRender(list, null, null, data, null, cache);
-		}
-
-		@Override
-		public void postRender(ModelGroup list, TileEntity ent, BlockData data, RenderCache cache){
-			postRender(list, null, null, data, null, cache);
 		}
 		
 		@Override

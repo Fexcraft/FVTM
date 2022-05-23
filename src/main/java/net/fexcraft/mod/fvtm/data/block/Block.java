@@ -9,11 +9,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
@@ -108,6 +108,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.burntime = JsonUtil.getIfExists(obj, "ItemBurnTime", 0).intValue();
 		this.oredict = obj.has("OreDictionary") ? obj.get("OreDictionary").getAsString() : null;
 		//
+		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		if(modelid == null || modelid.equals("null") || modelid.startsWith("baked|")) plain_model = true;//in other words, json models
 		modeldata = DataUtil.getModelData(obj);
 		if(obj.has("AABBs")){

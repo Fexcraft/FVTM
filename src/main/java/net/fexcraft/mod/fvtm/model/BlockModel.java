@@ -22,7 +22,6 @@ import net.minecraft.util.EnumFacing;
 public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
-    public static final ModelRenderData RENDERDATA = new ModelRenderData();
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = 0;

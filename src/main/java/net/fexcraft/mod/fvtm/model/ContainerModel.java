@@ -16,7 +16,6 @@ public class ContainerModel extends GenericModel implements FCLItemModel {
 	public static final ContainerModel EMPTY = new ContainerModel();
 	@Deprecated public static final String[] defval = new String[]{ "body", "body_colored_primary", "body_door_open_colored_primary",
 		"body_door_close_colored_primary", "body_colored_secondary", "other"};
-    public static final ModelRenderData RENDERDATA = new ModelRenderData();
 	
 	////-///---/---///-////
 	

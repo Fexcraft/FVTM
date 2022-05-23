@@ -6,21 +6,13 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
+import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBase;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorder;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorderEdge;
-import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontOffset;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 
 public class TrafficSignModel extends GenericModel {
 
@@ -31,21 +23,77 @@ public class TrafficSignModel extends GenericModel {
 	
 	////-///---/---///-////
 	
-	public TrafficSignModel(){ super(); }
-	
-	public TrafficSignModel(JsonObject obj){ super(obj); }
-	
 	@Override
-	public TrafficSignModel parse(Object[] stream, String type){
-		super.parse(stream, type);
-		checkifsignbase();
+	public TrafficSignModel parse(ModelData data){
+		super.parse(data);
+		if((Boolean)data.get("Font")){
+			checkifsignbase();
+			return this;
+		}
+		fontdata = new FontModelData();
+		//
+		if(data.contains("SpaceWidth")) fontdata.space_width = data.get("SpaceWidth");
+		if(data.contains("LetterSpacing")) fontdata.letter_spacing = data.get("LetterSpacing");
+		//
+		List<String> chars = data.getList("Char");
+		for(int i = 0; i < chars.size(); i++){
+			String[] arr = chars.get(i).trim().split(" ");
+			CharModelData chardata = new CharModelData();
+			float offx = 0, offy = 0;
+			try{
+				if(arr[0].startsWith("U+")){
+					chardata.id = (char)Integer.parseInt(arr[0].substring(2), 16);
+				}
+				else if(arr[0].startsWith("u") && arr[0].length() > 1){
+					chardata.id = (char)Integer.parseInt(arr[0].substring(1), 16);
+				}
+				else{
+					chardata.id = arr[0].toCharArray()[0];
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			if(arr.length > 1) chardata.width = Float.parseFloat(arr[1]);
+			if(arr.length > 2) chardata.height = Float.parseFloat(arr[2]);
+			if(arr.length > 3) offx = Float.parseFloat(arr[3]);
+			if(arr.length > 4) offy = Float.parseFloat(arr[4]);
+			if(arr.length > 5){
+				for(int j = 5; j < arr.length; j++){
+					ModelGroup list = groups.get(arr[j]);
+					if(list != null) chardata.groups.add(list);
+				}
+			}
+			else{
+				if(groups.contains(chardata.id + "")) chardata.groups.add(groups.get(chardata.id + ""));
+			}
+			for(ModelGroup list : chardata.groups){
+				boolean found = false;
+				for(ModelGroup.Program prog : list.getAllPrograms()){
+					if(prog instanceof TrafficSignPrograms.ColorChannel){
+						found = true;
+						break;
+					}
+				}
+				if(!found) list.addProgram(new TrafficSignPrograms.ColorChannel(0));
+			}
+			if(offx != 0){
+				final float ox = offx;
+				chardata.groups.forEach(list -> list.forEach(mrt -> mrt.rotationPointX -= ox));
+			}
+			if(offy != 0){
+				final float oy = offy;
+				chardata.groups.forEach(list -> list.forEach(mrt -> mrt.rotationPointY -= oy));
+			}
+			fontdata.chars.put(chardata.id, chardata);
+		}
 		return this; 
 	}
 	
 	private void checkifsignbase(){
 		for(ModelGroup list : groups){
 			if(signbase) break;
-			for(Program prog : list.programs){
+			for(Program prog : list.getAllPrograms()){
 				if(prog instanceof SignBase || prog instanceof SignBorder || prog instanceof SignBorderEdge){
 					signbase = true;
 					break;
@@ -59,7 +107,7 @@ public class TrafficSignModel extends GenericModel {
 		other = new ArrayList<>();
 		for(ModelGroup list : groups){
 			boolean found = false;
-			for(Program prog : list.programs){
+			for(Program prog : list.getAllPrograms()){
 				if(prog instanceof SignBase){
 					base.add(list);
 					found = true;
@@ -78,82 +126,15 @@ public class TrafficSignModel extends GenericModel {
 		}
 	}
 
-	public TrafficSignModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups, boolean exclude){
-		super(loc, objdata, objgroups, exclude);
-		if(!Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "Font:"))){
-			checkifsignbase();
-			return;
-		}
-		fontdata = new FontModelData();
-		//
-		String space = ObjParser.getCommentValue(objdata, "SpaceWidth:");
-		if(space != null) fontdata.space_width = Float.parseFloat(space);
-		//
-		String letter = ObjParser.getCommentValue(objdata, "LetterSpacing:");
-		if(letter != null) fontdata.letter_spacing = Float.parseFloat(letter);
-		//
-		List<String[]> chars = ObjParser.getCommentValues(objdata, new String[]{ "Char:" }, null, null);
-		for(int i = 0; i < chars.size(); i++){
-			String[] arr = chars.get(i);
-			CharModelData data = new CharModelData();
-			float offx = 0, offy = 0;
-			try{
-				if(arr[0].startsWith("U+")){
-					data.id = (char)Integer.parseInt(arr[0].substring(2), 16);
-				}
-				else if(arr[0].startsWith("u") && arr[0].length() > 1){
-					data.id = (char)Integer.parseInt(arr[0].substring(1), 16);
-				}
-				else{
-					data.id = arr[0].toCharArray()[0];
-				}
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-			if(arr.length > 1) data.width = Float.parseFloat(arr[1]);
-			if(arr.length > 2) data.height = Float.parseFloat(arr[2]);
-			if(arr.length > 3) offx = Float.parseFloat(arr[3]);
-			if(arr.length > 4) offy = Float.parseFloat(arr[4]);
-			if(arr.length > 5){
-				for(int j = 5; j < arr.length; j++){
-					ModelGroup list = groups.get(arr[j]);
-					if(list != null) data.groups.add(list);
-				}
-			}
-			else{
-				if(groups.contains(data.id + "")) data.groups.add(groups.get(data.id + ""));
-			}
-			for(ModelGroup list : data.groups){
-				boolean found = false;
-				for(ModelGroup.Program prog : list.programs){
-					if(prog instanceof TrafficSignPrograms.ColorChannel){
-						found = true;
-						break;
-					}
-				}
-				if(!found) list.addProgram(new TrafficSignPrograms.ColorChannel(0));
-			}
-			if(offx != 0){
-				final float ox = offx;
-				data.groups.forEach(list -> list.forEach(mrt -> mrt.rotationPointX -= ox));
-			}
-			if(offy != 0){
-				final float oy = offy;
-				data.groups.forEach(list -> list.forEach(mrt -> mrt.rotationPointY -= oy));
-			}
-			fontdata.chars.put(data.id, data);
-		}
-	}
-
 	@Override
-	public void render(CompDataRoot data, String key){
+	public void render(ModelRenderData renderdata){
+		CompDataRoot data = renderdata.trafficsign_compdata;
 		if(fontdata != null){
 			FontData font = (FontData)data;
 			if(font.text() == null) font.init(fontdata);
 			for(FontOffset offset : font.text()){
 				GL11.glTranslatef(offset.offset, 0, 0);
-				for(ModelGroup list : offset.data.groups) list.renderTrafficSign(data, key, null, null);
+				for(ModelGroup list : offset.data.groups) list.render(renderdata);
 				GL11.glTranslatef(-offset.offset, 0, 0);
 			}
 			return;
@@ -162,72 +143,30 @@ public class TrafficSignModel extends GenericModel {
 			GL11.glPushMatrix();
 			GL11.glScalef(data.scale0, data.scale1, 1);
 			for(ModelGroup list : base){
-				list.renderTrafficSign(data, key, null, null);
+				list.render(renderdata);
 			}
 			GL11.glPopMatrix();
 			GL11.glPushMatrix();
 			GL11.glScalef(data.scale0, 1, 1);
 			for(ModelGroup list : hori){
-				list.renderTrafficSign(data, key, null, null);
+				list.render(renderdata);
 			}
 			GL11.glPopMatrix();
 			GL11.glPushMatrix();
 			GL11.glScalef(1, data.scale1, 1);
 			for(ModelGroup list : vert){
-				list.renderTrafficSign(data, key, null, null);
-			}
-			GL11.glPopMatrix();
-			GL11.glPushMatrix();
-			for(ModelGroup list : other){
-				list.renderTrafficSign(data, key, null, null);
-			}
-			GL11.glPopMatrix();
-			return;
-		}
-		for(ModelGroup list : groups) list.renderTrafficSign(data, key, null, null);
-	}
-
-	@Override
-	public void render(CompDataRoot data, String key, Entity ent, RenderCache cache){
-		if(fontdata != null){
-			FontData font = (FontData)data;
-			if(font.text() == null) font.init(fontdata);
-			for(FontOffset offset : font.text()){
-				GL11.glTranslatef(offset.offset, 0, 0);
-				for(ModelGroup list : offset.data.groups) list.renderTrafficSign(data, key, null, null);
-				GL11.glTranslatef(-offset.offset, 0, 0);
-			}
-			return;
-		}
-		else if(signbase){
-			TrafficSignEntity tse = (TrafficSignEntity)ent;
-			GL11.glPushMatrix();
-			GL11.glScalef(data.scale0, data.scale1, 1);
-			for(ModelGroup list : base){
-				list.renderTrafficSign(data, key, tse, cache);
-			}
-			GL11.glPopMatrix();
-			GL11.glPushMatrix();
-			GL11.glScalef(data.scale0, 1, 1);
-			for(ModelGroup list : hori){
-				list.renderTrafficSign(data, key, tse, cache);
-			}
-			GL11.glPopMatrix();
-			GL11.glPushMatrix();
-			GL11.glScalef(1, data.scale1, 1);
-			for(ModelGroup list : vert){
-				list.renderTrafficSign(data, key, tse, cache);
+				list.render(renderdata);
 			}
 			GL11.glPopMatrix();
 			GL11.glPushMatrix();
 			//TODO offset
 			for(ModelGroup list : other){
-				list.renderTrafficSign(data, key, tse, cache);
+				list.render(renderdata);
 			}
 			GL11.glPopMatrix();
 			return;
 		}
-		for(ModelGroup list : groups) list.renderTrafficSign(data, key, (TrafficSignEntity)ent, cache);
+		for(ModelGroup list : groups) list.render(renderdata);
 	}
 	
 	public static class FontModelData {

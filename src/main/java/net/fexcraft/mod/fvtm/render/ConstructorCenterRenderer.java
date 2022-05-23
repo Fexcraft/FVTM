@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
@@ -7,9 +9,9 @@ import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -17,7 +19,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -49,7 +50,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	tile.updateLiftState();
             	TexUtil.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
-            	for(ConstructorLiftModel model : tile.models) model.render(tile, partialticks);
+            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null));
                 GL11.glPopMatrix();
             }
             else if(tile.getVehicleData().getType().getVehicleType().isRailVehicle()){
@@ -88,7 +89,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         if(vehicle){
             VehicleData vehicledata = tile.getVehicleData();
             if(offrot != null){ GL11.glTranslated(0, -offrot, 0); }
-            Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
+            Model modvec = vehicledata.getType().getModel();
             try{
                 if(modvec != null){
                     TexUtil.bindTexture(vehicledata.getCurrentTexture());
@@ -101,19 +102,19 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     }
                     if(!vehicledata.getType().getVehicleType().isRailVehicle()) heightoffset[0] += tile.getLiftState();
                     GL11.glTranslated(0, heightoffset[0], 0);
-                    modvec.render(vehicledata, null, null, null);
+                    modvec.render(RENDERDATA.set(vehicledata, null, null));
                     vehicledata.getParts().forEach((key, partdata) -> {
                         TexUtil.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
                     		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-	                        partdata.getType().getModel().render(vehicledata, key, null, null);
+	                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key));
             	            GL11.glPopMatrix();
                     	}
                     	else{
                     		partdata.getInstalledPos().translate();
                     		partdata.getInstalledRot().rotate();
-                    		partdata.getType().getModel().render(vehicledata, key, null, null);
+                    		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key));
                     		partdata.getInstalledRot().rotateR();
                     		partdata.getInstalledPos().translateR();
                     	}
@@ -127,18 +128,18 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         }
         else if(tile.getContainerData() != null){
             //GL11.glTranslated(0, 1.5F, 0);
-            Model<ContainerData, Object> model = tile.getContainerData().getType().getModel();
+            Model model = tile.getContainerData().getType().getModel();
             if(model != null){
                 TexUtil.bindTexture(tile.getContainerData().getCurrentTexture());
-                model.render(tile.getContainerData(), null);
+                model.render(RENDERDATA.set(tile.getContainerData(), null, null));
                 //TexUtil.bindTexture(lifttexture);
             }
         }
         else if(tile.getBlockData() != null){
-        	Model<BlockData, TileEntity> model = tile.getBlockData().getType().getModel();
+        	Model model = tile.getBlockData().getType().getModel();
         	if(model != null){
                 TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-                model.render(tile.getBlockData(), null);
+                model.render(RENDERDATA.set(tile.getBlockData(), null, null));
         	}
         }
         else{

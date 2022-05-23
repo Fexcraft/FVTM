@@ -56,7 +56,7 @@ public class ClothModel extends GenericModel {
 		transforms.apply();
 		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(ModelGroup list : groups){
-			if(!data.cloth_group.contains(list.name)) continue;
+			if(!data.cloth_groups.contains(list.name)) continue;
 			list.render(data);
 		}
 		transforms.deapply();

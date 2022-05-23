@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -156,7 +157,7 @@ public class EntitySystem extends DetachedSystem {
 		}
 
 		public boolean invalid(Collection<ParticleEntity> particles, int mul){
-			if(edata.getConditional() == null || edata.getConditional().isMet(vehicle, null, vehicle.getVehicleData(), null, null, data, part, null, null)){
+			if(edata.getConditional() == null || edata.getConditional().isMet(GenericModel.RENDERDATA.set(vehicle.getVehicleData(), vehicle, null, data, part))){
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());

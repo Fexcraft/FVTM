@@ -36,7 +36,6 @@ public class PartModel extends GenericModel implements FCLItemModel {
 		"windows", "windows_door_open", "windows_door_close"
 	};
 	@Deprecated public static final String[] defval_bogie = new String[]{ "chassis", "axle0", "axle1", "axle2", "axle3" };
-    public static final ModelRenderData RENDERDATA = new ModelRenderData();
 	
 	////-///---/---///-////
 	

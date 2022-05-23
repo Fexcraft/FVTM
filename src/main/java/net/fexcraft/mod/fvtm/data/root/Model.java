@@ -8,11 +8,16 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.ClothItem;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -58,8 +63,13 @@ public interface Model {
 		public ContainerData container;
 		public BlockData block;
 		public Colorable color;
+		public TextureUser texture;
 		public PartData part;
-		public String part_category, cloth_group;
+		public String part_category;
+		public DecorationData decoration;
+		public CompDataRoot trafficsign_compdata;
+		public ClothItem cloth_item;
+		public ArrayList<String> cloth_groups;
 		
 		public RenderCache cache;
 		
@@ -67,6 +77,10 @@ public interface Model {
 		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca){
 			entity = ent;
 			vehicle = data;
+			color = data;
+			texture = data;
+			part = null;
+			part_category = null;
 			cache = renca;
 			return this;
 		}
@@ -75,6 +89,8 @@ public interface Model {
 		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca, PartData partdata, String key){
 			entity = ent;
 			vehicle = data;
+			color = data;
+			texture = partdata;
 			part = partdata;
 			part_category = key;
 			cache = renca;
@@ -86,6 +102,8 @@ public interface Model {
 			container = data;
 			tile = tileent;
 			cache = renca;
+			color = data;
+			texture = data;
 			return this;
 		}
 
@@ -94,6 +112,32 @@ public interface Model {
 			block = data;
 			tile = tileent;
 			cache = renca;
+			color = data;
+			texture = data;
+			return this;
+		}
+
+
+		public ModelRenderData set(DecorationData data, Entity ent, RenderCache renca){
+			decoration = data;
+			entity = ent;
+			cache = renca;
+			color = data;
+			return null;
+		}
+
+
+		public ModelRenderData set(ClothItem item, ArrayList<String> list, EntityLivingBase ent, RenderCache renca){
+			cloth_item = item;
+			cloth_groups = list;
+			entity = ent;
+			cache = renca;
+			return null;
+		}
+
+
+		public ModelRenderData set(CompDataRoot comp){
+			trafficsign_compdata = comp;
 			return this;
 		}
 		

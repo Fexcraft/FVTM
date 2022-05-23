@@ -22,7 +22,6 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 		"body_door_open", "body_door_close", "body_door_open_colored_primary", "body_door_close_colored_primary",
 		"turret", "steering", "wheels_import"
 	};
-    public static final ModelRenderData RENDERDATA = new ModelRenderData();
 	
 	////-///---/---///-////
 	

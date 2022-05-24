@@ -102,7 +102,7 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 		if(program == null || hasinit) return;
 		if(program.isPreRender()) pre_programs.add(program);
 		if(program.isPostRender()) pst_programs.add(program);
-		getAllPrograms().add(program);
+		all_programs.add(program);
 	}
 	
 	public void addPrograms(Program... programs){

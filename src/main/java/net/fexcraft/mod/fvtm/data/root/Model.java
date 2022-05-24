@@ -179,7 +179,7 @@ public interface Model {
 		}
 
 		public void convert(){
-			Collection<String> keys = this.keySet();
+			Collection<String> keys = new ArrayList<String>(keySet());
 			for(String key : keys){
 				Object obj = get(key);
 				if(obj instanceof String == false) continue;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,12 +53,12 @@ public class ObjModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata) throws Exception {
+	public Object[] load(String name, ModelData confdata, Supplier<Model> supp_model) throws Exception {
 		String[] filter = name.split(";");
 		String id = filter.length > 1 ? filter[filter.length - 1] : name;
 		ResourceLocation loc = new ResourceLocation(id);
 		ObjModel objdata = loadObjData(loc);
-		GenericModel model = new GenericModel();
+		GenericModel model = (GenericModel)supp_model.get();
 		ArrayList<String> groups = new ArrayList<>();
 		boolean exclude = false;
 		if(filter.length > 1){

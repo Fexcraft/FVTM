@@ -60,10 +60,10 @@ public class GenericModel implements Model {
 			ArrayList<Object> programs = data.get(PROGRAMS);
 			for(Object obj : programs){
 				if(obj instanceof String){
-					String[] args = obj.toString().trim().split(" ");
-					if(!groups.contains(args[0])) continue;
+					String[] split = obj.toString().trim().split(" ");
+					if(!groups.contains(split[0])) continue;
 					try{
-						groups.get(args[0]).addProgram(parseProgram(args));
+						groups.get(split[0]).addProgram(parseProgram(split));
 					}
 					catch(Exception e){
 						e.printStackTrace();
@@ -251,7 +251,7 @@ public class GenericModel implements Model {
 		
 		@Override
 		public boolean add(ModelGroup list){
-			list.initPrograms();
+			//list.initPrograms();
 			return super.add(list);
 		}
 

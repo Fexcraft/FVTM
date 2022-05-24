@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model.loaders;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -26,8 +27,8 @@ public class JTMTModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata) throws Exception {
-		GenericModel model = new GenericModel();
+	public Object[] load(String name, ModelData confdata, Supplier<Model> supp_model) throws Exception {
+		GenericModel model = (GenericModel)supp_model.get();
 		JsonObject obj = JsonUtil.getObjectFromInputStream(Resources.getModelInputStream(new ResourceLocation(name), true));
 		if(obj.has("creators")){
 			obj.get("creators").getAsJsonArray().forEach(elm -> {

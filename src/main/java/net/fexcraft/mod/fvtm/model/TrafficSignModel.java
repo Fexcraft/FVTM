@@ -26,7 +26,7 @@ public class TrafficSignModel extends GenericModel {
 	@Override
 	public TrafficSignModel parse(ModelData data){
 		super.parse(data);
-		if((Boolean)data.get("Font")){
+		if(data.get("Font", false)){
 			checkifsignbase();
 			return this;
 		}

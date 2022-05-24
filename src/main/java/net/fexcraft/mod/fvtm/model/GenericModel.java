@@ -275,4 +275,8 @@ public class GenericModel implements Model {
 		for(ModelGroup list : groups) clearDisplayLists(list);
 	}
 	
+	public void setName(String string){
+		name = string;
+	}
+	
 }

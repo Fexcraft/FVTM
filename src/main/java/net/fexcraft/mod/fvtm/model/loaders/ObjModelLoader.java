@@ -68,6 +68,8 @@ public class ObjModelLoader implements ModelLoader {
 		//
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ keys.get(0), keys.get(1), keys.get(2) }, null);
 		for(String auth : authors) confdata.creators().add(auth);
+		String md_name = ObjParser.getCommentValue(objdata, "Model Name:");
+		if(md_name != null) ((GenericModel)model).setName(md_name);
 		try{
 			String tex = ObjParser.getCommentValue(objdata, keys.get(3));
 			String tey = ObjParser.getCommentValue(objdata, keys.get(4));

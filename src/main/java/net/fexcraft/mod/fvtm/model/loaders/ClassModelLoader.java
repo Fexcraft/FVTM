@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
+import java.util.function.Supplier;
+
+import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 
@@ -11,7 +14,7 @@ public class ClassModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata) throws Exception {
+	public Object[] load(String name, ModelData confdata, Supplier<Model> supp_model) throws Exception {
 		Class<?> clasz = Class.forName(name.replace(".class", ""));
 		return new Object[]{ clasz.newInstance() };
 	}

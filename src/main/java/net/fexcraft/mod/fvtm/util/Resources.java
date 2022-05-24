@@ -589,9 +589,17 @@ public class Resources {
 		ModelLoader loader = getModelLoader(name, FilenameUtils.getExtension(name));
 		if(loader == null) return getEmptyModelFromClass(clazz);
 		try{
-			Object[] ret = loader.load(name, data);
+			Object[] ret = loader.load(name, data, () -> {
+				try{
+					return clazz.getConstructor().newInstance();
+				}
+				catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+					e.printStackTrace();
+					return null;
+				}
+			});
 			if(ret.length == 0 || ret[0] == null) return getEmptyModelFromClass(clazz);
-			model = (Model) ret[0];
+			model = (Model)ret[0];
 			if(ret.length > 1) data = (ModelData)ret[1];
 			data.convert();
 			model.parse(data).lock();

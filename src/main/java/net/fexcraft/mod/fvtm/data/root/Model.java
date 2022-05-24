@@ -123,7 +123,7 @@ public interface Model {
 			entity = ent;
 			cache = renca;
 			color = data;
-			return null;
+			return this;
 		}
 
 
@@ -132,7 +132,7 @@ public interface Model {
 			cloth_groups = list;
 			entity = ent;
 			cache = renca;
-			return null;
+			return this;
 		}
 
 

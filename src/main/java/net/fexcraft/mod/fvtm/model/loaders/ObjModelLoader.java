@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
@@ -105,24 +103,23 @@ public class ObjModelLoader implements ModelLoader {
 		confdata.get(Model.PIVOTS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(14) }, null));
 		confdata.get(Model.OFFSET, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(15) }, null));
 		confdata.get(Model.TRANSFORMS, () -> new ArrayList<>()).addAll(ObjParser.getCommentValues(objdata, new String[]{ keys.get(16) }, null));
-		Pattern pattern = Pattern.compile("# (.+): (.+)");
 		for(String str : objdata.comments){
-			Matcher mat = pattern.matcher(str);
-			if(mat.matches()){
-				String key = mat.group(1);
-				String value = mat.group(2);
-				if(confdata.contains(key)){
-					if(confdata.get(key) instanceof Collection){
-						((Collection<Object>)confdata.get(key)).add(value);
-					}
-					else{
-						ArrayList<String> list = new ArrayList<String>();
-						list.add(confdata.get(key));
-						confdata.set(key, list);
-					}
+			if(!str.contains(":")) continue;
+			int idx = str.indexOf(":");
+			String key = str.substring(0, idx);
+			if(keys.contains(key)) continue;
+			String val = str.substring(idx + 2, str.length()).trim();
+			if(confdata.contains(key)){
+				if(confdata.get(key) instanceof Collection){
+					((Collection<Object>)confdata.get(key)).add(val);
 				}
-				else confdata.set(key, value);
+				else{
+					ArrayList<String> list = new ArrayList<String>();
+					list.add(confdata.get(key).toString());
+					confdata.set(key, list);
+				}
 			}
+			else confdata.set(key, val);
 		}
 		return new Object[]{ model, confdata };
 	}

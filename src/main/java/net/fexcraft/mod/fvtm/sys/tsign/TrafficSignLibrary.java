@@ -69,17 +69,16 @@ public class TrafficSignLibrary extends DetachedSystem {
 	
 	@SideOnly(Side.CLIENT)
 	public static void loadModels(){
-		ModelData empty = new ModelData();
 		for(Entry<String, String> entry : BACKGROUNDS.entrySet()){
-			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), empty, TrafficSignModel.class);
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), new ModelData(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		for(Entry<String, String> entry : COMPONENTS.entrySet()){
-			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), empty, TrafficSignModel.class);
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), new ModelData(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		for(Entry<String, String> entry : FONTS.entrySet()){
-			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), empty, TrafficSignModel.class);
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), new ModelData(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		initload = true;

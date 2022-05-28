@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -145,7 +146,7 @@ public class WireRenderer {
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
     	        		TexUtil.bindTexture(wire.deco_s.texture());
-            			wire.deco_s.render(relay.getTile().getBlockData(), relay.getTile());
+            			wire.deco_s.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
         			}
@@ -160,7 +161,7 @@ public class WireRenderer {
             			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
     	        		TexUtil.bindTexture(wire.deco_e.texture());
-            			wire.deco_e.render(relay.getTile().getBlockData(), relay.getTile());
+            			wire.deco_e.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
@@ -170,7 +171,7 @@ public class WireRenderer {
         				WireModel wm;
         				for(Entry<String, WireModel> dm : wire.deco_m.entrySet()){
                 			wm = dm.getValue();
-                			for(TurboList list : wm.groups){
+                			for(ModelGroup list : wm.groups){
                 				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
                 					ArrayList<ModelRendererTurbo> tlist = wire.deco_g.containsKey(dm.getKey()) ? wire.deco_g.get(dm.getKey()).get(list.name) : null;
                 					int didx = 0;
@@ -181,7 +182,7 @@ public class WireRenderer {
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
                     	        		TexUtil.bindTexture(wm.texture());
-                    					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
+                    					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
                     					if(tlist != null){
                     		        		TexUtil.bindTexture(wire.getWireType().getTexture());
                     						tlist.get(didx++).render();
@@ -197,7 +198,7 @@ public class WireRenderer {
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
                 	        		TexUtil.bindTexture(wm.texture());
-                					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
+                					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();
                 				}
@@ -299,8 +300,8 @@ public class WireRenderer {
 				wire.deco_m.put(entry.getKey(), deco);
 				wire.deco_d.put(entry.getKey(), new HashMap<>());
 				wire.deco_g.put(entry.getKey(), new HashMap<>());
-				for(TurboList list : deco.groups){
-					for(TurboList.Program program : list.programs){
+				for(ModelGroup list : deco.groups){
+					for(ModelGroup.Program program : list.getAllPrograms()){
 						if(program instanceof WirePrograms.SpacedDeco == false) continue;
 						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
 						break;

@@ -30,10 +30,10 @@ public class DebugModels {
 	public static final ModelRendererTurbo centermarker0 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-0.25f, -8, -0.25f, .5f, 16, .5f).setTextured(false).setColor(RGB.GREEN.copy());
 	public static final ModelRendererTurbo centermarker1 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-8, -0.25f, -0.25f, 16, .5f, .5f).setTextured(false).setColor(RGB.RED.copy());
 	public static final ModelRendererTurbo centermarker2 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-0.25f, -0.25f, -8, .5f, .5f, 16).setTextured(false).setColor(RGB.BLUE.copy());
-    public static TurboList group0, center, arm_left, arm_right;
+    public static ModelGroup group0, center, arm_left, arm_right;
     public static ModelRendererTurbo chest, leg, reg, br, bl;
     static {
-		group0 = new TurboList("group0");
+		group0 = new ModelGroup("group0");
 		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16).newCylinderBuilder()
 			.setPosition(0, 0, 0).setRadius(6, 5).setLength(3).setSegments(8, 0).setScale(1, 1).setDirection(4)
 			.setRadialTexture(3, 1).setTopOffset(null).setTopRotation(new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, 0.0)).build()
@@ -52,7 +52,7 @@ public class DebugModels {
 		);
 		group0.translate(0, -4, 0);
 		//
-		arm_left = new TurboList("arm_left");
+		arm_left = new ModelGroup("arm_left");
 		arm_left.add(new ModelRendererTurbo(arm_left, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f)
 			.setRotationPoint(-2, -24, 4).setRotationAngle(0, 0, 0).setName("arm_left")
 		);
@@ -62,7 +62,7 @@ public class DebugModels {
 		);
 		arm_left.translate(0, 22, -5);
 		//
-		arm_right = new TurboList("arm_right");
+		arm_right = new ModelGroup("arm_right");
 		arm_right.add(new ModelRendererTurbo(arm_right, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f)
 			.setRotationPoint(-2, -24, -8).setRotationAngle(0, 0, 0).setName("arm_right")
 		);
@@ -78,7 +78,7 @@ public class DebugModels {
 		bl = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2, 5, 2, 4.1f).setRotationPoint(0, 10, 0).setName("boot_left");
 		br = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2.1f, 5, 2, 4.1f).setRotationPoint(0, 10, 0).setName("boot_right");
 		//
-		center = new TurboList("center");
+		center = new ModelGroup("center");
 		center.add(centermarker0);
 		center.add(centermarker1);
 		center.add(centermarker2);

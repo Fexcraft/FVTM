@@ -2,29 +2,21 @@ package net.fexcraft.mod.fvtm.model;
 
 import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
 
-import javax.annotation.Nullable;
-
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.TurboList.ConditionalProgram;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
+import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
 
 public class ConditionalPrograms {
 	
 	public static class Lights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLightsState();
 		}
 		
 	}
@@ -34,8 +26,8 @@ public class ConditionalPrograms {
 	public static class BackLights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() || data.getThrottle() < -0.01 || (ent != null && ((GenericVehicle)ent).isBraking());//TODO rear+brake lights instead
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.entity != null && ((GenericVehicle)data.entity).isBraking());//TODO rear+brake lights instead
 		}
 		
 	}
@@ -45,8 +37,8 @@ public class ConditionalPrograms {
 	public static class BrakeLights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return ((GenericVehicle)ent).isBraking();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return ((GenericVehicle)data.entity).isBraking();
 		}
 		
 	}
@@ -54,8 +46,8 @@ public class ConditionalPrograms {
 	public static class FogLights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getFogLightsState();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getFogLightsState();
 		}
 		
 	}
@@ -63,8 +55,8 @@ public class ConditionalPrograms {
 	public static class LongLights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLongLightsState();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLongLightsState();
 		}
 		
 	}
@@ -72,8 +64,8 @@ public class ConditionalPrograms {
 	public static class ReverseLights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getThrottle() < -0.01;
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getThrottle() < -0.01;
 		}
 		
 	}
@@ -81,8 +73,8 @@ public class ConditionalPrograms {
 	public static class LightsFrontForward extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && data.getAttribute("forward").boolean_value();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -90,8 +82,8 @@ public class ConditionalPrograms {
 	public static class LightsFrontBackward extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && !data.getAttribute("forward").boolean_value();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -99,8 +91,8 @@ public class ConditionalPrograms {
 	public static class LightsRearForward extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && data.getAttribute("forward").boolean_value();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -108,8 +100,8 @@ public class ConditionalPrograms {
 	public static class LightsRearBackward extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && !data.getAttribute("forward").boolean_value();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -117,8 +109,8 @@ public class ConditionalPrograms {
 	public static class TurnSignalLeft extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return BLINKER_TOGGLE && (data.getTurnLightLeft() || data.getWarningLights());
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
 		}
 		
 	}
@@ -126,8 +118,8 @@ public class ConditionalPrograms {
 	public static class TurnSignalRight extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return BLINKER_TOGGLE && (data.getTurnLightRight() || data.getWarningLights());
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
 		}
 		
 	}
@@ -135,8 +127,8 @@ public class ConditionalPrograms {
 	public static class WarningLights extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return BLINKER_TOGGLE && data.getWarningLights();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return BLINKER_TOGGLE && data.vehicle.getWarningLights();
 		}
 		
 	}
@@ -147,9 +139,9 @@ public class ConditionalPrograms {
 	public static class BackLightsSignalLeft extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			if(data.getTurnLightLeft() || data.getWarningLights()) return BLINKER_TOGGLE;
-			else return data.getLightsState() || data.getThrottle() < -0.01;
+		public boolean test(ModelGroup list, ModelRenderData data){
+			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
 		
 	}
@@ -157,9 +149,9 @@ public class ConditionalPrograms {
 	public static class BackLightsSignalRight extends ConditionalProgram {
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			if(data.getTurnLightRight() || data.getWarningLights()) return BLINKER_TOGGLE;
-			else return data.getLightsState() || data.getThrottle() < -0.01;
+		public boolean test(ModelGroup list, ModelRenderData data){
+			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
 		
 	}
@@ -174,8 +166,8 @@ public class ConditionalPrograms {
 		public IDSpecific(String id){ this.group = id; }
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return part.equals(group);
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.part_category.equals(group);
 		}
 		
 	}
@@ -187,8 +179,8 @@ public class ConditionalPrograms {
 		public IDSpecificArray(String... ids){ this.groups = ids; }
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			for(String str : groups) if(str.equals(part)) return true;
+		public boolean test(ModelGroup list, ModelRenderData data){
+			for(String str : groups) if(str.equals(data.part_category)) return true;
 			return false;
 		}
 		
@@ -197,8 +189,8 @@ public class ConditionalPrograms {
 	public static class SignalState extends ConditionalProgram {
 
 		@Override
-		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			return tile != null && ((SignalTileEntity)tile).getSignalState() > 0;
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() > 0;
 		}
 		
 	}
@@ -206,8 +198,8 @@ public class ConditionalPrograms {
 	public static class SwitchFork2State extends ConditionalProgram {
 
 		@Override
-		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			return tile != null && ((SwitchTileEntity)tile).getSwitch0State();
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((SwitchTileEntity)data.tile).getSwitch0State();
 		}
 		
 	}
@@ -221,8 +213,8 @@ public class ConditionalPrograms {
 		}
 
 		@Override
-		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			return tile != null && ((SwitchTileEntity)tile).getSwitch2State() == tracked;
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((SwitchTileEntity)data.tile).getSwitch2State() == tracked;
 		}
 		
 	}
@@ -237,8 +229,8 @@ public class ConditionalPrograms {
 		}
 
 		@Override
-		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			return tile != null && ((SwitchTileEntity)tile).isDoubleSwitchState(switch0, switch1);
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((SwitchTileEntity)data.tile).isDoubleSwitchState(switch0, switch1);
 		}
 		
 	}
@@ -253,8 +245,8 @@ public class ConditionalPrograms {
 		}
 
 		@Override
-		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			return tile != null && ((SwitchTileEntity)tile).isDoubleSwitchStateOnSide(side, state);
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((SwitchTileEntity)data.tile).isDoubleSwitchStateOnSide(side, state);
 		}
 		
 	}
@@ -268,13 +260,8 @@ public class ConditionalPrograms {
 		}
 		
 		@Override
-		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return cond.isMet((GenericVehicle)ent, null, data, null, null, null, part, list, cache);
-		}
-
-		@Override
-		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			return cond.isMet(null, (BlockTileEntity)tile, null, null, data, null, null, list, cache);
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return cond.isMet(data);
 		}
 		
 	}

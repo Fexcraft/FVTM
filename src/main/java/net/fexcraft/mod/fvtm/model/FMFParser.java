@@ -33,7 +33,7 @@ public class FMFParser {
 	private static final int PBS = 16, PBC = 17, PBE = 18;
 	private static final int PCRL = 16, PCD = 17, PCSG = 18, PCSL = 19, PCTO = 20, PCTR = 21, PCRT = 22;
 	
-	public static HashMap<String, Object> parse(GenericModel<?, ?> model, InputStream stream) throws IOException {
+	public static HashMap<String, Object> parse(GenericModel model, InputStream stream) throws IOException {
 		int f0 = stream.read(), f1 = stream.read(), f2 = stream.read(), format = stream.read();
 		if(f0 != 6 || f1 != 13 || f2 != 6 || format < 0) return null;
 		HashMap<String, Object> data = new HashMap<>();
@@ -57,7 +57,7 @@ public class FMFParser {
 					break;
 				}
 				case G:{
-					TurboList list = new TurboList(readString(stream));
+					ModelGroup list = new ModelGroup(readString(stream));
 					readPolygons(stream, list, model.textureX, model.textureY);
 					model.groups.add(list);
 					break;
@@ -97,7 +97,7 @@ public class FMFParser {
 		return new String(read(stream), StandardCharsets.UTF_8);
 	}
 	
-	private static void readPolygons(InputStream stream, TurboList list, int tx, int ty) throws IOException {
+	private static void readPolygons(InputStream stream, ModelGroup list, int tx, int ty) throws IOException {
 		int r = -1, tv = 0;
 		ArrayList<TexturedVertex> verts = null;
 		ArrayList<Vec3f> norms = null;

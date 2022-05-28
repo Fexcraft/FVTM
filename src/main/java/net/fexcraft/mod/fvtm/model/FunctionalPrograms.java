@@ -1,13 +1,13 @@
 package net.fexcraft.mod.fvtm.model;
 
-import net.fexcraft.mod.fvtm.model.TurboList.FunctionalProgram;
+import net.fexcraft.mod.fvtm.model.ModelGroup.FunctionalProgram;
 
 public class FunctionalPrograms {
 	
 	public static class EngineOn extends FunctionalProgram {
 
 		public EngineOn(){
-			super(ProgramConditions.ENGINE_ON, 0);
+			super(ProgramConditions.ENGINE_ON);
 		}
 		
 	}
@@ -15,7 +15,7 @@ public class FunctionalPrograms {
 	public static class EngineOff extends FunctionalProgram {
 
 		public EngineOff(){
-			super(ProgramConditions.ENGINE_OFF, 0);
+			super(ProgramConditions.ENGINE_OFF);
 		}
 		
 	}

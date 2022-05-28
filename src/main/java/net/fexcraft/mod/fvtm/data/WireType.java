@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -29,6 +30,7 @@ public class WireType extends TypeCore<WireType> implements Tabbed, ItemTexturea
 	//
 	protected String modelid, ctab;
 	protected WireModel model;
+	protected ModelData modeldata;
 	protected ResourceLocation itemloc;
 	
 	public WireType(){}
@@ -68,7 +70,10 @@ public class WireType extends TypeCore<WireType> implements Tabbed, ItemTexturea
 			this.texture = new ResourceLocation(obj.get("Texture").getAsString());
 		}
 		else texture = Resources.WHITE_TEXTURE;
-		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(Static.isClient()){
+			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+			modeldata = DataUtil.getModelData(obj);
+		}
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
@@ -113,7 +118,7 @@ public class WireType extends TypeCore<WireType> implements Tabbed, ItemTexturea
 	
 	@Override
 	public void loadModel(){
-		this.model = (WireModel)Resources.getModel(modelid, WireModel.class);
+		this.model = (WireModel)Resources.getModel(modelid, modeldata, WireModel.class);
 	}
 	
 	public ResourceLocation getTexture(){

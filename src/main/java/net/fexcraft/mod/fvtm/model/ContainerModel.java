@@ -1,28 +1,20 @@
 package net.fexcraft.mod.fvtm.model;
 
-import java.util.ArrayList;
-
 import org.lwjgl.opengl.GL11;
 
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
-public class ContainerModel extends GenericModel<ContainerData, Object> implements FCLItemModel {
+public class ContainerModel extends GenericModel implements FCLItemModel {
 	
 	public static final ContainerModel EMPTY = new ContainerModel();
-	public static final String[] defval = new String[]{ "body", "body_colored_primary", "body_door_open_colored_primary",
+	@Deprecated public static final String[] defval = new String[]{ "body", "body_colored_primary", "body_door_open_colored_primary",
 		"body_door_close_colored_primary", "body_colored_secondary", "other"};
 	
 	////-///---/---///-////
@@ -33,32 +25,6 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
     public float gui_scale_x = 0.125f;
     public float gui_scale_y = 0.125f;
     public float gui_scale_z = 0.125f;
-    
-	public ContainerModel(){ super(); }
-	
-	public ContainerModel(JsonObject obj){ super(obj); }
-	
-	@Override
-	public ContainerModel parse(Object[] stream, String type){
-		return super.parse(stream, type);
-	}
-	
-	public ContainerModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
-    
-	@Override
-	public void render(ContainerData data, Object key){
-		transforms.apply();
-		render(data, key, null, null);
-		transforms.deapply();
-	}
-
-	@Override
-	public void render(ContainerData data, Object key, Entity ent, RenderCache cache){
-		transforms.apply();
-        GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
-		transforms.deapply();
-	}
 	
 	////-///---/---///-////
 
@@ -115,7 +81,7 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
                 bindTexture(data.getCurrentTexture());
-                model.render(data, null);
+                model.render(RENDERDATA.set(data, null, null));
                 //
                 GL11.glPopMatrix();
             }

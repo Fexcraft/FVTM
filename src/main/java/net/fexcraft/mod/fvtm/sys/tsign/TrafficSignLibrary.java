@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -69,15 +70,15 @@ public class TrafficSignLibrary extends DetachedSystem {
 	@SideOnly(Side.CLIENT)
 	public static void loadModels(){
 		for(Entry<String, String> entry : BACKGROUNDS.entrySet()){
-			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), new ModelData(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		for(Entry<String, String> entry : COMPONENTS.entrySet()){
-			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), new ModelData(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		for(Entry<String, String> entry : FONTS.entrySet()){
-			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), TrafficSignModel.class);
+			TrafficSignModel model = (TrafficSignModel)Resources.getModel(entry.getValue(), new ModelData(), TrafficSignModel.class);
 			if(model != null && model != TrafficSignModel.EMPTY) MODELS.put(entry.getValue(), model);
 		}
 		initload = true;

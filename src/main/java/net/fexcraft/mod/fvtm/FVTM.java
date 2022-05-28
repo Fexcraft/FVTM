@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
+import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
@@ -92,7 +93,7 @@ public class FVTM {
 
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
-	public static final String VERSION = "3.7.65";
+	public static final String VERSION = "3.8.66";
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
@@ -169,7 +170,7 @@ public class FVTM {
 			Resources.WIRES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			TrafficSignLibrary.loadModels();
 			Resources.loadDecoModels();
-			Resources.clearObjModelCache();
+			ObjModelLoader.clearCache();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
 		Resources.loadWireDecorations(event.getSide().isClient());

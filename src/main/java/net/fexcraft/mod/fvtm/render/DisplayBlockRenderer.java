@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
@@ -34,7 +36,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
         //
         if(te.getVehicleData() != null){
             VehicleData vehicledata = te.getVehicleData();
-            Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
+            Model modvec = vehicledata.getType().getModel();
             if(modvec != null){
                 TexUtil.bindTexture(vehicledata.getCurrentTexture());
                 if(!vehicledata.getWheelPositions().isEmpty()){
@@ -44,19 +46,19 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 	heightoffset /= vehicledata.getWheelPositions().size();
                 }
                 GL11.glTranslated(0, -heightoffset, 0);
-                modvec.render(vehicledata, null, null, cache);
+                modvec.render(RENDERDATA.set(vehicledata, null, cache));
                 vehicledata.getParts().forEach((key, partdata) -> {
                     TexUtil.bindTexture(partdata.getCurrentTexture());
                 	if(partdata.isInstalledOnSwivelPoint()){
                 		GL11.glPushMatrix();
                 		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-                        partdata.getType().getModel().render(vehicledata, key, null, null);
+                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key));
         	            GL11.glPopMatrix();
                 	}
                 	else{
                 		partdata.getInstalledPos().translate();
                     	partdata.getInstalledRot().rotate();
-                		partdata.getType().getModel().render(vehicledata, key, null, cache);
+                		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key));
                     	partdata.getInstalledRot().rotateR();
                 		partdata.getInstalledPos().translateR();
                 	}

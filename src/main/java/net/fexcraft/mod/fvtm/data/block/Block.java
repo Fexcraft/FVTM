@@ -9,15 +9,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -29,7 +30,6 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.oredict.OreDictionary;
@@ -45,7 +45,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected BlockItem item;
 	protected net.minecraft.block.Block block;
 	protected String modelid, ctab;
-	protected Model<BlockData, TileEntity> model;
+	protected Model model;
+	protected ModelData modeldata;
 	protected ResourceLocation itemloc;
 	protected boolean no3ditem;
 	//
@@ -109,6 +110,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		if(modelid == null || modelid.equals("null") || modelid.startsWith("baked|")) plain_model = true;//in other words, json models
+		modeldata = DataUtil.getModelData(obj);
 		if(obj.has("AABBs")){
 			obj.get("AABBs").getAsJsonObject().entrySet().forEach(entry -> {
 				try{
@@ -195,13 +197,13 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<BlockData, TileEntity> getModel(){
+	public Model getModel(){
 		return model;
 	}
 	
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, BlockModel.class);
+		this.model = Resources.getModel(modelid, modeldata, BlockModel.class);
 	}
 
 	@Override

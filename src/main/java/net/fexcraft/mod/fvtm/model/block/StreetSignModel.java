@@ -2,7 +2,7 @@
 package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.PartModel;
 
 /** This file was exported via the FVTM Exporter V1.1 of<br>
@@ -16,7 +16,7 @@ public class StreetSignModel extends PartModel {
 	public StreetSignModel(){
 		super(); textureX = 64; textureY = 128; this.addToCreators("Ferdinand (FEX___96)");
 		//
-		TurboList arrow_left = new TurboList("arrow_left");
+		ModelGroup arrow_left = new ModelGroup("arrow_left");
 		arrow_left.add(new ModelRendererTurbo(arrow_left, 40, 67, textureX, textureY)
 			.addShapeBox(0, 0, 0, 4, 4, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-7, -4, -4.1f).setRotationAngle(0, 0, 0).setName("Box 4cp")
@@ -35,7 +35,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(arrow_left);
 		//
-		TurboList arrow_right = new TurboList("arrow_right");
+		ModelGroup arrow_right = new ModelGroup("arrow_right");
 		arrow_right.add(new ModelRendererTurbo(arrow_right, 29, 67, textureX, textureY)
 			.addShapeBox(0, 0, 0, 4, 4, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(3, -4, -4.1f).setRotationAngle(0, 0, 0).setName("Box 4cp")
@@ -54,7 +54,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(arrow_right);
 		//
-		TurboList arrow_top_bot = new TurboList("arrow_top_bot");
+		ModelGroup arrow_top_bot = new ModelGroup("arrow_top_bot");
 		arrow_top_bot.add(new ModelRendererTurbo(arrow_top_bot, 0, 69, textureX, textureY)
 			.addShapeBox(0, 0, 0, 4, 4, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-2, -4, -4.1f).setRotationAngle(0, 0, 0).setName("Box 4cp")
@@ -65,7 +65,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(arrow_top_bot);
 		//
-		TurboList corner_bl = new TurboList("corner_bl");
+		ModelGroup corner_bl = new ModelGroup("corner_bl");
 		corner_bl.add(new ModelRendererTurbo(corner_bl, 1, 65, textureX, textureY)
 			.addShapeBox(0, 0, 0, 1, 1, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, -0.95f, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, -0.95f, 0)
 			.setRotationPoint(-9, 0, -4).setRotationAngle(0, 0, 0).setName("Box 31")
@@ -76,7 +76,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(corner_bl);
 		//
-		TurboList corner_br = new TurboList("corner_br");
+		ModelGroup corner_br = new ModelGroup("corner_br");
 		corner_br.add(new ModelRendererTurbo(corner_br, 17, 65, textureX, textureY)
 			.addShapeBox(0, 0, 0, 1, 2, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 1, -1, -0.5f, -2, 0, -0.5f, -2, 0, 0, 1, -1, 0)
 			.setRotationPoint(9, 0, -4).setRotationAngle(0, 0, 0).setName("Box 33")
@@ -87,7 +87,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(corner_br);
 		//
-		TurboList corner_tl = new TurboList("corner_tl");
+		ModelGroup corner_tl = new ModelGroup("corner_tl");
 		corner_tl.add(new ModelRendererTurbo(corner_tl, 57, 49, textureX, textureY)
 			.addShapeBox(0, 0, 0, 1, 1, 1, 0, 0, -0.95f, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, -0.95f, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-9, -17, -4).setRotationAngle(0, 0, 0).setName("Box 27")
@@ -98,7 +98,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(corner_tl);
 		//
-		TurboList corner_tr = new TurboList("corner_tr");
+		ModelGroup corner_tr = new ModelGroup("corner_tr");
 		corner_tr.add(new ModelRendererTurbo(corner_tr, 49, 57, textureX, textureY)
 			.addShapeBox(0, 0, 0, 1, 2, 1, 0, 1, -1, -0.5f, -2, 0, -0.5f, -2, 0, 0, 1, -1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(9, -18, -4).setRotationAngle(0, 0, 0).setName("Box 29")
@@ -109,7 +109,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(corner_tr);
 		//
-		TurboList left = new TurboList("left");
+		ModelGroup left = new ModelGroup("left");
 		left.add(new ModelRendererTurbo(left, 41, 33, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-10, -16, -4).setRotationAngle(0, 0, 0).setName("Box 19")
@@ -128,7 +128,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(left);
 		//
-		TurboList right = new TurboList("right");
+		ModelGroup right = new ModelGroup("right");
 		right.add(new ModelRendererTurbo(right, 49, 41, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(8, -16, -4).setRotationAngle(0, 0, 0).setName("Box 23")
@@ -147,7 +147,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(right);
 		//
-		TurboList row0 = new TurboList("row0");
+		ModelGroup row0 = new ModelGroup("row0");
 		row0.add(new ModelRendererTurbo(row0, 49, 1, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.8f, 0, 0, -0.8f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f)
 			.setRotationPoint(-7, -16, -3).setRotationAngle(0, 0, 0).setName("Box 5")
@@ -162,7 +162,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(row0);
 		//
-		TurboList row1 = new TurboList("row1");
+		ModelGroup row1 = new ModelGroup("row1");
 		row1.add(new ModelRendererTurbo(row1, 41, 1, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-7, -12, -3).setRotationAngle(0, 0, 0).setName("Box 6")
@@ -183,7 +183,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(row1);
 		//
-		TurboList row2 = new TurboList("row2");
+		ModelGroup row2 = new ModelGroup("row2");
 		row2.add(new ModelRendererTurbo(row2, 57, 1, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f)
 			.setRotationPoint(-7, -6, -3).setRotationAngle(0, 0, 0).setName("Box 7 0")
@@ -204,7 +204,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(row2);
 		//
-		TurboList row3 = new TurboList("row3");
+		ModelGroup row3 = new ModelGroup("row3");
 		row3.add(new ModelRendererTurbo(row3, 41, 9, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.8f, 0, 0, -0.8f)
 			.setRotationPoint(-7, -4, -3).setRotationAngle(0, 0, 0).setName("Box 8")
@@ -219,7 +219,7 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(row3);
 		//
-		TurboList top_bot = new TurboList("top_bot");
+		ModelGroup top_bot = new ModelGroup("top_bot");
 		top_bot.add(new ModelRendererTurbo(top_bot, 1, 57, textureX, textureY)
 			.addShapeBox(0, 0, 0, 16, 2, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-8, 0, -4).setRotationAngle(0, 0, 0).setName("Box 18")

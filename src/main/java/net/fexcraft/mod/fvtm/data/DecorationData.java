@@ -13,6 +13,8 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -20,7 +22,8 @@ public class DecorationData implements Colorable {
 	
 	private final String key, category;
 	public /*final*/ String modelid;
-	public Model<DecorationData, Object> model;
+	public Model model;
+	public ModelData modeldata = new ModelData();
 	public ArrayList<NamedResourceLocation> textures = new ArrayList<>();
 	private TreeMap<String, RGB> channels = new TreeMap<>();
 	public Pos offset = new Pos(0, 0, 0);
@@ -72,6 +75,9 @@ public class DecorationData implements Colorable {
 					else{
 						textures.add(new NamedResourceLocation(obj.get("texture").getAsString()));
 					}
+				}
+				if(obj.has("modeldata")){
+					modeldata = DataUtil.getModelData(obj, "modeldata", modeldata);
 				}
 			}
 		}

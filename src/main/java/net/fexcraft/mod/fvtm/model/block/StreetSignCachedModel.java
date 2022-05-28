@@ -6,13 +6,13 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
-import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class StreetSignCachedModel {
 	
-	private TurboList cachedmodel = new TurboList("cache");
+	private ModelGroup cachedmodel = new ModelGroup("cache");
 
     @SideOnly(Side.CLIENT)
 	public void recollectModel(StreetSign sign){
@@ -134,7 +134,7 @@ public class StreetSignCachedModel {
 	}
 
 	public void render(){
-		cachedmodel.renderPlain();
+		cachedmodel.render();
 	}
 
 }

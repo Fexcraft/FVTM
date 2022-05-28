@@ -3,26 +3,18 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-public class RailGaugeModel extends GenericModel<Track, Integer> {
+public class RailGaugeModel extends GenericModel {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();
@@ -37,27 +29,16 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	
 	////-///---/---///-////
 	
-	public RailGaugeModel(){ super(); }
-	
-	public RailGaugeModel(JsonObject obj){ super(obj); }
-	
 	@Override
-	public RailGaugeModel parse(Object[] stream, String type){
-		return super.parse(stream, type);
-	}
-	
-	public RailGaugeModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
-		super(loc, data, objgroups, exclude);
-		rail_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "RailCulling:"));
-		String tdis = ObjParser.getCommentValue(data, "TiesDistance:");
-		if(tdis != null && NumberUtils.isCreatable(tdis)) ties_distance = Float.parseFloat(tdis);
-		String sifoff = ObjParser.getCommentValue(data, "SignalOffset:");
-		if(sifoff != null && NumberUtils.isCreatable(sifoff)) signal_offset = Float.parseFloat(sifoff);
-		String bufflen = ObjParser.getCommentValue(data, "BufferLength:");
-		if(bufflen != null && NumberUtils.isCreatable(bufflen)) buffer_length = Float.parseFloat(bufflen);
-		List<String[]> rails = ObjParser.getCommentValues(data, new String[]{ "Rail:" }, null, null);
-		if(rails.isEmpty()) return;
-		for(String[] args : rails){
+	public RailGaugeModel parse(ModelData data){
+		rail_tempcull = data.get("RailCulling", false);
+		if(data.contains("TiesDistance")) ties_distance = data.get("TiesDistance");
+		if(data.contains("SignalOffset")) signal_offset = data.get("SignalOffset");
+		if(data.contains("BufferLength")) buffer_length = data.get("BufferLength");
+		List<String> rails = data.getList("Rail");
+		if(rails.isEmpty()) return this;
+		for(String rail : rails){
+			String[] args = rail.trim().split(" ");
 			boolean rect = args[0].equals("rect") || args[0].equals("flat");
 			float scale = Float.parseFloat(args[1]);
 			float sx = Float.parseFloat(args[2]);
@@ -73,16 +54,12 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 				this.addRailRectShape(scale, sx, sy, w, h, tl, tr, bl, br, m);
 			}
 		}
+		return this;
 	}
 
 	@Override
-	public void render(Track data, Integer index){
-		for(TurboList list : groups){ list.renderPlain(); }
-	}
-
-	@Override
-	public void render(Track data, Integer index, Entity ent, RenderCache cache){
-		for(TurboList list : groups){ list.renderPlain(); }
+	public void render(ModelRenderData data){
+		for(ModelGroup list : groups) list.render();
 	}
 	
 	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror){
@@ -129,7 +106,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		if(buffer_track.railmodel == null){ RailRenderer.generateTrackModel(buffer_track, this); }
 		TexUtil.bindTexture(buffer_track.gauge.getModelTexture());
 		GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(180, 0, 1, 0);
-		groups.get("buffer").renderPlain();
+		groups.get("buffer").render();
 		GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(-90, 0, 1, 0);
 		TexUtil.bindTexture(buffer_track.gauge.getTiesTexture());
 		buffer_track.restmodel.renderPlain();

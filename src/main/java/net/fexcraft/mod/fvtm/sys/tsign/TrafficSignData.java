@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.tsign;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,7 +110,7 @@ public class TrafficSignData {
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	//GL11.glScalef(comp.scale0, comp.scale1, 1);
-        	comp.model.render(comp, comp.comp);//, entity, null);
+        	comp.model.render(RENDERDATA.set(comp));
         	GL11.glPopMatrix();
         }
         for(ComponentData comp : components){
@@ -118,7 +119,7 @@ public class TrafficSignData {
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	GL11.glScalef(comp.scale0, comp.scale1, 1);
-        	comp.model.render(comp, comp.comp);//, entity, null);
+        	comp.model.render(RENDERDATA.set(comp));
         	GL11.glPopMatrix();
         }
         for(FontData comp : fonts){
@@ -127,7 +128,7 @@ public class TrafficSignData {
         	GL11.glTranslatef(comp.xoff * sixteenth, comp.yoff * sixteenth, comp.zoff * -0.00625f);
         	if(comp.rotation != 0) GL11.glRotatef(comp.rotation, 0, 0, 1);
         	GL11.glScalef(comp.scale0, comp.scale1, 1);
-        	comp.model.render(comp, comp.comp);//, entity, null);
+        	comp.model.render(RENDERDATA.set(comp));
         	GL11.glPopMatrix();
         }
         if(asent) GL11.glPopMatrix();

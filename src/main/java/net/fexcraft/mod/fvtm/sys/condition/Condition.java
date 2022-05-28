@@ -4,16 +4,10 @@ import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.event.ConditionEvent;
-import net.fexcraft.mod.fvtm.model.TurboList;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -88,60 +82,60 @@ public class Condition {
 					case "bequal":
 					case "b=":{
 						boolean bool = Boolean.parseBoolean(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeBoolean(target, false) == bool;
+						return data -> {
+							return data.vehicle.getAttributeBoolean(target, false) == bool;
 						};
 					}
 					case "n=":{
 						Float val = Float.parseFloat(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeFloat(target, 0f) == val;
+						return data -> {
+							return data.vehicle.getAttributeFloat(target, 0f) == val;
 						};
 					}
 					case "!n=":{
 						Float val = Float.parseFloat(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeFloat(target, 0f) != val;
+						return data -> {
+							return data.vehicle.getAttributeFloat(target, 0f) != val;
 						};
 					}
 					case "equal":
 					case "=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeString(target, "null").equals(condi);
+						return data -> {
+							return data.vehicle.getAttributeString(target, "null").equals(condi);
 						};
 					}
 					case "nequal":
 					case "!=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return !v.getAttributeString(target, "null").equals(condi);
+						return data -> {
+							return !data.vehicle.getAttributeString(target, "null").equals(condi);
 						};
 					}
 					case "lequal":
 					case "<=":{
 						float val = Float.parseFloat(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeFloat(target, 0f) <= val;
+						return data -> {
+							return data.vehicle.getAttributeFloat(target, 0f) <= val;
 						};
 					}
 					case "gequal":
 					case ">=":{
 						float val = Float.parseFloat(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeFloat(target, 0f) >= val;
+						return data -> {
+							return data.vehicle.getAttributeFloat(target, 0f) >= val;
 						};
 					}
 					case "less":
 					case "<":{
 						float val = Float.parseFloat(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeFloat(target, 0f) < val;
+						return data -> {
+							return data.vehicle.getAttributeFloat(target, 0f) < val;
 						};
 					}
 					case "greater":
 					case ">":{
 						float val = Float.parseFloat(condi);
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return v.getAttributeFloat(target, 0f) > val;
+						return data -> {
+							return data.vehicle.getAttributeFloat(target, 0f) > val;
 						};
 					}
 				}
@@ -152,38 +146,38 @@ public class Condition {
 				switch(mode){
 					case "equal":
 					case "=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return t.getBlockMetadata() == meta;
+						return data -> {
+							return data.tile.getBlockMetadata() == meta;
 						};
 					}
 					case "nequal":
 					case "!=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return t.getBlockMetadata() != meta;
+						return data -> {
+							return data.tile.getBlockMetadata() != meta;
 						};
 					}
 					case "lequal":
 					case "<=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return t.getBlockMetadata() <= meta;
+						return data -> {
+							return data.tile.getBlockMetadata() <= meta;
 						};
 					}
 					case "gequal":
 					case ">=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return t.getBlockMetadata() >= meta;
+						return data -> {
+							return data.tile.getBlockMetadata() >= meta;
 						};
 					}
 					case "less":
 					case "<":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return t.getBlockMetadata() < meta;
+						return data -> {
+							return data.tile.getBlockMetadata() < meta;
 						};
 					}
 					case "greater":
 					case ">":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							return t.getBlockMetadata() > meta;
+						return data -> {
+							return data.tile.getBlockMetadata() > meta;
 						};
 					}
 				}
@@ -192,8 +186,8 @@ public class Condition {
 			case "part_function":
 			case "part_func":
 			case "partfunc":{
-				return (e, t, v, c, b, p, s, tl, r) -> {
-					PartData data = s.equals(target) ? p : v.getPart(target);
+				return mrdata -> {
+					PartData data = mrdata.part_category.equals(target) ? mrdata.part : mrdata.vehicle.getPart(target);
 					Function func = data == null ? null : data.getFunction(targets[1]);
 					return func == null ? false : func.onCondition(targets, mode, condi);
 				};
@@ -207,9 +201,9 @@ public class Condition {
 					Conditional con = ConditionRegistry.get(str);
 					if(con != null) cons.add(con);
 				}
-				return (e, t, v, c, b, p, s, tl, r) -> {
+				return data -> {
 					for(Conditional con : cons){
-						if(con.isMet(e, t, v, c, b, p, s, tl, r)){
+						if(con.isMet(data)){
 							if(m == 1) return true;
 							else if(m == 2) return false;
 						}
@@ -223,43 +217,43 @@ public class Condition {
 				switch(mode){
 					case "equal":
 					case "=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+						return data -> {
+							World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
 							return world == null ? false : world.getWorldTime() == value;
 						};
 					}
 					case "nequal":
 					case "!=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+						return data -> {
+							World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
 							return world == null ? false : world.getWorldTime() != value;
 						};
 					}
 					case "lequal":
 					case "<=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+						return data -> {
+							World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
 							return world == null ? false : world.getWorldTime() <= value;
 						};
 					}
 					case "gequal":
 					case ">=":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+						return data -> {
+							World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
 							return world == null ? false : world.getWorldTime() >= value;
 						};
 					}
 					case "less":
 					case "<":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+						return data -> {
+							World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
 							return world == null ? false : world.getWorldTime() < value;
 						};
 					}
 					case "greater":
 					case ">":{
-						return (e, t, v, c, b, p, s, tl, r) -> {
-							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+						return data -> {
+							World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
 							return world == null ? false : world.getWorldTime() > value;
 						};
 					}
@@ -278,7 +272,7 @@ public class Condition {
 	@FunctionalInterface
 	public static interface Conditional {
 		
-		boolean isMet(GenericVehicle ent, BlockTileEntity tile, VehicleData vehdata, ContainerData condata, BlockData blkdata, PartData partdata, String part, TurboList list, RenderCache cache);
+		boolean isMet(ModelRenderData data);
 		
 	}
 

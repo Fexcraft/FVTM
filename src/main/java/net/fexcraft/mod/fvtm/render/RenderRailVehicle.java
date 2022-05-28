@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -7,7 +9,6 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -57,23 +58,23 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
             	});
             	heightoffset[0] /= vehicle.getVehicleData().getWheelPositions().size();
                 GL11.glTranslated(0, heightoffset[0], 0);*/
-	            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();
+	            Model modVehicle = vehicle.getVehicleData().getType().getModel();
 	            if(modVehicle != null){
 	                this.bindTexture(vehicle.getVehicleData().getCurrentTexture());
-	                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache);
+	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache));
 	                if(vehicle.getVehicleData().getParts().size() > 0){
 	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 	                    	TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 	                    		GL11.glPushMatrix();
 	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
-		                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache);
+		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey()));
 	            	            GL11.glPopMatrix();
 	                    	}
 	                    	else{
 		                    	entry.getValue().getInstalledPos().translate();
 		                    	entry.getValue().getInstalledRot().rotate();
-		                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache);
+		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey()));
 		                    	entry.getValue().getInstalledRot().rotateR();
 		                        entry.getValue().getInstalledPos().translateR();
 	                    	}

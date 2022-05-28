@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
@@ -59,13 +61,13 @@ public class MRWrapper extends ModelRenderer {
 				if(id.contains("right")) GL11.glTranslatef(0, 0, 0.25f);
 				GL11.glRotated(parent.rotateAngleX * 5, 0, 0, 1);
 			}
-			cloth_items.get(i).getType().getModel().render(cloth_items.get(i), cloth_models.get(i), entity, cache);
+			cloth_items.get(i).getType().getModel().render(RENDERDATA.set(cloth_items.get(i), cloth_models.get(i), entity, cache));
 			if(cloth_groups.get(i).startsWith("skirt")) GL11.glPopMatrix();
 		}
 		cloth_items.clear();
 		cloth_models.clear();
 		cloth_groups.clear();
-    	if(Command.OTHER) DebugModels.center.renderPlain();
+    	if(Command.OTHER) DebugModels.center.render();
     	RGB.glColorReset();
     	GL11.glRotatef(90, 0, -1, 0);
     	GlStateManager.bindTexture(deftex);

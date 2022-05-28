@@ -22,12 +22,12 @@ import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -55,7 +55,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected List<String> categories;
 	protected PartItem item;
 	protected String modelid, ctab;
-	protected Model<VehicleData, String> model;
+	protected Model model;
+	protected ModelData modeldata;
 	protected PartInstallationHandler installhandler;
 	protected Object installhandler_data;
 	protected ArrayList<Function> functions = new ArrayList<>();
@@ -200,7 +201,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
             }
 		}
 		//
-		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(Static.isClient()){
+			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+			modeldata = DataUtil.getModelData(obj);
+		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
@@ -261,13 +265,13 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<VehicleData, String> getModel(){
+	public Model getModel(){
 		return model;
 	}
 	
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, PartModel.class);
+		this.model = Resources.getModel(modelid, modeldata, PartModel.class);
 	}
 	
 	@Nullable

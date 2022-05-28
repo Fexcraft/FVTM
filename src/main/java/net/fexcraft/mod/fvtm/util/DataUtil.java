@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 
@@ -20,6 +21,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -227,6 +230,60 @@ public class DataUtil {
 			}
 			return resloc;
 		}
+	}
+
+	public static ModelData getModelData(JsonObject json){
+		return getModelData(json, "ModelData", new ModelData());
+	}
+
+	public static ModelData getModelData(JsonObject json, String key, ModelData data){
+		if(json.has("ModelData")){
+			JsonObject obj = json.get(key).getAsJsonObject();
+			for(Entry<String, JsonElement> entry : obj.entrySet()){
+				getModelDataEntry(data, entry.getKey(), entry.getValue());
+			}
+		}
+		return data;
+	}
+
+	private static void getModelDataEntry(ModelData data, String key, JsonElement value){
+		if(value.isJsonArray()){
+			ArrayList<Object> list = new ArrayList<>();
+			for(JsonElement elm : value.getAsJsonArray()){
+				if(elm.isJsonPrimitive()){
+					list.add(elm.getAsString());
+				}
+				else if(key.equals(Model.PROGRAMS)){
+					if(elm.isJsonArray()){
+						JsonArray array = elm.getAsJsonArray();
+						String group = array.get(0).getAsString();
+						array.remove(0);
+						list.add(new Object[]{ group, array });
+					}
+					else{
+						JsonObject prog = elm.getAsJsonObject();
+						String group = prog.get("group").getAsString();
+						prog.remove("group");
+						list.add(new Object[]{ group, prog });
+					}
+				}
+				else {
+					list.add(elm);
+				}
+			}
+			data.set(key, list);
+		}
+		else if(value.isJsonPrimitive()){
+			/*String val = value.getAsString();
+			if(val.equals("true") || val.equals("false")){
+				data.set(key, value.getAsBoolean());
+			}
+			else if(NumberUtils.isCreatable(val)){
+				data.set(key, value.getAsFloat());
+			}
+			else*/ data.set(key, value.getAsString());
+		}
+	
 	}
 
 }

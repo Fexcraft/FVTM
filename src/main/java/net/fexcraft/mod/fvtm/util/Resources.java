@@ -26,8 +26,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -68,6 +66,8 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -82,6 +82,11 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.loaders.ClassModelLoader;
+import net.fexcraft.mod.fvtm.model.loaders.FMFModelLoader;
+import net.fexcraft.mod.fvtm.model.loaders.JTMTModelLoader;
+import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
+import net.fexcraft.mod.fvtm.model.loaders.SMPTBJavaModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -158,10 +163,8 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	public static HashMap<String, Particle> PARTICLES = new HashMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
-	private static TreeMap<String, ObjModel> OBJ_MODEL_INFO_CACHE = new TreeMap<>();
-	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
-	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
+	public static final HashMap<String, Model> MODELS = new HashMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
@@ -170,6 +173,7 @@ public class Resources {
 	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
 	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
 	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
+	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	private File configroot; 
@@ -272,6 +276,14 @@ public class Resources {
 		searchInAddonsFor(DataType.BLOCK);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
+		//
+		if(event.getSide().isClient()){
+			MODEL_LOADERS.add(new ClassModelLoader());
+			MODEL_LOADERS.add(new JTMTModelLoader());
+			MODEL_LOADERS.add(new FMFModelLoader());
+			MODEL_LOADERS.add(new ObjModelLoader());
+			MODEL_LOADERS.add(new SMPTBJavaModelLoader());
+		}
 	}
 	
 	public static void searchAddonsInFolder(File packfolder, AddonLocation loc, boolean create){
@@ -547,95 +559,72 @@ public class Resources {
 		catch(Throwable e){
 			//e.printStackTrace();
 		}
-		return close == null ? new Object[]{ stream } : new Object[]{ stream, close};
+		return close == null ? new Object[]{ stream } : new Object[]{ stream, close };
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public static <T, K> Model<T, K> getModel(String name, Class<? extends Model<T, K>> clazz){
+	public static Model getModel(String name, ModelData data, Class<? extends Model> clazz){
 		if(name == null || name.equals("") || name.equals("null")){
-			return (Model<T, K>)getEmptyModelFromClass(clazz);
+			return getEmptyModelFromClass(clazz);
 		}
 		boolean bake = name.startsWith("baked|");
 		if(bake) name = name.substring(6);
-		Model<T, K> model = null;
+		Model model = null;
 		if(MODELS.containsKey(name)){
 			if(bake && getEmptyModelFromClass(clazz) instanceof BlockModel){
-				return (Model<T, K>)getEmptyModelFromClass(clazz);
+				return getEmptyModelFromClass(clazz);
 			}
-			return (Model<T, K>)MODELS.get(name);
+			return MODELS.get(name);
 		}
 		if(FCLRegistry.getModel(name) != null){
 			try{
-				model = (Model<T, K>)((Class<?>)FCLRegistry.getModel(name)).newInstance();
+				model = (Model)((Class<?>)FCLRegistry.getModel(name)).newInstance();
+				model.parse(data).lock();
 			}
 			catch(InstantiationException | IllegalAccessException e){
 				e.printStackTrace();
-				return (Model<T, K>)getEmptyModelFromClass(clazz);
+				return getEmptyModelFromClass(clazz);
 			}
 			MODELS.put(name, model);
 			return model;
 		}
-		String ext = FilenameUtils.getExtension(name);
+		ModelLoader loader = getModelLoader(name, FilenameUtils.getExtension(name));
+		if(loader == null) return getEmptyModelFromClass(clazz);
 		try{
-			switch(ext){
-				case "class":
-					Class<?> clasz = Class.forName(name.replace(".class", ""));
-					model = (Model<T, K>)clasz.newInstance();
-					break;
-				case "jtmt":
-					JsonObject obj = JsonUtil.getObjectFromInputStream(getModelInputStream(new ResourceLocation(name), true));
-					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
-					break;
-				case "json":
-					//TODO create a wrapper.
-					break;
-				case "obj":{
-					String[] filter = name.split(";");
-					String id = filter.length > 1 ? filter[filter.length - 1] : name;
-					ResourceLocation loc = new ResourceLocation(id);
-					ObjModel objdata = null;
-					if(OBJ_MODEL_INFO_CACHE.containsKey(id)){
-						objdata = OBJ_MODEL_INFO_CACHE.get(id);
-					}
-					else{
-						Object[] stream = getModelInputStreamWithFallback(loc);
-						objdata = new ObjParser((InputStream)stream[0]).readComments(true).readModel(false).parse();
-						OBJ_MODEL_INFO_CACHE.put(id, objdata);
-						if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
-					}
-					ArrayList<String> groups = new ArrayList<>();
-					boolean exclude = false;
-					if(filter.length > 1){
-						if(filter[0].equals("!") || filter[0].equals("exclude")) exclude = true;
-						if(!exclude || filter.length > 2){
-							for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
-						}
-					}
-					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class, boolean.class).newInstance(loc, objdata, groups, exclude);
-					break;
+			Object[] ret = loader.load(name, data, () -> {
+				try{
+					return clazz.getConstructor().newInstance();
 				}
-				case "fmf":{
-					Object[] stream = getModelInputStreamWithFallback(new ResourceLocation(name));
-					model = ((GenericModel<T, K>)clazz.getConstructor().newInstance()).parse(stream, ext);
-					break;
+				catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+					e.printStackTrace();
+					return null;
 				}
-				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
-			}
+			});
+			if(ret.length == 0 || ret[0] == null) return getEmptyModelFromClass(clazz);
+			model = (Model)ret[0];
+			if(ret.length > 1) data = (ModelData)ret[1];
+			data.convert();
+			model.parse(data).lock();
 		}
-		catch(Throwable thr){
-			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			thr.printStackTrace(); //Static.stop();
-			return (Model<T, K>)getEmptyModelFromClass(clazz);
+		catch(Exception e){
+			e.printStackTrace();
 		}
 		MODELS.put(name, model);
 		if(bake && model instanceof BlockModel){
 			FCLBlockModelLoader.addBlockModel(new ResourceLocation(name), (FCLBlockModel)model);
-			return (Model<T, K>)getEmptyModelFromClass(clazz);
+			return getEmptyModelFromClass(clazz);
 		}
 		return model;
 	}
 
-	private static Model<?, ?> getEmptyModelFromClass(Class<? extends Model<?, ?>> clazz){
+	private static ModelLoader getModelLoader(String name, String extension){
+		for(ModelLoader loader : MODEL_LOADERS){
+			if(loader.accepts(name, extension)) return loader;
+		}
+		return null;
+	}
+
+	private static Model getEmptyModelFromClass(Class<? extends Model> clazz){
 		//if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
 		if(clazz == PartModel.class) return PartModel.EMPTY;
@@ -646,7 +635,7 @@ public class Resources {
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		if(clazz == WireModel.class) return WireModel.EMPTY;
 		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
-		if(clazz == DecoModel.class) return DecoModel.EMPTY;
+		if(clazz == GenericModel.class) return GenericModel.EMPTY;
 		return null;
 	}
 
@@ -970,22 +959,6 @@ public class Resources {
 		return bool;
 	}
 	
-	public static ObjModel getObjModelFromCache(ResourceLocation loc, boolean flip_x, boolean flip_f, boolean flip_u, boolean flip_v, boolean norm){
-		if(OBJ_MODEL_DATA_CACHE.containsKey(loc)){
-			return OBJ_MODEL_DATA_CACHE.get(loc);
-		}
-		Object[] stream = getModelInputStreamWithFallback(loc);
-		ObjModel objmod = new ObjParser((InputStream)stream[0]).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
-		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
-		OBJ_MODEL_DATA_CACHE.put(loc, objmod);
-		return objmod;
-	}
-
-	public static void clearObjModelCache(){
-		OBJ_MODEL_INFO_CACHE.clear();
-		OBJ_MODEL_DATA_CACHE.clear();
-	}
-	
 	/*private static final BiConsumer<ArrayList<TileEntity>, Junction> LINK_TO_JUNC = (tiles, junction) -> {
 		for(TileEntity tile_entity : tiles){
 			if(tile_entity instanceof JunctionTrackingTileEntity == false) continue;
@@ -1107,7 +1080,7 @@ public class Resources {
 		for(Entry<String, JsonObject> cache : WIRE_DECO_CACHE.entrySet()){
 			for(Entry<String, JsonElement> entry : cache.getValue().entrySet()){
 				if(client){
-					parseWireModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
+					parseWireDecoModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
 				}
 				WIRE_DECOS.add(cache.getKey() + ":" + entry.getKey());
 			}
@@ -1116,7 +1089,7 @@ public class Resources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private static void parseWireModel(String key, JsonElement value){
+	private static void parseWireDecoModel(String key, JsonElement value){
 		String name = null;
 		JsonArray array = null;
 		if(value.isJsonArray()){
@@ -1126,7 +1099,7 @@ public class Resources {
 		else{
 			name = value.getAsString();
 		}
-		WireModel model = (WireModel)getModel(name, WireModel.class);
+		WireModel model = (WireModel)getModel(name, new ModelData(), WireModel.class);
 		if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).getAsString()));
 		if(array.size() > 2) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
 		if(array.size() > 3) model.decotype(array.get(3).getAsString());
@@ -1218,8 +1191,8 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static void loadDecoModels(){
 		for(DecorationData deco : DECORATIONS.values()){
-			DecoModel model = (DecoModel)Resources.getModel(deco.modelid, DecoModel.class);
-			if(model != null && model != DecoModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
+			Model model = Resources.getModel(deco.modelid, deco.modeldata, GenericModel.class);
+			if(model != null && model != GenericModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
 		}
 	}
 

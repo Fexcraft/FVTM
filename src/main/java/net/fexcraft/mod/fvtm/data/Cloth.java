@@ -4,8 +4,10 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
@@ -31,6 +33,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	protected EntityEquipmentSlot eq_slot;
 	protected ArmorMaterial material;
 	protected ClothModel model;
+	protected ModelData modeldata;
 	protected ResourceLocation texture;
 	protected ResourceLocation itemloc;
 	
@@ -65,7 +68,10 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 		this.material = parseMaterial(obj);
 		//
 		this.texture = new NamedResourceLocation(JsonUtil.getIfExists(obj, "Texture", Resources.NULL_TEXTURE.toString()));
-		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(Static.isClient()){
+			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+			modeldata = DataUtil.getModelData(obj);
+		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
 		this.item = new ClothItem(this);
@@ -132,7 +138,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	
 	@Override
 	public void loadModel(){
-		this.model = (ClothModel)Resources.getModel(modelid, ClothModel.class);
+		this.model = (ClothModel)Resources.getModel(modelid, modeldata, ClothModel.class);
 	}
 	
 	public ResourceLocation getTexture(){

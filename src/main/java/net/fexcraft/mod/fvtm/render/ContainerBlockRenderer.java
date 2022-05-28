@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Time;
@@ -55,7 +57,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         if(condata != null){
             if(condata.getType().getModel() != null){
                 TexUtil.bindTexture(condata.getCurrentTexture());
-                condata.getType().getModel().render(condata, null, null, te.getCapability(Capabilities.RENDERCACHE, null));
+                condata.getType().getModel().render(RENDERDATA.set(condata, te, te.getCapability(Capabilities.RENDERCACHE, null)));
             }
         }
         GL11.glPopMatrix();

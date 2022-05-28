@@ -107,7 +107,7 @@ public class ObjModelLoader implements ModelLoader {
 			if(!str.contains(":")) continue;
 			int idx = str.indexOf(":");
 			String key = str.substring(0, idx);
-			if(keys.contains(key)) continue;
+			if(keys.contains(key + ":")) continue;
 			String val = str.substring(idx + 2, str.length()).trim();
 			if(confdata.contains(key)){
 				if(confdata.get(key) instanceof Collection){
@@ -116,6 +116,7 @@ public class ObjModelLoader implements ModelLoader {
 				else{
 					ArrayList<String> list = new ArrayList<String>();
 					list.add(confdata.get(key).toString());
+					list.add(val);
 					confdata.set(key, list);
 				}
 			}

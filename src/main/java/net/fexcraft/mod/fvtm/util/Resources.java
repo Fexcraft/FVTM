@@ -86,6 +86,7 @@ import net.fexcraft.mod.fvtm.model.loaders.ClassModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.FMFModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.JTMTModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
+import net.fexcraft.mod.fvtm.model.loaders.SMPTBJavaModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -281,6 +282,7 @@ public class Resources {
 			MODEL_LOADERS.add(new JTMTModelLoader());
 			MODEL_LOADERS.add(new FMFModelLoader());
 			MODEL_LOADERS.add(new ObjModelLoader());
+			MODEL_LOADERS.add(new SMPTBJavaModelLoader());
 		}
 	}
 	

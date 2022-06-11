@@ -189,6 +189,14 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 			return addElse(programs);
 		}
 		
+		public ConditionalProgram transfer(ConditionalProgram other){
+			this.programs.addAll(other.programs);
+			this.opposite.addAll(other.opposite);
+			other.programs.clear();
+			other.opposite.clear();
+			return this;
+		}
+		
 	}
 	
 	public static class FunctionalProgram extends ConditionalProgram {

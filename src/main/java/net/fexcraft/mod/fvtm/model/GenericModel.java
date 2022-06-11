@@ -7,7 +7,9 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.TexturedPolygon;
@@ -84,8 +86,44 @@ public class GenericModel implements Model {
 			}
 		}
 		if(data.contains(CONDPROGRAMS)){
-			ArrayList<String> programs = data.get(CONDPROGRAMS);
-			for(String string : programs){
+			ArrayList<Object> programs = data.get(CONDPROGRAMS);
+			for(Object obj : programs){
+				if(obj instanceof JsonObject){
+					JsonObject json = (JsonObject)obj;
+					if(!json.has("id") || !json.has("group")) continue;
+					try{
+						String group = json.get("group").getAsString();
+						String progid = json.get("id").getAsString();
+						ConditionalProgram prog = null;
+						if(ModelGroup.COND_PROGRAMS.containsKey(progid)){
+							prog = ModelGroup.COND_PROGRAMS.get(progid).getConstructor().newInstance();
+						}
+						else prog = new ConditionBased(progid);
+						if(json.has("ifmet")){
+							JsonArray array = json.get("ifmet").getAsJsonArray();
+							for(JsonElement elm : array){
+								if(elm.isJsonPrimitive()) prog.add(parseProgram(elm.getAsString().trim().split(" ")));
+								else prog.add(parseProgram(elm));
+							}
+						}
+						if(json.has("else")){
+							JsonArray array = json.get("else").getAsJsonArray();
+							for(JsonElement elm : array){
+								if(elm.isJsonPrimitive()) prog.addElse(parseProgram(elm.getAsString().trim().split(" ")));
+								else prog.addElse(parseProgram(elm));
+							}
+						}
+						if(json.has("args")){
+							prog = (ConditionBased)prog.parse(json.get("args").getAsString().trim().split(" "));
+						}
+						groups.get(group).addProgram(prog);
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+					continue;
+				}
+				String string = obj.toString();
 				String[] args = string.trim().split("||");
 				if(!groups.contains(args[0])) continue;
 				try{

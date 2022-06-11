@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.function.BiPredicate;
 
@@ -10,7 +11,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 
 /**
- * Similar concept as the TurboList inside FMT-Standalone
+ * Similar concept as the TurboList inside FMT v2
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
@@ -19,6 +20,7 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 	
 	public static final ModelGroup EMPTY = new ModelGroup("fvtm:empty");
 	public static final ProgramMap PROGRAMS = new ProgramMap();
+	public static final HashMap<String, Class<? extends ConditionalProgram>> COND_PROGRAMS = new HashMap<>();
 	//
 	private ArrayList<Program> all_programs = new ArrayList<>();
 	private ArrayList<Program> pre_programs = new ArrayList<>();

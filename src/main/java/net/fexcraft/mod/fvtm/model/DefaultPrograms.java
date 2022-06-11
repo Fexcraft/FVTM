@@ -903,7 +903,7 @@ public class DefaultPrograms {
 		public IDSpecific(String id){ this.group = id; }
 
 		@Override
-		public String getId(){ return "fvtm:group_specific"; }
+		public String getId(){ return "fvtm:category_specific"; }
 
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
@@ -924,7 +924,7 @@ public class DefaultPrograms {
 		public IDSpecificArray(String... ids){ this.groups = ids; }
 
 		@Override
-		public String getId(){ return "fvtm:group_specific_array"; }
+		public String getId(){ return "fvtm:category_specific_array"; }
 
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){

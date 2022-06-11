@@ -16,6 +16,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
+import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
@@ -88,7 +89,11 @@ public class GenericModel implements Model {
 				String[] args = string.trim().split("||");
 				if(!groups.contains(args[0])) continue;
 				try{
-					ConditionBased prog = new ConditionBased(args[1]);
+					ConditionalProgram prog = null;
+					if(ModelGroup.COND_PROGRAMS.containsKey(args[1])){
+						prog = ModelGroup.COND_PROGRAMS.get(args[1]).getConstructor().newInstance();
+					}
+					else prog = new ConditionBased(args[1]);
 					String[] sub = args[2].split("|");
 					for(String s : sub){
 						prog.add(parseProgram(s.trim().split(" ")));
@@ -98,6 +103,9 @@ public class GenericModel implements Model {
 						for(String s : sub){
 							prog.addElse(parseProgram(s.trim().split(" ")));
 						}
+					}
+					if(args.length > 4){
+						prog = (ConditionBased)prog.parse(args[4].trim().split(" "));
 					}
 					groups.get(args[0]).addProgram(prog);
 				}

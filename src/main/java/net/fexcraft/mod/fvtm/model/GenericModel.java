@@ -40,6 +40,7 @@ public class GenericModel implements Model {
 	public GenericModel(){
 		if(!DefaultPrograms.DIDLOAD){
 			DefaultPrograms.init();
+			ConditionalPrograms.init();
 			WirePrograms.init();
 			TrafficSignPrograms.init();
 		}

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
+import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
 
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
@@ -11,6 +12,23 @@ import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 
 public class ConditionalPrograms {
+	
+	public static void init(){
+		COND_PROGRAMS.put("fvtm:lights", Lights.class);
+		COND_PROGRAMS.put("fvtm:front_lights", FrontLights.class);
+		COND_PROGRAMS.put("fvtm:back_lights", BackLights.class);
+		COND_PROGRAMS.put("fvtm:brake_lights", BrakeLights.class);
+		COND_PROGRAMS.put("fvtm:fog_lights", FogLights.class);
+		COND_PROGRAMS.put("fvtm:long_lights", LongLights.class);
+		COND_PROGRAMS.put("fvtm:reverse_lights", ReverseLights.class);
+		COND_PROGRAMS.put("fvtm:lights_rail_forward", LightsForward.class);
+		COND_PROGRAMS.put("fvtm:lights_rail_backward", LightsBackward.class);
+		COND_PROGRAMS.put("fvtm:turn_signal_left", TurnSignalLeft.class);
+		COND_PROGRAMS.put("fvtm:turn_signal_right", TurnSignalRight.class);
+		COND_PROGRAMS.put("fvtm:warning_lights", WarningLights.class);
+		COND_PROGRAMS.put("fvtm:back_lights_signal_left", BackLightsSignalLeft.class);
+		COND_PROGRAMS.put("fvtm:back_lights_signal_right", BackLightsSignalRight.class);
+	}
 	
 	public static class Lights extends ConditionalProgram {
 		
@@ -70,7 +88,7 @@ public class ConditionalPrograms {
 		
 	}
 	
-	public static class LightsFrontForward extends ConditionalProgram {
+	public static class LightsForward extends ConditionalProgram {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
@@ -79,25 +97,7 @@ public class ConditionalPrograms {
 		
 	}
 	
-	public static class LightsFrontBackward extends ConditionalProgram {
-		
-		@Override
-		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value();
-		}
-		
-	}
-	
-	public static class LightsRearForward extends ConditionalProgram {
-		
-		@Override
-		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value();
-		}
-		
-	}
-	
-	public static class LightsRearBackward extends ConditionalProgram {
+	public static class LightsBackward extends ConditionalProgram {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){

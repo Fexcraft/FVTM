@@ -14,7 +14,8 @@ public class ClothModel extends GenericModel {
 	@Override
 	public ClothModel parse(ModelData data){
 		if(data.contains("SetGroupAs")){
-			for(String string : ((List<String>)data.get("SetGroupAs"))){
+			List<String> list = data.getList("SetGroupAs");
+			for(String string : list){
 				String[] args = string.trim().split(" ");
 				if(!groups.contains(args[0])) continue;
 				try{

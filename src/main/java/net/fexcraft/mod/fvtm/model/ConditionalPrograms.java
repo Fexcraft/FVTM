@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
+import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -28,6 +29,14 @@ public class ConditionalPrograms {
 		COND_PROGRAMS.put("fvtm:warning_lights", WarningLights.class);
 		COND_PROGRAMS.put("fvtm:back_lights_signal_left", BackLightsSignalLeft.class);
 		COND_PROGRAMS.put("fvtm:back_lights_signal_right", BackLightsSignalRight.class);
+		COND_PROGRAMS.put("fvtm:category_specific", IDSpecific.class);
+		COND_PROGRAMS.put("fvtm:category_specific_array", IDSpecificArray.class);
+		COND_PROGRAMS.put("fvtm:signal_state", SignalState.class);
+		COND_PROGRAMS.put("fvtm:basic_signal", SignalState.class);
+		COND_PROGRAMS.put("fvtm:switch_fork2_state", SwitchFork2State.class);
+		COND_PROGRAMS.put("fvtm:switch_fork3_state", SwitchFork3State.class);
+		COND_PROGRAMS.put("fvtm:switch_double_state", SwitchDoubleState.class);
+		COND_PROGRAMS.put("fvtm:switch_double_state_side", SwitchDoubleStateSide.class);
 	}
 	
 	public static class Lights extends ConditionalProgram {
@@ -170,6 +179,11 @@ public class ConditionalPrograms {
 			return data.part_category.equals(group);
 		}
 		
+		@Override
+		public Program parse(String[] args){
+			return new IDSpecific(args[0]).transfer(this);
+		}
+		
 	}
 	
 	public static class IDSpecificArray extends ConditionalProgram {
@@ -182,6 +196,11 @@ public class ConditionalPrograms {
 		public boolean test(ModelGroup list, ModelRenderData data){
 			for(String str : groups) if(str.equals(data.part_category)) return true;
 			return false;
+		}
+		
+		@Override
+		public Program parse(String[] args){
+			return new IDSpecificArray(args).transfer(this);
 		}
 		
 	}
@@ -217,6 +236,11 @@ public class ConditionalPrograms {
 			return data.tile != null && ((SwitchTileEntity)data.tile).getSwitch2State() == tracked;
 		}
 		
+		@Override
+		public Program parse(String[] args){
+			return new SwitchFork3State(Integer.parseInt(args[0])).transfer(this);
+		}
+		
 	}
 	
 	public static class SwitchDoubleState extends ConditionalProgram {
@@ -233,6 +257,11 @@ public class ConditionalPrograms {
 			return data.tile != null && ((SwitchTileEntity)data.tile).isDoubleSwitchState(switch0, switch1);
 		}
 		
+		@Override
+		public Program parse(String[] args){
+			return new SwitchDoubleState(Boolean.parseBoolean(args[0]), Boolean.parseBoolean(args[1])).transfer(this);
+		}
+		
 	}
 	
 	public static class SwitchDoubleStateSide extends ConditionalProgram {
@@ -247,6 +276,11 @@ public class ConditionalPrograms {
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
 			return data.tile != null && ((SwitchTileEntity)data.tile).isDoubleSwitchStateOnSide(side, state);
+		}
+		
+		@Override
+		public Program parse(String[] args){
+			return new SwitchDoubleStateSide(Boolean.parseBoolean(args[0]), Boolean.parseBoolean(args[1])).transfer(this);
 		}
 		
 	}

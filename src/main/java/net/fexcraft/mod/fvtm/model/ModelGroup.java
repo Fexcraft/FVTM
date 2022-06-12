@@ -172,12 +172,18 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 		//
 		
 		public ConditionalProgram add(Program... programs){
-			for(Program prog : programs) this.programs.add(prog);
+			for(Program prog : programs){
+				if(prog == null) continue;
+				this.programs.add(prog);
+			}
 			return this;
 		}
 		
 		public ConditionalProgram addElse(Program... programs){
-			for(Program prog : programs) this.opposite.add(prog);
+			for(Program prog : programs){
+				if(prog == null) continue;
+				this.opposite.add(prog);
+			}
 			return this;
 		}
 		

@@ -48,6 +48,17 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 				e.printStackTrace();
 			}
 		}
+		if(data.containsKey("ItemTranslate")){
+			try{
+				float translate = Float.parseFloat(data.get("ItemTranslate").toString());
+				gui_translate_x = translate;
+				gui_translate_y = translate;
+				gui_translate_z = translate;
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		return this;
 	}
 	

@@ -102,14 +102,14 @@ public class GenericModel implements Model {
 						if(json.has("ifmet")){
 							JsonArray array = json.get("ifmet").getAsJsonArray();
 							for(JsonElement elm : array){
-								if(elm.isJsonPrimitive()) prog.add(parseProgram(elm.getAsString().trim().split(" ")));
+								if(elm.isJsonPrimitive()) prog.add(parseProgram(elm.getAsString().trim().split(" "), 0));
 								else prog.add(parseProgram(elm));
 							}
 						}
 						if(json.has("else")){
 							JsonArray array = json.get("else").getAsJsonArray();
 							for(JsonElement elm : array){
-								if(elm.isJsonPrimitive()) prog.addElse(parseProgram(elm.getAsString().trim().split(" ")));
+								if(elm.isJsonPrimitive()) prog.addElse(parseProgram(elm.getAsString().trim().split(" "), 0));
 								else prog.addElse(parseProgram(elm));
 							}
 						}
@@ -228,15 +228,19 @@ public class GenericModel implements Model {
 	}
 	
 	private static ModelGroup.Program parseProgram(String[] args) throws Exception {
-		if(args[1].startsWith("[") || args[1].startsWith("{")){
-			return parseProgram(JsonUtil.getFromString(args[1]));
+		return parseProgram(args, 1);
+	}
+	
+	private static ModelGroup.Program parseProgram(String[] args, int atidx) throws Exception {
+		if(args[atidx].startsWith("[") || args[atidx].startsWith("{")){
+			return parseProgram(JsonUtil.getFromString(args[atidx]));
 		}
 		else{
-			ModelGroup.Program prog = ModelGroup.PROGRAMS.get(args[1]);
+			ModelGroup.Program prog = ModelGroup.PROGRAMS.get(args[atidx]);
 			if(prog == null){
-				throw new Exception("TL-PROGRAM WITH ID '" + args[1] + "' NOT FOUND!");
+				throw new Exception("TL-PROGRAM WITH ID '" + args[atidx] + "' NOT FOUND!");
 			}
-			return prog.parse(Arrays.copyOfRange(args, 2, args.length));
+			return prog.parse(Arrays.copyOfRange(args, atidx + 1, args.length));
 		}
 	}
 

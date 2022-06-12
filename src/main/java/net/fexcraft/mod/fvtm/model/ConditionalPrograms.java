@@ -172,6 +172,8 @@ public class ConditionalPrograms {
 		
 		private String group;
 		
+		public IDSpecific(){}
+		
 		public IDSpecific(String id){ this.group = id; }
 		
 		@Override
@@ -189,6 +191,8 @@ public class ConditionalPrograms {
 	public static class IDSpecificArray extends ConditionalProgram {
 		
 		private String[] groups;
+		
+		public IDSpecificArray(){}
 		
 		public IDSpecificArray(String... ids){ this.groups = ids; }
 		
@@ -226,6 +230,8 @@ public class ConditionalPrograms {
 	public static class SwitchFork3State extends ConditionalProgram {
 		
 		private int tracked;
+		
+		public SwitchFork3State(){}
 
 		public SwitchFork3State(int tracked){
 			this.tracked = tracked;
@@ -246,6 +252,8 @@ public class ConditionalPrograms {
 	public static class SwitchDoubleState extends ConditionalProgram {
 		
 		private boolean switch0, switch1;
+		
+		public SwitchDoubleState(){}
 
 		public SwitchDoubleState(boolean switch0, boolean switch1){
 			this.switch0 = switch0;
@@ -267,6 +275,8 @@ public class ConditionalPrograms {
 	public static class SwitchDoubleStateSide extends ConditionalProgram {
 		
 		private boolean side, state;
+		
+		public SwitchDoubleStateSide(){}
 
 		public SwitchDoubleStateSide(boolean side, boolean state){
 			this.side = side;

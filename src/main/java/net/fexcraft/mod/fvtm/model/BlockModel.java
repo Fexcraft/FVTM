@@ -24,11 +24,11 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 	public static final BlockModel EMPTY = new BlockModel();
 	
     public float gui_translate_x = 0;
-    public float gui_translate_y = 0;
+    public float gui_translate_y = -.25f;
     public float gui_translate_z = 0;
-    public float gui_scale_x = 0;
-    public float gui_scale_y = 0;
-    public float gui_scale_z = 0;
+    public float gui_scale_x = 0.75f;
+    public float gui_scale_y = 0.75f;
+    public float gui_scale_z = 0.75f;
 	
 	public BlockModel(){
 		super();

@@ -114,7 +114,7 @@ public class GenericModel implements Model {
 							}
 						}
 						if(json.has("args")){
-							prog = (ConditionBased)prog.parse(json.get("args").getAsString().trim().split(" "));
+							prog = (ConditionalProgram)prog.parse(json.get("args").getAsString().trim().split(" "));
 						}
 						groups.get(group).addProgram(prog);
 					}

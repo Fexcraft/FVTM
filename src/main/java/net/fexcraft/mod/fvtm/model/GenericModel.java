@@ -232,6 +232,7 @@ public class GenericModel implements Model {
 	}
 	
 	private static ModelGroup.Program parseProgram(String[] args, int atidx) throws Exception {
+		if(args[atidx].startsWith("#")) return null;
 		if(args[atidx].startsWith("[") || args[atidx].startsWith("{")){
 			return parseProgram(JsonUtil.getFromString(args[atidx]));
 		}

@@ -408,18 +408,19 @@ public class Junction {
 		}
 		if(type.isSwitch()){
 			if(type == PathJuncType.FORK_2){
-				switch0 = !switch0; Print.bar(player, "&aChanged Junction State.");
+				switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [" + (switch0 ? 0 : 1)+ "]");
 			}
 			else{
 				if(switch1){ switch1 = false; switch0 = true; }
 				else if(switch0){ switch1 = false; switch0 = false; }
 				else if(!switch1){ switch0 = false; switch1 = true; }
-				Print.bar(player, "&aChanged Junction State.");
+				Print.bar(player, "&aChanged Junction State. [" + (switch0 ? 0 : switch1 ? 2 : 1) + "]");
 			}
 		}
 		if(type.isDouble()){
-			if(left){ switch1 = !switch1; Print.bar(player, "&aChanged Junction State. [1]"); }
-			else{ switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [0]"); }
+			if(left) switch1 = !switch1;
+			else switch0 = !switch0;
+			Print.bar(player, "&aChanged Junction State. [" + (switch0 ? 0 : 1) + "-" + (switch1 ? 0 : 1) + "]");
 		}
 		region.updateClient("junction_state", vecpos);
 		updateLinkedTileEntities(false);

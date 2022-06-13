@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * 
@@ -139,6 +140,11 @@ public interface Model {
 		public ModelRenderData set(CompDataRoot comp){
 			trafficsign_compdata = comp;
 			return this;
+		}
+
+
+		public World world(){
+			return entity == null ? tile == null ? null : tile.getWorld() : entity.world;
 		}
 		
 	}

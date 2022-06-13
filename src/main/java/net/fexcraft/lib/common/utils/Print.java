@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 
 public class Print {
 
@@ -75,6 +77,10 @@ public class Print {
 
 	public static void log(String str){
 		FVTM.getLogger().info(str);
+	}
+
+	public static void chat(Player player, String string){
+        player.sendMessage(new TextComponent("Toggled sign status."), player.getUUID());
 	}
 	
 }

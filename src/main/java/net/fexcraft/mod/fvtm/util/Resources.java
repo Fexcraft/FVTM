@@ -13,6 +13,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.mod.fvtm.InternalAddon;
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -32,6 +33,9 @@ public class Resources {
 	public static RegistryMap<Fuel> ALLFUELS = new RegistryMap<>();
 	public static RegistryMap<Material> MATERIALS = new RegistryMap<>();
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
+	//
+	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
+	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
 	//
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");

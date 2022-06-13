@@ -28,14 +28,5 @@ run/*
 !run/addons/
 
 # Yet Other
-src/main/java/com/
-src/main/java/net/fexcraft/mod/addons/manus/models/
-# src/main/java/net/fexcraft/mod/addons/test/models/ #temp
-src/main/java/net/fexcraft/mod/addons/gold/models/
-src/main/java/org/
-src/main/java/net/fexcraft/mod/addons/svm/
-run/addons/Gold's Pack
-src_fmr_test
-run/addons/Xeno's Stuff/
-src/main/java/net/fexcraft/mod/addons/xeno/
 old/
+src/main/java/net/fexcraft/mod/fvtm/sys/script/

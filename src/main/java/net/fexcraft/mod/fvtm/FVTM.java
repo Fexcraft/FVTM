@@ -8,6 +8,7 @@ import com.mojang.logging.LogUtils;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.test.RenderLast;
@@ -19,6 +20,8 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -49,8 +52,10 @@ public class FVTM {
     public static final HashMap<ResourceLocation, Item> ITEMS = new HashMap<>();
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
     public static final RegistryObject<Block> TEST_BLK = BLOCKS.register("test", () -> new TestBlock());
     public static final RegistryObject<BlockEntityType<TestTile>> TEST_TILE = TILES.register("test", () -> BlockEntityType.Builder.of(TestTile::new, TEST_BLK.get()).build(null));
+    public static final RegistryObject<EntityType<Decoration>> DECO_ENT = ENTITIES.register("decoration", () -> EntityType.Builder.<Decoration>of(Decoration::new, MobCategory.AMBIENT).build("decoration"));
 
     public FVTM(){
     	Static.setIsClient(FMLEnvironment.dist == Dist.CLIENT);
@@ -64,6 +69,7 @@ public class FVTM {
         MinecraftForge.EVENT_BUS.register(this);
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event){

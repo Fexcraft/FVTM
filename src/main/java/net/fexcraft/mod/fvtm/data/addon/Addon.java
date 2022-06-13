@@ -20,10 +20,12 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.lib.common.utils.ZipUtil;
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 
@@ -157,7 +159,7 @@ public class Addon extends TypeCore<Addon> {
 		if(obj.has("Decorations")){
 			JsonObject cats = obj.get("Decorations").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : cats.entrySet()){
-				/*String category = entry.getKey();
+				String category = entry.getKey();
 				JsonObject decos = entry.getValue().getAsJsonObject();
 				for(Entry<String, JsonElement> entr : decos.entrySet()){
 					String key = getRegistryName().getPath() + ":" + entr.getKey();
@@ -165,7 +167,7 @@ public class Addon extends TypeCore<Addon> {
 				}
 				if(decos.size() > 0 && !Resources.DECORATION_CATEGORIES.contains(category)){
 					Resources.DECORATION_CATEGORIES.add(category);
-				}*///TODO entries
+				}
 				Print.log("Decorations are not re-implemented yet. Found entry '" + entry.getKey() + "'.");
 			}
 		}

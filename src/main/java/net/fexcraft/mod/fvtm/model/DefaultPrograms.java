@@ -1624,10 +1624,10 @@ public class DefaultPrograms {
 			float ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
 			float rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
 			float scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
-			boolean cen = args.length > 7 ? Boolean.getBoolean(args[7]) : true;
+			boolean cen = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
 			String text = args.length > 8 && !args[8].equals("null") ? args[8] : "";
 			int color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
-			boolean glow = args.length > 10 ? Boolean.getBoolean(args[10]) : false;
+			boolean glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
 			return new TextRenderer(px, py, pz, rx, ry, rz, scale, cen, text).setColor(color).setGlow(glow);
 		}
 		
@@ -1646,6 +1646,11 @@ public class DefaultPrograms {
 		@Override
 		public String getId(){
 			return "fvtm:attr_text_renderer";
+		}
+		
+		@Override
+		public boolean isPreRender(){
+			return true;
 		}
 		
 		@Override
@@ -1681,10 +1686,10 @@ public class DefaultPrograms {
 			float ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
 			float rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
 			float scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
-			boolean cen = args.length > 7 ? Boolean.getBoolean(args[7]) : true;
+			boolean cen = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
 			String attr = args.length > 8 && !args[8].equals("null") ? args[8] : "";
 			int color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
-			boolean glow = args.length > 10 ? Boolean.getBoolean(args[10]) : false;
+			boolean glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
 			return new AttributeTextRenderer(attr, px, py, pz, rx, ry, rz, scale, cen).setColor(color).setGlow(glow);
 		}
 		

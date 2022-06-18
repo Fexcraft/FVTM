@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -47,6 +48,7 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
@@ -444,8 +446,17 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
-        if(isDead || world.isRemote || hand == EnumHand.OFF_HAND){ return false; }
+        if(isDead || hand == EnumHand.OFF_HAND){ return false; }
         ItemStack stack = player.getHeldItem(hand);
+        if(world.isRemote){
+        	if((!stack.isEmpty() && stack.getItem() instanceof PartItem == false) || Lockable.isKey(stack.getItem())) return true;
+            if(rek.data().isLocked()){
+            	Print.chat(player, "Vehicle is locked.");
+            	return true;
+            }
+        	ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
+        	return true;
+        }
         if(Lockable.isKey(stack.getItem())){
         	Lockable.toggle(rek.data(), player, stack);
         	this.sendLockStateUpdate();

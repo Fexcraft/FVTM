@@ -581,7 +581,11 @@ public class Resources {
 				model = (Model)((Class<?>)FCLRegistry.getModel(name)).newInstance();
 				model.parse(data).lock();
 			}
-			catch(InstantiationException | IllegalAccessException e){
+			catch(Exception e){
+				e.printStackTrace();
+				return getEmptyModelFromClass(clazz);
+			}
+			catch(NoClassDefFoundError e){
 				e.printStackTrace();
 				return getEmptyModelFromClass(clazz);
 			}
@@ -595,9 +599,13 @@ public class Resources {
 				try{
 					return clazz.getConstructor().newInstance();
 				}
-				catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+				catch(Exception e){
 					e.printStackTrace();
 					return null;
+				}
+				catch(NoClassDefFoundError e){
+					e.printStackTrace();
+					return getEmptyModelFromClass(clazz);
 				}
 			});
 			if(ret.length == 0 || ret[0] == null) return getEmptyModelFromClass(clazz);

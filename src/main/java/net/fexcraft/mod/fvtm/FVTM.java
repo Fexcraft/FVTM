@@ -41,6 +41,10 @@ import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
+import net.fexcraft.mod.fvtm.model.ConditionalPrograms;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.model.TrafficSignPrograms;
+import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
@@ -161,6 +165,10 @@ public class FVTM {
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		MinecraftForge.EVENT_BUS.register(new RVStore());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
+			DefaultPrograms.init();
+			ConditionalPrograms.init();
+			WirePrograms.init();
+			TrafficSignPrograms.init();
 			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
 			Resources.CONTAINERS.getValuesCollection().forEach(con -> con.loadModel());

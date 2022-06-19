@@ -39,15 +39,6 @@ public class GenericModel implements Model {
 	public boolean smooth_shading;
 	private boolean locked;
 	protected String name;
-	
-	public GenericModel(){
-		if(!DefaultPrograms.DIDLOAD){
-			DefaultPrograms.init();
-			ConditionalPrograms.init();
-			WirePrograms.init();
-			TrafficSignPrograms.init();
-		}
-	}
 
 	@Override
 	public void render(ModelRenderData data){

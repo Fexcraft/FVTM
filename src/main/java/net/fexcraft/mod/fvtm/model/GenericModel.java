@@ -222,7 +222,7 @@ public class GenericModel implements Model {
 		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
 		ModelGroup.Program prog = ModelGroup.PROGRAMS.get(id);
 		if(prog == null){
-			throw new Exception("TL-PROGRAM WITH ID '" + id + "' NOT FOUND!");
+			throw new Exception("PROGRAM WITH ID '" + id + "' NOT FOUND!");
 		}
 		return prog.parse(elm);
 	}
@@ -239,7 +239,7 @@ public class GenericModel implements Model {
 		else{
 			ModelGroup.Program prog = ModelGroup.PROGRAMS.get(args[atidx]);
 			if(prog == null){
-				throw new Exception("TL-PROGRAM WITH ID '" + args[atidx] + "' NOT FOUND!");
+				throw new Exception("PROGRAM WITH ID '" + args[atidx] + "' NOT FOUND!");
 			}
 			return prog.parse(Arrays.copyOfRange(args, atidx + 1, args.length));
 		}

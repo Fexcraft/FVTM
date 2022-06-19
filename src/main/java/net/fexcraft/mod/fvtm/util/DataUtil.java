@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -274,14 +275,14 @@ public class DataUtil {
 			data.set(key, list);
 		}
 		else if(value.isJsonPrimitive()){
-			/*String val = value.getAsString();
-			if(val.equals("true") || val.equals("false")){
+			JsonPrimitive val = value.getAsJsonPrimitive();
+			if(val.isBoolean()){
 				data.set(key, value.getAsBoolean());
 			}
-			else if(NumberUtils.isCreatable(val)){
+			else if(val.isNumber()){
 				data.set(key, value.getAsFloat());
 			}
-			else*/ data.set(key, value.getAsString());
+			else data.set(key, value.getAsString());
 		}
 	
 	}

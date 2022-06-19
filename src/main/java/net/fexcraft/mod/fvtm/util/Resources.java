@@ -601,7 +601,7 @@ public class Resources {
 				}
 				catch(Exception e){
 					e.printStackTrace();
-					return null;
+					return getEmptyModelFromClass(clazz);
 				}
 				catch(NoClassDefFoundError e){
 					e.printStackTrace();

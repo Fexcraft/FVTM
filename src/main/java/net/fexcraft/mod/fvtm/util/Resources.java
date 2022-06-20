@@ -226,7 +226,11 @@ public class Resources {
 			}
 			catch(Exception e){
 				Print.log("Failed to get field. [RESPACKLOADER:ERR:0]");
-				Print.log("LiteAddon loading will be skipped.");
+				Print.log("LiteAddon loading from ResourcePacks will be skipped.");
+			}
+			catch(Error e){
+				Print.log("Failed to get field. [RESPACKLOADER:ERR:00]");
+				Print.log("LiteAddon loading from ResourcePacks will be skipped.");
 			}
 			if(respackfile != null){
 				if(Config.LOAD_ALL_RESOURCEPACKS){

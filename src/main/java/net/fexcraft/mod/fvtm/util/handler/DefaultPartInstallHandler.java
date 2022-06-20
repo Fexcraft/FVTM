@@ -294,12 +294,11 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		if(idata != null && idata.onslot){
 			ArrayList<String> found = new ArrayList<>();
 			for(Entry<String, PartSlots> data : vehicle.getPartSlotProviders().entrySet()){
-				int funds = 0;
 				for(int i = 0; i < data.getValue().size(); i++){
 					String type = data.getValue().get(i).type;
 					for(String str : part.getType().getCategories()){
 						if(str.equals(type)){
-							found.add(data.getKey() + ":" + data.getValue().get(i).category + ":" + funds++);
+							found.add(data.getKey() + ":" + data.getValue().get(i).category + ":" + i);
 						}
 					}
 				}

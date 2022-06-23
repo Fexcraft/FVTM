@@ -10,6 +10,8 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
+import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
+import net.fexcraft.mod.fvtm.gui.construct.ConstMain;
 import net.fexcraft.mod.fvtm.gui.constructor.*;
 import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
 import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
@@ -103,7 +105,7 @@ public class GuiHandler implements IGuiHandler {
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
-			case CONSTRUCTOR_MAIN:
+			case CONSTRUCTOR_MAIN: return new ConstContainer(player, world, x, y, z);
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_VEHINFO:
 			case CONSTRUCTOR_PARTINFO:
@@ -145,7 +147,7 @@ public class GuiHandler implements IGuiHandler {
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
-				case CONSTRUCTOR_MAIN: return new ConstructorMain(player, world, x, y, z);
+				case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
 				case CONSTRUCTOR_STATUS: return new ConstructorStatus(player, world, x, y, z);
 				case CONSTRUCTOR_VEHINFO: return new ConstructorVehicleInfo(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINFO: return new ConstructorPartCacheInfo(player, world, x, y, z);

@@ -6,6 +6,7 @@ public enum ConstGuiElement {
 	HELP(165, 18, 11, 16),
 	BACK(177, 18, 11, 16),
 	SAVE(189, 18, 11, 16),
+	SPAWN(201, 18, 11, 16),
 	SPACER(0, 16, 144, 1),
 	FOOTER(0, 245, 144, 10),
 	//
@@ -13,12 +14,12 @@ public enum ConstGuiElement {
 	LIFT_UP(142, 41, 7, 12),
 	LIFT_DW(150, 41, 7, 12),
 	//
-	GENERIC_SEG(0, 65, 144, 22),
-	INPUT3_SEG(0, 77, 144, 22),
-	INPUT_SEG(0, 89, 144, 22),
-	SWITCH_SEG(0, 101, 144, 22),
-	EMPTY_SEG(0, 221, 144, 22),
-	BLANK_SEG(0, 233, 144, 22),
+	GENERIC_SEG(0, 65, 144, 12),
+	INPUT3_SEG(0, 77, 144, 12),
+	INPUT_SEG(0, 89, 144, 12),
+	SWITCH_SEG(0, 101, 144, 12),
+	EMPTY_SEG(0, 221, 144, 12),
+	BLANK_SEG(0, 233, 144, 12),
 	//
 	CONFIRM_ICON(145, 77, 12, 12),
 	PREV_ICON(145, 89, 12, 12),
@@ -30,7 +31,7 @@ public enum ConstGuiElement {
 	EDITTEX_ICON(157, 113, 12, 12),
 	;
 	
-	private int x, y, w, h;
+	protected int x, y, w, h;
 	
 	private ConstGuiElement(int x, int y, int w, int h){
 		this.x = x;

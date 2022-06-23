@@ -28,7 +28,7 @@ public class ConstructorContainer extends GenericContainer {
 			this.gui.titletext.update(packet.getString("titletext"), color);
 			this.gui.onTitleTextUpdate();
 		}
-		entity.processGUIPacket(side, packet, player, this);
+		//entity.processGUIPacket(side, packet, player, this);
 	}
 
 	public void setGUI(ConstructorGui congui){

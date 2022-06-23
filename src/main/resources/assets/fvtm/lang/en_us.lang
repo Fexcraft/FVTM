@@ -27,6 +27,7 @@ gui.fvtm.constructor.main.texture=Texture Manager
 gui.fvtm.constructor.main.color=Spraying Tool
 gui.fvtm.constructor.main.exit=Exit
 //
+gui.fvtm.constructor.welcome=Welcome %s!
 gui.fvtm.constructor.request_sending=Request sending to Server.
 gui.fvtm.constructor.not_available=Not available yet!
 gui.fvtm.constructor.invalid_input=Invalid input / too short.
@@ -36,8 +37,10 @@ gui.fvtm.constructor.no_cache_title=No Part in Constructor Cache.
 gui.fvtm.constructor.no_vehicle=No Vehicle
 gui.fvtm.constructor.no_const=Const. Offline
 gui.fvtm.constructor.no_cache=Cache Empty
-gui.fvtm.constructor.return=< Return
-gui.fvtm.constructor.back=< Back
+gui.fvtm.constructor.back=< Back to previous Interface
+gui.fvtm.constructor.help=HELP | Open Wiki Page
+gui.fvtm.constructor.save=Drop Item
+gui.fvtm.constructor.spawn=Spawn Vehicle
 gui.fvtm.constructor.page=Page
 //
 gui.fvtm.constructor.part_install.menu_title=Part Installation (from cache)

@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -34,7 +35,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	public ConstructorEntity(){}
 
-	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstContainer container){
+	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstConInterface container){
 		switch(packet.getString("cargo")){
 			case "constructor_connect":{
 				boolean auto = packet.getBoolean("Auto");
@@ -207,7 +208,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		}
 	}
 	
-	private boolean nocon(ConstContainer container){
+	private boolean nocon(ConstConInterface container){
 		if(this.getContainerData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_container", null);
 			return true;
@@ -215,7 +216,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean noveh(ConstContainer container){
+	private boolean noveh(ConstConInterface container){
 		if(this.getVehicleData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_vehicle", null);
 			return true;
@@ -223,7 +224,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean nopar(ConstContainer container){
+	private boolean nopar(ConstConInterface container){
 		if(this.getPartData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_part", null);
 			return true;
@@ -231,7 +232,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean noblk(ConstContainer container){
+	private boolean noblk(ConstConInterface container){
 		if(this.getBlockData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_block", null);
 			return true;

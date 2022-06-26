@@ -29,7 +29,8 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	
 	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/gui/constructor_base.png");
 	private String help_url = "https://fexcraft.net/wiki/mod/fvtm";
-	private ReturnAddList topbuttons = new ReturnAddList();
+	private ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
+	private ReturnAddList<ConstElement> elements = new ReturnAddList<>();
 	private int root = GuiHandler.CONSTRUCTOR_MAIN;
 	private ConstGui instance = this;
 	protected TitleText titletext;
@@ -41,6 +42,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	//
 	public static final RGB RGB_ORANGE = new RGB(0xFFA000);
 	public static final RGB RGB_CYAN = new RGB(0x00DDFF);
+	public static final RGB RGB_TEXT_GRAY = new RGB(222, 222, 222);
 	//
 	public ConstGui(EntityPlayer player, World world, int x, int y, int z){
 		this(new ConstContainer(player, world, x, y, z), player, x, y, z);
@@ -58,6 +60,8 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	protected void init(){
 		buttons.clear();
 		texts.clear();
+		topbuttons.clear();
+		elements.clear();
 		ySize = height;
 		xSize = 144;
 		int gray = new RGB(63, 63, 63).packed;
@@ -149,7 +153,24 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		}		
 	}
 	
-    @Override
+	public void addElement(ConstGuiElement type, String name, String lang, Runnable run){
+		int index = elements.size();
+		ConstElement elm = elements.addB(new ConstElement(name, type, index));
+		switch(type){
+			case GENERIC_SEG:{
+				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 2, 17 + 12 * index, type.x + 2, type.y + 1, 135, 10, run) })[0]);
+				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, 18 + 12 * index, 131, RGB_TEXT_GRAY.packed, format(lang)).hoverable(true).autoscale() })[0]);
+				break;
+			}
+			default: return;
+		}
+	}
+	
+    private String format(String lang){
+		return Formatter.format(I18n.format(lang));
+	}
+
+	@Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException{
         super.keyTyped(typedChar, keyCode);
         if(keyCode == Keyboard.KEY_DOWN){
@@ -177,7 +198,11 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		drawElement(TOP, 0, 0, width, 16);
 		drawElement(SPACER, 0, 16);
 		drawElement(LIFT, 139, 17);
-		drawElement(FOOTER, 0, 100);
+		drawElement(FOOTER, 0, 16 + elements.size() * 12);
+		for(ConstElement elm : elements){
+			if(elm.index > 3) drawElement(elm.elm, 0, 16 + elm.index * 12);
+			else drawElement(elm.elm, 0, 16 + elm.index * 12, elm.elm.w - 5, elm.elm.h);
+		}
 	}
 	
 	private void drawElement(ConstGuiElement elm, int x, int y){
@@ -202,6 +227,12 @@ public class ConstGui extends GenericGui<ConstContainer> {
     				info.add(I18n.format(str));
     			}
     		}
+	    }
+	    if(info.isEmpty()){
+		    for(BasicText btext : texts.values()){
+		    	if(!btext.hovered) continue;
+		    	info.add(btext.string);
+		    }
 	    }
 	    if(info.size() > 0) drawHoveringText(info, mouseX, mouseY, mc.fontRenderer);
 	}
@@ -236,11 +267,45 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		
 	}
 	
-	public static class ReturnAddList extends ArrayList<BasicButton> {
+	public static class ReturnAddList<T> extends ArrayList<T> {
 		
-		public BasicButton addB(BasicButton button){
+		public T addB(T button){
 			super.add(button);
 			return button;
+		}
+		
+	}
+	
+	public static class ConstElement {
+		
+		protected String id;
+		protected int index;
+		protected ConstGuiElement elm;
+		protected BasicButton[] buttons;
+		protected BasicText[] texts;
+		protected TextField[] fields;
+		
+		public ConstElement(String id, ConstGuiElement elm, int index){
+			this.id = id;
+			this.elm = elm;
+			this.index = index;
+		}
+		
+	}
+	
+	public static class RunButton extends BasicButton {
+
+		private Runnable run;
+
+		public RunButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, Runnable run){
+			super(name, x, y, tx, ty, sizex, sizey, true);
+			this.run = run;
+		}
+		
+		@Override
+		public boolean onclick(int mouseX, int mouseY, int mouseButton){
+			if(run != null) run.run();
+			return true;
 		}
 		
 	}

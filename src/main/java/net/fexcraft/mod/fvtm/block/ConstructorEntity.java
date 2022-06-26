@@ -11,7 +11,8 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
+import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.item.EntityItem;
@@ -34,7 +35,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	public ConstructorEntity(){}
 
-	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstructorContainer container){
+	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstConInterface container){
 		switch(packet.getString("cargo")){
 			case "constructor_connect":{
 				boolean auto = packet.getBoolean("Auto");
@@ -42,18 +43,18 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					BlockPos pos = BlockPos.fromLong(packet.getLong("BlockPos"));
 					TileEntity tile = world.getTileEntity(pos);
 					if(tile == null){
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile", RGB.RED.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile", RGB.RED); return;
 					}
 					if(tile instanceof ConstCenterEntity == false){
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.wrong_type", RGB.RED.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.wrong_type", RGB.RED); return;
 					}
 					ConstCenterEntity centerlift = (ConstCenterEntity)tile;
 					if(centerlift.getLinkPos() != null){
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.already_connected", RGB.BLUE.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.already_connected", RGB.BLUE); return;
 					}
 					else{
 						centerlift.setLinkPos(this.getPos(), true); this.setCenterPos(pos);
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK); return;
 					}
 				}
 				else{
@@ -78,11 +79,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					if(found && centertile != null){
 						centertile.setLinkPos(pos, true);
 						this.setCenterPos(centertile.getPos());
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK.packed);
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK);
 						return;
 					}
 					else{
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile_found" + (centertile == null ? "_null" : ""), RGB.RED.packed);
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile_found" + (centertile == null ? "_null" : ""), RGB.RED);
 						return;
 					}
 				}
@@ -92,7 +93,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					ConstCenterEntity tile = (ConstCenterEntity)world.getTileEntity(center);
 					if(tile != null) tile.setLinkPos(null, true);
 				} this.setCenterPos(null);
-				container.setTitleText("tile.fvtm.constructor.constructor_disconnect.disconnected", RGB.BLACK.packed);
+				container.setTitleText("tile.fvtm.constructor.constructor_disconnect.disconnected", RGB.BLACK);
 				return;
 			}
 			case "part_install":{
@@ -132,11 +133,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				int i = packet.getInteger("value");
 				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){
-					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED.packed);
+					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED);
 					return;
 				}
 				if(i < 0 || i >= textur.getTexHolder().getDefaultTextures().size()){
-					container.setTitleText("tile.fvtm.constructor.texture.invalid_supplied_id", RGB.RED.packed);
+					container.setTitleText("tile.fvtm.constructor.texture.invalid_supplied_id", RGB.RED);
 					return;
 				}
 				textur.getTexture().setSelectedTexture(textur.getTexHolder(), i, null, false);
@@ -149,7 +150,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				boolean external = packet.getBoolean("external");
 				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){
-					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED.packed);
+					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED);
 					return;
 				}
 				//TODO check if custom textures are allowed;
@@ -207,7 +208,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		}
 	}
 	
-	private boolean nocon(ConstructorContainer container){
+	private boolean nocon(ConstConInterface container){
 		if(this.getContainerData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_container", null);
 			return true;
@@ -215,7 +216,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean noveh(ConstructorContainer container){
+	private boolean noveh(ConstConInterface container){
 		if(this.getVehicleData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_vehicle", null);
 			return true;
@@ -223,7 +224,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean nopar(ConstructorContainer container){
+	private boolean nopar(ConstConInterface container){
 		if(this.getPartData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_part", null);
 			return true;
@@ -231,7 +232,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean noblk(ConstructorContainer container){
+	private boolean noblk(ConstConInterface container){
 		if(this.getBlockData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_block", null);
 			return true;
@@ -317,8 +318,8 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         else if(packet.nbt.hasKey("CenterReset") && packet.nbt.getBoolean("CenterReset")){
         	this.center = null;
         }
-        if(net.minecraft.client.Minecraft.getMinecraft().player.openContainer instanceof ConstructorContainer){
-        	((ConstructorContainer)net.minecraft.client.Minecraft.getMinecraft().player.openContainer).gui.onClientPacket(packet.nbt);
+        if(net.minecraft.client.Minecraft.getMinecraft().player.openContainer instanceof ConstContainer){
+        	((ConstContainer)net.minecraft.client.Minecraft.getMinecraft().player.openContainer).gui.onClientPacket(packet.nbt);
         }
     }
     

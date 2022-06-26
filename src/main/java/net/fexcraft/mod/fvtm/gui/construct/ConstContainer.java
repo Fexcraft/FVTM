@@ -1,27 +1,24 @@
-package net.fexcraft.mod.fvtm.gui.constructor;
+package net.fexcraft.mod.fvtm.gui.construct;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
-import net.fexcraft.mod.fvtm.gui.ConstructorCommandSender;
-import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ConstructorContainer extends GenericContainer implements ConstConInterface {
+public class ConstContainer extends GenericContainer implements ConstConInterface {
 	
-	protected ConstructorCommandSender sender;
+	protected ConstCommandSender sender;
 	protected ConstructorEntity entity;
-	public ConstructorGui gui;
+	public ConstGui gui;
 
-	public ConstructorContainer(EntityPlayer player, World world, int x, int y, int z){
+	public ConstContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
 		this.entity = (ConstructorEntity)world.getTileEntity(new BlockPos(x, y, z));
-		this.sender = new ConstructorCommandSender(this);
+		this.sender = new ConstCommandSender(this);
 	}
 
 	@Override
@@ -34,26 +31,21 @@ public class ConstructorContainer extends GenericContainer implements ConstConIn
 		entity.processGUIPacket(side, packet, player, this);
 	}
 
-	public void setGUI(ConstructorGui congui){
+	public void setGUI(ConstGui congui){
 		this.gui = congui;
 	}
 	
 	/** To be used from server side. */
 	public final void setTitleText(String string, RGB color){
-		setTitleText(string, color.packed);
-	}
-	
-	/** To be used from server side. */
-	public final void setTitleText(String string, Integer color){
 		if(this.entity == null) return;
 		if(this.entity.getWorld().isRemote){
 			this.gui.texttitle = string;
-			this.gui.titletext.update(string, color);
+			this.gui.titletext.update(string, color.packed);
 			return;
 		}
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("cargo", "titletext");
-		if(color != null) compound.setInteger("color", color);
+		if(color != null) compound.setInteger("color", color.packed);
 		compound.setString("titletext", string);
 		this.send(Side.CLIENT, compound);
 	}
@@ -62,7 +54,7 @@ public class ConstructorContainer extends GenericContainer implements ConstConIn
 		return entity;
 	}
 
-	public ICommandSender getCommandSender(){
+	public ConstCommandSender getCommandSender(){
 		return sender;
 	}
 

@@ -17,7 +17,7 @@ tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt
 
 # GUIs
-gui.fvtm.constructor.main.status=Const. Status
+gui.fvtm.constructor.main.status=Constructor Status
 gui.fvtm.constructor.main.info=Content Info
 gui.fvtm.constructor.main.lift=Lift Status
 gui.fvtm.constructor.main.part_cache=Part Cache

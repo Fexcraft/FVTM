@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ConstContainer extends GenericContainer {
+public class ConstContainer extends GenericContainer implements ConstConInterface {
 	
 	protected ConstCommandSender sender;
 	protected ConstructorEntity entity;

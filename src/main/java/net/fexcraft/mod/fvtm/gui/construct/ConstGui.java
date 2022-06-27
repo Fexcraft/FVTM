@@ -159,7 +159,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		switch(type){
 			case GENERIC_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 2, 17 + 12 * index, type.x + 2, type.y + 1, 135, 10, run) })[0]);
-				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, 18 + 12 * index, 131, RGB_TEXT_GRAY.packed, format(lang)).hoverable(true).autoscale() })[0]);
+				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, 18 + 12 * index, 131, RGB_TEXT_GRAY.packed, format(lang)).hoverable(true).autoscale().withshadow(true) })[0]);
 				break;
 			}
 			default: return;

@@ -40,7 +40,7 @@ public class ConstructorContainer extends GenericContainer implements ConstConIn
 	
 	/** To be used from server side. */
 	public final void setTitleText(String string, RGB color){
-		setTitleText(string, color.packed);
+		setTitleText(string, color == null ? null : color.packed);
 	}
 	
 	/** To be used from server side. */

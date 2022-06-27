@@ -53,9 +53,8 @@ gui.fvtm.constructor.part_install.empty=cache empty
 gui.fvtm.constructor.part_manager.menu_title=Part Manager
 gui.fvtm.constructor.part_manager.installed=Installed Parts:
 //
-gui.fvtm.constructor.status.menu_title=Const. Status
-gui.fvtm.constructor.status.lift_pos=Lift/Center Pos.
-gui.fvtm.constructor.status.manual=Manual Connect
+gui.fvtm.constructor.status.menu_title=Constructor Status
+gui.fvtm.constructor.status.lift_pos=Lift/Center Position:
 gui.fvtm.constructor.status.auto=Auto Connect
 gui.fvtm.constructor.status.reset=Reset Connection
 gui.fvtm.constructor.status.no_tile=No TileEntity at selected position. [CLIENT]

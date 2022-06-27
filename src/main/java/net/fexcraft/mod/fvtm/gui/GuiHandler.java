@@ -12,7 +12,15 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.gui.construct.ConstMain;
-import net.fexcraft.mod.fvtm.gui.constructor.*;
+import net.fexcraft.mod.fvtm.gui.construct.ConstStatus;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainerVTM;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
 import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
 import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
@@ -105,8 +113,8 @@ public class GuiHandler implements IGuiHandler {
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
-			case CONSTRUCTOR_MAIN: return new ConstContainer(player, world, x, y, z);
-			case CONSTRUCTOR_STATUS:
+			case CONSTRUCTOR_MAIN:
+			case CONSTRUCTOR_STATUS: return new ConstContainer(player, world, x, y, z);
 			case CONSTRUCTOR_VEHINFO:
 			case CONSTRUCTOR_PARTINFO:
 			case CONSTRUCTOR_PARTMANAGER:
@@ -148,7 +156,7 @@ public class GuiHandler implements IGuiHandler {
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
-				case CONSTRUCTOR_STATUS: return new ConstructorStatus(player, world, x, y, z);
+				case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
 				case CONSTRUCTOR_VEHINFO: return new ConstructorVehicleInfo(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINFO: return new ConstructorPartCacheInfo(player, world, x, y, z);
 				case CONSTRUCTOR_PARTMANAGER: return new ConstructorPartManager(player, world, x, y, z);

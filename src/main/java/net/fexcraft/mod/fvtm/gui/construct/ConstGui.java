@@ -28,10 +28,10 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ConstGui extends GenericGui<ConstContainer> {
 	
 	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/gui/constructor_base.png");
-	private String help_url = "https://fexcraft.net/wiki/mod/fvtm";
+	protected String help_url = "https://fexcraft.net/wiki/mod/fvtm/constructor";
 	private ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
 	private ReturnAddList<ConstElement> elements = new ReturnAddList<>();
-	private int root = GuiHandler.CONSTRUCTOR_MAIN;
+	protected int root = GuiHandler.CONSTRUCTOR_MAIN;
 	private ConstGui instance = this;
 	protected TitleText titletext;
 	protected BasicText menutitle;
@@ -42,7 +42,8 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	//
 	public static final RGB RGB_ORANGE = new RGB(0xFFA000);
 	public static final RGB RGB_CYAN = new RGB(0x00DDFF);
-	public static final RGB RGB_TEXT_GRAY = new RGB(222, 222, 222);
+	public static final RGB RGB_TEXT_LIGHTGRAY = new RGB(222, 222, 222);
+	public static final RGB RGB_TEXT_GRAY = new RGB(98, 98, 98);
 	//
 	public ConstGui(EntityPlayer player, World world, int x, int y, int z){
 		this(new ConstContainer(player, world, x, y, z), player, x, y, z);
@@ -92,6 +93,11 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	
 	protected void finish_init(){
 		menutitle.x = topbuttons.size() * 12 + 4;
+	}
+	
+	public void setMenuTitle(String lang){
+		menutitle.string = lang;
+		menutitle.translate();
 	}
 
 	public void addTopButton(ConstGuiElement type){
@@ -159,10 +165,21 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		switch(type){
 			case GENERIC_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 2, 17 + 12 * index, type.x + 2, type.y + 1, 135, 10, run) })[0]);
-				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, 18 + 12 * index, 131, RGB_TEXT_GRAY.packed, format(lang)).hoverable(true).autoscale().withshadow(true) })[0]);
 				break;
 			}
-			default: return;
+			default: break;
+		}
+		switch(type){
+			case GENERIC_SEG:
+			case BLANK_SEG:
+			case EMPTY_SEG:{
+				if(type == ConstGuiElement.EMPTY_SEG && lang == null) break;
+				boolean generic = type == ConstGuiElement.GENERIC_SEG;
+				RGB gray = generic ? RGB_TEXT_LIGHTGRAY : RGB_TEXT_GRAY;
+				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, 18 + 12 * index, 131, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
+				break;
+			}
+			default: break;
 		}
 	}
 	

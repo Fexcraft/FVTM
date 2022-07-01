@@ -28,7 +28,7 @@ gui.fvtm.constructor.main.color=Spraying Tool
 gui.fvtm.constructor.main.exit=Exit
 //
 gui.fvtm.constructor.welcome=Welcome %s!
-gui.fvtm.constructor.request_sent=Request sent to Server...
+gui.fvtm.constructor.request_sent=Request sent to Server..
 gui.fvtm.constructor.not_available=Not available yet!
 gui.fvtm.constructor.invalid_input=Invalid input / too short.
 gui.fvtm.constructor.empty=No Vehicle/Container/Block in Constructor.

@@ -22,19 +22,30 @@ public class ConstStatus extends ConstGui {
 		addTopButton(ConstGuiElement.HELP);
 		addTopButton(ConstGuiElement.BACK);
 		addElement(ConstGuiElement.BLANK_SEG, "liftpos", "gui.fvtm.constructor.status.lift_pos", null);
-		addElement(ConstGuiElement.INPUT3_SEG, "input", null, null);
+		addElement(ConstGuiElement.INPUT3_SEG, "input", null, () -> {
+			if(container.getTileEntity().getCenterPos() != null){
+				send_disconnect();
+				return;
+			}
+			BlockPos pos = new BlockPos(fields.get("input_0").getIntegerValue(), fields.get("input_1").getIntegerValue(), fields.get("input_2").getIntegerValue());
+			if(player.world.getTileEntity(pos) == null){
+				titletext.update("gui.fvtm.constructor.status.no_tile", RGB_ORANGE.packed);
+				return;
+			}
+			container.send(Side.SERVER, conn_packet(false, pos));
+		});
 		addElement(ConstGuiElement.EMPTY_SEG, "spacer0", null, null);
-		addElement(ConstGuiElement.GENERIC_SEG, "auto", "gui.fvtm.constructor.status.auto", () -> {
-			//TODO
-		});
+		addElement(ConstGuiElement.GENERIC_SEG, "auto", "gui.fvtm.constructor.status.auto", () -> container.send(Side.SERVER, conn_packet(true, null)));
 		addElement(ConstGuiElement.EMPTY_SEG, "spacer1", null, null);
-		addElement(ConstGuiElement.GENERIC_SEG, "reset", "gui.fvtm.constructor.status.reset", () -> {
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", "constructor_disconnect");
-			titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
-			container.send(Side.SERVER, compound);
-		});
+		addElement(ConstGuiElement.GENERIC_SEG, "reset", "gui.fvtm.constructor.status.reset", () -> send_disconnect());
 		finish_init();
+	}
+
+	private void send_disconnect(){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("cargo", "constructor_disconnect");
+		titletext.update(REQUEST_SENT, RGB_CYAN.packed);
+		container.send(Side.SERVER, compound);
 	}
 
 	private NBTTagCompound conn_packet(boolean auto, BlockPos pos){

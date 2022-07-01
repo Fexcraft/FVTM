@@ -28,6 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ConstGui extends GenericGui<ConstContainer> {
 	
 	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/gui/constructor_base.png");
+	public static String REQUEST_SENT = "gui.fvtm.constructor.request_sent";
 	protected String help_url = "https://fexcraft.net/wiki/mod/fvtm/constructor";
 	private ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
 	private ReturnAddList<ConstElement> elements = new ReturnAddList<>();
@@ -125,7 +126,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 						NBTTagCompound compound = new NBTTagCompound();
 						compound.setString("cargo", "drop");
 						compound.setString("what", "any"); 
-						instance.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
+						instance.titletext.update(REQUEST_SENT, RGB_CYAN.packed);
 						instance.container.send(Side.SERVER, compound);
 						break;
 					}

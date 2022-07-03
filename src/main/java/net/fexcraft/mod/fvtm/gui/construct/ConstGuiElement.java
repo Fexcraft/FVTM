@@ -40,4 +40,15 @@ public enum ConstGuiElement {
 		this.h = h;
 	}
 
+	public ConstGuiElement[] asarray(){
+		return new ConstGuiElement[]{ this };
+	}
+
+	public ConstGuiElement[] asarray(ConstGuiElement... other){
+		ConstGuiElement[] arr = new ConstGuiElement[other.length + 1];
+		arr[0] = this;
+		for(int i = 1; i < arr.length; i++) arr[i] = other[i - 1];
+		return arr;
+	}
+
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import org.lwjgl.input.Keyboard;
 
@@ -89,11 +90,14 @@ public class ConstGui extends GenericGui<ConstContainer> {
 				return true;
 			}
 		});
-		finish_init();
+		//finish_init();
 	}
 	
 	protected void finish_init(){
 		menutitle.x = topbuttons.size() * 12 + 4;
+		if(elements.size() < 4){
+			while(elements.size() < 4) addElement(ConstGuiElement.EMPTY_SEG, "autospacer" + elements.size(), null, null);
+		}
 	}
 	
 	public void setMenuTitle(String lang){
@@ -160,11 +164,15 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		}		
 	}
 	
-	public void addElement(ConstGuiElement type, String name, String lang, Runnable run){
-		addElement(type, name, lang, run, null);
+	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run){
+		addElement(type, name, lang, run, null, null);
 	}
 	
-	public void addElement(ConstGuiElement type, String name, String lang, Runnable run, ConstGuiElement[] btype){
+	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run, ConstGuiElement[] btype){
+		addElement(type, name, lang, run, btype, null);
+	}
+	
+	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run, ConstGuiElement[] btype, String[] binfo){
 		int index = elements.size(), y = 17 + 12 * index;
 		ConstElement elm = elements.addB(new ConstElement(name, type, index));
 		switch(type){
@@ -174,10 +182,28 @@ public class ConstGui extends GenericGui<ConstContainer> {
 			}
 			case INPUT3_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
-				infotext.put(elm.buttons[0], "gui.fvtm.constructor.button.confirm");
+				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : btype[0]);
+				elm.fields = new TextField[3];
 				for(int i = 0; i < 3; i++){
-					fields.put(name + "_" + i, new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true));
+					fields.put(name + "_" + i, elm.fields[i] = new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true));
 				}
+				break;
+			}
+			case INPUT_SEG:{
+				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
+				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : btype[0]);
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 121, 10).setEnableBackground(true) })[0]);
+				break;
+			}
+			case SWITCH_SEG:{
+				buttons.put(name + "_0", (elm.buttons = new BasicButton[]{
+					new RunButton(name + "_0", 114, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run),
+					new RunButton(name + "_1", 126, y - 1, btype[1].x, btype[1].y, btype[1].w, btype[1].h, run)
+				})[0]);
+				buttons.put(name + "_1", elm.buttons[1]);
+				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.prev" : binfo[0]);
+				infotext.put(elm.buttons[1], binfo == null ? "gui.fvtm.constructor.button.next" : binfo[1]);
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true) })[0]);
 				break;
 			}
 			default: break;
@@ -273,6 +299,10 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		return false;
 	}
 	
+	public void notAvailableYet(){
+		titletext.update("gui.fvtm.constructor.not_available", null);
+	}
+	
 	public static class TitleText extends BasicText {
 		
 		private GenericGui<?> gui;
@@ -326,9 +356,9 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	
 	public static class RunButton extends BasicButton {
 
-		private Runnable run;
+		private Consumer<BasicButton> run;
 
-		public RunButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, Runnable run){
+		public RunButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, Consumer<BasicButton> run){
 			super(name, x, y, tx, ty, sizex, sizey, true);
 			this.alpha(false);
 			this.run = run;
@@ -336,7 +366,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		
 		@Override
 		public boolean onclick(int mouseX, int mouseY, int mouseButton){
-			if(run != null) run.run();
+			if(run != null) run.accept(this);
 			return true;
 		}
 		

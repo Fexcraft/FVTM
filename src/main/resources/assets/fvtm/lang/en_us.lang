@@ -42,6 +42,15 @@ gui.fvtm.constructor.help=HELP | Open Wiki Page
 gui.fvtm.constructor.save=Drop Item
 gui.fvtm.constructor.spawn=Spawn Vehicle
 gui.fvtm.constructor.page=Page
+gui.fvtm.constructor.button.confirm=Confirm
+gui.fvtm.constructor.button.prev=Previous
+gui.fvtm.constructor.button.next=Next
+gui.fvtm.constructor.button.left=Left
+gui.fvtm.constructor.button.right=Right
+gui.fvtm.constructor.button.remove=Remove
+gui.fvtm.constructor.button.cancel=Cancel
+gui.fvtm.constructor.button.edit=Edit/Adjust
+gui.fvtm.constructor.button.edit_tex=Exit Textures
 //
 gui.fvtm.constructor.part_install.menu_title=Part Installation (from cache)
 gui.fvtm.constructor.part_install.custom=Custom Category:
@@ -57,6 +66,7 @@ gui.fvtm.constructor.status.menu_title=Constructor Status
 gui.fvtm.constructor.status.lift_pos=Lift/Center Position:
 gui.fvtm.constructor.status.auto=Auto Connect
 gui.fvtm.constructor.status.reset=Reset Connection
+gui.fvtm.constructor.status.exists=Already connected.
 gui.fvtm.constructor.status.no_tile=No TileEntity at selected position. [CLIENT]
 //
 gui.fvtm.constructor.vehicle_info.menu_title=Vehicle Data Overview

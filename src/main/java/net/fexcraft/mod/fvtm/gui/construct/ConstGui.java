@@ -31,6 +31,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/gui/constructor_base.png");
 	public static String REQUEST_SENT = "gui.fvtm.constructor.request_sent";
 	protected String help_url = "https://fexcraft.net/wiki/mod/fvtm/constructor";
+	protected Consumer<BasicButton> NOT_AVAILABLE_YET = button -> notAvailableYet();
 	private ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
 	private ReturnAddList<ConstElement> elements = new ReturnAddList<>();
 	protected int root = GuiHandler.CONSTRUCTOR_MAIN;
@@ -40,6 +41,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	protected String texttitle = "Fex's Vehicle and Transporation Mod";
 	protected ArrayList<String> info = new ArrayList<String>();
 	protected HashMap<BasicButton, Object> infotext = new HashMap<>();
+	protected String droptype = "any";
 	protected final boolean haslift;
 	protected final int[] tilepos;
 	//
@@ -59,6 +61,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		tilepos = new int[]{ x, y, z };
 		container.setGUI(this);
 		haslift = container.hasVehicle() && container.entity.getVehicleData().getType().getVehicleType().isLandVehicle();
+		droptype = container.hasVehicle() ? "vehicle" : container.hasContainer() ? "container" : container.hasBlock() ? "block" : "any";
 	}
 	
 	@Override
@@ -133,7 +136,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 					case SAVE:{
 						NBTTagCompound compound = new NBTTagCompound();
 						compound.setString("cargo", "drop");
-						compound.setString("what", "any"); 
+						compound.setString("what", droptype); 
 						instance.titletext.update(REQUEST_SENT, RGB_CYAN.packed);
 						instance.container.send(Side.SERVER, compound);
 						break;

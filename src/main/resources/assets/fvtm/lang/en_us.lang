@@ -82,7 +82,6 @@ gui.fvtm.constructor.part_cache.attributes=Attributes
 gui.fvtm.constructor.part_cache.functions=Functions
 gui.fvtm.constructor.part_cache.textures=Def. Textures
 gui.fvtm.constructor.part_cache.install_info=Install Info
-gui.fvtm.constructor.part_cache.eject=Eject
 //
 gui.fvtm.constructor.painter.menu_title_block=Block Color Painter
 gui.fvtm.constructor.painter.menu_title_container=Container Color Painter

@@ -40,6 +40,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	protected String texttitle = "Fex's Vehicle and Transporation Mod";
 	protected ArrayList<String> info = new ArrayList<String>();
 	protected HashMap<BasicButton, Object> infotext = new HashMap<>();
+	protected final boolean haslift;
 	protected final int[] tilepos;
 	//
 	public static final RGB RGB_ORANGE = new RGB(0xFFA000);
@@ -51,12 +52,13 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		this(new ConstContainer(player, world, x, y, z), player, x, y, z);
 	}
 
-	public ConstGui(ConstContainer container, EntityPlayer player, int x, int y, int z){
+	private ConstGui(ConstContainer container, EntityPlayer player, int x, int y, int z){
 		super(TEXTURE, container, player);
 		defbackground = false;
 		deftexrect = false;
 		tilepos = new int[]{ x, y, z };
 		container.setGUI(this);
+		haslift = container.hasVehicle() && container.entity.getVehicleData().getType().getVehicleType().isLandVehicle();
 	}
 	
 	@Override
@@ -70,32 +72,34 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		int gray = new RGB(63, 63, 63).packed;
 		texts.put("title", titletext = new TitleText(this, texttitle, gray));
 		texts.put("menutitle", menutitle = new BasicText(4, 2, width, gray, I18n.format("gui.fvtm.constructor.welcome", player.getDisplayNameString())));
-		buttons.put("lift_up", new BasicButton("lift_up", 142, 41, 142, 41, 7, 12, true){
-			@Override
-			public boolean onclick(int mouseX, int mouseY, int mouseButton){
-	    		NBTTagCompound compound = new NBTTagCompound();
-	    		compound.setString("cargo", "lift");
-	    		compound.setInteger("dir", -1);
-	    		instance.container.send(Side.SERVER, compound);
-				return true;
-			}
-		});
-		buttons.put("lift_dw", new BasicButton("lift_dw", 150, 41, 150, 41, 7, 12, true){
-			@Override
-			public boolean onclick(int mouseX, int mouseY, int mouseButton){
-	    		NBTTagCompound compound = new NBTTagCompound();
-	    		compound.setString("cargo", "lift");
-	    		compound.setInteger("dir", 1);
-	    		instance.container.send(Side.SERVER, compound);
-				return true;
-			}
-		});
+		if(haslift){
+			buttons.put("lift_up", new BasicButton("lift_up", 142, 41, 142, 41, 7, 12, true){
+				@Override
+				public boolean onclick(int mouseX, int mouseY, int mouseButton){
+		    		NBTTagCompound compound = new NBTTagCompound();
+		    		compound.setString("cargo", "lift");
+		    		compound.setInteger("dir", -1);
+		    		instance.container.send(Side.SERVER, compound);
+					return true;
+				}
+			});
+			buttons.put("lift_dw", new BasicButton("lift_dw", 150, 41, 150, 41, 7, 12, true){
+				@Override
+				public boolean onclick(int mouseX, int mouseY, int mouseButton){
+		    		NBTTagCompound compound = new NBTTagCompound();
+		    		compound.setString("cargo", "lift");
+		    		compound.setInteger("dir", 1);
+		    		instance.container.send(Side.SERVER, compound);
+					return true;
+				}
+			});
+		}
 		//finish_init();
 	}
 	
 	protected void finish_init(){
 		menutitle.x = topbuttons.size() * 12 + 4;
-		if(elements.size() < 4){
+		if(haslift && elements.size() < 4){
 			while(elements.size() < 4) addElement(ConstGuiElement.EMPTY_SEG, "autospacer" + elements.size(), null, null);
 		}
 	}
@@ -254,10 +258,10 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
 		drawElement(TOP, 0, 0, width, 16);
 		drawElement(SPACER, 0, 16);
-		drawElement(LIFT, 139, 17);
+		if(haslift) drawElement(LIFT, 139, 17);
 		drawElement(FOOTER, 0, 16 + elements.size() * 12);
 		for(ConstElement elm : elements){
-			if(elm.index > 3) drawElement(elm.elm, 0, 16 + elm.index * 12);
+			if(!haslift || elm.index > 3) drawElement(elm.elm, 0, 16 + elm.index * 12);
 			else drawElement(elm.elm, 0, 16 + elm.index * 12, elm.elm.w - 5, elm.elm.h);
 		}
 	}

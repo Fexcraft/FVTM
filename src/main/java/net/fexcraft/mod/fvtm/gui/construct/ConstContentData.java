@@ -10,9 +10,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ConstContentInfo extends ConstGui {
+public class ConstContentData extends ConstGui {
 
-	public ConstContentInfo(EntityPlayer player, World world, int x, int y, int z){
+	public ConstContentData(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		root = GuiHandler.CONSTRUCTOR_MAIN;
 		help_url += "#contentinfo";

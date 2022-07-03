@@ -18,7 +18,7 @@ tile.fvtm:asphalt.name=FVTM Asphalt
 
 # GUIs
 gui.fvtm.constructor.main.status=Constructor Status
-gui.fvtm.constructor.main.info=Content Info
+gui.fvtm.constructor.main.data=Content Data
 gui.fvtm.constructor.main.lift=Lift Status
 gui.fvtm.constructor.main.part_cache=Part Cache
 gui.fvtm.constructor.main.part_manager=Part Manager
@@ -47,6 +47,7 @@ gui.fvtm.constructor.button.prev=Previous
 gui.fvtm.constructor.button.next=Next
 gui.fvtm.constructor.button.left=Left
 gui.fvtm.constructor.button.right=Right
+gui.fvtm.constructor.button.reset=Reset
 gui.fvtm.constructor.button.remove=Remove
 gui.fvtm.constructor.button.cancel=Cancel
 gui.fvtm.constructor.button.edit=Edit/Adjust
@@ -69,11 +70,11 @@ gui.fvtm.constructor.status.reset=Reset Connection
 gui.fvtm.constructor.status.exists=Already connected.
 gui.fvtm.constructor.status.no_tile=No TileEntity at selected position. [CLIENT]
 //
-gui.fvtm.constructor.vehicle_info.menu_title=Vehicle Data Overview
-gui.fvtm.constructor.vehicle_info.name=Name:
-gui.fvtm.constructor.vehicle_info.attributes=Attributes
-gui.fvtm.constructor.vehicle_info.functions=Functions
-gui.fvtm.constructor.vehicle_info.scripts=Scripts
+gui.fvtm.constructor.content_data.menu_title=Data Overview
+gui.fvtm.constructor.content_data.name=Name:
+gui.fvtm.constructor.content_data.attributes=Attributes
+gui.fvtm.constructor.content_data.functions=Functions
+gui.fvtm.constructor.content_data.scripts=Scripts
 //
 gui.fvtm.constructor.part_cache.menu_title=Part Data Overview (CACHE)
 gui.fvtm.constructor.part_cache.name=Name:

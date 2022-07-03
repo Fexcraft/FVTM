@@ -11,12 +11,12 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
-import net.fexcraft.mod.fvtm.gui.construct.ConstContentInfo;
+import net.fexcraft.mod.fvtm.gui.construct.ConstContentData;
 import net.fexcraft.mod.fvtm.gui.construct.ConstMain;
+import net.fexcraft.mod.fvtm.gui.construct.ConstPartCache;
 import net.fexcraft.mod.fvtm.gui.construct.ConstStatus;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainerVTM;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
@@ -115,8 +115,8 @@ public class GuiHandler implements IGuiHandler {
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
 			case CONSTRUCTOR_MAIN:
 			case CONSTRUCTOR_STATUS:
-			case CONSTRUCTOR_CONTENTINFO: return new ConstContainer(player, world, x, y, z);
-			case CONSTRUCTOR_PARTINFO:
+			case CONSTRUCTOR_CONTENTINFO:
+			case CONSTRUCTOR_PARTINFO: return new ConstContainer(player, world, x, y, z);
 			case CONSTRUCTOR_PARTMANAGER:
 			case CONSTRUCTOR_PARTINSTALLER: return new ConstructorContainer(player, world, x, y, z);
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorContainerVTM(player, world, x, y, z);
@@ -157,8 +157,8 @@ public class GuiHandler implements IGuiHandler {
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
 				case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
-				case CONSTRUCTOR_CONTENTINFO: return new ConstContentInfo(player, world, x, y, z);
-				case CONSTRUCTOR_PARTINFO: return new ConstructorPartCacheInfo(player, world, x, y, z);
+				case CONSTRUCTOR_CONTENTINFO: return new ConstContentData(player, world, x, y, z);
+				case CONSTRUCTOR_PARTINFO: return new ConstPartCache(player, world, x, y, z);
 				case CONSTRUCTOR_PARTMANAGER: return new ConstructorPartManager(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINSTALLER: return new ConstructorPartInstaller(player, world, x, y, z);
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorVTM(player, world, x, y, z);

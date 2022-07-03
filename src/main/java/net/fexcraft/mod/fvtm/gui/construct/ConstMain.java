@@ -30,10 +30,12 @@ public class ConstMain extends ConstGui {
 		if(container.noContainer() && !container.isEmpty()){
 			addElement(GENERIC_SEG, "info", "gui.fvtm.constructor.main.data", button -> openGui(CONSTRUCTOR_CONTENTINFO, tilepos, LISTENERID));
 		}
-		addElement(EMPTY_SEG, "spacer0", null, null);
-		addElement(GENERIC_SEG, "part_cache", "gui.fvtm.constructor.main.part_cache", button -> openGui(CONSTRUCTOR_PARTINFO, tilepos, LISTENERID));
-		addElement(GENERIC_SEG, "part_manager", "gui.fvtm.constructor.main.part_manager", button -> openGui(CONSTRUCTOR_PARTMANAGER, tilepos, LISTENERID));
-		addElement(GENERIC_SEG, "part_install", "gui.fvtm.constructor.main.part_installer", button -> openGui(CONSTRUCTOR_PARTINSTALLER, tilepos, LISTENERID));
+		if(container.hasVehicle()){
+			addElement(EMPTY_SEG, "spacer0", null, null);
+			addElement(GENERIC_SEG, "part_cache", "gui.fvtm.constructor.main.part_cache", button -> openGui(CONSTRUCTOR_PARTINFO, tilepos, LISTENERID));
+			addElement(GENERIC_SEG, "part_manager", "gui.fvtm.constructor.main.part_manager", button -> openGui(CONSTRUCTOR_PARTMANAGER, tilepos, LISTENERID));
+			addElement(GENERIC_SEG, "part_install", "gui.fvtm.constructor.main.part_installer", button -> openGui(CONSTRUCTOR_PARTINSTALLER, tilepos, LISTENERID));
+		}
 		addElement(EMPTY_SEG, "spacer1", null, null);
 		addElement(GENERIC_SEG, "texture", "gui.fvtm.constructor.main.texture", button -> openGui(CONSTRUCTOR_TEXTUREMANAGER, tilepos, LISTENERID));
 		addElement(GENERIC_SEG, "color", "gui.fvtm.constructor.main.color", button -> openGui(CONSTRUCTOR_PAINTER, tilepos, LISTENERID));

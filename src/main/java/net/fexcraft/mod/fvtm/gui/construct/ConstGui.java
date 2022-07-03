@@ -161,15 +161,28 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	}
 	
 	public void addElement(ConstGuiElement type, String name, String lang, Runnable run){
-		int index = elements.size();
+		addElement(type, name, lang, run, null);
+	}
+	
+	public void addElement(ConstGuiElement type, String name, String lang, Runnable run, ConstGuiElement[] btype){
+		int index = elements.size(), y = 17 + 12 * index;
 		ConstElement elm = elements.addB(new ConstElement(name, type, index));
 		switch(type){
 			case GENERIC_SEG:{
-				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 2, 17 + 12 * index, type.x + 2, type.y + 1, 135, 10, run) })[0]);
+				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 2, y, type.x + 2, type.y + 1, 135, 10, run) })[0]);
+				break;
+			}
+			case INPUT3_SEG:{
+				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
+				infotext.put(elm.buttons[0], "gui.fvtm.constructor.button.confirm");
+				for(int i = 0; i < 3; i++){
+					fields.put(name + "_" + i, new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true));
+				}
 				break;
 			}
 			default: break;
 		}
+		y += 1;
 		switch(type){
 			case GENERIC_SEG:
 			case BLANK_SEG:
@@ -177,7 +190,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 				if(type == ConstGuiElement.EMPTY_SEG && lang == null) break;
 				boolean generic = type == ConstGuiElement.GENERIC_SEG;
 				RGB gray = generic ? RGB_TEXT_LIGHTGRAY : RGB_TEXT_GRAY;
-				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, 18 + 12 * index, 131, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
+				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, y, 131, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
 				break;
 			}
 			default: break;
@@ -317,6 +330,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 
 		public RunButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, Runnable run){
 			super(name, x, y, tx, ty, sizex, sizey, true);
+			this.alpha(false);
 			this.run = run;
 		}
 		

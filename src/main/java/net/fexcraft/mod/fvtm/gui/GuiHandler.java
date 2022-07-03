@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
+import net.fexcraft.mod.fvtm.gui.construct.ConstContentInfo;
 import net.fexcraft.mod.fvtm.gui.construct.ConstMain;
 import net.fexcraft.mod.fvtm.gui.construct.ConstStatus;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
@@ -20,7 +21,6 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
 import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
 import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
@@ -74,7 +74,7 @@ public class GuiHandler implements IGuiHandler {
 	/* 90x - constructor main */
 	public static final int CONSTRUCTOR_MAIN = 900;
 	public static final int CONSTRUCTOR_STATUS = 901;
-	public static final int CONSTRUCTOR_VEHINFO = 902;
+	public static final int CONSTRUCTOR_CONTENTINFO = 902;
 	public static final int CONSTRUCTOR_PARTINFO = 904;
 	public static final int CONSTRUCTOR_PARTMANAGER = 905;
 	public static final int CONSTRUCTOR_PARTINSTALLER = 906;
@@ -114,8 +114,8 @@ public class GuiHandler implements IGuiHandler {
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
 			case CONSTRUCTOR_MAIN:
-			case CONSTRUCTOR_STATUS: return new ConstContainer(player, world, x, y, z);
-			case CONSTRUCTOR_VEHINFO:
+			case CONSTRUCTOR_STATUS:
+			case CONSTRUCTOR_CONTENTINFO: return new ConstContainer(player, world, x, y, z);
 			case CONSTRUCTOR_PARTINFO:
 			case CONSTRUCTOR_PARTMANAGER:
 			case CONSTRUCTOR_PARTINSTALLER: return new ConstructorContainer(player, world, x, y, z);
@@ -157,7 +157,7 @@ public class GuiHandler implements IGuiHandler {
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
 				case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
-				case CONSTRUCTOR_VEHINFO: return new ConstructorVehicleInfo(player, world, x, y, z);
+				case CONSTRUCTOR_CONTENTINFO: return new ConstContentInfo(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINFO: return new ConstructorPartCacheInfo(player, world, x, y, z);
 				case CONSTRUCTOR_PARTMANAGER: return new ConstructorPartManager(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINSTALLER: return new ConstructorPartInstaller(player, world, x, y, z);

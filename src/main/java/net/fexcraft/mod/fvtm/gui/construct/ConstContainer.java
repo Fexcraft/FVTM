@@ -58,4 +58,40 @@ public class ConstContainer extends GenericContainer implements ConstConInterfac
 		return sender;
 	}
 
+	public boolean noPart(){
+		return entity.getPartData() == null;
+	}
+
+	public boolean noBlock(){
+		return entity.getBlockData() == null;
+	}
+
+	public boolean noVehicle(){
+		return entity.getVehicleData() == null;
+	}
+
+	public boolean noContainer(){
+		return entity.getContainerData() == null;
+	}
+
+	public boolean hasPart(){
+		return entity.getPartData() != null;
+	}
+
+	public boolean hasBlock(){
+		return entity.getBlockData() != null;
+	}
+
+	public boolean hasVehicle(){
+		return entity.getVehicleData() != null;
+	}
+
+	public boolean hasContainer(){
+		return entity.getContainerData() != null;
+	}
+
+	public boolean isEmpty(){
+		return entity.getBlockData() == null && entity.getVehicleData() == null && entity.getContainerData() == null;
+	}
+
 }

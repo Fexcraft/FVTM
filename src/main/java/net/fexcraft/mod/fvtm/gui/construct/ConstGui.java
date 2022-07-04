@@ -295,7 +295,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	    info.clear();
 	    Object text = null;
 	    for(BasicButton button : buttons.values()){
-	    	if(!button.hovered) continue;
+	    	if(!button.hovered || !button.visible) continue;
 	    	text = infotext.get(button);
 	    	if(text == null) continue;
     		if(text instanceof String) info.add(I18n.format(text.toString()));
@@ -307,7 +307,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	    }
 	    if(info.isEmpty()){
 		    for(BasicText btext : texts.values()){
-		    	if(!btext.hovered) continue;
+		    	if(!btext.hovered || !btext.visible) continue;
 		    	info.add(btext.string);
 		    }
 	    }

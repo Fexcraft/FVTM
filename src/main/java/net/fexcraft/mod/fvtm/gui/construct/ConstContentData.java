@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.gui.construct;
 
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.EMPTY_SEG;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.GENERIC_SEG;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.SWITCH_SEG;
+import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.INPUT_2B_SEG;
 
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +27,7 @@ public class ConstContentData extends ConstGui {
 		if(container.hasVehicle()){
 			addTopButton(ConstGuiElement.SAVE);
 			addElement(GENERIC_SEG, "veh_name", "gui.fvtm.constructor.content_data.name", null);
-			addElement(SWITCH_SEG, "name_input", null, button -> {
+			addElement(INPUT_2B_SEG, "name_input", null, button -> {
 				if(button.name.endsWith("_0")){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "veh_name_change");

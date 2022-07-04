@@ -196,13 +196,25 @@ public class ConstGui extends GenericGui<ConstContainer> {
 				}
 				break;
 			}
-			case INPUT_SEG:{
+			case INPUT_1B_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
 				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : btype[0]);
 				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 121, 10).setEnableBackground(true) })[0]);
 				break;
 			}
+			case INPUT_2B_SEG:{
+				buttons.put(name + "_0", (elm.buttons = new BasicButton[]{
+					new RunButton(name + "_0", 114, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run),
+					new RunButton(name + "_1", 126, y - 1, btype[1].x, btype[1].y, btype[1].w, btype[1].h, run)
+				})[0]);
+				buttons.put(name + "_1", elm.buttons[1]);
+				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.cancel" : binfo[0]);
+				infotext.put(elm.buttons[1], binfo == null ? "gui.fvtm.constructor.button.confirm" : binfo[1]);
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true) })[0]);
+				break;
+			}
 			case SWITCH_SEG:{
+				if(btype == null) btype = new ConstGuiElement[]{ ConstGuiElement.PREV_ICON, ConstGuiElement.NEXT_ICON };
 				buttons.put(name + "_0", (elm.buttons = new BasicButton[]{
 					new RunButton(name + "_0", 114, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run),
 					new RunButton(name + "_1", 126, y - 1, btype[1].x, btype[1].y, btype[1].w, btype[1].h, run)
@@ -210,7 +222,6 @@ public class ConstGui extends GenericGui<ConstContainer> {
 				buttons.put(name + "_1", elm.buttons[1]);
 				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.prev" : binfo[0]);
 				infotext.put(elm.buttons[1], binfo == null ? "gui.fvtm.constructor.button.next" : binfo[1]);
-				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true) })[0]);
 				break;
 			}
 			default: break;
@@ -218,12 +229,14 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		y += 1;
 		switch(type){
 			case GENERIC_SEG:
+			case SWITCH_SEG:
 			case BLANK_SEG:
 			case EMPTY_SEG:{
 				if(type == ConstGuiElement.EMPTY_SEG && lang == null) break;
-				boolean generic = type == ConstGuiElement.GENERIC_SEG;
+				boolean generic = type == ConstGuiElement.GENERIC_SEG || type == ConstGuiElement.SWITCH_SEG;
+				int width = type == ConstGuiElement.SWITCH_SEG ? 107 : 131;
 				RGB gray = generic ? RGB_TEXT_LIGHTGRAY : RGB_TEXT_GRAY;
-				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, y, 131, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
+				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, y, width, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
 				break;
 			}
 			default: break;

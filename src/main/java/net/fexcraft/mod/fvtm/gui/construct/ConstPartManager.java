@@ -7,7 +7,6 @@ import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.EMPTY_SEG;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.SWITCH_SEG;
 
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.IconButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -87,19 +86,15 @@ public class ConstPartManager extends ConstGui {
 	private void updateButtons(){
 		BasicText text = texts.get("page");
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		text.string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + (vdata.getParts().size() / 10 + 1);
+		text.string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + (vdata.getParts().size() / 12 + 1);
 		for(int i = 0; i < 12; i++){
-			int j = i + (page * 10);
-			texts.get("part" + i).string = j >= vdata.getParts().size() ? "" : (String)vdata.getParts().keySet().toArray()[j];
+			int j = i + (page * 12);
+			boolean ex = j < vdata.getParts().size();
+			texts.get("part" + i).string = ex ? (String)vdata.getParts().keySet().toArray()[j] : "";
+			texts.get("part" + i).visible = buttons.get("part" + i + "_0").visible = buttons.get("part" + i + "_1").visible = ex;
 		}
-		buttons.get("page_1").enabled = page < vdata.getParts().size() / 10;
+		buttons.get("page_1").enabled = page < vdata.getParts().size() / 12;
 		buttons.get("page_0").enabled = page > 0;
-		buttons.entrySet().forEach(entry -> {
-			if(entry.getKey().startsWith("icon")){
-				IconButton button = (IconButton)entry.getValue();
-				button.cbutton = null;
-			}
-		});
 	}
 
 }

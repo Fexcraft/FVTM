@@ -15,6 +15,7 @@ public enum ConstGuiElement {
 	LIFT_DW(150, 41, 7, 12),
 	//
 	GENERIC_SEG(0, 65, 144, 12),
+	GENERIC_1B_SEG(0, 89, 144, 12),
 	INPUT3_SEG(0, 77, 144, 12),
 	INPUT_1B_SEG(0, 89, 144, 12),
 	INPUT_2B_SEG(0, 101, 144, 12),

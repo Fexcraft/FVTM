@@ -257,7 +257,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 			case EMPTY_SEG:{
 				if(type == ConstGuiElement.EMPTY_SEG && lang == null) break;
 				boolean generic = type == ConstGuiElement.GENERIC_SEG || type == ConstGuiElement.SWITCH_SEG || type == ConstGuiElement.GENERIC_1B_SEG;
-				int width = type == ConstGuiElement.SWITCH_SEG ? 107 : type == ConstGuiElement.GENERIC_1B_SEG ? 123 : 131;
+				int width = type == ConstGuiElement.SWITCH_SEG ? 107 : type == ConstGuiElement.GENERIC_1B_SEG ? 119 : 131;
 				RGB gray = generic ? RGB_TEXT_LIGHTGRAY : RGB_TEXT_GRAY;
 				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, y, width, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
 				break;

@@ -182,27 +182,32 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run, ConstGuiElement[] btype, String[] binfo){
 		int index = elements.size(), y = 17 + 12 * index;
 		ConstElement elm = elements.addB(new ConstElement(name, type, index));
-		switch(type){
+		switch(type){//buttons
 			case GENERIC_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 2, y, type.x + 2, type.y + 1, 135, 10, run) })[0]);
 				break;
 			}
 			case INPUT3_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
-				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : btype[0]);
-				elm.fields = new TextField[3];
-				for(int i = 0; i < 3; i++){
-					fields.put(name + "_" + i, elm.fields[i] = new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true));
-				}
+				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
+				break;
+			}
+			case GENERIC_1B_SEG:{
+				buttons.put(name, (elm.buttons = new BasicButton[]{
+					new RunButton(name, 2, y, type.x + 2, type.y + 1, 123, 10, run),
+					new RunButton(name + "_0", 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run)
+				})[0]);
+				buttons.put(name + "_0", elm.buttons[1]);
+				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
 				break;
 			}
 			case INPUT_1B_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
-				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : btype[0]);
-				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 121, 10).setEnableBackground(true) })[0]);
+				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
 				break;
 			}
 			case INPUT_2B_SEG:{
+				if(btype == null) btype = new ConstGuiElement[]{ ConstGuiElement.CANCEL_ICON, ConstGuiElement.CONFIRM_ICON };
 				buttons.put(name + "_0", (elm.buttons = new BasicButton[]{
 					new RunButton(name + "_0", 114, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run),
 					new RunButton(name + "_1", 126, y - 1, btype[1].x, btype[1].y, btype[1].w, btype[1].h, run)
@@ -210,7 +215,6 @@ public class ConstGui extends GenericGui<ConstContainer> {
 				buttons.put(name + "_1", elm.buttons[1]);
 				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.cancel" : binfo[0]);
 				infotext.put(elm.buttons[1], binfo == null ? "gui.fvtm.constructor.button.confirm" : binfo[1]);
-				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true) })[0]);
 				break;
 			}
 			case SWITCH_SEG:{
@@ -226,15 +230,34 @@ public class ConstGui extends GenericGui<ConstContainer> {
 			}
 			default: break;
 		}
+		switch(type){//fields
+			case INPUT3_SEG:{
+				elm.fields = new TextField[3];
+				for(int i = 0; i < 3; i++){
+					fields.put(name + "_" + i, elm.fields[i] = new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true));
+				}
+				break;
+			}
+			case INPUT_1B_SEG:{
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 123, 10).setEnableBackground(true) })[0]);
+				break;
+			}
+			case INPUT_2B_SEG:{
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true) })[0]);
+				break;
+			}
+			default: break;
+		}
 		y += 1;
-		switch(type){
+		switch(type){//texts
 			case GENERIC_SEG:
+			case GENERIC_1B_SEG:
 			case SWITCH_SEG:
 			case BLANK_SEG:
 			case EMPTY_SEG:{
 				if(type == ConstGuiElement.EMPTY_SEG && lang == null) break;
-				boolean generic = type == ConstGuiElement.GENERIC_SEG || type == ConstGuiElement.SWITCH_SEG;
-				int width = type == ConstGuiElement.SWITCH_SEG ? 107 : 131;
+				boolean generic = type == ConstGuiElement.GENERIC_SEG || type == ConstGuiElement.SWITCH_SEG || type == ConstGuiElement.GENERIC_1B_SEG;
+				int width = type == ConstGuiElement.SWITCH_SEG ? 107 : type == ConstGuiElement.GENERIC_1B_SEG ? 123 : 131;
 				RGB gray = generic ? RGB_TEXT_LIGHTGRAY : RGB_TEXT_GRAY;
 				texts.put(name, (elm.texts = new BasicText[]{ new BasicText(4, y, width, gray.packed, format(lang)).hoverable(generic).autoscale().withshadow(generic) })[0]);
 				break;
@@ -388,6 +411,12 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		public boolean onclick(int mouseX, int mouseY, int mouseButton){
 			if(run != null) run.accept(this);
 			return true;
+		}
+
+		public void set_type_and_info(ConstGui gui, ConstGuiElement type, String info){
+			tx = type.x;
+			ty = type.y;
+			gui.infotext.put(this, info);
 		}
 		
 	}

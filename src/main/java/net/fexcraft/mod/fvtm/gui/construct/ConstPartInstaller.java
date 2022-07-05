@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import com.google.common.collect.Lists;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.client.resources.I18n;
@@ -114,8 +113,8 @@ public class ConstPartInstaller extends ConstGui {
 			return;
 		}
 		String sbprefix = I18n.format("gui.fvtm.constructor.part_install.slot_prefix");
-		for(int i = 0; i < 12; i++){
-			int j = i + (page * 12);
+		for(int i = 0; i < onpage; i++){
+			int j = i + (page * onpage);
 			boolean ex = j < categories.size();
 			String cat = ex ? categories.get(j) : "";
 			boolean slotbased = cat.startsWith("s:");
@@ -123,7 +122,6 @@ public class ConstPartInstaller extends ConstGui {
 			texts.get("category" + i).string = slotbased ? sbprefix + split[2] : cat;
 			BasicButton button = buttons.get("category" + i);
 			RunButton icon = (RunButton)buttons.get("category" + i + "_0");
-			Print.debug(buttons.keySet(), icon);
 			texts.get("category" + i).visible = button.visible = icon.visible = ex;
 			if(ex){
 				if(!slotbased){
@@ -150,7 +148,7 @@ public class ConstPartInstaller extends ConstGui {
 			}
 		}
 		if(!haspages) return;
-		buttons.get("page_1").enabled = page < vdata.getParts().size() / 12;
+		buttons.get("page_1").enabled = page < vdata.getParts().size() / onpage;
 		buttons.get("page_0").enabled = page > 0;
 	}
 

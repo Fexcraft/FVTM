@@ -107,11 +107,14 @@ public class ConstPartInstaller extends ConstGui {
 	
 	private void updateButtons(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		if(haspages) texts.get("page").string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + ((categories.size() / onpage + 1));
-		if(nopart){
+		if(nopart = container.getTileEntity().getPartData() == null){
 			texts.get("category0").string = I18n.format("gui.fvtm.constructor.part_install.empty");
+			for(int i = 1; i < onpage; i++){
+				texts.get("category" + i).string = "";
+			}
 			return;
 		}
+		if(haspages) texts.get("page").string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + ((categories.size() / onpage + 1));
 		String sbprefix = I18n.format("gui.fvtm.constructor.part_install.slot_prefix");
 		for(int i = 0; i < onpage; i++){
 			int j = i + (page * onpage);

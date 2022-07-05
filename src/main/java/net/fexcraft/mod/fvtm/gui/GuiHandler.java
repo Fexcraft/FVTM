@@ -14,11 +14,11 @@ import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContentData;
 import net.fexcraft.mod.fvtm.gui.construct.ConstMain;
 import net.fexcraft.mod.fvtm.gui.construct.ConstPartCache;
+import net.fexcraft.mod.fvtm.gui.construct.ConstPartInstaller;
 import net.fexcraft.mod.fvtm.gui.construct.ConstPartManager;
 import net.fexcraft.mod.fvtm.gui.construct.ConstStatus;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainerVTM;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
 import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
@@ -117,8 +117,8 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_CONTENTINFO:
 			case CONSTRUCTOR_PARTINFO:
-			case CONSTRUCTOR_PARTMANAGER: return new ConstContainer(player, world, x, y, z);
-			case CONSTRUCTOR_PARTINSTALLER: return new ConstructorContainer(player, world, x, y, z);
+			case CONSTRUCTOR_PARTMANAGER:
+			case CONSTRUCTOR_PARTINSTALLER: return new ConstContainer(player, world, x, y, z);
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorContainerVTM(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstructorContainer(player, world, x, y, z);
 			case VEHICLE_MAIN:
@@ -160,7 +160,7 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_CONTENTINFO: return new ConstContentData(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINFO: return new ConstPartCache(player, world, x, y, z);
 				case CONSTRUCTOR_PARTMANAGER: return new ConstPartManager(player, world, x, y, z);
-				case CONSTRUCTOR_PARTINSTALLER: return new ConstructorPartInstaller(player, world, x, y, z);
+				case CONSTRUCTOR_PARTINSTALLER: return new ConstPartInstaller(player, world, x, y, z);
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorVTM(player, world, x, y, z);
 				case CONSTRUCTOR_PAINTER: return new ConstructorVP(player, world, x, y, z);
 				case VEHICLE_MAIN: return new VehicleMain(player, world, x, y, z);

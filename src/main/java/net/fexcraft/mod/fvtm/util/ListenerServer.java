@@ -43,7 +43,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity entity = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				PartSlots source = entity.getVehicleData().getPartSlotsProvider(packet.nbt.getString("source"));
 				int index = packet.nbt.getInteger("index");
-				String slot = source.get(index).category;
+				String slot = source.get(index).category(packet.nbt.getString("source"));
 				if(entity.getVehicleData().getPart(slot) != null){
 					PartData oldpart = entity.getVehicleData().getPart(slot);
 					boolean valid = oldpart.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallationHandlerData()).hotswap;

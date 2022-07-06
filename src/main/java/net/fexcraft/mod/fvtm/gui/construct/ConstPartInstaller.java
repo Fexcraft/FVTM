@@ -125,7 +125,8 @@ public class ConstPartInstaller extends ConstGui {
 			String cat = ex ? categories.get(j) : "";
 			boolean slotbased = cat.startsWith("s:");
 			String[] split = slotbased ? cat.split(":") : null;
-			texts.get("category" + i).string = slotbased ? sbprefix + split[2] : cat;
+			if(slotbased) cat = split[2].replace("*", split[1]);
+			texts.get("category" + i).string = (slotbased ? sbprefix : "") + cat;
 			BasicButton button = buttons.get("category" + i);
 			RunButton icon = (RunButton)buttons.get("category" + i + "_0");
 			texts.get("category" + i).visible = button.visible = icon.visible = ex;
@@ -141,14 +142,13 @@ public class ConstPartInstaller extends ConstGui {
 					infotext.put(button, new String[]{
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_based")),
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_root", split[1])),
-						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_cat", split[2].replace("*", split[1]))),
+						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_cat", cat)),
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_index", split[3])),
 						"",
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.install"))
 					});
 				}
 				boolean partin = container.getTileEntity().getVehicleData() == null || container.getTileEntity().getVehicleData().getPart(cat) != null;
-				if(!partin && slotbased) partin = container.getTileEntity().getVehicleData().getPart(split[2].replace("*", split[1])) != null;
 				icon.enabled = !partin;
 				icon.set_type_and_info(this, partin ? CANCEL_ICON : CONFIRM_ICON, partin ? "gui.fvtm.constructor.part_install.cat_exists" : "gui.fvtm.constructor.part_install.cat_free");
 			}

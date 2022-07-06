@@ -56,4 +56,9 @@ public class PartSlot {
 		
 	}
 
+	public String category(String provider){
+		if(category.contains("*")) return category.replace("*", provider);
+		return category;
+	}
+
 }

@@ -90,6 +90,7 @@ public class Textureable {
 		selected = compound.getInteger("SelectedTexture");
 		external = compound.getBoolean("ExternalTexture");
 		if(selected < 0) selected = -1;
+		if(selected >= holder.getDefaultTextures().size()) selected = holder.getDefaultTextures().size() - 1;
 		if(!compound.hasKey("CurrentTexture")){
 			custom = compound.getString("CustomTexture");
 			if(selected < 0) currtex = external ? ExternalTextureHelper.get(custom) : new ResourceLocation(custom);
@@ -97,8 +98,14 @@ public class Textureable {
 		}
 		else{
 			String str = compound.getString("CurrentTexture");
-			currtex = external ? ExternalTextureHelper.get(str) : new ResourceLocation(str);
-			custom = selected < 0 ? external ? str : currtex.toString() : "";
+			if(selected < 0){
+				currtex = external ? ExternalTextureHelper.get(str) : new ResourceLocation(str);
+				custom = external ? str : currtex.toString();
+			}
+			else{
+				currtex = holder.getDefaultTextures().get(selected);
+				custom = "";
+			}
 		}
 	}
 

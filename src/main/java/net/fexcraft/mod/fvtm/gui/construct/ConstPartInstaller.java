@@ -25,7 +25,7 @@ public class ConstPartInstaller extends ConstGui {
 	
 	private ArrayList<String> categories = new ArrayList<>();
 	private String title;
-	private boolean haspages, nopart;
+	private boolean haspages;
 	private int page, onpage = 10;
 
 	public ConstPartInstaller(EntityPlayer player, World world, int x, int y, int z){
@@ -33,7 +33,6 @@ public class ConstPartInstaller extends ConstGui {
 		help_url += "#partinstaller";
 		if(container.getTileEntity().getPartData() == null){
 			title = "gui.fvtm.constructor.part_install.empty_title";
-			nopart = true;
 			return;
 		}
 		title = "gui.fvtm.constructor.part_install.menu_title";
@@ -108,7 +107,7 @@ public class ConstPartInstaller extends ConstGui {
 	
 	private void updateButtons(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		if(nopart = container.getTileEntity().getPartData() == null){
+		if(container.getTileEntity().getPartData() == null){
 			for(int i = 0; i < onpage; i++){
 				texts.get("category" + i).string = i == 0 ? I18n.format("gui.fvtm.constructor.part_install.empty") : "";
 				infotext.remove(buttons.get("category" + i));

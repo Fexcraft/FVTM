@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui.construct;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.BLANK_SEG;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.CANCEL_ICON;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.CONFIRM_ICON;
+import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.EDIT_ICON;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.EMPTY_SEG;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.GENERIC_1B_SEG;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.SWITCH_SEG;
@@ -108,10 +109,12 @@ public class ConstPartInstaller extends ConstGui {
 	private void updateButtons(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
 		if(nopart = container.getTileEntity().getPartData() == null){
-			texts.get("category0").string = I18n.format("gui.fvtm.constructor.part_install.empty");
-			for(int i = 1; i < onpage; i++){
-				texts.get("category" + i).string = "";
+			for(int i = 0; i < onpage; i++){
+				texts.get("category" + i).string = i == 0 ? I18n.format("gui.fvtm.constructor.part_install.empty") : "";
+				infotext.remove(buttons.get("category" + i));
+				((RunButton)buttons.get("category" + i + "_0")).set_type_and_info(this, EDIT_ICON, "gui.fvtm.constructor.part_install.empty");
 			}
+			categories.clear();
 			return;
 		}
 		if(haspages) texts.get("page").string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + ((categories.size() / onpage + 1));
@@ -138,14 +141,14 @@ public class ConstPartInstaller extends ConstGui {
 					infotext.put(button, new String[]{
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_based")),
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_root", split[1])),
-						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_cat", split[2])),
+						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_cat", split[2].replace("*", split[1]))),
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.slot_index", split[3])),
 						"",
 						Formatter.format(I18n.format("gui.fvtm.constructor.part_install.install"))
 					});
 				}
 				boolean partin = container.getTileEntity().getVehicleData() == null || container.getTileEntity().getVehicleData().getPart(cat) != null;
-				if(!partin && slotbased) partin = container.getTileEntity().getVehicleData().getPart(split[2]) != null;
+				if(!partin && slotbased) partin = container.getTileEntity().getVehicleData().getPart(split[2].replace("*", split[1])) != null;
 				icon.enabled = !partin;
 				icon.set_type_and_info(this, partin ? CANCEL_ICON : CONFIRM_ICON, partin ? "gui.fvtm.constructor.part_install.cat_exists" : "gui.fvtm.constructor.part_install.cat_free");
 			}

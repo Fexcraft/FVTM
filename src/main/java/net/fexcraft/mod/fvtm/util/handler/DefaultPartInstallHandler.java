@@ -29,7 +29,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		if(data.getParts().containsKey(cat.startsWith("s:") ? cat.split(":")[2] : cat)){
+		String[] split = cat.startsWith(":") ? cat.split(":") : null;
+		if(data.getParts().containsKey(split == null ? cat : gscn(split))){
 			Print.chatnn(sender, "handler.install.fvtm.default.category_occupied");
 			return false;
 		}

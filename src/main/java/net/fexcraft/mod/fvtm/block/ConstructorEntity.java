@@ -128,7 +128,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				this.dropPart(true);
 				return;
 			}
-			case "vtm_supplied":{
+			case "tm_supplied":{
 				if(nocon(container) && noveh(container) && noblk(container)) return;
 				int i = packet.getInteger("value");
 				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
@@ -144,7 +144,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
-			case "vtm_custom":{
+			case "tm_custom":{
 				if(nocon(container) && noveh(container) && noblk(container)) return;
 				String value = packet.getString("value");
 				boolean external = packet.getBoolean("external");

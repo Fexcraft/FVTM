@@ -54,7 +54,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		this(new ConstContainer(player, world, x, y, z), player, x, y, z);
 	}
 
-	private ConstGui(ConstContainer container, EntityPlayer player, int x, int y, int z){
+	protected ConstGui(ConstContainer container, EntityPlayer player, int x, int y, int z){
 		super(TEXTURE, container, player);
 		defbackground = false;
 		deftexrect = false;
@@ -234,16 +234,16 @@ public class ConstGui extends GenericGui<ConstContainer> {
 			case INPUT3_SEG:{
 				elm.fields = new TextField[3];
 				for(int i = 0; i < 3; i++){
-					fields.put(name + "_" + i, elm.fields[i] = new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true));
+					fields.put(name + "_" + i, elm.fields[i] = new TextField(fields.size(), fontRenderer, 3 + i * 41, y, 39, 10).setEnableBackground(true).setMaxLength(256));
 				}
 				break;
 			}
 			case INPUT_1B_SEG:{
-				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 123, 10).setEnableBackground(true) })[0]);
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 123, 10).setEnableBackground(true).setMaxLength(256) })[0]);
 				break;
 			}
 			case INPUT_2B_SEG:{
-				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true) })[0]);
+				fields.put(name, (elm.fields = new TextField[]{ new TextField(fields.size(), fontRenderer, 2, y, 110, 10).setEnableBackground(true).setMaxLength(256) })[0]);
 				break;
 			}
 			default: break;

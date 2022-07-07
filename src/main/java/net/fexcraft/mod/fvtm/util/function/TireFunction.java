@@ -114,19 +114,27 @@ public class TireFunction extends Function {
         	if(table.containsKey(mat)){
         		return rainfall ? table.get(mat).rainfall : table.get(mat).general;
         	}
-    		return general_grip * (rainfall ? DEFAULT_TABLE.get(mat).rainfall : DEFAULT_TABLE.get(mat).general);
+        	if(DEFAULT_TABLE.containsKey(mat)){
+        		return general_grip * (rainfall ? DEFAULT_TABLE.get(mat).rainfall : DEFAULT_TABLE.get(mat).general);
+        	}
+    		return general_grip * (rainfall ? MatTireAttr.DEF_RAIN_GRIP : MatTireAttr.DEF_GRIP);
         }
         
         public float getCornerStiffnessFor(Material mat, boolean steering){
         	if(table.containsKey(mat)){
         		return steering ? table.get(mat).corner_stiffness_steering : table.get(mat).corner_stiffness;
         	}
-    		return steering ? DEFAULT_TABLE.get(mat).corner_stiffness_steering : DEFAULT_TABLE.get(mat).corner_stiffness;
+        	if(DEFAULT_TABLE.containsKey(mat)){
+        		return steering ? DEFAULT_TABLE.get(mat).corner_stiffness_steering : DEFAULT_TABLE.get(mat).corner_stiffness;
+        	}
+    		return steering ? MatTireAttr.DEF_COR_STEER : MatTireAttr.DEF_COR;
         }
         
     }
     
     public static class MatTireAttr {
+    	
+    	public static final float DEF_GRIP = 1f, DEF_RAIN_GRIP = 0.75f, DEF_COR = 5.2f, DEF_COR_STEER = 5f;
     	
     	public final float general, rainfall, corner_stiffness, corner_stiffness_steering;
 
@@ -141,8 +149,8 @@ public class TireFunction extends Function {
     
     private static HashMap<Material, MatTireAttr> DEFAULT_TABLE = new HashMap<>();
     static {
-    	float dc = 5.2f, ds = 5f;
-    	DEFAULT_TABLE.put(null, new MatTireAttr(1f, 1f, dc, ds));
+    	float dc = MatTireAttr.DEF_COR, ds = MatTireAttr.DEF_COR_STEER;
+    	DEFAULT_TABLE.put(null, new MatTireAttr(MatTireAttr.DEF_GRIP, MatTireAttr.DEF_RAIN_GRIP, dc, ds));
     	DEFAULT_TABLE.put(Material.AIR, new MatTireAttr(0.1f, 0.1f, dc, ds));
     	DEFAULT_TABLE.put(Material.GRASS, new MatTireAttr(0.7f, 0.4f, dc, ds));
     	DEFAULT_TABLE.put(Material.GROUND, new MatTireAttr(0.9f, 0.75f, dc, ds));

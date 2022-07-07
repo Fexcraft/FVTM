@@ -29,7 +29,7 @@ public class Config {
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, ROADTOOL_FOR_ALL, OVERLAY_ON_BOTTOM;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, RENDER_BLOCK_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
-    public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
+    public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS, DISMOUNT_ON_LOGOUT;
     public static boolean LOAD_ALL_RESOURCEPACKS, LOAD_LITE_FROM_MODS, DISABLE_WIRES, RENDER_VEHICLES_SEPARATELY, DISABLE_PARTICLES;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
@@ -97,7 +97,8 @@ public class Config {
             ROADTOOL_FOR_ALL = config.getBoolean("road_tool_for_all", GENERAL, false, "When not using a Forge PermissionsAPI compatible permission manager, to allow any player to use the Road Placing Tool.");
             LOAD_ALL_RESOURCEPACKS = config.getBoolean("load_all_resourcepacks", GENERAL, true, "If true all lite packs in /resoucepacks/ will be loaded, otherwhise when false, only the active ones.");
             LOAD_LITE_FROM_MODS = config.getBoolean("load_litepacks_from_mods", GENERAL, true, "If true, FVTM will search for litepacks in the /mods/ folder.");
-            DEFAULT_TRAFFIC_SIGN_LIBRARIES = config.getStringList("traffic_sign_libraries", RAILSYS, new String[]{ "default_fexcraft;http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json" }, "List of External Traffic Sign Libraries. Separate ID from URL using a semicolon.");
+            DEFAULT_TRAFFIC_SIGN_LIBRARIES = config.getStringList("traffic_sign_libraries", GENERAL, new String[]{ "default_fexcraft;http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json" }, "List of External Traffic Sign Libraries. Separate ID from URL using a semicolon.");
+            DISMOUNT_ON_LOGOUT = config.getBoolean("dismount_on_logout", GENERAL, true, "If players should automatically dismount vehicles on log out (leaving server).");
             TrafficSignLibrary.load(true);
     	}
     	{//LEGACY

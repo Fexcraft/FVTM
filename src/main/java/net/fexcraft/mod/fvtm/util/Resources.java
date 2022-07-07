@@ -941,6 +941,9 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
+		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof GenericVehicle){
+			event.player.dismountRidingEntity();
+		}
 		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = false;
 	}

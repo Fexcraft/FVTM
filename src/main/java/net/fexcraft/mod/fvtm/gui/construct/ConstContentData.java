@@ -27,7 +27,7 @@ public class ConstContentData extends ConstGui {
 		if(container.hasVehicle()){
 			addTopButton(ConstGuiElement.SAVE);
 			addElement(GENERIC_SEG, "veh_name", "gui.fvtm.constructor.content_data.name", null);
-			addElement(INPUT_2B_SEG, "name_input", null, button -> {
+			addElement(INPUT_2B_SEG, "name_input", null, (button, mb) -> {
 				if(button.name.endsWith("_0")){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "veh_name_change");
@@ -51,10 +51,10 @@ public class ConstContentData extends ConstGui {
 			addElement(EMPTY_SEG, "spacer0", null, null);
 		}
 		if(container.hasVehicle()){
-			addElement(GENERIC_SEG, "attributes", "gui.fvtm.constructor.content_data.attributes", button -> notAvailableYet());
-			addElement(GENERIC_SEG, "functions", "gui.fvtm.constructor.content_data.functions", button -> notAvailableYet());
+			addElement(GENERIC_SEG, "attributes", "gui.fvtm.constructor.content_data.attributes", (button, mb) -> notAvailableYet());
+			addElement(GENERIC_SEG, "functions", "gui.fvtm.constructor.content_data.functions", (button, mb) -> notAvailableYet());
 		}
-		addElement(GENERIC_SEG, "scripts", "gui.fvtm.constructor.content_data.scripts", button -> notAvailableYet());
+		addElement(GENERIC_SEG, "scripts", "gui.fvtm.constructor.content_data.scripts", (button, mb) -> notAvailableYet());
 		if(container.hasVehicle()) fields.get("name_input").setText(container.entity.getVehicleData().getName());
 		finish_init();
 	}

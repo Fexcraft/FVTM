@@ -22,7 +22,7 @@ public enum ConstGuiElement {
 	SWITCH_SEG(0, 101, 144, 12),
 	EMPTY_SEG(0, 221, 144, 12),
 	BLANK_SEG(0, 233, 144, 12),
-	WHITE_SEG(0, 109, 144, 12),
+	WHITE_SEG(0, 209, 144, 12),
 	//
 	CONFIRM_ICON(145, 77, 12, 12),
 	PREV_ICON(145, 89, 12, 12),

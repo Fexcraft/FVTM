@@ -22,7 +22,7 @@ public class ConstStatus extends ConstGui {
 		addTopButton(ConstGuiElement.HELP);
 		addTopButton(ConstGuiElement.BACK);
 		addElement(ConstGuiElement.BLANK_SEG, "liftpos", "gui.fvtm.constructor.status.lift_pos", null);
-		addElement(ConstGuiElement.INPUT3_SEG, "input", null, button -> {
+		addElement(ConstGuiElement.INPUT3_SEG, "input", null, (button, mb) -> {
 			try{
 				BlockPos pos = new BlockPos(fields.get("input_0").getIntegerValue(), fields.get("input_1").getIntegerValue(), fields.get("input_2").getIntegerValue());
 				if(container.getTileEntity().getCenterPos() != null){
@@ -41,7 +41,7 @@ public class ConstStatus extends ConstGui {
 			}
 		}, ConstGuiElement.CONFIRM_ICON.asarray());
 		addElement(ConstGuiElement.EMPTY_SEG, "spacer0", null, null);
-		addElement(ConstGuiElement.GENERIC_SEG, "auto", "gui.fvtm.constructor.status.auto", button -> {
+		addElement(ConstGuiElement.GENERIC_SEG, "auto", "gui.fvtm.constructor.status.auto", (button, mb) -> {
 			if(container.getTileEntity().getCenterPos() != null){
 				titletext.update("gui.fvtm.constructor.status.exists", RGB_ORANGE.packed);
 				return;
@@ -49,7 +49,7 @@ public class ConstStatus extends ConstGui {
 			container.send(Side.SERVER, conn_packet(true, null));
 		});
 		addElement(ConstGuiElement.EMPTY_SEG, "spacer1", null, null);
-		addElement(ConstGuiElement.GENERIC_SEG, "reset", "gui.fvtm.constructor.status.reset", button -> send_disconnect());
+		addElement(ConstGuiElement.GENERIC_SEG, "reset", "gui.fvtm.constructor.status.reset", (button, mb) -> send_disconnect());
 		finish_init();
 		update_text();
 	}

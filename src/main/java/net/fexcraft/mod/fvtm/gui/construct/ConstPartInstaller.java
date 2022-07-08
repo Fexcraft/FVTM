@@ -49,7 +49,7 @@ public class ConstPartInstaller extends ConstGui {
 		addTopButton(ConstGuiElement.BACK);
 		addTopButton(ConstGuiElement.SAVE);
 		addElement(BLANK_SEG, "name", "gui.fvtm.constructor.part_install.custom", null);
-		addElement(ConstGuiElement.INPUT_1B_SEG, "custom_install", null, button -> {
+		addElement(ConstGuiElement.INPUT_1B_SEG, "custom_install", null, (button, mb) -> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_install");
 			compound.setString("category", fields.get("custom_install").getText());
@@ -62,7 +62,7 @@ public class ConstPartInstaller extends ConstGui {
 		addElement(BLANK_SEG, "default", "gui.fvtm.constructor.part_install.default", null);
 		for(int i = 0; i < onpage; i++){
 			int j = page * onpage + i;
-			addElement(GENERIC_1B_SEG, "category" + i, "", button -> {
+			addElement(GENERIC_1B_SEG, "category" + i, "", (button, mb) -> {
 				if(j >= categories.size()) return;
 				try{
 					NBTTagCompound compound = new NBTTagCompound();
@@ -81,7 +81,7 @@ public class ConstPartInstaller extends ConstGui {
 		}
 		if(haspages){
 			addElement(EMPTY_SEG, "spacer3", null, null);
-			addElement(SWITCH_SEG, "page", "gui.fvtm.constructor.page", button -> {
+			addElement(SWITCH_SEG, "page", "gui.fvtm.constructor.page", (button, mb) -> {
 				if(button.name.endsWith("_0")) page--; else page++;
 				if(page < 0) page = 0;
 				updateButtons();

@@ -16,7 +16,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
+import net.fexcraft.mod.fvtm.gui.construct.ConstGui;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -393,7 +393,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		//
 		root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " "), 8, 19 + yoff, 0xffffff);
 		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
-		(ent.throttle > 0.8 ? ConstructorGui.RGB_ORANGE : RGB.GREEN).glColorApply();
+		(ent.throttle > 0.8 ? ConstGui.RGB_ORANGE : RGB.GREEN).glColorApply();
 		root.drawTexturedModalRect(66, 19 + yoff, 66, 19, (int)(ent.throttle * 100), 7);
 		RGB.glColorReset();
 		//

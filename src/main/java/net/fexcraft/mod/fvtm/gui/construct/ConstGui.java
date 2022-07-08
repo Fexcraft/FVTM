@@ -32,10 +32,10 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	public static String REQUEST_SENT = "gui.fvtm.constructor.request_sent";
 	protected String help_url = "https://fexcraft.net/wiki/mod/fvtm/constructor";
 	protected Consumer<BasicButton> NOT_AVAILABLE_YET = button -> notAvailableYet();
-	private ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
-	private ReturnAddList<ConstElement> elements = new ReturnAddList<>();
+	protected ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
+	protected ReturnAddList<ConstElement> elements = new ReturnAddList<>();
 	protected int root = GuiHandler.CONSTRUCTOR_MAIN;
-	private ConstGui instance = this;
+	protected ConstGui instance = this;
 	protected TitleText titletext;
 	protected BasicText menutitle;
 	protected String texttitle = "Fex's Vehicle and Transporation Mod";
@@ -189,7 +189,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 			}
 			case INPUT3_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
-				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
+				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
 				break;
 			}
 			case GENERIC_1B_SEG:{
@@ -198,12 +198,12 @@ public class ConstGui extends GenericGui<ConstContainer> {
 					new RunButton(name + "_0", 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run)
 				})[0]);
 				buttons.put(name + "_0", elm.buttons[1]);
-				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
+				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
 				break;
 			}
 			case INPUT_1B_SEG:{
 				buttons.put(name, (elm.buttons = new BasicButton[]{ new RunButton(name, 126, y - 1, btype[0].x, btype[0].y, btype[0].w, btype[0].h, run) })[0]);
-				infotext.put(elm.buttons[0], btype == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
+				infotext.put(elm.buttons[0], binfo == null ? "gui.fvtm.constructor.button.confirm" : binfo[0]);
 				break;
 			}
 			case INPUT_2B_SEG:{

@@ -100,6 +100,9 @@ gui.fvtm.constructor.painter.rgb=RGB
 gui.fvtm.constructor.painter.hex=HEX
 gui.fvtm.constructor.painter.channel=Active Channel:
 gui.fvtm.constructor.painter.current=Current Color:
+gui.fvtm.constructor.painter.picker=Color Pickers
+gui.fvtm.constructor.painter.apply=Left-click to select color.
+gui.fvtm.constructor.painter.save=Right-click to save to custom palette.
 gui.fvtm.constructor.painter.error_rgb=Error parsing RGB Color.
 gui.fvtm.constructor.painter.error_hex=Error parsing HEX Color.
 //

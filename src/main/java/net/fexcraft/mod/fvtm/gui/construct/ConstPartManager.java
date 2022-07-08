@@ -34,7 +34,7 @@ public class ConstPartManager extends ConstGui {
 		addElement(EMPTY_SEG, "spacer0", null, null);
 		for(int i = 0; i < 12; i++){
 			int j = i;
-			addElement(SWITCH_SEG, "part" + i, "", button -> {
+			addElement(SWITCH_SEG, "part" + i, "", (button, mb) -> {
 				try{
 					if(button.name.endsWith("_0")){
 						//NBTTagCompound compound = new NBTTagCompound();
@@ -62,7 +62,7 @@ public class ConstPartManager extends ConstGui {
 			new String[]{ "gui.fvtm.constructor.button.edit_tex", "gui.fvtm.constructor.button.remove" });
 		}
 		addElement(EMPTY_SEG, "spacer1", null, null);
-		addElement(SWITCH_SEG, "page", "gui.fvtm.constructor.page", button -> {
+		addElement(SWITCH_SEG, "page", "gui.fvtm.constructor.page", (button, mb) -> {
 			if(button.name.endsWith("_0")) page--; else page++;
 			if(page < 0) page = 0;
 			updateButtons();

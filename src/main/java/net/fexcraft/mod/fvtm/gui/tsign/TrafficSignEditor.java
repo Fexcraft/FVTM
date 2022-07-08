@@ -17,7 +17,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
+import net.fexcraft.mod.fvtm.gui.construct.ConstPainter;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
@@ -62,8 +62,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton[] tabclose = new TSEButton[2];
 	private TSEButton[] editorconfirm = new TSEButton[7];
 	private TSEButton[] border = new TSEButton[5];
-	private ConstructorVP.Spectrum spectrum;
-	private ConstructorVP.Palette palette;
+	private ConstPainter.Spectrum spectrum;
+	private ConstPainter.Palette palette;
 	private BasicText title;
 	private BasicText[] lList = new BasicText[15];
 	private BasicText[] rList = new BasicText[15];
@@ -367,13 +367,13 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				return true;
 			}
 		});
-		buttons.put("spectrum", spectrum = new ConstructorVP.Spectrum(guiLeft - 105, guiTop + 125, 110, 10, 55){
+		buttons.put("spectrum", spectrum = new ConstPainter.Spectrum(guiLeft - 105, guiTop + 125, 110, 10, 55){
 			public boolean onclick(int x, int y, int b){
 				setcolor(getColorAt(x));
 				return true;
 			}
 		});
-		buttons.put("palette", palette = new ConstructorVP.Palette(guiLeft - 100, guiTop + 23, 10, 10, 10, 10){
+		buttons.put("palette", palette = new ConstPainter.Palette(guiLeft - 100, guiTop + 23, 10, 10, 10, 10){
 			public boolean onclick(int x, int y, int b){
 				setcolor(getColorAt(x, y));
 				return true;

@@ -46,7 +46,7 @@ public class ConstTextureManager extends ConstGui {
 		addElement(GENERIC_SEG, "current", "", null);
 		addElement(EMPTY_SEG, "spacer0", null, null);
 		addElement(BLANK_SEG, "supplied_title", "gui.fvtm.constructor.texture.supplied", null);
-		addElement(SWITCH_SEG, "supplied", "", button -> {
+		addElement(SWITCH_SEG, "supplied", "", (button, mb) -> {
 			try{
 				TextureUser textur = getTextureUser();
 				int i = textur.getSelectedTexture() + (button.name.endsWith("_1") ? 1 : -1);
@@ -71,12 +71,12 @@ public class ConstTextureManager extends ConstGui {
 		);
 		addElement(EMPTY_SEG, "spacer1", null, null);
 		addElement(BLANK_SEG, "internal_title", "gui.fvtm.constructor.texture.internal", null);
-		addElement(INPUT_1B_SEG, "internal", "", button -> {
+		addElement(INPUT_1B_SEG, "internal", "", (button, mb) -> {
 			applyTex(button);
 		}, ConstGuiElement.CONFIRM_ICON.asarray(), new String[]{"gui.fvtm.constructor.button.confirm"});
 		addElement(EMPTY_SEG, "spacer2", null, null);
 		addElement(BLANK_SEG, "external_title", "gui.fvtm.constructor.texture.external", null);
-		addElement(INPUT_1B_SEG, "external", "", button -> {
+		addElement(INPUT_1B_SEG, "external", "", (button, mb) -> {
 			applyTex(button);
 		}, ConstGuiElement.CONFIRM_ICON.asarray(), new String[]{ "gui.fvtm.constructor.button.confirm" });
 		finish_init();

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import org.lwjgl.input.Keyboard;
 
@@ -31,7 +31,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/gui/constructor_base.png");
 	public static String REQUEST_SENT = "gui.fvtm.constructor.request_sent";
 	protected String help_url = "https://fexcraft.net/wiki/mod/fvtm/constructor";
-	protected Consumer<BasicButton> NOT_AVAILABLE_YET = button -> notAvailableYet();
+	protected BiConsumer<BasicButton, Integer> NOT_AVAILABLE_YET = (button, mb) -> notAvailableYet();
 	protected ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
 	protected ReturnAddList<ConstElement> elements = new ReturnAddList<>();
 	protected int root = GuiHandler.CONSTRUCTOR_MAIN;
@@ -171,15 +171,15 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		}		
 	}
 	
-	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run){
+	public void addElement(ConstGuiElement type, String name, String lang, BiConsumer<BasicButton, Integer> run){
 		addElement(type, name, lang, run, null, null);
 	}
 	
-	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run, ConstGuiElement[] btype){
+	public void addElement(ConstGuiElement type, String name, String lang, BiConsumer<BasicButton, Integer> run, ConstGuiElement[] btype){
 		addElement(type, name, lang, run, btype, null);
 	}
 	
-	public void addElement(ConstGuiElement type, String name, String lang, Consumer<BasicButton> run, ConstGuiElement[] btype, String[] binfo){
+	public void addElement(ConstGuiElement type, String name, String lang, BiConsumer<BasicButton, Integer> run, ConstGuiElement[] btype, String[] binfo){
 		int index = elements.size(), y = 17 + 12 * index;
 		ConstElement elm = elements.addB(new ConstElement(name, type, index));
 		switch(type){//buttons
@@ -399,9 +399,9 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	
 	public static class RunButton extends BasicButton {
 
-		private Consumer<BasicButton> run;
+		private BiConsumer<BasicButton, Integer> run;
 
-		public RunButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, Consumer<BasicButton> run){
+		public RunButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, BiConsumer<BasicButton, Integer> run){
 			super(name, x, y, tx, ty, sizex, sizey, true);
 			this.alpha(false);
 			this.run = run;
@@ -409,7 +409,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 		
 		@Override
 		public boolean onclick(int mouseX, int mouseY, int mouseButton){
-			if(run != null) run.accept(this);
+			if(run != null) run.accept(this, mouseButton);
 			return true;
 		}
 

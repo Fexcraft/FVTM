@@ -52,6 +52,7 @@ gui.fvtm.constructor.button.remove=Remove
 gui.fvtm.constructor.button.cancel=Cancel
 gui.fvtm.constructor.button.edit=Edit/Adjust
 gui.fvtm.constructor.button.edit_tex=Exit Textures
+gui.fvtm.constructor.button.apply=Apply
 //
 gui.fvtm.constructor.part_install.menu_title=Part Installation (from cache)
 gui.fvtm.constructor.part_install.custom=Custom Category:
@@ -97,7 +98,8 @@ gui.fvtm.constructor.painter.menu_title_container=Container Color Painter
 gui.fvtm.constructor.painter.menu_title_vehicle=Vehicle Color Painter
 gui.fvtm.constructor.painter.rgb=RGB
 gui.fvtm.constructor.painter.hex=HEX
-gui.fvtm.constructor.painter.channel=T:
+gui.fvtm.constructor.painter.channel=Active Channel:
+gui.fvtm.constructor.painter.current=Current Color:
 gui.fvtm.constructor.painter.error_rgb=Error parsing RGB Color.
 gui.fvtm.constructor.painter.error_hex=Error parsing HEX Color.
 //

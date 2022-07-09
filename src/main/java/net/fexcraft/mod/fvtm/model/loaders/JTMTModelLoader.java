@@ -23,7 +23,7 @@ public class JTMTModelLoader implements ModelLoader {
 
 	@Override
 	public boolean accepts(String name, String suffix){
-		return suffix.equals(".jtmt") || suffix.equals(".frlj");
+		return suffix.equals("jtmt") || suffix.equals("frlj");
 	}
 
 	@Override

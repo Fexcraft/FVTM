@@ -1036,7 +1036,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if(data.entity == null){
-				if(data.tile == null || (block_predicate != null && !block_predicate.test(data.tile, data.block))) return;
+				if(data.tile == null || data.block == null || (block_predicate != null && !block_predicate.test(data.tile, data.block))) return;
 				EffectRenderer.BLOCK_LIGHTRAYS.add(this);
 				EffectRenderer.BLOCK_LIGHTRAYDATAS.add(data.block);
 				EffectRenderer.BLOCK_LIGHTRAYTILES.add(data.tile);
@@ -1047,6 +1047,11 @@ public class DefaultPrograms {
 				EffectRenderer.LIGHTRAYDATAS.add(data.vehicle);
 				EffectRenderer.LIGHTRAYVEHS.add((VehicleEntity)data.entity);
 			}
+		}
+		
+		@Override
+		public boolean isPostRender(){
+			return false;
 		}
 		
 		public LightBeam init(ModelRendererTurbo turboobj, Vec3d pos, ResourceLocation texture, BiPredicate<TileEntity, BlockData> predicate){

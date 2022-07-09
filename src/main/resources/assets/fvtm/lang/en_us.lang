@@ -51,7 +51,7 @@ gui.fvtm.constructor.button.reset=Reset
 gui.fvtm.constructor.button.remove=Remove
 gui.fvtm.constructor.button.cancel=Cancel
 gui.fvtm.constructor.button.edit=Edit/Adjust
-gui.fvtm.constructor.button.edit_tex=Exit Textures
+gui.fvtm.constructor.button.edit_tex=Edit Textures
 gui.fvtm.constructor.button.apply=Apply
 //
 gui.fvtm.constructor.part_install.menu_title=Part Installation (from cache)

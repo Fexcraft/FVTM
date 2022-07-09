@@ -115,7 +115,7 @@ public class ConstPainter extends ConstGui {
 			}
 		});
 		addElement(WHITE_SEG, "palette", null, null);
-		buttons.put("palette", palette = new Palette(2, 17 + 12 * (elements.size() - 1), 27, 5, 2, 5){
+		buttons.put("palette", palette = new Palette(2, 17 + 12 * (elements.size() - 1), 27, 5, 5, 2){
 			@Override
 			public boolean onclick(int x, int y, int b){
 				if(b == 0) updateColor(getColorAt(x, y), false);

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.addon;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 
@@ -271,35 +275,58 @@ public class Addon extends TypeCore<Addon> {
 			if(!folder.exists()){ folder.mkdirs(); }
 			ArrayList<File> candidates = findFiles(folder, data.suffix);
 			for(File file : candidates){
-				JsonObject obj = JsonUtil.get(file);
-				TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
-				if(core == null){
-					if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
-					continue;
+				try{
+					JsonObject obj = JsonUtil.get(file);
+					TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
+					if(core == null){
+						if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
+						continue;
+					}
+					data.register(core); Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
+					if(Static.side().isClient()){
+						checkIfHasCustomModel(data, core);
+					}
+					if(Static.dev()){
+						if(generatelang) checkLangFile(core);
+						if(generatejson) checkItemJson(core, data);
+						if(generateicon) checkItemIcon(core, data);
+					}
 				}
-				data.register(core); Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
-				if(Static.side().isClient()){
-					checkIfHasCustomModel(data, core);
-				}
-				if(Static.dev()){
-					if(generatelang) checkLangFile(core);
-					if(generatejson) checkItemJson(core, data);
-					if(generateicon) checkItemIcon(core, data);
+				catch(Throwable t){
+					t.printStackTrace();
+					Print.log("Failed to load config from file '" + file + "'!"); Static.stop();
 				}
 			}
 		}
 		else{ //assume it's a jar.
-			JsonArray array = ZipUtil.getJsonObjectsAt(file, "assets/" + registryname.getPath() + "/config/" + data.cfg_folder + "/", data.suffix);
-			for(JsonElement elm : array){ JsonObject obj = elm.getAsJsonObject();
-				TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
-				if(core == null){
-					if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
-					continue;
+			try{
+				String path = "assets/" + registryname.getPath() + "/config/" + data.cfg_folder + "/";
+				ZipFile zip = new ZipFile(file);
+				ZipInputStream stream = new ZipInputStream(new FileInputStream(file));
+				while(true){
+					ZipEntry entry = stream.getNextEntry();
+					if(entry == null){
+						break;
+					}
+					if(entry.getName().startsWith(path) && entry.getName().endsWith(data.suffix)){
+						JsonObject obj = JsonUtil.getObjectFromInputStream(zip.getInputStream(entry));
+						TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
+						if(core == null){
+							if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
+							continue;
+						}
+						data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
+						if(Static.side().isClient()){
+							checkIfHasCustomModel(data, core);
+						}
+						Print.log("Failed to load config from zip entry '" + entry.getName() + "'!"); Static.stop();
+					}
 				}
-				data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-				if(Static.side().isClient()){
-					checkIfHasCustomModel(data, core);
-				}
+				zip.close();
+				stream.close();
+			}
+			catch(Throwable e){
+				e.printStackTrace();
 			}
 		}
 	}

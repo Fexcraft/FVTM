@@ -871,9 +871,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		speed /= avsp.size();
 		//
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
+        for(SeatCache seat : seats) seat.updatePosition();
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
-        for(SeatCache seat : seats) seat.updatePosition();
         if(!world.isRemote && ticksExisted % SYNC_RATE == 0 && truck == null){
         	vehicle.getAttribute("throttle").value((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));

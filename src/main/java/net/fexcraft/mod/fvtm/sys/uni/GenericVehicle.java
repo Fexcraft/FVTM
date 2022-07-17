@@ -82,7 +82,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@Override
 	public Entity getControllingPassenger(){
-		return getDriver();
+		return null;//getDriver();
 	}
 	
 	@Override

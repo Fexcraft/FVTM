@@ -580,9 +580,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	rek.data().getAttribute("section_on").value(rek.current.getUnit().section().getUID());
         }
         for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
+        for(SeatCache seat : seats) seat.updatePosition();
         rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
-        for(SeatCache seat : seats) if(seat != null) seat.updatePosition();
         if(!world.isRemote && ticksExisted % servtick == 0){
         	throttle = rek.ent().throttle;
         	rek.data().getAttribute("throttle").value((float)throttle);

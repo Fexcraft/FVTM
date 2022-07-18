@@ -221,7 +221,6 @@ public class RailRenderer {
         	}*/
         }
         if(RailPlacingUtil.CL_CURRENT != null && RailPlacingUtil.CL_CURRENT.points.size() > 1){
-        	Print.debug(RailPlacingUtil.CL_CURRENT.points.size());
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             Vec3f vec0, vec1;

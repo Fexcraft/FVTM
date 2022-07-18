@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
@@ -99,6 +100,10 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         }
         ItemStack stack = player.getHeldItem(hand);
         Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        if(Static.dev()){
+        	RailPlacingUtil.place(world, player, stack, getType(), syscap, vector);
+			return EnumActionResult.SUCCESS;
+        }
         if(player.isSneaking()){
         	if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
     			stack.getTagCompound().removeTag("fvtm:railpoints");

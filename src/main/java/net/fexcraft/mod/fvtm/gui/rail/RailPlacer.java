@@ -117,8 +117,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	}
 
 	public static final BlockPos getPos(World world, int x, int z){
-		int h = world.getHeight() - 1;
-		for(int i = h; i > 0; i--){
+		for(int i = 255; i > 0; i--){
 			BlockPos pos = new BlockPos(x, i, z);
 			IBlockState state = world.getBlockState(pos);
 			if(state.getBlock() instanceof RailBlock) continue;

@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -218,6 +219,30 @@ public class RailRenderer {
             	//
             	GL11.glPopMatrix();
         	}*/
+        }
+        if(RailPlacingUtil.CL_CURRENT != null && RailPlacingUtil.CL_CURRENT.points.size() > 1){
+        	Print.debug(RailPlacingUtil.CL_CURRENT.points.size());
+    		Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            Vec3f vec0, vec1;
+			Track conn = RailPlacingUtil.CL_CURRENT.track;
+            GL11.glPushMatrix();
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.disableTexture2D();
+            GlStateManager.depthMask(false);
+			for(int j = 0; j < conn.vecpath.length - 1; j++){
+				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
+                bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+                bufferbuilder.pos(vec0.x, vec0.y + 0.1, vec0.z).color(0, 0, 1, 1F).endVertex();
+                bufferbuilder.pos(vec1.x, vec1.y + 0.1, vec1.z).color(0, 0, 1, 1F).endVertex();
+                tessellator.draw();
+			}
+            GlStateManager.depthMask(true);
+            GlStateManager.enableTexture2D();
+            GlStateManager.disableBlend();
+            GL11.glPopMatrix();
         }
 		GL11.glPopMatrix();
     }

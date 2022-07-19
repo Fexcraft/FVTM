@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.entity;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +45,9 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
         		buffer.writeLong(queueid.getMostSignificantBits());
         		buffer.writeLong(queueid.getLeastSignificantBits());
     		}
+    		buffer.writeFloat(position.vector.x);
+    		buffer.writeFloat(position.vector.y);
+    		buffer.writeFloat(position.vector.z);
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -55,6 +60,7 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
     		long m = buffer.readLong(), l = buffer.readLong();
     		if(m == 0 && l == 0) queueid = null;
     		else queueid = new UUID(m, l);
+    		position = new Vec316f(new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -114,8 +120,15 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
     
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
-        //TODO
-        return false;
+    	if(world.isRemote) return true;
+    	UUID current = RailPlacingUtil.CURRENT.get(player.getGameProfile().getId());
+    	if(current == null || queueid == null) return true;
+        if(queueid.equals(current)){
+        	NewTrack track = RailPlacingUtil.QUEUE.get(current);
+        	if(track == null) return true;
+        	track.select(player, position);
+        }
+        return true;
     }
     
     @Override
@@ -124,8 +137,12 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
             return true;
         }
         if(damagesource.damageType.equals("player")){
-            //TODO
-            setDead();
+            if(queueid != null && queueid.equals(queueid)){
+            	EntityPlayer player = (EntityPlayer)damagesource.getTrueSource();
+            	NewTrack track = RailPlacingUtil.QUEUE.get(queueid);
+            	if(track != null) track.remove(player, position);
+                setDead();
+            }
         }
         return true;
     }

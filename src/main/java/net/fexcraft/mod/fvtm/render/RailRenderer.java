@@ -250,6 +250,7 @@ public class RailRenderer {
 	                tessellator.draw();
 				}
 			}
+			//
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();

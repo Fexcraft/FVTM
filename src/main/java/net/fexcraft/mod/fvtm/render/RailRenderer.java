@@ -228,7 +228,7 @@ public class RailRenderer {
             GL11.glPushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.glLineWidth(4.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
 			for(int j = 0; j < conn.vecpath.length - 1; j++){
@@ -237,6 +237,18 @@ public class RailRenderer {
                 bufferbuilder.pos(vec0.x, vec0.y + 0.1, vec0.z).color(0, 0, 1, 1F).endVertex();
                 bufferbuilder.pos(vec1.x, vec1.y + 0.1, vec1.z).color(0, 0, 1, 1F).endVertex();
                 tessellator.draw();
+			}
+			if(RailPlacingUtil.CL_CURRENT.points.size() > 2){
+				int size = RailPlacingUtil.CL_CURRENT.points.size();
+				float[] arr = null;
+				for(int i = 1; i < size - 1; i++){
+					arr = conn.getPosition((conn.length / (size - 1)) * i);
+					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector;
+	                bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+	                bufferbuilder.pos(arr[0], arr[1] + 0.05, arr[2]).color(0, 1, 1, 1F).endVertex();
+	                bufferbuilder.pos(vec1.x, vec1.y + 0.05, vec1.z).color(0, 1, 1, 1F).endVertex();
+	                tessellator.draw();
+				}
 			}
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();

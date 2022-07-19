@@ -5,8 +5,11 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -16,11 +19,11 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 public class RenderRailMarker extends Render<RailMarker> implements IRenderFactory<RailMarker> {
 
 	private ResourceLocation texture = new ResourceLocation("fvtm:textures/entity/railmarker.png");
-	private RailMarkerModel model = new RailMarkerModel();
+	public static final RGB CYAN = new RGB(0, 255, 255);
 	
     public RenderRailMarker(RenderManager renderManager){
         super(renderManager);
-        shadowSize = 0.125F;
+        shadowSize = 0.25F;
     }
 
     public void bindTexture(ResourceLocation rs){
@@ -34,14 +37,24 @@ public class RenderRailMarker extends Render<RailMarker> implements IRenderFacto
         GL11.glPushMatrix();
 	    TexUtil.bindTexture(texture);
 	    GL11.glRotatef(180, 0, 0, 1);
-	    model.marker.render();
+	    RailMarkerModel.INST.marker.render();
+	    NewTrack track = RailPlacingUtil.QUEUE.get(entity.queueid);
+	    if(track != null){
+	    	int index = track.indexOf(entity.position);
+	    	boolean arrow = index == track.selected || index == 0 || index == track.points.size() - 1;
+	    	if(arrow){
+				(index == 0 ? RGB.GREEN : index == track.selected ? CYAN : RGB.RED).glColorApply();
+				RailMarkerModel.INST.arrow.render();
+				RGB.glColorReset();
+	    	}
+	    }
 	    GL11.glPopMatrix();
-	    GL11.glTranslatef(0, 1.5f, 0);
-        EffectRenderer.drawString(getPosString(entity), 0.8f, 0xffffff, true, true, false);
+	    //GL11.glTranslatef(0, 1.5f, 0);
+        //EffectRenderer.drawString(getPosString(entity), 0.8f, 0xffffff, true, true, false);
         GL11.glPopMatrix();
     }
     
-    private String getPosString(RailMarker entity){
+    protected String getPosString(RailMarker entity){
 		return df.format(entity.posX) + ", " + df.format(entity.posY) + ", " + df.format(entity.posZ) + " / " + "";
 	}
 	

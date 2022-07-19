@@ -82,17 +82,34 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 			}
 			case "rail_place_util":{
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
-				if(packet.nbt.hasKey("new")){
-					RailPlacingUtil.CL_CURRENT = new NewTrack(new Vec316f(packet.nbt.getCompoundTag("vector")), Resources.RAILGAUGES.getValue(new ResourceLocation(packet.nbt.getString("gauge"))));
-					RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
-				}
-				else if(packet.nbt.hasKey("reset")){
-					RailPlacingUtil.CL_CURRENT = null;
-					RailPlacingUtil.QUEUE.remove(uuid);
-				}
-				else{
-					Vec316f vector = new Vec316f(packet.nbt.getCompoundTag("vector"));
-					RailPlacingUtil.CL_CURRENT.add(vector);
+				switch(packet.nbt.getString("subtask")){
+					case "new":{
+						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new Vec316f(packet.nbt.getCompoundTag("vector")), Resources.RAILGAUGES.getValue(new ResourceLocation(packet.nbt.getString("gauge"))));
+						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
+						break;
+					}
+					case "reset":{
+						if(RailPlacingUtil.CL_CURRENT.id.equals(uuid)) RailPlacingUtil.CL_CURRENT = null;
+						RailPlacingUtil.QUEUE.remove(uuid);
+						break;
+					}
+					case "add":{
+						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+						if(track == null) return;
+						track.add(new Vec316f(packet.nbt.getCompoundTag("vector")));
+						break;
+					}
+					case "remove":{
+						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+						if(track == null) return;
+						track.remove(player, new Vec316f(packet.nbt.getCompoundTag("vector")));
+						break;
+					}
+					case "selected":{
+						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+						if(track == null) return;
+						track.selected = packet.nbt.getInteger("selected");
+					}
 				}
 			}
 			default: return;

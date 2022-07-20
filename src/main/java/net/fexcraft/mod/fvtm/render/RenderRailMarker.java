@@ -23,7 +23,7 @@ public class RenderRailMarker extends Render<RailMarker> implements IRenderFacto
 	
     public RenderRailMarker(RenderManager renderManager){
         super(renderManager);
-        shadowSize = 0.25F;
+        shadowSize = 0.125f;
     }
 
     public void bindTexture(ResourceLocation rs){

@@ -24,7 +24,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayer player = (EntityPlayer)objs[0];
-		RailSystem system = SystemManager.get(Systems.RAIL, player.world, RailSystem.class);
+		RailSystem system = SystemManager.get(Systems.RAIL, player.world);
 		try{
 			switch(task){
 				case "update_region":{

@@ -22,7 +22,7 @@ public class Section {
 	
 	public Section(RailSystem data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
-		Print.debug("Created Section [" + sid + "] " + (sid == null));
+		Print.log("Created Section [" + sid + "] " + (sid == null));
 	}
 	
 	public Section fill(TrackUnit... tracks){
@@ -44,7 +44,7 @@ public class Section {
 	}
 
 	public void fuseAtTrack(Track zero){
-		Print.debug("Fusing sections at track: " + zero);
+		Print.log("Fusing sections at track: " + zero);
 		Section old = null;
 		ArrayList<TrackUnit> list = new ArrayList<>();
 		list.add(zero.unit);
@@ -56,10 +56,10 @@ public class Section {
 				old = unit.section();
 				old.units.remove(unit);
 				unit.setSection(this);
-				Print.debug("Added into section '" + uid + "': " + unit);
+				Print.log("Added into section '" + uid + "': " + unit);
 				if(old.units.size() == 0){
 					data.getSections().remove(old.getUID());
-					Print.debug("Removing section '" + old.getUID() + "'!");
+					Print.log("Removing section '" + old.getUID() + "'!");
 				}
 			}
 		}
@@ -70,7 +70,7 @@ public class Section {
 
 	/** Called after a track was removed from a junction.*/
 	public void splitAtTrack(Track track){
-		Print.debug("Splitting section at track: " + track);
+		Print.log("Splitting section at track: " + track);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0 = explore(data.getJunction(track.start), list0);
 		list1 = explore(data.getJunction(track.end), list1);
@@ -85,12 +85,12 @@ public class Section {
 		}
 		this.units.removeAll(less);
 		section.units.addAll(less);
-		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
+		Print.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		//this.updateClientSections(track.junction, this, section);
 	}
 
 	public void splitAtSignal(Junction junction){
-		Print.debug("Splitting section at junction: " + junction);
+		Print.log("Splitting section at junction: " + junction);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0.add(junction.tracks.get(0).unit);
 		list1.add(junction.tracks.get(1).unit);
@@ -106,7 +106,7 @@ public class Section {
 		for(TrackUnit unit : less){ unit.setSection(section); }
 		this.units.removeAll(less);
 		section.units.addAll(less);
-		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
+		Print.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		//this.updateClientSections(junction, this, section);
 	}
 

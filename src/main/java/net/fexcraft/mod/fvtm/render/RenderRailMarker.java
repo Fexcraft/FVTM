@@ -43,7 +43,7 @@ public class RenderRailMarker extends Render<RailMarker> implements IRenderFacto
 	    	int index = track.indexOf(entity.position);
 	    	boolean arrow = index == track.selected || index == 0 || index == track.points.size() - 1;
 	    	if(arrow){
-				(index == 0 ? RGB.GREEN : index == track.selected ? CYAN : RGB.RED).glColorApply();
+				(index == track.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED).glColorApply();
 				RailMarkerModel.INST.arrow.render();
 				RGB.glColorReset();
 	    	}

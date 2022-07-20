@@ -299,6 +299,7 @@ public class Addon extends TypeCore<Addon> {
 			}
 		}
 		else{ //assume it's a jar.
+			String lastentryname = null;
 			try{
 				String path = "assets/" + registryname.getPath() + "/config/" + data.cfg_folder + "/";
 				ZipFile zip = new ZipFile(file);
@@ -308,6 +309,7 @@ public class Addon extends TypeCore<Addon> {
 					if(entry == null){
 						break;
 					}
+					lastentryname = entry.getName();
 					if(entry.getName().startsWith(path) && entry.getName().endsWith(data.suffix)){
 						JsonObject obj = JsonUtil.getObjectFromInputStream(zip.getInputStream(entry));
 						TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
@@ -319,7 +321,6 @@ public class Addon extends TypeCore<Addon> {
 						if(Static.side().isClient()){
 							checkIfHasCustomModel(data, core);
 						}
-						Print.log("Failed to load config from zip entry '" + entry.getName() + "'!"); Static.stop();
 					}
 				}
 				zip.close();
@@ -327,6 +328,7 @@ public class Addon extends TypeCore<Addon> {
 			}
 			catch(Throwable e){
 				e.printStackTrace();
+				if(lastentryname != null) Print.log("Failed to load config from zip entry '" + lastentryname + "'!"); Static.stop();
 			}
 		}
 	}

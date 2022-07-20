@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -120,13 +121,17 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
     
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
-    	if(world.isRemote) return true;
+    	if(world.isRemote || hand == EnumHand.OFF_HAND) return true;
     	UUID current = RailPlacingUtil.CURRENT.get(player.getGameProfile().getId());
     	if(current == null || queueid == null) return true;
         if(queueid.equals(current)){
         	NewTrack track = RailPlacingUtil.QUEUE.get(current);
         	if(track == null) return true;
-        	track.select(player, position);
+        	if(player.getHeldItemMainhand().getItem() instanceof RailGaugeItem){
+        		track.create(player, position);
+        	}
+        	else track.select(player, position);
+    		return true;
         }
         return true;
     }

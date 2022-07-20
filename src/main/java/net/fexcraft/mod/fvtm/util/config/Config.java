@@ -31,6 +31,7 @@ public class Config {
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, RENDER_BLOCK_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
     public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS, DISMOUNT_ON_LOGOUT;
     public static boolean LOAD_ALL_RESOURCEPACKS, LOAD_LITE_FROM_MODS, DISABLE_WIRES, RENDER_VEHICLES_SEPARATELY, DISABLE_PARTICLES;
+    public static boolean USE_RAIL_MARKERS;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
     public static int WIRE_SEGMENTATOR, MAX_WIRE_LENGTH;
@@ -131,6 +132,7 @@ public class Config {
             }
             MAX_RAIL_TRACK_LENGTH = config.getInt("rail_track_max_length", RAILSYS, 32, 1, 128, "Max vector (total) length of new placed (rail) Tracks.");
             DISABLE_RAILS = config.getBoolean("disable_rails", RAILSYS, false, "If FVTM rail system should be disabled.");
+            USE_RAIL_MARKERS = config.getBoolean("use_rail_markers", RAILSYS, true, "If Rail Marker Entities should be used for placing rails, set to false to use the old method.");
             
     	}
     	{//ROAD

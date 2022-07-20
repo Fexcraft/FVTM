@@ -27,7 +27,7 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
     public RailMarker(World world){
         super(world);
         stepHeight = 0;
-        setSize(0.125f, 1f);
+        setSize(0.24f, 1f);
     }
 
     public RailMarker(World world, UUID id){

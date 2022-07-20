@@ -6,10 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -90,7 +94,7 @@ public class RailPlacingUtil {
 		}
 
 		public void gentrack(){
-			track = new Track(null, points.toArray(new Vec316f[0]), gauge);
+			track = points.size() > 1 ? new Track(null, points.toArray(new Vec316f[0]), gauge) : null;
 		}
 
 		public void select(EntityPlayer player, Vec316f vector){
@@ -120,22 +124,17 @@ public class RailPlacingUtil {
 					break;
 				}
 			}
-			if(rem > -1){
-				if(rem <= selected) selected--;
-				if(selected < -1) selected = -1;
-				points.remove(rem);
-				gentrack();
-			}
+			if(rem < 0) return;
+			if(rem <= selected) selected--;
+			if(selected < -1) selected = -1;
+			points.remove(rem);
+			gentrack();
+			//
 			if(points.size() == 0){
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setString("target_listener", Resources.UTIL_LISTENER);
-				compound.setString("task", "rail_place_util");
-				compound.setString("subtask", "reset");
-				compound.setLong("uuid_l", id.getMostSignificantBits());
-				compound.setLong("uuid_m", id.getLeastSignificantBits());
-				PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+				reset();
 				return;
 			}
+			//
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("target_listener", Resources.UTIL_LISTENER);
 			compound.setString("task", "rail_place_util");
@@ -143,7 +142,20 @@ public class RailPlacingUtil {
 			compound.setString("subtask", "remove");
 			compound.setLong("uuid_l", id.getMostSignificantBits());
 			compound.setLong("uuid_m", id.getLeastSignificantBits());
+			compound.setTag("vector", vector.write());
 			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+		}
+		
+		public void reset(){
+			QUEUE.remove(id);
+			CURRENT.entrySet().removeIf(entry -> entry.getValue().equals(id));
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("task", "rail_place_util");
+			compound.setString("subtask", "reset");
+			compound.setLong("uuid_l", id.getMostSignificantBits());
+			compound.setLong("uuid_m", id.getLeastSignificantBits());
+			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
 		}
 
 		public int indexOf(Vec316f vector){
@@ -153,6 +165,77 @@ public class RailPlacingUtil {
 				}
 			}
 			return -2;
+		}
+
+		public void create(EntityPlayer player, Vec316f vector){
+			RailSystem sys = SystemManager.get(Systems.RAIL, player.world);
+			Junction junc = sys.getJunction(vector, true);
+			UUID current = CURRENT.get(player.getGameProfile().getId());
+			if(current == null){
+				Print.chat(player, "no_queue_entry / 0");
+				return;
+			}
+			NewTrack ntrack = QUEUE.get(current);
+			if(ntrack == null){
+				Print.chat(player, "no_queue_entry / 1");
+				return;
+			}
+			if(junc == null){
+				sys.addJunction(vector);
+				junc = sys.getJunction(vector, true);
+				if(ntrack.points.size() == 1 || ntrack.allsame()){
+					Print.chat(player, "&o> Junction Created.");
+					reset();
+					return;
+				}
+				else{
+					Print.chat(player, "&o> End Junction Created.");
+				}
+			}
+			if(!junc.tracks.isEmpty() && junc.tracks.size() < 2 && !junc.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
+				Print.chat(player, "&9Item/Track Gauge not compatible with the &7Junction's Gauge&9.");
+				return;
+			}
+			if(junc.signal != null){
+				Print.chat(player, "&9Please remove the signal first.");
+				return;
+			}
+			if(junc.tracks.size() >= 4){
+				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
+				ntrack.reset();
+				return;
+			}
+			else{
+				Track track = new Track(junc, ntrack.points.toArray(new Vec316f[0]), gauge);
+				if(track.length > Config.MAX_RAIL_TRACK_LENGTH){
+					Print.chat(player, "&cTrack length exceeds the configured max length.");
+					return;
+				}
+				track.blockless = Config.DISABLE_RAIL_BLOCKS;
+				Junction second = sys.getJunction(track.start);
+				if(second == null){
+					sys.addJunction(track.start);
+					second = sys.getJunction(track.start, true);
+					Print.chat(player, "&o> Start Junction Created.");
+				}
+				if(second != null){
+					if(!TrackPlacer.set(player, player, player.world, null, track).place().blocks(!track.blockless).consume().result()) return;
+					second.addnew(track);
+					junc.addnew(track.createOppositeCopy());
+					second.checkTrackSectionConsistency();
+					Print.chat(player, "&o> Track Created.");
+					ntrack.reset();
+				}
+				else Print.chat(player, "&cNo Junction at starting point found!");
+			}
+		}
+
+		private boolean allsame(){
+			Vec316f vec = points.get(0);
+			for(int i = 1; i < points.size(); i++){
+				if(!vec.equals(points.get(i))) return false;
+			}
+			return true;
 		}
 		
 	}

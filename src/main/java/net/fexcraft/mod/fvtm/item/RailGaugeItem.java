@@ -100,7 +100,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         }
         ItemStack stack = player.getHeldItem(hand);
         Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
-        if(Static.dev()){
+        if(Config.USE_RAIL_MARKERS){
         	RailPlacingUtil.place(world, player, stack, getType(), syscap, vector);
 			return EnumActionResult.SUCCESS;
         }

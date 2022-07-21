@@ -50,7 +50,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	
 	@Override
 	public BlockRenderLayer getRenderLayer(){
-		return type.isCutout() ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
+		return type.isCutout() ? BlockRenderLayer.CUTOUT : type.isTranslucent() ? BlockRenderLayer.TRANSLUCENT : BlockRenderLayer.SOLID;
 	}
 	
 	@Override

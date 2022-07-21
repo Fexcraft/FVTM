@@ -70,12 +70,23 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound compound){
-        //
+        if(compound.hasKey("uuid0")){
+        	queueid = new UUID(compound.getLong("uuid0"), compound.getLong("uuid1"));
+        }
+        if(compound.hasKey("position")){
+        	position = new Vec316f(compound.getCompoundTag("position"));
+        }
     }
 
 	@Override
     protected void writeEntityToNBT(NBTTagCompound compound){
-    	//
+    	if(queueid != null){
+    		compound.setLong("uuid0", queueid.getMostSignificantBits());
+    		compound.setLong("uuid1", queueid.getLeastSignificantBits());
+    	}
+    	if(position != null){
+    		compound.setTag("position", position.write());
+    	}
     }
     
 	@Override

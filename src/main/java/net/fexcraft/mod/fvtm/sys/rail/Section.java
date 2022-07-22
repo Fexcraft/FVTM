@@ -14,7 +14,7 @@ import net.fexcraft.lib.mc.utils.Print;
  */
 public class Section {
 	
-	private long uid;
+	private final long uid;
 	private RailSystem data;
 	private HashSet<TrackUnit> units = new HashSet<>();
 	public Long reserved;

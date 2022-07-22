@@ -104,7 +104,7 @@ public class Track extends Path {
 	
 	@Override
 	public String toString(){
-		return String.format("Track[%s-%s, %s, %s, %s, %s]", start, end, vecpath.length, unit == null ? "n/u" : unit.getSectionId(), copy ? "copy" : "original", items);
+		return String.format("Track[%s-%s, %s, %s, %s, %s]", start, end, vecpath.length, unit == null ? "n/u" : unit.getSectionId() + "/s", copy ? "copy" : "original", items);
 	}
 	
 	public TrackUnit getUnit(){

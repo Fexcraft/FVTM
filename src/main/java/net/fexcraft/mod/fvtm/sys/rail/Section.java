@@ -22,7 +22,7 @@ public class Section {
 	
 	public Section(RailSystem data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
-		Print.log("Created Section [" + sid + "] " + (sid == null));
+		Print.log("Created Section [" + (sid == null ? "new" : sid) + "]");
 	}
 	
 	public Section fill(TrackUnit... tracks){

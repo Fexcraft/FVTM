@@ -32,17 +32,32 @@ public class Track extends Path {
 	public int items;
 	
 	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
-		super(vec316fs, vector); this.junction = junction; this.gauge = gauge;
-		if(junction != null) unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
+		super(vec316fs, vector);
+		this.junction = junction;
+		this.gauge = gauge;
+		setunit();
 	}
-	
+
 	public Track(Junction junction, Vec316f[] vec316fs, RailGauge gauge){
-		super(vec316fs); this.junction = junction; this.gauge = gauge;
-		if(junction != null) unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
+		super(vec316fs);
+		this.junction = junction;
+		this.gauge = gauge;
+		setunit();
 	}
 	
-	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
-	public Track(Junction junk){ super(); this.junction = junk; }
+	private void setunit(){
+		if(junction == null) return;
+		Long id = null;
+		if(junction.size() == 0){
+			junction = junction.root.getJunction(end);
+			id = junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId();
+		}
+		else id = junction.tracks.get(0).unit.getSectionId();
+		unit = getUnit(id);
+	}
+	
+	/** Only for the READ process. @param junc just to make sure it's not used elsewhere */
+	public Track(Junction junc){ super(); this.junction = junc; }
 
 	@Override
 	public Track read(NBTTagCompound compound){

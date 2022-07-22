@@ -22,7 +22,7 @@ public class Section {
 	
 	public Section(RailSystem data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
-		Print.log("Created Section [" + (sid == null ? "new" : sid) + "]");
+		Print.log("Created Section [" + (sid == null ? "new/" + uid : sid) + "]");
 	}
 	
 	public Section fill(TrackUnit... tracks){
@@ -99,8 +99,7 @@ public class Section {
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
-		if(list0.size() > list1.size()){ less = list1; }
-		else{ less = list0; }
+		less = list0.size() > list1.size() ? list1 : list0;
 		if(less.isEmpty()) return;
 		Section section = data.getSection(null);
 		for(TrackUnit unit : less){ unit.setSection(section); }
@@ -116,7 +115,8 @@ public class Section {
 		//for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
 		if(!junction.hasSignal(null)) tracks.addAll(junction.tracks);
 		for(Track track : tracks){
-			if(list.contains(track.unit)) continue; list.add(track.unit);
+			if(list.contains(track.unit)) continue;
+			list.add(track.unit);
 			list = explore(data.getJunction(track.end), list);
 		}
 		return list;

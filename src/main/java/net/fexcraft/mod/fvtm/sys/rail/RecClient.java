@@ -88,7 +88,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 						com = (NBTTagCompound)base;
 						unit = system.getTrackUnits().get(com.getString("unit"));
 						if(unit != null){
-							unit.setSection(system.getSection(com.getLong("section")));
+							unit.setSection(system.getSection(com.getLong("section")), false);
 						}
 					}
 					Print.debug(list);
@@ -100,7 +100,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				}
 				case "update_unit_section":{
 					TrackUnit unit = system.getTrackUnits().get(packet.nbt.getString("unit"));
-					if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")));
+					if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")), false);
 					return;
 				}
 				default: Print.debug(packet.nbt); return;

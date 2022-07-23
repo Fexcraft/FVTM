@@ -61,9 +61,9 @@ public class TrackUnit {
 		return ((TrackUnit)o).uid.equals(uid);
 	}
 
-	public TrackUnit setSection(Section section){
+	public TrackUnit setSection(Section section, boolean update){
 		this.section = section;
-		this.updateClient();
+		if(update) updateClient();
 		return this;
 	}
 	

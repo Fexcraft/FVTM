@@ -55,7 +55,7 @@ public class Section {
 			if(unit.getSectionId() != uid){
 				old = unit.section();
 				old.units.remove(unit);
-				unit.setSection(this);
+				unit.setSection(this, true);
 				Print.log("Added into section '" + uid + "': " + unit);
 				if(old.units.size() == 0){
 					data.getSections().remove(old.getUID());
@@ -81,7 +81,7 @@ public class Section {
 		if(less.isEmpty()) return;//no connected tracks, needs no action either
 		Section section = data.getSection(null);//create new section
 		for(TrackUnit unit : less){
-			unit.setSection(section);//assign new section to the smaller list
+			unit.setSection(section, true);//assign new section to the smaller list
 		}
 		this.units.removeAll(less);
 		section.units.addAll(less);
@@ -102,7 +102,7 @@ public class Section {
 		less = list0.size() > list1.size() ? list1 : list0;
 		if(less.isEmpty()) return;
 		Section section = data.getSection(null);
-		for(TrackUnit unit : less){ unit.setSection(section); }
+		for(TrackUnit unit : less){ unit.setSection(section, true); }
 		this.units.removeAll(less);
 		section.units.addAll(less);
 		Print.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");

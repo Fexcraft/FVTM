@@ -5,13 +5,18 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 public class DecorationItem extends Item implements JunctionGridItem {
@@ -34,19 +39,18 @@ public class DecorationItem extends Item implements JunctionGridItem {
 		list.add(new TextComponent("Rightclick on a block to place a decoration."));
 	}
 
-	/*@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-		if(world.isRemote) return EnumActionResult.PASS;
-		ItemStack stack = player.getHeldItem(hand);
-		Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), 16);
-		Decoration decoen = new Decoration(world);
-		decoen.setPosition(vector.vector.x, vector.vector.y, vector.vector.z);
-		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
-		world.spawnEntity(decoen);
-		if(!player.capabilities.isCreativeMode) stack.shrink(1);
-    	player.openGui(FVTM.getInstance(), DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
-		return EnumActionResult.SUCCESS;
-	}*/
+	@Override
+	public InteractionResult useOn(UseOnContext context){
+		if(context.getLevel().isClientSide) return InteractionResult.PASS;
+		ItemStack stack = context.getItemInHand();
+		Vec316f vector = new Vec316f(context.getLevel(), context.getClickLocation(), 16);
+		Decoration decoen = new Decoration(FVTM.DECO_ENT.get(), context.getLevel());
+		decoen.setPos(vector.vector.x, vector.vector.y, vector.vector.z);
+		context.getLevel().addFreshEntity(decoen);
+		if(!context.getPlayer().isCreative()) stack.shrink(1);
+    	//player.openGui(FVTM.getInstance(), DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
+		return InteractionResult.SUCCESS;
+	}
 
 	@Override
 	public float[][] getGridColours(){

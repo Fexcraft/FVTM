@@ -54,6 +54,7 @@ public class SystemManager {
 	}
 
 	public static void onChunkUnload(World world, Chunk chunk){
+		if(world == null || chunk == null) return;
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
 			sys.onChunkUnload(chunk);
 		}

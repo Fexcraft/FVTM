@@ -54,8 +54,9 @@ public class SystemManager {
 	}
 
 	public static void onChunkUnload(World world, Chunk chunk){
-		if(world == null || chunk == null) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
+		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_DIM.get(world.provider.getDimension());
+		if(systems == null) return;
+		for(DetachedSystem sys : systems.values()){
 			sys.onChunkUnload(chunk);
 		}
 	}

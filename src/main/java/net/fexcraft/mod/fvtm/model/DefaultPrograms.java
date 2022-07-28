@@ -70,6 +70,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(FRONT_LIGHTS);
 		ModelGroup.PROGRAMS.add(BACK_LIGHTS);
 		ModelGroup.PROGRAMS.add(FOG_LIGHTS);
+		ModelGroup.PROGRAMS.add(BRAKE_LIGHTS);
 		ModelGroup.PROGRAMS.add(REVERSE_LIGHTS);
 		ModelGroup.PROGRAMS.add(TURN_SIGNAL_LEFT);
 		ModelGroup.PROGRAMS.add(TURN_SIGNAL_RIGHT);
@@ -122,15 +123,21 @@ public class DefaultPrograms {
 
 	@SuppressWarnings("deprecation")
 	public static final Program RGB_PRIMARY = new Program(){
+		@Override
 		public String getId(){ return "fvtm:rgb_primary"; }
+		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){ data.color.getPrimaryColor().glColorApply(); }
+		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
 	};
 
 	@SuppressWarnings("deprecation")
 	public static final Program RGB_SECONDARY = new Program(){
+		@Override
 		public String getId(){ return "fvtm:rgb_secondary"; }
+		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){ data.color.getSecondaryColor().glColorApply(); }
+		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
 	};
 	
@@ -209,90 +216,123 @@ public class DefaultPrograms {
 	}
 	
 	public static final Program INVISIBLE = new Program(){
+		@Override
 		public String getId(){ return "fvtm:hide"; }
+		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){ list.visible = false; }
+		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){ list.visible = true; }
 	}, HIDE = INVISIBLE;
 	
 	public static final Program ALWAYS_GLOW = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return true; }
+		@Override
 		public String getId(){ return "fvtm:glow"; }
 	}, GLOW = ALWAYS_GLOW;
 	
 	public static final Program LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState(); }
+		@Override
 		public String getId(){ return "fvtm:lights"; }
 	};
 	
 	public static final Program FRONT_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState(); }
+		@Override
 		public String getId(){ return "fvtm:front_lights"; }
 	};
 	
 	public static final Program BACK_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.entity != null && ((GenericVehicle)data.entity).isBraking()); }//TODO rear+brake lights instead
+		@Override
 		public String getId(){ return "fvtm:back_lights"; }
 	};
 	public static final Program REAR_LIGHTS = BACK_LIGHTS;
 	
 	public static final Program FOG_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getFogLightsState(); }
+		@Override
 		public String getId(){ return "fvtm:fog_lights"; }
 	};
 	public static final Program LONG_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLongLightsState(); }
+		@Override
 		public String getId(){ return "fvtm:long_lights"; }
 	};
 	
 	public static final Program REVERSE_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getThrottle() < -0.01; }
+		@Override
 		public String getId(){ return "fvtm:reverse_lights"; }
 	};
 	public static final Program BRAKE_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return (data.entity != null && ((GenericVehicle)data.entity).isBraking()); }
+		@Override
 		public String getId(){ return "fvtm:brake_lights"; }
 	};
 	
 	public static final Program LIGHTS_RAIL_FORWARD = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value(); }
+		@Override
 		public String getId(){ return "fvtm:lights_rail_forward"; }
 	};
 	
 	public static final Program LIGHTS_RAIL_BACKWARD = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value(); }
+		@Override
 		public String getId(){ return "fvtm:lights_rail_backward"; }
 	};
 	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()); }
+		@Override
 		public String getId(){ return "fvtm:turn_signal_left"; }
 	};
 	
 	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()); }
+		@Override
 		public String getId(){ return "fvtm:turn_signal_right"; }
 	};
 	
 	public static final Program WARNING_LIGHTS = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && data.vehicle.getWarningLights(); }
+		@Override
 		public String getId(){ return "fvtm:warning_lights"; }
 	};
 	
 	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;
 	
 	public static final Program BACK_LIGHTS_SIGNAL_LEFT = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
 			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
 			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
+		@Override
 		public String getId(){ return "fvtm:back_lights_signal_left"; }
 	};
 	
 	public static final Program BACK_LIGHTS_SIGNAL_RIGHT = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
 			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
 			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
+		@Override
 		public String getId(){ return "fvtm:back_lights_signal_right"; }
 	};
 	
@@ -302,17 +342,21 @@ public class DefaultPrograms {
 	//
 	
 	public static final Program BASIC_SIGNAL_CLEAR = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
 			return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() == 1;
 		}
+		@Override
 		public String getId(){ return "fvtm:basic_signal_clear"; }
 	};
 	public static final Program BASIC_SIGNAL_GREEN = BASIC_SIGNAL_CLEAR;
 	
 	public static final Program BASIC_SIGNAL_STOP = new AlwaysGlow(){
+		@Override
 		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
 			return data.tile == null || ((SignalTileEntity)data.tile).getSignalState() == 0;
 		}
+		@Override
 		public String getId(){ return "fvtm:basic_signal_stop"; }
 	};
 	public static final Program BASIC_SIGNAL_RED = BASIC_SIGNAL_STOP;
@@ -320,6 +364,7 @@ public class DefaultPrograms {
 	//
 	
 	public static final Program TRANSPARENT = new Transparent(63f, 63f){
+		@Override
 		public String getId(){ return "fvtm:transparent"; }
 	};
 	
@@ -373,6 +418,7 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
+		@Override
 		public String getId(){ return "fvtm:wheel_auto_all"; }
 		
 		@Override
@@ -396,6 +442,7 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
+		@Override
 		public String getId(){ return "fvtm:wheel_auto_all_opposite"; }
 		
 		@Override
@@ -419,6 +466,7 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
+		@Override
 		public String getId(){ return "fvtm:wheel_auto_steering"; }
 		
 		@Override
@@ -440,6 +488,7 @@ public class DefaultPrograms {
 		
 		private WheelSlot slot;
 		
+		@Override
 		public String getId(){ return "fvtm:wheel_auto_steering_opposite"; }
 		
 		@Override
@@ -459,6 +508,7 @@ public class DefaultPrograms {
 
 	public static final Program BOGIE_AXLE_WHEEL = new Program(){
 		
+		@Override
 		public String getId(){ return "fvtm:bogie_axle_wheel"; }
 		
 		@Override
@@ -475,6 +525,7 @@ public class DefaultPrograms {
 
 	public static final Program BOGIE_AUTO = new Program(){
 		
+		@Override
 		public String getId(){ return "fvtm:bogie_auto"; }
 		
 		@Override
@@ -491,6 +542,7 @@ public class DefaultPrograms {
 
 	public static final Program BOGIE_AUTO_OPPOSITE = new Program(){
 		
+		@Override
 		public String getId(){ return "fvtm:bogie_auto_opposite"; }
 		
 		@Override
@@ -507,6 +559,7 @@ public class DefaultPrograms {
 	
 	public static final Program BOGIE_FRONT = new Program(){
 		
+		@Override
 		public String getId(){ return "fvtm:bogie_front"; }
 		
 		@Override
@@ -523,6 +576,7 @@ public class DefaultPrograms {
 	
 	public static final Program BOGIE_REAR = new Program(){
 		
+		@Override
 		public String getId(){ return "fvtm:bogie_rear"; }
 		
 		@Override
@@ -816,6 +870,7 @@ public class DefaultPrograms {
 			this.attribute = attribute; this.ifis = ifis;
 		}
 
+		@Override
 		public String getId(){ return "fvtm:attribute_visible"; }
 		
 		@Override
@@ -939,6 +994,7 @@ public class DefaultPrograms {
 	}
 	
 	public static final Program NO_CULLFACE = new Program(){
+		@Override
 		public String getId(){ return "fvtm:no_cullface"; }
 		//
 		@Override
@@ -1187,6 +1243,7 @@ public class DefaultPrograms {
 	public static AlwaysGlow getCustomLights(String attr_id){
 		if(CUSTOM_LIGHTS.containsKey(attr_id)) return CUSTOM_LIGHTS.get(attr_id);
 		AlwaysGlow glow = new AlwaysGlow(){
+			@Override
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
 				return data.vehicle.getAttribute(attr_id).boolean_value();
 			}

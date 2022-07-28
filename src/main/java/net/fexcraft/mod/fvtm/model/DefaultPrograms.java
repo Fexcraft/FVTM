@@ -103,6 +103,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(BASIC_SIGNAL_STOP);
 		//
 		ModelGroup.PROGRAMS.add(new Scale(1f));
+		ModelGroup.PROGRAMS.add(new Scale3D(1f, 1f, 1f));
 		ModelGroup.PROGRAMS.add(TRANSPARENT);
 		ModelGroup.PROGRAMS.add(WINDOW);
 		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
@@ -1061,6 +1062,15 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			return new Scale3D(
+				args.length > 0 ? Float.parseFloat(args[0]) : 1,
+				args.length > 1 ? Float.parseFloat(args[1]) : 1,
+				args.length > 2 ? Float.parseFloat(args[2]) : 1);
 		}
 		
 	}

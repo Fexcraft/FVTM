@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -67,7 +68,7 @@ public class ObjModelLoader implements ModelLoader {
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ keys.get(0), keys.get(1), keys.get(2) }, null);
 		for(String auth : authors) confdata.creators().add(auth);
 		String md_name = ObjParser.getCommentValue(objdata, "Model Name:");
-		if(md_name != null) ((GenericModel)model).setName(md_name);
+		if(md_name != null) model.setName(md_name);
 		try{
 			String tex = ObjParser.getCommentValue(objdata, keys.get(3));
 			String tey = ObjParser.getCommentValue(objdata, keys.get(4));
@@ -160,6 +161,9 @@ public class ObjModelLoader implements ModelLoader {
 			objdata = new ObjParser((InputStream)stream[0]).readComments(true).readModel(false).parse();
 			INFO_CACHE.put(loc.toString(), objdata);
 			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
+			if(objdata.errors){
+				Print.log("Error while loading OBJ model '" + loc + "'!");
+			}
 		}
 		return objdata;
 	}

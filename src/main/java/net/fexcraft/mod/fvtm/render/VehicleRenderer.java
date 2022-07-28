@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -23,6 +25,7 @@ import net.minecraft.world.World;
 public class VehicleRenderer {
 	
 	private static MutableBlockPos pos =  new BlockPos.MutableBlockPos(0, 0, 0);
+	private static ArrayList<Entity> entities = new ArrayList<>();
 	
     public static void renderVehicles(World world, double cx, double cy, double cz, float ticks){
     	if(!Config.RENDER_VEHICLES_SEPARATELY) return;
@@ -30,7 +33,9 @@ public class VehicleRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-cx, -cy, -cz);
         double x, y, z;
-        for(Entity entity : world.loadedEntityList){
+        entities.clear();
+        entities.addAll(world.loadedEntityList);
+        for(Entity entity : entities){
         	if(entity instanceof GenericVehicle == false) continue;
         	GenericVehicle vehicle = (GenericVehicle)entity;
             x = vehicle.lastTickPosX + (vehicle.posX - vehicle.lastTickPosX) * ticks;

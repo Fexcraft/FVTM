@@ -952,7 +952,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
     	}
     	float force = 0;
-    	if(!overloaded && transmission != null){
+    	if(!overloaded && engine != null && transmission != null){
     		force = engine.getTorque(rpm) * transmission.getRatio(gear) * diff * transmission.getEfficiency() / wheel_radius;
         	if(transmission.isAutomatic() && autogear_timer <= 0){
         		int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);

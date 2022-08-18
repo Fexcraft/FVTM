@@ -3,12 +3,14 @@ package net.fexcraft.mod.fvtm.data.block;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -239,6 +241,11 @@ public abstract class CraftBlockScript implements BlockScript {
 			id = obj.get("id").getAsString();
 		}
 
+		public Recipe(String blkid, String rcpid){
+			targetmachine = blkid;
+			id = rcpid;
+		}
+
 		public void craft(CraftBlockScript script, MultiBlockData data){
 			for(Entry<String, Integer> cons : consume.entrySet()){
 				script.consume(cons.getKey(), cons.getValue(), false);
@@ -412,6 +419,11 @@ public abstract class CraftBlockScript implements BlockScript {
 			amount = obj.has("amount") ? obj.get("amount").getAsInt() : obj.has("count") ? obj.get("count").getAsInt() : 1;
 		}
 		
+		public InputWrapper(String inv, String data, InputType type){
+			inventory = inv;
+			//TODO
+		}
+
 		public boolean valid(ItemStack stack){
 			if(ingredient != null){
 				return ingredient.apply(stack);
@@ -459,6 +471,10 @@ public abstract class CraftBlockScript implements BlockScript {
 			overflow = obj.has("overflow") ? obj.get("overflow").getAsBoolean() : false;
 		}
 
+		public OutputWrapper(String inv, String data, boolean item){
+			inventory = inv;
+		}
+
 		public InventoryType getInventoryType(){
 			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
 		}
@@ -501,6 +517,127 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 			}
 		}
+	}
+
+	public static void parseRecipes(Addon addon, String filename, InputStream stream){
+		try{
+			Scanner scanner = new Scanner(stream);
+			String line = null, inv = null;
+			boolean override = false;
+			Recipe recipe = null;
+			int mode = 0;
+			//InputWrapper in = null;
+			OutputWrapper out = null;
+			while(scanner.hasNextLine()){
+				line = scanner.nextLine().trim();
+				if(line.equals("#override")) override = !override;
+				if(line.startsWith("#")){
+					if(recipe != null) finishParse(override, addon, recipe, filename);
+					String[] split = line.substring(1).split("@");
+					if(split.length < 2) continue;
+					String blkid = split[0].trim();
+					if(blkid.equals("fcl:bpt") || blkid.equals("fcl:blueprinttable")){
+						//TODO
+						continue;
+					}
+					String rcpid = split[1].trim();
+					if(!override && RECIPE_REGISTRY.containsKey(rcpid)){
+						Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), rcpid, filename));
+						continue;
+					}
+					recipe = new Recipe(blkid, rcpid);
+					out = null;
+					mode = 0;
+				}
+				if(recipe == null || line.startsWith("//")) continue;
+				if(line.startsWith("@in")){
+					mode = 1;
+					inv = line.substring(3).trim();
+					continue;
+				}
+				if(line.startsWith("@out")){
+					mode = 2;
+					inv = line.substring(3).trim();
+					out = null;
+					continue;
+				}
+				if(line.equals("overflow") && out != null){
+					out.overflow = true;
+					continue;
+				}
+				if(line.startsWith("time")){
+					recipe.crafttime = Integer.parseInt(line.substring(5));
+					continue;
+				}
+				if(line.startsWith("item")){
+					if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(4).trim(), InputType.ITEM));
+					else recipe.output.add(new OutputWrapper(inv, line.substring(4).trim(), true));
+					continue;
+				}
+				if(line.startsWith("fluid")){
+					if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(5).trim(), InputType.FLUID));
+					else recipe.output.add(new OutputWrapper(inv, line.substring(5).trim(), false));
+					continue;
+				}
+				if(line.startsWith("oredict") && mode == 1){
+					recipe.input.add(new InputWrapper(inv, line.substring(7).trim(), InputType.OREDICT));
+					continue;
+				}
+				if(line.startsWith("consume")){
+					String[] str = line.split(" ");
+					recipe.consume.put(str[1], Integer.parseInt(str[2]));
+					continue;
+				}
+			}
+			scanner.close();
+		}
+		catch(Exception e){
+			if(Static.dev()){
+				e.printStackTrace();
+				Static.stop();
+			}
+		}
+		/*for(JsonElement elm : array){
+			try{
+				JsonObject obj = elm.getAsJsonObject();
+				if(obj.get("block").getAsString().equals("fcl:bpt") || obj.get("block").getAsString().equals("fcl:blueprinttable")){
+					ItemStack output = fromJson(obj.get("output"));
+					JsonArray erray = obj.get("input").getAsJsonArray();
+					ItemStack[] stacks = new ItemStack[erray.size()];
+					for(int i = 0; i < stacks.length; i++){
+						stacks[i] = fromJson(erray.get(i));
+					}
+					RecipeRegistry.addBluePrintRecipe(obj.get("category").getAsString(), output, stacks);
+					//redirect recipe to FCL:BPT
+					continue;
+				}
+				Recipe recipe = new Recipe(obj);
+				if(!override && RECIPE_REGISTRY.containsKey(recipe.id)){
+					Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), recipe.id, filename));
+					continue;
+				}
+				RECIPE_REGISTRY.put(recipe.id, recipe);
+				if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
+				SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
+				Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
+			}
+			catch(Exception e){
+				if(Static.dev()){
+					e.printStackTrace();
+					Static.stop();
+				}
+			}
+		}*/
+	}
+
+	private static void finishParse(boolean override, Addon addon, Recipe recipe, String filename){
+		if(recipe.input.isEmpty() && recipe.consume.isEmpty()){
+			Print.debug("Recipe '" + recipe.id + "' for '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "' has no input/consumption, skipping!");
+		}
+		RECIPE_REGISTRY.put(recipe.id, recipe);
+		if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
+		SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
+		Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
 	}
 
 	private static final ItemStack fromJson(JsonElement elm) throws Exception {

@@ -555,15 +555,10 @@ public class Addon extends TypeCore<Addon> {
 			if(!folder.exists()){
 				folder.mkdirs();
 			}
-			ArrayList<File> candidates = findFiles(folder, ".json");
+			ArrayList<File> candidates = findFiles(folder, ".recipe");
 			for(File file : candidates){
 				try{
-					JsonObject obj = JsonUtil.get(file);
-					if(obj.entrySet().isEmpty()) continue;
-					boolean override = JsonUtil.getIfExists(obj, "OverrideExisting", false);
-					if(obj.has("Recipes")){
-						CraftBlockScript.parseRecipes(this, file.getName(), override, obj.get("Recipes").getAsJsonArray());
-					}
+					CraftBlockScript.parseRecipes(this, file.getName(), new FileInputStream(file));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -571,19 +566,24 @@ public class Addon extends TypeCore<Addon> {
 			}
 		}
 		else{ // assume it's a jar.
-			JsonArray array = ZipUtil.getJsonObjectsAt(file, "assets/" + registryname.getPath() + "/config/presets/", ".json");
-			for(JsonElement elm : array){
-				try{
-					JsonObject obj = elm.getAsJsonObject();
-					if(obj.entrySet().isEmpty()) continue;
-					boolean override = JsonUtil.getIfExists(obj, "OverrideExisting", false);
-					if(obj.has("Recipes")){
-						CraftBlockScript.parseRecipes(this, "ZIPENTRY", override, obj.get("Recipes").getAsJsonArray());
+			try{
+				String path = "assets/" + registryname.getPath() + "/config/presets/", ext = ".recipe";
+				ZipFile zip = new ZipFile(file);
+				ZipInputStream stream = new ZipInputStream(new FileInputStream(file));
+				while(true){
+					ZipEntry entry = stream.getNextEntry();
+					if(entry == null){
+						break;
+					}
+					if(entry.getName().startsWith(path) && entry.getName().endsWith(ext)){
+						CraftBlockScript.parseRecipes(this, "ZIPENTRY", zip.getInputStream(entry));
 					}
 				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
+				zip.close();
+				stream.close();
+			}
+			catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

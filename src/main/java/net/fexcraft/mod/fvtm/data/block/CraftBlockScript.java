@@ -381,6 +381,10 @@ public abstract class CraftBlockScript implements BlockScript {
 		public String oreid;
 		public int amount;
 		
+		public InputWrapper(String inv){
+			inventory = inv;
+		}
+		
 		public InputWrapper(String inv, String data, InputType type){
 			inventory = inv;
 			String[] arr = data.split(" ");
@@ -391,7 +395,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			}
 			if(amount < 1) amount = 1;
 			if(type == InputType.ITEM){
-				ingredient = toIngrArray(parseStack(arr, amount));
+				ingredient = Ingredient.fromStacks(parseStack(arr, amount));
 			}
 			else if(type == InputType.FLUID){
 				fluid = new FluidStack(FluidRegistry.getFluid(arr[0]), amount);
@@ -405,6 +409,10 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				else oreid = arr[0];
 			}
+		}
+		
+		protected void addIngredientItem(String data){
+			ingredient = toIngrArray(parseStack(data.split(" "), amount));
 		}
 
 		private Ingredient toIngrArray(ItemStack stack){
@@ -485,7 +493,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			boolean override = false, bpt = false;
 			Recipe recipe = null;
 			int mode = 0;
-			//InputWrapper in = null;
+			InputWrapper in = null;
 			OutputWrapper out = null;
 			ArrayList<ItemStack> bptin = new ArrayList<>();
 			ItemStack bptout = null;
@@ -514,6 +522,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					}
 					recipe = new Recipe(blkid, rcpid);
 					out = null;
+					in = null;
 					mode = 0;
 					bpt = false;
 				}
@@ -522,6 +531,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					mode = 1;
 					inv = line.substring(3).trim();
 					if(inv.length() == 0) inv = null;
+					in = null;
 					continue;
 				}
 				if(line.startsWith("@out")){
@@ -544,13 +554,16 @@ public abstract class CraftBlockScript implements BlockScript {
 						if(mode == 1) bptin.add(parseStack(line.substring(4).trim()));
 						else bptout = parseStack(line.substring(4).trim());
 					}
-					else if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(4).trim(), InputType.ITEM));
-					else recipe.output.add(new OutputWrapper(inv, line.substring(4).trim(), true));
+					else if(mode == 1) recipe.input.add(in = new InputWrapper(inv, line.substring(4).trim(), InputType.ITEM));
+					else recipe.output.add(out = new OutputWrapper(inv, line.substring(4).trim(), true));
 					continue;
+				}
+				if(line.startsWith("+item") && in != null && in.getInputType() == InputType.ITEM){
+					in.addIngredientItem(line.substring(5).trim());
 				}
 				if(line.startsWith("fluid")){
 					if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(5).trim(), InputType.FLUID));
-					else recipe.output.add(new OutputWrapper(inv, line.substring(5).trim(), false));
+					else recipe.output.add(out = new OutputWrapper(inv, line.substring(5).trim(), false));
 					continue;
 				}
 				if(line.startsWith("oredict") && mode == 1){

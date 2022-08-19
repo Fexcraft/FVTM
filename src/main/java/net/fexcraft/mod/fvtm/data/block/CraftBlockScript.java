@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
@@ -266,20 +267,25 @@ public abstract class CraftBlockScript implements BlockScript {
 			ArrayList<Integer> ints = new ArrayList<>();
 			for(OutputWrapper entry : output){
 				InventoryType local = entry.getInventoryType();
-				if(data.getType().getInventoryTypes().get(entry.inventory) != local){
+				String invid = entry.inventory == null ? getInvId(data, local) : entry.inventory;
+				if(invid == null){
+					fits = false;
+					break;
+				}
+				if(data.getType().getInventoryTypes().get(invid) != local){
 					fits = false;
 					break;
 				}
 				if(entry.overflow) continue;
 				if(local.isFluid()){
-					if(data.getFluidTank(entry.inventory).fill(entry.fluid, false) < entry.fluid.amount){
+					if(data.getFluidTank(invid).fill(entry.fluid, false) < entry.fluid.amount){
 						fits = false;
 						break;
 					}
 				}
 				else{
 					boolean found = false;
-					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
+					ItemStackHandler handler = data.getInventoryHandler(invid);
 					for(int i = 0; i < handler.getSlots(); i++){
 						if(ints.contains(i)) continue;
 						if(handler.insertItem(i, entry.stack, true).isEmpty()){
@@ -302,12 +308,13 @@ public abstract class CraftBlockScript implements BlockScript {
 			ints.clear();
 			for(InputWrapper entry : input){
 				InputType local = entry.getInputType();
-				if(data.getType().getInventoryTypes().get(entry.inventory) != local.toInventory()){
+				String invid = entry.inventory == null ? getInvId(data, local.toInventory()) : entry.inventory;
+				if(data.getType().getInventoryTypes().get(invid) != local.toInventory()){
 					passed = false;
 					break;
 				}
 				if(local.toInventory().isFluid()){
-					FluidStack drained = data.getFluidTank(entry.inventory).drain(entry.fluid, false);
+					FluidStack drained = data.getFluidTank(invid).drain(entry.fluid, false);
 					if(drained == null || drained.amount < entry.fluid.amount){
 						passed = false;
 						break;
@@ -315,7 +322,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				else{
 					boolean found = false;
-					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
+					ItemStackHandler handler = data.getInventoryHandler(invid);
 					for(int i = 0; i < handler.getSlots(); i++){
 						if(ints.contains(i)) continue;
 						ItemStack stack = handler.getStackInSlot(i);
@@ -339,6 +346,12 @@ public abstract class CraftBlockScript implements BlockScript {
 				if(!script.consume(cons.getKey(), cons.getValue(), true)) return false;
 			}
 			return true;
+		}
+
+		private String getInvId(MultiBlockData data, InventoryType type){
+			List<Entry<String, InventoryType>> coll = data.getType().getInventoryTypes().entrySet().stream().filter(entry -> entry.getValue() == type).collect(Collectors.toList());
+			if(coll.size() != 1) return null;
+			return coll.get(0).getKey();
 		}
 
 		public String id(){
@@ -468,32 +481,33 @@ public abstract class CraftBlockScript implements BlockScript {
 	public static void parseRecipes(Addon addon, String filename, InputStream stream){
 		try{
 			Scanner scanner = new Scanner(stream);
-			String line = null, inv = null;
+			String line = null, inv = null, bptcat = addon.getRegistryName().getPath() + ".recipes";
 			boolean override = false, bpt = false;
 			Recipe recipe = null;
 			int mode = 0;
 			//InputWrapper in = null;
 			OutputWrapper out = null;
 			ArrayList<ItemStack> bptin = new ArrayList<>();
-			ItemStack bptout = null;;
+			ItemStack bptout = null;
 			while(scanner.hasNextLine()){
 				line = scanner.nextLine().trim();
 				if(line.equals("#override")) override = !override;
 				if(line.startsWith("#")){
 					if(recipe != null){
-						if(bpt) RecipeRegistry.addBluePrintRecipe(inv, bptout, bptin.toArray(new ItemStack[0]));
+						if(bpt) RecipeRegistry.addBluePrintRecipe(bptcat, bptout, bptin.toArray(new ItemStack[0]));
 						else finishParse(override, addon, recipe, filename);
 					}
 					String[] split = line.substring(1).split("@");
 					if(split.length < 2) continue;
 					String blkid = split[0].trim();
+					String rcpid = split[1].trim();
 					if(blkid.equals("fcl:bpt") || blkid.equals("fcl:blueprinttable")){
 						bptin.clear();
 						bptout = null;
 						bpt = true;
+						bptcat = rcpid;
 						continue;
 					}
-					String rcpid = split[1].trim();
 					if(!override && RECIPE_REGISTRY.containsKey(rcpid)){
 						Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), rcpid, filename));
 						continue;
@@ -507,11 +521,13 @@ public abstract class CraftBlockScript implements BlockScript {
 				if(line.startsWith("@in")){
 					mode = 1;
 					inv = line.substring(3).trim();
+					if(inv.length() == 0) inv = null;
 					continue;
 				}
 				if(line.startsWith("@out")){
 					mode = 2;
 					inv = line.substring(3).trim();
+					if(inv.length() == 0) inv = null;
 					out = null;
 					continue;
 				}
@@ -544,9 +560,6 @@ public abstract class CraftBlockScript implements BlockScript {
 					String[] str = line.split(" ");
 					recipe.consume.put(str[1], Integer.parseInt(str[2]));
 					continue;
-				}
-				if(line.startsWith("category") && bpt){
-					inv = line.substring(8).trim();
 				}
 			}
 			scanner.close();

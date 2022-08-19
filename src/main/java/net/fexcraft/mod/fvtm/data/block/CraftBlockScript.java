@@ -517,7 +517,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					mode = 0;
 					bpt = false;
 				}
-				if(recipe == null || line.startsWith("//")) continue;
+				if((recipe == null && !bpt) || line.startsWith("//")) continue;
 				if(line.startsWith("@in")){
 					mode = 1;
 					inv = line.substring(3).trim();

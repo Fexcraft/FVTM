@@ -385,7 +385,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			inventory = inv;
 			String[] arr = data.split(" ");
 			if(arr[0].contains("*")){
-				String[] am = arr[0].split("*");
+				String[] am = arr[0].split("\\*");
 				arr[0] = am[0];
 				amount = Integer.parseInt(am[1]);
 			}
@@ -455,7 +455,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			int amount = 0;
 			String[] arr = data.split(" ");
 			if(arr[0].contains("*")){
-				String[] am = arr[0].split("*");
+				String[] am = arr[0].split("\\*");
 				arr[0] = am[0];
 				amount = Integer.parseInt(am[1]);
 			}
@@ -591,7 +591,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		int amount = 0;
 		String[] arr = data.split(" ");
 		if(arr[0].contains("*")){
-			String[] am = arr[0].split("*");
+			String[] am = arr[0].split("\\*");
 			arr[0] = am[0];
 			amount = Integer.parseInt(am[1]);
 		}

@@ -526,7 +526,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				if(line.startsWith("@out")){
 					mode = 2;
-					inv = line.substring(3).trim();
+					inv = line.substring(4).trim();
 					if(inv.length() == 0) inv = null;
 					out = null;
 					continue;

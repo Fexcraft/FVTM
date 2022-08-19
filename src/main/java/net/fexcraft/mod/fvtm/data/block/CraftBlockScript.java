@@ -604,9 +604,6 @@ public abstract class CraftBlockScript implements BlockScript {
 		@Override
 		public void finish(Addon addon){
 			ITEMGROUPS.put(id, Ingredient.fromStacks(stacks.toArray(new ItemStack[0])));
-			Print.debug("added " + id);
-			Print.debug(stacks);
-			Static.stop();
 		}
 		
 	}

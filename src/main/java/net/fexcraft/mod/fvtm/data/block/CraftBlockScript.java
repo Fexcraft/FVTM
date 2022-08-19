@@ -12,10 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.utils.Print;
@@ -30,6 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -221,25 +218,6 @@ public abstract class CraftBlockScript implements BlockScript {
 		protected HashMap<String, Integer> consume = new HashMap<>();
 		protected String targetmachine, id;
 		protected int crafttime;
-		
-		public Recipe(JsonObject obj) throws Exception {
-			targetmachine = obj.get("block").getAsString();
-			JsonArray ingr = obj.get("input").getAsJsonArray();
-			for(JsonElement entry : ingr){
-				input.add(new InputWrapper(entry.getAsJsonObject()));
-			}
-			ingr = obj.get("output").getAsJsonArray();
-			for(JsonElement entry : ingr){
-				output.add(new OutputWrapper(entry.getAsJsonObject()));
-			}
-			if(obj.has("consume")){
-				obj.get("consume").getAsJsonObject().entrySet().forEach(entry -> {
-					consume.put(entry.getKey(), entry.getValue().getAsInt());
-				});
-			}
-			crafttime = obj.has("craft_time") ? obj.get("craft_time").getAsInt() : 0;
-			id = obj.get("id").getAsString();
-		}
 
 		public Recipe(String blkid, String rcpid){
 			targetmachine = blkid;
@@ -390,38 +368,40 @@ public abstract class CraftBlockScript implements BlockScript {
 		public String oreid;
 		public int amount;
 		
-		public InputWrapper(JsonObject obj) throws Exception {
-			inventory = obj.get("inventory").getAsString();
-			if(obj.has("fluid")){
-				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
-			}
-			else if(obj.has("item")){
-				ingredient = Ingredient.fromStacks(fromJson(obj.get("item")));
-			}
-			else if(obj.has("items")){
-				JsonArray array = obj.get("items").getAsJsonArray();
-				ItemStack[] stacks = new ItemStack[array.size()];
-				for(int i = 0; i < stacks.length; i++){
-					stacks[i] = fromJson(array.get(i));
-				}
-				ingredient = Ingredient.fromStacks(stacks);
-			}
-			else if(obj.has("oredict")){
-				String id = obj.get("oredict").getAsString();
-				if(!oredict.containsKey(id)){
-					oredict.put(id, OreDictionary.getOres(id, true));
-				}
-				if(oredict.get(id).size() < 1){
-					throw new Exception("OreDict for '" + id + "' is empty!");
-				}
-				oreid = id;
-			}
-			amount = obj.has("amount") ? obj.get("amount").getAsInt() : obj.has("count") ? obj.get("count").getAsInt() : 1;
-		}
-		
 		public InputWrapper(String inv, String data, InputType type){
 			inventory = inv;
-			//TODO
+			String[] arr = data.split(" ");
+			if(arr[0].contains("*")){
+				String[] am = arr[0].split("*");
+				arr[0] = am[0];
+				amount = Integer.parseInt(am[1]);
+			}
+			if(amount < 1) amount = 1;
+			if(type == InputType.ITEM){
+				ingredient = toIngrArray(parseStack(arr, amount));
+			}
+			else if(type == InputType.FLUID){
+				fluid = new FluidStack(FluidRegistry.getFluid(arr[0]), amount);
+			}
+			else{//InputType.OREDICT
+				if(!oredict.containsKey(arr[0])){
+					oredict.put(arr[0], OreDictionary.getOres(arr[0], true));
+				}
+				if(oredict.get(arr[0]).size() < 1){
+					Print.log("OreDict for '" + arr[0] + "' is empty!");
+				}
+				else oreid = arr[0];
+			}
+		}
+
+		private Ingredient toIngrArray(ItemStack stack){
+			if(ingredient == null) return Ingredient.fromStacks(stack);
+			ItemStack[] stacks = new ItemStack[ingredient.getMatchingStacks().length + 1];
+			for(int i = 0; i < stacks.length - 1; i++){
+				stacks[i] = ingredient.getMatchingStacks()[i];
+			}
+			stacks[stacks.length - 1] = stack;
+			return Ingredient.fromStacks(stacks);
 		}
 
 		public boolean valid(ItemStack stack){
@@ -456,23 +436,23 @@ public abstract class CraftBlockScript implements BlockScript {
 		public FluidStack fluid;
 		public boolean overflow;
 		public String inventory;
-		
-		public OutputWrapper(JsonObject obj) throws Exception {
-			inventory = obj.get("inventory").getAsString();
-			if(obj.has("fluid")){
-				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
-			}
-			else if(obj.has("item")){
-				stack = fromJson(obj.get("item"));
-				if(obj.has("amount") || obj.has("count")){
-					stack.setCount(obj.get(obj.has("amount") ? "amount" : "count").getAsInt());
-				}
-			}
-			overflow = obj.has("overflow") ? obj.get("overflow").getAsBoolean() : false;
-		}
 
 		public OutputWrapper(String inv, String data, boolean item){
 			inventory = inv;
+			int amount = 0;
+			String[] arr = data.split(" ");
+			if(arr[0].contains("*")){
+				String[] am = arr[0].split("*");
+				arr[0] = am[0];
+				amount = Integer.parseInt(am[1]);
+			}
+			if(amount < 1) amount = 1;
+			if(item){
+				stack = parseStack(arr, amount);
+			}
+			else{
+				fluid = new FluidStack(FluidRegistry.getFluid(arr[0]), amount);
+			}
 		}
 
 		public InventoryType getInventoryType(){
@@ -485,59 +465,32 @@ public abstract class CraftBlockScript implements BlockScript {
 		
 	}
 
-	public static void parseRecipes(Addon addon, String filename, boolean override, JsonArray array){
-		for(JsonElement elm : array){
-			try{
-				JsonObject obj = elm.getAsJsonObject();
-				if(obj.get("block").getAsString().equals("fcl:bpt") || obj.get("block").getAsString().equals("fcl:blueprinttable")){
-					ItemStack output = fromJson(obj.get("output"));
-					JsonArray erray = obj.get("input").getAsJsonArray();
-					ItemStack[] stacks = new ItemStack[erray.size()];
-					for(int i = 0; i < stacks.length; i++){
-						stacks[i] = fromJson(erray.get(i));
-					}
-					RecipeRegistry.addBluePrintRecipe(obj.get("category").getAsString(), output, stacks);
-					//redirect recipe to FCL:BPT
-					continue;
-				}
-				Recipe recipe = new Recipe(obj);
-				if(!override && RECIPE_REGISTRY.containsKey(recipe.id)){
-					Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), recipe.id, filename));
-					continue;
-				}
-				RECIPE_REGISTRY.put(recipe.id, recipe);
-				if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
-				SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
-				Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
-			}
-			catch(Exception e){
-				if(Static.dev()){
-					e.printStackTrace();
-					Static.stop();
-				}
-			}
-		}
-	}
-
 	public static void parseRecipes(Addon addon, String filename, InputStream stream){
 		try{
 			Scanner scanner = new Scanner(stream);
 			String line = null, inv = null;
-			boolean override = false;
+			boolean override = false, bpt = false;
 			Recipe recipe = null;
 			int mode = 0;
 			//InputWrapper in = null;
 			OutputWrapper out = null;
+			ArrayList<ItemStack> bptin = new ArrayList<>();
+			ItemStack bptout = null;;
 			while(scanner.hasNextLine()){
 				line = scanner.nextLine().trim();
 				if(line.equals("#override")) override = !override;
 				if(line.startsWith("#")){
-					if(recipe != null) finishParse(override, addon, recipe, filename);
+					if(recipe != null){
+						if(bpt) RecipeRegistry.addBluePrintRecipe(inv, bptout, bptin.toArray(new ItemStack[0]));
+						else finishParse(override, addon, recipe, filename);
+					}
 					String[] split = line.substring(1).split("@");
 					if(split.length < 2) continue;
 					String blkid = split[0].trim();
 					if(blkid.equals("fcl:bpt") || blkid.equals("fcl:blueprinttable")){
-						//TODO
+						bptin.clear();
+						bptout = null;
+						bpt = true;
 						continue;
 					}
 					String rcpid = split[1].trim();
@@ -548,6 +501,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					recipe = new Recipe(blkid, rcpid);
 					out = null;
 					mode = 0;
+					bpt = false;
 				}
 				if(recipe == null || line.startsWith("//")) continue;
 				if(line.startsWith("@in")){
@@ -570,7 +524,10 @@ public abstract class CraftBlockScript implements BlockScript {
 					continue;
 				}
 				if(line.startsWith("item")){
-					if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(4).trim(), InputType.ITEM));
+					if(bpt){
+						
+					}
+					else if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(4).trim(), InputType.ITEM));
 					else recipe.output.add(new OutputWrapper(inv, line.substring(4).trim(), true));
 					continue;
 				}
@@ -588,6 +545,9 @@ public abstract class CraftBlockScript implements BlockScript {
 					recipe.consume.put(str[1], Integer.parseInt(str[2]));
 					continue;
 				}
+				if(line.startsWith("category") && bpt){
+					inv = line.substring(8).trim();
+				}
 			}
 			scanner.close();
 		}
@@ -597,37 +557,6 @@ public abstract class CraftBlockScript implements BlockScript {
 				Static.stop();
 			}
 		}
-		/*for(JsonElement elm : array){
-			try{
-				JsonObject obj = elm.getAsJsonObject();
-				if(obj.get("block").getAsString().equals("fcl:bpt") || obj.get("block").getAsString().equals("fcl:blueprinttable")){
-					ItemStack output = fromJson(obj.get("output"));
-					JsonArray erray = obj.get("input").getAsJsonArray();
-					ItemStack[] stacks = new ItemStack[erray.size()];
-					for(int i = 0; i < stacks.length; i++){
-						stacks[i] = fromJson(erray.get(i));
-					}
-					RecipeRegistry.addBluePrintRecipe(obj.get("category").getAsString(), output, stacks);
-					//redirect recipe to FCL:BPT
-					continue;
-				}
-				Recipe recipe = new Recipe(obj);
-				if(!override && RECIPE_REGISTRY.containsKey(recipe.id)){
-					Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), recipe.id, filename));
-					continue;
-				}
-				RECIPE_REGISTRY.put(recipe.id, recipe);
-				if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
-				SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
-				Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
-			}
-			catch(Exception e){
-				if(Static.dev()){
-					e.printStackTrace();
-					Static.stop();
-				}
-			}
-		}*/
 	}
 
 	private static void finishParse(boolean override, Addon addon, Recipe recipe, String filename){
@@ -640,22 +569,29 @@ public abstract class CraftBlockScript implements BlockScript {
 		Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
 	}
 
-	private static final ItemStack fromJson(JsonElement elm) throws Exception {
+	private static final ItemStack parseStack(String[] args, int count) {
 		ItemStack stack = null;
-		if(elm.isJsonPrimitive()){
-			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(elm.getAsString())));
+		if(args.length == 1){
+			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(args[0])), count);
 		}
 		else{
-			JsonObject obj = elm.getAsJsonObject();
-			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(obj.get("id").getAsString())));
-			stack.setCount(obj.has("count") ? obj.get("count").getAsInt() : 1);
-			stack.setItemDamage(obj.has("damage") ? obj.get("damage").getAsInt() : 0);
-			if(obj.has("tag")){
-				stack.setTagCompound(JsonToNBT.getTagFromJson(obj.get("tag").toString()));
+			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(args[0])), count);
+			boolean tag = args[1].startsWith("{");
+			if(!tag){
+				stack.setItemDamage(Integer.parseInt(args[1]));
+			}
+			if(tag || args.length > 2){
+				try{
+					stack.setTagCompound(JsonToNBT.getTagFromJson(args[tag ? 1 : 2]));
+				}
+				catch(NBTException e){
+					Print.log("Error while parsing tag for recipe ingredient.");
+					e.printStackTrace();
+				}
 			}
 		}
 		if(stack.isEmpty()){
-			throw new Exception("Item not found: " + elm.toString());
+			Print.log("Item for recipe not found: " + args[0]);
 		}
 		return stack;
 	}

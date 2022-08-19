@@ -493,7 +493,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				line = scanner.nextLine().trim();
 				if(line.equals("#override")) override = !override;
 				if(line.startsWith("#")){
-					if(recipe != null){
+					if(recipe != null || bptin.size() > 0){
 						if(bpt) RecipeRegistry.addBluePrintRecipe(bptcat, bptout, bptin.toArray(new ItemStack[0]));
 						else finishParse(override, addon, recipe, filename);
 					}
@@ -541,7 +541,8 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				if(line.startsWith("item")){
 					if(bpt){
-						
+						if(mode == 1) bptin.add(parseStack(line.substring(4).trim()));
+						else bptout = parseStack(line.substring(4).trim());
 					}
 					else if(mode == 1) recipe.input.add(new InputWrapper(inv, line.substring(4).trim(), InputType.ITEM));
 					else recipe.output.add(new OutputWrapper(inv, line.substring(4).trim(), true));
@@ -561,6 +562,10 @@ public abstract class CraftBlockScript implements BlockScript {
 					recipe.consume.put(str[1], Integer.parseInt(str[2]));
 					continue;
 				}
+			}
+			if(recipe != null || bptin.size() > 0){
+				if(bpt) RecipeRegistry.addBluePrintRecipe(bptcat, bptout, bptin.toArray(new ItemStack[0]));
+				else finishParse(override, addon, recipe, filename);
 			}
 			scanner.close();
 		}
@@ -582,7 +587,19 @@ public abstract class CraftBlockScript implements BlockScript {
 		Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
 	}
 
-	private static final ItemStack parseStack(String[] args, int count) {
+	private static final ItemStack parseStack(String data){
+		int amount = 0;
+		String[] arr = data.split(" ");
+		if(arr[0].contains("*")){
+			String[] am = arr[0].split("*");
+			arr[0] = am[0];
+			amount = Integer.parseInt(am[1]);
+		}
+		if(amount < 1) amount = 1;
+		return parseStack(arr, amount);
+	}
+
+	private static final ItemStack parseStack(String[] args, int count){
 		ItemStack stack = null;
 		if(args.length == 1){
 			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(args[0])), count);

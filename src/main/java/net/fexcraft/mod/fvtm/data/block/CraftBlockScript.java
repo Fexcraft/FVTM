@@ -566,19 +566,22 @@ public abstract class CraftBlockScript implements BlockScript {
 		public void read(String line){
 			if(line.startsWith(KEY_IN)){
 				in = true;
+				return;
 			}
 			if(line.startsWith(KEY_OUT)){
 				in = false;
+				return;
 			}
 			if(line.startsWith("item")){
 				if(in) stacks.add(parseStack(line.substring(4).trim()));
 				else out = parseStack(line.substring(4).trim());
+				return;
 			}
 		}
 
 		@Override
 		public void finish(Addon addon){
-			RecipeRegistry.addBluePrintRecipe(category.length() == 0 ? addon.getRegistryName().getPath() + ".recipes" : category , out, stacks.toArray(new ItemStack[0]));
+			RecipeRegistry.addBluePrintRecipe(category.length() == 0 ? addon.getRegistryName().getPath() + ".recipes" : category, out, stacks.toArray(new ItemStack[0]));
 		}
 		
 	}
@@ -624,14 +627,14 @@ public abstract class CraftBlockScript implements BlockScript {
 
 		@Override
 		public void read(String line){
-			if(line.startsWith("@in")){
+			if(line.startsWith(KEY_IN)){
 				input = true;
 				inv = line.substring(3).trim();
 				if(inv.length() == 0) inv = null;
 				in = null;
 				return;
 			}
-			if(line.startsWith("@out")){
+			if(line.startsWith(KEY_OUT)){
 				input = false;
 				inv = line.substring(4).trim();
 				if(inv.length() == 0) inv = null;

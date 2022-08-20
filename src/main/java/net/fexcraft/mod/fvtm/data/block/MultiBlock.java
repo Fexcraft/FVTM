@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,22 +76,73 @@ public class MultiBlock {
 			}
 		}
 		if(obj.has("Blocks")){
-			JsonArray blks = obj.get("Blocks").getAsJsonArray();
-			for(JsonElement entry : blks){
-				JsonArray values = entry.getAsJsonArray();
-				BlockPos pos = new BlockPos(values.get(1).getAsInt(), values.get(2).getAsInt(), values.get(3).getAsInt());
-				EnumFacing val = EnumFacing.NORTH;
-				if(values.size() > 4){
-					String value = values.get(4).getAsString();
-					if(NumberUtils.isCreatable(value)){
-						val = EnumFacing.byIndex(Integer.parseInt(value));
+			boolean pattern = obj.has("Pattern");
+			if(!pattern){
+				JsonArray blks = obj.get("Blocks").getAsJsonArray();
+				for(JsonElement entry : blks){
+					JsonArray values = entry.getAsJsonArray();
+					BlockPos pos = new BlockPos(values.get(1).getAsInt(), values.get(2).getAsInt(), values.get(3).getAsInt());
+					EnumFacing val = EnumFacing.NORTH;
+					if(values.size() > 4){
+						String value = values.get(4).getAsString();
+						if(NumberUtils.isCreatable(value)){
+							val = EnumFacing.byIndex(Integer.parseInt(value));
+						}
+						else{
+							val = EnumFacing.byName(value);
+						}
+					}
+					blocks.add(new SimpleEntry<>(new ResourceLocation(values.get(0).getAsString()), val));
+					blockpos.add(pos);
+				}
+			}
+			else{
+				ArrayList<Entry<Character, BlockPos>> list = new ArrayList<>();
+				JsonArray array = obj.get("Pattern").getAsJsonArray();
+				JsonArray core = obj.get("Core").getAsJsonArray();
+				int cx = core.get(0).getAsInt(), cy = core.get(1).getAsInt(), cz = core.get(2).getAsInt();
+				int x = 0;
+				for(JsonElement elm : array){
+					if(elm.isJsonArray()){
+						int y = 0;
+						for(JsonElement e : elm.getAsJsonArray()){
+							parsePatternArray(list, x, y, e.getAsString());
+							y++;
+						}
+					}
+					else parsePatternArray(list, 0, x, elm.getAsString());
+					x++;
+				}
+				HashMap<Character, ResourceLocation> blkmap = new HashMap<>();
+				HashMap<Character, EnumFacing> facemap = new HashMap<>();
+				JsonObject blks = obj.get("Blocks").getAsJsonObject();
+				for(Entry<String, JsonElement> elm : blks.entrySet()){
+					if(elm.getValue().isJsonArray()){
+						JsonArray arr = elm.getValue().getAsJsonArray();
+						blkmap.put(elm.getKey().charAt(0), new ResourceLocation(arr.get(0).getAsString()));
+						EnumFacing val = EnumFacing.NORTH;
+						String value = arr.get(1).getAsString();
+						if(NumberUtils.isCreatable(value)){
+							val = EnumFacing.byIndex(Integer.parseInt(value));
+						}
+						else{
+							val = EnumFacing.byName(value);
+						}
+						facemap.put(elm.getKey().charAt(0), val);
 					}
 					else{
-						val = EnumFacing.byName(value);
+						blkmap.put(elm.getKey().charAt(0), new ResourceLocation(elm.getValue().getAsString()));
+						facemap.put(elm.getKey().charAt(0), EnumFacing.NORTH);
 					}
 				}
-				blocks.add(new SimpleEntry<>(new ResourceLocation(values.get(0).getAsString()), val));
-				blockpos.add(pos);
+				for(Entry<Character, BlockPos> entry : list){
+					if(!blkmap.containsKey(entry.getKey())) continue;
+					BlockPos pos = entry.getValue().add(-cx, -cy, -cz);
+					blocks.add(new SimpleEntry<>(blkmap.get(entry.getKey()), facemap.get(entry.getKey())));
+					blockpos.add(pos);
+					//Print.debug(entry.getKey() + "/" + pos + "/" + blkmap.get(entry.getKey()));
+				}
+				//Static.stop();
 			}
 		}
 		if(obj.has("Trigger")){
@@ -126,6 +178,14 @@ public class MultiBlock {
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
 		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
+	}
+
+	private void parsePatternArray(ArrayList<Entry<Character, BlockPos>> list, int height, int row, String string){
+		char[] arr = string.toCharArray();
+		for(int c = 0; c < arr.length; c++){
+			if(arr[c] == ' ') continue;
+			list.add(new SimpleEntry<>(arr[c], new BlockPos(row, height, c)));
+		}
 	}
 
 	public ResourceLocation getRegName(){

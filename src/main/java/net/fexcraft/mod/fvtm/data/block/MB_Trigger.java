@@ -24,7 +24,7 @@ public class MB_Trigger {
 	
 	public MB_Trigger(JsonArray array, BlockPos core){
 		pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
-		if(core != null) pos = pos.add(-core.getX(), -core.getY(), -core.getZ());
+		if(core != null) pos = pos.add(-core.getZ(), -core.getY(), -core.getX());
 		script = array.get(3).getAsString().equals("script");
 		target = array.get(4).getAsString();
 		if(array.size() > 5){

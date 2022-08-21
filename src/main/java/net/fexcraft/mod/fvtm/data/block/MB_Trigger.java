@@ -1,10 +1,7 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -25,39 +22,20 @@ public class MB_Trigger {
 	private String target;
 	private boolean script;
 	
-	public MB_Trigger(JsonObject obj){
-		if(obj.has("block")){
-			JsonArray array = obj.get("block").getAsJsonArray();
-			pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
-		}
-		if(obj.has("hitbox")){
-			if(obj.get("hitbox").isJsonArray()){
-				JsonArray array = obj.get("hitbox").getAsJsonArray();
+	public MB_Trigger(JsonArray array, BlockPos core){
+		pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
+		if(core != null) pos = pos.add(-core.getX(), -core.getY(), -core.getZ());
+		script = array.get(3).getAsString().equals("script");
+		target = array.get(4).getAsString();
+		if(array.size() > 5){
+			if(array.get(5).isJsonArray()){
+				JsonArray arrbox = array.get(5).getAsJsonArray();
 				boundingbox = new AxisAlignedBB(
-					array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble(),
-					array.get(3).getAsDouble(), array.get(4).getAsDouble(), array.get(5).getAsDouble());
+					arrbox.get(0).getAsDouble(), arrbox.get(1).getAsDouble(), arrbox.get(2).getAsDouble(),
+					arrbox.get(3).getAsDouble(), arrbox.get(4).getAsDouble(), arrbox.get(5).getAsDouble());
 			}
 			else{
-				sidefrom = EnumFacing.byName(obj.get("hitbox").getAsString());
-			}
-		}
-		if(obj.has("target")){
-			target = obj.get("target").getAsString();
-		}
-		else{
-			Print.log("ERROR: Trigger has NO target! " + obj.toString());
-			Static.stop();
-		}
-		if(obj.has("type")){
-			switch(obj.get("type").getAsString()){
-				case "inventory": case "inv":{
-					script = false;
-					break;
-				}
-				case "script":{
-					script = true;
-					break;
-				}
+				sidefrom = EnumFacing.byName(array.get(5).getAsString());
 			}
 		}
 	}

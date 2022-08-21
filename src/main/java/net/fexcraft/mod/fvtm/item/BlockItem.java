@@ -17,7 +17,6 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
@@ -164,7 +163,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     }
 
 	@Override
-	public TypeCore<Block> getDataType(){
+	public Block getDataType(){
 		return type;
 	}
 

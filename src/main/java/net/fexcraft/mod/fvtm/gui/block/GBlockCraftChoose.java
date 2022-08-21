@@ -94,14 +94,14 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 		Recipe recipe = recipes[hovered];
 		for(InputWrapper wrapper : recipe.getInputs()){
 			String name = wrapper.fluid == null ? wrapper.oreid == null ? "I; " + wrapper.ingredient.getMatchingStacks()[0].getDisplayName() : "O; " + wrapper.oreid : wrapper.fluid.getLocalizedName();
-			hoverlines.add(Formatter.format("&4- %s&7x&c%s &7-> &c%s", wrapper.amount, name, wrapper.inventory));
+			hoverlines.add(Formatter.format("&4- %s&7x&c%s &7-> &c%s", wrapper.amount, name, CraftBlockScript.getInvId(container.tile.getMultiBlockData(), wrapper.getInputType().toInventory(), wrapper.inventory, "input")));
 		}
 		for(Entry<String, Integer> entry : recipe.getConsume().entrySet()){
 			hoverlines.add(Formatter.format("&b- &3%s &7-> &3%s", entry.getValue(), entry.getKey()));
 		}
 		for(OutputWrapper wrapper : recipe.getOutput()){
 			String name = wrapper.fluid == null ? wrapper.stack.getDisplayName() : wrapper.fluid.getLocalizedName();
-			hoverlines.add(Formatter.format("&a+ %s&7x&2%s &7-> &a%s", wrapper.amount(), name, wrapper.inventory));
+			hoverlines.add(Formatter.format("&a+ %s&7x&2%s &7-> &a%s", wrapper.amount(), name, CraftBlockScript.getInvId(container.tile.getMultiBlockData(), wrapper.getInventoryType(), wrapper.inventory, "output")));
 		}
 	}
 	

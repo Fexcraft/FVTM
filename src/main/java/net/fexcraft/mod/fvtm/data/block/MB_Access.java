@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -29,22 +26,11 @@ public class MB_Access {
 	private BlockPos pos;
 	private String target;
 	
-	public MB_Access(JsonObject obj){
-		if(obj.has("block")){
-			JsonArray array = obj.get("block").getAsJsonArray();
-			pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
-		}
-		else pos = new BlockPos(0, 0, 0);
-		if(obj.has("side")){
-			sidefrom = EnumFacing.byName(obj.get("side").getAsString());
-		}
-		if(obj.has("target")){
-			target = obj.get("target").getAsString();
-		}
-		else{
-			Print.log("ERROR: Trigger has NO target! " + obj.toString());
-			Static.stop();
-		}
+	public MB_Access(JsonArray array, BlockPos core){
+		pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
+		if(core != null) pos = pos.add(-core.getX(), -core.getY(), -core.getZ());
+		target = array.get(3).getAsString();
+		if(array.size() > 4) sidefrom = EnumFacing.byName(array.get(4).getAsString());
 	}
 	
 	public boolean isWholeBlock(){

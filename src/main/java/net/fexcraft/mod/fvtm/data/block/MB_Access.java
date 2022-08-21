@@ -28,7 +28,7 @@ public class MB_Access {
 	
 	public MB_Access(JsonArray array, BlockPos core){
 		pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
-		if(core != null) pos = pos.add(-core.getX(), -core.getY(), -core.getZ());
+		if(core != null) pos = pos.add(-core.getZ(), -core.getY(), -core.getX());
 		target = array.get(3).getAsString();
 		if(array.size() > 4) sidefrom = EnumFacing.byName(array.get(4).getAsString());
 	}

@@ -170,7 +170,7 @@ public class M_4ROT_TE extends BlockBase {
 			//Print.debug("Block at " + pos + "is NOT a MultiBlock! " + core);
 			return;
 		}
-		ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), corepos, core.getValue(FACING));
+		ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), corepos, core.getValue(FACING).getOpposite());
 		positions.forEach(blkpos -> {
 			IBlockState posstate = world.getBlockState(blkpos);
 			if(posstate.getBlock() instanceof M_4ROT_TE || posstate.getBlock() instanceof M_4ROT){

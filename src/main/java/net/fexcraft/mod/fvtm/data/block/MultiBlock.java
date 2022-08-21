@@ -75,6 +75,11 @@ public class MultiBlock {
 				if(data != null) inventorydata.put(entry.getKey(), data);
 			}
 		}
+		BlockPos core = null;
+		if(obj.has("Core")){
+			JsonArray corearr = obj.get("Core").getAsJsonArray();
+			core = new BlockPos(corearr.get(0).getAsInt(), corearr.get(1).getAsInt(), corearr.get(2).getAsInt());
+		}
 		if(obj.has("Blocks")){
 			boolean pattern = obj.has("Pattern");
 			if(!pattern){
@@ -99,8 +104,6 @@ public class MultiBlock {
 			else{
 				ArrayList<Entry<Character, BlockPos>> list = new ArrayList<>();
 				JsonArray array = obj.get("Pattern").getAsJsonArray();
-				JsonArray core = obj.get("Core").getAsJsonArray();
-				int cx = core.get(0).getAsInt(), cy = core.get(1).getAsInt(), cz = core.get(2).getAsInt();
 				int x = 0;
 				for(JsonElement elm : array){
 					if(elm.isJsonArray()){
@@ -137,7 +140,7 @@ public class MultiBlock {
 				}
 				for(Entry<Character, BlockPos> entry : list){
 					if(!blkmap.containsKey(entry.getKey())) continue;
-					BlockPos pos = entry.getValue().add(-cx, -cy, -cz);
+					BlockPos pos = entry.getValue().add(-core.getX(), -core.getY(), -core.getZ());
 					pos = new BlockPos(pos.getZ(), pos.getY(), pos.getX());
 					blocks.add(new SimpleEntry<>(blkmap.get(entry.getKey()), facemap.get(entry.getKey())));
 					blockpos.add(pos);
@@ -146,24 +149,16 @@ public class MultiBlock {
 				//Static.stop();
 			}
 		}
-		if(obj.has("Trigger")){
-			triggers.add(new MB_Trigger(obj.get("Trigger").getAsJsonObject()));
-		}
 		if(obj.has("Triggers")){
 			JsonArray array = obj.get("Triggers").getAsJsonArray();
 			for(JsonElement elm : array){
-				triggers.add(new MB_Trigger(elm.getAsJsonObject()));
+				triggers.add(new MB_Trigger(elm.getAsJsonArray(), core));
 			}
 		}
 		if(obj.has("Access")){
-			if(obj.get("Access").isJsonObject()){
-				access.add(new MB_Access(obj.get("Access").getAsJsonObject()));
-			}
-			else if(obj.get("Access").isJsonArray()){
-				JsonArray array = obj.get("Access").getAsJsonArray();
-				for(JsonElement elm : array){
-					access.add(new MB_Access(elm.getAsJsonObject()));
-				}
+			JsonArray array = obj.get("Access").getAsJsonArray();
+			for(JsonElement elm : array){
+				access.add(new MB_Access(elm.getAsJsonArray(), core));
 			}
 		}
 		if(obj.has("Script")){

@@ -350,16 +350,6 @@ public abstract class CraftBlockScript implements BlockScript {
 			return true;
 		}
 
-		private String getInvId(MultiBlockData data, InventoryType type, String invname, String fix){
-			if(data.getType().getInventoryTypes().containsKey(invname)) return invname;
-			ArrayList<String> coll = new ArrayList<>();
-			for(Entry<String, InventoryType> entry : data.getType().getInventoryTypes().entrySet()){
-				if(entry.getKey().equals(fix)) return entry.getKey();
-				if(entry.getValue() == type) coll.add(entry.getKey());
-			}
-			return coll.size() != 1 ? null : coll.get(0);
-		}
-
 		public String id(){
 			return id;
 		}
@@ -376,6 +366,16 @@ public abstract class CraftBlockScript implements BlockScript {
 			return consume;
 		}
 		
+	}
+
+	public static String getInvId(MultiBlockData data, InventoryType type, String invname, String fix){
+		if(data.getType().getInventoryTypes().containsKey(invname)) return invname;
+		ArrayList<String> coll = new ArrayList<>();
+		for(Entry<String, InventoryType> entry : data.getType().getInventoryTypes().entrySet()){
+			if(entry.getKey().equals(fix)) return entry.getKey();
+			if(entry.getValue() == type) coll.add(entry.getKey());
+		}
+		return coll.size() != 1 ? null : coll.get(0);
 	}
 	
 	public static class InputWrapper {

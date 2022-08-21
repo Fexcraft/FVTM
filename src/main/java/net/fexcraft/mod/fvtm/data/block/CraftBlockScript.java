@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
@@ -232,11 +231,12 @@ public abstract class CraftBlockScript implements BlockScript {
 			}
 			for(InputWrapper entry : input){
 				InputType local = entry.getInputType();
+				String inventory = getInvId(data, local.toInventory(), entry.inventory, "input");
 				if(local.toInventory().isFluid()){
-					data.getFluidTank(entry.inventory).drain(entry.fluid, true);
+					data.getFluidTank(inventory).drain(entry.fluid, true);
 				}
 				else{
-					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
+					ItemStackHandler handler = data.getInventoryHandler(inventory);
 					for(int i = 0; i < handler.getSlots(); i++){
 						ItemStack stack = handler.getStackInSlot(i);
 						if(entry.valid(stack) && stack.getCount() >= entry.amount){
@@ -248,11 +248,12 @@ public abstract class CraftBlockScript implements BlockScript {
 			}
 			for(OutputWrapper entry : output){
 				InventoryType local = entry.getInventoryType();
+				String inventory = getInvId(data, local, entry.inventory, "output");
 				if(local.isFluid()){
-					data.getFluidTank(entry.inventory).fill(entry.fluid, true);
+					data.getFluidTank(inventory).fill(entry.fluid, true);
 				}
 				else{
-					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
+					ItemStackHandler handler = data.getInventoryHandler(inventory);
 					ItemStack left = entry.stack.copy();
 					for(int i = 0; i < handler.getSlots(); i++){
 						left = handler.insertItem(i, left, false);
@@ -268,7 +269,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			ArrayList<Integer> ints = new ArrayList<>();
 			for(OutputWrapper entry : output){
 				InventoryType local = entry.getInventoryType();
-				String invid = entry.inventory == null ? getInvId(data, local) : entry.inventory;
+				String invid = getInvId(data, local, entry.inventory, "output");
 				if(invid == null){
 					fits = false;
 					break;
@@ -309,7 +310,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			ints.clear();
 			for(InputWrapper entry : input){
 				InputType local = entry.getInputType();
-				String invid = entry.inventory == null ? getInvId(data, local.toInventory()) : entry.inventory;
+				String invid = getInvId(data, local.toInventory(), entry.inventory, "input");
 				if(data.getType().getInventoryTypes().get(invid) != local.toInventory()){
 					passed = false;
 					break;
@@ -349,10 +350,14 @@ public abstract class CraftBlockScript implements BlockScript {
 			return true;
 		}
 
-		private String getInvId(MultiBlockData data, InventoryType type){
-			List<Entry<String, InventoryType>> coll = data.getType().getInventoryTypes().entrySet().stream().filter(entry -> entry.getValue() == type).collect(Collectors.toList());
-			if(coll.size() != 1) return null;
-			return coll.get(0).getKey();
+		private String getInvId(MultiBlockData data, InventoryType type, String invname, String fix){
+			if(data.getType().getInventoryTypes().containsKey(invname)) return invname;
+			ArrayList<String> coll = new ArrayList<>();
+			for(Entry<String, InventoryType> entry : data.getType().getInventoryTypes().entrySet()){
+				if(entry.getKey().equals(fix)) return entry.getKey();
+				if(entry.getValue() == type) coll.add(entry.getKey());
+			}
+			return coll.size() != 1 ? null : coll.get(0);
 		}
 
 		public String id(){

@@ -138,6 +138,7 @@ public class MultiBlock {
 				for(Entry<Character, BlockPos> entry : list){
 					if(!blkmap.containsKey(entry.getKey())) continue;
 					BlockPos pos = entry.getValue().add(-cx, -cy, -cz);
+					pos = new BlockPos(pos.getZ(), pos.getY(), pos.getX());
 					blocks.add(new SimpleEntry<>(blkmap.get(entry.getKey()), facemap.get(entry.getKey())));
 					blockpos.add(pos);
 					//Print.debug(entry.getKey() + "/" + pos + "/" + blkmap.get(entry.getKey()));

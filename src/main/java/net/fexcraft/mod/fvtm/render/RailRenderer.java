@@ -507,16 +507,20 @@ public class RailRenderer {
 	public static int getBrightness(Vec3f vec){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(vec.x), 0, MathHelper.floor(vec.z));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
-            mutblk.setY(MathHelper.floor(vec.y)); return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
-        } else { return 0; }
+            mutblk.setY(MathHelper.floor(vec.y));
+            return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
+        }
+        return 0;
 	}
 
 	//@Deprecated
 	public static int getBrightness(double x, double y, double z){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
-            mutblk.setY(MathHelper.floor(y)); return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
-        } else { return 0; }
+            mutblk.setY(MathHelper.floor(y));
+            return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
+        }
+        return 0;
 	}
 
 }

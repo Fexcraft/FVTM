@@ -148,10 +148,13 @@ public class SystemManager {
 	/** Called client side. */
 	public static void onWorldUnload(World world){
 		int dim = world.provider.getDimension();
-		for(Entry<Systems, DetachedSystem> sys : SYSTEMS_DIM.get(dim).entrySet()){
-			sys.getValue().stopTimer();
-			sys.getValue().unload();
-			SYSTEMS.get(sys.getKey()).remove(dim);
+		ConcurrentHashMap<Systems, DetachedSystem> map = SYSTEMS_DIM.get(dim);
+		if(map != null){
+			for(Entry<Systems, DetachedSystem> sys : map.entrySet()){
+				sys.getValue().stopTimer();
+				sys.getValue().unload();
+				SYSTEMS.get(sys.getKey()).remove(dim);
+			}
 		}
 		SYSTEMS_DIM.remove(dim);
 		LOADED_DIM.remove(dim);

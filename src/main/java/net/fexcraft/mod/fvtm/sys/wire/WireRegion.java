@@ -222,7 +222,7 @@ public class WireRegion {
 	}
 
 	public void updateClient(EntityPlayerMP player){
-		if(system.getWorld().isRemote) return;
+		if(system.getWorld().isRemote || player == null) return;
 		NBTTagCompound compound = this.write(true);
 		compound.setString("target_listener", "fvtm:wiresys");
 		compound.setString("task", "update_region");

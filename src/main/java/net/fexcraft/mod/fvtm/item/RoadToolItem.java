@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -14,6 +16,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.sys.road.PlacingUtils;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Compat;
@@ -89,12 +92,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
                 tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
         	}
-        	if(stack.getTagCompound().hasKey("LastRoad")){
-                tooltip.add(Formatter.format("&9< - - &7- &9- - >"));
-                NBTTagCompound com = stack.getTagCompound().getCompoundTag("LastRoad");
-                tooltip.add(Formatter.format("&9Last Road: &7" + com.getSize() + " blocks"));
-                tooltip.add(Formatter.format("&7Use &6/fvtm undo road &7to undo."));
-        	}
+            tooltip.add(Formatter.format("&7Use &6/fvtm undo road &7to undo last road."));
             tooltip.add(Formatter.format("&9< - - &7- &9- - >"));
             if(stack.getTagCompound().hasKey("fvtm:roadpoints")){
             	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints");
@@ -247,16 +245,16 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
 			if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 		}
-		NBTTagCompound compound = new NBTTagCompound();
+		JsonMap map = new JsonMap();
 		if(road != null){
-			roadFill(world, road, roadB, topheight, flnx, compound);
+			roadFill(world, road, roadB, topheight, flnx, map);
 		}
 		IBlockState block = null;
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
 				block = roadfillB.get(i);
 				flnx = Compat.isValidFlenix(block.getBlock());
-				roadFill(world, roadfill.get(i), block, topheight, flnx, compound);
+				roadFill(world, roadfill.get(i), block, topheight, flnx, map);
 			}
 		}
 		if(rooffill != null){
@@ -265,7 +263,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				for(Vec316f v : rooffill.get(i)){
 					state = world.getBlockState(blk = v.y != 0 ? v.pos.up() : v.pos);
 					if(state.getBlock() != block.getBlock()){
-						insert(compound, blk, state);
+						insert(map, blk, state);
 						world.setBlockState(blk, block);
 					}
 				}
@@ -277,7 +275,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				for(int i = -1/*1*/; i < borderheight_l + 1; i++){
 					//if(i == 1 && height > 8) continue;
 					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						insert(compound, blk.up(i), world.getBlockState(blk.up(i)));
+						insert(map, blk.up(i), world.getBlockState(blk.up(i)));
 						world.setBlockState(blk.up(i), left);
 					//}
 				}
@@ -289,7 +287,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				for(int i = -1/*1*/; i < borderheight_r + 1; i++){
 					//if(i == 1 && height > 8) continue;
 					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						insert(compound, blk.up(i), world.getBlockState(blk.up(i)));
+						insert(map, blk.up(i), world.getBlockState(blk.up(i)));
 						world.setBlockState(blk.up(i), righ);
 					//}
 				}
@@ -299,7 +297,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			for(Vec316f v : ground){
 				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
 				if(world.getBlockState(blk).getBlock() != Asphalt.INSTANCE){
-					insert(compound, blk, world.getBlockState(blk));
+					insert(map, blk, world.getBlockState(blk));
 					world.setBlockState(blk, bot);
 				}
 			}
@@ -308,27 +306,26 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			for(Vec316f v : roof){
 				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
 				//if(world.getBlockState(blk).isOpaqueCube()){
-					insert(compound, blk, world.getBlockState(blk));
+					insert(map, blk, world.getBlockState(blk));
 					world.setBlockState(blk, top);
 				//}
 			}
 		}
 		//
 		Print.chatbar(player, "&bRoad placed!");
-		stack.getTagCompound().setTag("LastRoad", compound);
+		PlacingUtils.addEntry(player, map);
 		stack.getTagCompound().setInteger("LastRoadDim", world.provider.getDimension());
 		stack.getTagCompound().removeTag("fvtm:roadpoints");
 		return EnumActionResult.SUCCESS;
 	
 	}
 	
-	private void insert(NBTTagCompound com, BlockPos pos, IBlockState state){
-		if(com.hasKey(pos.toLong() + "")) return;
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("pos", pos.toLong());
-		compound.setString("id", state.getBlock().getRegistryName().toString());
-		compound.setInteger("meta", state.getBlock().getMetaFromState(state));
-		com.setTag(pos.toLong() + "", compound);
+	private void insert(JsonMap map, BlockPos pos, IBlockState state){
+		if(map.has(pos.toLong() + "")) return;
+		JsonArray array = new JsonArray();
+		array.add(state.getBlock().getRegistryName().toString());
+		array.add(state.getBlock().getMetaFromState(state));
+		map.add(pos.toLong() + "", array);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -346,7 +343,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void roadFill(World world, ArrayList<Vec316f> fill, IBlockState block, int topheight, boolean flenix, NBTTagCompound compound){
+	private void roadFill(World world, ArrayList<Vec316f> fill, IBlockState block, int topheight, boolean flenix, JsonMap map){
 		int height = 0;
 		BlockPos blk;
 		boolean bool;
@@ -355,17 +352,17 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			IBlockState state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
 			if(!isRoad(state, block) || isLower(state, height)){
 				if(bool = isRoad(world.getBlockState(blk.up()))) height = 0;
-				insert(compound, blk, state);
+				insert(map, blk, state);
 				world.setBlockState(blk, block.getBlock().getStateFromMeta(Compat.getRoadHeight(bool ? 0 : height, flenix)));
 			}
 			if((height < 9 && height != 0) || isRoad(world.getBlockState(blk.down()))){
-				insert(compound, blk.down(), world.getBlockState(blk.down()));
+				insert(map, blk.down(), world.getBlockState(blk.down()));
 				world.setBlockState(blk.down(), block.getBlock().getStateFromMeta(Compat.getRoadHeight(0, flenix)));
 			}
 			int checkheight = topheight == 0 ? 4 : topheight;
 			for(int i = 1; i < checkheight; i++){
 				if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-					insert(compound, blk.up(1), world.getBlockState(blk.up(i)));
+					insert(map, blk.up(1), world.getBlockState(blk.up(i)));
 					world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
 				}
 			}

@@ -89,6 +89,7 @@ import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.SMPTBJavaModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.road.PlacingUtils;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -937,6 +938,7 @@ public class Resources {
 			cfgsync.setString("target_listener", Resources.UTIL_LISTENER);
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
 		}
+		if(!event.player.world.isRemote) PlacingUtils.onLogIn(event.player);
 		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = true;
 	}
@@ -945,6 +947,7 @@ public class Resources {
 	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
 		if(!event.player.world.isRemote){
 			RailPlacingUtil.CURRENT.remove(event.player.getGameProfile().getId());
+			PlacingUtils.onLogOut(event.player);
 		}
 		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof GenericVehicle){
 			event.player.dismountRidingEntity();

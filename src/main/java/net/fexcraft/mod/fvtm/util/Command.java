@@ -6,6 +6,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
@@ -22,6 +24,7 @@ import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.road.PlacingUtils;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -384,28 +387,26 @@ public class Command extends CommandBase {
             case "undo":{
             	EntityPlayer player = (EntityPlayer)sender;
             	if(args.length > 1 || args[1].equals("road") || player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
-            		ItemStack stack = player.getHeldItemMainhand();
-            		NBTTagCompound compound = stack.getTagCompound();
-            		if(compound == null || !compound.hasKey("LastRoad")){
+            		JsonMap map = PlacingUtils.getLastEntry(player);
+            		if(map == null || map.empty()){
                 		Print.chatbar(sender, "No last road data in item.");
             			return;
             		}
-            		if(compound.getInteger("LastRoadDim") != player.world.provider.getDimension()){
-                		Print.chatbar(sender, "Last road was placed in &6DIM" + compound.getInteger("LastRoadDim"));
+            		if(map.getInteger("dimension", player.dimension) != player.dimension){
+                		Print.chatbar(sender, "Last road was placed in &6DIM" + map.getInteger("dimension", -99999));
                 		Print.chatbar(sender, "You are currenctly in &6DIM" + player.world.provider.getDimension());
             			return;
             		}
+            		map.rem("dimension");
             		Print.chatbar(sender, "&oUndo-ing last placed road...");
-            		NBTTagCompound blocks = compound.getCompoundTag("LastRoad");
-            		for(String str : blocks.getKeySet()){
-            			NBTTagCompound com = blocks.getCompoundTag(str);
-            			BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
-            			Block block = Block.REGISTRY.getObject(new ResourceLocation(com.getString("id")));
-            			IBlockState state = block.getStateFromMeta(com.getInteger("meta"));
+            		for(String str : map.value.keySet()){
+            			JsonArray array = map.getArray(str);
+            			BlockPos pos = BlockPos.fromLong(Long.parseLong(str));
+            			Block block = Block.REGISTRY.getObject(new ResourceLocation(array.get(0).string_value()));
+            			IBlockState state = block.getStateFromMeta(array.get(1).integer_value());
             			player.world.setBlockState(pos, state);
             		}
-            		compound.removeTag("LastRoad");
-            		compound.removeTag("LastRoadDim");
+            		PlacingUtils.remLastEntry(player);
             		Print.chat(sender, "&7Last road undone.");
             	}
             	return;

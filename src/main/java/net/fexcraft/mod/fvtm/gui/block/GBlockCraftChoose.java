@@ -40,8 +40,8 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 		buttons.put("prev", new BasicButton("prev", guiLeft + 233, guiTop + 6, 233, 6, 8, 8, true));
 		buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 6, 242, 6, 8, 8, true));
 		for(int i = 0; i < 16; i++){
-			texts.put("t_" + i, new BasicText(guiLeft + 9, guiTop + 19 + (i * 14), 224, MapColor.SNOW.colorValue, "loading..."));
-			buttons.put("b_" + i, new BasicButton("b_" + i, guiLeft + 7, guiTop + 17 + (i * 14), 7, 17 + (i * 14), 228, 12, true));
+			texts.put("t_" + i, new BasicText(guiLeft + 9, guiTop + 19 + (i * 14), 238, MapColor.SNOW.colorValue, "loading...").autoscale());
+			buttons.put("b_" + i, new BasicButton("b_" + i, guiLeft + 7, guiTop + 17 + (i * 14), 7, 17 + (i * 14), 242, 12, true));
 		}
 		loadRecipes();
 	}

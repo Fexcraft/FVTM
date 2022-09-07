@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.Static;
@@ -29,7 +28,7 @@ import net.minecraft.world.chunk.Chunk;
  */
 public class WireRegion {
 	
-	private TreeMap<BlockPos, RelayHolder> holders = new TreeMap<>();
+	private ConcurrentHashMap<BlockPos, RelayHolder> holders = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess;
 	private int timer = 0;
@@ -259,7 +258,7 @@ public class WireRegion {
 		holders.remove(pos);
 	}
 	
-	public TreeMap<BlockPos, RelayHolder> getHolders(){
+	public ConcurrentHashMap<BlockPos, RelayHolder> getHolders(){
 		return holders;
 	}
 

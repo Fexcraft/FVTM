@@ -1,0 +1,128 @@
+package net.fexcraft.mod.fvtm.util.script;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.google.gson.JsonElement;
+
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.sys.script.ScrAction;
+import net.fexcraft.mod.fvtm.sys.script.Script;
+import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
+import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+
+public class FSVehicleScript extends VehicleScript {
+	
+	private Script script;
+	private String id;
+	private ResourceLocation resloc;
+	//
+	private ScrAction update, save, load, spawn, remove, keypress, attrtoggle, interact, onpacket;
+	private boolean hasUpdate, hasSave, hasLoad;
+	private boolean hasSpawn, hasRemove, hasKeyPress, hasAttrToggle, hasInteract, hasPacket;
+	private VehicleScriptContext context = new VehicleScriptContext();
+	
+	public FSVehicleScript(){}
+
+	public void set(JsonElement elm){
+		parseId(elm);
+	}
+	
+	private void parseId(JsonElement elm){
+		resloc = new ResourceLocation(elm.isJsonObject() ? elm.getAsJsonObject().get("script_location").getAsString() : elm.getAsString());
+		id = resloc.getNamespace() + (resloc.getPath().contains("/") ? resloc.getPath().substring(resloc.getPath().lastIndexOf("/")) : resloc.getPath());
+		if(id.endsWith(".script")) id = id.substring(0, id.length() - 7);
+	}
+
+	public VehicleScript init(JsonElement elm){
+		parseId(elm);
+		Object[] obj = Resources.getInputStream(resloc);
+		script = new Script((InputStream)obj[0], id);
+		if(obj.length > 1){
+			for(Closeable cl : (Closeable[])obj[1]){
+				try{ cl.close(); } catch(IOException e){ e.printStackTrace(); }
+			}
+		}
+		hasUpdate = (update = (ScrAction)script.blocks.get("update")) != null;
+		hasSave = (save = (ScrAction)script.blocks.get("save")) != null;
+		hasLoad = (load = (ScrAction)script.blocks.get("load")) != null;
+		hasSpawn = (spawn = (ScrAction)script.blocks.get("spawn")) != null;
+		hasRemove = (remove = (ScrAction)script.blocks.get("remove")) != null;
+		hasKeyPress = (keypress = (ScrAction)script.blocks.get("keypress")) != null;
+		hasAttrToggle = (attrtoggle = (ScrAction)script.blocks.get("attr_toggle")) != null;
+		hasInteract = (interact = (ScrAction)script.blocks.get("interact")) != null;
+		hasPacket = (onpacket = (ScrAction)script.blocks.get("data_packet")) != null;
+		Print.debug(script.print());
+		return this;
+	}
+
+	@Override
+	public String getId(){
+		return id;
+	}
+
+	@Override
+	public String getName(){
+		return "VehicleFS(" + id + ")";
+	}
+
+	@Override
+	public void onUpdate(Entity entity, VehicleData data){
+		if(!hasUpdate) return;
+		update.process(context.update(entity, data));
+	}
+
+	@Override
+	public VehicleScript read(VehicleData data, NBTTagCompound compound){
+		return this;
+	}
+
+	@Override
+	public NBTTagCompound write(VehicleData data, NBTTagCompound compound){
+		return null;
+	}
+
+	@Override
+	public void onSpawn(Entity entity, VehicleData data){
+		
+	}
+
+	@Override
+	public void onRemove(Entity entity, VehicleData data){
+		
+	}
+
+	@Override
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
+		return false;
+	}
+
+	@Override
+	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
+		
+	}
+
+	@Override
+	public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){
+		if(!hasInteract) return false;
+		return interact.process(context.update(entity, data)).bool_val();
+	}
+
+	@Override
+	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){
+		
+	}
+
+}

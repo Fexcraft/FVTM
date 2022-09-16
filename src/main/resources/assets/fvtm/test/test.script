@@ -1,0 +1,29 @@
+int counter = 0
+bln pressed = false
+str test = ""
+cnd testcond = pressed && counter > 10
+
+use attr test -> testing
+use cond gep:daytime -> daytime
+
+act update(obj context){
+    if(!pressed)
+    	return
+    ;;
+    if(counter < 60)
+    	counter += 1
+    ;;
+    else
+        counter = 0
+        pressed = !pressed
+    ;;
+    print(counter)
+}
+
+act interact(obj context){
+    print(pressed)
+    pressed = true
+    print(pressed)
+    print(!pressed)
+    return true
+}

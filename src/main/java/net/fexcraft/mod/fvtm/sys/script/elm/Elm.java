@@ -179,7 +179,7 @@ public abstract class Elm {
 				if(args == null) break;
 				for(Elm elm : args){
 					if(elm.type().reference()){
-						Elm e = block.getElm(elm.string_val());
+						Elm e = ((RefElm)elm).getElm(block);
 						Print.log(((RefElm)elm).negative() ? e.type().number() ? -elm.float_val() : !elm.bool_val() :  e.print_val());
 					}
 					else Print.log(elm.print_val());
@@ -194,6 +194,10 @@ public abstract class Elm {
 	/** If this element overrides existing element object rather than it's value. */
 	public boolean overrides(){
 		return false;
+	}
+
+	public static Elm asBool(boolean bool){
+		return bool ? TRUE : FALSE;
 	}
 
 }

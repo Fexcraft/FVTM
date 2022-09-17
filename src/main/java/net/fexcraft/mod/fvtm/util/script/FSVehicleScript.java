@@ -32,7 +32,7 @@ public class FSVehicleScript extends VehicleScript {
 	private ScrAction update, save, load, spawn, remove, keypress, attrtoggle, interact, onpacket;
 	private boolean hasUpdate, hasSave, hasLoad;
 	private boolean hasSpawn, hasRemove, hasKeyPress, hasAttrToggle, hasInteract, hasPacket;
-	private VehicleScriptContext context = new VehicleScriptContext();
+	private VehicleScriptContext context;
 	
 	public FSVehicleScript(){}
 
@@ -46,7 +46,7 @@ public class FSVehicleScript extends VehicleScript {
 		if(id.endsWith(".script")) id = id.substring(0, id.length() - 7);
 	}
 
-	public VehicleScript init(JsonElement elm){
+	public VehicleScript init(VehicleData data, JsonElement elm){
 		parseId(elm);
 		Object[] obj = Resources.getInputStream(resloc);
 		script = new Script((InputStream)obj[0], id);
@@ -64,6 +64,7 @@ public class FSVehicleScript extends VehicleScript {
 		hasAttrToggle = (attrtoggle = (ScrAction)script.blocks.get("attr_toggle")) != null;
 		hasInteract = (interact = (ScrAction)script.blocks.get("interact")) != null;
 		hasPacket = (onpacket = (ScrAction)script.blocks.get("data_packet")) != null;
+		context = new VehicleScriptContext(data);
 		Print.debug(script.print());
 		return this;
 	}
@@ -81,7 +82,7 @@ public class FSVehicleScript extends VehicleScript {
 	@Override
 	public void onUpdate(Entity entity, VehicleData data){
 		if(!hasUpdate) return;
-		update.process(context.update(entity, data));
+		update.process(context.update(entity));
 	}
 
 	@Override
@@ -96,33 +97,38 @@ public class FSVehicleScript extends VehicleScript {
 
 	@Override
 	public void onSpawn(Entity entity, VehicleData data){
-		
+		if(!hasSpawn) return;
+		spawn.process(context.update(entity));
 	}
 
 	@Override
 	public void onRemove(Entity entity, VehicleData data){
-		
+		if(!hasRemove) return;
+		remove.process(context.update(entity));
 	}
 
 	@Override
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		return false;
+		if(!hasKeyPress) return false;
+		return update.process(context.update(seat, player)).bool_val();
 	}
 
 	@Override
 	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
-		
+		if(!hasAttrToggle) return;
+		attrtoggle.process(context.update(entity, attr, oldvalue, player));
 	}
 
 	@Override
 	public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){
 		if(!hasInteract) return false;
-		return interact.process(context.update(entity, data)).bool_val();
+		return interact.process(context.update(entity)).bool_val();
 	}
 
 	@Override
 	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){
-		
+		if(!hasPacket) return;
+		onpacket.process(context.update(entity).update(compound, side));
 	}
 
 }

@@ -24,6 +24,5 @@ act interact(obj context){
     print(pressed)
     pressed = true
     print(pressed)
-    print(!pressed)
     return true
 }

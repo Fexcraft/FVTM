@@ -191,4 +191,9 @@ public abstract class Elm {
 		return NULL;
 	}
 
+	/** If this element overrides existing element object rather than it's value. */
+	public boolean overrides(){
+		return false;
+	}
+
 }

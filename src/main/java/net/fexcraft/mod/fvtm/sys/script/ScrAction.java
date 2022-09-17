@@ -36,7 +36,8 @@ public class ScrAction extends ScrBlock {
 		if(args != null){
 			for(int i = 0; i < args.length; i++){
 				if(i >= parameters.size()) break;
-				locals.get(parameters.get(i)).set(args[i]);
+				if(args[i].overrides()) locals.put(parameters.get(i), args[i]);
+				else locals.get(parameters.get(i)).set(args[i]);
 			}
 		}
 		return super.process().first;

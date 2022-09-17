@@ -88,6 +88,7 @@ public class VehicleScriptContext extends WrapperElm {
 		return attrs.get(id);
 	}
 
+	@Override
 	public Elm get(ScrBlock block, String target){
 		if(target.equals("attributes")){
 			return attrslist;
@@ -97,7 +98,7 @@ public class VehicleScriptContext extends WrapperElm {
 
 	@Override
 	public boolean overrides(){
-		return false;
+		return true;
 	}
 
 }

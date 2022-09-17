@@ -63,7 +63,7 @@ public class ListElm extends Elm {
 		//
 	}
 
-	public ArrayList<Elm> value() {
+	public ArrayList<Elm> value(){
 		return value;
 	}
 

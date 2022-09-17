@@ -1,6 +1,9 @@
 package net.fexcraft.mod.fvtm.sys.script.wrappers;
 
+import java.util.ArrayList;
+
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
 import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 
 public class AttrWrapper extends Elm {
@@ -54,6 +57,20 @@ public class AttrWrapper extends Elm {
 	@Override
 	public void set(boolean val){
 		attr.value(val);
+	}
+
+	@Override
+	public Elm get(ScrBlock block, String target){
+		//
+		return NULL;
+	}
+
+	public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
+		switch(act){
+			case "toggle": return asBool(attr.toggle_value());
+			default: break;
+		}
+		return NULL;
 	}
 
 }

@@ -18,6 +18,8 @@ act update(obj context){
         pressed = !pressed
     ;;
     print(counter)
+    print(context)
+    print(context.attributes)
 }
 
 act interact(obj context){

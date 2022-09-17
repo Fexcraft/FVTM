@@ -356,7 +356,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 								break;
 							}
 						}
-						if(!found) scripts.add(clazz.newInstance().init(part.getType().getVehicleScriptsData().get(i)));
+						if(!found) scripts.add(clazz.newInstance().init(this, part.getType().getVehicleScriptsData().get(i)));
 					}
 					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e){
 						e.printStackTrace();

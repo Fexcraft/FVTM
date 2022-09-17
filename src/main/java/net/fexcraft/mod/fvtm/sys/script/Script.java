@@ -15,12 +15,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.sys.script.elm.NullElm;
+import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
 
 /**
  * "FEX Script" Version 1.0
@@ -30,7 +32,7 @@ import net.fexcraft.mod.fvtm.sys.script.elm.NullElm;
  */
 public class Script extends ScrBlock {
 
-	public final HashMap<String, Elm> globals = new HashMap<>();
+	public static final ConcurrentHashMap<String, ConcurrentHashMap<String, Elm>> globals = new ConcurrentHashMap<>();
 	public final HashMap<String, String> attrmap = new HashMap<>();
 	public final HashMap<String, Conditional> conds = new HashMap<>();
 	public final HashMap<String, ScrBlock> blocks = new HashMap<>();
@@ -354,7 +356,10 @@ public class Script extends ScrBlock {
 			elm = Elm.parse(line, Elm.Type.COND);
 		}
 		if(elm != null){
-			if(global) globals.put(elm.first, elm.second);
+			if(global){
+				if(!globals.contains(id)) globals.put(id, new ConcurrentHashMap<>());
+				globals.get(id).put(elm.first, elm.second);
+			}
 			else block.locals.put(elm.first, elm.second);
 			return true;
 		}
@@ -366,16 +371,22 @@ public class Script extends ScrBlock {
 	}
 
 	public Elm getElm(String elm){
-		if(globals.containsKey(elm)) return globals.get(elm);
 		if(locals.containsKey(elm)) return locals.get(elm);
+		if(attrmap.containsKey(elm)){
+			VehicleScriptContext con = (VehicleScriptContext)locals.get("context");
+			return con.getAttribute(attrmap.get(elm));
+		}
+		if(globals.contains(id) && globals.get(id).containsKey(elm)) return globals.get(id).get(elm);
 		return NullElm.NULL;
 	}
 	
 	@Override
 	protected String preprint(String ret, String tab, String tab1, int depth){
 		//if(globals.size() > 0) ret += "\n";
-		for(HashMap.Entry<String, Elm> entry : globals.entrySet()){
-			ret += tab1 + "global " + entry.getValue().type() + " " + entry.getKey() + " = " + entry.getValue().print_val() + "\n";
+		if(globals.contains(id)){
+			for(HashMap.Entry<String, Elm> entry : globals.get(id).entrySet()){
+				ret += tab1 + "global " + entry.getValue().type() + " " + entry.getKey() + " = " + entry.getValue().print_val() + "\n";
+			}
 		}
 		//if(attrmap.size() > 0) ret += "\n";
 		for(Entry<String, String> entry : attrmap.entrySet()){

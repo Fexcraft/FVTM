@@ -84,7 +84,7 @@ public class RefElm extends Elm {
 
 	public Elm getElm(ScrBlock block){
 		if(expr != null) return expr.process(block, null, NULL);
-		return block.getElm(value);
+		return block.getElm(value, null);
 	}
 
 }

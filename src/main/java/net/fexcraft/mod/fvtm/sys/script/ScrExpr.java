@@ -64,16 +64,17 @@ public abstract class ScrExpr {
 
 		@Override
 		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			Elm elm = block.getElm(target);
+			Elm elm = block.getElm(target, null);
 			if(next == null) return elm;
-			ScrExpr next = this.next, last = next;
-			while(next instanceof Reference){
-				elm = elm.get(block, next.target);
-				if(elm == NULL) break;
-				last = next;
-				next = next.next instanceof Reference ? (Reference)next.next : null;
+			else if(next instanceof Reference){
+				ScrExpr nex = next;
+				while(nex instanceof Reference){
+					elm = elm.get(block, nex.target);
+					nex = nex.next;
+				}
+				return nex == null ? elm : nex.process(block, this, elm);
 			}
-			return last.process(block, this, elm);
+			else return next.process(block, this, elm);
 		}
 
 		public String print(){

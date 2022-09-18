@@ -63,9 +63,9 @@ public class ScrBlock {
 		this.condition = cond;
 	}
 
-	public Elm getElm(String elm){
+	public Elm getElm(String elm, ScrBlock sub){
 		if(locals.containsKey(elm)) return locals.get(elm);
-		return root == null ? NullElm.NULL : root.getElm(elm);
+		return root == null ? NullElm.NULL : root.getElm(elm, this);
 	}
 	
 	public String print(int depth){

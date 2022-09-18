@@ -10,6 +10,7 @@ import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_LEFT;
 import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_NONE;
 import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_RETURN;
 import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_RIGHT;
+import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.NULL;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
-import net.fexcraft.mod.fvtm.sys.script.elm.NullElm;
 import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
 
 /**
@@ -68,15 +68,15 @@ public class Script extends ScrBlock {
 					if(line.startsWith("attr ")){
 						line = line.substring(5);
 						int idx = line.indexOf("->");
-						String nick = line.substring(0, idx).trim();
-						String attr = line.substring(idx + 2).trim();
+						String attr = line.substring(0, idx).trim();
+						String nick = line.substring(idx + 2).trim();
 						attrmap.put(nick, attr);
 					}
 					else if(line.startsWith("cond ")){
 						line = line.substring(5);
 						int idx = line.indexOf("->");
-						String nick = line.substring(0, idx).trim();
-						String cond = line.substring(idx + 2).trim();
+						String cond = line.substring(0, idx).trim();
+						String nick = line.substring(idx + 2).trim();
 						Conditional condition = ConditionRegistry.get(cond);
 						if(condition != null) conds.put(nick, condition);
 					}
@@ -370,14 +370,15 @@ public class Script extends ScrBlock {
 		map.put(two.first, two.second);
 	}
 
-	public Elm getElm(String elm){
+	@Override
+	public Elm getElm(String elm, ScrBlock sub){
 		if(locals.containsKey(elm)) return locals.get(elm);
 		if(attrmap.containsKey(elm)){
-			VehicleScriptContext con = (VehicleScriptContext)locals.get("context");
-			return con.getAttribute(attrmap.get(elm));
+			VehicleScriptContext con = (VehicleScriptContext)sub.locals.get("context");
+			return con == null ? NULL : con.getAttribute(attrmap.get(elm));
 		}
 		if(globals.contains(id) && globals.get(id).containsKey(elm)) return globals.get(id).get(elm);
-		return NullElm.NULL;
+		return NULL;
 	}
 	
 	@Override
@@ -390,11 +391,11 @@ public class Script extends ScrBlock {
 		}
 		//if(attrmap.size() > 0) ret += "\n";
 		for(Entry<String, String> entry : attrmap.entrySet()){
-			ret += tab1 + "using attr " + entry.getKey() + " as " + entry.getValue() + "\n";
+			ret += tab1 + "using attr " + entry.getValue() + " as " + entry.getKey() + "\n";
 		}
 		//if(conds.size() > 0) ret += "\n";
 		for(Entry<String, Conditional> entry : conds.entrySet()){
-			ret += tab1 + "using cond '" + entry.getKey() + "'\n";
+			ret += tab1 + "using cond '" + entry.getValue() + "'\n";
 		}
 		return ret;
 	}

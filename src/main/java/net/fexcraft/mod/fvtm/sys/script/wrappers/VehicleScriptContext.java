@@ -19,7 +19,7 @@ public class VehicleScriptContext extends WrapperElm {
 	private HashMap<String, AttrWrapper> attrs = new HashMap<>();
 	private GenericVehicle entity;
 	private EntityPlayer player;
-	private VehicleData data;
+	protected VehicleData data;
 	//
 	private Seat seat;
 	private Attribute toggl;
@@ -32,7 +32,7 @@ public class VehicleScriptContext extends WrapperElm {
 	public VehicleScriptContext(VehicleData data){
 		this.data = data;
 		for(Attribute<?> attr : data.getAttributes().values()){
-			AttrWrapper wrap = new AttrWrapper(attr);
+			AttrWrapper wrap = new AttrWrapper(attr, this);
 			attrs.put(attr.id(), wrap);
 			attrslist.value().add(wrap);
 		}
@@ -82,7 +82,7 @@ public class VehicleScriptContext extends WrapperElm {
 		if(attrs.containsKey(id)) return attrs.get(id);
 		Attribute<?> attr = data.getAttribute(id);
 		if(attr == null) return NULL;
-		AttrWrapper wrap = new AttrWrapper(attr);
+		AttrWrapper wrap = new AttrWrapper(attr, this);
 		attrs.put(id, wrap);
 		attrslist.value().add(wrap);
 		return attrs.get(id);

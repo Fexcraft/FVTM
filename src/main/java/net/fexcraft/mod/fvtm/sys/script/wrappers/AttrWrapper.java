@@ -8,10 +8,12 @@ import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 
 public class AttrWrapper extends Elm {
 	
+	private VehicleScriptContext context;
 	private Attribute<?> attr;
 
-	public AttrWrapper(Attribute<?> attr){
+	public AttrWrapper(Attribute<?> attr, VehicleScriptContext context){
 		this.attr = attr;
+		this.context = context;
 	}
 
 	@Override
@@ -66,11 +68,15 @@ public class AttrWrapper extends Elm {
 	}
 
 	public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
+		Elm val = NULL;
 		switch(act){
-			case "toggle": return asBool(attr.toggle_value());
+			case "toggle":{
+				val = asBool(attr.toggle_value());
+				//
+			}
 			default: break;
 		}
-		return NULL;
+		return val;
 	}
 
 }

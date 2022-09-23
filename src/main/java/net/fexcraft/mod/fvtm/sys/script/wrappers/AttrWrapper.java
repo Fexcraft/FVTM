@@ -44,25 +44,32 @@ public class AttrWrapper extends Elm {
 
 	@Override
 	public void set(String val){
-		attr.value(val);
+		attr.value(attr.parseValue(val));
 		sync = true;
 	}
 
 	@Override
 	public void set(int val){
-		attr.value(val);
+		if(attr.valuetype().isString()) attr.value(val + "");
+		else if(attr.valuetype().isBoolean()) attr.value(val > 0);
+		else if(attr.valuetype().isFloat()) attr.value((float)val);
+		else attr.value(attr.parseValue(val + ""));
 		sync = true;
 	}
 
 	@Override
 	public void set(float val){
-		attr.value(val);
+		if(attr.valuetype().isString()) attr.value(val + "");
+		else if(attr.valuetype().isBoolean()) attr.value(val > 0);
+		else if(attr.valuetype().isInteger()) attr.value((int)val);
+		else attr.value(attr.parseValue(val + ""));
 		sync = true;
 	}
 
 	@Override
 	public void set(boolean val){
-		attr.value(val);
+		if(attr.valuetype().isString()) attr.value(val + "");
+		else attr.value(attr.parseValue(val ? "1" : "0"));
 		sync = true;
 	}
 
@@ -84,6 +91,9 @@ public class AttrWrapper extends Elm {
 				context.vehicle().sendAttributeUpdate(attr);
 				sync = false;
 				return TRUE;
+			}
+			case "value":{
+				return this;
 			}
 			default: break;
 		}

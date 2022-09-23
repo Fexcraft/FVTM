@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.sys.script.wrappers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -95,6 +94,9 @@ public class VehicleScriptContext extends WrapperElm {
 		if(target.equals("attributes")){
 			return attrslist;
 		}
+		if(target.equals("client")){
+			return entity.world.isRemote ? TRUE : FALSE;
+		}
 		return NULL;
 	}
 
@@ -113,7 +115,6 @@ public class VehicleScriptContext extends WrapperElm {
 			Elm val = NULL;
 			switch(act){
 				case "sync":{
-					Print.debug("running sync");
 					for(Elm elm : this.value()){
 						if(elm instanceof AttrWrapper == false) continue;
 						((AttrWrapper)elm).sync();

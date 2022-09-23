@@ -274,10 +274,10 @@ public abstract class ScrExpr {
 				}
 				case EQL:{
 					if(pelm.type().number()){
-						return pelm.float_val() != next.float_val() ? TRUE : FALSE;
+						return pelm.float_val() == next.float_val() ? TRUE : FALSE;
 					}
 					else if(pelm.type().bool()){
-						return pelm.bool_val() != next.bool_val() ? TRUE : FALSE;
+						return pelm.bool_val() == next.bool_val() ? TRUE : FALSE;
 					}
 					else return !pelm.equals(next) ? TRUE : FALSE;
 				}

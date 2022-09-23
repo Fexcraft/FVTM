@@ -5,11 +5,26 @@ use attr c12_door_fl -> frleftdoor
 use attr c12_door_fr -> frrighdoor
 use attr c12_door_rl -> releftdoor
 use attr c12_door_rr -> rerighdoor
+use attr speed -> speed
+use attr license_plate -> lp
 
 act update(obj context){
-    if(!pressed)
-    	return
-    ;;
+	flt val = 0
+	flt mod = 0
+	str string
+	val = speed * 2.5
+	mod = counter % 20
+	if(mod == 0)
+		lp = val + " km/h"
+		string = val + " km/h"
+		print(string)
+		lp = val;
+		print(lp)
+		lp.sync()
+	;;
+    //if(!pressed)
+    //	return
+    //;;
     counter += 1;
     
     //opening a door each full second

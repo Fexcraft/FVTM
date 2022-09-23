@@ -265,11 +265,11 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		packet.setInteger("entity", getEntityId());
 		if(attr.valuetype().isTristate()){
 			if(attr.tristate_value() == null){
-				packet.setBoolean("bool", false);
+				packet.setBoolean("value", false);
 				packet.setBoolean("reset", true);
 			}
 			else{
-				packet.setBoolean("bool", attr.boolean_value());
+				packet.setBoolean("value", attr.boolean_value());
 			}
 		}
 		else if(attr.valuetype().isFloat()){

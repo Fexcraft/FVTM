@@ -10,6 +10,7 @@ public class AttrWrapper extends Elm {
 	
 	private VehicleScriptContext context;
 	private Attribute<?> attr;
+	private boolean sync;
 
 	public AttrWrapper(Attribute<?> attr, VehicleScriptContext context){
 		this.attr = attr;
@@ -44,21 +45,25 @@ public class AttrWrapper extends Elm {
 	@Override
 	public void set(String val){
 		attr.value(val);
+		sync = true;
 	}
 
 	@Override
 	public void set(int val){
 		attr.value(val);
+		sync = true;
 	}
 
 	@Override
 	public void set(float val){
 		attr.value(val);
+		sync = true;
 	}
 
 	@Override
 	public void set(boolean val){
 		attr.value(val);
+		sync = true;
 	}
 
 	@Override
@@ -72,11 +77,18 @@ public class AttrWrapper extends Elm {
 		switch(act){
 			case "toggle":{
 				val = asBool(attr.toggle_value());
-				//
+				context.vehicle().sendAttributeUpdate(attr);
+				return val;
 			}
 			default: break;
 		}
 		return val;
+	}
+
+	public void sync(){
+		if(!sync) return;
+		context.vehicle().sendAttributeUpdate(attr);
+		sync = false;
 	}
 
 }

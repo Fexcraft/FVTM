@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm.sys.script.wrappers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -27,7 +29,7 @@ public class VehicleScriptContext extends WrapperElm {
 	private NBTTagCompound packet;
 	private Side side;
 	//
-	private ListElm attrslist = new ListElm();
+	private AttrList attrslist = new AttrList();
 
 	public VehicleScriptContext(VehicleData data){
 		this.data = data;
@@ -99,6 +101,30 @@ public class VehicleScriptContext extends WrapperElm {
 	@Override
 	public boolean overrides(){
 		return true;
+	}
+
+	public GenericVehicle vehicle(){
+		return entity;
+	}
+	
+	public static class AttrList extends ListElm {
+
+		public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
+			Elm val = NULL;
+			switch(act){
+				case "sync":{
+					Print.debug("running sync");
+					for(Elm elm : this.value()){
+						if(elm instanceof AttrWrapper == false) continue;
+						((AttrWrapper)elm).sync();
+					}
+					return TRUE;
+				}
+				default: break;
+			}
+			return val;
+		}
+		
 	}
 
 }

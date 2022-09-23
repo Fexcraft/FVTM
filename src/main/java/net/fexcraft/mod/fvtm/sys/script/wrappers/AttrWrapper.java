@@ -80,6 +80,11 @@ public class AttrWrapper extends Elm {
 				context.vehicle().sendAttributeUpdate(attr);
 				return val;
 			}
+			case "sync":{
+				context.vehicle().sendAttributeUpdate(attr);
+				sync = false;
+				return TRUE;
+			}
 			default: break;
 		}
 		return val;

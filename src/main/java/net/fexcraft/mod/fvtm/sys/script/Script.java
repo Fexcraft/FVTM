@@ -243,14 +243,6 @@ public class Script extends ScrBlock {
 				par.line = par.line.substring(2);
 				return ref.next(new ScrExpr.Compare(ScrOper.EQL));
 			}
-			if(par.line.startsWith(">")){
-				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Compare(ScrOper.GRT));
-			}
-			if(par.line.startsWith("<")){
-				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Compare(ScrOper.LES));
-			}
 			if(par.line.startsWith(">=")){
 				par.line = par.line.substring(2);
 				return ref.next(new ScrExpr.Compare(ScrOper.GRT_EQL));
@@ -258,6 +250,14 @@ public class Script extends ScrBlock {
 			if(par.line.startsWith("<=")){
 				par.line = par.line.substring(2);
 				return ref.next(new ScrExpr.Compare(ScrOper.LES_EQL));
+			}
+			if(par.line.startsWith(">")){
+				par.line = par.line.substring(1);
+				return ref.next(new ScrExpr.Compare(ScrOper.GRT));
+			}
+			if(par.line.startsWith("<")){
+				par.line = par.line.substring(1);
+				return ref.next(new ScrExpr.Compare(ScrOper.LES));
 			}
 			if(par.line.startsWith("!=")){
 				par.line = par.line.substring(2);

@@ -185,7 +185,7 @@ public class Script extends ScrBlock {
 			return new ScrExpr.Negate();
 		}
 		char[] arr = par.line.toCharArray();
-		int till0 = till(arr, 0, !left, true);
+		int till0 = till(arr, 0, !left);
 		if(till0 < 0) return null;
 		String tar = par.line.substring(0, till0).trim();
 		par.line = par.line.substring(till0).trim();
@@ -214,7 +214,7 @@ public class Script extends ScrBlock {
 		ScrExpr.Reference ref = new ScrExpr.Reference(tar);
 		if(par.current == EXT_LEFT){
 			if(par.line.startsWith("=")){
-				par.set( par.line.substring(1), EXT_RIGHT);
+				par.set(par.line.substring(1), EXT_RIGHT);
 				return ref.next(new ScrExpr.Set(null));
 			}
 			else if(par.line.startsWith("+=")){
@@ -275,33 +275,36 @@ public class Script extends ScrBlock {
 		else if(par.current == EXT_RIGHT){
 			if(par.line.startsWith("+")){
 				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Set(ScrOper.ADD));
+				return ref.next(new ScrExpr.Math(ScrOper.ADD));
 			}
 			else if(par.line.startsWith("-")){
 				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Set(ScrOper.SUB));
+				return ref.next(new ScrExpr.Math(ScrOper.SUB));
 			}
 			else if(par.line.startsWith("*")){
 				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Set(ScrOper.MUL));
+				return ref.next(new ScrExpr.Math(ScrOper.MUL));
 			}
 			else if(par.line.startsWith("/")){
 				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Set(ScrOper.DIV));
+				return ref.next(new ScrExpr.Math(ScrOper.DIV));
 			}
 			else if(par.line.startsWith("%")){
 				par.line = par.line.substring(1);
-				return ref.next(new ScrExpr.Set(ScrOper.MOD));
+				return ref.next(new ScrExpr.Math(ScrOper.MOD));
 			}
 		}
 		return null;
 	}
 
-	private static int till(char[] arr, int from, boolean dot, boolean po){
-		if(po){
+	private static int till(char[] arr, int from, boolean dot){
+		//if(po){
 			boolean ia = dot && arr[from] == '"';
 			for(int i = ia ? from + 1 : from; i < arr.length; i++){
-				if(ia && arr[i] == '"' && arr[i - 1] != '\\') return i;
+				if(ia){
+					if(arr[i] == '"' && arr[i - 1] != '\\') return i;
+					continue;
+				}
 				if(arr[i] == '_' || arr[i] == ' ') continue;
 				if(arr[i] >= 'a' && arr[i] <= 'z') continue;
 				if(arr[i] >= 'A' && arr[i] <= 'Z') continue;
@@ -310,7 +313,7 @@ public class Script extends ScrBlock {
 				return i;
 			}
 			return arr.length;
-		}
+		/*}
 		else{
 			for(int i = from; i < arr.length; i++){
 				if(arr[i] == '_') return i;
@@ -319,7 +322,7 @@ public class Script extends ScrBlock {
 				if(arr[i] >= '0' && arr[i] <= '9') return i;
 			}
 			return -1;
-		}
+		}*/
 	}
 
 	public static boolean isn(char c){

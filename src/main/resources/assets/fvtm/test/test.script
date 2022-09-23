@@ -10,30 +10,30 @@ act update(obj context){
     if(!pressed)
     	return
     ;;
-    if(counter < 80)
-    	counter += 1
-    ;;
-    else
+    counter += 1;
+    
+    //opening a door each full second
+    if(counter == 20){
+    	frleftdoor.toggle()
+    }
+    else if(counter == 40){
+    	frrighdoor.toggle()
+    }
+    else if(counter == 60){
+    	releftdoor.toggle()
+    }
+    else if(counter == 80){
+    	rerighdoor.toggle()
+    }
+    
+    if(counter >= 100)
         counter = 0
-        //pressed = !pressed
         frleftdoor = false
     	frrighdoor = false
     	releftdoor = false
     	rerighdoor = false
+    	context.attributes.sync()
     ;;
-    //opening a door each second
-    if(counter < 20){
-    	frleftdoor.toggle()
-    }
-    else if(counter < 40){
-    	frrighdoor.toggle()
-    }
-    else if(counter < 60){
-    	releftdoor.toggle()
-    }
-    else if(counter < 80){
-    	rerighdoor.toggle()
-    }
 }
 
 act interact(obj context){

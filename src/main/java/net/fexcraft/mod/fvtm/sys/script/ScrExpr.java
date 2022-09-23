@@ -184,35 +184,35 @@ public abstract class ScrExpr {
 			Elm nex = next.process(block, this, NULL);
 			switch(oper){
 				case SET:{
-					if(nex.type().decimal()) pelm.set(nex.float_val());
-					else if(nex.type().integer()) pelm.set(nex.integer_val());
-					else if(nex.type().bool()) pelm.set(nex.bool_val());
-					else if(nex.type().string()) pelm.set(nex.string_val());
+					if(pelm.type().decimal()) pelm.set(nex.float_val());
+					else if(pelm.type().integer()) pelm.set(nex.integer_val());
+					else if(pelm.type().bool()) pelm.set(nex.bool_val());
+					else if(pelm.type().string()) pelm.set(nex.string_val());
 					else pelm.set(nex);
 					break;
 				}
 				case ADD:{
-					if(nex.type().decimal()) pelm.set(pelm.float_val() + nex.float_val());
+					if(pelm.type().decimal()) pelm.set(pelm.float_val() + nex.float_val());
 					else pelm.set(pelm.integer_val() + nex.integer_val());
 					break;
 				}
 				case SUB:{
-					if(nex.type().decimal()) pelm.set(pelm.float_val() - nex.float_val());
+					if(pelm.type().decimal()) pelm.set(pelm.float_val() - nex.float_val());
 					else pelm.set(pelm.integer_val() - nex.integer_val());
 					break;
 				}
 				case DIV:{
-					if(nex.type().decimal()) pelm.set(pelm.float_val() / nex.float_val());
+					if(pelm.type().decimal()) pelm.set(pelm.float_val() / nex.float_val());
 					else pelm.set(pelm.integer_val() / nex.integer_val());
 					break;
 				}
 				case MUL:{
-					if(nex.type().decimal()) pelm.set(pelm.float_val() * nex.float_val());
+					if(pelm.type().decimal()) pelm.set(pelm.float_val() * nex.float_val());
 					else pelm.set(pelm.integer_val() * nex.integer_val());
 					break;
 				}
 				case MOD:{
-					if(nex.type().decimal()) pelm.set(pelm.float_val() % nex.float_val());
+					if(pelm.type().decimal()) pelm.set(pelm.float_val() % nex.float_val());
 					else pelm.set(pelm.integer_val() % nex.integer_val());
 					break;
 				}
@@ -232,13 +232,46 @@ public abstract class ScrExpr {
 		private ScrOper oper;
 
 		public Math(ScrOper oper){
-			this.oper = oper == null ? ScrOper.SET : oper;
+			this.oper = oper;
 		}
 
 		@Override
 		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			// TODO Auto-generated method stub
-			return pelm;
+			Elm nex = next.process(block, this, NULL);
+			if((pelm.type().string() || nex.type().string()) && oper == ScrOper.ADD){
+				return new StrElm(pelm.string_val() + nex.string_val());
+			}
+			boolean deci = pelm.type().decimal() || nex.type().decimal();
+			Elm res = pelm.type().integer() ? new IntElm(0) : new FltElm(0f);
+			switch(oper){
+				case ADD:{
+					if(deci) res.set(pelm.float_val() + nex.float_val());
+					else res.set(pelm.integer_val() + nex.integer_val());
+					break;
+				}
+				case SUB:{
+					if(deci) res.set(pelm.float_val() - nex.float_val());
+					else res.set(pelm.integer_val() - nex.integer_val());
+					break;
+				}
+				case DIV:{
+					if(deci) res.set(pelm.float_val() / nex.float_val());
+					else res.set(pelm.integer_val() / nex.integer_val());
+					break;
+				}
+				case MUL:{
+					if(deci) res.set(pelm.float_val() * nex.float_val());
+					else res.set(pelm.integer_val() * nex.integer_val());
+					break;
+				}
+				case MOD:{
+					if(deci) res.set(pelm.float_val() % nex.float_val());
+					else res.set(pelm.integer_val() % nex.integer_val());
+					break;
+				}
+				default: break;
+			}
+			return res;
 		}
 
 		public String print(){

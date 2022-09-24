@@ -5,6 +5,7 @@
  */
 package net.fexcraft.mod.fvtm.sys.script.elm;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
 import net.fexcraft.mod.fvtm.sys.script.ScrExpr;
 import net.fexcraft.mod.fvtm.sys.script.ScrExprType;
 import net.fexcraft.mod.fvtm.sys.script.Script;
@@ -40,6 +41,11 @@ public class CondElm extends Elm {
 	@Override
 	public boolean bool_val(){
 		return false;
+	}
+
+	@Override
+	public boolean bool_val(ScrBlock block, ScrExpr prev, Elm pelm){
+		return value.process(block, prev, pelm).bool_val();
 	}
 
 	@Override

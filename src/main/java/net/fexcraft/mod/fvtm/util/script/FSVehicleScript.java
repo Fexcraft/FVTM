@@ -64,7 +64,7 @@ public class FSVehicleScript extends VehicleScript {
 		hasAttrToggle = (attrtoggle = (ScrAction)script.blocks.get("attr_toggle")) != null;
 		hasInteract = (interact = (ScrAction)script.blocks.get("interact")) != null;
 		hasPacket = (onpacket = (ScrAction)script.blocks.get("data_packet")) != null;
-		context = new VehicleScriptContext(data);
+		context = new VehicleScriptContext(data, this);
 		Print.debug(script.print());
 		return this;
 	}
@@ -127,8 +127,15 @@ public class FSVehicleScript extends VehicleScript {
 
 	@Override
 	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){
+		if(side.isClient() && compound.hasKey("ScriptElm")){
+			context.onElmUpdate(compound);
+		}
 		if(!hasPacket) return;
 		onpacket.process(context.update(entity).update(compound, side));
+	}
+
+	public Script script(){
+		return script;
 	}
 
 }

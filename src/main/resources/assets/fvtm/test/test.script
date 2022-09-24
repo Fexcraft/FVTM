@@ -9,51 +9,25 @@ use attr speed -> speed
 use attr license_plate -> lp
 
 act update(obj context){
-	flt val = 0
 	flt mod = 0
-	str string
-	val = speed * 2.5
-	mod = counter % 20
-	if(mod == 0)
-		lp = val + " km/h"
-		string = val + " km/h"
-		print(string)
-		lp = val;
-		print(lp)
-		lp.sync()
-	;;
-    //if(!pressed)
-    //	return
-    //;;
+	
+    if(!pressed)
+    	return
+    ;;
     counter += 1;
-    
-    //opening a door each full second
-    if(counter == 20){
-    	frleftdoor.toggle()
-    }
-    else if(counter == 40){
-    	frrighdoor.toggle()
-    }
-    else if(counter == 60){
-    	releftdoor.toggle()
-    }
-    else if(counter == 80){
-    	rerighdoor.toggle()
-    }
+	mod = counter % 20
+	if(context.client && mod == 0)
+		lp = speed * 2.5
+	;;
     
     if(counter >= 100)
         counter = 0
-        frleftdoor = false
-    	frrighdoor = false
-    	releftdoor = false
-    	rerighdoor = false
-    	context.attributes.sync()
     ;;
 }
 
 act interact(obj context){
     pressed = !pressed
-    print("Togging auto-doors!")
     print(pressed)
+    context.sync(pressed)
     return true
 }

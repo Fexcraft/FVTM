@@ -135,4 +135,10 @@ public class ScrBlock {
 		return new Two<>(NULL, false);
 	}
 
+	public Script getScript(){
+		ScrBlock block = this;
+		while(block.root != null) block = block.root;
+		return (Script)block;
+	}
+
 }

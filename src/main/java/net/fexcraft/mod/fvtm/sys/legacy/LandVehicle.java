@@ -1065,7 +1065,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : vehicle.getScripts()){
-                if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
+                if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
                     script.onDataPacket(this, vehicle, pkt.nbt, Side.SERVER);
                 }
             }
@@ -1102,8 +1102,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : vehicle.getScripts()){
-                if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, vehicle, pkt.nbt, Side.SERVER);
+                if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
+                    script.onDataPacket(this, vehicle, pkt.nbt, Side.CLIENT);
                 }
             }
         }

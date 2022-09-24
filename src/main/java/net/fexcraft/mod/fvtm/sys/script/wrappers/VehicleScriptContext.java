@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
 import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.sys.script.elm.ListElm;
+import net.fexcraft.mod.fvtm.sys.script.elm.RefElm;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -98,6 +99,29 @@ public class VehicleScriptContext extends WrapperElm {
 			return entity.world.isRemote ? TRUE : FALSE;
 		}
 		return NULL;
+	}
+
+	@Override
+	public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
+		Elm val = NULL;
+		switch(act){
+			case "sync":{
+				for(Elm elm : args){
+					if(elm instanceof AttrWrapper) ((AttrWrapper)elm).sync();
+					else if(elm instanceof RefElm) sendScriptValueUpdatePacket(block, elm);
+				}
+				return TRUE;
+			}
+			default: break;
+		}
+		return val;
+	}
+
+	private void sendScriptValueUpdatePacket(ScrBlock block, Elm elm){
+		if(elm == null) return;
+		elm = ((RefElm)elm).getScriptElm(block);
+		if(elm == NULL) return;
+		//TODO
 	}
 
 	@Override

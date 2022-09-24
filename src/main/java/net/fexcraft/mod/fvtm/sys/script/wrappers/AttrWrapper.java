@@ -69,8 +69,21 @@ public class AttrWrapper extends Elm {
 	@Override
 	public void set(boolean val){
 		if(attr.valuetype().isString()) attr.value(val + "");
+		else if(attr.valuetype().isTristate()) attr.value(val);
 		else attr.value(attr.parseValue(val ? "1" : "0"));
 		sync = true;
+	}
+
+	@Override
+	public void set(Elm elm){
+		if(elm.type().primitive()){
+			if(elm.type().integer()) set(elm.integer_val());
+			else if(elm.type().decimal()) set(elm.float_val());
+			else if(elm.type().bool()) set(elm.bool_val());
+			else if(elm.type().string()) set(elm.string_val());
+			sync = true;	
+		}
+		else return;
 	}
 
 	@Override

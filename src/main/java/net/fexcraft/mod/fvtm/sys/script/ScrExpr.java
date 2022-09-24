@@ -8,6 +8,7 @@ package net.fexcraft.mod.fvtm.sys.script;
 import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.FALSE;
 import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.NULL;
 import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.TRUE;
+import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.asBool;
 
 import java.util.ArrayList;
 
@@ -300,8 +301,8 @@ public abstract class ScrExpr {
 					if(pelm.type().number()){
 						return pelm.float_val() != next.float_val() ? TRUE : FALSE;
 					}
-					else if(pelm.type().bool()){
-						return pelm.bool_val() != next.bool_val() ? TRUE : FALSE;
+					else if(pelm.type().boolcond()){
+						return pelm.bool_val(block, prev, pelm) != next.bool_val(block, prev, pelm) ? TRUE : FALSE;
 					}
 					else return !pelm.equals(next) ? TRUE : FALSE;
 				}
@@ -309,10 +310,16 @@ public abstract class ScrExpr {
 					if(pelm.type().number()){
 						return pelm.float_val() == next.float_val() ? TRUE : FALSE;
 					}
-					else if(pelm.type().bool()){
-						return pelm.bool_val() == next.bool_val() ? TRUE : FALSE;
+					else if(pelm.type().boolcond()){
+						return pelm.bool_val(block, prev, pelm) == next.bool_val(block, prev, pelm) ? TRUE : FALSE;
 					}
-					else return !pelm.equals(next) ? TRUE : FALSE;
+					else return pelm.equals(next) ? TRUE : FALSE;
+				}
+				case AND:{
+					return asBool(pelm.bool_val(block, prev, pelm) && next.bool_val(block, prev, pelm));
+				}
+				case OR:{
+					return asBool(pelm.bool_val(block, prev, pelm) || next.bool_val(block, prev, pelm));
 				}
 				default: return FALSE;
 			}

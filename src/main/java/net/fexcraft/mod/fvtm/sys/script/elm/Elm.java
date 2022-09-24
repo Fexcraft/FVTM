@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.script.ScrAction;
 import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
+import net.fexcraft.mod.fvtm.sys.script.ScrExpr;
 import net.fexcraft.mod.fvtm.sys.script.Two;
 import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm.Final;
 
@@ -75,6 +76,10 @@ public abstract class Elm {
 		}
 
 		public boolean bool(){
+			return this == BOOLEAN;
+		}
+
+		public boolean boolcond(){
 			return this == BOOLEAN || this == COND;
 		}
 
@@ -198,6 +203,10 @@ public abstract class Elm {
 
 	public static Elm asBool(boolean bool){
 		return bool ? TRUE : FALSE;
+	}
+
+	public boolean bool_val(ScrBlock block, ScrExpr prev, Elm pelm){
+		return bool_val();
 	}
 
 }

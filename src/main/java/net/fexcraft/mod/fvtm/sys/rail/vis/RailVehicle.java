@@ -656,7 +656,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : rek.data().getScripts()){
-                if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
+                if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
                     script.onDataPacket(this, rek.data(), pkt.nbt, Side.SERVER);
                 }
             }
@@ -692,8 +692,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : rek.data().getScripts()){
-                if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, rek.data(), pkt.nbt, Side.SERVER);
+                if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
+                    script.onDataPacket(this, rek.data(), pkt.nbt, Side.CLIENT);
                 }
             }
         }

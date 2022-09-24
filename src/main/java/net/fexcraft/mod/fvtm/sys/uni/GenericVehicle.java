@@ -276,7 +276,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 			packet.setFloat("value", attr.float_value());
 		}
 		else if(attr.valuetype().isInteger()){
-			packet.setFloat("value", attr.integer_value());
+			packet.setInteger("value", attr.integer_value());
 		}
 		else if(attr.valuetype().isString()){
 			packet.setString("value", attr.string_value());

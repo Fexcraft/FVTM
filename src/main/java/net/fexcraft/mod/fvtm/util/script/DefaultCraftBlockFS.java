@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.script;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
 
@@ -42,6 +43,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 		scriptwrapper = new FSBlockScript(obj);
 	}
 
+	@Override
 	public void read(MultiBlockData data, NBTTagCompound tag){
 		if(script == null){
 			scriptwrapper.init(data.getData());
@@ -93,10 +95,32 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			}
 			return Elm.TRUE;
 		});
+		context.exes.put("sync", (block, args) -> {
+			if(context.entity() == null || context.entity().getWorld().isRemote) return Elm.FALSE;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setInteger("elm_sync", consumables.get(args.get(0).string_val()).integer_val());
+			super.sendPacket(context.entity(), compound);
+			return Elm.TRUE;
+		});
 		if(script.blocks.containsKey("init")){
 			((ScrAction)script.blocks.get("init")).process(context);
 		}
 		Print.debug(script);
+		super.read(data, tag);
+		for(Entry<String, Elm> entry : consumables.entrySet()){
+			if(tag.hasKey("elm_" + entry.getKey())){
+				entry.getValue().set(tag.getInteger("elm_" + entry.getKey()));
+			}
+		}
+	}
+
+	@Override
+	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound){
+		super.write(data, compound);
+		for(Entry<String, Elm> entry : consumables.entrySet()){
+			compound.setInteger("elm_" + entry.getKey(), entry.getValue().integer_val());
+		}
+		return compound;
 	}
 
 	@Override
@@ -185,7 +209,11 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 
 	@Override
 	public void onUpdatePacket(TileEntity tile, NBTTagCompound compound){
-		//
+		if(tile.getWorld().isRemote){
+			if(!compound.hasKey("elm_sync")) return;
+			Elm elm = consumables.get("elm_sync");
+			elm.set(compound.getInteger("value"));
+		}
 	}
 
 }

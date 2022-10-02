@@ -209,4 +209,13 @@ public abstract class Elm {
 		return bool_val();
 	}
 
+	/** Only for primitives. */
+	public static Elm wrap(Object obj){
+		if(obj instanceof String) return new StrElm(obj.toString());
+		if(obj instanceof Integer) return new IntElm((int)obj);
+		if(obj instanceof Float) return new FltElm((float)obj);
+		if(obj instanceof Boolean) return new BoolElm((boolean)obj);
+		return NULL;
+	}
+
 }

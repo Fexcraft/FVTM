@@ -57,7 +57,7 @@ public class M_4ROT extends PlainBase {
             MultiBlockData data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
             BlockPos core = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos);
             if(data == null){
-                Print.chat(player, "MultiBlockData not found.");
+                Print.chat(player, "MultiBlockData not found [CAP].");
                 return true;
             }
             if(core == null){

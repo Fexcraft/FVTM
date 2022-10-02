@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
@@ -88,6 +89,7 @@ public class Script extends ScrBlock {
 					String[] args = line.substring(idx0 + 1, line.indexOf(")")).split(",");
 					ScrAction act = new ScrAction(this, name);
 					for(String str : args){
+						if(str.length() < 3) continue;
 						String[] s = str.split(" ");
 						act.locals.put(s[1], Elm.from(Elm.Type.from(s[0])));
 						act.parameters.add(s[1]);
@@ -383,6 +385,14 @@ public class Script extends ScrBlock {
 		if(globals.contains(id) && globals.get(id).containsKey(elm)) return globals.get(id).get(elm);
 		return NULL;
 	}
+
+	public Elm getLocalScriptElm(String elm, Supplier<Elm> create){
+		if(locals.containsKey(elm)) return locals.get(elm);
+		else{
+			locals.put(elm, create.get());
+			return locals.get(elm);
+		}
+	}
 	
 	@Override
 	protected String preprint(String ret, String tab, String tab1, int depth){
@@ -410,6 +420,11 @@ public class Script extends ScrBlock {
 			ret += sub.print(depth + 1);
 		}
 		return ret;
+	}
+	
+	@Override
+	public String toString(){
+		return print();
 	}
 	
 }

@@ -175,10 +175,18 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 
 	@Override
 	public boolean consume(String id, int amount, boolean simulate){
+		if(!consumables.containsKey(id)) return false;
 		if(hasConsume){
-			return consume.process(scriptwrapper.context(), Elm.wrap(id), Elm.wrap(amount), Elm.wrap(simulate)).bool_val();
+			return consume.process(scriptwrapper.context(), consumables.get(id), Elm.wrap(amount), Elm.wrap(simulate)).bool_val();
 		}
-		return true;
+		else{
+			if(simulate) return consumables.get(id).integer_val() >= amount;
+			else{
+				Elm elm = consumables.get(id);
+				elm.set(elm.integer_val() - amount);
+				return true;
+			}
+		}
 	}
 
 	@Override

@@ -65,7 +65,7 @@ public class FSVehicleScript extends VehicleScript {
 		hasInteract = (interact = (ScrAction)script.blocks.get("interact")) != null;
 		hasPacket = (onpacket = (ScrAction)script.blocks.get("data_packet")) != null;
 		context = new VehicleScriptContext(data, this);
-		Print.debug(script.print());
+		Print.debug(script);
 		return this;
 	}
 

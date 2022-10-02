@@ -19,6 +19,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
+import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -163,7 +164,21 @@ public class MultiBlock {
 		}
 		if(obj.has("Script")){
 			try{
-				clazz = (Class<? extends BlockScript>)Class.forName(obj.get("Script").getAsString().replace(".class", ""));
+				String loc = obj.get("Script").getAsString();
+				if(loc.endsWith(".script")){
+					if(obj.has("ScriptRoot")) clazz = (Class<? extends BlockScript>)Class.forName(obj.get("ScriptRoot").getAsString().replace(".class", ""));
+					else clazz = FSBlockScript.class;
+					if(obj.has("ScriptData")){
+						JsonObject elm = obj.get("ScriptData").getAsJsonObject();
+						elm.addProperty("script_location", loc);
+					}
+					else{
+						JsonObject elm = new JsonObject();
+						elm.addProperty("script_location", loc);
+						obj.add("ScriptData", elm);
+					}
+				}
+				else clazz = (Class<? extends BlockScript>)Class.forName(loc.replace(".class", ""));
 			}
 			catch(ClassNotFoundException e){
 				e.printStackTrace();

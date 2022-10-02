@@ -73,7 +73,7 @@ public class M_4ROT_TE extends BlockBase {
             }
             MultiBlockData data = te.getMultiBlockData();
             if(data == null){
-                Print.chat(player, "MultiBlockData not found.");
+                Print.chat(player, "MultiBlockData not found [TE].");
                 return true;
             }
             if(te.triggers == null) te.triggers = data.getType().getTriggers(state.getValue(FACING), pos, te.isCore() ? pos : te.getCore());

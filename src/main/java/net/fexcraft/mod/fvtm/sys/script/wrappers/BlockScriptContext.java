@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
 import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class BlockScriptContext extends WrapperElm {
@@ -59,6 +60,10 @@ public class BlockScriptContext extends WrapperElm {
 	public Elm update(MultiblockTickableTE tile){
 		entity = tile;
 		return this;
+	}
+
+	public TileEntity entity(){
+		return entity;
 	}
 
 }

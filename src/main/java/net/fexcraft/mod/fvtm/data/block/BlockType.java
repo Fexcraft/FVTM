@@ -7,6 +7,7 @@ import net.minecraft.block.properties.PropertyInteger;
 public enum BlockType {
 	
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class, 4),
+	GENERIC_4X4ROT(G_4x4ROT_TE.class, G_4x4ROT.class, 4),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class, 16),
 	GENERIC_2VAR(G_VAR_TE.class, G_VAR.class, 0),
 	GENERIC_3VAR(G_VAR_TE.class, G_VAR.class, 0),
@@ -81,14 +82,15 @@ public enum BlockType {
 	}
 
 	public int getMetaVariants(){
-		return this == GENERIC_ROAD ? 16 : (this.ordinal() >= 2 && this.ordinal() <= 16) ? this.ordinal() - 2 : 0;
+		return this == GENERIC_ROAD ? 16 : this == GENERIC_4X4ROT ? 4 : (this.ordinal() >= 2 && this.ordinal() <= 16) ? this.ordinal() - 2 : 0;
 	}
 
 	public PropertyInteger getIntProperty(){
 		switch(this){
 			case GENERIC_2VAR: return Properties.VARIANTS2;
 			case GENERIC_3VAR: return Properties.VARIANTS3;
-			case GENERIC_4VAR: return Properties.VARIANTS4;
+			case GENERIC_4VAR:
+			case GENERIC_4X4ROT: return Properties.VARIANTS4;
 			case GENERIC_5VAR: return Properties.VARIANTS5;
 			case GENERIC_6VAR: return Properties.VARIANTS6;
 			case GENERIC_7VAR: return Properties.VARIANTS7;

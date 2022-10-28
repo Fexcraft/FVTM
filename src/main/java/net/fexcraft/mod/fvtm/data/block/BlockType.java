@@ -1,11 +1,28 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.mod.fvtm.block.generated.*;
+import net.fexcraft.mod.fvtm.util.Properties;
+import net.minecraft.block.properties.PropertyInteger;
 
 public enum BlockType {
 	
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class, 4),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class, 16),
+	GENERIC_2VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_3VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_4VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_5VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_6VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_7VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_8VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_9VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_10VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_11VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_12VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_13VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_14VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_15VAR(G_VAR_TE.class, G_VAR.class, 0),
+	GENERIC_16VAR(G_VAR_TE.class, G_VAR.class, 0),
 	GENERIC_ROAD(G_ROAD_TE.class, G_ROAD.class, 0),
 	MULTIBLOCK_4ROT(M_4ROT_TE.class, M_4ROT.class, 4),
 	SIGNAL_4ROT(SG_4ROT_TE.class, null, 4),
@@ -61,6 +78,32 @@ public enum BlockType {
 
 	public boolean is16Rot(){
 		return rotations == 16;
+	}
+
+	public int getMetaVariants(){
+		return this == GENERIC_ROAD ? 16 : (this.ordinal() >= 2 && this.ordinal() <= 16) ? this.ordinal() - 2 : 0;
+	}
+
+	public PropertyInteger getIntProperty(){
+		switch(this){
+			case GENERIC_2VAR: return Properties.VARIANTS2;
+			case GENERIC_3VAR: return Properties.VARIANTS3;
+			case GENERIC_4VAR: return Properties.VARIANTS4;
+			case GENERIC_5VAR: return Properties.VARIANTS5;
+			case GENERIC_6VAR: return Properties.VARIANTS6;
+			case GENERIC_7VAR: return Properties.VARIANTS7;
+			case GENERIC_8VAR: return Properties.VARIANTS8;
+			case GENERIC_9VAR: return Properties.VARIANTS9;
+			case GENERIC_10VAR: return Properties.VARIANTS10;
+			case GENERIC_11VAR: return Properties.VARIANTS11;
+			case GENERIC_12VAR: return Properties.VARIANTS12;
+			case GENERIC_13VAR: return Properties.VARIANTS13;
+			case GENERIC_14VAR: return Properties.VARIANTS14;
+			case GENERIC_15VAR: return Properties.VARIANTS15;
+			case GENERIC_16VAR: return Properties.VARIANTS16;
+			default: break;
+		}
+		return Properties.VARIANTS16;
 	}
 
 }

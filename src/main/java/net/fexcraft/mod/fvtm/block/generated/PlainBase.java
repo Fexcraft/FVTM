@@ -25,7 +25,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	public PlainBase(Block type){
 		super(type.getMaterial(), type.getMapColor()); this.type = type;
 		type.getAddon().getFCLRegisterer().addBlock(
-			type.getRegistryName().getPath(), this, BlockItem.class, type.getBlockType().isGenericRoad() ? 16 : 0, null);
+			type.getRegistryName().getPath(), this, BlockItem.class, type.getBlockType().getMetaVariants(), null);
 		this.setHardness(type.getHardness());
 		this.setLightLevel(type.getLightLevel());
 		this.setResistance(type.getResistance());

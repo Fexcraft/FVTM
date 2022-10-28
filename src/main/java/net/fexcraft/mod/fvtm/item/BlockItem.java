@@ -65,6 +65,9 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
         if(type.getBlockType().isGenericRoad()){
         	tooltip.add(Formatter.format("&9Height: &7" + (stack.getMetadata() == 0 ? 16 : stack.getMetadata())));
         }
+        else if(type.getBlockType().getMetaVariants() > 0){
+        	tooltip.add(Formatter.format("&9Variant: &7" + stack.getMetadata()));
+        }
         BlockData data = cache.getBlockData();
         if(data == null) return;
         if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
@@ -101,6 +104,11 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));
 	    		items.add(new ItemStack(this, 1, 2)); items.add(new ItemStack(this, 1, 1));
+    		}
+    		else if(type.getBlockType().getMetaVariants() > 0){
+    			for(int i = 0; i < type.getBlockType().getMetaVariants(); i++){
+    	    		items.add(new ItemStack(this, 1, i));
+    			}
     		}
     		else{
         		items.add(type.newItemStack());

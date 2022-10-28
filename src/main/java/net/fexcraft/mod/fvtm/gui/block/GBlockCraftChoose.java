@@ -93,7 +93,7 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 		if(hovered < 0 || recipes[hovered] == null) return;
 		Recipe recipe = recipes[hovered];
 		for(InputWrapper wrapper : recipe.getInputs()){
-			String name = wrapper.fluid == null ? wrapper.oreid == null ? "I; " + wrapper.ingredient.getMatchingStacks()[0].getDisplayName() : "O; " + wrapper.oreid : wrapper.fluid.getLocalizedName();
+			String name = wrapper.fluid == null ? wrapper.oreid == null ? wrapper.ingredient == null ? "ERROR;NULL" : "I; " + wrapper.ingredient.getMatchingStacks()[0].getDisplayName() : "O; " + wrapper.oreid : wrapper.fluid.getLocalizedName();
 			hoverlines.add(Formatter.format("&4- %s&7x&c%s &7-> &c%s", wrapper.amount, name, CraftBlockScript.getInvId(container.tile.getMultiBlockData(), wrapper.getInputType().toInventory(), wrapper.inventory, "input")));
 		}
 		for(Entry<String, Integer> entry : recipe.getConsume().entrySet()){

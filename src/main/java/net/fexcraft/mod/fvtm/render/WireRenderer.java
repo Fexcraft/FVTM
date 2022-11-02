@@ -65,6 +65,7 @@ public class WireRenderer {
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(Config.DISABLE_RAILS) return;
 	    wiredata = SystemManager.get(Systems.WIRE, world);
+	    if(wiredata == null || wiredata.getRegions() == null) return;
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

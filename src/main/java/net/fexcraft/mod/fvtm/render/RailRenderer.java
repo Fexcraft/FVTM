@@ -165,6 +165,7 @@ public class RailRenderer {
     public static void renderRails(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
     	if(Config.DISABLE_RAILS) return;
 	    raildata = SystemManager.get(Systems.RAIL, world, RailSystem.class);
+	    if(raildata == null || raildata.getRegions() == null) return;
         //if(raildata.isLoading()) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

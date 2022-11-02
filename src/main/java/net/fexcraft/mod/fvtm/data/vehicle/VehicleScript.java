@@ -18,7 +18,11 @@ import net.minecraftforge.fml.relauncher.Side;
 public abstract class VehicleScript {
 	
 	/** Optional init Data */
-	public VehicleScript init(JsonElement elm){ return this; }
+	@Deprecated
+	public VehicleScript init(JsonElement elm) { return this; }
+	
+	/** Optional init Data */
+	public VehicleScript init(VehicleData data, JsonElement elm) { return init(elm); }
 
 	/** The Unique ID of the Script. */
 	public abstract String getId();

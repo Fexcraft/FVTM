@@ -42,6 +42,7 @@ import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -344,6 +345,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					try{
 						Class<? extends VehicleScript> clazz = part.getType().getVehicleScripts().get(i);
 						VehicleScript scrapt = clazz.newInstance();
+						if(scrapt instanceof FSVehicleScript){
+							((FSVehicleScript)scrapt).set(part.getType().getVehicleScriptsData().get(i));
+						}
 						String id = scrapt.getId();
 						boolean found = false;
 						for(VehicleScript script : scripts){
@@ -352,7 +356,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 								break;
 							}
 						}
-						if(!found) scripts.add(clazz.newInstance().init(part.getType().getVehicleScriptsData().get(i)));
+						if(!found) scripts.add(clazz.newInstance().init(this, part.getType().getVehicleScriptsData().get(i)));
 					}
 					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e){
 						e.printStackTrace();

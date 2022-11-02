@@ -1219,4 +1219,37 @@ public class Resources {
 		}
 	}
 
+	public static Object[] getInputStream(ResourceLocation resloc){
+		Closeable[] close = null;
+		InputStream stream = getModelInputStream(resloc, false);
+		if(stream != null) return new Object[]{ stream };
+		try{
+			Addon addon = getAddon(resloc.getNamespace());
+			if(addon != null){
+				if(addon.getContainerType() == ContainerType.DIR){
+					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
+					if(file.exists()) stream = new FileInputStream(file);
+				}
+				else{
+					String filename = "assets/" + resloc.getNamespace() + "/" + resloc.getPath();
+					ZipFile zip = new ZipFile(addon.getFile());
+					ZipInputStream zipstream = new ZipInputStream(new FileInputStream(addon.getFile()));
+					close = new Closeable[]{ zip, zipstream };
+					while(true){
+						ZipEntry entry = zipstream.getNextEntry();
+						if(entry == null) break;
+						if(entry.getName().equals(filename)){
+							stream = zip.getInputStream(entry);
+							break;
+						}
+					}
+				}
+			}
+		}
+		catch(Throwable e){
+			//e.printStackTrace();
+		}
+		return close == null ? new Object[]{ stream } : new Object[]{ stream, close };
+	}
+
 }

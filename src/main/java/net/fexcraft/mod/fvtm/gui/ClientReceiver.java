@@ -6,14 +6,9 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
+import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -32,54 +27,11 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 		EntityPlayer player = (EntityPlayer)objs[0];
 		switch(task){
 			case "attr_toggle":{
-				boolean bool = packet.nbt.getBoolean("bool");
-				String attribute = packet.nbt.getString("attr");
-				Attribute<?> attr = null;
-				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				if(veh == null && packet.nbt.hasKey("railid")){
-					RailEntity ent = SystemManager.get(Systems.RAIL, player.world, RailSystem.class).getEntity(packet.nbt.getLong("railid"), false);
-					attr = ent.vehdata.getAttribute(attribute);
-				}
-				else if(veh != null){
-					attr = veh.getVehicleData().getAttribute(attribute);
-				}
-				else{
-					Print.debug("Received packet for entity not found on client side!");
-					return;
-				}
-				if(attr.valuetype().isTristate()){
-					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);
-					else attr.value(null);
-				}
-				else if(attr.valuetype().isNumber()){
-					attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
-				}
-				else{
-					Print.log("no code for toggling this attribute type yet");
-				}
+				AttrReqHandler.processToggleResponse(player.world, player, packet.nbt);
 				break;
 			}
 			case "attr_update":{
-				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
-				if(attr.valuetype().isTristate()){
-					if(packet.nbt.hasKey("reset") && packet.nbt.getBoolean("reset")){
-						attr.value(null);
-					}
-					else{
-						attr.value(packet.nbt.getBoolean("value"));
-					}
-				}
-				else if(attr.valuetype().isFloat()){
-					attr.value(packet.nbt.getFloat("value"));
-				}
-				else if(attr.valuetype().isInteger()){
-					attr.value(packet.nbt.getInteger("value"));
-				}
-				else if(attr.valuetype().isString()){
-					attr.value(packet.nbt.getString("value"));
-				}
-				else attr.value(packet.nbt.getString("value"));
+				AttrReqHandler.processUpdateResponse(player.world, player, packet.nbt);
 				break;
 			}
 			case "update_container_holder":{

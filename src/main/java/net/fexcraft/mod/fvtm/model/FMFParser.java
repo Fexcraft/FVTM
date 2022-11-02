@@ -276,6 +276,10 @@ public class FMFParser {
 							cyl.setRadialTexture(fl[0], fl[1]);
 							break;
 						}
+						case 23:{
+							cyl.setSegmentOffset(readFloats(stream, 1)[0]);
+							break;
+						}
 						default: break;
 					}
 				}

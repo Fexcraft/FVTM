@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
@@ -39,6 +40,7 @@ import net.fexcraft.mod.fvtm.util.handler.ConnectorInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
+import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -225,8 +227,18 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 			data = new JsonObject();
 		}
         try{
-        	scripts.add((Class<? extends VehicleScript>)Class.forName(clazz));
-        	scripts_data.add(data);
+        	if(clazz.endsWith(".script")){
+        		scripts.add(FSVehicleScript.class);
+        		if(data.isJsonObject()){
+        			data.getAsJsonObject().addProperty("script_location", clazz);
+        			scripts_data.add(data);
+        		}
+        		else scripts_data.add(new JsonPrimitive(clazz));
+        	}
+        	else{
+            	scripts.add((Class<? extends VehicleScript>)Class.forName(clazz));
+            	scripts_data.add(data);
+        	}
         }
         catch(Exception e){
         	e.printStackTrace();

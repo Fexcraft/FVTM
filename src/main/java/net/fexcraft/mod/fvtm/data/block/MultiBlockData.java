@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
+import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -55,6 +56,9 @@ public class MultiBlockData {
 		}
 		try{
 			script = block.hasScript() ? block.getScript().getConstructor(JsonObject.class).newInstance(block.getScriptData()) : null;
+			if(script instanceof FSBlockScript){
+				((FSBlockScript)script).init(data);
+			}
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
 			e.printStackTrace();

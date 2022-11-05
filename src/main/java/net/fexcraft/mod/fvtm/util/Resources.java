@@ -43,14 +43,7 @@ import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.data.Fuel;
-import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.TextureSupply;
-import net.fexcraft.mod.fvtm.data.WireType;
+import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
@@ -174,6 +167,7 @@ public class Resources {
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
 	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
 	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
+	public static final HashMap<String, DirectPipe> DIRPIPES = new HashMap<>();
 	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
 	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//

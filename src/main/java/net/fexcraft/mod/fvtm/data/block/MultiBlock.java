@@ -45,7 +45,6 @@ public class MultiBlock {
 	private JsonObject scriptdata;
 	private boolean tickable;
 
-	@SuppressWarnings("unchecked")
 	public MultiBlock(ResourceLocation registryname, JsonObject obj){
 		regname = registryname;
 		if(obj.has("Inventories")){

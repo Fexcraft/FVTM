@@ -31,6 +31,7 @@ import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.fvtm.data.DirectPipe;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
@@ -197,6 +198,18 @@ public class Addon extends TypeCore<Addon> {
 				}
 				if(decos.size() > 0 && !Resources.DECORATION_CATEGORIES.contains(category)){
 					Resources.DECORATION_CATEGORIES.add(category);
+				}
+			}
+		}
+		if(obj.has("DirectPipes")){
+			JsonObject pipes = obj.get("DirectPipes").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : pipes.entrySet()){
+				try{
+					String id = registryname.getPath() + ":" +  entry.getKey();
+					Resources.DIRPIPES.put(id, new DirectPipe(id, entry.getValue()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
 				}
 			}
 		}

@@ -67,6 +67,7 @@ public class PlacingUtils {
 		UUID uuid = player.getGameProfile().getId();
 		if(!UNDOCACHE.containsKey(uuid)) return null;
 		JsonArray array = UNDOCACHE.get(uuid);
+		if((array.value.isEmpty())) return null;
 		return array.get(array.size() - 1).asMap();
 	}
 	
@@ -74,6 +75,7 @@ public class PlacingUtils {
 		UUID uuid = player.getGameProfile().getId();
 		if(!UNDOCACHE.containsKey(uuid)) return;
 		JsonArray array = UNDOCACHE.get(uuid);
+		if((array.value.isEmpty())) return;
 		array.rem(array.size() - 1);
 	}
 	

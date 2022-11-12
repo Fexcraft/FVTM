@@ -45,4 +45,9 @@ public class InvHandlerItem extends InvHandler {
 		return handler;
 	}
 	
+	@Override
+	public String getContentDesc(){
+		return getStacks().stream().filter(is -> is != null && !is.isEmpty()).count() + "";
+	}
+	
 }

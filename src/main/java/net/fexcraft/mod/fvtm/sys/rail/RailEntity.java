@@ -581,7 +581,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void dispose(){
 		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple(); lastcheck = null;
 		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
-		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(uid);
+		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(this);
 	}
 
 	public UUID getPlacer(){

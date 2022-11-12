@@ -15,7 +15,7 @@ public class InvHandlerItem extends InvHandler {
 
 	public InvHandlerItem(InvType type, String filter, int cap){
 		super(type);
-		this.filter = ContentFilter.FILTER_REGISTRY.get(filter);
+		if(filter != null) this.filter = ContentFilter.FILTER_REGISTRY.get(filter);
 		stacks = NonNullList.withSize(capacity = cap, ItemStack.EMPTY);
 	}
 

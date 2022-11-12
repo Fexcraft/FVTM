@@ -21,7 +21,7 @@ public class ContainerItemInventory extends GenericGui<ContainerInvContainer> {
 	@Override
 	protected void init(){
 		texts.put("top", new BasicText(guiLeft + 9, guiTop + 9, 230, MapColor.SNOW.colorValue, container.tile.getContainerData().getType().getName()));
-		texts.put("page", new BasicText(guiLeft + 188, guiTop + 138, 40, MapColor.SNOW.colorValue, "1/" + (container.tile.getContainerData().getInventory().size() / 78 + 1)));
+		texts.put("page", new BasicText(guiLeft + 188, guiTop + 138, 40, MapColor.SNOW.colorValue, "1/" + (container.tile.getContainerData().getInventory().getStacks().size() / 78 + 1)));
 		buttons.put("prev", new BasicButton("prev", guiLeft + 176, guiTop + 137, 176, 137, 10, 10, true));
 		buttons.put("next", new BasicButton("next", guiLeft + 230, guiTop + 137, 230, 137, 10, 10, true));
 	}
@@ -57,7 +57,7 @@ public class ContainerItemInventory extends GenericGui<ContainerInvContainer> {
 	
 	private void updatePage(int i){
 		container.page += i; if(container.page < 0) container.page = 0; container.populateSlots();
-		texts.get("page").string = (container.page + 1) + "/" + (container.tile.getContainerData().getInventory().size() / 78 + 1);
+		texts.get("page").string = (container.page + 1) + "/" + (container.tile.getContainerData().getInventory().getStacks().size() / 78 + 1);
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("cargo", "inventory_page");
 		compound.setInteger("page", container.page);

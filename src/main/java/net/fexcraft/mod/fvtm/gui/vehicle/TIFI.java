@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,11 +13,14 @@ import net.minecraft.util.text.TextComponentString;
 /** "Temporary Inventory Function Inventory "*/
 public class TIFI implements IInventory {
 
-	private InventoryFunction inv;
+	private InventoryFunction func;
+	private InvHandler inv;
     private PartData part;
 
-    public TIFI(PartData data, InventoryFunction func){
-        part = data; inv = func;
+    public TIFI(PartData data, InventoryFunction partfunc){
+        part = data;
+        func = partfunc;
+        inv = func.inventory();
     }
 
     @Override
@@ -91,7 +95,7 @@ public class TIFI implements IInventory {
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack){
-        return inv.isItemValid(stack);
+        return func.isItemValid(stack);
     }
 
     @Override

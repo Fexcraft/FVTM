@@ -7,16 +7,9 @@ import java.util.Map.Entry;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.InventoryType;
-import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
-import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidTank;
 
 /**
  * 
@@ -26,33 +19,15 @@ import net.minecraftforge.fluids.FluidTank;
 public class MultiBlockData {
 	
 	private MultiBlock type;
-	private LinkedHashMap<String, NonNullList<ItemStack>> inventories = new LinkedHashMap<>();
-	private LinkedHashMap<String, ItemStackHandler> inv_handlers = new LinkedHashMap<>();
-	private LinkedHashMap<String, ContentFilter> invfilters = new LinkedHashMap<>();
-	private LinkedHashMap<String, FluidTank> tanks = new LinkedHashMap<>();
+	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
 	private BlockScript script;
 	private BlockData data;
 	
 	public MultiBlockData(BlockData data, MultiBlock block){
 		this.type = block;
 		this.data = data;
-		for(Entry<String, InventoryType> entry : block.getInventoryTypes().entrySet()){
-			int capacity = block.getInventorySizes().get(entry.getKey());
-	        switch(entry.getValue()){
-		        case ENERGY:
-		            break;
-		        case FLUID:
-		        	Fluid fluid = (Fluid)block.getInventoryData().get(entry.getKey());
-		            tanks.put(entry.getKey(), fluid == null ? new FluidTank(capacity) : new FluidTank(fluid, 0, capacity));
-		            break;
-		        case ITEM:
-		        	ContentFilter filter = (ContentFilter)block.getInventoryData().get(entry.getKey());
-		        	if(filter != null) invfilters.put(entry.getKey(), filter);
-		            inventories.put(entry.getKey(), NonNullList.<ItemStack>withSize(capacity, ItemStack.EMPTY));
-		            break;
-		        default:
-		            break;
-		    }
+		for(Entry<String, InvHandler> entry : block.getInventories().entrySet()){
+			inventories.put(entry.getKey(), entry.getValue().gen());
 		}
 		try{
 			script = block.hasScript() ? block.getScript().getConstructor(JsonObject.class).newInstance(block.getScriptData()) : null;
@@ -72,13 +47,11 @@ public class MultiBlockData {
 	}
 	
 	public void read(NBTTagCompound compound){
-		for(Entry<String, NonNullList<ItemStack>> entry : inventories.entrySet()){
-			if(!compound.hasKey("inv-" + entry.getKey())) continue;
-			DataUtil.loadAllItems(compound, entry.getValue(), "inv-" + entry.getKey());
-		}
-		for(Entry<String, FluidTank> entry : tanks.entrySet()){
-			if(!compound.hasKey("tank-" + entry.getKey())) continue;
-			entry.getValue().readFromNBT(compound.getCompoundTag("tank-" + entry.getKey()));
+		
+		for(Entry<String, InvHandler> entry : inventories.entrySet()){
+			String pre = entry.getValue().getBlkSavePrefix();
+			if(!compound.hasKey(pre + entry.getKey())) continue;
+			entry.getValue().load(compound, pre + entry.getKey());
 		}
 		if(script != null){
 			script.read(this, compound);
@@ -91,11 +64,9 @@ public class MultiBlockData {
 	
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
-		for(Entry<String, NonNullList<ItemStack>> entry : inventories.entrySet()){
-			DataUtil.saveAllItems(compound, entry.getValue(), true, "inv-" + entry.getKey());
-		}
-		for(Entry<String, FluidTank> entry : tanks.entrySet()){
-			compound.setTag("tank-" + entry.getKey(), entry.getValue().writeToNBT(new NBTTagCompound()));
+		for(Entry<String, InvHandler> entry : inventories.entrySet()){
+			String pre = entry.getValue().getBlkSavePrefix();
+			entry.getValue().save(compound, pre + entry.getKey());
 		}
 		if(script != null){
 			script.write(this, compound);
@@ -107,24 +78,12 @@ public class MultiBlockData {
 		return script;
 	}
 	
-	public NonNullList<ItemStack> getInventory(String id){
-		return inventories.get(id);
-	}
-	
-	public FluidTank getFluidTank(String id){
-		return tanks.get(id);
-	}
-	
 	public BlockData getData(){
 		return data;
 	}
 
-	public ItemStackHandler getInventoryHandler(String inv_id){
-		if(!inventories.containsKey(inv_id)) return null;
-		if(!inv_handlers.containsKey(inv_id)){
-			inv_handlers.put(inv_id, new ItemStackHandler(inventories.get(inv_id)));
-		}
-		return inv_handlers.get(inv_id);
+	public InvHandler getInventory(String inventory){
+		return inventories.get(inventory);
 	}
 
 }

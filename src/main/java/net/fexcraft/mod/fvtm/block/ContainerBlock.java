@@ -7,8 +7,8 @@ import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -166,10 +166,10 @@ public class ContainerBlock extends BlockContainer {
                     return true;
                 }
                 BlockPos corepos = te.getCore().getPos();
-                if(te.getContainerData().getType().getInventoryType() == InventoryType.ITEM){
+                if(te.getContainerData().getType().getInventoryType() == InvType.ITEM){
                 	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_ITEM, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }
-                else if(te.getContainerData().getType().getInventoryType() == InventoryType.FLUID){
+                else if(te.getContainerData().getType().getInventoryType() == InvType.FLUID){
                     te.sendFluidTankUpdate(player);
                 	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_FLUID, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }

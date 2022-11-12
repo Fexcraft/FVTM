@@ -11,7 +11,8 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.InventoryType;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
@@ -32,7 +33,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * 
@@ -46,13 +46,10 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected Model model;
 	protected ModelData modeldata;
 	protected ResourceLocation keytype;
-	protected ContentFilter filter;
-	protected InventoryType invtype;
+	protected InvHandler invtype;
 	protected ContainerType type;
 	protected ContainerItem item;
 	protected String modelid, ctab;
-	protected int capacity;
-	protected Fluid fluid;
 	protected ResourceLocation itemloc;
 	protected boolean no3ditem;
 
@@ -95,14 +92,10 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 			}
 		}
 		this.keytype = obj.has("KeyType") ? new ResourceLocation(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
-		this.invtype = InventoryType.valueOf(JsonUtil.getIfExists(obj, "InventoryType", "ITEM").toUpperCase());
-		this.capacity = JsonUtil.getIfExists(obj, "InventorySize", invtype == InventoryType.ITEM ? 8 : 16000).intValue();
-        if(obj.has("FluidType")){
-            fluid = FluidRegistry.getFluid(obj.get("FluidType").getAsString());
-        }
-        if(obj.has("ContentFilter")){
-        	this.filter = ContentFilter.FILTER_REGISTRY.get(obj.get("ContentFilter").getAsString());
-        }
+		invtype = new InvHandler(InvType.parse(JsonUtil.getIfExists(obj, "InventoryType", "item"), false));
+		invtype.setCapacity(JsonUtil.getIfExists(obj, "InventorySize", invtype.type.isItem() ? 8 : 16000).intValue());
+        if(invtype.type.isFluid() && obj.has("FluidType")) invtype.setArg(obj.get("FluidType").getAsString());
+        if(invtype.type.isItem() &&  obj.has("ContentFilter")) invtype.setArg(obj.get("ContentFilter").getAsString());
 		//
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
@@ -152,24 +145,20 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		return type;
 	}
 
-	public InventoryType getInventoryType(){
-		return invtype;
-	}
-
-	public int getInventorySize(){
-		return capacity;
+	public InvType getInventoryType(){
+		return invtype.type;
 	}
 
 	public int getCapacity(){
-		return capacity;
+		return invtype.capacity();
 	}
 
 	public Fluid getFluidType(){
-		return fluid;
+		return invtype.getFluid();
 	}
 
 	public ContentFilter getContentFilter(){
-		return filter;
+		return invtype.getFilter();
 	}
 
 	@Override

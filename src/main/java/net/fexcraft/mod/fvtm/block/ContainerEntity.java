@@ -7,8 +7,8 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
@@ -108,10 +108,10 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
         if(facing != null && facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked()){
             if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-                return getCore().container.getType().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
+                return getCore().container.getType().getInventoryType().isItem() && getCore().container.getInventory().capacity() > 0;
             }
             if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-                return getCore().container.getType().getInventoryType() == InventoryType.FLUID;
+                return getCore().container.getType().getInventoryType().isFluid();
             }
         }
         return super.hasCapability(capability, facing);
@@ -123,12 +123,12 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
             if(itemStackHandler == null){
-                itemStackHandler = new ItemStackHandler(getCore().container, getCore().container.getInventory());
+                itemStackHandler = new ItemStackHandler(getCore().container, getCore().container.getInventory().getStacks());
             }
             return (T) itemStackHandler;
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-            return (T) getCore().container.getFluidHandler();
+            return (T) getCore().container.getInventory().getTank();
         }
         return super.getCapability(capability, facing);
     }
@@ -171,7 +171,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
             	}
                 //
                 if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
-                    for(ItemStack stack : getContainerData().getInventory()){
+                    for(ItemStack stack : getContainerData().getInventory().getStacks()){
                         if(!stack.isEmpty()){
                             EntityItem entity = new EntityItem(world);
                             entity.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 2.5, blkpos.getZ() + 0.5);
@@ -179,7 +179,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
                             world.spawnEntity(entity);
                         }
                     }
-                    getContainerData().getInventory().clear();
+                    getContainerData().getInventory().getStacks().clear();
                 }
             }
             if(asplayer ? !blkpos.equals(pos) : true){
@@ -214,10 +214,10 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
         if(packet.nbt.hasKey("task")){
             switch(packet.nbt.getString("task")){
                 case "update_container_fluid_tank": {
-                    if(this.getContainerData() != null && this.getContainerData().getType().getInventoryType() != InventoryType.FLUID){
+                    if(this.getContainerData() != null && this.getContainerData().getType().getInventoryType() != InvType.FLUID){
                         return;
                     }
-                    this.getContainerData().getFluidTank().readFromNBT(packet.nbt.getCompoundTag("state"));
+                    this.getContainerData().getInventory().load(packet.nbt.getCompoundTag("state"));
                     break;
                 }
             }
@@ -233,11 +233,11 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
         }
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("task", "update_container_fluid_tank");
-        nbt.setTag("state", this.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("state", this.getContainerData().getInventory().save(new NBTTagCompound()));
         PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
     }
 
-	public InventoryType getInventoryType(){
+	public InvType getInventoryType(){
 		return this.getContainerData() == null ? null : this.getContainerData().getType().getInventoryType();
 	}
 

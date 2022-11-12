@@ -6,19 +6,15 @@ import java.util.TreeMap;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.InventoryType;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
-import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -29,8 +25,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	protected Textureable texture;
 	protected String lockcode;
 	protected boolean locked;
-    private NonNullList<ItemStack> stacks;
-    private FluidTank fluidtank;
+	private InvHandler inventory;
 	
 	public ContainerData(Container type){
 		super(type);
@@ -39,18 +34,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
 		//
-        switch(type.getInventoryType()){
-	        case ENERGY:
-	            break;
-	        case FLUID:
-	            fluidtank = type.getFluidType() == null ? new FluidTank(type.getCapacity()) : new FluidTank(type.getFluidType(), 0, type.getCapacity());
-	            break;
-	        case ITEM:
-	            stacks = NonNullList.<ItemStack>withSize(type.getCapacity(), ItemStack.EMPTY);
-	            break;
-	        default:
-	            break;
-	    }
+		inventory = type.invtype.gen();
 	}
 
 	@Override
@@ -97,12 +81,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
 		texture.save(compound);
-        if(type.getInventoryType() == InventoryType.ITEM){
-            compound = DataUtil.saveAllItems(compound, stacks, true, null);
-        }
-        else if(type.getInventoryType() == InventoryType.FLUID){
-            fluidtank.writeToNBT(compound);
-        }
+		inventory.save(compound);
 		compound.setBoolean("Locked", locked);
 		if(lockcode != null) compound.setString("LockCode", lockcode);
 		return compound;
@@ -123,13 +102,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		}
 		//
 		texture.load(compound, type);
-		//
-        if(type.getInventoryType() == InventoryType.ITEM){
-            DataUtil.loadAllItems(compound, stacks, null);
-        }
-        else if(type.getInventoryType() == InventoryType.FLUID){
-            fluidtank.readFromNBT(compound);
-        }
+		inventory.load(compound);
 		this.locked = compound.getBoolean("Locked");
 		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
 		return this;
@@ -151,16 +124,8 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		return type.getContainerType();
 	}
 
-    public NonNullList<ItemStack> getInventory(){
-        return stacks;
-    }
-
-    public IFluidHandler getFluidHandler(){
-        return fluidtank;
-    }
-
-    public FluidTank getFluidTank(){
-        return fluidtank;
+    public InvHandler getInventory(){
+        return inventory;
     }
 
 	public boolean isItemValid(ItemStack stack){

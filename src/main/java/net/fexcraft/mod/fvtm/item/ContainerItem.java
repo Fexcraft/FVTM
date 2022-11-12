@@ -10,10 +10,10 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -56,8 +56,8 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         tooltip.add(Formatter.format("&9Type: &7" + type.getContainerType().name()));
         //
-        tooltip.add(Formatter.format("&9Capacity: &7" + (data.getType().getInventoryType() == InventoryType.FLUID ? data.getType().getCapacity() / 1000 : data.getType().getCapacity()) + " " + data.getType().getInventoryType().getUnitSuffix()));
-        tooltip.add(Formatter.format("&9Content: &7" + (data.getFluidTank() == null || data.getFluidTank().getFluid() == null ? data.getInventory() == null ? "empty" : data.getInventory().stream().filter(is -> is != null && !is.isEmpty()).count() : data.getFluidTank().getFluidAmount() + "mB " + data.getFluidTank().getFluid().getLocalizedName())));
+        tooltip.add(Formatter.format("&9Capacity: &7" + (data.getType().getInventoryType() == InvType.FLUID ? data.getType().getCapacity() / 1000 : data.getType().getCapacity()) + " " + data.getType().getInventoryType().unit_suffix));
+        tooltip.add(Formatter.format("&9Content: &7" + data.getInventory().getContentDesc()));
         if(data.getType().getContentFilter() != null){
             tooltip.add(Formatter.format("&9Content Filter: &7" + data.getType().getContentFilter().id()));
         }

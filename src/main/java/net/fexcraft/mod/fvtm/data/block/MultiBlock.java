@@ -17,14 +17,13 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.InventoryType;
-import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * 
@@ -34,9 +33,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 public class MultiBlock {
 	
 	private ResourceLocation regname;
-	private Map<String, InventoryType> inventories = new LinkedHashMap<>();
-	private Map<String, Integer> inventorysizes = new LinkedHashMap<>();
-	private Map<String, Object> inventorydata = new LinkedHashMap<>();
+	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
 	private ArrayList<MB_Trigger> triggers = new ArrayList<>();
 	private ArrayList<MB_Access> access = new ArrayList<>();
@@ -52,27 +49,12 @@ public class MultiBlock {
 			for(Entry<String, JsonElement> entry : invs.entrySet()){
 				String[] split = entry.getValue().getAsString().split("-");
 				String invtype = split[0];
-				int capacity = Integer.parseInt(split[1]);
-				String invdata = split.length > 2 ? split[2] : null;
-				Object data = null;
-				InventoryType type = InventoryType.valueOf(invtype.toUpperCase());
-				if(invdata != null){
-					switch(type){
-						case ENERGY:
-							break;
-						case FLUID:
-							data = FluidRegistry.getFluid(invdata);
-							break;
-						case ITEM:
-				        	data = ContentFilter.FILTER_REGISTRY.get(invdata);
-							break;
-						default:
-							break;
-					}
+				InvHandler handler = new InvHandler(InvType.parse(invtype, true));
+				handler.setCapacity(Integer.parseInt(split[1]));
+				if(split.length > 2){
+					handler.setArg(split[2]);
 				}
-				inventories.put(entry.getKey(), type);
-				inventorysizes.put(entry.getKey(), capacity);
-				if(data != null) inventorydata.put(entry.getKey(), data);
+				inventories.put(entry.getKey(), handler);
 			}
 		}
 		BlockPos core = null;
@@ -202,16 +184,8 @@ public class MultiBlock {
 		return regname;
 	}
 
-	public Map<String, InventoryType> getInventoryTypes(){
+	public Map<String, InvHandler> getInventories(){
 		return inventories;
-	}
-
-	public Map<String, Integer> getInventorySizes(){
-		return inventorysizes;
-	}
-
-	public Map<String, Object> getInventoryData(){
-		return inventorydata;
 	}
 
 	public ArrayList<Entry<ResourceLocation, EnumFacing>> getBlocks(){

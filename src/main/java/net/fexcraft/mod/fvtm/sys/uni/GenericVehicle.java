@@ -204,8 +204,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
     	if(this.hasCapability(capability, facing)){
 			for(String inv_id : getVehicleData().getInventories()){
-				InventoryFunction inventory = getVehicleData().getPart(inv_id).getFunction(InventoryFunction.class, "fvtm:inventory");
-				if(inventory.isInventoryType(capability)){ return inventory.getInventory(capability); }
+				InventoryFunction invfunc = getVehicleData().getPart(inv_id).getFunction(InventoryFunction.class, "fvtm:inventory");
+				if(invfunc.isInventoryType(capability)){ return invfunc.getInventory(capability); }
 			}
     	}
         return super.getCapability(capability, facing);

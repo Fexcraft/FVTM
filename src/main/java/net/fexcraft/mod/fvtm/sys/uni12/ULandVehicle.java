@@ -19,7 +19,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -291,14 +290,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public void setDead(){
         if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
             for(String part : vehicle.getInventories()){
-            	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory"); if(func == null) continue;
-            	if(func.isInventoryType(InventoryType.ITEM)){
-            		for(int i = 0; i < func.getStacks().size(); i++){
-                        this.entityDropItem(func.getStacks().get(i), 0.5f);
-                        func.getStacks().set(i, ItemStack.EMPTY);
-            		}
-            	}
-            	//TODO fluid handler alternative
+            	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory");
+            	if(func == null) continue;
+        		func.inventory().dropAllAt(this);
             }
         }
         this.getCapability(Capabilities.CONTAINER, null).dropContents();

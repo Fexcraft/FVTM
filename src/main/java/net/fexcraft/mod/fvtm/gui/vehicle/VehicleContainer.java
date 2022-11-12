@@ -11,7 +11,6 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Fuel;
-import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -87,7 +86,7 @@ public class VehicleContainer extends GenericContainer {
 			int invid = 0;
 			for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
-				if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
+				if(inv == null || inv.inventory().type.isContainer()) continue;
 				if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
 					if(invid == z){
 						inv_id = entry.getKey();
@@ -132,53 +131,43 @@ public class VehicleContainer extends GenericContainer {
 		this.inventorySlots.clear();
 		this.empty_index = -1;
 		slots = 0;
-		switch(function.getInventoryType()){
-			case CONTAINER:
-				return;
-			case ENERGY:
-				break;
-			case FLUID:{
-				fluid_io = new GenericIInventory(null, 2, 1);
-				slots = 2;
-				addSlotToContainer(new Slot(fluid_io, 0, 116, 50));
-				addSlotToContainer(new Slot(fluid_io, 1, 152, 50));
-				//
-				for(int row = 0; row < 3; row++){
-					for(int col = 0; col < 9; col++){
-						addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 74 + row * 18));
-					}
-				}
+		if(function.inventory().type.isFluid()){
+			fluid_io = new GenericIInventory(null, 2, 1);
+			slots = 2;
+			addSlotToContainer(new Slot(fluid_io, 0, 116, 50));
+			addSlotToContainer(new Slot(fluid_io, 1, 152, 50));
+			//
+			for(int row = 0; row < 3; row++){
 				for(int col = 0; col < 9; col++){
-					addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
+					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 74 + row * 18));
 				}
-				break;
 			}
-			case ITEM:{
-				temp = new TIFI(invpart, function);
-				for(int row = 0; row < 6; row++){
-					for(int col = 0; col < 13; col++){
-						int index = (col + row * 13) + (page * 78);
-						if(index >= temp.getSizeInventory()){
-							if(empty_index == -1) empty_index = index;
-							break;
-						}
-						addSlotToContainer(new TIS(temp, index, 8 + col * 18, 22 + row * 18, temp.getData(), null));
-						slots++;
+			for(int col = 0; col < 9; col++){
+				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
+			}
+		}
+		else if(function.inventory().type.isItem()){
+			temp = new TIFI(invpart, function);
+			for(int row = 0; row < 6; row++){
+				for(int col = 0; col < 13; col++){
+					int index = (col + row * 13) + (page * 78);
+					if(index >= temp.getSizeInventory()){
+						if(empty_index == -1) empty_index = index;
+						break;
 					}
+					addSlotToContainer(new TIS(temp, index, 8 + col * 18, 22 + row * 18, temp.getData(), null));
+					slots++;
 				}
-				//
-				for(int row = 0; row < 3; row++){
-					for(int col = 0; col < 9; col++){
-						addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 136 + row * 18));
-					}
-				}
+			}
+			//
+			for(int row = 0; row < 3; row++){
 				for(int col = 0; col < 9; col++){
-					addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 192));
+					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 136 + row * 18));
 				}
-				break;
 			}
-			default:
-				return;
+			for(int col = 0; col < 9; col++){
+				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 192));
+			}
 		}
 	}
 
@@ -194,7 +183,7 @@ public class VehicleContainer extends GenericContainer {
 			}
 			else{
 				if(packet.getString("cargo").equals("update_fluid_tank")){
-					function.getFluidTank().readFromNBT(packet.getCompoundTag("state"));
+					function.inventory().load(packet.getCompoundTag("state"));
 					if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
 					if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 				}
@@ -266,7 +255,7 @@ public class VehicleContainer extends GenericContainer {
 				if(!stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)){
 					IFluidHandlerItem item = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 					if(item.getTankProperties().length > 0 && item.getTankProperties()[0].getContents() != null && item.getTankProperties()[0].getContents().amount > 0){
-						FluidActionResult result = FluidUtil.tryEmptyContainer(stack, function.getFluidTank(), 1000, player, true);
+						FluidActionResult result = FluidUtil.tryEmptyContainer(stack, function.inventory().getTank(), 1000, player, true);
 						if(result.success){
 							anychange = true;
 							fluid_io.setInventorySlotContents(0, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
@@ -274,10 +263,10 @@ public class VehicleContainer extends GenericContainer {
 					}
 				}
 				//
-				if(function.getFluidTank().getFluidAmount() > 0){
+				if(function.inventory().getTank().getFluidAmount() > 0){
 					stack = fluid_io.getStackInSlot(1);
 					if(!stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)){
-						FluidActionResult result = FluidUtil.tryFillContainer(stack, function.getFluidTank(), 1000, player, true);
+						FluidActionResult result = FluidUtil.tryFillContainer(stack, function.inventory().getTank(), 1000, player, true);
 						if(result.success){
 							anychange = true;
 							fluid_io.setInventorySlotContents(1, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
@@ -288,7 +277,7 @@ public class VehicleContainer extends GenericContainer {
 				if(!player.world.isRemote && anychange){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fluid_tank");
-					compound.setTag("state", function.getFluidTank().writeToNBT(new NBTTagCompound()));
+					compound.setTag("state", function.inventory().save(new NBTTagCompound()));
 					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);

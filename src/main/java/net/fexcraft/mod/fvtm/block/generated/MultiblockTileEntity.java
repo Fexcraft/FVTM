@@ -129,7 +129,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
     	if(capabilities == null) loadCapabilities();
     	if(capabilities != null && capabilities.containsKey(facing)){
 			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
-				if(con.cap == capability) return (T)con.value;
+				if(con.cap == capability) return (T)con.handler.getCapObj();
 			}
     	}
         return super.getCapability(capability, facing);

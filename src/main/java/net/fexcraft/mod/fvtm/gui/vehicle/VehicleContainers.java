@@ -6,7 +6,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.InventoryType;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -31,7 +31,7 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 		this.xSize = 194;
 		this.ySize = 134;
 		entity = world.getEntityByID(y); inv_names = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds();
-		for(int i = 0; i < 8; i++) colors[i] = InventoryType.CONTAINER.getColor();
+		for(int i = 0; i < 8; i++) colors[i] = InvType.CONTAINER.color;
 		containers = I18n.format("gui.fvtm.vehicle.container.containers");
 	}
 

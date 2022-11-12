@@ -26,7 +26,7 @@ public class ContainerFluidInventory extends GenericGui<ContainerInvContainer> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		FluidTank tank = container.tile.getContainerData().getFluidTank();
+		FluidTank tank = container.tile.getContainerData().getInventory().getTank();
 		String name = tank.getFluid() == null ? "no fluid" : tank.getFluid().getLocalizedName();
 		texts.get("info").string = tank.getFluidAmount() == 0 ? "empty - " + name : name; 
 		texts.get("capacity").string = tank.getFluidAmount() + "mB / " + tank.getCapacity() + "mB";
@@ -34,7 +34,7 @@ public class ContainerFluidInventory extends GenericGui<ContainerInvContainer> {
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		float percent = container.tile.getContainerData().getFluidTank().getFluidAmount() * 1f / container.tile.getContainerData().getFluidTank().getCapacity() * 100f;
+		float percent = container.tile.getContainerData().getInventory().getTank().getFluidAmount() * 1f / container.tile.getContainerData().getInventory().getTank().getCapacity() * 100f;
 		if(percent > 0) drawTexturedModalRect(guiLeft + 10, guiTop + 49, 0, 238, (int)percent, 18);
 	}
 

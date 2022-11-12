@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
@@ -41,7 +40,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		SeatCache seat = veh.getSeatOf(player);
 		for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
-			if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
+			if(inv == null || inv.inventory().type.isContainer()) continue;
 			if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
 				inventories.add(entry.getValue()); inv_names.add(entry.getKey());
 			}
@@ -99,7 +98,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		texts.get("top").string = String.format(INVENTORIES + " [%s/%s]", page + 1, inventories.size() / 8 + 1);
 		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inventories.size();
 			texts.get("row" + j).string = bool ? "" : inv_names.get(k); buttons.get("inv" + j).enabled = !bool;
-			if(!bool){ colors[j] = inventories.get(k).getFunction(InventoryFunction.class, "fvtm:inventory").getInventoryType().getColor(); }
+			if(!bool){ colors[j] = inventories.get(k).getFunction(InventoryFunction.class, "fvtm:inventory").inventory().type.color; }
 			else{ colors[j] = RGB.WHITE; }
 		}
 	}

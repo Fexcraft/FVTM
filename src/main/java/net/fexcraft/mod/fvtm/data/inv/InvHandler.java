@@ -76,12 +76,6 @@ public class InvHandler {
 	}
 
 	public String getContentDesc(){
-		if(type.isFluid()){
-			return getTank().getFluidAmount() + "mB " + getTank().getFluid().getLocalizedName();
-		}
-		else if(type.isItem()){
-			return getStacks().stream().filter(is -> is != null && !is.isEmpty()).count() + "";
-		}
 		return "empty";
 	}
 

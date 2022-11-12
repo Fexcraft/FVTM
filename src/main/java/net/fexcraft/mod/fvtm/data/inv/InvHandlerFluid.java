@@ -48,4 +48,10 @@ public class InvHandlerFluid extends InvHandler {
 		return tank;
 	}
 
+	@Override
+	public String getContentDesc(){
+		if(tank.getFluid() == null) return super.getContentDesc();
+		return tank.getFluidAmount() + "mB " + tank.getFluid().getLocalizedName();
+	}
+
 }

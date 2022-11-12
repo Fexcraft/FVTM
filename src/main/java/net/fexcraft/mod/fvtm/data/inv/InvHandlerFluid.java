@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
-import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -10,7 +9,6 @@ public class InvHandlerFluid extends InvHandler {
 	
 	protected FluidTank tank;
 	protected Fluid fluid;
-	private ContentFilter filter;
 
 	public InvHandlerFluid(InvType type, String fluidid, int cap){
 		super(type);

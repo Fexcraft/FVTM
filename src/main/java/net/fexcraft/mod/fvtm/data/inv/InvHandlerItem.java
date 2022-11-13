@@ -1,22 +1,27 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
-import net.fexcraft.mod.fvtm.util.DataUtil;
+import java.util.ArrayList;
+
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
-import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class InvHandlerItem extends InvHandler {
 	
 	protected ItemStackHandler handler;
-	protected NonNullList<ItemStack> stacks;
+	protected ArrayList<StackEntry> stacks = new ArrayList<>();
 	private ContentFilter filter;
 
 	public InvHandlerItem(InvType type, String filter, int cap){
 		super(type);
+		capacity = cap;
 		if(filter != null) this.filter = ContentFilter.FILTER_REGISTRY.get(filter);
-		stacks = NonNullList.withSize(capacity = cap, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -26,28 +31,85 @@ public class InvHandlerItem extends InvHandler {
 
 	@Override
 	public NBTTagCompound save(NBTTagCompound compound, String ctag){
-        compound = DataUtil.saveAllItems(compound, stacks, true, ctag);
+		NBTTagList list = new NBTTagList();
+		for(StackEntry entry : stacks){
+			NBTTagCompound com = new NBTTagCompound();
+			entry.stack.writeToNBT(com);
+			com.setInteger("fvtm:stack_amount", entry.amount);
+			list.appendTag(list);
+		}
+        if(list.tagCount() > 0) compound.setTag(ctag == null ? "Items" : ctag, list);
         return compound;
 	}
 
 	@Override
 	public void load(NBTTagCompound compound, String ctag){
-        DataUtil.loadAllItems(compound, stacks, ctag);
+		stacks.clear();
+		NBTTagList list = (NBTTagList)compound.getTag(ctag == null ? "Items" : ctag);
+		if(list == null || list.isEmpty()) return;
+		for(NBTBase base : list){
+			NBTTagCompound com = (NBTTagCompound)base;
+			stacks.add(new StackEntry(com));
+		}
 	}
 
-	public NonNullList<ItemStack> getStacks(){
+	public ArrayList<StackEntry> getStacks(){
 		return stacks;
 	}
 	
 	@Override
 	public ItemStackHandler getStackHandler(){
-		if(handler == null) handler = new ItemStackHandler(stacks);
+		if(handler == null) handler = new ItemStackHandler(this);
 		return handler;
 	}
 	
 	@Override
+	public void dropAllAt(Entity entity){
+		for(StackEntry entry : stacks){
+			int am = entry.amount;
+			while(am - entry.stack.getMaxStackSize() > 0){
+	            entity.entityDropItem(entry.stack, 0.5f);
+	            am -= entry.stack.getMaxStackSize();
+			}
+		}
+		stacks.clear();
+	}
+
+	@Override
+	public void dropAllAt(World world, BlockPos pos){
+		for(StackEntry entry : stacks){
+			int am = entry.amount;
+			while(am - entry.stack.getMaxStackSize() > 0){
+                EntityItem entity = new EntityItem(world);
+                entity.setPosition(pos.getX() + 0.5, pos.getY() + 2.5, pos.getZ() + 0.5);
+                entity.setItem(entry.stack);
+                world.spawnEntity(entity);
+	            am -= entry.stack.getMaxStackSize();
+			}
+		}
+		stacks.clear();
+	}
+	
+	@Override
 	public String getContentDesc(){
-		return getStacks().stream().filter(is -> is != null && !is.isEmpty()).count() + "";
+		return getStacks().stream().filter(is -> is != null && !is.stack.isEmpty()).count() + "";
+	}
+	
+	public static class StackEntry {
+		
+		public ItemStack stack = ItemStack.EMPTY;
+		public int amount = 0;
+		
+		public StackEntry(NBTTagCompound com){
+			stack = new ItemStack(com);
+			amount = com.getInteger("fvtm:stack_amount");
+		}
+		
+		public int stacksize(){
+			int ret = amount % stack.getMaxStackSize();
+			return (amount / stack.getMaxStackSize()) + (ret > 0 ? 1 : 0);
+		}
+		
 	}
 	
 }

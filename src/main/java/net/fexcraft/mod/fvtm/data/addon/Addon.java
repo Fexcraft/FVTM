@@ -295,7 +295,7 @@ public class Addon extends TypeCore<Addon> {
 						if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
 						continue;
 					}
-					data.register(core); Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
+					data.register(core); //Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
 					if(Static.side().isClient()){
 						checkIfHasCustomModel(data, core);
 					}
@@ -330,7 +330,7 @@ public class Addon extends TypeCore<Addon> {
 							if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
 							continue;
 						}
-						data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
+						data.register(core); //Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
 						if(Static.side().isClient()){
 							checkIfHasCustomModel(data, core);
 						}

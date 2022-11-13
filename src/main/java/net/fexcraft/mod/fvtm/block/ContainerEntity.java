@@ -9,9 +9,9 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -123,7 +123,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
             if(itemStackHandler == null){
-                itemStackHandler = new ItemStackHandler(getCore().container, getCore().container.getInventory().getStacks());
+                itemStackHandler = getCore().container.getInventory().getStackHandler();
             }
             return (T) itemStackHandler;
         }
@@ -171,15 +171,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
             	}
                 //
                 if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
-                    for(ItemStack stack : getContainerData().getInventory().getStacks()){
-                        if(!stack.isEmpty()){
-                            EntityItem entity = new EntityItem(world);
-                            entity.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 2.5, blkpos.getZ() + 0.5);
-                            entity.setItem(stack);
-                            world.spawnEntity(entity);
-                        }
-                    }
-                    getContainerData().getInventory().getStacks().clear();
+                    getContainerData().getInventory().dropAllAt(world, blkpos);
                 }
             }
             if(asplayer ? !blkpos.equals(pos) : true){

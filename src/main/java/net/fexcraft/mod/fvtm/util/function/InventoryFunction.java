@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -102,15 +101,10 @@ public class InventoryFunction extends Function {
 	}
 
 	public <T> T getInventory(Capability<?> capability){
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T)new ItemStackHandler(inventory.getStacks());
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T)inventory.getStackHandler();
 		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return (T)inventory.getTank();
 		return null;
 	}
-
-	@Deprecated
-    public ItemStackHandler getItemStackHandler(){
-        return new ItemStackHandler(inventory.getStacks());
-    }
     
     public ArrayList<String> getSeats(){
     	return seats;

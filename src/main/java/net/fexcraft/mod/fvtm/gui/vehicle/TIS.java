@@ -1,23 +1,22 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
-import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 /** Temporary Inventory Slot */
 public class TIS extends Slot {
+	
+	protected InvHandler handler;
 
-    private ContainerData containerdata;
-    private PartData partdata;
-
-    public TIS(IInventory inventory, int index, int xPosition, int yPosition, PartData data, ContainerData condata){
-        super(inventory, index, xPosition, yPosition); this.partdata = data; this.containerdata = condata;
+    public TIS(InvHandler handler, int index, int xPosition, int yPosition){
+        super(new TIFI(handler), index, xPosition, yPosition);
+        this.handler = handler;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class TIS extends Slot {
                 return false;
             }
         }
-        return partdata == null ? containerdata == null ? true : containerdata.getInventory().getFilter().isValid(stack) : partdata.getFunction(InventoryFunction.class, "fvtm:inventory").isItemValid(stack);
+        return handler.getFilter().isValid(stack);
     }
 
 }

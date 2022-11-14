@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class InvHandlerItem extends InvHandler {
 	
@@ -26,7 +27,7 @@ public class InvHandlerItem extends InvHandler {
 
 	@Override
 	public ContentFilter getFilter(){
-		return null;
+		return filter;
 	}
 
 	@Override
@@ -109,7 +110,38 @@ public class InvHandlerItem extends InvHandler {
 			int ret = amount % stack.getMaxStackSize();
 			return (amount / stack.getMaxStackSize()) + (ret > 0 ? 1 : 0);
 		}
+
+		public boolean overmax(){
+			return amount > stack.getMaxStackSize();
+		}
+
+		public int max(){
+			return stack.getMaxStackSize();
+		}
+
+		public int tillfullstack(){
+			return stack.getMaxStackSize() - (amount % stack.getMaxStackSize());
+		}
+
+		public ItemStack genstack(int size){
+			ItemStack nstack = stack.copy();
+			nstack.setCount(amount < size ? amount : size);
+			return nstack;
+		}
 		
+	}
+
+	public StackEntry getEntryFor(ItemStack stack){
+		for(StackEntry entry : stacks){
+			if(ItemHandlerHelper.canItemStacksStack(stack, entry.stack)) return entry;
+		}
+		return null;
+	}
+
+	public boolean full(){
+		int am = 0;
+		for(StackEntry entry : stacks) am += entry.stacksize();
+		return am >= capacity;
 	}
 	
 }

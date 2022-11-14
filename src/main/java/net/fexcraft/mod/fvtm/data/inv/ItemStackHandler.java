@@ -1,13 +1,16 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.IItemHandler;
 
-public class ItemStackHandler extends net.minecraftforge.items.ItemStackHandler {
+public class ItemStackHandler implements IItemHandler {
 	
 	protected InvHandlerItem handler;
 	private ContentFilter filter;
@@ -33,22 +36,79 @@ public class ItemStackHandler extends net.minecraftforge.items.ItemStackHandler 
     //
 
 	@Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate){
+	public int getSlots(){
+		return 1;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int idx){
+		validateIndex(idx);
+		StackEntry entry = handler.stacks.get(idx);
+		ItemStack stack = entry.stack.copy();
+		stack.setCount(entry.overmax() ? entry.amount : entry.max());
+		return stack;
+	}
+
+	@Override
+	public ItemStack insertItem(int idx, ItemStack stack, boolean simulate){
+		if(stack.isEmpty()) return ItemStack.EMPTY;
         if(stack.getItem() instanceof VehicleItem || stack.getItem() instanceof ContainerItem || isContainerPart(stack) || !isValid(stack)){
             return stack;
         }
-        return super.insertItem(slot, stack, simulate);
-    }
-	
-    @Override
-    public void setStackInSlot(int slot, ItemStack stack){
-        validateIndex(slot);
-        this.stacks.set(slot, stack);
-        onContentsChanged(slot);
-    }
+		validateIndex(idx);
+		StackEntry entry = handler.getEntryFor(stack);
+		if(entry == null){
+			if(handler.full()) return stack;
+			if(simulate) return ItemStack.EMPTY;
+			entry = new StackEntry(stack.writeToNBT(new NBTTagCompound()));
+			entry.amount = stack.getCount();
+			entry.stack.setCount(1);
+			handler.stacks.add(entry);
+			return ItemStack.EMPTY;
+		}
+		int tfs = entry.tillfullstack();
+		if(tfs >= stack.getCount()){
+			if(!simulate) entry.amount += stack.getCount();
+			return ItemStack.EMPTY;
+		}
+		else{
+			if(!simulate) entry.amount += tfs;
+			if(tfs > 0){
+				stack = stack.copy();
+				stack.shrink(tfs);
+			}
+			if(handler.full()){
+				return stack;
+			}
+			if(!simulate && stack.getCount() > 0) entry.amount += stack.getCount();
+			return ItemStack.EMPTY;
+		}
+	}
 
-	private void validateIndex(int slot){
-		if(slot < 0 || slot > stacks.size()) validateSlotIndex(slot);
+	@Override
+	public ItemStack extractItem(int idx, int amount, boolean simulate){
+		if(amount == 0) return ItemStack.EMPTY;
+		validateIndex(idx);
+		StackEntry entry = handler.stacks.get(idx);
+		int exam = entry.max() < amount ? entry.max() : amount;
+		ItemStack stack = entry.genstack(exam);
+		if(exam >= entry.amount){
+			if(!simulate) handler.stacks.remove(entry);
+		}
+		else{
+			if(!simulate) entry.amount -= exam;
+		}
+		return stack;
+	}
+
+	@Override
+	public int getSlotLimit(int slot){
+		return 256;
+	}
+
+	private void validateIndex(int idx){
+		if(idx >= 0 && idx < handler.stacks.size()) return;
+		throw new RuntimeException("Index " + idx + " is not in valid range [0 - " + handler.stacks.size() + "]");
 	}
 
 }

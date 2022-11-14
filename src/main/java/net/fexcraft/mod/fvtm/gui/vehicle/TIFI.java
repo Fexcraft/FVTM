@@ -1,11 +1,9 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -13,19 +11,15 @@ import net.minecraft.util.text.TextComponentString;
 /** "Temporary Inventory Function Inventory "*/
 public class TIFI implements IInventory {
 
-	private InventoryFunction func;
-	private InvHandler inv;
-    private PartData part;
+	private InvHandlerItem inv;
 
-    public TIFI(PartData data, InventoryFunction partfunc){
-        part = data;
-        func = partfunc;
-        inv = func.inventory();
+    public TIFI(InvHandler handler){
+        inv = (InvHandlerItem)handler;
     }
 
     @Override
     public String getName(){
-        return part.getType().getRegistryName().toString();
+        return "Item Inventory Handler";
     }
 
     @Override
@@ -35,12 +29,12 @@ public class TIFI implements IInventory {
 
     @Override
     public ITextComponent getDisplayName(){
-        return new TextComponentString(part.getType().getName());
+        return new TextComponentString("Item Inventory Handler");
     }
 
     @Override
     public int getSizeInventory(){
-        return inv.getStacks().size();
+        return 1;
     }
 
     @Override
@@ -50,22 +44,22 @@ public class TIFI implements IInventory {
 
     @Override
     public ItemStack getStackInSlot(int index){
-        return inv.getStacks().get(index);
+        return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count){
-        return !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(inv.getStacks(), index, count) : ItemStack.EMPTY;
+        return ItemStack.EMPTY;//!getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(inv.getStacks(), index, count) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index){
-        return inv.getStacks().set(index, ItemStack.EMPTY);
+        return ItemStack.EMPTY;//inv.getStacks().set(index, ItemStack.EMPTY);
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack){
-        inv.getStacks().set(index, stack);
+        //inv.getStacks().set(index, stack);
     }
 
     @Override
@@ -95,7 +89,7 @@ public class TIFI implements IInventory {
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack){
-        return func.isItemValid(stack);
+        return inv.getFilter() == null ? true : inv.getFilter().isValid(stack);
     }
 
     @Override
@@ -116,10 +110,6 @@ public class TIFI implements IInventory {
     @Override
     public void clear(){
         inv.getStacks().clear();
-    }
-
-    public PartData getData(){
-        return this.part;
     }
 
 }

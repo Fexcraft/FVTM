@@ -34,7 +34,7 @@ public class TIS extends Slot {
                 return false;
             }
         }
-        return partdata == null ? containerdata == null ? true : containerdata.getType().getContentFilter().isValid(containerdata, stack) : partdata.getFunction(InventoryFunction.class, "fvtm:inventory").isItemValid(stack);
+        return partdata == null ? containerdata == null ? true : containerdata.getInventory().getFilter().isValid(stack) : partdata.getFunction(InventoryFunction.class, "fvtm:inventory").isItemValid(stack);
     }
 
 }

@@ -37,12 +37,12 @@ public class ItemStackHandler implements IItemHandler {
 
 	@Override
 	public int getSlots(){
-		return 1;
+		return handler.stacks.size();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int idx){
-		validateIndex(idx);
+		if(idx < 0 || idx >= handler.stacks.size()) return ItemStack.EMPTY;
 		StackEntry entry = handler.stacks.get(idx);
 		ItemStack stack = entry.stack.copy();
 		stack.setCount(entry.overmax() ? entry.amount : entry.max());
@@ -50,12 +50,11 @@ public class ItemStackHandler implements IItemHandler {
 	}
 
 	@Override
-	public ItemStack insertItem(int idx, ItemStack stack, boolean simulate){
+	public ItemStack insertItem(int unused, ItemStack stack, boolean simulate){
 		if(stack.isEmpty()) return ItemStack.EMPTY;
         if(stack.getItem() instanceof VehicleItem || stack.getItem() instanceof ContainerItem || isContainerPart(stack) || !isValid(stack)){
             return stack;
         }
-		validateIndex(idx);
 		StackEntry entry = handler.getEntryFor(stack);
 		if(entry == null){
 			if(handler.full()) return stack;
@@ -88,7 +87,7 @@ public class ItemStackHandler implements IItemHandler {
 	@Override
 	public ItemStack extractItem(int idx, int amount, boolean simulate){
 		if(amount == 0) return ItemStack.EMPTY;
-		validateIndex(idx);
+		if(idx < 0 || idx >= handler.stacks.size()) return ItemStack.EMPTY;
 		StackEntry entry = handler.stacks.get(idx);
 		int exam = entry.max() < amount ? entry.max() : amount;
 		ItemStack stack = entry.genstack(exam);
@@ -102,13 +101,9 @@ public class ItemStackHandler implements IItemHandler {
 	}
 
 	@Override
-	public int getSlotLimit(int slot){
-		return 256;
-	}
-
-	private void validateIndex(int idx){
-		if(idx >= 0 && idx < handler.stacks.size()) return;
-		throw new RuntimeException("Index " + idx + " is not in valid range [0 - " + handler.stacks.size() + "]");
+	public int getSlotLimit(int idx){
+		if(idx < 0 || idx >= handler.stacks.size()) return 0;
+		return handler.stacks.get(idx).max();
 	}
 
 }

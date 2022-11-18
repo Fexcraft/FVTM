@@ -58,8 +58,8 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         //
         tooltip.add(Formatter.format("&9Capacity: &7" + (data.getType().getInventoryType() == InvType.FLUID ? data.getType().getCapacity() / 1000 : data.getType().getCapacity()) + " " + data.getType().getInventoryType().unit_suffix));
         tooltip.add(Formatter.format("&9Content: &7" + data.getInventory().getContentDesc()));
-        if(data.getType().getContentFilter() != null){
-            tooltip.add(Formatter.format("&9Content Filter: &7" + data.getType().getContentFilter().id()));
+        if(data.getInventory().getFilter() != null){
+            tooltip.add(Formatter.format("&9Content Filter: &7" + data.getInventory().getFilter().id()));
         }
     	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLockCode()));
     }

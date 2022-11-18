@@ -1,13 +1,15 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import java.util.ArrayList;
+
+import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class InvHandler {
 	
@@ -67,7 +69,7 @@ public class InvHandler {
 	
 	//
 
-	public NonNullList<ItemStack> getStacks(){
+	public ArrayList<StackEntry> getStacks(){
 		return null;
 	}
 
@@ -80,11 +82,11 @@ public class InvHandler {
 	}
 
 	public void dropAllAt(Entity entity){
-		if(!type.isItem()) return;
-		for(int i = 0; i < getStacks().size(); i++){
-            entity.entityDropItem(getStacks().get(i), 0.5f);
-            getStacks().set(i, ItemStack.EMPTY);
-		}
+		//
+	}
+
+	public void dropAllAt(World world, BlockPos pos){
+        //
 	}
 
 	public String getBlkSavePrefix(){

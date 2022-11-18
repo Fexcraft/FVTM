@@ -128,10 +128,6 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
         return inventory;
     }
 
-	public boolean isItemValid(ItemStack stack){
-		return type.getContentFilter() == null ? true : type.getContentFilter().isValid(this, stack);
-	}
-
 	@Override
 	public Textureable getTexture(){
 		return texture;

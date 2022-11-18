@@ -5,9 +5,9 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -77,7 +77,7 @@ public class GBlockInvContainer extends GenericContainer {
 			}
 		}
 		else if(inventory.type.isItem()){
-			temp = new ItemStackHandler(tile.getMultiBlockData().getInventory(inv_id).getStacks());
+			temp = tile.getMultiBlockData().getInventory(inv_id).getStackHandler();
 			int size = tile.getMultiBlockData().getInventory(inv_id).getStacks().size();
 			for(int row = 0; row < 6; row++){
 				for(int col = 0; col < 13; col++){

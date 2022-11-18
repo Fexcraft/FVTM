@@ -41,6 +41,7 @@ public class VehicleContainer extends GenericContainer {
 	protected GenericVehicle veh;
 	protected PartData invpart;
 	protected String inv_id;
+	protected TIFI temp;
 	protected GenericIInventory fluid_io, fuel;
 	protected int empty_index = -1, page, slots;
 	protected long fluid_date;
@@ -143,6 +144,29 @@ public class VehicleContainer extends GenericContainer {
 			}
 			for(int col = 0; col < 9; col++){
 				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
+			}
+		}
+		else if(function.inventory().type.isItem()){
+			temp = new TIFI(invpart, function);
+			for(int row = 0; row < 6; row++){
+				for(int col = 0; col < 13; col++){
+					int index = (col + row * 13) + (page * 78);
+					if(index >= temp.getSizeInventory()){
+						if(empty_index == -1) empty_index = index;
+						break;
+					}
+					addSlotToContainer(new TIS(temp, index, 8 + col * 18, 22 + row * 18, temp.getData(), null));
+					slots++;
+				}
+			}
+			//
+			for(int row = 0; row < 3; row++){
+				for(int col = 0; col < 9; col++){
+					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 136 + row * 18));
+				}
+			}
+			for(int col = 0; col < 9; col++){
+				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 192));
 			}
 		}
 	}

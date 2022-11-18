@@ -27,6 +27,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -154,6 +155,10 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 
 	public Fluid getFluidType(){
 		return invtype.getFluid();
+	}
+
+	public ContentFilter getContentFilter(){
+		return invtype.getFilter();
 	}
 
 	@Override

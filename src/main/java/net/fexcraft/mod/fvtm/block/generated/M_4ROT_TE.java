@@ -107,7 +107,7 @@ public class M_4ROT_TE extends BlockBase {
     	return false;
     }
 
-    public static void openInventory(EntityPlayer player, String target, BlockPos corepos){
+    protected static void openInventory(EntityPlayer player, String target, BlockPos corepos){
     	TileEntity core = (TileEntity)player.world.getTileEntity(corepos);
     	ApiUtil.sendTileEntityUpdatePacket(core, core.writeToNBT(new NBTTagCompound()), 256);
     	//

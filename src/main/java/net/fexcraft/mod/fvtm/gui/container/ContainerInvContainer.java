@@ -5,8 +5,8 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
+import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -59,7 +59,7 @@ public class ContainerInvContainer extends GenericContainer {
 			}
 		}
 		else if(type.isItem()){
-			temp = tile.getContainerData().getInventory().getStackHandler();
+			temp = new ItemStackHandler(tile.getContainerData(), tile.getContainerData().getInventory().getStacks());
 			for(int row = 0; row < 6; row++){
 				for(int col = 0; col < 13; col++){
 					int index = (col + row * 13) + (page * 78);

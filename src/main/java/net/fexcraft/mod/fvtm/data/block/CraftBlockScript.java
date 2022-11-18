@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -237,7 +237,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					data.getInventory(inventory).getTank().drain(entry.fluid, true);
 				}
 				else{
-					ItemStackHandler handler = data.getInventory(inventory).getStackHandler();
+					IItemHandler handler = data.getInventory(inventory).getStackHandler();
 					for(int i = 0; i < handler.getSlots(); i++){
 						ItemStack stack = handler.getStackInSlot(i);
 						if(entry.valid(stack) && stack.getCount() >= entry.amount){
@@ -254,7 +254,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					data.getInventory(inventory).getTank().fill(entry.fluid, true);
 				}
 				else{
-					ItemStackHandler handler = data.getInventory(inventory).getStackHandler();
+					IItemHandler handler = data.getInventory(inventory).getStackHandler();
 					ItemStack left = entry.stack.copy();
 					for(int i = 0; i < handler.getSlots(); i++){
 						left = handler.insertItem(i, left, false);
@@ -288,7 +288,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				else{
 					boolean found = false;
-					ItemStackHandler handler = data.getInventory(invid).getStackHandler();
+					IItemHandler handler = data.getInventory(invid).getStackHandler();
 					for(int i = 0; i < handler.getSlots(); i++){
 						if(ints.contains(i)) continue;
 						if(handler.insertItem(i, entry.stack, true).isEmpty()){
@@ -325,7 +325,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				else{
 					boolean found = false;
-					ItemStackHandler handler = data.getInventory(invid).getStackHandler();
+					IItemHandler handler = data.getInventory(invid).getStackHandler();
 					for(int i = 0; i < handler.getSlots(); i++){
 						if(ints.contains(i)) continue;
 						ItemStack stack = handler.getStackInSlot(i);

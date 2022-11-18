@@ -145,28 +145,6 @@ public class VehicleContainer extends GenericContainer {
 				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
 			}
 		}
-		else if(function.inventory().type.isItem()){
-			for(int row = 0; row < 6; row++){
-				for(int col = 0; col < 13; col++){
-					int index = (col + row * 13) + (page * 78);
-					if(index >= 1){
-						if(empty_index == -1) empty_index = index;
-						break;
-					}
-					addSlotToContainer(new TIS(function.inventory(), index, 8 + col * 18, 22 + row * 18));
-					slots++;
-				}
-			}
-			//
-			for(int row = 0; row < 3; row++){
-				for(int col = 0; col < 9; col++){
-					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 136 + row * 18));
-				}
-			}
-			for(int col = 0; col < 9; col++){
-				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 192));
-			}
-		}
 	}
 
 	@Override

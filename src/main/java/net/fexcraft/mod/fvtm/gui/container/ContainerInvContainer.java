@@ -5,7 +5,6 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -18,16 +17,14 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerInvContainer extends GenericContainer {
 
 	protected GenericGui<ContainerInvContainer> gui;
 	//
 	protected long fluid_date;
-	protected ItemStackHandler temp;
 	protected GenericIInventory fluid_io;
-	protected int empty_index = -1, page, slots;
+	protected int slots;
 	//
 	protected ContainerEntity tile;
 
@@ -40,7 +37,6 @@ public class ContainerInvContainer extends GenericContainer {
 	protected void populateSlots(){
 		this.inventoryItemStacks.clear();
 		this.inventorySlots.clear();
-		this.empty_index = -1;
 		slots = 0;
 		InvType type = tile.getInventoryType();
 		if(type.isFluid()){
@@ -58,39 +54,13 @@ public class ContainerInvContainer extends GenericContainer {
 				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
 			}
 		}
-		else if(type.isItem()){
-			temp = tile.getContainerData().getInventory().getStackHandler();
-			for(int row = 0; row < 6; row++){
-				for(int col = 0; col < 13; col++){
-					int index = (col + row * 13) + (page * 78);
-					if(index >= tile.getContainerData().getType().getCapacity()){
-						if(empty_index == -1) empty_index = index;
-						break;
-					}
-					addSlotToContainer(new SlotItemHandler(temp, index, 8 + col * 18, 22 + row * 18));
-					slots++;
-				}
-			}
-			//
-			for(int row = 0; row < 3; row++){
-				for(int col = 0; col < 9; col++){
-					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 136 + row * 18));
-				}
-			}
-			for(int col = 0; col < 9; col++){
-				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 192));
-			}
-		}
 	}
 
 	@Override
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 		if(!packet.hasKey("cargo")) return;
 		if(side.isServer()){
-			if(packet.getString("cargo").equals("inventory_page")){
-				page = packet.getInteger("page");
-				this.populateSlots();
-			}
+			//
 		}
 		else{
 			if(packet.getString("cargo").equals("update_fluid_tank")){

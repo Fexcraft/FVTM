@@ -8,14 +8,13 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
-import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
-import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
 import net.fexcraft.mod.fvtm.gui.construct.*;
 import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
 import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
-import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
 import net.fexcraft.mod.fvtm.gui.deco.DecoEditor;
 import net.fexcraft.mod.fvtm.gui.deco.DecoEditorContainer;
+import net.fexcraft.mod.fvtm.gui.inv.UniItemInvContainer;
+import net.fexcraft.mod.fvtm.gui.inv.UniItemInvUi;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemChooser;
@@ -115,13 +114,10 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_FUEL:
 			case VEHICLE_TOGGABLES:
 			case VEHICLE_INVENTORIES:
-			case VEHICLE_INVENTORY:
 			case VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
 			case VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
-			case CONTAINER_ITEM:
 			case CONTAINER_FLUID: return new ContainerInvContainer(player, world, x, y, z);
-			case MULTIBLOCK_INVENTORY: return new GBlockInvContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
 			case WIRE_RELAY_MAIN:
@@ -129,6 +125,10 @@ public class GuiHandler implements IGuiHandler {
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
 			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
+			//
+			case VEHICLE_INVENTORY:
+			case CONTAINER_ITEM:
+			case MULTIBLOCK_INVENTORY: return new UniItemInvContainer(player, world, ID, x, y, z);
 		}
 		return null;
 	}
@@ -157,13 +157,10 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_FUEL: return new VehicleFuel(player, world, x, y, z);
 				case VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
 				case VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
-				case VEHICLE_INVENTORY: return new VehicleInventory(player, world, x, y, z);
 				case VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
 				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
 				case VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
-				case CONTAINER_ITEM: return new ContainerItemInventory(player, world, x, y, z);
 				case CONTAINER_FLUID: return new ContainerFluidInventory(player, world, x, y, z);
-				case MULTIBLOCK_INVENTORY: return new GBlockInventory(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraft(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
 				case WIRE_RELAY_MAIN: return new WireRelayChooser(player, world, x, y, z);
@@ -171,6 +168,10 @@ public class GuiHandler implements IGuiHandler {
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
 				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				case DECORATION_EDITOR: return new DecoEditor(player, world, x);
+				//
+				case VEHICLE_INVENTORY:
+				case CONTAINER_ITEM:
+				case MULTIBLOCK_INVENTORY: return new UniItemInvUi(player, world, ID, x, y, z);
 			}
 		}
 		catch(Exception e){

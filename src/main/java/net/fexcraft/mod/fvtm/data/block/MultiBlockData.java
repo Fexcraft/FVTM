@@ -86,4 +86,8 @@ public class MultiBlockData {
 		return inventories.get(inventory);
 	}
 
+	public LinkedHashMap<String, InvHandler> getInventories(){
+		return inventories;
+	}
+
 }

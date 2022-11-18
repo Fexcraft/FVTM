@@ -44,8 +44,12 @@ public class UniItemInvContainer extends GenericContainer {
 		if(ID == GuiHandler.MULTIBLOCK_INVENTORY){
 			mb_tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 			NBTTagCompound com = GuiHandler.validate(player, null, player.world.isRemote);
-			if(com == null) return;
-			invhandler = mb_tile.getMultiBlockData().getType().getInventories().get(inv_id);
+			if(com == null){
+				player.closeScreen();
+				return;
+			}
+			inv_id = com.getString("inventory");
+			invhandler = mb_tile.getMultiBlockData().getInventory(inv_id);
 			title = mb_tile.getBlockData().getType().getName() + " - " + inv_id;
 		}
 		else if(ID == GuiHandler.CONTAINER_ITEM){

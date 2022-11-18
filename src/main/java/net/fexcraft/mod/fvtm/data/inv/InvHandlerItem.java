@@ -37,7 +37,7 @@ public class InvHandlerItem extends InvHandler {
 			NBTTagCompound com = new NBTTagCompound();
 			entry.stack.writeToNBT(com);
 			com.setInteger("fvtm:stack_amount", entry.amount);
-			list.appendTag(list);
+			list.appendTag(com);
 		}
         if(list.tagCount() > 0) compound.setTag(ctag == null ? "Items" : ctag, list);
         return compound;
@@ -127,6 +127,13 @@ public class InvHandlerItem extends InvHandler {
 			ItemStack nstack = stack.copy();
 			nstack.setCount(amount < size ? amount : size);
 			return nstack;
+		}
+
+		public ItemStack modstack(){
+			if(amount < stack.getMaxStackSize()) return ItemStack.EMPTY;
+			int mod = amount % stack.getMaxStackSize();
+			if(mod == 0) return ItemStack.EMPTY;
+			else return genstack(mod);
 		}
 		
 	}

@@ -1,7 +1,8 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY_FLUID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY_ITEM;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -94,7 +96,12 @@ public class M_4ROT_TE extends BlockBase {
         	if(!pass && trigger.getSide() != null) pass = trigger.getSide(corestate.getValue(FACING)) == side;
         	if(pass){
         		if(trigger.forInventory()){
-        			openInventory(player, trigger.getTarget(), core);
+        			InvHandler handler = data.getInventory(trigger.getTarget());
+        			if(handler == null){
+        				Print.chat(player, "error_target_inventory_not_found");
+        				return true;
+        			}
+        			openInventory(player, trigger.getTarget(), handler, core);
         			return true;
         		}
         		if(trigger.forScript() && data.getScript() != null){
@@ -107,14 +114,14 @@ public class M_4ROT_TE extends BlockBase {
     	return false;
     }
 
-    public static void openInventory(EntityPlayer player, String target, BlockPos corepos){
+    public static void openInventory(EntityPlayer player, String target, InvHandler handler, BlockPos corepos){
     	TileEntity core = (TileEntity)player.world.getTileEntity(corepos);
     	ApiUtil.sendTileEntityUpdatePacket(core, core.writeToNBT(new NBTTagCompound()), 256);
     	//
     	NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("inventory", target);
         int[] xyz = new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() };
-        GenericContainer.openGui(MULTIBLOCK_INVENTORY, xyz, LISTENERID, packet, player);
+        GenericContainer.openGui(handler.type.isItem() ? MULTIBLOCK_INVENTORY_ITEM : MULTIBLOCK_INVENTORY_FLUID, xyz, LISTENERID, packet, player);
 	}
 
 	@Override

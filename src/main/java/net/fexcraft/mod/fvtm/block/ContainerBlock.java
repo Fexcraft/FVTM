@@ -166,12 +166,12 @@ public class ContainerBlock extends BlockContainer {
                     return true;
                 }
                 BlockPos corepos = te.getCore().getPos();
-                if(te.getContainerData().getType().getInventoryType() == InvType.ITEM){
-                	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_ITEM, world, corepos.getX(), corepos.getY(), corepos.getZ());
+                if(te.getContainerData().getInventory().type == InvType.ITEM){
+                	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY_ITEM, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }
-                else if(te.getContainerData().getType().getInventoryType() == InvType.FLUID){
+                else if(te.getContainerData().getInventory().type == InvType.FLUID){
                     te.sendFluidTankUpdate(player);
-                	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_FLUID, world, corepos.getX(), corepos.getY(), corepos.getZ());
+                	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY_FLUID, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }
                 else{
                     Print.chat(player, "Currently not supported Inventory Type.");

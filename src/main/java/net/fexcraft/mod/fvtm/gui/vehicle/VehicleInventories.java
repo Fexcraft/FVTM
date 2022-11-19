@@ -1,7 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORY;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORY_FLUID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORY_ITEM;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_inventories.png");
 	private static String INVENTORIES;
-	private ArrayList<PartData> inventories = new ArrayList<>();
+	private ArrayList<InventoryFunction> inventories = new ArrayList<>();
 	private ArrayList<String> inv_names = new ArrayList<>();
 	private RGB[] colors = new RGB[8];
 	private GenericVehicle veh;
@@ -42,7 +43,8 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 			if(inv == null || inv.inventory().type.isContainer()) continue;
 			if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
-				inventories.add(entry.getValue()); inv_names.add(entry.getKey());
+				inventories.add(inv);
+				inv_names.add(entry.getKey());
 			}
 		}
 		for(int i = 0; i < 8; i++) colors[i] = RGB.WHITE;
@@ -82,7 +84,8 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("inv")){
 			int i = Integer.parseInt(button.name.replace("inv", ""));
 			if(i < 0 || (i + (page * 8)) >= inventories.size()) return true;
-			openGui(VEHICLE_INVENTORY, new int[]{ VEHICLE_INVENTORY, veh.getEntity().getEntityId(), i }, LISTENERID);
+			int gui = inventories.get(i).inventory().type.isItem() ? VEHICLE_INVENTORY_ITEM : VEHICLE_INVENTORY_FLUID;
+			openGui(gui, new int[]{ gui, veh.getEntity().getEntityId(), i }, LISTENERID);
 			return true;
 		}
 		return false;
@@ -98,7 +101,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		texts.get("top").string = String.format(INVENTORIES + " [%s/%s]", page + 1, inventories.size() / 8 + 1);
 		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inventories.size();
 			texts.get("row" + j).string = bool ? "" : inv_names.get(k); buttons.get("inv" + j).enabled = !bool;
-			if(!bool){ colors[j] = inventories.get(k).getFunction(InventoryFunction.class, "fvtm:inventory").inventory().type.color; }
+			if(!bool){ colors[j] = inventories.get(k).inventory().type.color; }
 			else{ colors[j] = RGB.WHITE; }
 		}
 	}

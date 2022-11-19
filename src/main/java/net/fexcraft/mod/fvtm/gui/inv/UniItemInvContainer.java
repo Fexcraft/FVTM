@@ -41,7 +41,7 @@ public class UniItemInvContainer extends GenericContainer {
 		super(player);
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		initPacket(null);
-		if(ID == GuiHandler.MULTIBLOCK_INVENTORY){
+		if(ID == GuiHandler.MULTIBLOCK_INVENTORY_ITEM){
 			mb_tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 			NBTTagCompound com = GuiHandler.validate(player, null, player.world.isRemote);
 			if(com == null){
@@ -52,13 +52,13 @@ public class UniItemInvContainer extends GenericContainer {
 			invhandler = mb_tile.getMultiBlockData().getInventory(inv_id);
 			title = mb_tile.getBlockData().getType().getName() + " - " + inv_id;
 		}
-		else if(ID == GuiHandler.CONTAINER_ITEM){
+		else if(ID == GuiHandler.CONTAINER_INVENTORY_ITEM){
 			con_tile = (ContainerEntity)world.getTileEntity(new BlockPos(x, y, z));
 			invhandler = con_tile.getContainerData().getInventory();
 			title = con_tile.getContainerData().getType().getName();
 			coninv = true;
 		}
-		else if(ID == GuiHandler.VEHICLE_INVENTORY){
+		else if(ID == GuiHandler.VEHICLE_INVENTORY_ITEM){
 			entity = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			SeatCache seat = entity.getSeatOf(player);
 			int invid = 0;

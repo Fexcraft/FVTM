@@ -2,9 +2,6 @@ package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORY;
-
-import java.util.Map;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -17,7 +14,6 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,10 +22,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class VehicleContainer extends GenericContainer {
@@ -41,9 +33,9 @@ public class VehicleContainer extends GenericContainer {
 	protected GenericVehicle veh;
 	protected PartData invpart;
 	protected String inv_id;
-	protected GenericIInventory fluid_io, fuel;
-	protected int empty_index = -1, page, slots;
-	protected long fluid_date;
+	protected GenericIInventory fuel;
+	protected int slots;
+	protected long fuel_date = 0;
 	/** When things have to be fixed by force. */
 	protected EntityPlayerMP mpp;
 	//
@@ -73,32 +65,6 @@ public class VehicleContainer extends GenericContainer {
 				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
 			}
 		}
-		if(x == VEHICLE_INVENTORY){
-			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			if(y == 0 && (!player.isRiding() || player.getRidingEntity() instanceof GenericVehicle == false)){
-				player.closeScreen();
-				return;
-			}
-			invmode = true;
-			veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-			SeatCache seat = veh.getSeatOf(player);
-			int invid = 0;
-			for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
-				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
-				if(inv == null || inv.inventory().type.isContainer()) continue;
-				if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
-					if(invid == z){
-						inv_id = entry.getKey();
-						break;
-					}
-					else invid++;
-				}
-			}
-			if(inv_id == null) player.closeScreen();
-			invpart = veh.getVehicleData().getPart(inv_id);
-			function = invpart.getFunction("fvtm:inventory");
-			this.populateSlots();
-		}
 		if(x == VEHICLE_CONTAINER){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 			entity = player.world.getEntityByID(y);
@@ -125,44 +91,14 @@ public class VehicleContainer extends GenericContainer {
 		}
 	}
 
-	protected void populateSlots(){
-		this.inventoryItemStacks.clear();
-		this.inventorySlots.clear();
-		this.empty_index = -1;
-		slots = 0;
-		if(function.inventory().type.isFluid()){
-			fluid_io = new GenericIInventory(null, 2, 1);
-			slots = 2;
-			addSlotToContainer(new Slot(fluid_io, 0, 116, 50));
-			addSlotToContainer(new Slot(fluid_io, 1, 152, 50));
-			//
-			for(int row = 0; row < 3; row++){
-				for(int col = 0; col < 9; col++){
-					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 74 + row * 18));
-				}
-			}
-			for(int col = 0; col < 9; col++){
-				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
-			}
-		}
-	}
-
 	@Override
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 		if(!packet.hasKey("cargo")) return;
 		if(invmode){
 			if(side.isServer()){
-				if(packet.getString("cargo").equals("inventory_page")){
-					page = packet.getInteger("page");
-					this.populateSlots();
-				}
+				//
 			}
 			else{
-				if(packet.getString("cargo").equals("update_fluid_tank")){
-					function.inventory().load(packet.getCompoundTag("state"));
-					if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
-					if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
-				}
 				if(packet.getString("cargo").equals("update_fuel_tank")){
 					veh.getVehicleData().getAttribute("fuel_stored").value(packet.getInteger("state"));
 					if(packet.hasKey("stack")) fuel.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack")));
@@ -209,9 +145,6 @@ public class VehicleContainer extends GenericContainer {
 	@Override
 	public void onContainerClosed(EntityPlayer player){
 		super.onContainerClosed(player);
-		if(fluid_io != null){
-			fluid_io.closeInventory(player);
-		}
 		if(fuel != null){
 			fuel.closeInventory(player);
 		}
@@ -222,47 +155,9 @@ public class VehicleContainer extends GenericContainer {
 
 	@Override
 	public void detectAndSendChanges(){
-		if(fluid_io != null && function != null){
-			if(fluid_date + 50 <= Time.getDate()){
-				fluid_date = Time.getDate();
-				boolean anychange = false;
-				//
-				ItemStack stack = fluid_io.getStackInSlot(0);
-				if(!stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)){
-					IFluidHandlerItem item = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-					if(item.getTankProperties().length > 0 && item.getTankProperties()[0].getContents() != null && item.getTankProperties()[0].getContents().amount > 0){
-						FluidActionResult result = FluidUtil.tryEmptyContainer(stack, function.inventory().getTank(), 1000, player, true);
-						if(result.success){
-							anychange = true;
-							fluid_io.setInventorySlotContents(0, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-						}
-					}
-				}
-				//
-				if(function.inventory().getTank().getFluidAmount() > 0){
-					stack = fluid_io.getStackInSlot(1);
-					if(!stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)){
-						FluidActionResult result = FluidUtil.tryFillContainer(stack, function.inventory().getTank(), 1000, player, true);
-						if(result.success){
-							anychange = true;
-							fluid_io.setInventorySlotContents(1, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-						}
-					}
-				}
-				//
-				if(!player.world.isRemote && anychange){
-					NBTTagCompound compound = new NBTTagCompound();
-					compound.setString("cargo", "update_fluid_tank");
-					compound.setTag("state", function.inventory().save(new NBTTagCompound()));
-					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
-					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
-					this.send(Side.CLIENT, compound);
-				}
-			}
-		}
 		if(fuel != null && !fuel.getStackInSlot(0).isEmpty()){
-			if(fluid_date + 50 <= Time.getDate()){
-				fluid_date = Time.getDate();
+			if(fuel_date + 50 <= Time.getDate()){
+				fuel_date = Time.getDate();
 				boolean anychange = false;
 				ItemStack stack = fuel.getStackInSlot(0);
 				if(stack.getItem() instanceof MaterialItem){

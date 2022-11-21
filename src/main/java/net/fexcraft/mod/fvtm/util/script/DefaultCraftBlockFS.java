@@ -1,17 +1,17 @@
 package net.fexcraft.mod.fvtm.util.script;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.sys.script.ScrAction;
 import net.fexcraft.mod.fvtm.sys.script.Script;
 import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm;
@@ -36,7 +36,6 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	protected ScrAction prepare, running, consume, ready;
 	private boolean auto_recipe_chooser, instant;
 	private Elm process_speed, cooldown_speed, process_time;
-	private HashMap<String, Elm> consumables = new HashMap<>();
 	private ArrayList<Object[]> uielms = new ArrayList<>();
 	
 	public DefaultCraftBlockFS(JsonObject obj){
@@ -59,14 +58,14 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			process_speed = script.getLocalScriptElm("process_speed", () -> new IntElm(1));
 			cooldown_speed = script.getLocalScriptElm("cooldown_speed", () -> new IntElm(1));
 			process_time = script.getLocalScriptElm("process_time", () -> new IntElm(100));
-			context.exes.put("register", (block, args) -> {
+			/*context.exes.put("register", (block, args) -> {
 				if(args.isEmpty()) return Elm.FALSE;
 				Elm elm = script.getElm(args.get(0).string_val(), null);
 				if(!elm.type().integer()) return Elm.FALSE;
 				consumables.put(args.get(0).string_val(), elm);
 				return Elm.TRUE;
 			});
-			context.exes.put("registerConsumable", context.exes.get("register"));
+			context.exes.put("registerConsumable", context.exes.get("register"));*/
 			context.exes.put("addGuiElement", (block, args) -> {
 				String typestr = args.get(0).string_val();
 				switch(typestr){
@@ -98,7 +97,8 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			context.exes.put("sync", (block, args) -> {
 				if(context.entity() == null || context.entity().getWorld().isRemote) return Elm.FALSE;
 				NBTTagCompound compound = new NBTTagCompound();
-				compound.setInteger("elm_sync", consumables.get(args.get(0).string_val()).integer_val());
+				compound.setString("elm_sync", args.get(0).string_val());
+				compound.setInteger("elm_val", data.getInventory(args.get(0).string_val()).getVarValue());
 				super.sendPacket(context.entity(), compound);
 				return Elm.TRUE;
 			});
@@ -108,19 +108,19 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			Print.debug(script);
 		}
 		super.read(data, tag);
-		for(Entry<String, Elm> entry : consumables.entrySet()){
+		/*for(Entry<String, Elm> entry : consumables.entrySet()){
 			if(tag.hasKey("elm_" + entry.getKey())){
 				entry.getValue().set(tag.getInteger("elm_" + entry.getKey()));
 			}
-		}
+		}*/
 	}
 
 	@Override
 	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound){
 		super.write(data, compound);
-		for(Entry<String, Elm> entry : consumables.entrySet()){
+		/*for(Entry<String, Elm> entry : consumables.entrySet()){
 			compound.setInteger("elm_" + entry.getKey(), entry.getValue().integer_val());
-		}
+		}*/
 		return compound;
 	}
 
@@ -175,16 +175,16 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean consume(String id, int amount, boolean simulate){
-		if(!consumables.containsKey(id)) return false;
+	public boolean consume(MultiBlockData data, String id, int amount, boolean simulate){
+		InvHandler handler = data.getInventory(id);
+		if(handler == null) return false;
 		if(hasConsume){
-			return consume.process(scriptwrapper.context(), consumables.get(id), Elm.wrap(amount), Elm.wrap(simulate)).bool_val();
+			return consume.process(scriptwrapper.context(), Elm.wrap(handler.getVarValue()), Elm.wrap(amount), Elm.wrap(simulate)).bool_val();
 		}
 		else{
-			if(simulate) return consumables.get(id).integer_val() >= amount;
+			if(simulate) return handler.getVarValue() >= amount;
 			else{
-				Elm elm = consumables.get(id);
-				elm.set(elm.integer_val() - amount);
+				handler.setVarValue(handler.getVarValue() - amount);
 				return true;
 			}
 		}
@@ -196,22 +196,6 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public int getConsumable(String id){
-		return consumables.get(id).integer_val();
-	}
-
-	@Override
-	public String[] getConsumables(){
-		return consumables.keySet().toArray(new String[0]);
-	}
-
-	@Override
-	public void setConsumable(String id, int value){
-		Elm elm = consumables.get(id);
-		elm.set(value);
-	}
-
-	@Override
 	public List<Object[]> getGuiElements(){
 		return uielms;
 	}
@@ -220,8 +204,9 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	public void onUpdatePacket(TileEntity tile, NBTTagCompound compound){
 		if(tile.getWorld().isRemote){
 			if(!compound.hasKey("elm_sync")) return;
-			Elm elm = consumables.get("elm_sync");
-			elm.set(compound.getInteger("value"));
+			InvHandler handler = ((MultiblockTileEntity)tile).getMultiBlockData().getInventory(compound.getString("elm_sync"));
+			if(handler == null) return;
+			handler.setVarValue(compound.getInteger("elm_val"));
 		}
 	}
 

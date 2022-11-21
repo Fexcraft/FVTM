@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -78,28 +79,13 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean consume(String id, int amount, boolean simulate){
+	public boolean consume(MultiBlockData data, String id, int amount, boolean simulate){
 		return true;
 	}
 
 	@Override
 	public int process_time(){
 		return process_time;
-	}
-
-	@Override
-	public int getConsumable(String id){
-		return 0;
-	}
-
-	@Override
-	public String[] getConsumables(){
-		return new String[0];
-	}
-
-	@Override
-	public void setConsumable(String id, int value){
-		//
 	}
 
 	@Override

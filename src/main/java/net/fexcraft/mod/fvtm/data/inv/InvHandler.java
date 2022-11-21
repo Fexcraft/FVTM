@@ -32,10 +32,10 @@ public class InvHandler {
 	}
 	
 	public InvHandler gen(){
-		if(type.isItem()) return new InvHandlerItem(type, initarg, capacity);
-		else if(type.isFluid()) return new InvHandlerFluid(type, initarg, capacity);
-		else if(type.isContainer());
-		else if(type.isVariable());
+		if(type.isItem()) return new InvHandlerItem(initarg, capacity);
+		else if(type.isFluid()) return new InvHandlerFluid(initarg, capacity);
+		else if(type.isContainer()) return null;
+		else if(type.isVariable()) return new InvHandlerVar(initarg, capacity);
 		return null;
 	}
 	
@@ -103,7 +103,16 @@ public class InvHandler {
 	public Object getCapObj(){
 		if(type.isFluid()) return getTank();
 		if(type.isItem()) return getStackHandler();
+		if(type.isVariable()) return getVarValue();
 		return null;
+	}
+
+	public int getVarValue(){
+		return 0;
+	}
+
+	public void setVarValue(int i){
+		//
 	}
 
 }

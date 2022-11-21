@@ -47,7 +47,6 @@ public class MultiBlockData {
 	}
 	
 	public void read(NBTTagCompound compound){
-		
 		for(Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getBlkSavePrefix();
 			if(!compound.hasKey(pre + entry.getKey())) continue;

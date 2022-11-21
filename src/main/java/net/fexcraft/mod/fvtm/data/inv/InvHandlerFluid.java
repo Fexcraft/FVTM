@@ -10,8 +10,8 @@ public class InvHandlerFluid extends InvHandler {
 	protected FluidTank tank;
 	protected Fluid fluid;
 
-	public InvHandlerFluid(InvType type, String fluidid, int cap){
-		super(type);
+	public InvHandlerFluid(String fluidid, int cap){
+		super(InvType.FLUID);
 		capacity = cap;
 		fluid = FluidRegistry.getFluid(fluidid);
 		tank = fluid == null ? new FluidTank(cap) : new FluidTank(fluid, 0, cap);

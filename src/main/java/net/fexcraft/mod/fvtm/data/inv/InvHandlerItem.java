@@ -19,8 +19,8 @@ public class InvHandlerItem extends InvHandler {
 	protected ArrayList<StackEntry> stacks = new ArrayList<>();
 	private ContentFilter filter;
 
-	public InvHandlerItem(InvType type, String filter, int cap){
-		super(type);
+	public InvHandlerItem(String filter, int cap){
+		super(InvType.ITEM);
 		capacity = cap;
 		if(filter != null) this.filter = ContentFilter.FILTER_REGISTRY.get(filter);
 	}

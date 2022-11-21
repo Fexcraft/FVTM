@@ -179,14 +179,7 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public abstract boolean update_client();
 	
-	public abstract boolean consume(String id, int amount, boolean simulate);
-	
-	public abstract int getConsumable(String id);
-	
-	public abstract String[] getConsumables();
-
-	/** For GUI/External */
-	public abstract void setConsumable(String id, int value);
+	public abstract boolean consume(MultiBlockData data, String id, int amount, boolean simulate);
 
 	public int getCooldown(){
 		return cooldown;
@@ -228,7 +221,7 @@ public abstract class CraftBlockScript implements BlockScript {
 
 		public void craft(CraftBlockScript script, MultiBlockData data){
 			for(Entry<String, Integer> cons : consume.entrySet()){
-				script.consume(cons.getKey(), cons.getValue(), false);
+				script.consume(data, cons.getKey(), cons.getValue(), false);
 			}
 			for(InputWrapper entry : input){
 				InputType local = entry.getInputType();
@@ -346,7 +339,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				return false;
 			}
 			for(Entry<String, Integer> cons : consume.entrySet()){
-				if(!script.consume(cons.getKey(), cons.getValue(), true)) return false;
+				if(!script.consume(data, cons.getKey(), cons.getValue(), true)) return false;
 			}
 			return true;
 		}

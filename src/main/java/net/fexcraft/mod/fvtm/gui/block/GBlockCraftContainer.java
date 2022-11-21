@@ -2,11 +2,15 @@ package net.fexcraft.mod.fvtm.gui.block;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
 
+import java.util.Map.Entry;
+
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +23,7 @@ public class GBlockCraftContainer extends GenericContainer {
 	protected GenericGui<GBlockCraftContainer> gui;
 	protected MultiblockTileEntity tile;
 	protected CraftBlockScript script;
+	protected MultiBlockData data;
 	protected EntityPlayerMP mpp;
 	public int page, crafted;
 	public int crafttime;
@@ -33,6 +38,7 @@ public class GBlockCraftContainer extends GenericContainer {
 		tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		script = (CraftBlockScript)tile.getMultiBlockData().getScript();
 		tickable = tile.getMultiBlockData().getType().isTickable();
+		data = tile.getMultiBlockData();
 	}
 
 	@Override
@@ -88,9 +94,9 @@ public class GBlockCraftContainer extends GenericContainer {
 					current = packet.getString("current");
 					script.setProcessed(packet.getInteger("processed"));
 					script.setCooldown(packet.getInteger("cooldown"));
-					for(String val : script.getConsumables()){
-						if(packet.hasKey("c_" + val)){
-							script.setConsumable(val, packet.getInteger("c_" + val));
+					for(Entry<String, InvHandler> handler : data.getInventories().entrySet()){
+						if(packet.hasKey("c_" + handler.getKey())){
+							handler.getValue().setVarValue(packet.getInteger("c_" + handler.getKey()));
 						}
 					}
 					crafttime = packet.getInteger("crafttime");
@@ -126,8 +132,9 @@ public class GBlockCraftContainer extends GenericContainer {
 		if(passed < 10) return;
 		passed = 0;
 		NBTTagCompound compound = new NBTTagCompound();
-		for(String val : script.getConsumables()){
-			compound.setInteger("c_" + val, script.getConsumable(val));
+		for(Entry<String, InvHandler> entry : data.getInventories().entrySet()){
+			if(!entry.getValue().type.isVariable()) continue;
+			compound.setInteger("c_" + entry.getKey(), entry.getValue().getVarValue());
 		}
 		compound.setString("current", script.getCurrentRecipe());
 		compound.setInteger("cooldown", script.getCooldown());

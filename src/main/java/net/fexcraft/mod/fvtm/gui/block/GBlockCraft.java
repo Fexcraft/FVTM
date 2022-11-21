@@ -69,13 +69,13 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					break;
 				case PROGRESS_BAR:
 					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 136, MapColor.SNOW.colorValue, (String)objs[1]));
-					texts.put("e_" + i + "v", new BasicText(guiLeft + 150, guiTop + 61 + (i * 14), 94, MapColor.SNOW.colorValue, "" + container.script.getConsumable((String)objs[2])));
+					texts.put("e_" + i + "v", new BasicText(guiLeft + 150, guiTop + 61 + (i * 14), 94, MapColor.SNOW.colorValue, "" + container.data.getInventory((String)objs[2]).getVarValue()));
 					break;
 				case TEXT:
 					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, (String)objs[1]));
 					break;
 				case TEXT_VALUE:
-					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, String.format((String)objs[1], container.script.getConsumable((String)objs[2]))));
+					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, String.format((String)objs[1], container.data.getInventory((String)objs[2]).getVarValue())));
 					break;
 				default:
 					break;
@@ -117,9 +117,9 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 				Object[] objs = elementdata.get(i);
 				switch(elements[i]){
 					case PROGRESS_BAR:{
-						texts.get("e_" + i + "v").string = "" + container.script.getConsumable((String)objs[2]);
+						texts.get("e_" + i + "v").string = "" + container.data.getInventory((String)objs[2]).getVarValue();
 						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 30, this.xSize, 14);
-						int max = (int)objs[3], val = container.script.getConsumable((String)objs[2]);
+						int max = (int)objs[3], val = container.data.getInventory((String)objs[2]).getVarValue();
 						proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
 						if(proc > 0){
 							(objs.length < 5 ? RGB.GREEN : (RGB)objs[4]).glColorApply();
@@ -129,7 +129,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 						break;
 					}
 					case TEXT_VALUE:
-						texts.get("e_" + i).string = String.format((String)objs[1], container.script.getConsumable((String)objs[2]));
+						texts.get("e_" + i).string = String.format((String)objs[1], container.data.getInventory((String)objs[2]).getVarValue());
 					case TEXT:
 						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 16, this.xSize, 14);
 						break;

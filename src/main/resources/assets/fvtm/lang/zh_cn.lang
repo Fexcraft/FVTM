@@ -1,0 +1,360 @@
+## FVTM Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+# Commands
+commands.fvtm.main_usage=尝试输入指令: /fvtm help
+
+# Blocks
+tile.fvtm:constructor.name=机械加工厂
+tile.fvtm:constructor_lift.name=施工区域
+tile.fvtm:display_block.name=展示仪(载具)
+tile.fvtm:streetpost.name=钢梁
+tile.fvtm:asphalt.name=FVTM沥青
+
+# GUIs
+gui.fvtm.constructor.main.status=加工厂信息
+gui.fvtm.constructor.main.data=物品数据
+gui.fvtm.constructor.main.lift=升降机状态
+gui.fvtm.constructor.main.part_cache=部件库存
+gui.fvtm.constructor.main.part_manager=部件管理
+gui.fvtm.constructor.main.part_installer=部件安装
+gui.fvtm.constructor.main.texture=纹理管理
+gui.fvtm.constructor.main.color=喷涂工具
+gui.fvtm.constructor.main.exit=退出
+//
+gui.fvtm.constructor.welcome=欢迎光临，%s
+gui.fvtm.constructor.request_sent=请求已发送到服务器..
+gui.fvtm.constructor.not_available=不可用!
+gui.fvtm.constructor.invalid_input=无效输入 (太短)
+gui.fvtm.constructor.empty=无待加工载具/容器/方块
+gui.fvtm.constructor.no_vehicle_title=无待加工载具
+gui.fvtm.constructor.no_cache_title=加工厂库存无此部件
+gui.fvtm.constructor.no_vehicle=无载具
+gui.fvtm.constructor.no_const=加工厂 离线
+gui.fvtm.constructor.no_cache=库存清理
+gui.fvtm.constructor.back=< 返回上一界面
+gui.fvtm.constructor.help=求助|打开Wiki网页
+gui.fvtm.constructor.save=掉落物品
+gui.fvtm.constructor.spawn=生成载具
+gui.fvtm.constructor.page=Page
+gui.fvtm.constructor.button.confirm=确定
+gui.fvtm.constructor.button.prev=上一页
+gui.fvtm.constructor.button.next=下一页
+gui.fvtm.constructor.button.left=左
+gui.fvtm.constructor.button.right=右
+gui.fvtm.constructor.button.reset=重置
+gui.fvtm.constructor.button.remove=移除
+gui.fvtm.constructor.button.cancel=取消
+gui.fvtm.constructor.button.edit=编辑/调整
+gui.fvtm.constructor.button.edit_tex=编辑纹理
+gui.fvtm.constructor.button.apply=应用
+//
+gui.fvtm.constructor.part_install.menu_title=部件安装 (从缓存)
+gui.fvtm.constructor.part_install.custom=自定义类别:
+gui.fvtm.constructor.part_install.custom_install=安装定制
+gui.fvtm.constructor.part_install.install=&o&7点击安装
+gui.fvtm.constructor.part_install.default=默认类别:
+gui.fvtm.constructor.part_install.empty_title=加工厂库存无此部件
+gui.fvtm.constructor.part_install.empty=库存清理
+gui.fvtm.constructor.part_install.cat_free=部件类别为空
+gui.fvtm.constructor.part_install.cat_exists=已使用该类别部件
+gui.fvtm.constructor.part_install.normal=&a普通安装
+gui.fvtm.constructor.part_install.slot_prefix=插槽 | 
+gui.fvtm.constructor.part_install.slot_based=&a&o插槽安装
+gui.fvtm.constructor.part_install.slot_root=提供者: %s
+gui.fvtm.constructor.part_install.slot_cat=类别: %s
+gui.fvtm.constructor.part_install.slot_index=索引: %s
+//
+gui.fvtm.constructor.part_manager.menu_title=部件管理
+gui.fvtm.constructor.part_manager.installed=已安装部件:
+//
+gui.fvtm.constructor.status.menu_title=加工厂信息
+gui.fvtm.constructor.status.lift_pos=场地位置:
+gui.fvtm.constructor.status.auto=自动连接
+gui.fvtm.constructor.status.reset=重置连接
+gui.fvtm.constructor.status.exists=已经连接
+gui.fvtm.constructor.status.no_tile=选定位置无方块实体 [客户端]
+//
+gui.fvtm.constructor.content_data.menu_title=数据概况
+gui.fvtm.constructor.content_data.name=名称:
+gui.fvtm.constructor.content_data.attributes=属性
+gui.fvtm.constructor.content_data.functions=功能
+gui.fvtm.constructor.content_data.scripts=脚本
+//
+gui.fvtm.constructor.part_cache.menu_title=部件数据概况 (库存)
+gui.fvtm.constructor.part_cache.name=名称:
+gui.fvtm.constructor.part_cache.attributes=属性
+gui.fvtm.constructor.part_cache.functions=功能
+gui.fvtm.constructor.part_cache.textures=Def. 纹理
+gui.fvtm.constructor.part_cache.install_info=安装信息
+//
+gui.fvtm.constructor.painter.menu_title_block=方块颜色喷涂
+gui.fvtm.constructor.painter.menu_title_container=容器颜色喷涂
+gui.fvtm.constructor.painter.menu_title_vehicle=载具颜色喷涂
+gui.fvtm.constructor.painter.rgb=RGB
+gui.fvtm.constructor.painter.hex=HEX
+gui.fvtm.constructor.painter.channel=喷涂区域:
+gui.fvtm.constructor.painter.current=当前颜色:
+gui.fvtm.constructor.painter.picker=颜色选取
+gui.fvtm.constructor.painter.apply=左键选择颜色
+gui.fvtm.constructor.painter.save=右键保存颜色到画板
+gui.fvtm.constructor.painter.error_rgb=解析RGB颜色时出错
+gui.fvtm.constructor.painter.error_hex=解析HEX颜色时出错
+//
+gui.fvtm.constructor.texture.menu_title_part=部件 [$0] 纹理管理
+gui.fvtm.constructor.texture.menu_title_block=方块纹理管理
+gui.fvtm.constructor.texture.menu_title_container=容器纹理管理
+gui.fvtm.constructor.texture.menu_title_vehicle=载具纹理管理
+gui.fvtm.constructor.texture.current=当前:
+gui.fvtm.constructor.texture.supplied=方案:
+gui.fvtm.constructor.texture.internal=内部:
+gui.fvtm.constructor.texture.external=外部:
+gui.fvtm.constructor.texture.tex_supplied=默认方案
+gui.fvtm.constructor.texture.tex_internal=内部
+gui.fvtm.constructor.texture.tex_external=外部
+gui.fvtm.constructor.texture.not_found_in_memory=未找到颜色
+//
+gui.fvtm.trafficsigneditor.prev=上一个: 
+gui.fvtm.trafficsigneditor.next=下一个: 
+gui.fvtm.trafficsigneditor.search_off=在已选择中搜索
+gui.fvtm.trafficsigneditor.search_on=关闭搜索
+gui.fvtm.trafficsigneditor.left_up=向上滚动列表
+gui.fvtm.trafficsigneditor.left_down=向下滚动列表
+gui.fvtm.trafficsigneditor.right_up=向上滚动列表
+gui.fvtm.trafficsigneditor.right_down=向下滚动列表
+gui.fvtm.trafficsigneditor.zoom_in=放大
+gui.fvtm.trafficsigneditor.zoom_out=缩小
+gui.fvtm.trafficsigneditor.confirm=确认更改
+gui.fvtm.trafficsigneditor.cancel=取消/放弃 更改
+gui.fvtm.trafficsigneditor.mode_current=当前选择
+gui.fvtm.trafficsigneditor.mode_base=背景模式
+gui.fvtm.trafficsigneditor.mode_component=组件模式
+gui.fvtm.trafficsigneditor.mode_font=字体模式
+gui.fvtm.trafficsigneditor.mode_preset=预设选择
+gui.fvtm.trafficsigneditor.move_up=视角上移
+gui.fvtm.trafficsigneditor.move_down=视角下移
+gui.fvtm.trafficsigneditor.move_left=视角左移
+gui.fvtm.trafficsigneditor.move_right=视角右移
+gui.fvtm.trafficsigneditor.list.remove=移除
+gui.fvtm.trafficsigneditor.list.color=设置颜色
+gui.fvtm.trafficsigneditor.list.edit=编辑
+gui.fvtm.trafficsigneditor.title.all_packs=所有
+gui.fvtm.trafficsigneditor.tab_editor.font_text=文本 (字体)
+gui.fvtm.trafficsigneditor.tab_editor.sign_sides=切换标志边框
+gui.fvtm.trafficsigneditor.tab_editor.position=位置 (偏移)
+gui.fvtm.trafficsigneditor.tab_editor.rotation=旋转 / Z-偏移
+gui.fvtm.trafficsigneditor.tab_editor.scale=缩放
+gui.fvtm.trafficsigneditor.tab_editor.not_font=不可用
+gui.fvtm.trafficsigneditor.tab_editor.border_top=标志边界(上)
+gui.fvtm.trafficsigneditor.tab_editor.border_bottom=标志边界(下)
+gui.fvtm.trafficsigneditor.tab_editor.border_right=标志边界(右)
+gui.fvtm.trafficsigneditor.tab_editor.border_left=标志边界(左)
+gui.fvtm.trafficsigneditor.tab_editor.base=标志主体
+gui.fvtm.trafficsigneditor.tool.copy=复制 (本地NBT)
+gui.fvtm.trafficsigneditor.tool.paste=粘贴 (本地NBT)
+gui.fvtm.trafficsigneditor.tool.export=导出 (JSON)
+gui.fvtm.trafficsigneditor.tool.import=导入 (JSON)
+//
+fvtm.sign_library.none=无已安装标志包
+fvtm.sign_library.error=错误 - 包为空
+//
+gui.fvtm.decoration_editor.position=位置偏移
+gui.fvtm.decoration_editor.rotation=旋转 (角度)
+gui.fvtm.decoration_editor.scale=缩放
+gui.fvtm.decoration_editor.texture=纹理
+gui.fvtm.decoration_editor.no_color_channels=无颜色喷涂
+//
+tile.fvtm.constructor.constructor_connect.no_tile=选定位置无方块实体 [服务器]
+tile.fvtm.constructor.constructor_connect.wrong_type=位置处方块类型错误
+tile.fvtm.constructor.constructor_connect.already_connected=位置处方块数据已经连接
+tile.fvtm.constructor.constructor_connect.no_tile_found_null=未找到适合的方块实体 [tilenull]
+tile.fvtm.constructor.constructor_connect.no_tile_found=未找到适合的方块实体
+tile.fvtm.constructor.constructor_connect.connected=方块已连接
+tile.fvtm.constructor.constructor_disconnect.disconnected=方块连接重置
+tile.fvtm.constructor.part_install.custom_cat_not_allowed=自定义类别无法用于该部件
+tile.fvtm.constructor.part_remove.not_found_server=无法在服务器找到选择的部件
+tile.fvtm.constructor.texture.invalid_part=无效部件请求
+tile.fvtm.constructor.texture.invalid_supplied_id=无效方案ID
+tile.fvtm.constructor.texture.applied=纹理已应用
+tile.fvtm.constructor.color.applied=颜色已应用
+tile.fvtm.constructor.drop.container=容器已掉落
+tile.fvtm.constructor.drop.vehicle=载具已掉落
+tile.fvtm.constructor.drop.block=方块已掉落
+tile.fvtm.constructor.drop.part=部件库存已清空
+tile.fvtm.constructor.drop.all=物品已掉落
+tile.fvtm.constructor.name.changed=名称已修改
+tile.fvtm.constructor.lift.adjusted=升降状态已调整
+tile.fvtm.constructor.no_container=无待加工容器
+tile.fvtm.constructor.no_vehicle=无待加工载具
+tile.fvtm.constructor.no_block=无待加工方块
+tile.fvtm.constructor.no_part=无待加工部件
+//
+gui.fvtm.overlay.default.no_engine=未安装引擎
+gui.fvtm.overlay.default.speed=速度:
+gui.fvtm.overlay.default.fuel=燃料:
+gui.fvtm.overlay.default.throttle=节流阀:
+gui.fvtm.overlay.default.gear=档位:
+gui.fvtm.overlay.default.rpm=转速: 
+gui.fvtm.overlay.default.trailer=&a&o拖车已连接
+//
+gui.fvtm.vehicle.main.info=状态/信息
+gui.fvtm.vehicle.main.settings=设置
+gui.fvtm.vehicle.main.fuel=燃料
+gui.fvtm.vehicle.main.attributes=属性
+gui.fvtm.vehicle.main.inventories=库存
+gui.fvtm.vehicle.main.containers=容器
+gui.fvtm.vehicle.main.connectors=连接器
+gui.fvtm.vehicle.main.exit=退出
+gui.fvtm.vehicle.fuel.accepts=使用: 
+gui.fvtm.vehicle.attribute.scroll_value=Scroll:
+gui.fvtm.vehicle.attribute.open_editor=打开属性编辑器
+gui.fvtm.vehicle.attribute.toggle_value=切换属性
+gui.fvtm.vehicle.attribute.toggle_info=左键 = 切换; 右键 = 重置;
+gui.fvtm.vehicle.attribute.not_editable=[ 不可编辑 ]
+gui.fvtm.vehicle.attribute.sort_all=展示所有属性
+gui.fvtm.vehicle.attribute.sort_editable=Sort Out Non-Editable
+gui.fvtm.vehicle.attribute.sort_external=展示外部属性
+gui.fvtm.vehicle.attribute.sort_seat=在座位上显示属性
+gui.fvtm.vehicle.attribute_editor.help=打开Wiki页面
+gui.fvtm.vehicle.attribute_editor.return=返回到属性列表
+gui.fvtm.vehicle.attribute_editor.apply=应用属性
+gui.fvtm.vehicle.attribute_editor.reset=重置属性
+gui.fvtm.vehicle.attribute_editor.id=ID
+gui.fvtm.vehicle.attribute_editor.type=种类
+gui.fvtm.vehicle.attribute_editor.default=默认
+gui.fvtm.vehicle.attribute_editor.current=当前
+gui.fvtm.vehicle.attribute_editor.editable=可编辑
+gui.fvtm.vehicle.attribute_editor.external=外部
+gui.fvtm.vehicle.attribute_editor.perm=权限
+gui.fvtm.vehicle.attribute_editor.perm.none=无
+gui.fvtm.vehicle.attribute_editor.seats=座位
+gui.fvtm.vehicle.attribute_editor.modifiers=改装者
+gui.fvtm.vehicle.attribute_editor.group=组
+gui.fvtm.vehicle.inventory.inventories=库存
+gui.fvtm.vehicle.inventory.fluid_tank=液体容器
+gui.fvtm.vehicle.inventory.no_fluid=空
+gui.fvtm.vehicle.inventory.empty=空
+gui.fvtm.vehicle.container.containers=容器槽
+gui.fvtm.vehicle.connector.no_rear_connector=该载具未安装后部连接器
+gui.fvtm.vehicle.connector.not_available_yet=该载具类型暂无连接器/耦合器功能
+
+# Handlers
+handler.install.fvtm.default.category_occupied=已安装同类别部件
+handler.install.fvtm.default.part_invalid_category=该部件不允许安装在该类别
+handler.install.fvtm.default.part_incompatible_vehicle=该载具不兼容该部件
+handler.install.fvtm.default.vehicle_contains_incompatible=该载具已包含与此部件不兼容的部件
+handler.install.fvtm.default.vehicle_missing_required_parts=载具缺少必需部件
+handler.install.fvtm.default.vehicle_missing_required_swivelpoint=该载具缺少 旋转点 缺少: %s
+handler.install.fvtm.default.check_passed=已通过安装检查
+handler.install.fvtm.default.success=部件已安装到所选类别
+handler.deinstall.fvtm.default.part_not_removable=部件被标记为不可拆卸
+handler.deinstall.fvtm.default.check_passed=已通过卸载检查
+handler.deinstall.fvtm.default.remove_linked_wheels=请先拆卸所有已连接的车轮
+handler.deinstall.fvtm.default.success=部件已卸载并已重置位置
+//
+handler.install.fvtm.wheel.category_occupied=已安装该类别的其他部件
+handler.install.fvtm.wheel.wheelslot_missing=该载具未配置所需的车轮插槽
+handler.install.fvtm.wheel.wheelslot_null=错误，未找到插槽
+handler.install.fvtm.wheel.radius_too_large=车轮半径太大 [%s>%s]
+handler.install.fvtm.wheel.radius_too_small=车轮半径太小 [%s<%s]
+handler.install.fvtm.wheel.width_too_wide=车轮太宽了 [%s>%s]
+handler.install.fvtm.wheel.width_too_thin=车轮太薄了 [%s<%s]
+handler.install.fvtm.wheel.incompatible_connector=连接器不兼容
+handler.install.fvtm.wheel.check_passed=已通过安装检查
+handler.install.fvtm.wheel.success=部件已安装到所选类别
+handler.deinstall.fvtm.wheel.part_not_removable=部件被标记为不可拆卸
+handler.deinstall.fvtm.wheel.remove_tire_first=请先把轮胎取下来
+handler.deinstall.fvtm.wheel.check_passed=已通过卸载检查
+handler.deinstall.fvtm.wheel.success=部件已卸载并已重置位置
+//
+handler.install.fvtm.tire.category_occupied=已安装该类别的其他部件
+handler.install.fvtm.tire.wheelslot_missing=该载具未配置所需的车轮插槽
+handler.install.fvtm.tire.no_wheel_at_slot=没有能安装轮胎的轮辋
+handler.install.fvtm.tire.wheelslot_null=错误，未找到插槽
+handler.install.fvtm.tire.radius_too_large=轮胎半径太大 [%s>%s]
+handler.install.fvtm.tire.radius_too_small=轮胎半径太小 [%s<%s]
+handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius=车轮太大了 [%s>%s]
+handler.install.fvtm.tire.tire_inner_radius_larger_than_wheel=轮胎内半径太大了 [%s>%s]
+handler.install.fvtm.tire.width_too_wide=轮胎太宽了 [%s>%s]
+handler.install.fvtm.tire.width_too_thin=轮胎太薄了 [%s<%s]
+handler.install.fvtm.tire.check_passed=已通过安装检查
+handler.install.fvtm.tire.success=部件已安装到所选类别
+handler.deinstall.fvtm.tire.part_not_removable=部件被标记为不可拆卸
+handler.deinstall.fvtm.tire.check_passed=已通过卸载检查
+handler.deinstall.fvtm.tire.success=部件已卸载并已重置位置
+//
+handler.install.fvtm.bogie.category_occupied=已安装该类别的其他部件
+handler.install.fvtm.bogie.bogieslot_missing=载具还未配置转向架
+handler.install.fvtm.bogie.check_passed=已通过安装检查
+handler.install.fvtm.bogie.success=部件已安装到所选类别
+handler.deinstall.fvtm.bogie.part_not_removable=部件被标记为不可拆卸
+handler.deinstall.fvtm.bogie.check_passed=已通过卸载检查
+handler.deinstall.fvtm.bogie.success=部件已卸载并已重置位置
+//
+handler.install.fvtm.connector.category_occupied=已安装该类别的其他部件
+handler.install.fvtm.connector.front_occupied=已设置前连接器位置
+handler.install.fvtm.connector.not_front_part=这不是前连接器部件
+handler.install.fvtm.connector.rear_occupied=已设置后连接器位置
+handler.install.fvtm.connector.not_rear_part=这不是后连接器部件
+handler.install.fvtm.connector.check_passed=已通过安装检查
+handler.install.fvtm.connector.success=部件已安装到所选类别
+handler.deinstall.fvtm.connector.part_not_removable=部件被标记为不可拆卸
+handler.deinstall.fvtm.connector.check_passed=已通过卸载检查
+handler.deinstall.fvtm.connector.success=部件已卸载并已重置位置
+
+
+# Entities
+//
+
+
+# Items
+item.fvtm:streetsign.name=Streetsign
+item.fvtm:standard.name=Standard FVTM Rail Gauge
+item.fvtm:standard.4_straight.name=FVTM-RG 4m Straight
+item.fvtm:standard.8_straight.name=FVTM-RG 8m Straight
+item.fvtm:standard.16_straight.name=FVTM-RG 16m Straight
+item.fvtm:standard.32_straight.name=FVTM-RG 32m Straight
+item.fvtm:standard.16_straight_slope_up.name=FVTM-RG 16m Straight Slope Up
+item.fvtm:standard.16_straight_slope_down.name=FVTM-RG 16m Straight Slope Down
+item.fvtm:junction_tool.name=Junction Tool
+item.fvtm:simple_signal.name=Simple Signal (BLOCK)
+item.fvtm:road_tool.name=道路工具
+item.fvtm:train_adjuster.name=Train Adjuster
+item.fvtm:trafficsign.name=Universal Traffic Sign
+item.fvtm:decoration.name=Decoration (Editor)
+
+
+# Entities
+
+
+# Other
+itemGroup.fvtm:fvtm=FVTM[内部组件]
+itemGroup.fvtm:presets=FVTM预设
+itemGroup.fvtm:road_signs=FVTM道路标志
+fvtm:standard.gauge_desc0=&9The &a1.25x &9scale (compared to 1:1 real scale)
+fvtm:standard.gauge_desc1=&7&lStandard Gauge &r&9of FVTM.
+fvtm:standard.gauge_desc2=&6Wooden Ties
+fvtm.recipes.blocks=FVTM方块
+
+
+# Keys
+keycompound.fvtm.controls=FVTM按键
+key.fvtm.engine=引擎开关
+key.fvtm.vehicle_inventory=载具库存开关
+key.fvtm.vehicle_doors=门/属性开关
+key.fvtm.vehicle_scripts=脚本开关
+key.fvtm.vehicle_lights=灯开关
+key.fvtm.vehicle_trailer=A/D Trailer or Wagon Rear
+key.fvtm.vehicle_wagon=A/D Wagon Front
+key.fvtm.arrow_up=Arrow Up (Gear Up)
+key.fvtm.arrow_down=Arrow Down (Gear Down)
+key.fvtm.arrow_left=Arrow Left
+key.fvtm.arrow_right=Arrow Right
+key.fvtm.reset=重置属性 (可切换)
+key.fvtm.brake=刹车
+key.fvtm.pbrake=手刹

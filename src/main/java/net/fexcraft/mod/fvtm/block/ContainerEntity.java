@@ -9,7 +9,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
@@ -34,7 +33,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class ContainerEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 
-    private ItemStackHandler itemStackHandler;
     private boolean core, setup;
     private ContainerData container;
     private BlockPos corepos;
@@ -108,26 +106,21 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
         if(facing != null && facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked()){
             if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-                return getCore().container.getType().getInventoryType().isItem() && getCore().container.getInventory().capacity() > 0;
+                return getCore().container.getInventory().type.isItem() && getCore().container.getInventory().capacity() > 0;
             }
             if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-                return getCore().container.getType().getInventoryType().isFluid();
+                return getCore().container.getInventory().type.isFluid();
             }
         }
         return super.hasCapability(capability, facing);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    @Nullable
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-            if(itemStackHandler == null){
-                itemStackHandler = getCore().container.getInventory().getStackHandler();
-            }
-            return (T) itemStackHandler;
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing){
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getCore().container.getInventory().type.isItem()){
+            return (T)getCore().container.getInventory().getStackHandler();
         }
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getCore().container.getInventory().type.isFluid()){
             return (T) getCore().container.getInventory().getTank();
         }
         return super.getCapability(capability, facing);

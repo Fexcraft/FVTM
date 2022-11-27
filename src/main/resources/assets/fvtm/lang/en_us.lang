@@ -15,6 +15,7 @@ tile.fvtm:constructor_lift.name=Constructor Center/Lift
 tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt
+tile.fvtm:vpinfo.name=Vehicle & Part Info
 
 # GUIs
 gui.fvtm.constructor.main.status=Constructor Status

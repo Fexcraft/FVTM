@@ -85,6 +85,7 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&7- /fvtm debug <args>");
         		Print.chat(sender, "&7- /fvtm spawn-sys");
         		Print.chat(sender, "&7- /fvtm undo road");
+        		Print.chat(sender, "&7- /fvtm vpinfo");
         		Print.chat(sender, "&8- - - - - -");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
         		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
@@ -121,6 +122,10 @@ public class Command extends CommandBase {
             	Print.chat(sender, "&2URL: &7" + addon.getURL());
             	Print.chat(sender, "&2License: &7" + addon.getLicense());
             	Print.chat(sender, "&6Type: &7" + addon.getLoc().name().toLowerCase());
+            	break;
+            }
+            case "vpinfo":{
+            	((EntityPlayer)sender.getCommandSenderEntity()).openGui(FVTM.getInstance(), GuiHandler.VEHICLE_AND_PART_INFO, sender.getEntityWorld(), 0, 0, 0);
             	break;
             }
             case "get-key": {

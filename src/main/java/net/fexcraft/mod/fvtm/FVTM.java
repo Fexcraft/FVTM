@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.RailEntity;
+import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
@@ -25,6 +26,7 @@ import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.Decoration;
@@ -42,6 +44,7 @@ import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
+import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms;
@@ -172,6 +175,7 @@ public class FVTM {
 			ConditionalPrograms.init();
 			WirePrograms.init();
 			TrafficSignPrograms.init();
+	        Resources.getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
 			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
 			Resources.CONTAINERS.getValuesCollection().forEach(con -> con.loadModel());
@@ -207,6 +211,7 @@ public class FVTM {
 			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			DecorationItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			VPInfo.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();

@@ -19,6 +19,8 @@ import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemChooser;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemContainer;
+import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfo;
+import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfoContainer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacerContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacer;
@@ -60,6 +62,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int WIRE_RELAY_EDIT = 711;
 	public static final int WIRE_EDIT = 712;
 	public static final int DECORATION_EDITOR = 713;
+	public static final int VEHICLE_AND_PART_INFO = 714;
 	/* 90x - constructor main */
 	public static final int CONSTRUCTOR_MAIN = 900;
 	public static final int CONSTRUCTOR_STATUS = 901;
@@ -126,6 +129,7 @@ public class GuiHandler implements IGuiHandler {
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
 			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
+			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
 			case VEHICLE_INVENTORY_ITEM:
 			case CONTAINER_INVENTORY_ITEM:
@@ -172,6 +176,7 @@ public class GuiHandler implements IGuiHandler {
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
 				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				case DECORATION_EDITOR: return new DecoEditor(player, world, x);
+				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//
 				case VEHICLE_INVENTORY_ITEM:
 				case CONTAINER_INVENTORY_ITEM:

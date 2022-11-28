@@ -32,7 +32,7 @@ public class UniItemInvContainer extends GenericContainer {
 	protected String inv_id, title;
 	protected boolean coninv;
 	//
-	protected int page, slots;
+	protected int page, rows;
 	protected InvHandler invhandler;
 	protected EntityPlayerMP mpp;
 	protected GenericIInventory insert;
@@ -40,7 +40,6 @@ public class UniItemInvContainer extends GenericContainer {
 	public UniItemInvContainer(EntityPlayer player, World world, int ID, int x, int y, int z){
 		super(player);
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-		initPacket(null);
 		if(ID == GuiHandler.MULTIBLOCK_INVENTORY_ITEM){
 			mb_tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 			NBTTagCompound com = GuiHandler.validate(player, null, player.world.isRemote);
@@ -79,20 +78,19 @@ public class UniItemInvContainer extends GenericContainer {
 			title = entity.getVehicleData().getType().getName() + " - " + inv_id;
 		}
 		insert = new GenericIInventory(null, 1, 64);
-		//populateSlots();
 	}
 
 	protected void populateSlots(){
 		this.inventoryItemStacks.clear();
 		this.inventorySlots.clear();
-		this.slots = 0;
 		int size = invhandler.getStacks().size();
+		rows = 0;
 		for(int row = 0; row < 6; row++){
 			int index = (page * 6) + row;
 			if(index >= size) break;
 			addSlotToContainer(new InvSlot(this, invhandler, true, index, 8, 22 + row * 20));
 			addSlotToContainer(new InvSlot(this, invhandler, false, index, 26, 22 + row * 20));
-			slots++;
+			rows += 2;
 		}
 		addSlotToContainer(new Slot(insert, 0, 176, 143){
 		    @Override
@@ -142,10 +140,18 @@ public class UniItemInvContainer extends GenericContainer {
 		}
 		else{
 			if(packet.getString("cargo").equals("update_stack")){
-				inventorySlots.get(packet.getInteger("index")).putStack(new ItemStack(packet.getCompoundTag("stack")));
-				inventoryItemStacks.set(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
+				int idx = packet.getInteger("index");
+				ItemStack stack = new ItemStack(packet.getCompoundTag("stack"));
+				inventorySlots.get(idx).putStack(stack);
+				inventoryItemStacks.set(idx, stack);
 			}
-			if(packet.getString("cargo").equals("reload_slots")) this.populateSlots();
+			if(packet.getString("cargo").equals("update_inv")){
+				invhandler.load(packet);
+				for(int idx = 0; idx < rows; idx++){
+					inventoryItemStacks.set(idx, ((InvSlot)inventorySlots.get(idx)).getReloadedStack());
+				}
+			}
+			if(packet.getString("cargo").equals("reload_slots")) populateSlots();
 			if(packet.getString("cargo").equals("inv_update")){
 				invhandler.load(packet);
 				insert.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("insert")));
@@ -176,17 +182,20 @@ public class UniItemInvContainer extends GenericContainer {
         for(int i = 0; i < this.inventorySlots.size(); ++i){
             ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
             ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-            if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)){
-                boolean changed = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
-                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
-                this.inventoryItemStacks.set(i, itemstack1);
-                if(changed){
-					NBTTagCompound compound = new NBTTagCompound();
-					compound.setString("cargo", "update_stack");
-					compound.setInteger("index", i);
-					compound.setTag("stack", itemstack1.writeToNBT(new NBTTagCompound()));
-					this.send(Side.CLIENT, compound);
-                }
+            if(ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack)) continue;
+            this.inventoryItemStacks.set(i, itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy());
+            if(i < rows){
+    			NBTTagCompound compound = new NBTTagCompound();
+    			compound.setString("cargo", "update_inv");
+    			invhandler.save(compound);
+    			send(Side.CLIENT, compound);
+            }
+            else{
+    			NBTTagCompound compound = new NBTTagCompound();
+    			compound.setString("cargo", "update_stack");
+    			compound.setInteger("index", i);
+    			compound.setTag("stack", itemstack.writeToNBT(new NBTTagCompound()));
+    			send(Side.CLIENT, compound);
             }
         }
 	}

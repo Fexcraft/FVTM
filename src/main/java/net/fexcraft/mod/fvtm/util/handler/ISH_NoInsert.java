@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class ItemStackHandler2 extends net.minecraftforge.items.ItemStackHandler {
+public class ISH_NoInsert extends net.minecraftforge.items.ItemStackHandler {
 
-    public ItemStackHandler2(NonNullList<ItemStack> inventory){
+    public ISH_NoInsert(NonNullList<ItemStack> inventory){
         super(inventory);
     }
 

@@ -198,11 +198,9 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
     public void processClientPacket(PacketTileEntityUpdate packet){
         if(packet.nbt.hasKey("task")){
             switch(packet.nbt.getString("task")){
-                case "update_container_fluid_tank": {
-                    if(this.getContainerData() != null && this.getContainerData().getType().getInventoryType() != InvType.FLUID){
-                        return;
-                    }
-                    this.getContainerData().getInventory().load(packet.nbt.getCompoundTag("state"));
+                case "update_container_inventory": {
+                    if(getContainerData() == null) break;
+                    getContainerData().getInventory().load(packet.nbt.getCompoundTag("state"));
                     break;
                 }
             }
@@ -212,12 +210,10 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
         }
     }
 
-    public void sendFluidTankUpdate(EntityPlayer player){
-        if(player == null){
-            return;
-        }
+    public void sendInvUpdate(EntityPlayer player){
+        if(player == null) return;
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("task", "update_container_fluid_tank");
+        nbt.setString("task", "update_container_inventory");
         nbt.setTag("state", this.getContainerData().getInventory().save(new NBTTagCompound()));
         PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
     }

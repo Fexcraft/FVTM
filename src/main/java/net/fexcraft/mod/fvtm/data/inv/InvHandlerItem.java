@@ -124,6 +124,7 @@ public class InvHandlerItem extends InvHandler {
 		}
 
 		public ItemStack genstack(int size){
+			if(amount <= 0) return ItemStack.EMPTY;
 			ItemStack nstack = stack.copy();
 			nstack.setCount(amount < size ? amount : size);
 			return nstack;

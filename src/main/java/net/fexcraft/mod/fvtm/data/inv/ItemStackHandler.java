@@ -91,11 +91,12 @@ public class ItemStackHandler implements IItemHandler {
 		StackEntry entry = handler.stacks.get(idx);
 		int exam = entry.max() < amount ? entry.max() : amount;
 		ItemStack stack = entry.genstack(exam);
-		if(exam >= entry.amount){
-			if(!simulate) handler.stacks.remove(entry);
-		}
-		else{
-			if(!simulate) entry.amount -= exam;
+		if(!simulate){
+			entry.amount -= exam;
+			if(entry.amount <= 0){
+				entry.amount = 0;
+				handler.stacks.remove(entry);
+			}
 		}
 		return stack;
 	}

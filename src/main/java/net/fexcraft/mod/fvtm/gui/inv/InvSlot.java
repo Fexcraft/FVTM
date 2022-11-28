@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /** Temporary Inventory Slot */
 public class InvSlot extends Slot {
@@ -81,5 +82,19 @@ public class InvSlot extends Slot {
 		}
         return stack;
     }
+
+	public ItemStack getReloadedStack(){
+		if(handler.getStacks().size() <= index){
+			relinkentry();
+			return ItemStack.EMPTY;
+		}
+        this.entry = handler.getStacks().get(index);
+        if(entry == null) relinkentry();
+		return getStack();
+	}
+
+	private void relinkentry(){
+		entry = new StackEntry(new NBTTagCompound());
+	}
 
 }

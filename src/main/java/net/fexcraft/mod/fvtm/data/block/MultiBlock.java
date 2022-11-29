@@ -184,7 +184,7 @@ public class MultiBlock {
 		return regname;
 	}
 
-	public Map<String, InvHandler> getInventories(){
+	public Map<String, InvHandler> getDefaultInventories(){
 		return inventories;
 	}
 

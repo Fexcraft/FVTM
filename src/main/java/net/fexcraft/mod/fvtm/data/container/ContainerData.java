@@ -33,8 +33,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
-		//
-		inventory = type.invtype.gen();
+		inventory = type.invtype.gen(type.type.length() * 3);
 	}
 
 	@Override

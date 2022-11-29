@@ -26,7 +26,7 @@ public class MultiBlockData {
 	public MultiBlockData(BlockData data, MultiBlock block){
 		this.type = block;
 		this.data = data;
-		for(Entry<String, InvHandler> entry : block.getInventories().entrySet()){
+		for(Entry<String, InvHandler> entry : block.getDefaultInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen());
 		}
 		try{

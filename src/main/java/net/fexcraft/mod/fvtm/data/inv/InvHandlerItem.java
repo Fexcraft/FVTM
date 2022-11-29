@@ -17,12 +17,13 @@ public class InvHandlerItem extends InvHandler {
 	
 	protected ItemStackHandler handler;
 	protected ArrayList<StackEntry> stacks = new ArrayList<>();
-	private ContentFilter filter;
+	protected ContentFilter filter;
 
-	public InvHandlerItem(String filter, int cap){
+	public InvHandlerItem(String filter, int cap, int min){
 		super(InvType.ITEM);
 		capacity = cap;
 		if(filter != null) this.filter = ContentFilter.FILTER_REGISTRY.get(filter);
+		handler = new ItemStackHandler(this, min);
 	}
 
 	@Override
@@ -60,7 +61,6 @@ public class InvHandlerItem extends InvHandler {
 	
 	@Override
 	public ItemStackHandler getStackHandler(){
-		if(handler == null) handler = new ItemStackHandler(this);
 		return handler;
 	}
 	

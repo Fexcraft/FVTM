@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
@@ -37,7 +38,7 @@ public class ItemStackHandler implements IItemHandler {
 
 	@Override
 	public int getSlots(){
-		return handler.stacks.size();
+		return handler.stacks.size() == 0 ? 1 : handler.stacks.size();
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class MB_Access {
 		//Print.debug("filling " + facing);
 		facing = MultiBlock.rotate(facing, rotateby);
 		if(!capabilities.containsKey(facing)) capabilities.put(facing, new ArrayList<>());
-		InvHandler handler = data.getType().getInventories().get(target);
+		InvHandler handler = data.getInventories().get(target);
 		Capability<?> cap = null;
 		if(handler.type.isFluid()){
 			cap = CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
@@ -70,6 +70,7 @@ public class MB_Access {
 		else if(handler.type.isItem()){
 			cap = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 		}
+		else return;
 		capabilities.get(facing).add(new CapabilityContainer(cap, handler));
 	}
 	

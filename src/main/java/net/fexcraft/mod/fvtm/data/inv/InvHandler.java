@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.entity.Entity;
@@ -101,9 +102,7 @@ public class InvHandler {
 	}
 
 	public Object getCapObj(){
-		if(type.isFluid()) return getTank();
-		if(type.isItem()) return getStackHandler();
-		if(type.isVariable()) return getVarValue();
+		Static.exception(null, true);
 		return null;
 	}
 

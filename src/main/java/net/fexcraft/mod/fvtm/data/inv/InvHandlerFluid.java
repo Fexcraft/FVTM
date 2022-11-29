@@ -59,4 +59,9 @@ public class InvHandlerFluid extends InvHandler {
 		return tank;
 	}
 
+	@Override
+	public int getVarValue(){
+		return tank.getFluidAmount();
+	}
+
 }

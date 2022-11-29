@@ -27,7 +27,7 @@ public class MultiBlockData {
 		this.type = block;
 		this.data = data;
 		for(Entry<String, InvHandler> entry : block.getDefaultInventories().entrySet()){
-			inventories.put(entry.getKey(), entry.getValue().gen());
+			inventories.put(entry.getKey(), entry.getValue().gen(1));
 		}
 		try{
 			script = block.hasScript() ? block.getScript().getConstructor(JsonObject.class).newInstance(block.getScriptData()) : null;

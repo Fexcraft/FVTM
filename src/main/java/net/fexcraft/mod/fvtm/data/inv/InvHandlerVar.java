@@ -56,4 +56,9 @@ public class InvHandlerVar extends InvHandler {
 		value++;
 	}
 
+	@Override
+	public Object getCapObj(){
+		return value;
+	}
+
 }

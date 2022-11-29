@@ -32,8 +32,8 @@ public class InvHandler {
 		return this;
 	}
 	
-	public InvHandler gen(){
-		if(type.isItem()) return new InvHandlerItem(initarg, capacity);
+	public InvHandler gen(int min){
+		if(type.isItem()) return new InvHandlerItem(initarg, capacity, min);
 		else if(type.isFluid()) return new InvHandlerFluid(initarg, capacity);
 		else if(type.isContainer()) return null;
 		else if(type.isVariable()) return new InvHandlerVar(initarg, capacity);

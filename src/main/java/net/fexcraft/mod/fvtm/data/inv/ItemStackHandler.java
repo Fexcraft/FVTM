@@ -1,12 +1,10 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
@@ -14,14 +12,15 @@ import net.minecraftforge.items.IItemHandler;
 public class ItemStackHandler implements IItemHandler {
 	
 	protected InvHandlerItem handler;
-	private ContentFilter filter;
+	protected int min;
 
-    public ItemStackHandler(InvHandlerItem invhandler){
-		filter = (handler = invhandler).getFilter();
+    public ItemStackHandler(InvHandlerItem invhandler, int min){
+		handler = invhandler;
+		this.min = min;
 	}
 
     private boolean isValid(ItemStack stack){
-        return filter == null ? true : filter.isValid(stack);
+        return handler.filter == null ? true : handler.filter.isValid(stack);
     }
 
     public static boolean isContainerPart(ItemStack stack){
@@ -38,7 +37,7 @@ public class ItemStackHandler implements IItemHandler {
 
 	@Override
 	public int getSlots(){
-		return handler.stacks.size() == 0 ? 1 : handler.stacks.size();
+		return handler.stacks.size() < min ? min : handler.stacks.size();
 	}
 
 	@Override

@@ -54,4 +54,9 @@ public class InvHandlerFluid extends InvHandler {
 		return tank.getFluidAmount() + "mB " + tank.getFluid().getLocalizedName();
 	}
 
+	@Override
+	public Object getCapObj(){
+		return tank;
+	}
+
 }

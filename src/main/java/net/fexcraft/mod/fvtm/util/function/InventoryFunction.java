@@ -65,7 +65,7 @@ public class InventoryFunction extends Function {
 	public InventoryFunction(InventoryFunction root){
 		super(null, null);
 		this.whitelist = root.whitelist; this.blacklist = root.blacklist; this.seats = root.seats;
-		inventory = root.inventory.gen();
+		inventory = root.inventory.gen(1);
 	}
 
 	@Override

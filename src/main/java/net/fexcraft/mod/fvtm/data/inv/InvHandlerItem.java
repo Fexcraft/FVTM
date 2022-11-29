@@ -151,5 +151,10 @@ public class InvHandlerItem extends InvHandler {
 		for(StackEntry entry : stacks) am += entry.stacksize();
 		return am >= capacity;
 	}
+
+	@Override
+	public Object getCapObj(){
+		return getStackHandler();
+	}
 	
 }

@@ -268,7 +268,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					fits = false;
 					break;
 				}
-				if(data.getType().getInventories().get(invid).type != local){
+				if(data.getInventories().get(invid).type != local){
 					fits = false;
 					break;
 				}
@@ -305,7 +305,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			for(InputWrapper entry : input){
 				InputType local = entry.getInputType();
 				String invid = getInvId(data, local.toInventory(), entry.inventory, "input");
-				if(data.getType().getInventories().get(invid).type != local.toInventory()){
+				if(data.getInventories().get(invid).type != local.toInventory()){
 					passed = false;
 					break;
 				}
@@ -363,9 +363,9 @@ public abstract class CraftBlockScript implements BlockScript {
 	}
 
 	public static String getInvId(MultiBlockData data, InvType type, String invname, String fix){
-		if(data.getType().getInventories().containsKey(invname)) return invname;
+		if(data.getInventories().containsKey(invname)) return invname;
 		ArrayList<String> coll = new ArrayList<>();
-		for(Entry<String, InvHandler> entry : data.getType().getInventories().entrySet()){
+		for(Entry<String, InvHandler> entry : data.getInventories().entrySet()){
 			if(entry.getKey().equals(fix)) return entry.getKey();
 			if(entry.getValue().type == type) coll.add(entry.getKey());
 		}

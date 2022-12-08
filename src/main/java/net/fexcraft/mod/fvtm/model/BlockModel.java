@@ -29,6 +29,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
     public float gui_scale_x = 0.75f;
     public float gui_scale_y = 0.75f;
     public float gui_scale_z = 0.75f;
+    public boolean bindtex;
 	
 	public BlockModel(){
 		super();
@@ -58,6 +59,9 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 			catch(Exception e){
 				e.printStackTrace();
 			}
+		}
+		if(data.containsKey("DefaultTextureBinding")){
+			bindtex = data.get("DefaultTextureBinding", true);
 		}
 		return this;
 	}
@@ -116,7 +120,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
             {
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
-                super.bindTexture(data.getCurrentTexture());
+                if(model.bindtex) super.bindTexture(data.getCurrentTexture());
                 model.render(RENDERDATA.set(data, null, null));
                 GL11.glPopMatrix();
             }

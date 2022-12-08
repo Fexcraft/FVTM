@@ -112,7 +112,9 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
-		ModelGroup.PROGRAMS.add(SELECTED_TEXTURE_BINDER);
+		ModelGroup.PROGRAMS.add(TEXTURE_BINDER_SELECTED);
+		ModelGroup.PROGRAMS.add(TEXTURE_BINDER_BLOCK_4x4ROT);
+		ModelGroup.PROGRAMS.add(TEXTURE_BINDER_BLOCK_VARIANT);
 		ModelGroup.PROGRAMS.add(RESCALE_NORMAL);
 		ModelGroup.PROGRAMS.add(new TextRenderer(0, 0, 0, 0, 0, 0, 0, true));
 		ModelGroup.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
@@ -1530,7 +1532,7 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static Program SELECTED_TEXTURE_BINDER = new Program(){
+	public static Program TEXTURE_BINDER_SELECTED = new Program(){
 
 		@Override
 		public String getId(){
@@ -1540,6 +1542,44 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
 			TexUtil.bindTexture(data.texture.getCurrentTexture());
+		}
+
+		@Override
+		public boolean isPostRender(){
+			return false;
+		}
+		
+	};
+	
+	public static Program TEXTURE_BINDER_BLOCK_4x4ROT = new Program(){
+
+		@Override
+		public String getId(){
+			return "fvtm:bind_block_4x4rot_texture";
+		}
+		
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(data.tile.getBlockMetadata() / 4));
+		}
+
+		@Override
+		public boolean isPostRender(){
+			return false;
+		}
+		
+	};
+	
+	public static Program TEXTURE_BINDER_BLOCK_VARIANT = new Program(){
+
+		@Override
+		public String getId(){
+			return "fvtm:bind_block_variant_texture";
+		}
+		
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(data.tile.getBlockMetadata()));
 		}
 
 		@Override

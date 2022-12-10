@@ -249,7 +249,7 @@ public class DataUtil {
 
 	private static void getModelDataEntry(ModelData data, String key, JsonElement value){
 		if(value.isJsonArray()){
-			ArrayList<Object> list = new ArrayList<>();
+			ArrayList<Object> list = data.containsKey(key) ? data.get(key) : new ArrayList<>();
 			for(JsonElement elm : value.getAsJsonArray()){
 				if(elm.isJsonPrimitive()){
 					list.add(elm.getAsString());

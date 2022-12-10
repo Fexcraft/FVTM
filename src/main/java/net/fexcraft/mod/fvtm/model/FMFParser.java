@@ -67,7 +67,7 @@ public class FMFParser {
 					break;
 				}
 				case A:{
-					data.put(larray = readString(stream), new ArrayList<String>());
+					if(!data.containsKey(larray = readString(stream))) data.put(larray, new ArrayList<String>());
 					break;
 				}
 				case AE:{

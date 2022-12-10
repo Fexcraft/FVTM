@@ -29,7 +29,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
     public float gui_scale_x = 0.75f;
     public float gui_scale_y = 0.75f;
     public float gui_scale_z = 0.75f;
-    public boolean bindtex;
+    public boolean bindtex = true;
 	
 	public BlockModel(){
 		super();

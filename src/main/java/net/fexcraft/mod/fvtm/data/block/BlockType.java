@@ -7,7 +7,7 @@ import net.minecraft.block.properties.PropertyInteger;
 public enum BlockType {
 	
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class, 4),
-	GENERIC_4X4ROT(G_4x4ROT_TE.class, G_4x4ROT.class, 4),
+	GENERIC_4X4ROT(G_4x4ROT_TE.class, G_4x4ROT.class, 44),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class, 16),
 	GENERIC_2VAR(G_VAR_TE.class, G_VAR.class, 0),
 	GENERIC_3VAR(G_VAR_TE.class, G_VAR.class, 0),
@@ -51,8 +51,17 @@ public enum BlockType {
 	            case 5: return -270d;
 	        }
 		}
-		if(rotations == 16){
+		else if(rotations == 16){
 			return meta * 22.5 + 180;
+		}
+		else if(rotations == 44){
+			meta %= 4;
+	        switch(meta){
+	            case 0: return 0;
+	            case 1: return -180d;
+	            case 2: return -90;
+	            case 3: return -270d;
+	        }
 		}
 		return 0;
 	}

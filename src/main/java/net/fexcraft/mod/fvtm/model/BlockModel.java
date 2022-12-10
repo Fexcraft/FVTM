@@ -13,6 +13,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
@@ -120,7 +121,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
             {
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
-                if(model.bindtex) super.bindTexture(data.getCurrentTexture());
+                super.bindTexture(model.bindtex ? data.getCurrentTexture() : Resources.WHITE_TEXTURE);
                 model.render(RENDERDATA.set(data, null, null));
                 GL11.glPopMatrix();
             }

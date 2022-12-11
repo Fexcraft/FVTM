@@ -35,7 +35,7 @@ public class FMFParser {
 	
 	public static HashMap<String, Object> parse(GenericModel model, InputStream stream) throws IOException {
 		int f0 = stream.read(), f1 = stream.read(), f2 = stream.read(), format = stream.read();
-		if(f0 != 6 || f1 != 13 || f2 != 6 || format < 0) return null;
+		if(f0 != 6 || f1 != 13 || f2 != 6 || format < 0) return new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
 		int r = -1;
 		String larray = null;

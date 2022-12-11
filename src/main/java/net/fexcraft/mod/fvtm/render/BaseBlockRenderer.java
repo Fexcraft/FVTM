@@ -19,9 +19,9 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
 
     @Override
     public void render(BlockTileEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+        if((data = tile.getBlockData()) == null) return;
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-        data = tile.getBlockData();
         model = (BlockModel)data.getType().getModel();
         TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture() : Resources.WHITE_TEXTURE);
         GL11.glPushMatrix();

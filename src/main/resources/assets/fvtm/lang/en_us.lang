@@ -329,6 +329,14 @@ item.fvtm:train_adjuster.name=Train Adjuster
 item.fvtm:trafficsign.name=Universal Traffic Sign
 item.fvtm:decoration.name=Decoration (Editor)
 
+# Path Items
+fvtm.pipe.no_data=No compound data, invalid item.
+fvtm.pipe.pipe=&9Pipe: &7%s
+fvtm.pipe.category=&9Category: &7%s
+fvtm.pipe.transfer=&9Transfer: &7%s&emb/tick
+fvtm.pipe.no_points=No points cached.
+fvtm.pipe.start_point=&bStarting at: %s
+
 
 # Entities
 

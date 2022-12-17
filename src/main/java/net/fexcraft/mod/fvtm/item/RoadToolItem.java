@@ -238,8 +238,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				}
 			}
 			if(rooffill != null){
+				float off = roadfill == null ? 0 : 0.25f;
 				for(int i = 0; i < rooffill.size(); i++){
-					rooffill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), topheight, 0)))));
+					rooffill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + off + (i * 1), topheight, 0)))));
 				}
 			}
 			if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
@@ -362,7 +363,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			int checkheight = topheight == 0 ? 4 : topheight;
 			for(int i = 1; i < checkheight; i++){
 				if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-					insert(map, blk.up(1), world.getBlockState(blk.up(i)));
+					insert(map, blk.up(i), world.getBlockState(blk.up(i)));
 					world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
 				}
 			}
@@ -383,7 +384,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	public static final Vec3f grv(float rad, Vec3f vec){
-        double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
+        double co = Math.cos(rad), si = Math.sin(rad);
+        return new Vec3f(co * vec.x, vec.y, si * vec.x);
 	}
 
 	private boolean lastEquals(NBTTagList list, Vec316f vector){

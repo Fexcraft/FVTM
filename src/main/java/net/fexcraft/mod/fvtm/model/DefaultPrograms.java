@@ -1560,6 +1560,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.texture == null || data.tile == null) return;
 			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(data.tile.getBlockMetadata() / 4));
 		}
 

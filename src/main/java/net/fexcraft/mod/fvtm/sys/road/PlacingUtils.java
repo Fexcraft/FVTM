@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
@@ -17,10 +18,10 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class PlacingUtils {
 	
-	private static final HashMap<UUID, HashMap<Integer, JsonArray>> UNDOCACHE = new HashMap<>();
+	private static final ConcurrentHashMap<UUID, HashMap<Integer, JsonArray>> UNDOCACHE = new ConcurrentHashMap<>();
 
 	public static void onLogIn(EntityPlayer player){
-		load(player);
+		new Thread(() -> { load(player); }, "PlacingUtils.LOAD").start();;
 	}
 
 	public static void onLogOut(EntityPlayer player){

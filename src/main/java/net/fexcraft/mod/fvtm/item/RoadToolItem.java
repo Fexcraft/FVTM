@@ -243,8 +243,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					rooffill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + off + (i * 1), topheight, 0)))));
 				}
 			}
-			if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-			if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
+			if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1 + off, 0, 0)))));
+			if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1 + off, 0, 0)))));
 		}
 		JsonMap map = new JsonMap();
 		if(road != null){

@@ -2,12 +2,15 @@ package net.fexcraft.mod.fvtm.util.caps;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.util.I19U;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -77,6 +80,7 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 		private Entity entity;
 		private int vehicle = -1, seatindex = -1;
 		private byte check;
+		private boolean notified;
 
 		@Override
 		public void set(int veh, int seat){
@@ -88,7 +92,13 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 			}
 			vehicle = veh;
 			seatindex = seat;
-			if(!entity.world.isRemote) update_packet();
+			if(!entity.world.isRemote){
+				update_packet();
+				if(entity instanceof EntityPlayer && !notified){
+					Print.link(entity, I19U.trs("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
+					notified = true;
+				}
+			}
 		}
 
 		public void set(Entity entity){

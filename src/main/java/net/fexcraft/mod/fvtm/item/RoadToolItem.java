@@ -227,9 +227,10 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			last = vec; vec = _road.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
+			float off = roadfill == null ? 0 : 0.25f;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				if(road != null) road.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
-				if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, -1, 0)))));
+				if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl + off, -1, 0)))));
 				if(roof != null) roof.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
 			}
 			if(roadfill != null){
@@ -238,7 +239,6 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				}
 			}
 			if(rooffill != null){
-				float off = roadfill == null ? 0 : 0.25f;
 				for(int i = 0; i < rooffill.size(); i++){
 					rooffill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + off + (i * 1), topheight, 0)))));
 				}
@@ -297,7 +297,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		if(ground != null){
 			for(Vec316f v : ground){
 				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-				if(world.getBlockState(blk).getBlock() != Asphalt.INSTANCE){
+				state = world.getBlockState(blk);
+				if(!Compat.isFVTMRoad(state.getBlock()) && !Compat.isValidFlenix(state.getBlock())){
 					insert(map, blk, world.getBlockState(blk));
 					world.setBlockState(blk, bot);
 				}

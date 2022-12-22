@@ -34,7 +34,7 @@ public class Config {
     public static boolean USE_RAIL_MARKERS;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
-    public static int WIRE_SEGMENTATOR, MAX_WIRE_LENGTH;
+    public static int WIRE_SEGMENTATOR, MAX_WIRE_LENGTH, ROAD_UNDO_CACHE_SIZE, ROAD_UNDO_CACHE_CLEARTIME;
 	public static long UNLOAD_INTERVAL;
 	public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 
@@ -146,6 +146,8 @@ public class Config {
             }
             MAX_ROAD_LENGTH = config.getInt("road_max_length", ROADSYS, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
             DISABLE_ROADS = config.getBoolean("disable_roads", ROADSYS, false, "If FVTM road system should be disabled.");
+            ROAD_UNDO_CACHE_SIZE = config.getInt("road_undo_cache_size", ROADSYS, 8, 0, 32, "How many roads should be remembered in the undo cache. Set '0' to disable the undo cache.");
+            ROAD_UNDO_CACHE_CLEARTIME = config.getInt("road_undo_cache_cleartime", ROADSYS, 5, 0, 60, "After how many minutes the undo cache of a player should reset. Useful if your players have unstable connection. Set to '0' for instant deletion.");
             
     	}
     	{//WIRE

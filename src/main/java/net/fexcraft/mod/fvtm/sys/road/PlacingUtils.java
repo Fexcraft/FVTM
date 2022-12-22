@@ -1,19 +1,19 @@
 package net.fexcraft.mod.fvtm.sys.road;
 
-import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mojang.authlib.GameProfile;
+
 import net.fexcraft.app.json.JsonArray;
-import net.fexcraft.app.json.JsonHandler;
-import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonObject;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PlacingUtils {
@@ -21,58 +21,39 @@ public class PlacingUtils {
 	private static final ConcurrentHashMap<UUID, HashMap<Integer, JsonArray>> UNDOCACHE = new ConcurrentHashMap<>();
 
 	public static void onLogIn(EntityPlayer player){
-		new Thread(() -> { load(player); }, "PlacingUtils.LOAD").start();;
+		if(Config.ROAD_UNDO_CACHE_SIZE == 0) return;
+		UNDOCACHE.put(player.getGameProfile().getId(), new HashMap<>());
 	}
 
 	public static void onLogOut(EntityPlayer player){
-		HashMap<Integer, JsonArray> array = UNDOCACHE.remove(player.getGameProfile().getId());
-		if(array != null) save(player, array);
-	}
-
-	private static void load(EntityPlayer player){
-		UNDOCACHE.put(player.getGameProfile().getId(), new HashMap<>());
-		File file = new File(getFileRoot(), player.getGameProfile().getId().toString() + ".json");
-		if(!file.exists()) return;
-		JsonMap map = JsonHandler.parse(file);
-		if(!map.has("dims")) return;
-		for(JsonObject<?> o : map.getArray("dims").value){
-			int i = o.integer_value();
-			if(!map.has("dim" + i)) continue;
-			UNDOCACHE.get(player.getGameProfile().getId()).put(i, map.getArray("dim" + i));
+		if(Config.ROAD_UNDO_CACHE_SIZE == 0) return;
+		if(Config.ROAD_UNDO_CACHE_CLEARTIME == 0) UNDOCACHE.remove(player.getGameProfile().getId());
+		else {
+			UUID uuid = player.getGameProfile().getId();
+			new Timer().schedule(new TimerTask(){
+				@Override
+				public void run(){
+					for(GameProfile prof : Static.getServer().getPlayerList().getOnlinePlayerProfiles()){
+						if(prof.getId().equals(uuid)) return;
+					}
+					UNDOCACHE.remove(uuid);
+				}
+			}, new Date(Time.getDate() + (Config.ROAD_UNDO_CACHE_CLEARTIME * 60000)));
 		}
-	}
-
-	private static File getFileRoot(){
-		File root = new File(Static.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "/fvtm/road-undo/");
-		if(!root.exists()) root.mkdirs();
-		return root;
-	}
-
-	private static void save(EntityPlayer player, HashMap<Integer, JsonArray> map){
-		if(map == null || map.size() == 0) return;
-		File file = new File(getFileRoot(), player.getGameProfile().getId().toString() + ".json");
-		JsonMap jmap = new JsonMap();
-		JsonArray dims = new JsonArray();
-		for(Entry<Integer, JsonArray> entry : map.entrySet()){
-			dims.add(entry.getKey());
-			jmap.add("dim" + entry.getKey(), entry.getValue());
-		}
-		jmap.add("dims", dims);
-		jmap.add("last_save", Time.getAsString(null, true));
-		JsonHandler.print(file, jmap, PrintOption.FLAT);
-		Print.log(String.format("Saved road placing cache for %s (%s).", player, player.getGameProfile().getId()));
 	}
 
 	public static void addEntry(EntityPlayer player, JsonMap map){
+		if(Config.ROAD_UNDO_CACHE_SIZE == 0) return;
 		UUID uuid = player.getGameProfile().getId();
 		if(!UNDOCACHE.containsKey(uuid)) UNDOCACHE.put(uuid, new HashMap<>());
 		if(!UNDOCACHE.get(uuid).containsKey(player.dimension)) UNDOCACHE.get(uuid).put(player.dimension, new JsonArray());
 		JsonArray array = UNDOCACHE.get(uuid).get(player.dimension);
-		while(array.size() >= 10) array.rem(0);
+		while(array.size() >= Config.ROAD_UNDO_CACHE_SIZE) array.rem(0);
 		array.add(map);
 	}
 	
 	public static JsonMap getLastEntry(EntityPlayer player){
+		if(Config.ROAD_UNDO_CACHE_SIZE == 0) return null;
 		UUID uuid = player.getGameProfile().getId();
 		if(!UNDOCACHE.containsKey(uuid)) return null;
 		if(!UNDOCACHE.get(uuid).containsKey(player.dimension)) return null;
@@ -82,6 +63,7 @@ public class PlacingUtils {
 	}
 	
 	public static void remLastEntry(EntityPlayer player){
+		if(Config.ROAD_UNDO_CACHE_SIZE == 0) return;
 		UUID uuid = player.getGameProfile().getId();
 		if(!UNDOCACHE.containsKey(uuid)) return;
 		if(!UNDOCACHE.get(uuid).containsKey(player.dimension)) return;

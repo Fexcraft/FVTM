@@ -310,7 +310,7 @@ handler.deinstall.fvtm.connector.success=Part uninstalled and position reset.
 
 
 # Entities
-//
+fvtm.seat.controls_info=&3Vehicle controls and instructions can be found in the &nwiki.
 
 
 # Items

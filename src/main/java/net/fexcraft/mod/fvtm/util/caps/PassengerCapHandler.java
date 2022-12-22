@@ -95,8 +95,13 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 			if(!entity.world.isRemote){
 				update_packet();
 				if(entity instanceof EntityPlayer && !notified){
-					Print.link(entity, I19U.trs("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
-					notified = true;
+					try{
+						Print.link(entity, I19U.trs("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
+						notified = true;
+					}
+					catch(Exception e){
+						//
+					}
 				}
 			}
 		}

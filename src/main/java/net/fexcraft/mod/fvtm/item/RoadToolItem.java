@@ -93,6 +93,16 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
                 tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
         	}
+        	//
+        	if(layers.length > 5){
+            	if(stack.getTagCompound().hasKey("CustomLinesFill") && layers[5] > 0){
+                    tooltip.add(Formatter.format("&9Roof Fill: &7CUSTOM &ex" + layers[0]));
+            	}
+            	else if(stack.getTagCompound().hasKey("LinesFill") && layers[5] > 0){
+            		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
+                    tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
+            	}
+        	}
             tooltip.add(Formatter.format("&7Use &6/fvtm undo road &7to undo last road."));
         }
     }

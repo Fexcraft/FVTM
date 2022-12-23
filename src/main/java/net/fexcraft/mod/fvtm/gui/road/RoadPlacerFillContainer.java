@@ -1,10 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOL;
-
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,10 +64,7 @@ public class RoadPlacerFillContainer extends GenericContainer {
 		switch(packet.getString("cargo")){
 			case "save":{
 				stack.getTagCompound().setIntArray("RoadLayers", packet.getIntArray("sizes"));
-				if(packet.getBoolean("close")){
-					player.closeScreen();
-					player.openGui(FVTM.getInstance(), ROADTOOL, player.world, 0, 0, 0);
-				}
+				if(packet.getBoolean("close")) player.closeScreen();
 				break;
 			}
 		}

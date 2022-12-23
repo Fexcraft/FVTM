@@ -16,7 +16,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class PlacingUtils {
+public class RoadPlacingCache {
 	
 	private static final ConcurrentHashMap<UUID, HashMap<Integer, JsonArray>> UNDOCACHE = new ConcurrentHashMap<>();
 

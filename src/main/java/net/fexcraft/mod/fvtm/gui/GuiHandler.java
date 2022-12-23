@@ -23,8 +23,6 @@ import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfo;
 import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfoContainer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacerContainer;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacer;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacerContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacerCustomFill;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacerCustomFillContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFill;
@@ -52,7 +50,7 @@ public class GuiHandler implements IGuiHandler {
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	public static final int JUNCTION_ADJUSTER = 701;
-	public static final int ROADTOOL = 702;
+	//public static final int ROADTOOL = 702;
 	public static final int ROADTOOLFILL = 703;
 	public static final int ROADTOOLCUSTOMFILL = 704;
 	public static final int SPAWNSYS = 705;
@@ -101,7 +99,7 @@ public class GuiHandler implements IGuiHandler {
 		switch(ID){
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
-			case ROADTOOL: return new RoadPlacerContainer(player, x, y, z);
+			//case ROADTOOL: return new RoadPlacerContainer(player, x, y, z);
 			case ROADTOOLFILL: return new RoadPlacerFillContainer(player, x, y, z);
 			case ROADTOOLCUSTOMFILL: return new RoadPlacerCustomFillContainer(player, x, y, z);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
@@ -148,7 +146,7 @@ public class GuiHandler implements IGuiHandler {
 			switch(ID){
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
-				case ROADTOOL: return new RoadPlacer(player, x, y, z);
+				//case ROADTOOL: return new RoadPlacer(player, x, y, z);
 				case ROADTOOLFILL: return new RoadPlacerFill(player, x, y, z);
 				case ROADTOOLCUSTOMFILL: return new RoadPlacerCustomFill(player, x, y, z);
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);

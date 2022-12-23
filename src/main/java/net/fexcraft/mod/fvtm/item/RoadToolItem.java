@@ -16,7 +16,8 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.sys.road.PlacingUtils;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Compat;
@@ -93,16 +94,6 @@ public class RoadToolItem extends Item implements JunctionGridItem {
                 tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
         	}
             tooltip.add(Formatter.format("&7Use &6/fvtm undo road &7to undo last road."));
-            tooltip.add(Formatter.format("&9< - - &7- &9- - >"));
-            if(stack.getTagCompound().hasKey("fvtm:roadpoints")){
-            	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints");
-        		for(int k = 0; k < list.tagCount(); k++){
-                	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new Vec316f(list.getCompoundTagAt(k)).toString()));
-        		}
-            }
-            else{
-            	tooltip.add("No points cached.");
-            }
         }
     }
 	
@@ -111,7 +102,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         if(world.isRemote){ return EnumActionResult.PASS; }
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking() && hand != EnumHand.OFF_HAND){
-        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOL, world, 0, 0, 0);
+        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOLFILL, world, 0, 0, 0);
         	return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){
@@ -123,30 +114,16 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	return EnumActionResult.FAIL;
         }
         Vec316f vector = new Vec316f(world, new Vec3d(pos.down()).add(hitX, hitY, hitZ), Config.ROAD_PLACING_GRID);
-        if(player.isSneaking()){
-			stack.getTagCompound().removeTag("fvtm:roadpoints");
-			Print.chat(player, "&bResetting Item Point(s) Cache.");
-			return EnumActionResult.SUCCESS;
-		}
-		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		NBTTagList list = stack.getTagCompound().hasKey("fvtm:roadpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints") : new NBTTagList();
-		if(!lastEquals(list, vector)){
-			list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:roadpoints", list);
-			Print.bar(player, list.tagCount() + getSuffix(list.tagCount()) + " Point Added!");
-			return EnumActionResult.SUCCESS;
-		}
-		else{
-			return placeRoad(player, world, stack, vector, list, player, true);
-		}
+    	RoadPlacingUtil.place(world, player, stack, vector);
+		return EnumActionResult.SUCCESS;
     }
 
 	@SuppressWarnings("deprecation")
-	public EnumActionResult placeRoad(EntityPlayer player, World world, ItemStack stack, Vec316f vector, NBTTagList list, ICommandSender sender, boolean noblocks){
-		Print.debug(list);
-		Road _road = new Road(getVectors(list, true));
+	public boolean placeRoad(EntityPlayer player, World world, ItemStack stack, Vec316f vector, Road _road, ICommandSender sender){
+		Print.debug(_road.vecpath);
 		if(_road.length > Config.MAX_ROAD_LENGTH){
 			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
-			return EnumActionResult.FAIL;
+			return false;
 		}
     	ItemStack stack0 = null;
 		int[] layers = stack.getTagCompound().getIntArray("RoadLayers");
@@ -315,10 +292,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		}
 		//
 		Print.chatbar(player, "&bRoad placed!");
-		PlacingUtils.addEntry(player, map);
+		RoadPlacingCache.addEntry(player, map);
 		stack.getTagCompound().setInteger("LastRoadDim", world.provider.getDimension());
-		stack.getTagCompound().removeTag("fvtm:roadpoints");
-		return EnumActionResult.SUCCESS;
+		return true;
 	
 	}
 	

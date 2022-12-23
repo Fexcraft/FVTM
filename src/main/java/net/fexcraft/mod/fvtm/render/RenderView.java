@@ -32,6 +32,7 @@ public class RenderView extends Render<RenderViewEntity> implements IRenderFacto
             double cz = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * ticks;
             FRUSTUM.setPosition(cx, cy, cz);
         	RailRenderer.renderRails(entity.world, cx, cy, cz, ticks);
+        	RoadRenderer.renderRoads(entity.world, cx, cy, cz, ticks);
         	VehicleRenderer.renderVehicles(entity.world, cx, cy, cz, ticks);
         	DecorationRenderer.renderDecorations(entity.world, cx, cy, cz, ticks);
         	TrafficSignRenderer.renderTrafficSigns(entity.world, cx, cy, cz, ticks);

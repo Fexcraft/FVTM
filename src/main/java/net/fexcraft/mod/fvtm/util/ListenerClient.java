@@ -9,6 +9,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
@@ -109,6 +111,38 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
 						if(track == null) return;
 						track.selected = packet.nbt.getInteger("selected");
+					}
+				}
+			}
+			case "road_place_util":{
+				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
+				switch(packet.nbt.getString("subtask")){
+					case "new":{
+						RoadPlacingUtil.CL_CURRENT = new NewRoad(uuid, new Vec316f(packet.nbt.getCompoundTag("vector")));
+						RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
+						break;
+					}
+					case "reset":{
+						if(RoadPlacingUtil.CL_CURRENT.id.equals(uuid)) RoadPlacingUtil.CL_CURRENT = null;
+						RoadPlacingUtil.QUEUE.remove(uuid);
+						break;
+					}
+					case "add":{
+						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
+						if(road == null) return;
+						road.add(new Vec316f(packet.nbt.getCompoundTag("vector")));
+						break;
+					}
+					case "remove":{
+						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
+						if(road == null) return;
+						road.remove(player, new Vec316f(packet.nbt.getCompoundTag("vector")));
+						break;
+					}
+					case "selected":{
+						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
+						if(road == null) return;
+						road.selected = packet.nbt.getInteger("selected");
 					}
 				}
 			}

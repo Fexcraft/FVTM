@@ -24,7 +24,7 @@ import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.road.PlacingUtils;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -392,7 +392,7 @@ public class Command extends CommandBase {
             case "undo":{
             	EntityPlayer player = (EntityPlayer)sender;
             	if(args.length > 1 || args[1].equals("road") || player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
-            		JsonMap map = PlacingUtils.getLastEntry(player);
+            		JsonMap map = RoadPlacingCache.getLastEntry(player);
             		if(map == null || map.empty()){
                 		Print.chatbar(sender, "No last road data in item.");
             			return;
@@ -411,7 +411,7 @@ public class Command extends CommandBase {
             			IBlockState state = block.getStateFromMeta(array.get(1).integer_value());
             			player.world.setBlockState(pos, state);
             		}
-            		PlacingUtils.remLastEntry(player);
+            		RoadPlacingCache.remLastEntry(player);
             		Print.chat(sender, "&7Last road undone.");
             	}
             	return;

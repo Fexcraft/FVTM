@@ -12,12 +12,12 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class RoadPlacerFillContainer extends GenericContainer {
 	
-	public static final String[] fills = new String[]{ "RoadFill", "BottomFill", "SideLeftFill", "SideRightFill", "TopFill" };
+	public static final String[] fills = new String[]{ "RoadFill", "BottomFill", "SideLeftFill", "SideRightFill", "TopFill", "LinesFill" };
 	protected GenericGui<RoadPlacerFillContainer> gui;
 	protected GuiCommandSender sender;
 	protected RoadInventory roadinv;
 	protected ItemStack stack;
-	protected boolean cr, ct;
+	protected boolean cr, ct, cl;
 	protected int slots;
 	
 	public RoadPlacerFillContainer(EntityPlayer player, int x, int y, int z){
@@ -26,24 +26,21 @@ public class RoadPlacerFillContainer extends GenericContainer {
 		sender = new GuiCommandSender(player);
 		stack = player.getHeldItemMainhand();
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		if(stack.getTagCompound().hasKey("CustomRoadFill")){
-			cr = stack.getTagCompound().getBoolean("CustomRoadFill");
-		}
-		if(stack.getTagCompound().hasKey("CustomTopFill")){
-			cr = stack.getTagCompound().getBoolean("CustomTopFill");
-		}
-		roadinv = new RoadInventory(slots = 5);
+		cr = stack.getTagCompound().hasKey("CustomRoadFill");
+		ct = stack.getTagCompound().hasKey("CustomTopFill");
+		cl = stack.getTagCompound().hasKey("CustomLinesFill");
+		roadinv = new RoadInventory(slots = 6);
         for(int i = 0; i < slots; i++){
         	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, false, false));
         }
 		//
         for(int row = 0; row < 3; row++){
             for(int col = 0; col < 9; col++){
-                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 112 + row * 18));
+                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 132 + row * 18));
             }
         }
         for(int col = 0; col < 9; col++){
-            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 168));
+            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 188));
         }
         //
         for(int i = 0; i < fills.length; i++){

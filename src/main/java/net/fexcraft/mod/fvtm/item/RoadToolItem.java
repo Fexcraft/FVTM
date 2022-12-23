@@ -96,11 +96,11 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	//
         	if(layers.length > 5){
             	if(stack.getTagCompound().hasKey("CustomLinesFill") && layers[5] > 0){
-                    tooltip.add(Formatter.format("&9Roof Fill: &7CUSTOM &ex" + layers[0]));
+                    tooltip.add(Formatter.format("&9Lines Fill: &7CUSTOM &ex" + layers[0]));
             	}
             	else if(stack.getTagCompound().hasKey("LinesFill") && layers[5] > 0){
-            		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
-                    tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
+            		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("LinesFill"));
+                    tooltip.add(Formatter.format("&9Lines Fill: &7" + stack0.getDisplayName()));
             	}
         	}
             tooltip.add(Formatter.format("&7Use &6/fvtm undo road &7to undo last road."));
@@ -137,11 +137,11 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		}
     	ItemStack stack0 = null;
 		int[] layers = stack.getTagCompound().getIntArray("RoadLayers");
-		IBlockState top = null, bot = null, righ = null, left = null, roadB = null;
-		ArrayList<Vec316f> border_r = null, border_l = null, roof = null, ground = null, road;
+		IBlockState top = null, bot = null, righ = null, left = null, roadB = null, lineB = null;
+		ArrayList<Vec316f> border_r = null, border_l = null, roof = null, ground = null, road, line = null;
     	int borderheight_l = 0, borderheight_r = 0, topheight = 0;
-    	ArrayList<ArrayList<Vec316f>> roadfill = null, rooffill = null;
-    	boolean flnx = false;
+    	ArrayList<ArrayList<Vec316f>> roadfill = null, rooffill = null, linefill = null;
+    	boolean flnx = false, hlines = layers.length > 5 && layers[5] > 0;
     	if(stack.getTagCompound().hasKey("RoadFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("RoadFill"));
     		flnx = Compat.isValidFlenix(stack0.getItem());
@@ -168,9 +168,20 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
             top = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
     	}
+    	if(hlines && stack.getTagCompound().hasKey("LinesFill") && !stack.getTagCompound().hasKey("CustomLinesFill")){
+    		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("LinesFill"));
+            lineB = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+    	}
     	topheight = borderheight_l > borderheight_r ? borderheight_l : borderheight_r;
-    	if(topheight == 0) topheight = 1;
-    	ArrayList<IBlockState> roadfillB = null, rooffillB = null;
+    	if(topheight == 0){
+    		if(hlines){
+    			borderheight_l++;
+    			borderheight_r++;
+    			topheight = 2;
+    		}
+    		else topheight = 1;
+    	}
+    	ArrayList<IBlockState> roadfillB = null, rooffillB = null, linefillB = null;
     	if(stack.getTagCompound().hasKey("CustomRoadFill")){
     		roadfill = new ArrayList<>();
     		roadfillB = new ArrayList<>();
@@ -181,6 +192,11 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     		rooffillB = new ArrayList<>();
     		loadFill(rooffill, rooffillB, layers[0], stack.getTagCompound().getCompoundTag("CustomTopFill"));
     	}
+    	if(hlines && stack.getTagCompound().hasKey("CustomLinesFill")){
+    		linefill = new ArrayList<>();
+    		linefillB = new ArrayList<>();
+    		loadFill(linefill, linefillB, layers[0], stack.getTagCompound().getCompoundTag("CustomLinesFill"));
+    	}
 		//
 		BlockPos blk;
 		Vec3f last, vec;
@@ -189,6 +205,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		float angle, passed = 0, half = (width * 0.5f) - 0.5f;
 		road = roadfill == null && roadB != null ? new ArrayList<>() : null;
 		roof = rooffill == null && layers[4] > 0 ? new ArrayList<>() : null;
+		line = linefill == null && hlines ? new ArrayList<>() : null;
 		//
 		vec = _road.getVectorPosition0(0.001f, false); passed = 0;
 		angle = (float)Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
@@ -196,11 +213,17 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		for(float fl = -half; fl <= half; fl += 0.25f){
 			if(road != null) road.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
 			if(ground != null) ground.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
+			if(line != null) line.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 1, 0)))));
 			if(roof != null) roof.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
 		}
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
 				roadfill.get(i).add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+			}
+		}
+		if(linefill != null){
+			for(int i = 0; i < linefill.size(); i++){
+				linefill.get(i).add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 1, 0)))));
 			}
 		}
 		if(rooffill != null){
@@ -218,11 +241,17 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				if(road != null) road.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
 				if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl + off, -1, 0)))));
+				if(line != null) line.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 1, 0)))));
 				if(roof != null) roof.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
 			}
 			if(roadfill != null){
 				for(int i = 0; i < roadfill.size(); i++){
 					roadfill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+				}
+			}
+			if(linefill != null){
+				for(int i = 0; i < linefill.size(); i++){
+					linefill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + off + (i * 1), 1, 0)))));
 				}
 			}
 			if(rooffill != null){
@@ -243,6 +272,18 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				block = roadfillB.get(i);
 				flnx = Compat.isValidFlenix(block.getBlock());
 				roadFill(world, roadfill.get(i), block, topheight, flnx, map);
+			}
+		}
+		if(linefill != null){
+			for(int i = 0; i < linefill.size(); i++){
+				block = linefillB.get(i);
+				for(Vec316f v : linefill.get(i)){
+					state = world.getBlockState(blk = v.y != 0 ? v.pos.up() : v.pos);
+					if(state.getBlock() != block.getBlock()){
+						insert(map, blk, state);
+						world.setBlockState(blk, block);
+					}
+				}
 			}
 		}
 		if(rooffill != null){
@@ -289,6 +330,13 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					insert(map, blk, world.getBlockState(blk));
 					world.setBlockState(blk, bot);
 				}
+			}
+		}
+		if(line != null){
+			for(Vec316f v : line){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				insert(map, blk, world.getBlockState(blk));
+				world.setBlockState(blk, lineB);
 			}
 		}
 		if(roof != null){

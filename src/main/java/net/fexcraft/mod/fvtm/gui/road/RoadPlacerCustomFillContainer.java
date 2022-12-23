@@ -19,12 +19,11 @@ import net.minecraftforge.fml.relauncher.Side;
 public class RoadPlacerCustomFillContainer extends GenericContainer {
 	
 	protected GenericGui<RoadPlacerCustomFillContainer> gui;
-	protected int[] size = new int[]{ 1, 0, 0, 0, 0 };
+	protected int[] size = new int[]{ 1, 0, 0, 0, 0, 0 };
 	protected GuiCommandSender sender;
 	protected RoadInventory roadinv;
 	protected ItemStack stack;
-	protected boolean notroad;
-	protected int slots, off;
+	protected int slots, off, idx;
 	
 	public RoadPlacerCustomFillContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
@@ -36,11 +35,12 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 			stack.getTagCompound().setIntArray("RoadLayers", size);
 		}
 		else size = stack.getTagCompound().getIntArray("RoadLayers");
+		if(size.length < 6) size = new int[]{ size[0], size[1], size[2], size[3], size[4], 0 };
 		roadinv = new RoadInventory(slots = size[0]);
 		off = (size[0] * 9);
-		notroad = x != 0;
+		idx = x;
         for(int i = 0; i < slots; i++){
-        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 88 - off + 1 + i * 18, 8, true, notroad));
+        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 88 - off + 1 + i * 18, 8, true, x > 0));
         }
 		//
         for(int row = 0; row < 3; row++){
@@ -52,7 +52,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
             addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 100));
         }
         //
-		String tagname = notroad ? "CustomTopFill" : "CustomRoadFill";
+		String tagname = "Custom" + RoadPlacerFillContainer.fills[x];
         if(stack.getTagCompound().hasKey(tagname)){
         	NBTTagCompound compound = stack.getTagCompound().getCompoundTag(tagname);
         	int size = compound.getInteger("Size");
@@ -83,7 +83,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 							break;
 						}
 					}
-					String tagname = notroad ? "CustomTopFill" : "CustomRoadFill";
+					String tagname = "Custom" + RoadPlacerFillContainer.fills[idx];
 					if(empty){
 						if(stack.getTagCompound().hasKey(tagname)) stack.getTagCompound().removeTag(tagname);
 					}
@@ -94,7 +94,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 							ItemStack item = roadinv.getStackInSlot(i);
 							if(!item.isEmpty()){
 								com.setString("Block" + i, ((ItemBlock)item.getItem()).getBlock().getRegistryName().toString());
-								if(notroad) com.setByte("Meta" + i, (byte)item.getMetadata());
+								if(idx > 0) com.setByte("Meta" + i, (byte)item.getMetadata());
 							}
 						}
 						stack.getTagCompound().setTag(tagname, com);

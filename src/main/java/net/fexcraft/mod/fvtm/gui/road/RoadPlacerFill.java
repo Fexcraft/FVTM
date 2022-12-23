@@ -19,7 +19,7 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 	//private static int minheight = 3;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
-	private int[] size = new int[]{ 1, 0, 0, 0, 0 };
+	private int[] size = new int[]{ 1, 0, 0, 0, 0, 0 };
 	
 	public RoadPlacerFill(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerFillContainer(player, x, y, z), player);
@@ -28,18 +28,20 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 			container.stack.getTagCompound().setIntArray("RoadLayers", size);
 		}
 		else size = container.stack.getTagCompound().getIntArray("RoadLayers");
+		if(size.length < 6) size = new int[]{ size[0], size[1], size[2], size[3], size[4], 0 };
 		this.defbackground = true;
 		this.deftexrect = true;
 		container.gui = this;
 		this.xSize = 182;
-		this.ySize = 192;
+		this.ySize = 212;
 	}
 
 	@Override
 	protected void init(){
 		this.buttons.put("road", new BasicButton("road", guiLeft + 168, guiTop + 12, 168, 12, 8, 8, true));
 		this.buttons.put("roof", new BasicButton("roof", guiLeft + 168, guiTop + 92, 168, 92, 8, 8, true));
-		for(int i = 0; i < 5; i++){
+		this.buttons.put("line", new BasicButton("line", guiLeft + 168, guiTop + 112, 168, 112, 8, 8, true));
+		for(int i = 0; i < 6; i++){
 			int j = i * 20;
 			this.buttons.put("a" + i, new BasicButton("a" + i, guiLeft + 27, guiTop + 7 + j, 27, 7 + j, 8, 8, true));
 			this.buttons.put("s" + i, new BasicButton("s" + i, guiLeft + 27, guiTop + 17 + j, 27, 17 + j, 8, 8, true));
@@ -64,6 +66,9 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 		//
 		texts.get("tu4").string = container.ct ? "Custom Top Fill" : container.roadinv.getStackInSlot(4).isEmpty() ? "No Fill Block" : container.roadinv.getStackInSlot(4).getDisplayName();
 		texts.get("td4").string = "top fill " + (size[4] > 0 ? "enabled" : "disabled");
+		//
+		texts.get("tu5").string = container.cl ? "Custom Lines Fill" : container.roadinv.getStackInSlot(5).isEmpty() ? "No Fill Block" : container.roadinv.getStackInSlot(5).getDisplayName();
+		texts.get("td5").string = "lines fill " + (size[5] > 0 ? "enabled" : "disabled");
 	}
 
 	@Override
@@ -103,6 +108,10 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 			openGui(ROADTOOLCUSTOMFILL, new int[]{ 4, 0, 0 }, LISTENERID);
 			return true;
 		}
+		else if(button.name.equals("line")){
+			openGui(ROADTOOLCUSTOMFILL, new int[]{ 5, 0, 0 }, LISTENERID);
+			return true;
+		}
 		else if(button.name.startsWith("a")){
 			int idx = Integer.parseInt(button.name.substring(1));
 			size(idx, 1);
@@ -121,6 +130,7 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 			case 2: if(size[idx] + am >= 0 && size[idx] + am <= 64) size[idx] += am; break;
 			case 3: if(size[idx] + am >= 0 && size[idx] + am <= 64) size[idx] += am; break;
 			case 4: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;
+			case 5: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;
 		}
 		save(false);
 	}

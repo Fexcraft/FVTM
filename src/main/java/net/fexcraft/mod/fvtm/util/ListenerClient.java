@@ -118,7 +118,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
 				switch(packet.nbt.getString("subtask")){
 					case "new":{
-						RoadPlacingUtil.CL_CURRENT = new NewRoad(uuid, new Vec316f(packet.nbt.getCompoundTag("vector")));
+						RoadPlacingUtil.CL_CURRENT = new NewRoad(uuid, new Vec316f(packet.nbt.getCompoundTag("vector")), packet.nbt.getInteger("width"));
 						RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
 						break;
 					}
@@ -130,7 +130,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 					case "add":{
 						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
 						if(road == null) return;
-						road.add(new Vec316f(packet.nbt.getCompoundTag("vector")));
+						road.add(new Vec316f(packet.nbt.getCompoundTag("vector")), packet.nbt.getInteger("width"));
 						break;
 					}
 					case "remove":{

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.util.I19U.trs;
+import static net.fexcraft.mod.fvtm.util.I19U.trsc;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class PipeItem extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
         if(stack.getTagCompound() == null){
-        	tooltip.add(trs("fvtm.pipe.no_data"));
+        	tooltip.add(trsc("fvtm.pipe.no_data"));
         	return;
         }
     	NBTTagCompound com = stack.getTagCompound();
@@ -46,19 +46,19 @@ public class PipeItem extends Item {
     		tooltip.add("invalid_pipe : " + com.getString("Type"));
     		return;
     	}
-        tooltip.add(trs("fvtm.pipe.pipe", pipe.id));
-        tooltip.add(trs("fvtm.pipe.category", pipe.fluidcategory));
-        tooltip.add(trs("fvtm.pipe.transfer", pipe.transferspeed));
+        tooltip.add(trsc("fvtm.pipe.pipe", pipe.id));
+        tooltip.add(trsc("fvtm.pipe.category", pipe.fluidcategory));
+        tooltip.add(trsc("fvtm.pipe.transfer", pipe.transferspeed));
         if(com.hasKey("fvtm:start_point")){
         	BlockPos pos = BlockPos.fromLong(com.getLong("fvtm:start:point"));
-        	tooltip.add(trs("fvtm.pipe.start_point", pos.toString()));
+        	tooltip.add(trsc("fvtm.pipe.start_point", pos.toString()));
         	NBTTagList poss = (NBTTagList)com.getTag("fvtm:pipepoints");
         	if(poss != null){
         		
         	}
         }
         else{
-        	tooltip.add(trs("fvtm.pipe.no_points"));
+        	tooltip.add(trsc("fvtm.pipe.no_points"));
         }
     }
 	

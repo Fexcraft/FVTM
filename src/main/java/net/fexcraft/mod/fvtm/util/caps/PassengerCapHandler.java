@@ -96,7 +96,7 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 				update_packet();
 				if(entity instanceof EntityPlayer && !notified){
 					try{
-						Print.link(entity, I19U.trs("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
+						Print.link(entity, I19U.trss("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
 						notified = true;
 					}
 					catch(Exception e){

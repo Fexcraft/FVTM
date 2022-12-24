@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -14,8 +13,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class I19U {
 	
 	@SideOnly(Side.CLIENT)
-	public static String trs(String str, Object... args){
-		return Formatter.format(I18n.format(str, args));
+	public static String trsc(String str, Object... args){
+		return Formatter.format(net.minecraft.client.resources.I18n.format(str, args));
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static String trss(String str, Object... args){
+		return Formatter.format(net.minecraft.util.text.translation.I18n.translateToLocalFormatted(str, args));
 	}
 
 }

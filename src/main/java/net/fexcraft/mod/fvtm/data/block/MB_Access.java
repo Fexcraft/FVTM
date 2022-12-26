@@ -70,7 +70,7 @@ public class MB_Access {
 		else if(handler.type.isItem()){
 			cap = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 		}
-		else return;
+		else if(!handler.type.isVariable()) return;
 		capabilities.get(facing).add(new CapabilityContainer(cap, handler));
 	}
 	

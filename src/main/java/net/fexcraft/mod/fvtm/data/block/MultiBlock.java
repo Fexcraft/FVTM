@@ -196,6 +196,10 @@ public class MultiBlock {
 		return triggers;
 	}
 
+	public ArrayList<MB_Access> getAccess(){
+		return access;
+	}
+
 	public ArrayList<BlockPos> getBlockLocations(){
 		return blockpos;
 	}

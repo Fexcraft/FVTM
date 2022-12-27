@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY_FLUID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY_ITEM;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
@@ -79,7 +78,7 @@ public class M_4ROT_TE extends BlockBase {
                 return true;
             }
             if(te.triggers == null) te.triggers = data.getType().getTriggers(state.getValue(FACING), pos, te.isCore() ? pos : te.getCore());
-            if(processTriggers(te.triggers, data, te.isCore() ? pos : te.getCore(), player, hand, state, pos, side, hitX, hitY, hitZ)){
+            if(processTriggers(te, te.triggers, data, te.isCore() ? pos : te.getCore(), player, hand, state, pos, side, hitX, hitY, hitZ)){
             	return true;
             }
             return false;
@@ -87,7 +86,7 @@ public class M_4ROT_TE extends BlockBase {
         return true;
     }
     
-    protected static boolean processTriggers(List<MB_Trigger> triggers, MultiBlockData data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
+    protected static boolean processTriggers(MultiblockTileEntity te, List<MB_Trigger> triggers, MultiBlockData data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
     	for(MB_Trigger trigger : triggers){
         	boolean pass = trigger.isWholeBlock();
         	IBlockState corestate = player.world.getBlockState(core);
@@ -111,6 +110,13 @@ public class M_4ROT_TE extends BlockBase {
         	}
         	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
     	}
+    	if(te == null) return false;
+    	for(CapabilityContainer capcon : te.getCapabilities(side)){
+    		if(capcon.handler.type.isVariable()){
+    			openInventory(player, capcon.id, capcon.handler, core);
+    			return true;
+    		}
+    	}
     	return false;
     }
 
@@ -121,7 +127,7 @@ public class M_4ROT_TE extends BlockBase {
     	NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("inventory", target);
         int[] xyz = new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() };
-        GenericContainer.openGui(handler.type.isItem() ? MULTIBLOCK_INVENTORY_ITEM : MULTIBLOCK_INVENTORY_FLUID, xyz, LISTENERID, packet, player);
+        GenericContainer.openGui(handler.type.guiId(), xyz, LISTENERID, packet, player);
 	}
 
 	@Override

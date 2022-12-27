@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MB_Access;
+import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -155,6 +156,11 @@ public class MultiblockTileEntity extends BlockTileEntity {
     		return;
     	}
     	super.processServerPacket(pkt);
+    }
+    
+    public List<CapabilityContainer> getCapabilities(EnumFacing side){
+    	if(capabilities == null) loadCapabilities();
+    	return capabilities.get(side);
     }
 
 }

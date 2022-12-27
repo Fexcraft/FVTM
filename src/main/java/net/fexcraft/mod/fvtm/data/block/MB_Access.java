@@ -71,18 +71,20 @@ public class MB_Access {
 			cap = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 		}
 		else if(!handler.type.isVariable()) return;
-		capabilities.get(facing).add(new CapabilityContainer(cap, handler));
+		capabilities.get(facing).add(new CapabilityContainer(target, cap, handler));
 	}
 	
 	public static class CapabilityContainer {
 		
-		public CapabilityContainer(Capability<?> capability, InvHandler invhandler){
+		public CapabilityContainer(String id, Capability<?> capability, InvHandler invhandler){
 			cap = capability;
 			handler = invhandler;
+			this.id = id;
 		}
 		
 		public Capability<?> cap;
 		public InvHandler handler;
+		public final String id;
 		
 	}
 

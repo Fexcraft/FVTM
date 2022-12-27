@@ -243,6 +243,8 @@ gui.fvtm.vehicle.inventory.empty=empty
 gui.fvtm.vehicle.container.containers=Container Slots
 gui.fvtm.vehicle.connector.no_rear_connector=This vehicle does not have a rear connector installed.
 gui.fvtm.vehicle.connector.not_available_yet=There is no connector/coupler function for this vehicle type yet.
+//
+gui.fvtm.pipe.title=Inventory: %s
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part with that category installed.
@@ -328,6 +330,8 @@ item.fvtm:road_tool.name=Road Tool
 item.fvtm:train_adjuster.name=Train Adjuster
 item.fvtm:trafficsign.name=Universal Traffic Sign
 item.fvtm:decoration.name=Decoration (Editor)
+item.fvtm.pipe.name=Pipe (Block)
+item.fvtm.dirpipe.name=Pipe (Tool)
 
 # Path Items
 fvtm.pipe.no_data=No compound data, invalid item.
@@ -336,9 +340,6 @@ fvtm.pipe.category=&9Category: &7%s
 fvtm.pipe.transfer=&9Transfer: &7%s&emb/tick
 fvtm.pipe.no_points=No points cached.
 fvtm.pipe.start_point=&bStarting at: %s
-
-
-# Entities
 
 
 # Other

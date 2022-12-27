@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 
 public class InvType {
 	
@@ -60,6 +61,13 @@ public class InvType {
 
 	public String name(){
 		return name;
+	}
+
+	public int guiId(){
+		if(isItem()) return GuiHandler.MULTIBLOCK_INVENTORY_ITEM;
+		if(isFluid()) return GuiHandler.MULTIBLOCK_INVENTORY_FLUID;
+		if(isVariable()) return GuiHandler.MULTIBLOCK_PIPE_ACCESS;
+		return 0;
 	}
 
 }

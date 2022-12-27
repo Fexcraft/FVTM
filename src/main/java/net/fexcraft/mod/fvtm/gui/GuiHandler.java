@@ -93,6 +93,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int MULTIBLOCK_INVENTORY_FLUID = 9512;
 	public static final int MULTIBLOCK_CRAFT_MAIN = 952;
 	public static final int MULTIBLOCK_CRAFT_CHOOSE = 953;
+	public static final int MULTIBLOCK_PIPE_ACCESS = 955;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){

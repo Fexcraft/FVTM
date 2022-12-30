@@ -83,9 +83,14 @@ public class EffectRenderer {
 	
     @SubscribeEvent
     public void renderLights(RenderWorldLastEvent event){
-    	if(Config.DISABLE_LIGHT_BEAMS) return;
+    	if(Config.DISABLE_LIGHT_BEAMS || (LIGHTRAYS.size() == 0 && BLOCK_LIGHTRAYS.size() == 0)) return;
         GL11.glPushMatrix();
+        Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
+        double cx = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
+        double cy = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * event.getPartialTicks();
+        double cz = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * event.getPartialTicks();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glTranslated(-cx, -cy, -cz);
 		TexUtil.bindTexture(LIGHT_TEXTURE);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDepthMask(false);

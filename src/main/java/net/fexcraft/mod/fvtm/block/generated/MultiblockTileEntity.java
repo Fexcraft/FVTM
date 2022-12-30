@@ -116,7 +116,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
     	if(capabilities == null) loadCapabilities();
-    	if(capabilities.containsKey(facing)){
+    	if(capabilities != null && capabilities.containsKey(facing)){
 			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
 				if(con.cap == capability) return true;
 			}
@@ -128,7 +128,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
     	if(capabilities == null) loadCapabilities();
-    	if(capabilities.containsKey(facing)){
+    	if(capabilities != null && capabilities.containsKey(facing)){
 			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
 				if(con.cap == capability) return (T)con.handler.getCapObj();
 			}

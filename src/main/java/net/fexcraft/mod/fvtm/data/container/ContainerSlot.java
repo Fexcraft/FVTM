@@ -140,7 +140,7 @@ public class ContainerSlot {
 				// Print.debug("Rendering Slot Sub " + i);
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(renderoffset[i], 0, 0);
 				TexUtil.bindTexture(containers[i].getTexture().getTexture());
-				containers[i].getType().getModel().render(ContainerModel.RENDERDATA.set(containers[i], null, entity.getCapability(Capabilities.RENDERCACHE, null)));
+				containers[i].getType().getModel().render(ContainerModel.RENDERDATA.set(containers[i], null, entity.getCapability(Capabilities.RENDERCACHE, null), false));
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
 			}
 		}

@@ -46,19 +46,19 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 	heightoffset /= vehicledata.getWheelPositions().size();
                 }
                 GL11.glTranslated(0, -heightoffset, 0);
-                modvec.render(RENDERDATA.set(vehicledata, null, cache));
+                modvec.render(RENDERDATA.set(vehicledata, null, cache, false));
                 vehicledata.getParts().forEach((key, partdata) -> {
                     TexUtil.bindTexture(partdata.getCurrentTexture());
                 	if(partdata.isInstalledOnSwivelPoint()){
                 		GL11.glPushMatrix();
                 		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key));
+                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key, false));
         	            GL11.glPopMatrix();
                 	}
                 	else{
                 		partdata.getInstalledPos().translate();
                     	partdata.getInstalledRot().rotate();
-                		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key));
+                		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key, false));
                     	partdata.getInstalledRot().rotateR();
                 		partdata.getInstalledPos().translateR();
                 	}

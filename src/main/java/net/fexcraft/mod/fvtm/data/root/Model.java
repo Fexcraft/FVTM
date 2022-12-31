@@ -114,6 +114,7 @@ public interface Model {
 
 
 		public ModelRenderData set(BlockData data, TileEntity tileent, RenderCache renca, boolean item){
+			entity = null;
 			block = data;
 			tile = tileent;
 			cache = renca;

@@ -147,7 +147,7 @@ public class WireRenderer {
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
     	        		TexUtil.bindTexture(wire.deco_s.texture());
-            			wire.deco_s.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
+            			wire.deco_s.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, false));
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
         			}
@@ -162,7 +162,7 @@ public class WireRenderer {
             			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
     	        		TexUtil.bindTexture(wire.deco_e.texture());
-            			wire.deco_e.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
+            			wire.deco_e.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, false));
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
@@ -183,7 +183,7 @@ public class WireRenderer {
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
                     	        		TexUtil.bindTexture(wm.texture());
-                    					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
+                    					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, false));
                     					if(tlist != null){
                     		        		TexUtil.bindTexture(wire.getWireType().getTexture());
                     						tlist.get(didx++).render();
@@ -199,7 +199,7 @@ public class WireRenderer {
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
                 	        		TexUtil.bindTexture(wm.texture());
-                					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null));
+                					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, false));
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();
                 				}

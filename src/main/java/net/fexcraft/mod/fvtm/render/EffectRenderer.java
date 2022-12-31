@@ -141,11 +141,6 @@ public class EffectRenderer {
         }
         if(BLOCK_LIGHTRAYS.size() > 0){
         	last = null;
-        	EntityPlayer player = Minecraft.getMinecraft().player;
-        	double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
-            double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
-            double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
-    		GL11.glTranslated(-x, -y, -z);
             for(int i = 0; i < BLOCK_LIGHTRAYS.size(); i++){
             	LightBeam light = BLOCK_LIGHTRAYS.get(i);
             	BlockData data = BLOCK_LIGHTRAYDATAS.get(i);

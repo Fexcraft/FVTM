@@ -50,7 +50,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	tile.updateLiftState();
             	TexUtil.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
-            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null));
+            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null, false));
                 GL11.glPopMatrix();
             }
             else if(tile.getVehicleData().getType().getVehicleType().isRailVehicle()){
@@ -102,19 +102,19 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     }
                     if(!vehicledata.getType().getVehicleType().isRailVehicle()) heightoffset[0] += tile.getLiftState();
                     GL11.glTranslated(0, heightoffset[0], 0);
-                    modvec.render(RENDERDATA.set(vehicledata, null, null));
+                    modvec.render(RENDERDATA.set(vehicledata, null, null, false));
                     vehicledata.getParts().forEach((key, partdata) -> {
                         TexUtil.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
                     		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-	                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key));
+	                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key, false));
             	            GL11.glPopMatrix();
                     	}
                     	else{
                     		partdata.getInstalledPos().translate();
                     		partdata.getInstalledRot().rotate();
-                    		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key));
+                    		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key, false));
                     		partdata.getInstalledRot().rotateR();
                     		partdata.getInstalledPos().translateR();
                     	}
@@ -131,7 +131,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             Model model = tile.getContainerData().getType().getModel();
             if(model != null){
                 TexUtil.bindTexture(tile.getContainerData().getCurrentTexture());
-                model.render(RENDERDATA.set(tile.getContainerData(), null, null));
+                model.render(RENDERDATA.set(tile.getContainerData(), null, null, false));
                 //TexUtil.bindTexture(lifttexture);
             }
         }
@@ -139,7 +139,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         	Model model = tile.getBlockData().getType().getModel();
         	if(model != null){
                 TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-                model.render(RENDERDATA.set(tile.getBlockData(), null, null));
+                model.render(RENDERDATA.set(tile.getBlockData(), null, null, false));
         	}
         }
         else{

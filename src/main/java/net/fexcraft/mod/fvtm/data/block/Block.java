@@ -144,8 +144,15 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.lightlevel = JsonUtil.getIfExists(obj, "LightLevel", 0f).floatValue();
 		this.resistance = JsonUtil.getIfExists(obj, "Resistance", 0f).floatValue();
 		this.lightopacity = JsonUtil.getIfExists(obj, "LightOpacity", 0f).byteValue();
-		this.harveresttoolclass = JsonUtil.getIfExists(obj, "HarverestToolClass", "pickaxe");
-		this.harveresttoollevel = JsonUtil.getIfExists(obj, "HarverestToolLevel", 0).intValue();
+		if(obj.has("HarverestTool")){
+			JsonArray ht = obj.get("HarverestTool").getAsJsonArray();
+			harveresttoolclass = ht.get(0).getAsString();
+			harveresttoollevel = ht.get(1).getAsInt();
+		}
+		else{
+			this.harveresttoolclass = JsonUtil.getIfExists(obj, "HarverestToolClass", "pickaxe");
+			this.harveresttoollevel = JsonUtil.getIfExists(obj, "HarverestToolLevel", 0).intValue();
+		}
 		this.damage = JsonUtil.getIfExists(obj, "CollisionDamage", 0).floatValue();
 		this.isweblike = JsonUtil.getIfExists(obj, "WebLike", false);
 		this.fullblock = JsonUtil.getIfExists(obj, "FullBlock", true);

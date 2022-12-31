@@ -71,11 +71,12 @@ public interface Model {
 		public CompDataRoot trafficsign_compdata;
 		public ClothItem cloth_item;
 		public ArrayList<String> cloth_groups;
+		public boolean itemrender;
 		
 		public RenderCache cache;
 		
 
-		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca){
+		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca, boolean item){
 			entity = ent;
 			vehicle = data;
 			color = data;
@@ -83,11 +84,12 @@ public interface Model {
 			part = null;
 			part_category = null;
 			cache = renca;
+			itemrender = item;
 			return this;
 		}
 
 
-		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca, PartData partdata, String key){
+		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca, PartData partdata, String key, boolean item){
 			entity = ent;
 			vehicle = data;
 			color = data;
@@ -95,26 +97,29 @@ public interface Model {
 			part = partdata;
 			part_category = key;
 			cache = renca;
+			itemrender = item;
 			return this;
 		}
 
 
-		public ModelRenderData set(ContainerData data, TileEntity tileent, RenderCache renca){
+		public ModelRenderData set(ContainerData data, TileEntity tileent, RenderCache renca, boolean item){
 			container = data;
 			tile = tileent;
 			cache = renca;
 			color = data;
 			texture = data;
+			itemrender = item;
 			return this;
 		}
 
 
-		public ModelRenderData set(BlockData data, TileEntity tileent, RenderCache renca){
+		public ModelRenderData set(BlockData data, TileEntity tileent, RenderCache renca, boolean item){
 			block = data;
 			tile = tileent;
 			cache = renca;
 			color = data;
 			texture = data;
+			itemrender = item;
 			return this;
 		}
 
@@ -124,6 +129,7 @@ public interface Model {
 			entity = ent;
 			cache = renca;
 			color = data;
+			itemrender = false;
 			return this;
 		}
 
@@ -133,12 +139,14 @@ public interface Model {
 			cloth_groups = list;
 			entity = ent;
 			cache = renca;
+			itemrender = false;
 			return this;
 		}
 
 
 		public ModelRenderData set(CompDataRoot comp){
 			trafficsign_compdata = comp;
+			itemrender = false;
 			return this;
 		}
 

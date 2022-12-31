@@ -61,20 +61,20 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            Model modVehicle = vehicle.getVehicleData().getType().getModel();
 	            if(modVehicle != null){
 	                this.bindTexture(vehicle.getVehicleData().getCurrentTexture());
-	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache));
+	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false));
 	                if(vehicle.getVehicleData().getParts().size() > 0){
 	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 	                    	TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 	                    		GL11.glPushMatrix();
 	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
-		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey()));
+		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
 	            	            GL11.glPopMatrix();
 	                    	}
 	                    	else{
 		                    	entry.getValue().getInstalledPos().translate();
 		                    	entry.getValue().getInstalledRot().rotate();
-		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey()));
+		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
 		                    	entry.getValue().getInstalledRot().rotateR();
 		                        entry.getValue().getInstalledPos().translateR();
 	                    	}

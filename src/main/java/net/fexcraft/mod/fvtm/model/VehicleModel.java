@@ -175,18 +175,18 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 			GL11.glPushMatrix();
 			GL11.glRotated(180d, 1, 0, 0);
 			bindTexture(data.getCurrentTexture());
-			model.render(RENDERDATA.set(data, null, null));
+			model.render(RENDERDATA.set(data, null, null, true));
 			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				bindTexture(entry.getValue().getCurrentTexture());
             	if(entry.getValue().isInstalledOnSwivelPoint()){
             		GL11.glPushMatrix();
     	            PartModel.translateAndRotatePartOnSwivelPointFast(data, entry.getValue());
-                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey()));
+                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey(), true));
     	            GL11.glPopMatrix();
             	}
             	else{
                 	entry.getValue().getInstalledPos().translate();
-                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey()));
+                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey(), true));
                     entry.getValue().getInstalledPos().translateR();
             	}
 			}

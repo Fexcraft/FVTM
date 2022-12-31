@@ -9,6 +9,7 @@ public enum BlockType {
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class, 4),
 	GENERIC_4X4ROT(G_4x4ROT_TE.class, G_4x4ROT.class, 44),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class, 16),
+	GENERIC_SIMPLE(G_SIMPLE_TE.class, G_SIMPLE.class, 0),
 	GENERIC_2VAR(G_VAR_TE.class, G_VAR.class, 0),
 	GENERIC_3VAR(G_VAR_TE.class, G_VAR.class, 0),
 	GENERIC_4VAR(G_VAR_TE.class, G_VAR.class, 0),

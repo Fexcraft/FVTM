@@ -81,7 +81,7 @@ public class ContainerModel extends GenericModel implements FCLItemModel {
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
                 bindTexture(data.getCurrentTexture());
-                model.render(RENDERDATA.set(data, null, null));
+                model.render(RENDERDATA.set(data, null, null, true));
                 //
                 GL11.glPopMatrix();
             }

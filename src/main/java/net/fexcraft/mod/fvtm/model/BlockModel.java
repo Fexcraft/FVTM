@@ -122,7 +122,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
                 super.bindTexture(model.bindtex ? data.getCurrentTexture() : Resources.WHITE_TEXTURE);
-                model.render(RENDERDATA.set(data, null, null));
+                model.render(RENDERDATA.set(data, null, null, true));
                 GL11.glPopMatrix();
             }
             GL11.glScalef(-scal[0], -scal[1], -scal[2]);

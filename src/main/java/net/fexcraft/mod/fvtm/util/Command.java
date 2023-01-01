@@ -95,7 +95,7 @@ public class Command extends CommandBase {
             case "packs":{
             	Print.chat(sender, "");
             	Print.chat(sender, "&0[&2FVTM Packs&0]&6 = = = = = =");
-            	for(Addon addon : Resources.ADDONS.getValuesCollection()){
+            	for(Addon addon : Resources.ADDONS){
             		Print.chat(sender, "&e" + addon.getRegistryName().getPath() + " &b- &7" + addon.getName());
             	}
             	break;

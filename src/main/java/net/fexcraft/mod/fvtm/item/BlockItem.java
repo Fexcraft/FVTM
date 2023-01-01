@@ -48,7 +48,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
 		if(Static.side().isServer()) return;
-		tab = Resources.getCreativeTab(type);
+		this.setCreativeTab(tab = Resources.getCreativeTab(type));
 	}
 
     @SideOnly(Side.CLIENT)
@@ -99,7 +99,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(type.shouldHideItem()) return;
-    	if(tab == CreativeTabs.SEARCH || tab == type.getAddon().getCreativeTab(type.getCreativeTab())){
+    	if(tab == CreativeTabs.SEARCH || tab == this.tab){
     		if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));

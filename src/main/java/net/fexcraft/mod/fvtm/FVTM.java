@@ -181,13 +181,13 @@ public class FVTM {
 			WirePrograms.init();
 			TrafficSignPrograms.init();
 	        Resources.getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
-			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
-			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
-			Resources.CONTAINERS.getValuesCollection().forEach(con -> con.loadModel());
-			Resources.BLOCKS.getValuesCollection().forEach(block -> block.loadModel());
-			Resources.RAILGAUGES.getValuesCollection().forEach(gauge -> gauge.loadModel());
-			Resources.CLOTHES.getValuesCollection().forEach(cloth -> cloth.loadModel());
-			Resources.WIRES.getValuesCollection().forEach(cloth -> cloth.loadModel());
+			Resources.PARTS.forEach(part -> part.loadModel());
+			Resources.VEHICLES.forEach(veh -> veh.loadModel());
+			Resources.CONTAINERS.forEach(con -> con.loadModel());
+			Resources.BLOCKS.forEach(block -> block.loadModel());
+			Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());
+			Resources.CLOTHES.forEach(cloth -> cloth.loadModel());
+			Resources.WIRES.forEach(cloth -> cloth.loadModel());
 			TrafficSignLibrary.loadModels();
 			Resources.loadDecoModels();
 			ObjModelLoader.clearCache();
@@ -210,7 +210,7 @@ public class FVTM {
 			StreetSignItem.INSTANCE.setCreativeTab(deftab);
 			TrafficSignItem.INSTANCE.setCreativeTab(deftab);
 			//RailItemTemp.INSTANCE.setCreativeTab(deftab);
-			Resources.BLOCKS.getValuesCollection().forEach(block -> block.linkItem());
+			Resources.BLOCKS.forEach(block -> block.linkItem());
 			JunctionToolItem.INSTANCE.setCreativeTab(deftab);
 			SignalItem0.INSTANCE.setCreativeTab(deftab);
 			TrainAdjuster.INSTANCE.setCreativeTab(deftab);
@@ -232,11 +232,11 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
-		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
-		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.linkContainerItem());
-		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
-		Resources.BLOCKS.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
+		Resources.MATERIALS.forEach(mat -> mat.linkContainerItem());
+		Resources.MATERIALS.forEach(mat -> mat.registerIntoOreDictionary());
+		Resources.CONSUMABLES.forEach(con -> con.linkContainerItem());
+		Resources.CONSUMABLES.forEach(con -> con.registerIntoOreDictionary());
+		Resources.BLOCKS.forEach(con -> con.registerIntoOreDictionary());
 		Resources.loadPresets();
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());

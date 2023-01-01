@@ -205,6 +205,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return new ItemStack(item, 1);
 	}
 	
+	public ItemStack newItemStack(Item iitem){
+		return new ItemStack(item == null ? iitem : item, 1);
+	}
+	
 	public Model getModel(){
 		return model;
 	}

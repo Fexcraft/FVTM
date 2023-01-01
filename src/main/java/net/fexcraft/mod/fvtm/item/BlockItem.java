@@ -111,7 +111,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     			}
     		}
     		else{
-        		items.add(type.newItemStack());
+        		items.add(type.newItemStack(this));
     		}
     	}
     }

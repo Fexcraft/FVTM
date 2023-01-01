@@ -151,8 +151,8 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
     }
 
 	private RailGauge getGauge(int width){
-    	RailGauge gauge = Resources.RAILGAUGES.getValue(InternalAddon.STANDARD_GAUGE);
-    	for(RailGauge railgauge : Resources.RAILGAUGES.getValuesCollection()){
+    	RailGauge gauge = Resources.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
+    	for(RailGauge railgauge : Resources.RAILGAUGES){
     		if(railgauge.width() == width){ gauge = railgauge; break; }
     		if(Math.abs(width - railgauge.width()) < Math.abs(width - gauge.width())){
     			gauge = railgauge; continue;

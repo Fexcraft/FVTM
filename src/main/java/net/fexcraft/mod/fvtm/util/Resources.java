@@ -136,22 +136,20 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
 
 public class Resources {
 	
-	public static IForgeRegistry<Addon> ADDONS;
-	public static IForgeRegistry<Part> PARTS;
-	public static IForgeRegistry<Vehicle> VEHICLES;
-	public static IForgeRegistry<Material> MATERIALS;
-	public static IForgeRegistry<Fuel> ALLFUELS;
-	public static IForgeRegistry<Consumable> CONSUMABLES;
-	public static IForgeRegistry<Container> CONTAINERS;
-	public static IForgeRegistry<Block> BLOCKS;
-	public static IForgeRegistry<RailGauge> RAILGAUGES;
-	public static IForgeRegistry<Cloth> CLOTHES;
-	public static IForgeRegistry<WireType> WIRES;
+	public static Registry<Addon> ADDONS = new Registry<>();
+	public static Registry<Part> PARTS = new Registry<>();
+	public static Registry<Vehicle> VEHICLES = new Registry<>();
+	public static Registry<Material> MATERIALS = new Registry<>();
+	public static Registry<Fuel> ALLFUELS = new Registry<>();
+	public static Registry<Consumable> CONSUMABLES = new Registry<>();
+	public static Registry<Container> CONTAINERS = new Registry<>();
+	public static Registry<Block> BLOCKS = new Registry<>();
+	public static Registry<RailGauge> RAILGAUGES = new Registry<>();
+	public static Registry<Cloth> CLOTHES = new Registry<>();
+	public static Registry<WireType> WIRES = new Registry<>();
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
@@ -177,19 +175,6 @@ public class Resources {
 	public Resources(FMLPreInitializationEvent event){
 		configroot = new File(event.getModConfigurationDirectory(), "/fvtm/");
 		if(!configroot.exists()) configroot.mkdirs(); //addonconfig = new File(configpath, "/addonpacks.fex");
-		//
-		ADDONS = new RegistryBuilder<Addon>().setName(new ResourceLocation("fvtm:addons")).setType(Addon.class).create();
-		PARTS = new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
-		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
-		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
-		ALLFUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
-		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
-		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
-		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
-		RAILGAUGES = new RegistryBuilder<RailGauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(RailGauge.class).create();
-		CLOTHES = new RegistryBuilder<Cloth>().setName(new ResourceLocation("fvtm:clothes")).setType(Cloth.class).create();
-		WIRES = new RegistryBuilder<WireType>().setName(new ResourceLocation("fvtm:wires")).setType(WireType.class).create();
-		/*PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();*/
 		//
 		String addonclass = AddonClass.class.getCanonicalName();
 		Set<ASMData> addons = event.getAsmData().getAll(addonclass);
@@ -325,7 +310,7 @@ public class Resources {
 	private static boolean isDuplicate(JsonObject obj){
 		if(!obj.has("RegistryName")) return false;
 		String regname = obj.get("RegistryName").getAsString();
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			if(addon.getRegistryName().toString().equals(regname)) return true;
 		}
 		return false;
@@ -383,7 +368,7 @@ public class Resources {
 	}
 
 	public static final void loadPresets(){
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			addon.loadPresets();
 		}
 		File file = new File("./config/fvtm/presets/");
@@ -393,7 +378,7 @@ public class Resources {
 			try{
 				JsonObject obj = JsonUtil.get(fl);
 				if(obj.entrySet().isEmpty()) continue;
-				Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
+				Vehicle vehicle = Resources.VEHICLES.get(obj.get("Vehicle").getAsString());
 				VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
 				data.read(JsonToNBT.getTagFromJson(obj.toString()));
 				data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
@@ -407,7 +392,7 @@ public class Resources {
 	}
 
 	public static void loadRecipes(){
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			addon.loadRecipes();
 		}
 	}
@@ -457,7 +442,7 @@ public class Resources {
 	}
 
 	private void searchInAddonsFor(DataType datatype){
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			try{
 				addon.searchFor(datatype);
 			}
@@ -469,35 +454,35 @@ public class Resources {
 	}
 
 	public static Part getPart(String string){
-		return getPart(new ResourceLocation(string));
+		return PARTS.get(string);
 	}
 
 	public static Part getPart(ResourceLocation resloc){
-		return PARTS.getValue(resloc);
+		return PARTS.get(resloc);
 	}
 
 	public static Vehicle getVehicle(String string){
-		return getVehicle(new ResourceLocation(string));
+		return VEHICLES.get(string);
 	}
 
 	public static Vehicle getVehicle(ResourceLocation resloc){
-		return VEHICLES.getValue(resloc);
+		return VEHICLES.get(resloc);
 	}
 
 	public static Container getContainer(String string){
-		return getContainer(new ResourceLocation(string));
+		return CONTAINERS.get(string);
 	}
 
 	public static Container getContainer(ResourceLocation resloc){
-		return CONTAINERS.getValue(resloc);
+		return CONTAINERS.get(resloc);
 	}
 
 	public static Block getBlock(String string){
-		return getBlock(new ResourceLocation(string));
+		return BLOCKS.get(string);
 	}
 
 	public static Block getBlock(ResourceLocation resloc){
-		return BLOCKS.getValue(resloc);
+		return BLOCKS.get(resloc);
 	}
 
 	@Deprecated
@@ -789,11 +774,11 @@ public class Resources {
 	}
 
 	public static Fuel getFuel(String id){
-		return getFuel(new ResourceLocation(id));
+		return ALLFUELS.get(id);
 	}
 
 	public static Fuel getFuel(ResourceLocation resloc){
-		return ALLFUELS.getValue(resloc);
+		return ALLFUELS.get(resloc);
 	}
 
 	public static String getFuelName(String id){
@@ -898,7 +883,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regSounds(RegistryEvent.Register<SoundEvent> event){
-		VEHICLES.getValuesCollection().forEach(vehicle -> {
+		VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid)){
 					sound.event = event.getRegistry().getValue(sound.soundid);
@@ -909,7 +894,7 @@ public class Resources {
 				}
 			});
 		});
-		PARTS.getValuesCollection().forEach(part -> {
+		PARTS.forEach(part -> {
 			part.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid)){
 					sound.event = event.getRegistry().getValue(sound.soundid);
@@ -1032,7 +1017,7 @@ public class Resources {
 
 	public static ArmorMaterial getClothMaterial(String matid){
 		String[] split = matid.split(":");
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			if(addon.getRegistryName().getPath().equals(split[0])){
 				ArmorMaterial mat = addon.getClothMaterials().get(split[1]);
 				if(mat != null) return mat;
@@ -1043,24 +1028,23 @@ public class Resources {
 	}
 
 	public static void linkTextureSuppliers(){
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			if(addon.getTextureSuppliers().isEmpty()) continue;
 			for(TextureSupply texsupp : addon.getTextureSuppliers().values()){
 				for(String tar : texsupp.targets()){
 					String[] split = tar.split(";");
-					ResourceLocation rl = new ResourceLocation(split[1]);
 					Textureable.TextureHolder holder = null;
 					switch(split[0]){
 						case "vehicle":{
-							holder =  VEHICLES.getValue(rl);
+							holder =  VEHICLES.get(split[1]);
 							break;
 						}
 						case "part":{
-							holder = PARTS.getValue(rl);
+							holder = PARTS.get(split[1]);
 							break;
 						}
 						case "container":{
-							holder = CONTAINERS.getValue(rl);
+							holder = CONTAINERS.get(split[1]);
 							break;
 						}
 					}
@@ -1087,7 +1071,7 @@ public class Resources {
 	}
 
 	public static Addon getAddon(String string){
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			if(addon.getRegistryName().getPath().equals(string)) return addon;
 		}
 		return null;
@@ -1129,7 +1113,7 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static void loadLitePackLang() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
 		ArrayList<Addon> lites = new ArrayList<>();
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
 		}
 		if(lites.size() == 0) return;
@@ -1190,7 +1174,7 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static void loadLitePackTextureLocations(){
 		ArrayList<Addon> lites = new ArrayList<>();
-		for(Addon addon : ADDONS.getValuesCollection()){
+		for(Addon addon : ADDONS){
 			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
 		}
 		if(lites.size() == 0) return;

@@ -63,7 +63,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
     		if(type.isFuelContainer() && !type.isUniversalFuelContainer()){
-    			for(Fuel fuel : Resources.ALLFUELS.getValuesCollection()){
+    			for(Fuel fuel : Resources.ALLFUELS){
     				if(!type.isValidFuel(fuel)) continue;
         			NBTTagCompound compound = new NBTTagCompound();
         			compound.setString("StoredFuelType", fuel.getRegistryName().toString());

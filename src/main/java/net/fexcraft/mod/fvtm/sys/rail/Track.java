@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -64,10 +63,10 @@ public class Track extends Path {
 		super.read(compound);
 		if(junction != null) unit = getUnit(compound.getLong("section"));
 		if(compound.hasKey("gauge")){
-			gauge = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
+			gauge = Resources.RAILGAUGES.get(compound.getString("gauge"));
 		}
 		if(gauge == null){
-			gauge = Resources.RAILGAUGES.getValue(InternalAddon.STANDARD_GAUGE);
+			gauge = Resources.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
 		}
 		if(junction == null || junction.root.getWorld().isRemote){
 			railmodel = null; restmodel = null;

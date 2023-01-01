@@ -54,7 +54,7 @@ public class DataUtil {
 			Addon addon = Resources.getAddon(addin);
 			if(addon != null) return addon;
 		}
-		return Resources.ADDONS.getValue(InternalAddon.REGNAME);
+		return Resources.ADDONS.get(InternalAddon.REGNAME);
 	}
 	
 	public static List<String> getStringArray(JsonObject obj, String key, boolean split, boolean immutable){

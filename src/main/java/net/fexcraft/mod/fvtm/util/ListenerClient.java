@@ -17,7 +17,6 @@ import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
@@ -86,7 +85,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
 				switch(packet.nbt.getString("subtask")){
 					case "new":{
-						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new Vec316f(packet.nbt.getCompoundTag("vector")), Resources.RAILGAUGES.getValue(new ResourceLocation(packet.nbt.getString("gauge"))));
+						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new Vec316f(packet.nbt.getCompoundTag("vector")), Resources.RAILGAUGES.get(packet.nbt.getString("gauge")));
 						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
 						break;
 					}

@@ -1067,7 +1067,7 @@ public class Resources {
 			return addon.getCreativeTab(split[1]);
 		}
 		addon = ((TypeCore<?>)type).getAddon();
-		return addon.getDefaultCreativeTab();
+		return addon.getCreativeTab(tab);
 	}
 
 	public static Addon getAddon(String string){

@@ -17,7 +17,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -131,7 +130,7 @@ public class Wire {
 	}
 
 	public Wire read(NBTTagCompound compound){
-		if(compound.hasKey("wiretype")) type = Resources.WIRES.getValue(new ResourceLocation(compound.getString("wiretype")));
+		if(compound.hasKey("wiretype")) type = Resources.WIRES.get(compound.getString("wiretype"));
 		start = new Vec3f(compound.getFloat("sx"), compound.getFloat("sy"), compound.getFloat("sz"));
 		end = new Vec3f(compound.getFloat("ex"), compound.getFloat("ey"), compound.getFloat("ez"));
 		if(compound.hasKey("slack")) slack = compound.getFloat("slack");

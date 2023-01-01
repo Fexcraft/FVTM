@@ -122,7 +122,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
     	}
-    	if(tab == CreativeTabs.SEARCH || tab == PresetTab.INSTANCE){
+    	if(tab == PresetTab.INSTANCE){
     		if(tab == PresetTab.INSTANCE) (PresetTab.INSTANCE.ITEMS = items).clear();
     		for(ItemStack stack : PresetTab.INSTANCE.get()){ items.add(stack); }
     	}

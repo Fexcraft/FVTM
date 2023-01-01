@@ -526,7 +526,7 @@ public class Addon extends TypeCore<Addon> {
 				try{
 					JsonObject obj = JsonUtil.get(file);
 					if(obj.entrySet().isEmpty()) continue;
-					Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
+					Vehicle vehicle = Resources.VEHICLES.get(new ResourceLocation(obj.get("Vehicle").getAsString()));
 					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
 					data.read(JsonToNBT.getTagFromJson(obj.toString()));
 					data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
@@ -543,7 +543,7 @@ public class Addon extends TypeCore<Addon> {
 				try{
 					JsonObject obj = elm.getAsJsonObject();
 					if(obj.entrySet().isEmpty()) continue;
-					Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
+					Vehicle vehicle = Resources.VEHICLES.get(obj.get("Vehicle").getAsString());
 					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
 					data.read(JsonToNBT.getTagFromJson(obj.toString()));
 					data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));

@@ -6,43 +6,43 @@ import net.minecraftforge.fml.common.ICrashCallable;
 
 public class CrashCallable implements ICrashCallable {
 
-	@SuppressWarnings("deprecation") @Override
+	@Override
 	public String call() throws Exception {
-		String[] lines = new String[Resources.ADDONS.getValues().size()];
+		String[] lines = new String[Resources.ADDONS.size()];
 		int size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.getValues().get(i).getRegistryName().getPath().length() > size){
-				size = Resources.ADDONS.getValues().get(i).getRegistryName().getPath().length();
+			if(Resources.ADDONS.get(i).getRegistryName().getPath().length() > size){
+				size = Resources.ADDONS.get(i).getRegistryName().getPath().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] = "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.getValues().get(i).getRegistryName().getPath());
+			lines[i] = "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.get(i).getRegistryName().getPath());
 		}
 		//
 		size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.getValues().get(i).getName().length() > size){
-				size = Resources.ADDONS.getValues().get(i).getName().length();
+			if(Resources.ADDONS.get(i).getName().length() > size){
+				size = Resources.ADDONS.get(i).getName().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] += "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.getValues().get(i).getName());
+			lines[i] += "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.get(i).getName());
 		}
 		//
 		size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.getValues().get(i).getVersion().length() > size){
-				size = Resources.ADDONS.getValues().get(i).getVersion().length();
+			if(Resources.ADDONS.get(i).getVersion().length() > size){
+				size = Resources.ADDONS.get(i).getVersion().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] += "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.getValues().get(i).getVersion());
+			lines[i] += "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.get(i).getVersion());
 		}
 		//
 		size = 4;
 		File file;
 		for(int i = 0; i < lines.length; i++){
-			file = Resources.ADDONS.getValues().get(i).getFile();
+			file = Resources.ADDONS.get(i).getFile();
 			String filename = file == null ? "null" : file.toString();
 			lines[i] += "| " + String.format("%-64s", "..." + (filename.length() > 64 ? filename.substring(filename.length() - 64) : filename));
 		}

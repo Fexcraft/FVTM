@@ -38,7 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, ItemTex<Block> {
 	
 	@SideOnly(Side.CLIENT)
-	private CreativeTabs tab;
+	private CreativeTabs ctab;
 	private Block type;
 
     public BlockItem(net.minecraft.block.Block block) throws Exception {
@@ -48,7 +48,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
 		if(Static.side().isServer()) return;
-		this.setCreativeTab(tab = Resources.getCreativeTab(type));
+		ctab = Resources.getCreativeTab(type);
 	}
 
     @SideOnly(Side.CLIENT)
@@ -99,7 +99,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(type.shouldHideItem()) return;
-    	if(tab == CreativeTabs.SEARCH || tab == this.tab){
+    	if(tab == CreativeTabs.SEARCH || tab == ctab){
     		if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));
@@ -118,7 +118,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     
     @Override
     public CreativeTabs getCreativeTab(){
-        return tab;
+        return ctab;
     }
     
     @Override

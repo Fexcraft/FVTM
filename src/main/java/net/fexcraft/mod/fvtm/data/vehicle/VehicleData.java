@@ -98,7 +98,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(type.getPreInstalledParts() != null){
 			for(java.util.Map.Entry<String, ResourceLocation> entry : type.getPreInstalledParts().entrySet()){
 				try{
-					Part part = Resources.PARTS.getValue(entry.getValue());
+					Part part = Resources.PARTS.get(entry.getValue());
 					if(part == null) continue;
 					this.installPart(null, new PartData(part), entry.getKey(), false);
 				}

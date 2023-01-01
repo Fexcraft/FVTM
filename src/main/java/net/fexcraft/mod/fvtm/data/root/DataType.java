@@ -14,9 +14,8 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public enum DataType {
 	
@@ -40,19 +39,19 @@ public enum DataType {
 		this.suffix = suffix; this.cfg_folder = cfg_folder; this.core = type;
 	}
 
-	public <T extends IForgeRegistryEntry<T>> IForgeRegistry<T> getRegistry(){
+	public <T extends TypeCore<T>> Registry<T> getRegistry(){
 		switch(this){
-			case ADDON: return (IForgeRegistry<T>)Resources.ADDONS;
-			case PART: return (IForgeRegistry<T>)Resources.PARTS;
-			case VEHICLE: return (IForgeRegistry<T>)Resources.VEHICLES;
-			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
-			case FUEL: return (IForgeRegistry<T>)Resources.ALLFUELS;
-			case CONSUMABLE: return (IForgeRegistry<T>)Resources.CONSUMABLES;
-			case CONTAINER: return (IForgeRegistry<T>)Resources.CONTAINERS;
-			case BLOCK: return (IForgeRegistry<T>)Resources.BLOCKS;
-			case RAILGAUGE: return (IForgeRegistry<T>)Resources.RAILGAUGES;
-			case CLOTH: return (IForgeRegistry<T>)Resources.CLOTHES;
-			case WIRE: return (IForgeRegistry<T>)Resources.WIRES;
+			case ADDON: return (Registry<T>)Resources.ADDONS;
+			case PART: return (Registry<T>)Resources.PARTS;
+			case VEHICLE: return (Registry<T>)Resources.VEHICLES;
+			case MATERIAL: return (Registry<T>)Resources.MATERIALS;
+			case FUEL: return (Registry<T>)Resources.ALLFUELS;
+			case CONSUMABLE: return (Registry<T>)Resources.CONSUMABLES;
+			case CONTAINER: return (Registry<T>)Resources.CONTAINERS;
+			case BLOCK: return (Registry<T>)Resources.BLOCKS;
+			case RAILGAUGE: return (Registry<T>)Resources.RAILGAUGES;
+			case CLOTH: return (Registry<T>)Resources.CLOTHES;
+			case WIRE: return (Registry<T>)Resources.WIRES;
 			default: return null;
 		}
 	}

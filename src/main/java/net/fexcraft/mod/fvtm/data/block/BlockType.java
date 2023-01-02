@@ -92,7 +92,26 @@ public enum BlockType {
 	}
 
 	public int getMetaVariants(){
-		return this == GENERIC_ROAD ? 16 : this == GENERIC_4X4ROT ? 4 : (this.ordinal() >= 2 && this.ordinal() <= 16) ? this.ordinal() - 2 : 0;
+		switch(this){
+			case GENERIC_2VAR: return 2;
+			case GENERIC_3VAR: return 3;
+			case GENERIC_4VAR: return 4;
+			case GENERIC_5VAR: return 5;
+			case GENERIC_6VAR: return 6;
+			case GENERIC_7VAR: return 7;
+			case GENERIC_8VAR: return 8;
+			case GENERIC_9VAR: return 9;
+			case GENERIC_10VAR: return 10;
+			case GENERIC_11VAR: return 11;
+			case GENERIC_12VAR: return 12;
+			case GENERIC_13VAR: return 13;
+			case GENERIC_14VAR: return 14;
+			case GENERIC_15VAR: return 15;
+			case GENERIC_16VAR: return 16;
+			case GENERIC_4X4ROT: return 4;
+			case GENERIC_ROAD: return 16;
+			default: return 0;
+		}
 	}
 
 	public PropertyInteger getIntProperty(){

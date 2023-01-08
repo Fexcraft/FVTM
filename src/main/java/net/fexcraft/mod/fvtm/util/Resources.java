@@ -83,6 +83,7 @@ import net.fexcraft.mod.fvtm.model.loaders.SMPTBJavaModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -909,7 +910,10 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onPlayerIn(PlayerEvent.PlayerLoggedInEvent event){
-		if(event.player.world.isRemote) RailPlacingUtil.CL_CURRENT = null;
+		if(event.player.world.isRemote){
+			RailPlacingUtil.CL_CURRENT = null;
+			RoadPlacingUtil.CL_CURRENT = null;
+		}
 		if(event.player.world != null && !event.player.world.isRemote){
 			NBTTagCompound cfgsync = new NBTTagCompound();
 			cfgsync.setInteger("u12_sync_rate", Config.U12_SYNC_RATE);

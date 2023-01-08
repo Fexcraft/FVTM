@@ -112,6 +112,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 						track.selected = packet.nbt.getInteger("selected");
 					}
 				}
+				return;
 			}
 			case "road_place_util":{
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
@@ -144,6 +145,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 						road.selected = packet.nbt.getInteger("selected");
 					}
 				}
+				return;
 			}
 			default: return;
 		}

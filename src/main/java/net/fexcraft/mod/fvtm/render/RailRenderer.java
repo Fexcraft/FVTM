@@ -184,43 +184,6 @@ public class RailRenderer {
             	GL11.glPopMatrix();
         		renderLines(junctions[i]);
         	}
-        	/*RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
-        	for(int i = 0; i < entities.length; i++){
-            	GL11.glPushMatrix();
-            	GL11.glTranslatef(entities[i].pos.x, entities[i].pos.y, entities[i].pos.z);
-            	//
-	            GL11.glPushMatrix();
-            	Minecraft.getMinecraft().entityRenderer.enableLightmap();
-            	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            	GL11.glEnable(GL11.GL_LIGHTING);
-            	GL11.glDisable(GL11.GL_BLEND);
-            	RenderHelper.enableStandardItemLighting();
-    	        int br = getBrightness(entities[i].pos.x, entities[i].pos.y, entities[i].pos.z), j = br % 65536, k = br / 65536;
-    	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
-    	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-	            {
-		            GL11.glRotatef(180f, 0f, 0f, 1f);
-		            Model<VehicleData, Object> modVehicle = entities[i].vehdata.getType().getModel();
-		            if(modVehicle != null){
-		                TexUtil.bindTexture(entities[i].vehdata.getTexture());
-		                modVehicle.render(entities[i].vehdata, null);
-		                if(entities[i].vehdata.getParts().size() > 0){
-		                	for(java.util.Map.Entry<String, PartData> entry : entities[i].vehdata.getParts().entrySet()){
-		                    	TexUtil.bindTexture(entry.getValue().getTexture());
-		                    	entry.getValue().getInstalledPos().translate();
-		                        entry.getValue().getType().getModel().render(entities[i].vehdata, entry.getKey());
-		                        entry.getValue().getInstalledPos().translateR();
-		                	}
-		                }
-		            }
-	            }
-        		Minecraft.getMinecraft().entityRenderer.disableLightmap();
-        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        		GL11.glDisable(GL11.GL_LIGHTING);
-	            GL11.glPopMatrix();
-            	//
-            	GL11.glPopMatrix();
-        	}*/
         }
         if(RailPlacingUtil.CL_CURRENT != null && RailPlacingUtil.CL_CURRENT.points.size() > 1){
     		Tessellator tessellator = Tessellator.getInstance();

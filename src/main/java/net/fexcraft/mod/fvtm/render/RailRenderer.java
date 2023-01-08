@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -225,15 +226,16 @@ public class RailRenderer {
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             Vec3f vec0, vec1;
-			Track conn = RailPlacingUtil.CL_CURRENT.track;
+			NewTrack conn = RailPlacingUtil.CL_CURRENT;
+			if(conn.preview == null) conn.genpreview();
             GL11.glPushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.glLineWidth(4.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
-			for(int j = 0; j < conn.vecpath.length - 1; j++){
-				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
+			for(int j = 0; j < conn.track.vecpath.length - 1; j++){
+				vec0 = conn.track.vecpath[j]; vec1 = conn.track.vecpath[j + 1];
                 bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                 bufferbuilder.pos(vec0.x, vec0.y + 0.1, vec0.z).color(0, 0, 1, 1F).endVertex();
                 bufferbuilder.pos(vec1.x, vec1.y + 0.1, vec1.z).color(0, 0, 1, 1F).endVertex();
@@ -243,12 +245,20 @@ public class RailRenderer {
 				int size = RailPlacingUtil.CL_CURRENT.points.size();
 				float[] arr = null;
 				for(int i = 1; i < size - 1; i++){
-					arr = conn.getPosition((conn.length / (size - 1)) * i);
+					arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector;
 	                bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 	                bufferbuilder.pos(arr[0], arr[1] + 0.05, arr[2]).color(0, 1, 1, 1F).endVertex();
 	                bufferbuilder.pos(vec1.x, vec1.y + 0.05, vec1.z).color(0, 1, 1, 1F).endVertex();
 	                tessellator.draw();
+				}
+			}
+			for(ArrayList<Vec3f> l : conn.preview){
+				for(int j = 0; j < l.size() - 1; j++){
+					bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+					bufferbuilder.pos((vec0 = l.get(j)).x, vec0.y + 1.05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec1 = l.get(j + 1)).x, vec1.y + 1.05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
+					tessellator.draw();
 				}
 			}
 			//

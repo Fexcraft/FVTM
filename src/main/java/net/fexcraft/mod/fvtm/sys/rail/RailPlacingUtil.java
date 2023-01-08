@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
+import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -77,6 +80,7 @@ public class RailPlacingUtil {
 	public static class NewTrack {
 		
 		public ArrayList<Vec316f> points = new ArrayList<>();
+		public ArrayList<ArrayList<Vec3f>> preview;
 		public RailGauge gauge;
 		public Track track;
 		public int selected = -1;
@@ -90,6 +94,7 @@ public class RailPlacingUtil {
 
 		public void add(Vec316f vector){
 			points.add(selected == -1 ? points.size() : ++selected, vector);
+			preview = null;
 			gentrack();
 		}
 
@@ -129,6 +134,7 @@ public class RailPlacingUtil {
 			if(selected < -1) selected = -1;
 			points.remove(rem);
 			gentrack();
+			preview = null;
 			//
 			if(points.size() == 0){
 				reset();
@@ -236,6 +242,21 @@ public class RailPlacingUtil {
 				if(!vec.equals(points.get(i))) return false;
 			}
 			return true;
+		}
+
+		public void genpreview(){
+			float angle, half = gauge.width() * 0.03125f;
+			preview = new ArrayList<>();
+			preview.add(new ArrayList<>());
+			preview.add(new ArrayList<>());
+			Vec3f last, vec = track.vecpath[0];
+			for(float pass = 0; pass < track.length + 0.125f; pass += 0.125f){
+				last = vec;
+				vec = track.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
+				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Static.rad90;
+				preview.get(0).add(vec.add(RoadToolItem.grv(angle, new Vec3f(-half, 0, 0))));
+				preview.get(1).add(vec.add(RoadToolItem.grv(angle, new Vec3f(half, 0, 0))));
+			}
 		}
 		
 	}

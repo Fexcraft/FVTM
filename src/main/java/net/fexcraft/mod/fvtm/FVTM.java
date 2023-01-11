@@ -116,6 +116,7 @@ public class FVTM {
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
 		IDLManager.INSTANCE[0] = new IDLManagerImpl();
+		Log.INSTANCE = new Log2();
 		//
 		REGISTERER = new AutoRegisterer(MODID);
 		Config.initalize(event, event.getSuggestedConfigurationFile());

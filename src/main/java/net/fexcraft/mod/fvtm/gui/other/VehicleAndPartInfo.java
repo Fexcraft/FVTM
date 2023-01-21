@@ -17,12 +17,17 @@ import net.minecraft.util.ResourceLocation;
 public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_part_info.png");
-	private static boolean vehmode = true;
-	private static List<Addon> vehpacks, partpacks;
-	private static List<Vehicle> vehicles;
-	private static List<Part> parts;
-	private static int pack_idx, selected;
-	private static Addon addon;
+	private boolean vehmode = true;
+	private List<Addon> vehpacks, partpacks;
+	private List<Vehicle> vehicles;
+	private List<Part> parts;
+	private int pack_idx = 0, sel_idx = 0;
+	private Addon addon;
+	private Vehicle veh;
+	private Part part;
+	private VehMode vmode = VehMode.REQUIRED;
+	private PartMode pmode = PartMode.CATEGORIES;
+	private String selcat;
 
 	public VehicleAndPartInfo(EntityPlayer player){
 		super(texture, new VehicleAndPartInfoContainer(player), player);
@@ -70,17 +75,58 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 				return true;
 			}
 		});
-		buttons.put("sel_prev", new BasicButton("s_p", guiLeft + 216, guiTop + 41, 216, 41, 12, 12, true));
-		buttons.put("sel_next", new BasicButton("s_n", guiLeft + 229, guiTop + 41, 229, 41, 12, 12, true));
-		buttons.put("mode_prev", new BasicButton("m_p", guiLeft + 216, guiTop + 59, 216, 59, 12, 12, true));
-		buttons.put("mode_next", new BasicButton("m_n", guiLeft + 229, guiTop + 59, 229, 59, 12, 12, true));
+		buttons.put("sel_prev", new BasicButton("s_p", guiLeft + 216, guiTop + 41, 216, 41, 12, 12, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				if(--sel_idx < 0) sel_idx = (vehmode ? vehicles : parts).size() - 1;
+				refmode();
+				return true;
+			}
+		});
+		buttons.put("sel_next", new BasicButton("s_n", guiLeft + 229, guiTop + 41, 229, 41, 12, 12, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				if(++sel_idx >= (vehmode ? vehicles : parts).size()) sel_idx = 0;
+				refmode();
+				return true;
+			}
+		});
+		buttons.put("mode_prev", new BasicButton("m_p", guiLeft + 216, guiTop + 59, 216, 59, 12, 12, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				if(vehmode){
+					if(vmode.ordinal() - 1 < 0) vmode = VehMode.COMPATIBLE_SPECIFIC;
+					else vmode = VehMode.values()[vmode.ordinal() - 1];
+				}
+				else{
+					if(pmode.ordinal() - 1 < 0) pmode = PartMode.COMPATIBLE;
+					else pmode = PartMode.values()[pmode.ordinal() - 1];
+				}
+				refmode();
+				return true;
+			}
+		});
+		buttons.put("mode_next", new BasicButton("m_n", guiLeft + 229, guiTop + 59, 229, 59, 12, 12, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				if(vehmode){
+					if(vmode.ordinal() + 1 > VehMode.values().length) vmode = VehMode.REQUIRED;
+					else vmode = VehMode.values()[vmode.ordinal() + 1];
+				}
+				else{
+					if(pmode.ordinal() + 1 > PartMode.values().length) pmode = PartMode.CATEGORIES;
+					else pmode = PartMode.values()[pmode.ordinal() + 1];
+				}
+				refmode();
+				return true;
+			}
+		});
 		for(int i = 0; i < 9; i++){
 			buttons.put("entry" + i, new BasicButton("e" + i, guiLeft + 229, guiTop + 73 + (i * 14), 229, 216, 12, 12, true));
 		}
 		buttons.put("scroll_up", new BasicButton("s_u", guiLeft + 222, guiTop + 199, 222, 199, 9, 9, true));
 		buttons.put("scroll_dw", new BasicButton("s_d", guiLeft + 232, guiTop + 199, 232, 199, 9, 9, true));
 		collectpacks();
-		addon = (vehmode ? vehpacks : partpacks).get(pack_idx = 0);
 		if(vehpacks.isEmpty()){
 			Print.chat(player, I19U.trsc("gui.fvtm.vpinfo.no_vehicles"));
 			player.closeScreen();
@@ -89,6 +135,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			Print.chat(player, I19U.trsc("gui.fvtm.vpinfo.no_parts"));
 			player.closeScreen();
 		}
+		refcontentlist();
 	}
 
 	private void collectpacks(){
@@ -110,18 +157,41 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	protected void refcontentlist(){
 		if(vehicles != null) vehicles.clear();
 		if(parts != null) parts.clear();
+		addon = (vehmode ? vehpacks : partpacks).get(pack_idx);
 		if(vehmode){
 			vehicles = Resources.VEHICLES.stream().filter(veh -> veh.getAddon() == addon).collect(Collectors.toList());
+			veh = vehicles.get(sel_idx = 0);
 		}
 		else{
 			parts = Resources.PARTS.stream().filter(part -> part.getAddon() == addon).collect(Collectors.toList());
+			part = parts.get(sel_idx = 0);
 		}
-		addon = (vehmode ? vehpacks : partpacks).get(pack_idx);
+		refmode();
+	}
+
+	protected void refmode(){
+		if(vehmode) veh = vehicles.get(sel_idx);
+		else part = parts.get(sel_idx);
+		texts.get("mode").string = "gui.fvtm.vpinfo.mode." + (vehmode ? vmode : pmode).name().toLowerCase();
+		if(selcat == null) texts.get("mode").translate();
+		else texts.get("mode").translate(selcat);
 	}
 	
 	@Override
 	public void predraw(float ticks, int x, int y){
 		texts.get("pack").string = addon.getName();
+		texts.get("selected").string = vehmode ? veh.getName() : part.getName();
+	}
+	
+	public static enum VehMode {
+		
+		REQUIRED, PRE_INSTALLED, COMPATIBLE_ALL, COMPATIBLE_SPECIFIC
+		
+	}
+	
+	public static enum PartMode {
+		
+		CATEGORIES, COMPATIBLE
 	}
 
 }

@@ -11,7 +11,11 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.util.I19U;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
@@ -28,6 +32,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	private VehMode vmode = VehMode.REQUIRED;
 	private PartMode pmode = PartMode.CATEGORIES;
 	private String selcat;
+	private ItemStack stack = ItemStack.EMPTY;
 
 	public VehicleAndPartInfo(EntityPlayer player){
 		super(texture, new VehicleAndPartInfoContainer(player), player);
@@ -110,11 +115,11 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			@Override
 			public boolean onclick(int x, int y, int m){
 				if(vehmode){
-					if(vmode.ordinal() + 1 > VehMode.values().length) vmode = VehMode.REQUIRED;
+					if(vmode.ordinal() + 1 >= VehMode.values().length - 1) vmode = VehMode.REQUIRED;
 					else vmode = VehMode.values()[vmode.ordinal() + 1];
 				}
 				else{
-					if(pmode.ordinal() + 1 > PartMode.values().length) pmode = PartMode.CATEGORIES;
+					if(pmode.ordinal() + 1 >= PartMode.values().length) pmode = PartMode.CATEGORIES;
 					else pmode = PartMode.values()[pmode.ordinal() + 1];
 				}
 				refmode();
@@ -151,6 +156,8 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 
 	protected void switchmode(boolean to){
 		vehmode = to;
+		texts.get("title").string = "gui.fvtm.vpinfo.title_" + (vehmode ? "veh" : "part");
+		texts.get("title").translate();
 		refcontentlist();
 	}
 
@@ -170,8 +177,8 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	}
 
 	protected void refmode(){
-		if(vehmode) veh = vehicles.get(sel_idx);
-		else part = parts.get(sel_idx);
+		if(vehmode) stack = (veh = vehicles.get(sel_idx)).newItemStack();
+		else stack = (part = parts.get(sel_idx)).newItemStack();
 		texts.get("mode").string = "gui.fvtm.vpinfo.mode." + (vehmode ? vmode : pmode).name().toLowerCase();
 		if(selcat == null) texts.get("mode").translate();
 		else texts.get("mode").translate(selcat);
@@ -181,6 +188,16 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	public void predraw(float ticks, int x, int y){
 		texts.get("pack").string = addon.getName();
 		texts.get("selected").string = vehmode ? veh.getName() : part.getName();
+	}
+	
+	@Override
+	public void drawlast(float ticks, int x, int y){
+		if(stack == null) return;
+        RenderHelper.enableGUIStandardItemLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		itemRender.renderItemAndEffectIntoGUI(stack, guiLeft + 8, guiTop + 36);
+        RenderHelper.disableStandardItemLighting();
 	}
 	
 	public static enum VehMode {

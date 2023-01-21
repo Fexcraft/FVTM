@@ -172,6 +172,8 @@ gui.fvtm.decoration_editor.no_color_channels=No Color Channels
 //
 gui.fvtm.vpinfo.title_veh=Vehicle Info Mode
 gui.fvtm.vpinfo.title_part=Part Info Mode
+gui.fvtm.vpinfo.no_vehicles=You have no packs installed containing vehicles!
+gui.fvtm.vpinfo.no_parts=You have no packs installed containing parts!
 //
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.

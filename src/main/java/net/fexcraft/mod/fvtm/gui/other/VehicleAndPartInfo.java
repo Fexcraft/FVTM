@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_part_info.png");
-	private static boolean vehmode;
+	private static boolean vehmode = true;
 
 	public VehicleAndPartInfo(EntityPlayer player){
 		super(texture, new VehicleAndPartInfoContainer(player), player);
@@ -25,8 +25,20 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			texts.put("line" + i, new BasicText(guiLeft + 9, guiTop + 75 + (i * 14), 204, null, "...").translate().autoscale());
 		}
 		texts.put("scroll", new BasicText(guiLeft + 151, guiTop + 200, 68, null, "0/0").translate().autoscale());
-		buttons.put("vehmode", new BasicButton("vehmode", guiLeft + 7, guiTop + 7, 7, 7, 12, 12, true));
-		buttons.put("partmode", new BasicButton("partmode", guiLeft + 20, guiTop + 7, 7, 20, 12, 12, true));
+		buttons.put("vehmode", new BasicButton("vehmode", guiLeft + 7, guiTop + 7, 7, 7, 12, 12, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				switchmode(true);
+				return true;
+			}
+		});
+		buttons.put("partmode", new BasicButton("partmode", guiLeft + 20, guiTop + 7, 7, 20, 12, 12, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				switchmode(false);
+				return true;
+			}
+		});
 		buttons.put("pack_prev", new BasicButton("p_p", guiLeft + 216, guiTop + 21, 216, 21, 12, 12, true));
 		buttons.put("pack_next", new BasicButton("p_n", guiLeft + 229, guiTop + 21, 229, 21, 12, 12, true));
 		buttons.put("sel_prev", new BasicButton("s_p", guiLeft + 216, guiTop + 41, 216, 41, 12, 12, true));
@@ -38,6 +50,10 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 		}
 		buttons.put("scroll_up", new BasicButton("s_u", guiLeft + 222, guiTop + 199, 222, 199, 9, 9, true));
 		buttons.put("scroll_dw", new BasicButton("s_d", guiLeft + 232, guiTop + 199, 232, 199, 9, 9, true));
+	}
+
+	protected void switchmode(boolean to){
+		vehmode = to;
 	}
 
 }

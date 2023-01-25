@@ -181,6 +181,8 @@ gui.fvtm.vpinfo.mode.compatible_specific=Compatible parts (%s):
 gui.fvtm.vpinfo.mode.categories=Can be installed as:
 gui.fvtm.vpinfo.mode.compatible=Compatible with:
 gui.fvtm.vpinfo.mode.compatible.cat=%s (vehicle category)
+gui.fvtm.vpinfo.line.wait=Please wait, searching...
+gui.fvtm.vpinfo.line.none=No results found.
 //
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.

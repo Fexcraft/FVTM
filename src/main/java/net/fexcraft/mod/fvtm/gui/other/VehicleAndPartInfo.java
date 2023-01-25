@@ -8,7 +8,9 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.I19U;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,7 +27,8 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	private List<Addon> vehpacks, partpacks;
 	private List<Vehicle> vehicles;
 	private List<Part> parts;
-	private int pack_idx = 0, sel_idx = 0;
+	private List<String> etexts = new ArrayList<>();
+	private int pack_idx = 0, sel_idx = 0, scroll;
 	private Addon addon;
 	private Vehicle veh;
 	private Part part;
@@ -45,9 +48,10 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 		texts.put("title", new BasicText(guiLeft + 35, guiTop + 9, 204, 0xcdcdcd, "gui.fvtm.vpinfo.title_" + (vehmode ? "veh" : "part")).translate().autoscale());
 		texts.put("pack", new BasicText(guiLeft + 9, guiTop + 23, 204, null, "...").translate().autoscale());
 		texts.put("selected", new BasicText(guiLeft + 29, guiTop + 38, 186, null, "...").translate().autoscale());
+		texts.put("selid", new BasicText(guiLeft + 29, guiTop + 46, 186, null, "...").translate().scale(0.75f));
 		texts.put("mode", new BasicText(guiLeft + 9, guiTop + 61, 204, null, "...").translate().autoscale());
 		for(int i = 0; i < 9; i++){
-			texts.put("line" + i, new BasicText(guiLeft + 9, guiTop + 75 + (i * 14), 204, null, "...").translate().autoscale());
+			texts.put("line" + i, new BasicText(guiLeft + 9, guiTop + 75 + (i * 14), 204, 0xf1f1f1, "...").translate().autoscale());
 		}
 		texts.put("scroll", new BasicText(guiLeft + 151, guiTop + 200, 68, null, "0/0").translate().autoscale());
 		buttons.put("vehmode", new BasicButton("vehmode", guiLeft + 7, guiTop + 7, 7, 7, 12, 12, true){
@@ -100,7 +104,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			@Override
 			public boolean onclick(int x, int y, int m){
 				if(vehmode){
-					if(vmode.ordinal() - 1 < 0) vmode = VehMode.COMPATIBLE_SPECIFIC;
+					if(vmode.ordinal() - 1 < 0) vmode = VehMode.REQUIRED;
 					else vmode = VehMode.values()[vmode.ordinal() - 1];
 				}
 				else{
@@ -115,7 +119,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			@Override
 			public boolean onclick(int x, int y, int m){
 				if(vehmode){
-					if(vmode.ordinal() + 1 >= VehMode.values().length - 1) vmode = VehMode.REQUIRED;
+					if(vmode.ordinal() + 1 >= VehMode.values().length - 1) vmode = VehMode.COMPATIBLE_ALL;
 					else vmode = VehMode.values()[vmode.ordinal() + 1];
 				}
 				else{
@@ -129,8 +133,22 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 		for(int i = 0; i < 9; i++){
 			buttons.put("entry" + i, new BasicButton("e" + i, guiLeft + 229, guiTop + 73 + (i * 14), 229, 216, 12, 12, true));
 		}
-		buttons.put("scroll_up", new BasicButton("s_u", guiLeft + 222, guiTop + 199, 222, 199, 9, 9, true));
-		buttons.put("scroll_dw", new BasicButton("s_d", guiLeft + 232, guiTop + 199, 232, 199, 9, 9, true));
+		buttons.put("scroll_up", new BasicButton("s_u", guiLeft + 222, guiTop + 199, 222, 199, 9, 9, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				if(--scroll < 0) scroll = 0;
+				refscroll();
+				return true;
+			}
+		});
+		buttons.put("scroll_dw", new BasicButton("s_d", guiLeft + 232, guiTop + 199, 232, 199, 9, 9, true){
+			@Override
+			public boolean onclick(int x, int y, int m){
+				if(++scroll + 9 >= etexts.size()) scroll = etexts.size() - 9;
+				refscroll();
+				return true;
+			}
+		});
 		collectpacks();
 		if(vehpacks.isEmpty()){
 			Print.chat(player, I19U.trsc("gui.fvtm.vpinfo.no_vehicles"));
@@ -182,12 +200,75 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 		texts.get("mode").string = "gui.fvtm.vpinfo.mode." + (vehmode ? vmode : pmode).name().toLowerCase();
 		if(selcat == null) texts.get("mode").translate();
 		else texts.get("mode").translate(selcat);
+		//
+		etexts.clear();
+		if(vehmode){
+			switch(vmode){
+			case REQUIRED:
+				etexts.addAll(veh.getRequiredParts());
+				break;
+			case PRE_INSTALLED:
+				veh.getPreInstalledParts().entrySet().forEach(entry -> {
+					etexts.add(entry.getKey() + " (" + entry.getValue().toString() + ")");
+				});
+				break;
+			case COMPATIBLE_ALL:
+				etexts.add(I19U.trsc("gui.fvtm.vpinfo.line.wait"));
+				mc.addScheduledTask(() -> {
+					VehicleData vdata = new VehicleData(veh);
+					ArrayList<String> list = new ArrayList<>();
+					for(Part part : Resources.PARTS){
+						PartData data = new PartData(part);
+						for(String str : part.getCategories()){
+							if(part.getInstallationHandler().allowInstall(null, data, str, vdata)) list.add(part.getRegistryName() + " (" + str + ")");
+						}
+					}
+					etexts.clear();
+					etexts.addAll(list);
+					if(etexts.isEmpty()) etexts.add(I19U.trsc("gui.fvtm.vpinfo.line.none"));
+				});
+				break;
+			case COMPATIBLE_SPECIFIC:
+				etexts.add(I19U.trsc("gui.fvtm.vpinfo.line.wait"));
+				break;
+			default:
+				etexts.add("error.unknown.mode");
+				break;
+			}
+		}
+		else{
+			switch(pmode){
+			case CATEGORIES:
+				etexts.addAll(part.getCategories());
+				break;
+			case COMPATIBLE:
+				etexts.add(I19U.trsc("gui.fvtm.vpinfo.line.wait"));
+				break;
+			default:
+				etexts.add("error.unknown.mode");
+				break;
+			}
+		}
+		//
+		scroll = 0;
+		refscroll();
 	}
 	
+	private void refscroll(){
+		if(scroll < 0) scroll = 0;
+		for(int i = 0; i < 9; i++){
+			int j = scroll + i;
+			buttons.get("entry" + i).visible = j < etexts.size();
+			texts.get("line" + i).string = j >= etexts.size() ? "" : etexts.get(j);
+		}
+		texts.get("scroll").string = scroll + "/" + (etexts.size() < 9 ? 0 : etexts.size() - 9);
+	}
+
 	@Override
 	public void predraw(float ticks, int x, int y){
 		texts.get("pack").string = addon.getName();
 		texts.get("selected").string = vehmode ? veh.getName() : part.getName();
+		texts.get("selid").string = (vehmode ? veh.getRegistryName() : part.getRegistryName()).toString();
 	}
 	
 	@Override
@@ -199,16 +280,25 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 		itemRender.renderItemAndEffectIntoGUI(stack, guiLeft + 8, guiTop + 36);
         RenderHelper.disableStandardItemLighting();
 	}
+
+	@Override
+	protected void scrollwheel(int am, int x, int y){
+		scroll += am > 0 ? 1 : -1;
+		if(scroll < 0) scroll = 0;
+		if(scroll + 9 >= etexts.size()) scroll = etexts.size() - 9;
+		refscroll();
+	}
 	
 	public static enum VehMode {
 		
-		REQUIRED, PRE_INSTALLED, COMPATIBLE_ALL, COMPATIBLE_SPECIFIC
+		REQUIRED, PRE_INSTALLED, COMPATIBLE_ALL, COMPATIBLE_SPECIFIC;
 		
 	}
 	
 	public static enum PartMode {
 		
 		CATEGORIES, COMPATIBLE
+		
 	}
 
 }

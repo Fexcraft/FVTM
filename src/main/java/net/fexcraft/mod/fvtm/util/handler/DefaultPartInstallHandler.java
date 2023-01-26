@@ -35,7 +35,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		if(!part.getType().getCategories().contains(cat) && (idata != null && !idata.custom_cat && !idata.onslot)){
+		if(!part.getType().getCategories().contains(cat) && !idata.custom_cat && !idata.onslot){
 			Print.chatnn(sender, "handler.install.fvtm.default.part_invalid_category");
 			return false;
 		}
@@ -51,7 +51,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_missing_required_parts");
 			return false;
 		}
-		if(idata != null && idata.sp_req && !idata.onslot && !data.getRotationPoints().containsKey(idata.swivel_point)){
+		if(idata.sp_req && !idata.onslot && !data.getRotationPoints().containsKey(idata.swivel_point)){
 			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_missing_required_swivelpoint:" + idata.swivel_point);
 			return false;
 		}

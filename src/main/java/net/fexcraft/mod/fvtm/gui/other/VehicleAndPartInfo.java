@@ -457,7 +457,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 				if(imode && text.getKey().startsWith("line")){
 					int i = Integer.parseInt(text.getKey().substring(4));
 					if(text.getValue().string.startsWith(SUB_PRE)) tips.add(text.getValue().string.substring(2));
-					tips.add(itexts.get(i + scroll));
+					if(i < itexts.size()) tips.add(itexts.get(i + scroll));
 				}
 				else tips.add(text.getValue().string);
 			}

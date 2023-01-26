@@ -21,6 +21,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -216,6 +217,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 				return true;
 			}
 		});
+		buttons.put("item_hover", new BasicButton("i_h", guiLeft + 8, guiTop + 36, 8, 36, 16, 16, true));
 		collectpacks();
 		if(vehpacks.isEmpty()){
 			Print.chat(player, I19U.trsc("gui.fvtm.vpinfo.no_vehicles"));
@@ -462,6 +464,9 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 				}
 				else tips.add(text.getValue().string);
 			}
+		}
+		if(buttons.get("item_hover").hovered){
+			tips.addAll(stack.getTooltip(player, ITooltipFlag.TooltipFlags.NORMAL));
 		}
 		if(tips.size() > 0) this.drawHoveringText(tips, x, y, fontRenderer);
 	}

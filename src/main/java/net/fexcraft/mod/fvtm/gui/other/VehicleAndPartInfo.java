@@ -276,6 +276,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 				etexts.addAll(veh.getRequiredParts());
 				break;
 			case PRE_INSTALLED:
+				if(veh.getPreInstalledParts() == null) break;
 				veh.getPreInstalledParts().entrySet().forEach(entry -> {
 					etexts.add(entry.getKey());
 					itexts.add(entry.getValue().toString());

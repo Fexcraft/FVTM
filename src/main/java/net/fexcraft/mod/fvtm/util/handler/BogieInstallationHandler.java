@@ -19,6 +19,10 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+		if(!data.getType().getVehicleType().isRailVehicle()){
+			Print.chatnn(sender, "handler.install.fvtm.bogie.not_rail_vehicle");
+			return false;
+		}
 		if(data.getParts().containsKey(cat)){
 			Print.chatnn(sender, "handler.install.fvtm.bogie.category_occupied");
 			return false;

@@ -274,6 +274,7 @@ handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.default.remove_linked_wheels=Please remove all linked wheels first.
 handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.wheel.rail_vehicle=Not compatible with rail vehicles.
 handler.install.fvtm.wheel.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.wheel.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
 handler.install.fvtm.wheel.wheelslot_null=Error, slot not found.
@@ -289,6 +290,7 @@ handler.deinstall.fvtm.wheel.remove_tire_first=Please remove the tire first.
 handler.deinstall.fvtm.wheel.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.wheel.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.tire.rail_vehicle=Not compatible with rail vehicles.
 handler.install.fvtm.tire.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.tire.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
 handler.install.fvtm.tire.no_wheel_at_slot=There is no wheel/rim to install this tire on, at that slot!
@@ -305,6 +307,7 @@ handler.deinstall.fvtm.tire.part_not_removable=Part is marked as non removable.
 handler.deinstall.fvtm.tire.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.tire.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.bogie.not_rail_vehicle=This is not a rail vehicle.
 handler.install.fvtm.bogie.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.bogie.bogieslot_missing=This Vehicle does not have the required BogieSlot configured.
 handler.install.fvtm.bogie.check_passed=Installation check passed.

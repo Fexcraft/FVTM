@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
@@ -42,7 +42,7 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(64);
 		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-		if(Static.side().isServer()) return;
+		if(Statics.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
     }
 

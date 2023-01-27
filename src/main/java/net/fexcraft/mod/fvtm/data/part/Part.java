@@ -16,7 +16,7 @@ import com.google.gson.JsonPrimitive;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
@@ -125,7 +125,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 						this.functions.add(func.getConstructor(Part.class, JsonObject.class).newInstance(this, elmobj));
 					}
 					catch(Exception e){
-						e.printStackTrace(); Static.stop();
+						e.printStackTrace(); Statics.stop();
 					}
 				}
 				else{
@@ -169,7 +169,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				}
 				catch(Exception e){
 					Print.log("Failed to load InstallationHandler for `" + this.getRegistryName().toString() + "`!"); e.printStackTrace();
-					Static.stop();
+					Statics.stop();
 				}
 			}
 		}
@@ -193,7 +193,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				}
 				catch(Exception e){
 					e.printStackTrace();
-					Static.stop();
+					Statics.stop();
 				}
 			});
 		}
@@ -207,7 +207,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
             }
 		}
 		//
-		if(Static.isClient()){
+		if(Statics.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 			modeldata = DataUtil.getModelData(obj);
 		}
@@ -246,7 +246,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
         }
         catch(Exception e){
         	e.printStackTrace();
-        	Static.stop();
+        	Statics.stop();
         }
 	}
 

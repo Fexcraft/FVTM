@@ -16,7 +16,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -221,10 +221,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	PartData part = vehicle.getPart(entry.getKey());
         	if(!((WheelData)part.getType().getInstallationHandlerData()).hasTire()){
         		part = vehicle.getPart(entry.getKey() + ":tire");
-        		wheel_radius += ((TireData)part.getType().getInstallationHandlerData()).getOuterRadius() * Static.sixteenth;
+        		wheel_radius += ((TireData)part.getType().getInstallationHandlerData()).getOuterRadius() * Statics.sixteenth;
         	}
         	else{
-        		wheel_radius += ((WheelData)part.getType().getInstallationHandlerData()).getRadius() * Static.sixteenth;
+        		wheel_radius += ((WheelData)part.getType().getInstallationHandlerData()).getRadius() * Statics.sixteenth;
         	}
         	wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
         	wheeldata.add(wheel);
@@ -781,7 +781,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public void onUpdate(){
         super.onUpdate();
         if(this.isDead) return;
-        if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Static.stop(); return; }
+        if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Statics.stop(); return; }
         if(!world.isRemote){
             for(int i = 0; i < wheels.length; i++){
                 if(wheels[i] == null || !wheels[i].addedToChunk){
@@ -810,7 +810,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         //
         if(!world.isRemote){ wheelsYaw *= 0.98F;  }
         float wymax = vehicle.getAttributeFloat("max_steering_angle", 45);
-        wheelsYaw = Static.clamp(wheelsYaw, -wymax, wymax);
+        wheelsYaw = Statics.clamp(wheelsYaw, -wymax, wymax);
         //px = posX; py = posY; pz = posZ;
         if(world.isRemote){
             if(server_pos_ticker > 0){
@@ -830,7 +830,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
             vehicle.getAttribute("steering_angle").value(wheelsYaw);
-            wheelsAngle += speed * (wheel_radius * 2 * Static.PI) * (vehicle.getAttributeInteger("gear", 0) >= 0 ? 1 : -1);
+            wheelsAngle += speed * (wheel_radius * 2 * Statics.PI) * (vehicle.getAttributeInteger("gear", 0) >= 0 ? 1 : -1);
             if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").value(wheelsAngle);
         	vehicle.getAttribute("throttle").value((float)throttle);
@@ -905,7 +905,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
 	private ArrayList<Double> avsp = new ArrayList<>();
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
-    public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
+    public static final float TICKA = 1f / 20f, o132 = Statics.sixteenth / 2;
     /*private double /*px, py, pz, oos, os;*/
     private double appmass = 0;
     private double accx = 0f;
@@ -939,7 +939,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
     	if(engine != null && transmission != null){
         	orpm = rpm;
-        	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
+        	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Statics.PI2);
         	rpm = (orpm + rpm) / 2;
         	if(rpm < 0) rpm = -rpm;
         	if(rpm < engine.minRPM()) rpm = engine.minRPM();
@@ -996,7 +996,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
             double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
             double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
-        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
+        	double frict = Statics.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
         	double trac = wheeldata.function.getGripFor(mat, rainfall) * ((consumed ? thr : 0) - brake * Math.signum(motx));//grip inclusion here is for testing
         	double dragx = -rr * motx - ar * motx * Math.abs(motx);
         	double dragy = -rr * moty - ar * moty * Math.abs(moty);

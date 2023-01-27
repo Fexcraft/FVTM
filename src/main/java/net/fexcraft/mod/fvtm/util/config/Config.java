@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.util.config;
 import java.io.File;
 import java.util.List;
 
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
@@ -82,7 +82,7 @@ public class Config {
             RENDER_VEHILE_MODELS_AS_ITEMS = config.getBoolean("render_vehicle_models_as_items", CLIENT, true, "If the Vehicle's model should be rendered as Item. Could cause laggs.");
             RENDER_BLOCK_MODELS_AS_ITEMS = config.getBoolean("render_block_models_as_items", CLIENT, true, "If the (non-vanilla) Block models should be rendered as Item.");
             BLINKER_INTERVAL = config.getInt("blinker_interval", CLIENT, 750, 100, 2000, "Blinker/Turn Signal toggle interval, in milliseconds.");
-            if(Static.side().isClient()){
+            if(Statics.side().isClient()){
             	net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
             }
             DISABLE_LIGHT_BEAMS = config.getBoolean("disable_light_beams", CLIENT, false, "If light beam rendering should be disabled.");

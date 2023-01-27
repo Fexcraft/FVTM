@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,7 @@ public class PKTH_VehControl {
 
         @Override
         public IMessage onMessage(final PKT_VehControl packet, final MessageContext ctx){
-            Static.getServer().addScheduledTask(() -> {
+            Statics.getServer().addScheduledTask(() -> {
                 for(Entity ent : ctx.getServerHandler().player.world.loadedEntityList){
                     if(ent.getEntityId() == packet.entid){ updatevehicle(ent, packet); return; }
                 } return;

@@ -8,7 +8,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -97,7 +97,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 				}
 				else{
 					Print.bar(player, "A strange error happened, see location in log.");
-					Static.exception(null, false);
+					Statics.exception(null, false);
 				}
 				junction.pollSignal(null);
 				Print.bar(player, "&bJunction Signal &aupdated&b. [" + dir.getSaveByte() + "/" + dir.name().toLowerCase() + "]");

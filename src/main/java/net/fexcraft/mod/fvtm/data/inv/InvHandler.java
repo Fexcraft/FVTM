@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 
 import java.util.ArrayList;
 
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.entity.Entity;
@@ -102,7 +102,7 @@ public class InvHandler {
 	}
 
 	public Object getCapObj(){
-		Static.exception(null, true);
+		Statics.exception(null, true);
 		return null;
 	}
 

@@ -16,7 +16,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
@@ -163,7 +163,7 @@ public class MultiBlock {
 			}
 			catch(ClassNotFoundException e){
 				e.printStackTrace();
-				Static.stop();
+				Statics.stop();
 			}
 		}
 		if(obj.has("ScriptData")){

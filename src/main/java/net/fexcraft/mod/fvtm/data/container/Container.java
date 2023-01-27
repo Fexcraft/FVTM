@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -96,7 +96,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
         if(invtype.type.isFluid() && obj.has("FluidType")) invtype.setArg(obj.get("FluidType").getAsString());
         if(invtype.type.isItem() &&  obj.has("ContentFilter")) invtype.setArg(obj.get("ContentFilter").getAsString());
 		//
-		if(Static.isClient()){
+		if(Statics.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 			modeldata = DataUtil.getModelData(obj);
 		}

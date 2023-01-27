@@ -24,7 +24,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -822,9 +822,9 @@ public class DefaultPrograms {
 			if(current > max) current = max; if(current < min) current = min;
 			//GL11.glPushMatrix();
 			GL11.glTranslatef(
-				axis == 0 ? current * Static.sixteenth : 0,
-				axis == 1 ? current * Static.sixteenth : 0,
-				axis == 2 ? current * Static.sixteenth : 0);
+				axis == 0 ? current * Statics.sixteenth : 0,
+				axis == 1 ? current * Statics.sixteenth : 0,
+				axis == 2 ? current * Statics.sixteenth : 0);
 			data.cache.setValue(cacheid, current);
 		}
 
@@ -832,9 +832,9 @@ public class DefaultPrograms {
 		public void postRender(ModelGroup list, ModelRenderData data){
 			if(data.cache == null || attr == null) return;
 			GL11.glTranslatef(
-				axis == 0 ? current * -Static.sixteenth : 0,
-				axis == 1 ? current * -Static.sixteenth : 0,
-				axis == 2 ? current * -Static.sixteenth : 0);
+				axis == 0 ? current * -Statics.sixteenth : 0,
+				axis == 1 ? current * -Statics.sixteenth : 0,
+				axis == 2 ? current * -Statics.sixteenth : 0);
 			//GL11.glPopMatrix();
 		}
 		
@@ -1440,7 +1440,7 @@ public class DefaultPrograms {
 		private float x, y, z;
 		
 		public TranslationSetter(float x, float y, float z){
-			this(x, y, z, Static.sixteenth);
+			this(x, y, z, Statics.sixteenth);
 		}
 		
 		public TranslationSetter(float x, float y, float z, float scale){
@@ -1471,7 +1471,7 @@ public class DefaultPrograms {
 			float x = array.get(0).getAsFloat();
 			float y = array.get(1).getAsFloat();
 			float z = array.get(2).getAsFloat();
-			float s = array.size() > 3 ? array.get(3).getAsFloat() : Static.sixteenth;
+			float s = array.size() > 3 ? array.get(3).getAsFloat() : Statics.sixteenth;
 			return new TranslationSetter(x, y, z, s);
 		}
 
@@ -1480,7 +1480,7 @@ public class DefaultPrograms {
 			float x = Float.parseFloat(args[0]);
 			float y = Float.parseFloat(args[1]);
 			float z = Float.parseFloat(args[2]);
-			float s = args.length > 3 ? Float.parseFloat(args[3]) : Static.sixteenth;
+			float s = args.length > 3 ? Float.parseFloat(args[3]) : Statics.sixteenth;
 			return new TranslationSetter(x, y, z, s);
 		}
 
@@ -1974,9 +1974,9 @@ public class DefaultPrograms {
 			}
 			//GL11.glPushMatrix();
 			GL11.glTranslatef(
-				axis == 0 ? current * Static.sixteenth : 0,
-				axis == 1 ? current * Static.sixteenth : 0,
-				axis == 2 ? current * Static.sixteenth : 0);
+				axis == 0 ? current * Statics.sixteenth : 0,
+				axis == 1 ? current * Statics.sixteenth : 0,
+				axis == 2 ? current * Statics.sixteenth : 0);
 			data.cache.setValue(cacheid, current);
 		}
 
@@ -1984,9 +1984,9 @@ public class DefaultPrograms {
 		public void postRender(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
 			GL11.glTranslatef(
-				axis == 0 ? current * -Static.sixteenth : 0,
-				axis == 1 ? current * -Static.sixteenth : 0,
-				axis == 2 ? current * -Static.sixteenth : 0);
+				axis == 0 ? current * -Statics.sixteenth : 0,
+				axis == 1 ? current * -Statics.sixteenth : 0,
+				axis == 2 ? current * -Statics.sixteenth : 0);
 			//GL11.glPopMatrix();
 		}
 		

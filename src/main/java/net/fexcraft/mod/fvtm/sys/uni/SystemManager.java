@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -78,7 +78,7 @@ public class SystemManager {
 
 	public static void onAttachWorldCapabilities(World world){
 		if(loaded(world.provider.getDimension())) return;
-		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
+		SINGLEPLAYER = Statics.getServer() != null && Statics.getServer().isSinglePlayer();
 		int dim = world.provider.getDimension();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
 		Print.debug("dimension remote = " + world.isRemote + "/" + SINGLEPLAYER);

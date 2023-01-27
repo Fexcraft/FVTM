@@ -11,7 +11,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -116,7 +116,7 @@ public class Command extends CommandBase {
                 	for(String str : addon.getAuthors()){
                 		UUID uuid = parseUUID(str);
                 		if(uuid == null) Print.chat(sender, "&7- " + str);
-                		else Print.chat(sender, "&7- " + Static.getPlayerNameByUUID(uuid));
+                		else Print.chat(sender, "&7- " + Statics.getPlayerNameByUUID(uuid));
                 	}
             	}
             	Print.chat(sender, "&2URL: &7" + addon.getURL());
@@ -369,19 +369,19 @@ public class Command extends CommandBase {
             	break;
             }
             case "rrr": case "reload-railregion":{
-            	if(!Static.dev()) return;
+            	if(!Statics.dev()) return;
             	((RailSystem)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("all", sender);
             	Print.chat(sender, "&oRail-Regions Reloading.");
             	break;
             }
             case "rrs": case "reload-railsections":{
-            	if(!Static.dev()) return;
+            	if(!Statics.dev()) return;
             	((RailSystem)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("sections", sender);
             	Print.chat(sender, "&oRail-Sections Reloading.");
             	break;
             }
             case "vals":{
-            	if(!Static.dev() || !server.isSinglePlayer()) return;
+            	if(!Statics.dev() || !server.isSinglePlayer()) return;
             	if(args.length < 3){
             		Print.chat(sender, VALS.get(args[1]));
             		return;

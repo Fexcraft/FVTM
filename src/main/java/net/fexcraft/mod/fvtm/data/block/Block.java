@@ -13,7 +13,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
@@ -183,7 +183,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			this.block = blocktype.getApplicableClass(sub || isFunctional() || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
 		}
 		catch(Exception e){
-			e.printStackTrace(); Static.stop();
+			e.printStackTrace(); Statics.stop();
 		}
 		return this;
 	}

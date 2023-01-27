@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
@@ -36,7 +36,7 @@ public class InternalAddon extends Addon {
 		url = "https://fexcraft.net/minecraft/mod?id=fvtm";
 		license = "https://fexcraft.net/license?id=mods";
 		registerer = FVTM.getRegisterer();
-		if(Static.side().isClient()){
+		if(Statics.side().isClient()){
 			(creativetabs = new HashMap<>()).put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 		}
 	}

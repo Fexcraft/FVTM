@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -31,7 +31,7 @@ public class ClothItem extends ItemArmor implements ItemTex<Cloth> {
 		if(cloth.getMaxDamage() > 0) this.setMaxDamage(cloth.getMaxDamage());
 		//
         (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-        if(Static.side().isServer()) return;
+        if(Statics.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 

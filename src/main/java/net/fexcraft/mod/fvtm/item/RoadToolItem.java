@@ -11,7 +11,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -126,7 +126,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	Print.chat(player, "&9This is a &6CREATIVE &9mode tool.");
         	return EnumActionResult.FAIL;
         }
-        if(!Static.getServer().isSinglePlayer() && !Perms.ROAD_PLACER_ITEM.has(player)){
+        if(!Statics.getServer().isSinglePlayer() && !Perms.ROAD_PLACER_ITEM.has(player)){
         	Print.chat(player, "&cNo permission to use this item.");
         	return EnumActionResult.FAIL;
         }
@@ -216,7 +216,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		//
 		vec = _road.getVectorPosition0(0.001f, false); passed = 0;
 		angle = (float)Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
-		angle += Static.rad90;
+		angle += Statics.rad90;
 		for(float fl = -half; fl <= half; fl += 0.25f){
 			if(road != null) road.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
 			if(ground != null) ground.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
@@ -243,7 +243,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		while(passed < _road.length){ passed += 0.125f;
 			last = vec; vec = _road.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
-			angle += Static.rad90;
+			angle += Statics.rad90;
 			float off = roadfill == null ? 0 : 0.25f;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				if(road != null) road.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));

@@ -9,7 +9,7 @@ import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.mc.utils.Statics;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -229,7 +229,7 @@ public class FVTM {
 			}
 			catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | FileNotFoundException e){
 				e.printStackTrace();
-				Static.stop();
+				Statics.stop();
 			}
 		}
 		Resources.MATERIALS.forEach(mat -> mat.linkContainerItem());

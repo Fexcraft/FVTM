@@ -155,7 +155,18 @@ public interface Model {
 		public World world(){
 			return entity == null ? tile == null ? null : tile.getWorld() : entity.world;
 		}
-		
+
+		public ModelRenderData clear(){
+			entity = null;
+			vehicle = null;
+			color = null;
+			texture = null;
+			part = null;
+			part_category = null;
+			cache = null;
+			itemrender = false;
+			return this;
+		}
 	}
 	
 	public static class ModelData extends HashMap<String, Object> {

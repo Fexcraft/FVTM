@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,7 @@ public class PKTH_SPUpdate {
 
 		@Override
 		public IMessage onMessage(final PKT_SPUpdate packet, final MessageContext ctx){
-			Statics.getServer().addScheduledTask(() -> {
+			Static.getServer().addScheduledTask(() -> {
 				for(Entity ent : ctx.getServerHandler().player.world.loadedEntityList){
 					if(ent.getEntityId() == packet.entid){
 						updatesp(ent, packet, false);

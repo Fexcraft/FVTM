@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
@@ -44,7 +44,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(64);
 		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
-		path = vecs; if(Statics.side().isServer()) return;
+		path = vecs; if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
     }
     
@@ -116,8 +116,8 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		int con = (int)((((int)yaw + 90f) * rotations) / 360f);
 		if(con % seg > seg / 2) con++;
 		for(int i = 0; i < vecs.length; i++){
-			if(i != 0 && i != vecs.length - 1) vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Statics.rad1, vecs[i].vector).add(pos.vector));
-			else vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Statics.rad1, vecs[i].vector).add(pos.vector), Config.RAIL_PLACING_GRID);
+			if(i != 0 && i != vecs.length - 1) vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector));
+			else vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector), Config.RAIL_PLACING_GRID);
 		} return vecs;
 	}
 

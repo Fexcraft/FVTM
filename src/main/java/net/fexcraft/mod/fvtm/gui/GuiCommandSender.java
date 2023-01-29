@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,7 +36,7 @@ public class GuiCommandSender implements ICommandSender {
 
 	@Override
 	public MinecraftServer getServer(){
-		return Statics.getServer();
+		return Static.getServer();
 	}
 	
 	@Override

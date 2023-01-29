@@ -8,7 +8,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem.Road;
@@ -197,7 +197,7 @@ public class RoadPlacingUtil {
 			for(float pass = 0; pass < road.length + 0.125f; pass += 0.125f){
 				last = vec;
 				vec = road.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
-				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Statics.rad90;
+				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Static.rad90;
 				for(int w = 0; w < width + 1; w++){
 					preview.get(w).add(vec.add(RoadToolItem.grv(angle, new Vec3f(-half + w, 0, 0))));
 				}

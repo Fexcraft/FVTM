@@ -35,7 +35,7 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLBlockModelLoader;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -343,7 +343,7 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	private void checkEntry(net.minecraft.client.resources.IResourcePack pack) {
 		for(String str : pack.getResourceDomains()){
-			if(Statics.dev()){
+			if(Static.dev()){
 				try {
 					Print.log("Checking " + respackfile.get(pack) + " " + str);
 					Print.log("Result: " + pack.resourceExists(new ResourceLocation(str + ":addonpack.fvtm")));
@@ -388,7 +388,7 @@ public class Resources {
 			}
 			catch(Exception e){
 				e.printStackTrace();
-				Statics.stop();
+				Static.stop();
 			}
 		}
 	}
@@ -450,7 +450,7 @@ public class Resources {
 			}
 			catch(Throwable thr){
 				thr.printStackTrace();
-				Statics.stop();
+				Static.stop();
 			}
 		}
 	}
@@ -756,7 +756,7 @@ public class Resources {
 				flightdata.setInt(passenger.connection, 0);
 			}
 			catch(IllegalArgumentException | IllegalAccessException e){
-				if(Statics.dev()){
+				if(Static.dev()){
 					e.printStackTrace();
 				}
 				flightdata_failed = true;
@@ -835,7 +835,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> event){
-		if(Statics.side().isClient() && (event.getObject() instanceof DisplayEntity ||
+		if(Static.side().isClient() && (event.getObject() instanceof DisplayEntity ||
 			event.getObject() instanceof BlockTileEntity || event.getObject() instanceof ContainerEntity)){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
@@ -844,7 +844,7 @@ public class Resources {
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
-		for(World world : Statics.getServer().worlds){
+		for(World world : Static.getServer().worlds){
 			SystemManager.onServerTick(world);
 		}
 	}
@@ -923,7 +923,7 @@ public class Resources {
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
 		}
 		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player);
-		if(!Statics.getServer().isSinglePlayer()) return;
+		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = true;
 	}
 	
@@ -936,7 +936,7 @@ public class Resources {
 		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof GenericVehicle){
 			event.player.dismountRidingEntity();
 		}
-		if(!Statics.getServer().isSinglePlayer()) return;
+		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = false;
 	}
 	

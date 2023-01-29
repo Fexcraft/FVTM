@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -86,7 +86,7 @@ public class TrackPlacer {
 			ArrayList<Vec316f> path = new ArrayList<>();
 			Vec3f last, vec = track.getVectorPosition0(0.001f, false);
 			angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
-			angle += Statics.rad90;
+			angle += Static.rad90;
 			/*for(float fl = -half; fl <= half; fl += 0.25f){
 				path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 			}*/
@@ -94,7 +94,7 @@ public class TrackPlacer {
 			while(passed < track.length){
 				last = vec; vec = track.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
-				angle += Statics.rad90;
+				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){
 					path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 				}

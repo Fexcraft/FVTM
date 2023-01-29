@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -44,7 +44,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getPath(), this, 0, null);
-        if(Statics.side().isServer()) return;
+        if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 

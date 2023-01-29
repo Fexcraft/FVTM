@@ -18,7 +18,7 @@ import com.google.gson.JsonPrimitive;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.root.DataType;
@@ -222,7 +222,7 @@ public class DataUtil {
 		}
 		else{
 			ResourceLocation resloc = new ResourceLocation(regname.getNamespace(), "textures/items/" + regname.getPath() + ".png");
-			if(Statics.side().isClient()){
+			if(Static.side().isClient()){
 				if(net.fexcraft.mod.fvtm.util.TexUtil.isMissing(resloc)){
 					if(type == DataType.VEHICLE) return RSLC_VEHICLE;
 					else if(type == DataType.PART) return RSLC_PART;

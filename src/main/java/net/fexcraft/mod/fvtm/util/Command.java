@@ -11,7 +11,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -48,6 +48,7 @@ public class Command extends CommandBase {
 	
 	public static boolean OTHER, TOGGABLE, TOGG_LABEL, HOTSWAP, CONTAINER;
 	public static HashMap<String, String> VALS = new HashMap<>();
+	//public static HashMap<String, Long> TIMES = new HashMap<>();
 
     @Override
     public String getName(){
@@ -116,7 +117,7 @@ public class Command extends CommandBase {
                 	for(String str : addon.getAuthors()){
                 		UUID uuid = parseUUID(str);
                 		if(uuid == null) Print.chat(sender, "&7- " + str);
-                		else Print.chat(sender, "&7- " + Statics.getPlayerNameByUUID(uuid));
+                		else Print.chat(sender, "&7- " + Static.getPlayerNameByUUID(uuid));
                 	}
             	}
             	Print.chat(sender, "&2URL: &7" + addon.getURL());
@@ -369,19 +370,19 @@ public class Command extends CommandBase {
             	break;
             }
             case "rrr": case "reload-railregion":{
-            	if(!Statics.dev()) return;
+            	if(!Static.dev()) return;
             	((RailSystem)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("all", sender);
             	Print.chat(sender, "&oRail-Regions Reloading.");
             	break;
             }
             case "rrs": case "reload-railsections":{
-            	if(!Statics.dev()) return;
+            	if(!Static.dev()) return;
             	((RailSystem)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("sections", sender);
             	Print.chat(sender, "&oRail-Sections Reloading.");
             	break;
             }
             case "vals":{
-            	if(!Statics.dev() || !server.isSinglePlayer()) return;
+            	if(!Static.dev() || !server.isSinglePlayer()) return;
             	if(args.length < 3){
             		Print.chat(sender, VALS.get(args[1]));
             		return;
@@ -416,6 +417,11 @@ public class Command extends CommandBase {
             	}
             	return;
             }
+			/*case "load-time":{
+				TIMES.entrySet().forEach(entry -> {
+					Print.chat(sender, entry.getValue() + "ms - " + entry.getKey());
+				});
+			}*/
             default: {
                 Print.chat(sender, "null [0]");
                 break;

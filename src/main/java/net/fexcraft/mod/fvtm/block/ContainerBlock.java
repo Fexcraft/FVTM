@@ -5,7 +5,7 @@ import java.util.Random;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
@@ -178,7 +178,7 @@ public class ContainerBlock extends BlockContainer {
                 }
                 return true;
             }
-            else if(Statics.dev()){
+            else if(Static.dev()){
                 Print.debug(te.getContainerData() == null ? "No Container." : te.getContainerData().write(new NBTTagCompound()).toString());
             }
         }

@@ -12,7 +12,7 @@ import com.mojang.authlib.GameProfile;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -33,7 +33,7 @@ public class RoadPlacingCache {
 			new Timer().schedule(new TimerTask(){
 				@Override
 				public void run(){
-					for(GameProfile prof : Statics.getServer().getPlayerList().getOnlinePlayerProfiles()){
+					for(GameProfile prof : Static.getServer().getPlayerList().getOnlinePlayerProfiles()){
 						if(prof.getId().equals(uuid)) return;
 					}
 					UNDOCACHE.remove(uuid);

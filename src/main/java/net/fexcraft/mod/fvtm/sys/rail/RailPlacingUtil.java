@@ -8,7 +8,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
@@ -253,7 +253,7 @@ public class RailPlacingUtil {
 			for(float pass = 0; pass < track.length + 0.125f; pass += 0.125f){
 				last = vec;
 				vec = track.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
-				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Statics.rad90;
+				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Static.rad90;
 				preview.get(0).add(vec.add(RoadToolItem.grv(angle, new Vec3f(-half, 0, 0))));
 				preview.get(1).add(vec.add(RoadToolItem.grv(angle, new Vec3f(half, 0, 0))));
 			}

@@ -29,7 +29,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.DirectPipe;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
@@ -111,7 +111,7 @@ public class Addon extends TypeCore<Addon> {
 		generatejson = JsonUtil.getIfExists(obj, "GenerateItemJson", false);
 		generateicon = JsonUtil.getIfExists(obj, "GenerateItemIcon", false);
 		//
-		if(Statics.side().isClient()){
+		if(Static.side().isClient()){
 			creativetabs = new HashMap<>();
 			if(!obj.has("CreativeTabs") /*|| obj.get("CreativeTabs").getAsJsonArray().size() == 0*/){
 				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
@@ -141,7 +141,7 @@ public class Addon extends TypeCore<Addon> {
 		if(obj.has("WireDecos")){
 			Resources.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), obj.get("WireDecos").getAsJsonObject());
 		}
-		if(obj.has("Particles") && Statics.isClient()){
+		if(obj.has("Particles") && Static.isClient()){
 			JsonObject par = obj.get("Particles").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : par.entrySet()){
 				new net.fexcraft.mod.fvtm.sys.particle.Particle(registryname.getPath() + ":" + entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
@@ -296,10 +296,10 @@ public class Addon extends TypeCore<Addon> {
 						continue;
 					}
 					data.register(core); //Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
-					if(Statics.side().isClient()){
+					if(Static.side().isClient()){
 						checkIfHasCustomModel(data, core);
 					}
-					if(Statics.dev()){
+					if(Static.dev()){
 						if(generatelang) checkLangFile(core);
 						if(generatejson) checkItemJson(core, data);
 						if(generateicon) checkItemIcon(core, data);
@@ -307,7 +307,7 @@ public class Addon extends TypeCore<Addon> {
 				}
 				catch(Throwable t){
 					t.printStackTrace();
-					Print.log("Failed to load config from file '" + file + "'!"); Statics.stop();
+					Print.log("Failed to load config from file '" + file + "'!"); Static.stop();
 				}
 			}
 		}
@@ -331,7 +331,7 @@ public class Addon extends TypeCore<Addon> {
 							continue;
 						}
 						data.register(core); //Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-						if(Statics.side().isClient()){
+						if(Static.side().isClient()){
 							checkIfHasCustomModel(data, core);
 						}
 					}
@@ -341,7 +341,7 @@ public class Addon extends TypeCore<Addon> {
 			}
 			catch(Throwable e){
 				e.printStackTrace();
-				if(lastentryname != null) Print.log("Failed to load config from zip entry '" + lastentryname + "'!"); Statics.stop();
+				if(lastentryname != null) Print.log("Failed to load config from zip entry '" + lastentryname + "'!"); Static.stop();
 			}
 		}
 	}

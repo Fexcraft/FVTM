@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
@@ -36,7 +36,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         //this.setUnlocalizedName(this.getRegistryName().toString());
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getPath(), this, 0, null);
-        if(Statics.side().isServer()) return;
+        if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
@@ -66,7 +66,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         }
         if(type.getBaseModifiers().size() > 0){
         	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getBaseModifiers().size()));
-        	if(Statics.dev()){
+        	if(Static.dev()){
         		for(Modifier<?> mod : type.getBaseModifiers()){
                     tooltip.add(Formatter.format("&9" + mod.id() + ": &7" + mod.target() + " / " + mod.string_value() + " [" + mod.impl() + "]"));
         		}

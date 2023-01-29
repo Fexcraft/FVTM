@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,7 +37,7 @@ public class MultiBlockData {
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
 			e.printStackTrace();
-			Statics.stop();
+			Static.stop();
 		}
 	}
 	

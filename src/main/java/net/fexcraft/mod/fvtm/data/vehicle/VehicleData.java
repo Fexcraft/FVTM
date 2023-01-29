@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -105,7 +105,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				}
 				catch(Exception e){
 					e.printStackTrace();
-					Statics.stop();
+					Static.stop();
 				}
 			}
 		}
@@ -223,7 +223,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 			attributes.get(attr.id()).copyAABBs(attr).external(attr.external()).perm(attr.perm());
 		}
-		if(Statics.isClient()) for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
+		if(Static.isClient()) for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
 		//
 		texture.load(compound, type);
 		//

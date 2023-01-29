@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
@@ -47,7 +47,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
 		this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
-		if(Statics.side().isServer()) return;
+		if(Static.side().isServer()) return;
 		ctab = Resources.getCreativeTab(type);
 	}
 

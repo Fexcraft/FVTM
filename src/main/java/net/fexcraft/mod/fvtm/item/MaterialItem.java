@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
@@ -36,7 +36,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
 		this.setMaxStackSize(type.isFuelContainer() ? 1 : material.getMaxStackSize());
 		this.setMaxDamage(material.getMaxDamage());
         this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-        if(Statics.side().isServer()) return;
+        if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
@@ -77,7 +77,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
     
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-    	if(!Statics.dev()) return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    	if(!Static.dev()) return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         player.getHeldItem(hand).getItem().setDamage(player.getHeldItem(hand), player.getHeldItem(hand).getItemDamage() - 1); return EnumActionResult.SUCCESS;
     }
     

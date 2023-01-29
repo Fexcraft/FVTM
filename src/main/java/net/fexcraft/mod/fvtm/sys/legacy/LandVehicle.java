@@ -14,7 +14,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -635,7 +635,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void onUpdate(){
         super.onUpdate(); if(this.isDead) return;
-        if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Statics.stop(); return; }
+        if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Static.stop(); return; }
         if(!world.isRemote){
             for(int i = 0; i < wheels.length; i++){
                 if(wheels[i] == null || !wheels[i].addedToChunk){
@@ -674,7 +674,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
             vehicle.getAttribute("steering_angle").value(wheelsYaw);
-            double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Statics.PI;
+            double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").value(wheelsAngle);
         	vehicle.getAttribute("throttle").value((float)throttle);

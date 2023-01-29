@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -68,7 +68,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 		this.material = parseMaterial(obj);
 		//
 		this.texture = new NamedResourceLocation(JsonUtil.getIfExists(obj, "Texture", Resources.NULL_TEXTURE.toString()));
-		if(Statics.isClient()){
+		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 			modeldata = DataUtil.getModelData(obj);
 		}

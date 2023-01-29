@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.tmt.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Statics;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
@@ -63,7 +63,7 @@ public class JTMTModelLoader implements ModelLoader {
         }
         catch(Throwable thr){
         	thr.printStackTrace();
-        	Statics.stop();
+        	Static.stop();
         }
 		return new Object[]{ model, confdata };
 	}

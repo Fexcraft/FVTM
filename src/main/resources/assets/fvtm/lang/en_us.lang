@@ -170,6 +170,20 @@ gui.fvtm.decoration_editor.scale=Scale
 gui.fvtm.decoration_editor.texture=Texture
 gui.fvtm.decoration_editor.no_color_channels=No Color Channels
 //
+gui.fvtm.vpinfo.title_veh=Vehicle Info Mode
+gui.fvtm.vpinfo.title_part=Part Info Mode
+gui.fvtm.vpinfo.no_vehicles=You have no packs installed containing vehicles!
+gui.fvtm.vpinfo.no_parts=You have no packs installed containing parts!
+gui.fvtm.vpinfo.mode.required=Required parts:
+gui.fvtm.vpinfo.mode.pre_installed=Pre-Installed parts:
+gui.fvtm.vpinfo.mode.compatible_all=Compatible parts (all):
+gui.fvtm.vpinfo.mode.compatible_specific=Compatible parts (%s):
+gui.fvtm.vpinfo.mode.categories=Can be installed as:
+gui.fvtm.vpinfo.mode.compatible=Compatible with:
+gui.fvtm.vpinfo.mode.compatible.cat=%s (vehicle category)
+gui.fvtm.vpinfo.line.wait=Please wait, searching...
+gui.fvtm.vpinfo.line.none=No results found.
+//
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.
 tile.fvtm.constructor.constructor_connect.already_connected=Tile at position has already connection data.
@@ -260,6 +274,7 @@ handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.default.remove_linked_wheels=Please remove all linked wheels first.
 handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.wheel.rail_vehicle=Not compatible with rail vehicles.
 handler.install.fvtm.wheel.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.wheel.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
 handler.install.fvtm.wheel.wheelslot_null=Error, slot not found.
@@ -275,6 +290,7 @@ handler.deinstall.fvtm.wheel.remove_tire_first=Please remove the tire first.
 handler.deinstall.fvtm.wheel.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.wheel.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.tire.rail_vehicle=Not compatible with rail vehicles.
 handler.install.fvtm.tire.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.tire.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
 handler.install.fvtm.tire.no_wheel_at_slot=There is no wheel/rim to install this tire on, at that slot!
@@ -291,6 +307,7 @@ handler.deinstall.fvtm.tire.part_not_removable=Part is marked as non removable.
 handler.deinstall.fvtm.tire.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.tire.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.bogie.not_rail_vehicle=This is not a rail vehicle.
 handler.install.fvtm.bogie.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.bogie.bogieslot_missing=This Vehicle does not have the required BogieSlot configured.
 handler.install.fvtm.bogie.check_passed=Installation check passed.

@@ -9,15 +9,18 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
@@ -45,6 +48,7 @@ public class ObjModelLoader implements ModelLoader {
 		keys.add("Offset:");
 		keys.add("Transform:");
 	}
+	//private long start;
 
 	@Override
 	public boolean accepts(String name, String suffix){
@@ -53,6 +57,7 @@ public class ObjModelLoader implements ModelLoader {
 
 	@Override
 	public Object[] load(String name, ModelData confdata, Supplier<Model> supp_model) throws Exception {
+		//if(Static.dev()) start = Time.getDate();
 		String[] filter = name.split(";");
 		String id = filter.length > 1 ? filter[filter.length - 1] : name;
 		ResourceLocation loc = new ResourceLocation(id);
@@ -123,6 +128,7 @@ public class ObjModelLoader implements ModelLoader {
 			}
 			else confdata.set(key, val);
 		}
+		//if(Static.dev()) Command.TIMES.put(name, Time.getDate() - start);
 		return new Object[]{ model, confdata };
 	}
 

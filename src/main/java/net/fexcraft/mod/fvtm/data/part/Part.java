@@ -172,7 +172,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 					Static.stop();
 				}
 			}
-		} else{ this.installhandler = DefaultPartInstallHandler.INSTANCE; }
+		}
+		else{
+			this.installhandler = DefaultPartInstallHandler.INSTANCE;
+			this.installhandler_data = new DefaultPartInstallHandler.DPIHData(null);
+		}
 		//
 		if(obj.has("Script")){
 			addScript(obj.get("Script"));

@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
@@ -807,6 +808,21 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public PartSlots getPartSlotsProvider(String psp_id){
 		return psproviders.get(psp_id);
+	}
+
+	public ArrayList<PartSlot> getAllPartSlots(){
+		ArrayList<PartSlot> list = new ArrayList<>();
+		psproviders.values().forEach(val -> list.addAll(val));
+		return list;
+	}
+
+	public boolean hasPartSlot(String str){
+		for(PartSlots slots : psproviders.values()){
+			for(PartSlot slot : slots){
+				if(slot.category.equals(str)) return true;
+			}
+		}
+		return false;
 	}
 
 	public int getAttributeIndex(Attribute<?> attribute){

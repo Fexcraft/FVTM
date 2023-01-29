@@ -48,6 +48,7 @@ public class Command extends CommandBase {
 	
 	public static boolean OTHER, TOGGABLE, TOGG_LABEL, HOTSWAP, CONTAINER;
 	public static HashMap<String, String> VALS = new HashMap<>();
+	//public static HashMap<String, Long> TIMES = new HashMap<>();
 
     @Override
     public String getName(){
@@ -416,6 +417,11 @@ public class Command extends CommandBase {
             	}
             	return;
             }
+			/*case "load-time":{
+				TIMES.entrySet().forEach(entry -> {
+					Print.chat(sender, entry.getValue() + "ms - " + entry.getKey());
+				});
+			}*/
             default: {
                 Print.chat(sender, "null [0]");
                 break;

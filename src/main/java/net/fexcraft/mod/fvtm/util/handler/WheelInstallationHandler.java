@@ -21,6 +21,10 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+		if(data.getType().getVehicleType().isRailVehicle()){
+			Print.chatnn(sender, "handler.install.fvtm.wheel.rail_vehicle");
+			return false;
+		}
 		if(data.getParts().containsKey(cat)){
 			Print.chatnn(sender, "handler.install.fvtm.wheel.category_occupied");
 			return false;

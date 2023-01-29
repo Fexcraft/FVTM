@@ -65,6 +65,13 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         }
         else{
         	int[] layers = stack.getTagCompound().getIntArray("RoadLayers");
+        	if(layers.length < 6){
+        		int[] n = new int[6];
+        		for(int i = 0; i < 6; i++){
+        			n[i] = i >= layers.length ? 0 : layers[i];
+        		}
+        		stack.getTagCompound().setIntArray("RoadLayers", layers = n);
+        	}
         	ItemStack stack0 = null;
         	if(stack.getTagCompound().hasKey("CustomRoadFill")){
                 tooltip.add(Formatter.format("&6Road Fill: &bCUSTOM &7x" + layers[0]));

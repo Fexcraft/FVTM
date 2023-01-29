@@ -24,6 +24,10 @@ public class TireInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+		if(data.getType().getVehicleType().isRailVehicle()){
+			Print.chatnn(sender, "handler.install.fvtm.tire.rail_vehicle");
+			return false;
+		}
 		if(data.getParts().containsKey(cat)){
 			Print.chatnn(sender, "handler.install.fvtm.tire.category_occupied");
 			return false;

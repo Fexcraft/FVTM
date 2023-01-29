@@ -60,9 +60,10 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end){
-		ArrayList<RayTraceResult> list = new ArrayList<>();
 		ArrayList<AxisAlignedBB> aabbs = new ArrayList<>();
 		this.addCollisionsToList(state, world, pos, null, aabbs);
+		if(aabbs.size() < 2) return super.collisionRayTrace(state, world, pos, start, end); 
+		ArrayList<RayTraceResult> list = new ArrayList<>();
 		for(AxisAlignedBB aabb : aabbs){
 			RayTraceResult res = rayTrace(pos, start, end, aabb);
 			if(res != null) list.add(res);

@@ -40,6 +40,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed, ItemTextureable {
 	
 	public static final AxisAlignedBB[] FULL_BLOCK_AABB_ARRAY = new AxisAlignedBB[]{ net.minecraft.block.Block.FULL_BLOCK_AABB };
+	public static final AxisAlignedBB[] NULL_AABB_ARRAY = new AxisAlignedBB[]{ null };
 	//
 	protected List<NamedResourceLocation> textures;
 	protected BlockItem item;
@@ -125,10 +126,15 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 						aabbs.put(entry.getKey(), list.toArray(new AxisAlignedBB[0]));
 					}
 					else{
-						aabbs.put(entry.getKey(), new AxisAlignedBB[]{
-							new AxisAlignedBB(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble(),
-							array.get(3).getAsDouble(), array.get(4).getAsDouble(), array.get(5).getAsDouble())
-						});
+						if(entry.getKey().startsWith("collision") && array.size() == 1 && array.get(0).getAsString().equals("null")){
+							aabbs.put(entry.getKey(), NULL_AABB_ARRAY);
+						}
+						else{
+							aabbs.put(entry.getKey(), new AxisAlignedBB[]{
+								new AxisAlignedBB(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble(),
+								array.get(3).getAsDouble(), array.get(4).getAsDouble(), array.get(5).getAsDouble())
+							});
+						}
 					}
 				}
 				catch(Exception e){

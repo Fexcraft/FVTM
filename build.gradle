@@ -100,6 +100,9 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+	from(zipTree("../FVTM-Core/src/")){
+		include 'net/fexcraft/mod/fvtm'
+	}
 }
 
 // Example configuration to allow publishing using the maven-publish task

@@ -31,7 +31,7 @@ public class VehicleRenderer {
     	if(!Config.RENDER_VEHICLES_SEPARATELY) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-cx, -cy, -cz);
+        //GL11.glTranslated(-cx, -cy, -cz);
         double x, y, z;
         entities.clear();
         entities.addAll(world.loadedEntityList);
@@ -44,7 +44,7 @@ public class VehicleRenderer {
         	if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(vehicle.renderbox == null ? vehicle.getEntityBoundingBox() : vehicle.renderbox.offset(x, y, z))) continue;
         	//
         	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
-            GL11.glTranslated(x, y, z);
+            GL11.glTranslated(x - cx, y - cy, z - cz);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
             GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);

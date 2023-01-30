@@ -32,12 +32,12 @@ public class ParticleEntity {
 		this.speed = speed;
 	}
 	
-	public void render(float ticks){
+	public void render(float ticks, double cx, double cy, double cz){
 		temp.x = pos.x;//prev.x + (pos.x - prev.x) * ticks;
 		temp.y = pos.y;//prev.y + (pos.y - prev.y) * ticks;
 		temp.z = pos.z;//prev.z + (pos.z - prev.z) * ticks;
 		GL11.glPushMatrix();
-		GL11.glTranslatef(temp.x, temp.y, temp.z);
+		GL11.glTranslated(temp.x - cx, temp.y - cy, temp.z - cz);
 		color.glColorApply();
 		GL11.glScalef(scale, scale, scale);
 		particle.model.render(1f);

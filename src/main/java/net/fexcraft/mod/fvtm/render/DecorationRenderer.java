@@ -22,14 +22,14 @@ public class DecorationRenderer {
 	public static void renderDecorations(World world, double cx, double cy, double cz, float partialticks){
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glTranslated(-cx, -cy, -cz);
+		//GL11.glTranslated(-cx, -cy, -cz);
 		TexUtil.bindTexture(Resources.WHITE_TEXTURE);
 		for(Entity ent : world.loadedEntityList){
 			if(ent instanceof Decoration == false) continue;
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;
 			Decoration deco = (Decoration)ent;
 			GL11.glPushMatrix();
-			GL11.glTranslated(ent.posX, ent.posY, ent.posZ);
+			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
 			GlStateManager.rotate(180, 0, 1, 0);
 			GlStateManager.rotate(180, 0, 0, 1);
 			if(deco.decos.size() == 0){

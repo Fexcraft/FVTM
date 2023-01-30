@@ -22,7 +22,7 @@ public class ParticleRenderer {
         if(sys == null) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-cx, -cy, -cz);
+        //GL11.glTranslated(-cx, -cy, -cz);
         Minecraft.getMinecraft().renderEngine.bindTexture(Resources.WHITE_TEXTURE);
         ents.addAll(sys.particles);
         GL11.glEnable(GL11.GL_BLEND);
@@ -31,7 +31,7 @@ public class ParticleRenderer {
         	if(part == null || part.pos == null) return;
 	        int z = RailRenderer.getBrightness(part.pos), x = z % 65536, y = z / 65536;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)x / 1.0F, (float)y / 1.0F);
-            part.render(ticks);
+            part.render(ticks, cx, cy, cz);
         }
         GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();

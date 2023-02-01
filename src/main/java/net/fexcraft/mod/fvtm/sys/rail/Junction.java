@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class Junction {
 	
-	private Vec316f vecpos;
+	private GridV3D vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
 	public RailSystem root;
@@ -57,7 +57,7 @@ public class Junction {
 	public Float bufferrot;
 	
 	/** General Constructor */
-	public Junction(Region region, Vec316f pos){
+	public Junction(Region region, GridV3D pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
 		this.region = region; this.switch0 = this.switch1 = false; type = PathJuncType.STRAIGHT;
 	}
@@ -72,7 +72,7 @@ public class Junction {
 	}
 	
 	public Junction read(NBTTagCompound compound){
-		this.vecpos = new Vec316f(compound.getCompoundTag("Pos"));
+		this.vecpos = new GridV3D(compound.getCompoundTag("Pos"));
 		this.switch0 = compound.getBoolean("Switch0");
 		this.switch1 = compound.getBoolean("Switch1");
 		//this.crossing = compound.getBoolean("Crossing");
@@ -164,7 +164,7 @@ public class Junction {
 		return compound;
 	}
 	
-	public Vec316f getVec316f(){
+	public GridV3D getVec316f(){
 		return vecpos;
 	}
 	

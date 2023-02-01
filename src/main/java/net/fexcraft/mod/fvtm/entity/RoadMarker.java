@@ -7,7 +7,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
 	
-	public Vec316f position;
+	public GridV3D position;
 	public UUID queueid;
 
     public RoadMarker(World world){
@@ -61,7 +61,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
     		long m = buffer.readLong(), l = buffer.readLong();
     		if(m == 0 && l == 0) queueid = null;
     		else queueid = new UUID(m, l);
-    		position = new Vec316f(new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+    		position = new GridV3D(new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -74,7 +74,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         	queueid = new UUID(compound.getLong("uuid0"), compound.getLong("uuid1"));
         }
         if(compound.hasKey("position")){
-        	position = new Vec316f(compound.getCompoundTag("position"));
+        	position = new GridV3D(compound.getCompoundTag("position"));
         }
     }
 

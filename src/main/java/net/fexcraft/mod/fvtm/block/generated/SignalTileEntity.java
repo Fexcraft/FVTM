@@ -6,12 +6,12 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SignalTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
 	
-	protected Vec316f juncpos;
+	protected GridV3D juncpos;
 	protected Junction junction;
 	protected EntryDirection dir = EntryDirection.FORWARD;
 	
@@ -39,7 +39,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
         if(compound.hasKey("junction")){
-        	juncpos = new Vec316f(compound.getCompoundTag("junction"));
+        	juncpos = new GridV3D(compound.getCompoundTag("junction"));
         	dir = EntryDirection.getFromSaveByte(compound.getByte("direction"));
         }
         else{
@@ -50,7 +50,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     }
 
     @Override
-	public void setJunction(Vec316f vec){
+	public void setJunction(GridV3D vec){
 		juncpos = vec;
 		linkJunction(world, pos, vec);
 		sendUpdate();
@@ -71,7 +71,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
 	}
 
     @Override
-	public Vec316f getJuncPos(){
+	public GridV3D getJuncPos(){
 		return juncpos;
 	}
     

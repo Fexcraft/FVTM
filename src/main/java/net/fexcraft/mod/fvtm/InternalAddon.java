@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -60,10 +60,10 @@ public class InternalAddon extends Addon {
 			obj.addProperty("ModelTexture", "fvtm:textures/blocks/30px_standard_gauge.png");
 			obj.add("PreSets", new JsonArray());
 			data.register(gauge = new RailGauge().parse(obj)); int r = Config.RAIL_PLACING_GRID;
-			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new Vec316f(0, 0, 0, r), new Vec316f(4, 0, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new Vec316f(0, 0, 0, r), new Vec316f(8, 0, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new Vec316f(0, 0, 0, r), new Vec316f(16, 0, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new Vec316f(0, 0, 0, r), new Vec316f(32, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new GridV3D(0, 0, 0, r), new GridV3D(4, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new GridV3D(0, 0, 0, r), new GridV3D(8, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new GridV3D(0, 0, 0, r), new GridV3D(16, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new GridV3D(0, 0, 0, r), new GridV3D(32, 0, 0, r)).setSegmentation(8));
 			//
 			/*gauge.getPresets().add(new RailPresetItem(gauge, "16_curve_90_right",
 				new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),
@@ -74,8 +74,8 @@ public class InternalAddon extends Addon {
 				new Vec316f(16, 0, 0, r), new Vec316f(16, 0, -14, r),
 				new Vec316f(16, 0, -16, r)).setSegmentation(4));*/
 			//
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_up", new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),new Vec316f(14, 1, 0, r), new Vec316f(16, 1, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_down", new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),new Vec316f(14, -1, 0, r), new Vec316f(16, -1, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_up", new GridV3D(0, 0, 0, r), new GridV3D(2, 0, 0, r),new GridV3D(14, 1, 0, r), new GridV3D(16, 1, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_down", new GridV3D(0, 0, 0, r), new GridV3D(2, 0, 0, r),new GridV3D(14, -1, 0, r), new GridV3D(16, -1, 0, r)).setSegmentation(8));
 		}
 		return;
 	}

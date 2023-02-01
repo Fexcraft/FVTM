@@ -2,8 +2,8 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import java.util.ArrayList;
 
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,38 +15,38 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public abstract class Path {
 	
-	public Vec316f start, end;
-	public Vec316f[] rootpath;
+	public GridV3D start, end;
+	public GridV3D[] rootpath;
 	public boolean copy;
-	public Vec3f[] vecpath;
+	public V3D[] vecpath;
 	public PathKey id, op;
-	public float length;
+	public double length;
 	
-	public Path(Vec316f[] vec316fs, Vec316f vector){
-		start = vec316fs[0];
+	public Path(GridV3D[] gridvecs, GridV3D vector){
+		start = gridvecs[0];
 		end = vector;
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
-		rootpath = new Vec316f[vec316fs.length + 1];
-		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = vec316fs[i].copy();
+		rootpath = new GridV3D[gridvecs.length + 1];
+		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = gridvecs[i].copy();
 		rootpath[rootpath.length - 1] = vector.copy();
 		construct();
 	}
 
-	public Path(Vec316f[] vec316fs){
-		start = vec316fs[0];
-		end = vec316fs[vec316fs.length - 1];
+	public Path(GridV3D[] gridvecs){
+		start = gridvecs[0];
+		end = gridvecs[gridvecs.length - 1];
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
-		rootpath = new Vec316f[vec316fs.length];
-		for(int i = 0; i < rootpath.length; i++) rootpath[i] = vec316fs[i].copy();
+		rootpath = new GridV3D[gridvecs.length];
+		for(int i = 0; i < rootpath.length; i++) rootpath[i] = gridvecs[i].copy();
 		construct();
 	}
 	
 	public Path(){}
 	
 	protected void construct(){
-		vecpath = new Vec3f[rootpath.length];
+		vecpath = new V3D[][rootpath.length];
 		if(vecpath.length == 2){
 			vecpath[0] = rootpath[0].vector; vecpath[1] = rootpath[rootpath.length - 1].vector;
 			this.length = vecpath[0].dis(vecpath[1]);
@@ -56,13 +56,13 @@ public abstract class Path {
 				vecpath[i] = rootpath[i].vector;
 			}
 			//
-			Vec3f[] vecs = curve(vecpath);
-			vecpath = new Vec3f[vecs.length + 2];
-			vecpath[0] = new Vec3f(start.vector);
+			V3D[] vecs = curve(vecpath);
+			vecpath = new V3D[vecs.length + 2];
+			vecpath[0] = new V3D(start.vector);
 			for(int i = 0; i < vecs.length; i++){
 				vecpath[i + 1] = vecs[i];
 			}
-			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
+			vecpath[vecpath.length - 1] = new V3D(end.vector);
 			this.length = this.calcLength();
 		}
 	}
@@ -72,14 +72,14 @@ public abstract class Path {
 	 * @param vecpoints
 	 * @return
 	 */
-	private Vec3f[] curve(Vec3f[] vecpoints){
-		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
-		float length = getLength(vecpoints);
-		float increment = 1 / length / Config.RAIL_SEGMENTATOR;
-		double d = 0; while(d < 1){
-			Vec3f[] moved = vecpoints;
+	private V3D[] curve(V3D[] vecpoints){
+		ArrayList<V3D> vecs = new ArrayList<V3D>();
+		double length = getLength(vecpoints);
+		double increment = 1 / length / Config.RAIL_SEGMENTATOR, d = 0;
+		while(d < 1){
+			V3D[] moved = vecpoints;
 			while(moved.length > 2){
-				Vec3f[] arr = new Vec3f[moved.length - 1];
+				V3D[] arr = new V3D[moved.length - 1];
 				for(int i = 0; i < moved.length - 1; i++){
 					arr[i] = move(moved[i], moved[i + 1], moved[i].dis(moved[i + 1]) * d);
 				}
@@ -88,17 +88,17 @@ public abstract class Path {
 			d += increment;//0.0625//0.05;
 			vecs.add(move(moved[0], moved[1], moved[0].dis(moved[1]) * d));
 		}
-		return vecs.toArray(new Vec3f[0]);
+		return vecs.toArray(new V3D[0]);
 	}
 
-	public static Vec3f move(Vec3f vec0, Vec3f vec1, double dis){
+	public static V3D move(V3D vec0, V3D vec1, double dis){
 		double[] dest = Vector3D.newVector(vec1), beg = Vector3D.newVector(vec0);
     	dest = Vector3D.direction(dest[0] - beg[0], dest[1] - beg[1], dest[2] - beg[2]);
     	dest = Vector3D.newVector(beg[0] + (dest[0] * dis), beg[1] + (dest[1] * dis), beg[2] + (dest[2] * dis));
-		return new Vec3f(dest[0], dest[1], dest[2]);
+		return new V3D(dest[0], dest[1], dest[2]);
 	}
 	
-	public float getLength(Vec3f[] vecs){
+	public double getLength(V3D[] vecs){
 		vecs = vecs == null ? vecpath : vecs;
 		float temp = 0;
 		for(int i = 0; i < vecs.length - 1; i++){
@@ -107,22 +107,22 @@ public abstract class Path {
 		return temp;
 	}
 	
-	protected float calcLength(){
+	protected double calcLength(){
 		return getLength(null);
 	}
 	
 	public Path read(NBTTagCompound compound){
 		id = new PathKey(compound);
 		op = new PathKey(id, true);
-		this.copy = compound.getBoolean("copy");
-		this.start = new Vec316f(compound.getCompoundTag("start"));
-		this.end = new Vec316f(compound.getCompoundTag("end"));
-		this.rootpath = new Vec316f[compound.getInteger("vectors")];
+		copy = compound.getBoolean("copy");
+		start = new GridV3D(compound.getCompoundTag("start"));
+		end = new GridV3D(compound.getCompoundTag("end"));
+		rootpath = new GridV3D[compound.getInteger("vectors")];
 		for(int i = 0; i < rootpath.length; i++){
-			rootpath[i] = new Vec316f(compound.getCompoundTag("vector-" + i));
+			rootpath[i] = new GridV3D(compound.getCompoundTag("vector-" + i));
 		}
 		construct();
-		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
+		length = compound.hasKey("length") ? compound.getDouble("length") : calcLength();
 		return this;
 	}
 
@@ -135,15 +135,15 @@ public abstract class Path {
 		for(int i = 0; i < rootpath.length; i++){
 			compound.setTag("vector-" + i, rootpath[i].write());
 		}
-		compound.setFloat("length", length);
+		compound.setDouble("length", length);
 		return compound;
 	}
 	
-	public Vec3f getFirstVector(){
+	public V3D getFirstVector(){
 		return vecpath.length == 0 ? null : vecpath[0];
 	}
 	
-	public Vec3f getLastVector(){
+	public V3D getLastVector(){
 		return vecpath.length == 0 ? null : vecpath[vecpath.length - 1];
 	}
 	
@@ -161,8 +161,10 @@ public abstract class Path {
 		instance.start = end;
 		instance.end = start;
 		instance.copy = true;
-		instance.rootpath = new Vec316f[rootpath.length]; int j = rootpath.length - 1;
-		for(int i = 0; i < instance.rootpath.length; i++){ instance.rootpath[i] = rootpath[j--].copy(); }
+		instance.rootpath = new GridV3D[rootpath.length]; int j = rootpath.length - 1;
+		for(int i = 0; i < instance.rootpath.length; i++){
+			instance.rootpath[i] = rootpath[j--].copy();
+		}
 		instance.construct(); instance.length = instance.calcLength();
 		return instance;
 	}
@@ -175,55 +177,56 @@ public abstract class Path {
 		return op;
 	}
 	
-	public float[] getPosition(float distance){
+	public double[] getPosition(double distance){
 		if(distance >= this.length){
 			if(distance == this.length) vecpath[vecpath.length - 1].toFloatArray();
-			return new float[]{ distance - length };
+			return new double[]{ distance - length };
 		}
-		float traveled = 0, temp, multi;
+		double traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
 			temp = traveled + (multi = vecpath[i].dis(vecpath[i + 1]));
 			if(temp >= distance){
-				if(temp == distance) return vecpath[i + 1].toFloatArray();
-				return vecpath[i + 1].distance(vecpath[i], temp - distance).toFloatArray();
+				if(temp == distance) return vecpath[i + 1].toDoubleArray();
+				return vecpath[i + 1].distance(vecpath[i], temp - distance).toDoubleArray();
 			}
 			else{
 				traveled += multi;
 			}
 		}
-		return vecpath[0].toFloatArray();
+		return vecpath[0].toDoubleArray();
 	}
 	
-	public Vec3f getVectorPosition0(float distance, boolean reverse){
-		if(reverse) distance = (float)this.oppositePassed(distance);
+	public V3D getVectorPosition0(double distance, boolean reverse){
+		if(reverse) distance = oppositePassed(distance);
 		if(distance >= this.length){
-			//if(distance == this.length) blkposToVec3f(end).toFloatArray();
+			//if(distance == this.length) blkposToVec(end).toFloatArray();
 			//return new float[]{ distance - length };
-			return new Vec3f(vecpath[vecpath.length - 1]);
+			return new V3D(vecpath[vecpath.length - 1]);
 		}
-		float traveled = 0, temp, multi;
+		double traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
 			temp = traveled + (multi = vecpath[i].dis(vecpath[i + 1]));
 			if(temp >= distance){
-				if(temp == distance) return new Vec3f(vecpath[i + 1]);
+				if(temp == distance) return new V3D(vecpath[i + 1]);
 				return vecpath[i + 1].distance(vecpath[i], temp - distance);
 			}
 			else{
 				traveled += multi;
 			}
 		}
-		return new Vec3f(vecpath[0]);
+		return new V3D(vecpath[0]);
 	}
 	
-	public abstract Vec3f getVectorPosition(float distance, boolean reverse);
+	public abstract V3D getVectorPosition(double distance, boolean reverse);
 	
 	@Override
 	public boolean equals(Object obj){
 		if(obj == this) return true;
 		if(obj instanceof Path){
 			Path path = (Path)obj;
-			 return path.getId().equals(getId()) && path.getType() == getType();
-		} else return false;
+			return path.getId().equals(getId()) && path.getType() == getType();
+		}
+		else return false;
 	}
 	
 	@Override
@@ -231,8 +234,8 @@ public abstract class Path {
 		return String.format("Path[%s-%s, %s, %s]", start, end, vecpath.length, copy ? "copy" : "original");
 	}
 
-	public float oppositePassed(float sec){
-		return sec >= length ? 0 : sec <= 0 ? length : this.length - sec;
+	public double oppositePassed(double sec){
+		return sec >= length ? 0 : sec <= 0 ? length : length - sec;
 	}
 	
 	public abstract PathType getType();

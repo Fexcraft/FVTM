@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
@@ -83,7 +83,7 @@ public class TrackPlacer {
 		boolean regblocks = this.blocks && !Config.DISABLE_RAIL_BLOCKS;
 		if(register ? creative ? regblocks : useitems : (!track.blockless && regblocks)){
 			float angle, half = (width * 0.5f) - 0.25f;
-			ArrayList<Vec316f> path = new ArrayList<>();
+			ArrayList<GridV3D> path = new ArrayList<>();
 			Vec3f last, vec = track.getVectorPosition0(0.001f, false);
 			angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 			angle += Static.rad90;
@@ -96,7 +96,7 @@ public class TrackPlacer {
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){
-					path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
+					path.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 				}
 				passed += 0.125f;
 			}
@@ -104,7 +104,7 @@ public class TrackPlacer {
 			BlockPos blk;
 			IBlockState state;
 			if(regblocks){
-				for(Vec316f v : path){
+				for(GridV3D v : path){
 					height = v.y;
 					state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
 					if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
@@ -115,7 +115,7 @@ public class TrackPlacer {
 			}
 			boolean rb;
 			HashMap<BlockPos, Integer> blocks = new HashMap<>();
-			for(Vec316f v : path){
+			for(GridV3D v : path){
 				height = v.y;
 				state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
 				rb = state.getBlock() == RailBlock.INSTANCE;

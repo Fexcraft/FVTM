@@ -7,19 +7,19 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_SetSwitch extends JEC {
 	
-	private Vec316f junction;
+	private GridV3D junction;
 	private byte entry, state;
 
 	public CMD_SetSwitch(String label, EntryDirection dir, byte entry, byte state, @Nullable String junction, String[] targets){
 		super(label, JECType.SET_STATE, dir, targets); this.entry = entry; this.state = state;
-		this.junction = junction == null || junction.length() == 0 || junction.equals("this") ? null : Vec316f.fromIDString(junction, true);
+		this.junction = junction == null || junction.length() == 0 || junction.equals("this") ? null : GridV3D.fromIDString(junction, true);
 	}
 
 	public CMD_SetSwitch(NBTTagCompound compound){
@@ -47,7 +47,7 @@ public class CMD_SetSwitch extends JEC {
 		byte[] arr = null;
 		if(base instanceof NBTTagCompound){
 			NBTTagCompound compound = (NBTTagCompound)base;
-			junction = Vec316f.fromIDString(compound.getString("Junction"));
+			junction = GridV3D.fromIDString(compound.getString("Junction"));
 			arr = compound.getByteArray("State");
 		}
 		else{

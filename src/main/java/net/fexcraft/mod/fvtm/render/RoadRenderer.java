@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.render;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.mc.utils.Print;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -20,7 +22,7 @@ public class RoadRenderer {
         if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-cx, -cy, -cz);
+        //GL11.glTranslated(-cx, -cy, -cz);
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         Vec3f vec0, vec1;
@@ -33,8 +35,9 @@ public class RoadRenderer {
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
+        float x = (float)cx, y = (float)cy, z = (float)cz;
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
-			vec0 = nroad.road.vecpath[j]; vec1 = nroad.road.vecpath[j + 1];
+			vec0 = nroad.road.vecpath[j].sub(x, y, z); vec1 = nroad.road.vecpath[j + 1].sub(x, y, z);
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
             bufferbuilder.pos(vec0.x, vec0.y + 1.25, vec0.z).color(0, 0, 1, 1F).endVertex();
             bufferbuilder.pos(vec1.x, vec1.y + 1.25, vec1.z).color(0, 0, 1, 1F).endVertex();
@@ -44,17 +47,17 @@ public class RoadRenderer {
 		float[] arr = null;
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
-			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vector;
+			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vector.sub(x, y, z);;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(arr[0], arr[1] + 1.25, arr[2]).color(0, 1, 1, 1F).endVertex();
+            bufferbuilder.pos(arr[0] - cx, arr[1] + 1.25 - cy, arr[2] - cz).color(0, 1, 1, 1F).endVertex();
             bufferbuilder.pos(vec1.x, vec1.y + 1.25, vec1.z).color(0, 1, 1, 1F).endVertex();
             tessellator.draw();
 		}
 		for(ArrayList<Vec3f> l : nroad.preview){
 			for(int j = 0; j < l.size() - 1; j++){
 				bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-				bufferbuilder.pos((vec0 = l.get(j)).x, vec0.y + 1.05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
-				bufferbuilder.pos((vec1 = l.get(j + 1)).x, vec1.y + 1.05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
+				bufferbuilder.pos((vec0 = l.get(j).sub(x, y, z)).x, vec0.y + 1.05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
+				bufferbuilder.pos((vec1 = l.get(j + 1).sub(x, y, z)).x, vec1.y + 1.05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
 				tessellator.draw();
 			}
 		}

@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem.Road;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +25,7 @@ public class RoadPlacingUtil {
 	public static final ConcurrentHashMap<UUID, UUID> CURRENT = new ConcurrentHashMap<>();
 	public static NewRoad CL_CURRENT = null;
 
-	public static void place(World world, EntityPlayer player, ItemStack stack, Vec316f vector){
+	public static void place(World world, EntityPlayer player, ItemStack stack, GridV3D vector){
 		UUID roadid = CURRENT.get(player.getGameProfile().getId());
 		int width = stack.getTagCompound().getIntArray("RoadLayers")[0];
 		if(roadid == null){
@@ -78,19 +78,19 @@ public class RoadPlacingUtil {
 
 	public static class NewRoad {
 		
-		public ArrayList<Vec316f> points = new ArrayList<>();
+		public ArrayList<GridV3D> points = new ArrayList<>();
 		public ArrayList<ArrayList<Vec3f>> preview;
 		public Road road;
 		public int selected = -1, width;
 		public UUID id;
 
-		public NewRoad(UUID uuid, Vec316f vector, int width){
+		public NewRoad(UUID uuid, GridV3D vector, int width){
 			points.add(vector);
 			this.width = width;
 			id = uuid;
 		}
 
-		public void add(Vec316f vector, int width){
+		public void add(GridV3D vector, int width){
 			points.add(selected == -1 ? points.size() : ++selected, vector);
 			this.width = width;
 			preview = null;
@@ -98,10 +98,10 @@ public class RoadPlacingUtil {
 		}
 
 		public void genroad(){
-			road = points.size() > 1 ? new Road(points.toArray(new Vec316f[0])) : null;
+			road = points.size() > 1 ? new Road(points.toArray(new GridV3D[0])) : null;
 		}
 
-		public void select(EntityPlayer player, Vec316f vector){
+		public void select(EntityPlayer player, GridV3D vector){
 			int sel = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -120,7 +120,7 @@ public class RoadPlacingUtil {
 			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
 		}
 
-		public void remove(EntityPlayer player, Vec316f vector){
+		public void remove(EntityPlayer player, GridV3D vector){
 			int rem = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -163,7 +163,7 @@ public class RoadPlacingUtil {
 			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
 		}
 
-		public int indexOf(Vec316f vector){
+		public int indexOf(GridV3D vector){
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
 					return i;
@@ -172,7 +172,7 @@ public class RoadPlacingUtil {
 			return -2;
 		}
 
-		public void create(EntityPlayer player, Vec316f vector, ItemStack stack){
+		public void create(EntityPlayer player, GridV3D vector, ItemStack stack){
 			UUID current = CURRENT.get(player.getGameProfile().getId());
 			if(current == null){
 				Print.chat(player, "no_queue_entry / 0");
@@ -184,7 +184,7 @@ public class RoadPlacingUtil {
 				return;
 			}
 			RoadToolItem tool = (RoadToolItem)stack.getItem();
-			if(!tool.placeRoad(player, player.world, stack, vector, new Road(nroad.points.toArray(new Vec316f[0])), player)) return;
+			if(!tool.placeRoad(player, player.world, stack, vector, new Road(nroad.points.toArray(new GridV3D[0])), player)) return;
 			Print.chat(player, "&o> Road Created.");
 			nroad.reset();
 		}

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class PathKey implements Comparable<PathKey> {
@@ -9,7 +9,7 @@ public class PathKey implements Comparable<PathKey> {
 	protected int[] pos = new int[6];
 	protected byte[] xyz = new byte[6];
 	
-	public PathKey(Vec316f start, Vec316f end){
+	public PathKey(GridV3D start, GridV3D end){
 		pos[0] = start.pos.getX();
 		pos[1] = start.pos.getY();
 		pos[2] = start.pos.getZ();
@@ -90,8 +90,8 @@ public class PathKey implements Comparable<PathKey> {
 		return true;
 	}
 
-	public Vec316f toVec3f(int i){
-		return new Vec316f(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
+	public GridV3D toVec3f(int i){
+		return new GridV3D(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -104,7 +104,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		try{
 			List<PathKey> keys = tracks.keySet().stream().collect(Collectors.toList());
 			for(PathKey key : keys){
-				Vec316f vec = key.toVec3f(0);
+				GridV3D vec = key.toVec3f(0);
 				Junction junc = system.getJunction(vec, true);
 				Junction seco = system.getJunction(key.toVec3f(3), true);
 				int index  = junc.getIndex(key);

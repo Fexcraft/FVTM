@@ -288,15 +288,15 @@ public class Command extends CommandBase {
                 	}
             	}
             	else if(stack.getItem() instanceof RailGaugeItem){
-            		Vec316f[] origin = ((JunctionGridItem)stack.getItem()).getVectors(stack), vecs = new Vec316f[origin.length];
-            		for(int i = 0; i < vecs.length; i++) vecs[i] = new Vec316f(origin[i].vector.sub(origin[0].vector));
+            		GridV3D[] origin = ((JunctionGridItem)stack.getItem()).getVectors(stack), vecs = new GridV3D[origin.length];
+            		for(int i = 0; i < vecs.length; i++) vecs[i] = new GridV3D(origin[i].vector.sub(origin[0].vector));
                 	if(args[1].equals("print")){
-                		for(Vec316f vec : vecs){
+                		for(GridV3D vec : vecs){
                     		Print.chat(sender, vec.vector.x + ", " + vec.vector.y + ", " + vec.vector.z);
                 		} return;
                 	}
                 	if(args[1].equals("copy")){
-                		String str = new String(); Vec316f vec = null;
+                		String str = new String(); GridV3D vec = null;
                 		for(int i = 0; i < vecs.length; i++){ vec = vecs[i];
                     		str += "[ " + vec.vector.x + ", " + vec.vector.y + ", " + vec.vector.z + (i == vecs.length - 1 ? "]" : "],\n");
                 		}

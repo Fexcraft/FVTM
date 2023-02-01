@@ -27,7 +27,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
@@ -49,7 +49,7 @@ public class RailRenderer {
     
 	private JunctionGridItem jitem;
     private ItemStack stack;
-    private Vec316f[] vecs;
+    private GridV3D[] vecs;
 	//
 	public static final RGB MIDDLE_GRAY = new RGB(127, 127, 127);
 	public static boolean HOLDING;
@@ -60,16 +60,16 @@ public class RailRenderer {
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
-    		Vec316f vec = new Vec316f(event.getPlayer().world, event.getTarget().hitVec, jitem.getPlacingGrid());
+    		GridV3D vec = new GridV3D(event.getPlayer().world, event.getTarget().hitVec, jitem.getPlacingGrid());
     		if(jitem.offsetVectors()){
-        		vecs = new Vec316f[jitem.getVectors(stack).length];
+        		vecs = new GridV3D[jitem.getVectors(stack).length];
     			float seg = 360f / jitem.getSegments();
     			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			if(con % seg > seg / 2) con++;
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), jitem.getPlacingGrid());
+    				vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), jitem.getPlacingGrid());
     			}
-				Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
+				if(Static.dev()) Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}
     		else{
     			vecs = jitem.getVectors(stack);
@@ -80,15 +80,16 @@ public class RailRenderer {
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
-    		GL11.glTranslated(-x, -y, -z); GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    		//GL11.glTranslated(-x, -y, -z);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPushMatrix();
-            GL11.glTranslated(vec.vector.x, vec.vector.y, vec.vector.z);
+            GL11.glTranslated(vec.vector.x - x, vec.vector.y - y, vec.vector.z - z);
             model1.render();
             GL11.glPopMatrix();
             //
             for(int v = 0; v < vecs.length; v++){
         		GL11.glPushMatrix();
-                GL11.glTranslated(vecs[v].vector.x, vecs[v].vector.y, vecs[v].vector.z);
+                GL11.glTranslated(vecs[v].vector.x - x, vecs[v].vector.y - y, vecs[v].vector.z - z);
                 model0.render();
                 if(jitem.offsetVectors() && (v == 0 || v == vecs.length - 1)) model.render();
                 GL11.glPopMatrix();
@@ -105,9 +106,9 @@ public class RailRenderer {
             if(vecs.length > 1){
                 for(int i = 1; i < vecs.length; i++){
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vecs[i - 1].vector.x, vecs[i - 1].vector.y + 0.01, vecs[i - 1].vector.z)
+                    bufferbuilder.pos(vecs[i - 1].vector.x - x, vecs[i - 1].vector.y + 0.01 - y, vecs[i - 1].vector.z - z)
                     	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-                    bufferbuilder.pos(vecs[i].vector.x, vecs[i].vector.y + 0.01, vecs[i].vector.z)
+                    bufferbuilder.pos(vecs[i].vector.x - x, vecs[i].vector.y + 0.01 - y, vecs[i].vector.z - z)
                     	.color(color[1][0], color[1][1], color[1][2], color[1][3]).endVertex();
                     tessellator.draw();
                 }
@@ -115,15 +116,15 @@ public class RailRenderer {
             BlockPos pos = event.getTarget().getBlockPos();
             float yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ())
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ()- z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ() + 1)
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             tessellator.draw();
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX(), pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625))
+            bufferbuilder.pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (vec.z * 0.0625) - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-            bufferbuilder.pos(pos.getX() + 1, pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625))
+            bufferbuilder.pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (vec.z * 0.0625) - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             tessellator.draw();
             GlStateManager.depthMask(true);
@@ -131,7 +132,7 @@ public class RailRenderer {
             GL11.glPopMatrix();
             //
             GlStateManager.enableTexture2D();
-            GL11.glTranslated(x, y, z);
+            //GL11.glTranslated(x, y, z);
     	} else return;
     }
 
@@ -170,7 +171,7 @@ public class RailRenderer {
         //if(raildata.isLoading()) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-cx, -cy, -cz);
+        //GL11.glTranslated(-cx, -cy, -cz);
         //TexUtil.bindTexture(Resources.NULL_TEXTURE);
         for(Region reg : raildata.getRegions().values()){
         	//if(reg.READING) continue;
@@ -179,7 +180,7 @@ public class RailRenderer {
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
             	GL11.glPushMatrix();
             	TexUtil.bindTexture(WOOLTEX);
-            	GL11.glTranslatef(junctions[i].getVec3f().x, junctions[i].getVec3f().y, junctions[i].getVec3f().z);
+            	GL11.glTranslated(junctions[i].getVec3f().x - cx, junctions[i].getVec3f().y - cy, junctions[i].getVec3f().z - cz);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
         		renderLines(junctions[i]);
@@ -197,8 +198,10 @@ public class RailRenderer {
             GlStateManager.glLineWidth(4.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
+			float x = (float)cx, y = (float)cy, z = (float)cz;
 			for(int j = 0; j < conn.track.vecpath.length - 1; j++){
-				vec0 = conn.track.vecpath[j]; vec1 = conn.track.vecpath[j + 1];
+				vec0 = conn.track.vecpath[j].sub(x, y, z);
+				vec1 = conn.track.vecpath[j + 1].sub(x, y, z);
                 bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                 bufferbuilder.pos(vec0.x, vec0.y + 0.1, vec0.z).color(0, 0, 1, 1F).endVertex();
                 bufferbuilder.pos(vec1.x, vec1.y + 0.1, vec1.z).color(0, 0, 1, 1F).endVertex();
@@ -209,9 +212,9 @@ public class RailRenderer {
 				float[] arr = null;
 				for(int i = 1; i < size - 1; i++){
 					arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
-					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector;
+					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector.sub(x, y, z);
 	                bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-	                bufferbuilder.pos(arr[0], arr[1] + 0.05, arr[2]).color(0, 1, 1, 1F).endVertex();
+	                bufferbuilder.pos(arr[0] - x, arr[1] + 0.05 - y, arr[2] - z).color(0, 1, 1, 1F).endVertex();
 	                bufferbuilder.pos(vec1.x, vec1.y + 0.05, vec1.z).color(0, 1, 1, 1F).endVertex();
 	                tessellator.draw();
 				}
@@ -219,8 +222,8 @@ public class RailRenderer {
 			for(ArrayList<Vec3f> l : conn.preview){
 				for(int j = 0; j < l.size() - 1; j++){
 					bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-					bufferbuilder.pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.height16() + .05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
-					bufferbuilder.pos((vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.height16() + .05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec0 = l.get(j).sub(x, y, z)).x, vec0.y + conn.gauge.height16() + .05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec1 = l.get(j + 1).sub(x, y, z)).x, vec1.y + conn.gauge.height16() + .05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
 					tessellator.draw();
 				}
 			}

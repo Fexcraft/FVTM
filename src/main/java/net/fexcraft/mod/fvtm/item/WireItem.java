@@ -20,7 +20,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -101,9 +101,9 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
     }
 	
 	@Override
-	public Vec316f[] getVectors(ItemStack stack){
-		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:wirepoints")) return new Vec316f[0];
-		return new Vec316f[]{ new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:wirepoint_vec"))};
+	public GridV3D[] getVectors(ItemStack stack){
+		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:wirepoints")) return new GridV3D[0];
+		return new GridV3D[]{ new GridV3D(stack.getTagCompound().getCompoundTag("fvtm:wirepoint_vec"))};
 	}
 
 	@Override

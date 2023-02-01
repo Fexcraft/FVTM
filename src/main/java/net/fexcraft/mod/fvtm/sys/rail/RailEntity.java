@@ -20,7 +20,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.entity.Entity;
@@ -376,7 +376,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
 	}
 
-	public void updateRegion(Vec316f start){
+	public void updateRegion(GridV3D start){
 		region.getEntities().remove(uid);
 		region = region.getWorld().getRegions().get(RegionKey.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);

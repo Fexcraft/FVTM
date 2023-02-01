@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,15 +30,15 @@ public class Track extends Path {
 	public boolean blockless;
 	public int items;
 	
-	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
-		super(vec316fs, vector);
+	public Track(Junction junction, GridV3D[] gridvecs, GridV3D vector, RailGauge gauge){
+		super(gridvecs, vector);
 		this.junction = junction;
 		this.gauge = gauge;
 		setunit();
 	}
 
-	public Track(Junction junction, Vec316f[] vec316fs, RailGauge gauge){
-		super(vec316fs);
+	public Track(Junction junction, GridV3D[] gridvecs, RailGauge gauge){
+		super(gridvecs);
 		this.junction = junction;
 		this.gauge = gauge;
 		setunit();

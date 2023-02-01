@@ -23,7 +23,7 @@ import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -114,13 +114,13 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 				try{
 					JsonObject jsn = element.getAsJsonObject();
 					JsonArray array = jsn.get("path").getAsJsonArray(), temp;
-					Vec316f[] vecs = new Vec316f[array.size()];
+					GridV3D[] vecs = new GridV3D[array.size()];
 					for(int i = 0; i < vecs.length; i++){
 						temp = array.get(i).getAsJsonArray();
 						float x = temp.get(0).getAsFloat();
 						float y = temp.get(1).getAsFloat();
 						float z = temp.get(2).getAsFloat();
-						vecs[i] = new Vec316f(new Vec3f(x, y, z));
+						vecs[i] = new GridV3D(new Vec3f(x, y, z));
 					}
 					RailPresetItem item = new RailPresetItem(this, jsn.get("name").getAsString().toLowerCase(), vecs);
 					item.setSegmentation(JsonUtil.getIfExists(jsn, "segmentation", 4).intValue());

@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.util.math.Vec3d;
 
 public class RailGaugeModel extends GenericModel {
@@ -101,7 +101,7 @@ public class RailGaugeModel extends GenericModel {
 	public void renderBuffer(Junction junc){
 		if(!groups.contains("buffer")) return;
 		if(buffer_track == null){
-			buffer_track = new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(0, 0, 0)) }, new Vec316f(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
+			buffer_track = new Track(null, new GridV3D[]{ new GridV3D(new Vec3d(0, 0, 0)) }, new GridV3D(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
 		}
 		if(buffer_track.railmodel == null){ RailRenderer.generateTrackModel(buffer_track, this); }
 		TexUtil.bindTexture(buffer_track.gauge.getModelTexture());

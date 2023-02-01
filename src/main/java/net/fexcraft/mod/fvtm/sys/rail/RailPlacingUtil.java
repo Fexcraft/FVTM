@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ public class RailPlacingUtil {
 	public static final ConcurrentHashMap<UUID, UUID> CURRENT = new ConcurrentHashMap<>();
 	public static NewTrack CL_CURRENT = null;
 
-	public static void place(World world, EntityPlayer player, ItemStack stack, RailGauge gauge, RailSystem syscap, Vec316f vector){
+	public static void place(World world, EntityPlayer player, ItemStack stack, RailGauge gauge, RailSystem syscap, GridV3D vector){
 		UUID trackid = CURRENT.get(player.getGameProfile().getId());
 		if(trackid == null){
 			UUID newid = genId();
@@ -79,30 +79,30 @@ public class RailPlacingUtil {
 
 	public static class NewTrack {
 		
-		public ArrayList<Vec316f> points = new ArrayList<>();
+		public ArrayList<GridV3D> points = new ArrayList<>();
 		public ArrayList<ArrayList<Vec3f>> preview;
 		public RailGauge gauge;
 		public Track track;
 		public int selected = -1;
 		public UUID id;
 
-		public NewTrack(UUID uuid, Vec316f vector, RailGauge gauge){
+		public NewTrack(UUID uuid, GridV3D vector, RailGauge gauge){
 			points.add(vector);
 			this.gauge = gauge;
 			id = uuid;
 		}
 
-		public void add(Vec316f vector){
+		public void add(GridV3D vector){
 			points.add(selected == -1 ? points.size() : ++selected, vector);
 			preview = null;
 			gentrack();
 		}
 
 		public void gentrack(){
-			track = points.size() > 1 ? new Track(null, points.toArray(new Vec316f[0]), gauge) : null;
+			track = points.size() > 1 ? new Track(null, points.toArray(new GridV3D[0]), gauge) : null;
 		}
 
-		public void select(EntityPlayer player, Vec316f vector){
+		public void select(EntityPlayer player, GridV3D vector){
 			int sel = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -121,7 +121,7 @@ public class RailPlacingUtil {
 			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
 		}
 
-		public void remove(EntityPlayer player, Vec316f vector){
+		public void remove(EntityPlayer player, GridV3D vector){
 			int rem = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -164,7 +164,7 @@ public class RailPlacingUtil {
 			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
 		}
 
-		public int indexOf(Vec316f vector){
+		public int indexOf(GridV3D vector){
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
 					return i;
@@ -173,7 +173,7 @@ public class RailPlacingUtil {
 			return -2;
 		}
 
-		public void create(EntityPlayer player, Vec316f vector){
+		public void create(EntityPlayer player, GridV3D vector){
 			RailSystem sys = SystemManager.get(Systems.RAIL, player.world);
 			Junction junc = sys.getJunction(vector, true);
 			UUID current = CURRENT.get(player.getGameProfile().getId());
@@ -212,7 +212,7 @@ public class RailPlacingUtil {
 				return;
 			}
 			else{
-				Track track = new Track(junc, ntrack.points.toArray(new Vec316f[0]), gauge);
+				Track track = new Track(junc, ntrack.points.toArray(new GridV3D[0]), gauge);
 				if(track.length > Config.MAX_RAIL_TRACK_LENGTH){
 					Print.chat(player, "&cTrack length exceeds the configured max length.");
 					return;
@@ -237,7 +237,7 @@ public class RailPlacingUtil {
 		}
 
 		private boolean allsame(){
-			Vec316f vec = points.get(0);
+			GridV3D vec = points.get(0);
 			for(int i = 1; i < points.size(); i++){
 				if(!vec.equals(points.get(i))) return false;
 			}

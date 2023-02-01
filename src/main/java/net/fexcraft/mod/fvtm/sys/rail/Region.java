@@ -14,7 +14,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -32,7 +32,7 @@ public class Region {
 	
 	public static final TreeMap<Long, NBTTagCompound> fillqueue = new TreeMap<>();
 	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
-	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
+	private TreeMap<GridV3D, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess; private int timer = 0;
@@ -46,7 +46,7 @@ public class Region {
 		if(load) load();
 	}
 
-	public Region(Vec316f vec, RailSystem root, boolean load){
+	public Region(GridV3D vec, RailSystem root, boolean load){
 		key = new RegionKey(vec);
 		world = root;
 		if(load) load();//.updateClient(vec);
@@ -167,7 +167,7 @@ public class Region {
 		return compound;
 	}
 
-	public Junction getJunction(Vec316f vec){
+	public Junction getJunction(GridV3D vec){
 		if(!key.isInRegion(vec)) return world.getJunction(vec);
 		return junctions.get(vec);
 	}
@@ -189,15 +189,15 @@ public class Region {
 		return key;
 	}
 
-	public TreeMap<Vec316f, Junction> getJunctions(){
+	public TreeMap<GridV3D, Junction> getJunctions(){
 		return junctions;
 	}
 	
-	public void updateClient(Vec316f vector){
+	public void updateClient(GridV3D vector){
 		updateClient("all", vector);
 	}
 	
-	public void updateClient(String kind, Vec316f vector){
+	public void updateClient(String kind, GridV3D vector){
 		if(world.getWorld().isRemote) return;
 		NBTTagCompound compound = null;
 		switch(kind){

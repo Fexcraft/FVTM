@@ -330,7 +330,7 @@ public class RailRenderer {
     			TexUtil.bindTexture(value.tracks.get(0).gauge.getModelTexture());
     			if(value.signalpos0 != null){
         			GL11.glPushMatrix();
-        			GL11.glTranslated(value.signalpos0.x, value.signalpos0.y, value.signalpos0.z);
+        			GL11.glTranslated(value.signalpos0.x - cx, value.signalpos0.y - cy, value.signalpos0.z - cz);
         			GL11.glRotatef(180, 0, 0, 1);
 					GL11.glRotated(value.signalrot0, 0, 1, 0);
         			value.tracks.get(value.signal_dir.getTrackId()).gauge.getModel()
@@ -339,7 +339,7 @@ public class RailRenderer {
     			}
     			if(value.signalpos1 != null){
         			GL11.glPushMatrix();
-        			GL11.glTranslated(value.signalpos1.x, value.signalpos1.y, value.signalpos1.z);
+        			GL11.glTranslated(value.signalpos1.x - cx, value.signalpos1.y - cy, value.signalpos1.z - cz);
         			GL11.glRotatef(180, 0, 0, 1);
 					GL11.glRotated(value.signalrot1, 0, 1, 0);
         			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD, value.signal1);
@@ -366,7 +366,7 @@ public class RailRenderer {
 					value.bufferrot = Math.toDegrees(-value.bufferrot);
     			}
     			GL11.glPushMatrix();
-    			GL11.glTranslated(value.getVec().x, value.getVec().y, value.getVec().z);
+    			GL11.glTranslated(value.getVec().x - cx, value.getVec().y - cy, value.getVec().z - cz);
     			GL11.glRotated(value.bufferrot, 0, 1, 0);
     			value.tracks.get(0).gauge.getModel().renderBuffer(value);
     			GL11.glPopMatrix();

@@ -138,7 +138,6 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 
 	@SuppressWarnings("deprecation")
 	public boolean placeRoad(EntityPlayer player, World world, ItemStack stack, GridV3D vector, Road _road, ICommandSender sender){
-		Print.debug(_road.vecpath);
 		if(_road.length > Config.MAX_ROAD_LENGTH){
 			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
 			return false;
@@ -210,15 +209,15 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		V3D last, vec;
 		IBlockState state;
 		int width = layers[0], height;
-		float angle, passed = 0, half = (width * 0.5f) - 0.5f;
+		double angle, passed = 0, half = (width * 0.5) - 0.5;
 		road = roadfill == null && roadB != null ? new ArrayList<>() : null;
 		roof = rooffill == null && layers[4] > 0 ? new ArrayList<>() : null;
 		line = linefill == null && hlines ? new ArrayList<>() : null;
 		//
 		vec = _road.getVectorPosition0(0.001f, false); passed = 0;
-		angle = (float)Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
+		angle = Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
 		angle += Static.rad90;
-		for(float fl = -half; fl <= half; fl += 0.25f){
+		for(double fl = -half; fl <= half; fl += 0.25){
 			if(road != null) road.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 0, 0)))));
 			if(ground != null) ground.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, -1, 0)))));
 			if(line != null) line.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 1, 0)))));
@@ -245,8 +244,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			last = vec; vec = _road.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
-			float off = roadfill == null ? 0 : 0.25f;
-			for(float fl = -half; fl <= half; fl += 0.25f){
+			double off = roadfill == null ? 0 : 0.25;
+			for(double fl = -half; fl <= half; fl += 0.25){
 				if(road != null) road.add(new GridV3D(vec.add(grv(angle, new V3D(fl, 0, 0)))));
 				if(ground != null) ground.add(new GridV3D(vec.add(grv(angle, new V3D(fl + off, -1, 0)))));
 				if(line != null) line.add(new GridV3D(vec.add(grv(angle, new V3D(fl, 1, 0)))));

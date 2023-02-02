@@ -180,7 +180,7 @@ public class RailRenderer {
             	GL11.glTranslated(junctions[i].getVec().x - cx, junctions[i].getVec().y - cy, junctions[i].getVec().z - cz);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
-        		renderLines(junctions[i]);
+        		renderLines(junctions[i], cx, cy, cz);
         	}
         }
         if(RailPlacingUtil.CL_CURRENT != null && RailPlacingUtil.CL_CURRENT.points.size() > 1){
@@ -232,7 +232,7 @@ public class RailRenderer {
 		GL11.glPopMatrix();
     }
 
-	private static void renderLines(Junction value){
+	private static void renderLines(Junction value, double cx, double cy, double cz){
         /*if(Command.DEBUG){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -278,7 +278,10 @@ public class RailRenderer {
         	for(int i = 0; i < value.size(); i++){
         		if(i > 2) GL11.glTranslatef(0, -0.02f, 0);
         		if(value.tracks.get(i).isOppositeCopy()) continue;
-        		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
+				GL11.glPushMatrix();
+        		Track track = value.tracks.get(i);
+				GL11.glTranslated(track.vecpath[0].x - cx, track.vecpath[0].y - cy, track.vecpath[0].z - cz);
+				RailGaugeModel model = track.gauge.getModel();
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		TexUtil.bindTexture(track.gauge.getRailTexture());
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.disableCull();
@@ -286,6 +289,7 @@ public class RailRenderer {
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.enableCull();
         		TexUtil.bindTexture(track.gauge.getTiesTexture());
         		track.restmodel.render();
+				GL11.glPopMatrix();
         	}
         	if(Command.OTHER){
         		Track track;
@@ -376,24 +380,27 @@ public class RailRenderer {
 	}
 	
 	public static void generateTrackModel(Track track, RailGaugeModel model){
-		TurboArrayPositioned tarp = new TurboArrayPositioned(track, MIDDLE_GRAY);
 		double angle, passed = 0;
-		V3D last, vec;
+		V3D last, vec, cen = track.vecpath[0];
 		ArrayList<V3D> path = new ArrayList<>();
-		TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
+		TexturedVertex vert0, vert1, vert2, vert3;
+		TexturedPolygon poly0;
 		//
+		TurboArrayPositioned tarp = new TurboArrayPositioned(track, MIDDLE_GRAY);
 		for(int p = 0; p < model.rail_model.size(); p++){
-			path.clear(); vec = track.getVectorPosition0(0.001f, false); passed = 0;
+			path.clear();
+			passed = 0;
+			vec = track.getVectorPosition0(0.001f, false);
 			angle = Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 			angle += Static.rad90;
-			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])));
-			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])));
+			path.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0]));
+			path.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1]));
 			for(int v = 0; v < track.vecpath.length - 1; v++){
 				last = track.vecpath[v]; vec = track.vecpath[v + 1];
 				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
-				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])));
-				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])).sub(cen));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])).sub(cen));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
 				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
@@ -418,20 +425,24 @@ public class RailRenderer {
 			double half = model.ties_distance * .5, accu = half;
 			while(accu < track.length){
 				last = track.getVectorPosition0(accu - 0.1, false);
-				vec = track.getVectorPosition0(accu + 0.1f, false);
+				vec = track.getVectorPosition0(accu + 0.1, false);
 				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
-				vec = track.getVectorPosition0(accu, false);;
+				vec = track.getVectorPosition0(accu, false);
 				for(ModelRendererTurbo mrt : model.get("ties", false)){
 					for(TexturedPolygon poly : mrt.getFaces()){
 						TexturedVertex[] verts = new TexturedVertex[poly.getVertices().length];
 						for(int m = 0; m < verts.length; m++){
 							TexturedVertex org = poly.getVertices()[m];
 							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.textureX, org.textureY);
-							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(new Vec3f(vec.x, vec.y, vec.z));
+							double dx = (verts[m].vector.x * Static.sixteenth) + vec.x - cen.x;
+							double dy = (verts[m].vector.y * Static.sixteenth) + vec.y - cen.y;
+							double dz = (verts[m].vector.z * Static.sixteenth) + vec.z - cen.z;
+							verts[m].vector = new Vec3f(dx, dy, dz);
 						}
 						tarp.turbos[(int)accu].copyTo(new TexturedPolygon(verts));
 					}
-				} accu += model.ties_distance;
+				}
+				accu += model.ties_distance;
 			}
 		}
 		track.restmodel = tarp;

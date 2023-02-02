@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonElement;
@@ -70,7 +71,7 @@ public class WirePrograms {
 		}
 		
 		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			GL11.glRotatef(WireRenderer.ANGLE, 0, 1, 0);
+			GL11.glRotated(WireRenderer.ANGLE, 0, 1, 0);
 		}
 		
 	};
@@ -98,7 +99,7 @@ public class WirePrograms {
 		}
 		
 		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-			GL11.glRotatef(WireRenderer.ANGLE_DOWN, 1, 0, 0);
+			GL11.glRotated(WireRenderer.ANGLE_DOWN, 1, 0, 0);
 		}
 
 		public Program parse(JsonElement elm){
@@ -170,7 +171,7 @@ public class WirePrograms {
 
 		@SuppressWarnings("rawtypes")
 		public ArrayList generate(WireRelay relay, Wire wire, ModelGroup group, String decoid, boolean vecs){
-			ArrayList list = vecs ? new ArrayList<Vec3f>() : new ArrayList<Float>();
+			ArrayList list = vecs ? new ArrayList<V3D>() : new ArrayList<Float>();
 			if(symmetric){
 				int limit = this.limit * 2;
 				float half = wire.length / 2f;
@@ -245,7 +246,7 @@ public class WirePrograms {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public ArrayList generate(WireRelay relay, Wire wire, ModelGroup group, String decoid, boolean bool){
-			ArrayList<Vec3f> veclis = super.generate(relay, wire, group, decoid, true);
+			ArrayList<V3D> veclis = super.generate(relay, wire, group, decoid, true);
 			if(!relay.getKey().equals("contact")) return veclis;
 			WireRelay other = relay.getHolder().relays.get("support");
 			if(other == null) return veclis;
@@ -258,12 +259,12 @@ public class WirePrograms {
 				float last = -1;
 				int idx = 0;
 				for(Float dis : dislis){
-					Vec3f vec = owir.getVectorPosition(dis * rat, last == dis);
-					Vec3f vecl = veclis.get(idx);
-					float hei = vec.y - vecl.y;
+					V3D vec = owir.getVectorPosition(dis * rat, last == dis);
+					V3D vecl = veclis.get(idx);
+					double hei = vec.y - vecl.y;
 					tlist.add(new ModelRendererTurbo(null, 0, 0, 16, 16)
-						.addBox(-sx/2, 0, -sz/2, sx, hei * 16, sz)
-						.setRotationPoint(0, -hei * 16, 0));
+						.addBox(-sx/2, 0, -sz/2, sx, (float)hei * 16, sz)
+						.setRotationPoint(0, (float)-hei * 16, 0));
 					last = dis;
 					idx++;
 				}

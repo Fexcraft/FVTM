@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.JunctionTrackingTileEntity;
@@ -50,11 +51,15 @@ public class Junction {
 	protected AxisAlignedBB frustumbb;
 	//
 	@SideOnly(Side.CLIENT)
-	public Vec3f signalpos0, signalpos1;
+	public V3D signalpos0;
+    @SideOnly(Side.CLIENT)
+    public V3D signalpos1;
 	@SideOnly(Side.CLIENT)
-	public float signalrot0, signalrot1;
+	public double signalrot0;
 	@SideOnly(Side.CLIENT)
-	public Float bufferrot;
+	public double signalrot1;
+	@SideOnly(Side.CLIENT)
+	public Double bufferrot;
 	
 	/** General Constructor */
 	public Junction(Region region, GridV3D pos){
@@ -168,7 +173,7 @@ public class Junction {
 		return vecpos;
 	}
 	
-	public Vec3f getVec3f(){
+	public V3D getVec(){
 		return vecpos.vector;
 	}
 
@@ -395,8 +400,9 @@ public class Junction {
 	@SuppressWarnings("unused")
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
-			if(vecpos.vector.dis(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
-		} return false;
+			if(vecpos.vector.dis(new V3D(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
+		}
+		return false;
 	}
 
 	public boolean onSwitchInteract(EntityPlayer player, SwitchTileEntity tile, boolean left){
@@ -464,7 +470,7 @@ public class Junction {
 
 	public AxisAlignedBB getAABB(){
 		if(frustumbb != null) return frustumbb;
-		Vec3f min = new Vec3f(), max = new Vec3f(), other;
+		V3D min = new V3D(), max = new V3D(), other;
 		for(Track track : tracks){
 			other = track.start.vector;
 			if(other.x < min.x) min.x = other.x;

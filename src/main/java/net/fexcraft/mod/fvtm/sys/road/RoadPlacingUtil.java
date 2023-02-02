@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -79,7 +80,7 @@ public class RoadPlacingUtil {
 	public static class NewRoad {
 		
 		public ArrayList<GridV3D> points = new ArrayList<>();
-		public ArrayList<ArrayList<Vec3f>> preview;
+		public ArrayList<ArrayList<V3D>> preview;
 		public Road road;
 		public int selected = -1, width;
 		public UUID id;
@@ -190,16 +191,16 @@ public class RoadPlacingUtil {
 		}
 
 		public void genpreview(){
-			float angle, half = (width * 0.5f);
+			double angle, half = (width * 0.5f);
 			preview = new ArrayList<>();
 			for(int i = 0; i < width + 1; i++) preview.add(new ArrayList<>());
-			Vec3f last, vec = road.vecpath[0];
+			V3D last, vec = road.vecpath[0];
 			for(float pass = 0; pass < road.length + 0.125f; pass += 0.125f){
 				last = vec;
 				vec = road.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Static.rad90;
 				for(int w = 0; w < width + 1; w++){
-					preview.get(w).add(vec.add(RoadToolItem.grv(angle, new Vec3f(-half + w, 0, 0))));
+					preview.get(w).add(vec.add(RoadToolItem.grv(angle, new V3D(-half + w, 0, 0))));
 				}
 			}
 		}

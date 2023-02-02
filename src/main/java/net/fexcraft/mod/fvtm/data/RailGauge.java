@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.DataType;
@@ -117,10 +118,10 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 					GridV3D[] vecs = new GridV3D[array.size()];
 					for(int i = 0; i < vecs.length; i++){
 						temp = array.get(i).getAsJsonArray();
-						float x = temp.get(0).getAsFloat();
-						float y = temp.get(1).getAsFloat();
-						float z = temp.get(2).getAsFloat();
-						vecs[i] = new GridV3D(new Vec3f(x, y, z));
+						double x = temp.get(0).getAsDouble();
+						double y = temp.get(1).getAsDouble();
+						double z = temp.get(2).getAsDouble();
+						vecs[i] = new GridV3D(new V3D(x, y, z));
 					}
 					RailPresetItem item = new RailPresetItem(this, jsn.get("name").getAsString().toLowerCase(), vecs);
 					item.setSegmentation(JsonUtil.getIfExists(jsn, "segmentation", 4).intValue());

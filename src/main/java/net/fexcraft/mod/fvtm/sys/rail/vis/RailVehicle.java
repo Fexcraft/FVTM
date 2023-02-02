@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
@@ -535,9 +536,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	rek.data().getAttribute("speed").value((float)speed);
         	//rek.data().getAttribute("rpm").value(rpm / 100 * 100);
         	//
-        	Vec3f bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
-        	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
-        	Vec3f br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
+            V3D bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
+            V3D br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
+            V3D br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
         		float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - rotpoint.getAxes().deg_yaw());
         		float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - rotpoint.getAxes().deg_yaw());

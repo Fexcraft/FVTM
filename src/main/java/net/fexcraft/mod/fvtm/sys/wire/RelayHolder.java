@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.minecraft.nbt.NBTBase;
@@ -26,7 +27,7 @@ public class RelayHolder {
 		this.region = region;
 	}
 
-	public WireRelay add(String key, Vec3f vec, boolean override){
+	public WireRelay add(String key, V3D vec, boolean override){
 		if(relays.containsKey(key)){
 			if(override){
 				remove(key);

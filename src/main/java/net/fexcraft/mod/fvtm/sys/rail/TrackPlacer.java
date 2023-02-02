@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -82,20 +83,20 @@ public class TrackPlacer {
 		boolean creative = player != null && player.capabilities.isCreativeMode;
 		boolean regblocks = this.blocks && !Config.DISABLE_RAIL_BLOCKS;
 		if(register ? creative ? regblocks : useitems : (!track.blockless && regblocks)){
-			float angle, half = (width * 0.5f) - 0.25f;
+			double angle, half = (width * 0.5f) - 0.25f;
 			ArrayList<GridV3D> path = new ArrayList<>();
-			Vec3f last, vec = track.getVectorPosition0(0.001f, false);
+			V3D last, vec = track.getVectorPosition0(0.001f, false);
 			angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 			angle += Static.rad90;
 			/*for(float fl = -half; fl <= half; fl += 0.25f){
 				path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 			}*/
-			float passed = 0.125f;
+			double passed = 0.125f;
 			while(passed < track.length){
 				last = vec; vec = track.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
-				for(float fl = -half; fl <= half; fl += 0.25f){
+				for(double fl = -half; fl <= half; fl += 0.25f){
 					path.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 				}
 				passed += 0.125f;
@@ -200,9 +201,9 @@ public class TrackPlacer {
 		result();
 	}
 
-	public static final Vec3f grv(float rad, Vec3f vec){
+	public static V3D grv(double rad, Vec3f vec){
         double co = Math.cos(rad), si = Math.sin(rad);
-        return new Vec3f(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
+        return new V3D(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
 	}
 
 	private static int getRailsOfTypeInInv(RailGauge type, EntityPlayer player){

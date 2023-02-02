@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -110,10 +111,12 @@ public class Track extends Path {
 	public RailGauge getGauge(){
 		return gauge;
 	}
-	
-	public Vec3f getVectorPosition(float distance, boolean reverse){
-		Vec3f vec = this.getVectorPosition0(distance, reverse);
-		vec.y += gauge.height16(); return vec;
+
+	@Override
+	public V3D getVectorPosition(double distance, boolean reverse){
+		V3D vec = this.getVectorPosition0(distance, reverse);
+		vec.y += gauge.height16();
+		return vec;
 	}
 	
 	@Override
@@ -134,10 +137,10 @@ public class Track extends Path {
 		return junction;
 	}
 
-	public Vec3f getVectorOnTrack(Vec3f ext){
-		Vec3f at = vecpath[0];
-		float dis = ext.dis(vecpath[0]), tes;
-		for(Vec3f vec : vecpath){
+	public V3D getVectorOnTrack(V3D ext){
+		V3D at = vecpath[0];
+		double dis = ext.dis(vecpath[0]), tes;
+		for(V3D vec : vecpath){
 			if((tes = vec.dis(ext)) < dis){
 				dis = tes;
 				at = vec;
@@ -146,11 +149,11 @@ public class Track extends Path {
 		return at;
 	}
 	
-	public float getPassedOnTrack(Vec3f ext){
+	public double getPassedOnTrack(V3D ext){
 		float passed = 0;
-		Vec3f at = getVectorOnTrack(ext), last = at;
+		V3D at = getVectorOnTrack(ext), last = at;
 		for(int i = 1; i < vecpath.length; i++){
-			float dis = last.dis(vecpath[i]);
+			double dis = last.dis(vecpath[i]);
 			if(dis < 0.001f) break;
 			passed += dis;
 		}

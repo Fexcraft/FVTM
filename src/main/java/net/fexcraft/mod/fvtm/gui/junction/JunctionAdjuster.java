@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -194,7 +195,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	private void renderTrack(Track track, float[] color,  BlockPos junc){
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Vec3f vec0, vec1;
+		V3D vec0, vec1;
         if(track.vecpath.length == 2){
         	vec0 = track.vecpath[00];
         	vec1 = vec0.distance(track.vecpath[1], 15);
@@ -204,7 +205,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			tessellator.draw();
         	return;
         }
-        float x0, x1, z0, z1;
+        double x0, x1, z0, z1;
 		for(int j = 0; j < track.vecpath.length - 1; j++){
 			vec0 = track.vecpath[j];
 			vec1 = track.vecpath[j + 1];

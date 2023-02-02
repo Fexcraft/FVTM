@@ -2,13 +2,10 @@ package net.fexcraft.mod.fvtm.render;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.*;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -63,7 +60,7 @@ public class RailRenderer {
     		GridV3D vec = new GridV3D(event.getPlayer().world, event.getTarget().hitVec, jitem.getPlacingGrid());
     		if(jitem.offsetVectors()){
         		vecs = new GridV3D[jitem.getVectors(stack).length];
-    			float seg = 360f / jitem.getSegments();
+    			double seg = 360f / jitem.getSegments();
     			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			if(con % seg > seg / 2) con++;
     			for(int i = 0; i < vecs.length; i++){
@@ -114,7 +111,7 @@ public class RailRenderer {
                 }
             }
             BlockPos pos = event.getTarget().getBlockPos();
-            float yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
+            double yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
             bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ()- z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
@@ -180,7 +177,7 @@ public class RailRenderer {
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
             	GL11.glPushMatrix();
             	TexUtil.bindTexture(WOOLTEX);
-            	GL11.glTranslated(junctions[i].getVec3f().x - cx, junctions[i].getVec3f().y - cy, junctions[i].getVec3f().z - cz);
+            	GL11.glTranslated(junctions[i].getVec().x - cx, junctions[i].getVec().y - cy, junctions[i].getVec().z - cz);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
         		renderLines(junctions[i]);
@@ -189,7 +186,7 @@ public class RailRenderer {
         if(RailPlacingUtil.CL_CURRENT != null && RailPlacingUtil.CL_CURRENT.points.size() > 1){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            Vec3f vec0, vec1;
+			V3D vec0, vec1;
 			NewTrack conn = RailPlacingUtil.CL_CURRENT;
 			if(conn.preview == null) conn.genpreview();
             GL11.glPushMatrix();
@@ -198,10 +195,9 @@ public class RailRenderer {
             GlStateManager.glLineWidth(4.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
-			float x = (float)cx, y = (float)cy, z = (float)cz;
 			for(int j = 0; j < conn.track.vecpath.length - 1; j++){
-				vec0 = conn.track.vecpath[j].sub(x, y, z);
-				vec1 = conn.track.vecpath[j + 1].sub(x, y, z);
+				vec0 = conn.track.vecpath[j].sub(cx, cy, cz);
+				vec1 = conn.track.vecpath[j + 1].sub(cx, cy, cz);
                 bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                 bufferbuilder.pos(vec0.x, vec0.y + 0.1, vec0.z).color(0, 0, 1, 1F).endVertex();
                 bufferbuilder.pos(vec1.x, vec1.y + 0.1, vec1.z).color(0, 0, 1, 1F).endVertex();
@@ -209,21 +205,21 @@ public class RailRenderer {
 			}
 			if(RailPlacingUtil.CL_CURRENT.points.size() > 2){
 				int size = RailPlacingUtil.CL_CURRENT.points.size();
-				float[] arr = null;
+				double[] arr = null;
 				for(int i = 1; i < size - 1; i++){
 					arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
-					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector.sub(x, y, z);
+					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector.sub(cx, cy, cz);
 	                bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-	                bufferbuilder.pos(arr[0] - x, arr[1] + 0.05 - y, arr[2] - z).color(0, 1, 1, 1F).endVertex();
+	                bufferbuilder.pos(arr[0] - cx, arr[1] + 0.05 - cy, arr[2] - cz).color(0, 1, 1, 1F).endVertex();
 	                bufferbuilder.pos(vec1.x, vec1.y + 0.05, vec1.z).color(0, 1, 1, 1F).endVertex();
 	                tessellator.draw();
 				}
 			}
-			for(ArrayList<Vec3f> l : conn.preview){
+			for(ArrayList<V3D> l : conn.preview){
 				for(int j = 0; j < l.size() - 1; j++){
 					bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-					bufferbuilder.pos((vec0 = l.get(j).sub(x, y, z)).x, vec0.y + conn.gauge.height16() + .05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
-					bufferbuilder.pos((vec1 = l.get(j + 1).sub(x, y, z)).x, vec1.y + conn.gauge.height16() + .05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec0 = l.get(j).sub(cx, cy, cz)).x, vec0.y + conn.gauge.height16() + .05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec1 = l.get(j + 1).sub(cx, cy, cz)).x, vec1.y + conn.gauge.height16() + .05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
 					tessellator.draw();
 				}
 			}
@@ -295,9 +291,9 @@ public class RailRenderer {
         		Track track;
         		for(int i = 0; i < value.size(); i++){
         			track = value.tracks.get(i);
-	    			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false);
-	    			float off = track.isOppositeCopy() ? 0.125f : -0.125f;
-	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+					V3D pos = track.getVectorPosition(track.length * 0.5f, false);
+	    			double off = track.isOppositeCopy() ? 0.125f : -0.125f;
+	    			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
 	    			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, track.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
 	    			//
 	    			if(!track.isOppositeCopy() && track.getUnit().getEntities().size() > 0){
@@ -313,54 +309,61 @@ public class RailRenderer {
     		if(value.signal != null && value.size() == 2){
     			if(value.signalpos0 == null){
     				Track track = value.tracks.get(value.signal_dir.getTrackId());
-    				Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
-    				value.signalrot0 = (float)Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
+					V3D vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+    				value.signalrot0 = Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
     				value.signalrot0 += Static.rad90;
-    				value.signalpos0 = vec0.add(VecUtil.rotByRad(value.signalrot0, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
-    				value.signalrot0 = (float)Math.toDegrees(value.signalrot0);
+    				value.signalpos0 = vec0.add(VecUtil.rotByRad(value.signalrot0, new V3D(track.gauge.getModel().signal_offset, 0, 0)));
+    				value.signalrot0 = Math.toDegrees(value.signalrot0);
     			}
     			if(value.signal_dir.isBoth() && value.signalpos1 == null){
-					Track track = value.tracks.get(1); Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
-    				value.signalrot1 = (float)Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
+					Track track = value.tracks.get(1);
+					V3D vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+    				value.signalrot1 = Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
     				value.signalrot1 += Static.rad90;
-    				value.signalpos1 = vec0.add(VecUtil.rotByRad(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
-    				value.signalrot1 = (float)Math.toDegrees(value.signalrot1);
+    				value.signalpos1 = vec0.add(VecUtil.rotByRad(value.signalrot1, new V3D(track.gauge.getModel().signal_offset, 0, 0)));
+    				value.signalrot1 = Math.toDegrees(value.signalrot1);
     			}
     			TexUtil.bindTexture(value.tracks.get(0).gauge.getModelTexture());
     			if(value.signalpos0 != null){
         			GL11.glPushMatrix();
-        			GL11.glTranslatef(value.signalpos0.x, value.signalpos0.y, value.signalpos0.z);
-        			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot0, 0, 1, 0);
+        			GL11.glTranslated(value.signalpos0.x, value.signalpos0.y, value.signalpos0.z);
+        			GL11.glRotatef(180, 0, 0, 1);
+					GL11.glRotated(value.signalrot0, 0, 1, 0);
         			value.tracks.get(value.signal_dir.getTrackId()).gauge.getModel()
         				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : value.signal_dir, value.signal0);
         			GL11.glPopMatrix();
     			}
     			if(value.signalpos1 != null){
         			GL11.glPushMatrix();
-        			GL11.glTranslatef(value.signalpos1.x, value.signalpos1.y, value.signalpos1.z);
-        			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot1, 0, 1, 0);
+        			GL11.glTranslated(value.signalpos1.x, value.signalpos1.y, value.signalpos1.z);
+        			GL11.glRotatef(180, 0, 0, 1);
+					GL11.glRotated(value.signalrot1, 0, 1, 0);
         			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD, value.signal1);
         			GL11.glPopMatrix();
     			}
     			if(Command.OTHER){
-        			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-        			long uid = value.tracks.get(value.signal_dir.getTrackId()).getUnit().section().getUID(); Vec3f pos = value.signalpos0;
+        			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+        			long uid = value.tracks.get(value.signal_dir.getTrackId()).getUnit().section().getUID();
+					V3D pos = value.signalpos0;
         			RenderStreetSign.drawString(uid + "/" + value.signal0, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
     				if(value.signal_dir.isBoth()){
-    					uid = value.tracks.get(1).getUnit().section().getUID(); pos = value.signalpos1;
+    					uid = value.tracks.get(1).getUnit().section().getUID();
+						pos = value.signalpos1;
             			RenderStreetSign.drawString(uid + "/" + value.signal1, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
     				}
     			}
     		}
     		if(value.size() == 1){
     			if(value.bufferrot == null){
-    				Track track = value.tracks.get(0); Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
-    				value.bufferrot = (float)Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
-    				value.bufferrot += Static.rad90; value.bufferrot = (float)Math.toDegrees(-value.bufferrot);
+    				Track track = value.tracks.get(0);
+					V3D vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+    				value.bufferrot = Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
+    				value.bufferrot += Static.rad90;
+					value.bufferrot = Math.toDegrees(-value.bufferrot);
     			}
     			GL11.glPushMatrix();
-    			GL11.glTranslatef(value.getVec3f().x, value.getVec3f().y, value.getVec3f().z);
-    			GL11.glRotatef(value.bufferrot, 0, 1, 0);
+    			GL11.glTranslated(value.getVec().x, value.getVec().y, value.getVec().z);
+    			GL11.glRotated(value.bufferrot, 0, 1, 0);
     			value.tracks.get(0).gauge.getModel().renderBuffer(value);
     			GL11.glPopMatrix();
     		}
@@ -372,20 +375,22 @@ public class RailRenderer {
         /*}*/
 	}
 	
-	public static final void generateTrackModel(Track track, RailGaugeModel model){
+	public static void generateTrackModel(Track track, RailGaugeModel model){
 		TurboArrayPositioned tarp = new TurboArrayPositioned(track, MIDDLE_GRAY);
-		float angle, passed = 0; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
+		double angle, passed = 0;
+		V3D last, vec;
+		ArrayList<V3D> path = new ArrayList<>();
 		TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
 		//
 		for(int p = 0; p < model.rail_model.size(); p++){
 			path.clear(); vec = track.getVectorPosition0(0.001f, false); passed = 0;
-			angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
+			angle = Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 			angle += Static.rad90;
 			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])));
 			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])));
 			for(int v = 0; v < track.vecpath.length - 1; v++){
 				last = track.vecpath[v]; vec = track.vecpath[v + 1];
-				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
+				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])));
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])));
@@ -410,18 +415,19 @@ public class RailRenderer {
 		//
 		tarp = new TurboArrayPositioned(track, null);
 		if(track.length >  model.ties_distance){
-			float half = model.ties_distance * .5f, accu = half;
+			double half = model.ties_distance * .5, accu = half;
 			while(accu < track.length){
-				last = track.getVectorPosition0(accu - 0.1f, false); vec = track.getVectorPosition0(accu + 0.1f, false);
-				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
+				last = track.getVectorPosition0(accu - 0.1, false);
+				vec = track.getVectorPosition0(accu + 0.1f, false);
+				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
 				vec = track.getVectorPosition0(accu, false);;
 				for(ModelRendererTurbo mrt : model.get("ties", false)){
 					for(TexturedPolygon poly : mrt.getFaces()){
 						TexturedVertex[] verts = new TexturedVertex[poly.getVertices().length];
 						for(int m = 0; m < verts.length; m++){
 							TexturedVertex org = poly.getVertices()[m];
-							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector), org.textureX, org.textureY);
-							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(vec);
+							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.textureX, org.textureY);
+							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(new Vec3f(vec.x, vec.y, vec.z));
 						}
 						tarp.turbos[(int)accu].copyTo(new TexturedPolygon(verts));
 					}
@@ -434,14 +440,14 @@ public class RailRenderer {
 	public static class TurboArrayPositioned {
 		
 		protected ModelRendererTurbo[] turbos;
-		protected Vec3f[] positions;
+		protected V3D[] positions;
 		
 		public TurboArrayPositioned(Path path, RGB colour){
 			int i = (int)path.getLength(null);
 			if(path.length % 1f > 0) i++;
 			if(i == 0) i = 1;
 			turbos = new ModelRendererTurbo[i];
-			positions = new Vec3f[i];
+			positions = new V3D[i];
 			for(int k = 0; k < i; k++){
 				turbos[k] = new ModelRendererTurbo(path, 0, 0, 16, 16);
 				if(colour != null) turbos[k].setColor(colour);
@@ -454,7 +460,7 @@ public class RailRenderer {
 			if(wire.length % 1f > 0) i++;
 			if(i == 0) i = 1;
 			turbos = new ModelRendererTurbo[i];
-			positions = new Vec3f[i];
+			positions = new V3D[i];
 			for(int k = 0; k < i; k++){
 				turbos[k] = new ModelRendererTurbo(wire, 0, 0, 16, 16);
 				if(colour != null) turbos[k].setColor(colour);
@@ -481,7 +487,7 @@ public class RailRenderer {
 	}
 
 	//@Deprecated
-	public static int getBrightness(Vec3f vec){
+	public static int getBrightness(V3D vec){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(vec.x), 0, MathHelper.floor(vec.z));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
             mutblk.setY(MathHelper.floor(vec.y));

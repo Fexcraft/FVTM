@@ -46,7 +46,7 @@ public abstract class Path {
 	public Path(){}
 	
 	protected void construct(){
-		vecpath = new V3D[][rootpath.length];
+		vecpath = new V3D[rootpath.length];
 		if(vecpath.length == 2){
 			vecpath[0] = rootpath[0].vector; vecpath[1] = rootpath[rootpath.length - 1].vector;
 			this.length = vecpath[0].dis(vecpath[1]);

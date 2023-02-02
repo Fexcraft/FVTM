@@ -6,6 +6,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -211,7 +212,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		if(conn.isOppositeCopy()) return;
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Vec3f vec0, vec1;
+		V3D vec0, vec1;
         float flfl = junc ? 0 : 1, glgl = junc ? 1 : 0;
 		for(int j = 0; j < conn.vecpath.length - 1; j++){
 			vec0 = conn.vecpath[j];

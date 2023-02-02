@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -156,7 +157,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 	private void renderWire(Wire wire, float[] color,  BlockPos junc){
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Vec3f vec0, vec1;
+		V3D vec0, vec1;
         if(wire.vecpath.length == 2){
         	vec0 = wire.vecpath[00];
         	vec1 = vec0.distance(wire.vecpath[1], 15);
@@ -166,7 +167,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 			tessellator.draw();
         	return;
         }
-        float x0, x1, z0, z1;
+        double x0, x1, z0, z1;
 		for(int j = 0; j < wire.vecpath.length - 1; j++){
 			vec0 = wire.vecpath[j];
 			vec1 = wire.vecpath[j + 1];

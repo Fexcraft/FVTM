@@ -7,13 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.*;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.WireModel;
@@ -41,8 +38,8 @@ import net.minecraft.world.World;
 public class WireRenderer {
     
 	public static Wire CURRENT;
-	public static float ANGLE;
-	public static float ANGLE_DOWN;
+	public static double ANGLE;
+	public static double ANGLE_DOWN;
 	protected static final ModelRendererTurbo model, model0, model1;
 	protected static final ModelRendererTurbo[] all;
 	static{
@@ -92,7 +89,8 @@ public class WireRenderer {
         if(Command.OTHER){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            Vec3f vec0, vec1; float flfl, glgl;
+			V3D vec0, vec1;
+			float flfl, glgl;
     		for(int o = 0; o < relay.wires.size(); o++){
     			Wire conn = relay.wires.get(o);
         		if(conn.vecpath == null) return;
@@ -142,10 +140,10 @@ public class WireRenderer {
         			if(wire.deco_s != null){
         				ANGLE_DOWN = wire.model_start_angle_down;
         				GL11.glPushMatrix();
-            			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+            			GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
-            			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
+            			GL11.glRotated(wire.model_start_angle, 0, 1, 0);
     	        		TexUtil.bindTexture(wire.deco_s.texture());
             			wire.deco_s.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, false));
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
@@ -156,10 +154,10 @@ public class WireRenderer {
         				ANGLE_DOWN = wire.model_end_angle_down;
             			int l = wire.vecpath.length - 1;
         				GL11.glPushMatrix();
-            			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
+            			GL11.glTranslated(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
-            			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
+            			GL11.glRotated(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
     	        		TexUtil.bindTexture(wire.deco_e.texture());
             			wire.deco_e.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, false));
@@ -176,9 +174,9 @@ public class WireRenderer {
                 				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
                 					ArrayList<ModelRendererTurbo> tlist = wire.deco_g.containsKey(dm.getKey()) ? wire.deco_g.get(dm.getKey()).get(list.name) : null;
                 					int didx = 0;
-                					for(Vec3f vec : wire.deco_d.get(dm.getKey()).get(list.name)){
+                					for(V3D vec : wire.deco_d.get(dm.getKey()).get(list.name)){
                             			GL11.glPushMatrix();
-                            			GL11.glTranslatef(vec.x, vec.y, vec.z);
+                            			GL11.glTranslated(vec.x, vec.y, vec.z);
                             			GL11.glRotated(180, 0, 0, 1);
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
@@ -194,7 +192,7 @@ public class WireRenderer {
                 				}
                 				else{
                         			GL11.glPushMatrix();
-                        			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+                        			GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
                         			GL11.glRotated(180, 0, 0, 1);
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
@@ -212,9 +210,9 @@ public class WireRenderer {
         		Wire wire;
         		for(int i = 0; i < relay.size(); i++){
         			wire = relay.wires.get(i);
-	    			Vec3f pos = wire.getVectorPosition(wire.length * 0.5f, false);
-	    			float off = wire.copy ? 0.125f : -0.125f;
-	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+					V3D pos = wire.getVectorPosition(wire.length * 0.5, false);
+	    			double off = wire.copy ? 0.125 : -0.125;
+	    			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90d;
 	    			RenderStreetSign.drawString(wire.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, wire.copy ? 0xb8bc38 : 0x32a852, deg);
         		}
         	}
@@ -226,26 +224,26 @@ public class WireRenderer {
 	private static void generateWireModel(Wire wire){
 		WireModel model = wire.getWireType().getModel();
 		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
-		float angle, passed = 0;
-		Vec3f last, vec;
-		ArrayList<Vec3f> path = new ArrayList<>();
+		double angle, passed = 0;
+		V3D last, vec;
+		ArrayList<V3D> path = new ArrayList<>();
 		TexturedVertex vert0, vert1, vert2, vert3;
 		TexturedPolygon poly0;
 		//
-		for(Entry<Integer, ArrayList<Vec3f[]>> entry : model.wire_model.entrySet()){
-			ArrayList<Vec3f[]> wodl = entry.getValue();
+		for(Entry<Integer, ArrayList<V3D[]>> entry : model.wire_model.entrySet()){
+			ArrayList<V3D[]> wodl = entry.getValue();
 			for(int p = 0; p < wodl.size(); p++){
 				path.clear();
 				vec = wire.getVectorPosition(0.001f, false);
 				passed = 0;
-				angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
+				angle = Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
 				angle += Static.rad90;
 				path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
 				path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, wodl.get(p)[1])));
 				for(int v = 0; v < wire.vecpath.length - 1; v++){
 					last = wire.vecpath[v];
 					vec = wire.vecpath[v + 1];
-					angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
+					angle = Math.atan2(last.z - vec.z, last.x - vec.x);
 					angle += Static.rad90;
 					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
 					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[1])));
@@ -267,7 +265,7 @@ public class WireRenderer {
 		wire.wiremodel = tarp;
 		//
 		vec = wire.vecpath[wire.vecpath.length - 1];
-		wire.model_end_angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
+		wire.model_end_angle = Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
 		wire.model_end_angle = Static.toDegrees(wire.model_end_angle);
 		wire.model_start_angle = wire.model_end_angle - 180;
 		//
@@ -277,14 +275,14 @@ public class WireRenderer {
 		if(wire.deco_s != null){
 			float len = wire.deco_s.getLongestDownward();
 			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
-	        float dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
+	        double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model_start_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_start_angle_down = Static.toDegrees(wire.model_start_angle_down);
 		}
 		if(wire.deco_e != null){
 			float len = wire.deco_e.getLongestDownward();
 			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
-	        float dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
+	        double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_end_angle_down = Static.toDegrees(wire.model_end_angle_down);
 		}

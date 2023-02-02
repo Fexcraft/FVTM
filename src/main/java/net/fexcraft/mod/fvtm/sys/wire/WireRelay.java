@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,14 +16,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class WireRelay {
 	
 	protected String key;
-	public Vec3f pos = new Vec3f();
+	public V3D pos = new V3D();
 	public ArrayList<Wire> wires;
 	protected RelayHolder holder;
 	//
 	protected AxisAlignedBB frustumbb;
 	
 	/** General Constructor */
-	public WireRelay(RelayHolder holder, String key, Vec3f pos){
+	public WireRelay(RelayHolder holder, String key, V3D pos){
 		this.key = key;
 		wires = new ArrayList<Wire>();
 		this.holder = holder;
@@ -50,7 +51,7 @@ public class WireRelay {
 			}
 		}
 		else wires.clear();
-		pos = new Vec3f(compound.getFloat("PosX"), compound.getFloat("PosY"), compound.getFloat("PosZ"));
+		pos = new V3D(compound.getDouble("PosX"), compound.getDouble("PosY"), compound.getDouble("PosZ"));
 		frustumbb = null;
 		return this;
 	}
@@ -62,9 +63,9 @@ public class WireRelay {
 		}
 		compound.setInteger("Wires", wires.size());
 		compound.setString("Key", key);
-		compound.setFloat("PosX", pos.x);
-		compound.setFloat("PosY", pos.y);
-		compound.setFloat("PosZ", pos.z);
+		compound.setDouble("PosX", pos.x);
+		compound.setDouble("PosY", pos.y);
+		compound.setDouble("PosZ", pos.z);
 		return compound;
 	}
 	
@@ -146,7 +147,7 @@ public class WireRelay {
 
 	public AxisAlignedBB getAABB(){
 		if(frustumbb != null) return frustumbb;
-		Vec3f min = new Vec3f(), max = new Vec3f(), other;
+		V3D min = new V3D(), max = new V3D(), other;
 		for(Wire wire : wires){
 			other = wire.start;
 			if(other.x < min.x) min.x = other.x;
@@ -164,8 +165,8 @@ public class WireRelay {
 			if(other.z > max.z) max.z = other.z;
 		}
 		if(size() == 0){
-			min = new Vec3f(-.1f,-.1f,-.1f);
-			max = new Vec3f(+.1f,+.1f,+.1f);
+			min = new V3D(-.1f,-.1f,-.1f);
+			max = new V3D(+.1f,+.1f,+.1f);
 		}
 		return frustumbb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
 	}

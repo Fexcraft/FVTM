@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entity;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -46,9 +47,9 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         		buffer.writeLong(queueid.getMostSignificantBits());
         		buffer.writeLong(queueid.getLeastSignificantBits());
     		}
-    		buffer.writeFloat(position.vector.x);
-    		buffer.writeFloat(position.vector.y);
-    		buffer.writeFloat(position.vector.z);
+    		buffer.writeDouble(position.vector.x);
+    		buffer.writeDouble(position.vector.y);
+    		buffer.writeDouble(position.vector.z);
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -61,7 +62,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
     		long m = buffer.readLong(), l = buffer.readLong();
     		if(m == 0 && l == 0) queueid = null;
     		else queueid = new UUID(m, l);
-    		position = new GridV3D(new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+    		position = new GridV3D(new V3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
     	}
     	catch(Exception e){
 			e.printStackTrace();

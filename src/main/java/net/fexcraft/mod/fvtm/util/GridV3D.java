@@ -28,7 +28,7 @@ public class GridV3D implements Comparable<GridV3D> {
 		vector = toVec();
 	}
 
-	public GridV3D(Vec3f vec){
+	public GridV3D(V3D vec){
 		pos = new BlockPos(vec.x, vec.y, vec.z);
 		x = (byte)((vec.x - this.pos.getX()) / 0.0625);
 		y = (byte)((vec.y - this.pos.getY()) / 0.0625);
@@ -52,7 +52,7 @@ public class GridV3D implements Comparable<GridV3D> {
 		this(pos.x, pos.y, pos.z, rgs);
 	}
 
-	public GridV3D(Vec3f pos, int rgs){
+	public GridV3D(V3D pos, int rgs){
 		this(pos.x, pos.y, pos.z, rgs);
 	}
 

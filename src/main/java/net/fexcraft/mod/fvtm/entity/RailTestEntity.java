@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
@@ -105,8 +106,8 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     			passed = 0;
     		}
     		else{
-    			Vec3f vec = current.getVectorPosition(passed, false);
-    			this.setPosition(vec.x, vec.y, vec.z);
+				V3D vec = current.getVectorPosition(passed, false);
+    			setPosition(vec.x, vec.y, vec.z);
     		}
     	}
     	else{

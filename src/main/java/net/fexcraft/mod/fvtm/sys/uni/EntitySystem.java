@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -82,7 +83,7 @@ public class EntitySystem extends DetachedSystem {
 		if(expired.size() > 0){
 			for(ParticleEntity part : expired){
 				Particle particle = Resources.PARTICLES.get(part.particle.next);
-				if(particle != null) particles.add(new ParticleEntity(particle, new Vec3f(part.pos), null, null));
+				if(particle != null) particles.add(new ParticleEntity(particle, new V3D(part.pos), null, null));
 			}
 			expired.clear();
 		}
@@ -141,9 +142,9 @@ public class EntitySystem extends DetachedSystem {
 		private String part;
 		//
 		private Vec3d off;
-		private Vec3f dir;
+		private V3D dir;
 		private int freq, cool;
-		private float speed;
+		private double speed;
 
 		public Emitter(GenericVehicle vehicle, String key, PartData data, EmitterData edata){
 			this.vehicle = vehicle;
@@ -163,7 +164,7 @@ public class EntitySystem extends DetachedSystem {
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
 					Vec3d pos = point.getRelativeVector(off).add(vehicle.getPositionVector());
 					Vec3d vdr = point.getRelativeVector(dir.x, dir.y, dir.z);
-					particles.add(new ParticleEntity(edata.particle, new Vec3f(pos.x, pos.y, pos.z), new Vec3f(vdr.x, vdr.y, vdr.z), speed));
+					particles.add(new ParticleEntity(edata.particle, new V3D(pos.x, pos.y, pos.z), new V3D(vdr.x, vdr.y, vdr.z), speed));
 					cool = 0;
 				}
 			}

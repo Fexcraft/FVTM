@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -206,7 +207,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     	}
 		//
 		BlockPos blk;
-		Vec3f last, vec;
+		V3D last, vec;
 		IBlockState state;
 		int width = layers[0], height;
 		float angle, passed = 0, half = (width * 0.5f) - 0.5f;
@@ -218,56 +219,56 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		angle = (float)Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
 		angle += Static.rad90;
 		for(float fl = -half; fl <= half; fl += 0.25f){
-			if(road != null) road.add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
-			if(ground != null) ground.add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
-			if(line != null) line.add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 1, 0)))));
-			if(roof != null) roof.add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
+			if(road != null) road.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 0, 0)))));
+			if(ground != null) ground.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, -1, 0)))));
+			if(line != null) line.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 1, 0)))));
+			if(roof != null) roof.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, topheight, 0)))));
 		}
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
-				roadfill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+				roadfill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0)))));
 			}
 		}
 		if(linefill != null){
 			for(int i = 0; i < linefill.size(); i++){
-				linefill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 1, 0)))));
+				linefill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 1, 0)))));
 			}
 		}
 		if(rooffill != null){
 			for(int i = 0; i < rooffill.size(); i++){
-				rooffill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), topheight, 0)))));
+				rooffill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), topheight, 0)))));
 			}
 		}
-		if(border_l != null) border_l.add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-		if(border_r != null) border_r.add(new GridV3D(_road.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
+		if(border_l != null) border_l.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half - 1, 0, 0)))));
+		if(border_r != null) border_r.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(half + 1, 0, 0)))));
 		while(passed < _road.length){ passed += 0.125f;
 			last = vec; vec = _road.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
 			float off = roadfill == null ? 0 : 0.25f;
 			for(float fl = -half; fl <= half; fl += 0.25f){
-				if(road != null) road.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
-				if(ground != null) ground.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl + off, -1, 0)))));
-				if(line != null) line.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl, 1, 0)))));
-				if(roof != null) roof.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
+				if(road != null) road.add(new GridV3D(vec.add(grv(angle, new V3D(fl, 0, 0)))));
+				if(ground != null) ground.add(new GridV3D(vec.add(grv(angle, new V3D(fl + off, -1, 0)))));
+				if(line != null) line.add(new GridV3D(vec.add(grv(angle, new V3D(fl, 1, 0)))));
+				if(roof != null) roof.add(new GridV3D(vec.add(grv(angle, new V3D(fl, topheight, 0)))));
 			}
 			if(roadfill != null){
 				for(int i = 0; i < roadfill.size(); i++){
-					roadfill.get(i).add(new GridV3D(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+					roadfill.get(i).add(new GridV3D(vec.add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0)))));
 				}
 			}
 			if(linefill != null){
 				for(int i = 0; i < linefill.size(); i++){
-					linefill.get(i).add(new GridV3D(vec.add(grv(angle, new Vec3f(-half + off + (i * 1), 1, 0)))));
+					linefill.get(i).add(new GridV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), 1, 0)))));
 				}
 			}
 			if(rooffill != null){
 				for(int i = 0; i < rooffill.size(); i++){
-					rooffill.get(i).add(new GridV3D(vec.add(grv(angle, new Vec3f(-half + off + (i * 1), topheight, 0)))));
+					rooffill.get(i).add(new GridV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), topheight, 0)))));
 				}
 			}
-			if(border_l != null) border_l.add(new GridV3D(vec.add(grv(angle, new Vec3f(-half - 1 + off, 0, 0)))));
-			if(border_r != null) border_r.add(new GridV3D(vec.add(grv(angle, new Vec3f(half + 1 + off, 0, 0)))));
+			if(border_l != null) border_l.add(new GridV3D(vec.add(grv(angle, new V3D(-half - 1 + off, 0, 0)))));
+			if(border_r != null) border_r.add(new GridV3D(vec.add(grv(angle, new V3D(half + 1 + off, 0, 0)))));
 		}
 		JsonMap map = new JsonMap();
 		if(road != null){
@@ -425,9 +426,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		return h > height;
 	}
 
-	public static final Vec3f grv(float rad, Vec3f vec){
+	public static V3D grv(double rad, V3D vec){
         double co = Math.cos(rad), si = Math.sin(rad);
-        return new Vec3f(co * vec.x, vec.y, si * vec.x);
+        return new V3D(co * vec.x, vec.y, si * vec.x);
 	}
 
 	private boolean lastEquals(NBTTagList list, GridV3D vector){
@@ -471,7 +472,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		}
 
 		@Override
-		public Vec3f getVectorPosition(float distance, boolean reverse){
+		public V3D getVectorPosition(double distance, boolean reverse){
 			return super.getVectorPosition0(distance, reverse);
 		}
 

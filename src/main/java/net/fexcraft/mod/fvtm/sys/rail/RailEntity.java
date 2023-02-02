@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -47,14 +48,14 @@ public class RailEntity implements Comparable<RailEntity>{
 	public long uid;
 	public Region region;
 	//protected boolean forward = true;
-	public float throttle, passed;
-	public Vec3f pos = new Vec3f(), prev = new Vec3f(),
-		cfront = new Vec3f(), crear = new Vec3f(),
-		bfront = new Vec3f(), brear = new Vec3f();
+	public double throttle, passed;
+	public V3D pos = new V3D(), prev = new V3D(),
+		cfront = new V3D(), crear = new V3D(),
+		bfront = new V3D(), brear = new V3D();
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	public Coupler front = new Coupler(this, true), rear = new Coupler(this, false);
 	public VehicleData vehdata;
-	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
+	public double frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
 	public TrackUnit[] unitson = new TrackUnit[4];
 	//
 	private Short lastcheck = null;//for entity despawn/spawning;
@@ -78,16 +79,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		//this.passed = passed + rrconndis + frbogiedis;
 		bfront = move(rrconndis + frbogiedis, TrainPoint.BOGIE_FRONT);
 		brear = move(rrconndis - rrbogiedis, TrainPoint.BOGIE_REAR);
-		pos = medium(bfront, brear); moverq += 0.02f;
+		pos = bfront.middle(brear);
+		moverq += 0.02f;
 		cfront = move(rrconndis + frconndis, TrainPoint.COUPLER_FRONT);
 		crear = move(0, TrainPoint.COUPLER_REAR);
 		front.mbb.update(cfront, vehdata.getType().getCouplerRange() / 2); rear.mbb.update(crear, vehdata.getType().getCouplerRange() / 2);
 		//
 		region.spawnEntity(this.start());
-	}
-
-	private Vec3f medium(Vec3f vec0, Vec3f vec1){
-		return new Vec3f((vec0.x + vec1.x) * 0.5f, (vec0.y + vec1.y) * 0.5f, (vec0.z + vec1.z) * 0.5f);
 	}
 
 	/** only to use with read() afterwards 
@@ -131,15 +129,16 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(vehdata.hasPart("engine")){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
 				if(CMODE() || processConsumption(engine)){
-					float eng = throttle * engine.getLegacyEngineSpeed();
+					double eng = throttle * engine.getLegacyEngineSpeed();
 					if(com.isMultiple()) com.accumulator += eng;
 					else moverq = com.forward ? eng : -eng;
 				}
 			}
 		}
-		float am = moverq; boolean move = false;
+		double am = moverq;
+		boolean move = false;
 		if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
-			float amount = com.accumulator;
+			double amount = com.accumulator;
 			if(com.forward && com.isHead(this)){
 				am += front.hasEntity() ? -amount : amount;
 				com.accumulator = 0;
@@ -256,7 +255,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	//Well, only do this as "head" of the compound.
-	public final void moveCompound(float amount){
+	public final void moveCompound(double amount){
 		Coupler coupler = front.hasEntity() ? rear : front;
 		boolean rev = false;
 		while(coupler.getOpposite().hasEntity()){
@@ -268,12 +267,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 	}
 
-	private float checkForPushCoupling(TRO tro, float am){
+	private double checkForPushCoupling(TRO tro, double am){
 		if(front.hasEntity() && rear.hasEntity()) return am;
 		Collection<RailEntity> ents = getEntitiesOnTrackAndNext(tro.track);
 		Coupler[] couplers = new Coupler[]{ front, rear };
 		for(int i = 0; i < 2; i++){
-			if(couplers[i].hasEntity()) continue; Vec3f coucen = i == 0 ? cfront : crear;
+			if(couplers[i].hasEntity()) continue;
+			V3D coucen = i == 0 ? cfront : crear;
 			for(RailEntity ent : ents){
 				if(ent == this || ent == front.entity || ent == rear.entity || ent.com.uid == com.uid) continue;
 				ccalc.update(ent.cfront, ent.crear, 0.125f); if(!ccalc.contains(coucen)) continue;
@@ -319,7 +319,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		brear = move(passed - frbogiedis - rrbogiedis, TrainPoint.BOGIE_REAR);
 		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
 		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
-		prev.copy(pos); pos = medium(bfront, brear);
+		prev.copy(pos); pos = bfront.middle(brear);
 		front.mbb.update(cfront, vehdata.getType().getCouplerRange());
 		rear.mbb.update(crear, vehdata.getType().getCouplerRange());
 	}
@@ -349,7 +349,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 			case "passed":{
 				compound.setString("task", "update_passed");
-				compound.setFloat("passed", passed);
+				compound.setDouble("passed", passed);
 				break;
 			}
 			case "couplers":{
@@ -382,7 +382,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		region.getEntities().put(uid, this);
 	}
 
-	public Vec3f move(float passed, TrainPoint point){
+	public V3D move(double passed, TrainPoint point){
 		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0), false);
 		if(unitson[point.index] == null){
 			(unitson[point.index] = tro.track.unit).update(this, true);
@@ -394,14 +394,18 @@ public class RailEntity implements Comparable<RailEntity>{
 		return tro.track.getVectorPosition(tro.passed, false);
 	}
 
-	public Vec3f moveOnly(float passed){
-		TRO tro = getTrack(current, passed, true, false); return tro.track.getVectorPosition(tro.passed, false);
+	public V3D moveOnly(float passed){
+		TRO tro = getTrack(current, passed, true, false);
+		return tro.track.getVectorPosition(tro.passed, false);
 	}
 
-	private TRO getTrack(Track track, float passed, boolean apply, boolean signal){
+	private TRO getTrack(Track track, double passed, boolean apply, boolean signal){
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
-			if(junk == null){ com.stop(track, track.length); new TRO(track, track.length); }
+			if(junk == null){
+				com.stop(track, track.length);
+				new TRO(track, track.length);
+			}
 			if(signal && junk.hasSignal(track.getId()) && isActiveEnd()){
 				junk.pollSignal(this);
 				if(!junk.getSignalState(track.getId()) && !isPaused()){
@@ -443,9 +447,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public static class TRO {//track return object
-		public TRO(Track track, float passed){
-			this.track = track; this.passed = passed;
-		} public Track track; public float passed;
+
+		public TRO(Track track, double passed){
+			this.track = track;
+			this.passed = passed;
+		}
+
+		public Track track;
+		public double passed;
+
 	}
 
 	private void checkIfShouldHaveEntity(){
@@ -477,8 +487,9 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : region.getWorld().getWorld().playerEntities){
-			if(pos.dis(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 256) return true;
-		} return false;
+			if(pos.dis(pl.posX, pl.posY, pl.posZ) < 256) return true;
+		}
+		return false;
 	}
 
 	public NBTTagCompound write(NBTTagCompound compound){
@@ -486,14 +497,14 @@ public class RailEntity implements Comparable<RailEntity>{
 		compound.setLong("uid", uid);
 		compound.setIntArray("region", region.getKey().toArray());
 		current.getId().write(compound);
-		compound.setTag("pos", DataUtil.writeVec3f(pos));
-		compound.setTag("prev", DataUtil.writeVec3f(prev));
-		compound.setTag("cfront", DataUtil.writeVec3f(cfront));
-		compound.setTag("bfront", DataUtil.writeVec3f(bfront));
-		compound.setTag("crear", DataUtil.writeVec3f(crear));
-		compound.setTag("brear", DataUtil.writeVec3f(brear));
+		compound.setTag("pos", DataUtil.writeVec(pos));
+		compound.setTag("prev", DataUtil.writeVec(prev));
+		compound.setTag("cfront", DataUtil.writeVec(cfront));
+		compound.setTag("bfront", DataUtil.writeVec(bfront));
+		compound.setTag("crear", DataUtil.writeVec(crear));
+		compound.setTag("brear", DataUtil.writeVec(brear));
 		compound.setBoolean("forward", com.getOrient(this));
-		compound.setFloat("passed", passed);
+		compound.setDouble("passed", passed);
 		compound.setLong("Placer0", placer.getMostSignificantBits());
 		compound.setLong("Placer1", placer.getLeastSignificantBits());
 		if(front.entity != null){
@@ -513,7 +524,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		compound.setLong("Compound", com.getUID());
 		compound.setBoolean("Singular", com.isSingular());
-		compound.setFloat("throttle", throttle);
+		compound.setDouble("throttle", throttle);
 		return vehdata.write(compound);
 	}
 	
@@ -522,12 +533,12 @@ public class RailEntity implements Comparable<RailEntity>{
 		current = region.getTrack(new PathKey(compound));
 		if(current == null) Print.log("track not found! " + new PathKey(compound).toString());
 		if(current == null){ this.dispose(); return this; }
-		pos = DataUtil.readVec3f(compound.getTag("pos"));
-		prev = DataUtil.readVec3f(compound.getTag("prev"));
-		cfront = DataUtil.readVec3f(compound.getTag("cfront"));
-		bfront = DataUtil.readVec3f(compound.getTag("bfront"));
-		crear = DataUtil.readVec3f(compound.getTag("crear"));
-		brear = DataUtil.readVec3f(compound.getTag("brear"));
+		pos = DataUtil.readVec(compound.getTag("pos"));
+		prev = DataUtil.readVec(compound.getTag("prev"));
+		cfront = DataUtil.readVec(compound.getTag("cfront"));
+		bfront = DataUtil.readVec(compound.getTag("bfront"));
+		crear = DataUtil.readVec(compound.getTag("crear"));
+		brear = DataUtil.readVec(compound.getTag("brear"));
 		//forward = compound.hasKey("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
 		throttle = compound.getFloat("throttle");
@@ -579,8 +590,12 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void dispose(){
-		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple(); lastcheck = null;
-		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
+		Print.debug("Disposing of TrackEntity " + uid + "!");
+		front.decouple();
+		rear.decouple();
+		lastcheck = null;
+		region.getWorld().delEntity(this);
+		if(entity != null && !entity.isDead) entity.setDead();
 		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(this);
 	}
 
@@ -610,7 +625,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void tryCoupling(EntityPlayer player, boolean thefront){
-		Coupler coupler = thefront ? front : rear; Vec3f vec = thefront ? cfront : crear;
+		Coupler coupler = thefront ? front : rear;
+		V3D vec = thefront ? cfront : crear;
 		if(coupler.hasEntity()){
 			coupler.decouple(); Print.chat(player, (thefront ? "Front" : "Rear") + " disconnected.");
 		}

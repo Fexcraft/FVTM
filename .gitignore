@@ -30,3 +30,4 @@ run/*
 # Yet Other
 old/
 src/main/resources/assets/fvtm/test/
+gradle/

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonArray;
@@ -12,20 +13,20 @@ import net.minecraft.nbt.NBTTagCompound;
 public class Rot {
 	
 	public static final Rot NULL = new Rot();
-	private final Vec3f vec;
+	private final V3D vec;
 	public boolean nell;
 	
 	public Rot(){
-		vec = new Vec3f();
+		vec = new V3D();
 		check();
 	}
 
-	public Rot(float x, float y, float z){
-		vec = new Vec3f(x, y, z);
+	public Rot(double x, double y, double z){
+		vec = new V3D(x, y, z);
 		check();
 	}
 	
-	public Rot(Vec3f vec){
+	public Rot(V3D vec){
 		this.vec = vec;
 		check();
 	}
@@ -42,7 +43,7 @@ public class Rot {
 
 	public void toNBT(String key, NBTTagCompound compound){
 		if(isNull()) return;
-		compound.setTag(key, DataUtil.writeVec3f(vec));
+		compound.setTag(key, DataUtil.writeVec(vec));
 	}
 
 	public boolean isNull(){
@@ -51,31 +52,31 @@ public class Rot {
 
 	public static Rot fromNBT(String key, NBTTagCompound compound){
 		if(!compound.hasKey(key)) return new Rot();
-		Vec3f vec = DataUtil.readVec3f(compound.getTag(key));
+		V3D vec = DataUtil.readVec(compound.getTag(key));
 		return new Rot(vec);
 	}
 
 	public static Rot fromJson(JsonObject obj, String key){
 		if(!obj.has(key) || obj.get(key).isJsonArray()) return new Rot();
-		return new Rot(DataUtil.readVec3f(obj.get(key)));
+		return new Rot(DataUtil.readVec(obj.get(key)));
 	}
 
 	public JsonElement toJson(){
-		return DataUtil.writeVec3fJSON(vec);
+		return DataUtil.writeVecJSON(vec);
 	}
 
 	public void rotate(){
 		if(nell) return;
-        if(vec.y != 0f) GL11.glRotatef(vec.y, 0.0F, 1.0F, 0.0F);
-        if(vec.x != 0f) GL11.glRotatef(vec.x, 1.0F, 0.0F, 0.0F);
-        if(vec.z != 0f) GL11.glRotatef(vec.z, 0.0F, 0.0F, 1.0F);
+        if(vec.y != 0f) GL11.glRotated(vec.y, 0.0F, 1.0F, 0.0F);
+        if(vec.x != 0f) GL11.glRotated(vec.x, 1.0F, 0.0F, 0.0F);
+        if(vec.z != 0f) GL11.glRotated(vec.z, 0.0F, 0.0F, 1.0F);
 	}
 
 	public void rotateR(){
 		if(nell) return;
-        if(vec.z != 0f) GL11.glRotatef(-vec.z, 0.0F, 0.0F, 1.0F);
-        if(vec.x != 0f) GL11.glRotatef(-vec.x, 1.0F, 0.0F, 0.0F);
-        if(vec.y != 0f) GL11.glRotatef(-vec.y, 0.0F, 1.0F, 0.0F);
+        if(vec.z != 0f) GL11.glRotated(-vec.z, 0.0F, 0.0F, 1.0F);
+        if(vec.x != 0f) GL11.glRotated(-vec.x, 1.0F, 0.0F, 0.0F);
+        if(vec.y != 0f) GL11.glRotated(-vec.y, 0.0F, 1.0F, 0.0F);
 	}
 
 	public void set(Vec3f rot){

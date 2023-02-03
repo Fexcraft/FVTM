@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail.vis;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -16,13 +17,14 @@ public class Reltrs {
 	private VehicleData data;
 	public final Long uid;
 	public Track last, current;
-	public float passed;
+	public double passed;
 	public RailSystem sys;
-	public float frbogiedis, rrbogiedis;
+	public double frbogiedis, rrbogiedis;
 	
 	public Reltrs(RailSystem system, RailEntity entity, Long id){
 		this.entity = entity; uid = entity == null ? id : entity.uid; sys = system;
-		frbogiedis = entity.frbogiedis; rrbogiedis = entity.rrbogiedis;
+		frbogiedis = entity.frbogiedis;
+		rrbogiedis = entity.rrbogiedis;
 	}
 	
 	public Reltrs(RailSystem system, NBTTagCompound compound){
@@ -34,15 +36,15 @@ public class Reltrs {
 				data = Resources.getVehicleData(compound);
 			} else data.read(compound);
 		} else entity.read(compound);
-		frbogiedis = compound.getFloat("fr_bogie");
-		rrbogiedis = compound.getFloat("rr_bogie");
+		frbogiedis = compound.getDouble("fr_bogie");
+		rrbogiedis = compound.getDouble("rr_bogie");
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound = entity.vehdata.write(compound);
 		compound.setLong("UID", entity.uid);
-		compound.setFloat("fr_bogie", frbogiedis);
-		compound.setFloat("rr_bogie", frbogiedis);
+		compound.setDouble("fr_bogie", frbogiedis);
+		compound.setDouble("rr_bogie", frbogiedis);
 		//entity.current.id.write(compound);
 		compound.setTag("Track", entity.current.write(new NBTTagCompound()));
 		return compound;
@@ -56,11 +58,12 @@ public class Reltrs {
 		return entity == null ? data : entity.vehdata;
 	}
 
-	public Vec3f moveOnly(float passed){
-		TRO tro = getTrack(current, passed); return tro.track == null ? null : tro.track.getVectorPosition(tro.passed, false);
+	public V3D moveOnly(double passed){
+		TRO tro = getTrack(current, passed);
+		return tro.track == null ? null : tro.track.getVectorPosition(tro.passed, false);
 	}
 
-	private TRO getTrack(Track track, float passed){
+	private TRO getTrack(Track track, double passed){
 		if(track == null) return new TRO(track, passed);
 		while(passed > track.length){
 			Junction junk = sys.getJunction(track.end);

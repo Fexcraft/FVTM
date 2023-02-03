@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -11,13 +12,13 @@ import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.util.math.Vec3d;
 
 public class RailGaugeModel extends GenericModel {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
-	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();
+	public ArrayList<V3D[]> rail_model = new ArrayList<>();
 	public boolean rail_tempcull = false;
 	public float ties_distance = 0.5f;
 	public float signal_offset = 0.25f;
@@ -50,7 +51,7 @@ public class RailGaugeModel extends GenericModel {
 				this.addRailRect(scale, sx, sy, w, h, m);
 			}
 			else{
-				Vec3f tl = new Vec3f(args, 7), tr = new Vec3f(args, 10), bl = new Vec3f(args, 13), br = new Vec3f(args, 16);
+				V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);
 				this.addRailRectShape(scale, sx, sy, w, h, tl, tr, bl, br, m);
 			}
 		}
@@ -63,33 +64,33 @@ public class RailGaugeModel extends GenericModel {
 	}
 	
 	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror){
-		rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y, 0).scale(scale), new Vec3f(start_x + width, start_y, 0).scale(scale) });
+		rail_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
 		if(height > 0){
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y - height, 0).scale(scale), new Vec3f(start_x, start_y, 0).scale(scale) });
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x + width, start_y, 0).scale(scale), new Vec3f(start_x + width, start_y - height, 0).scale(scale) });
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y - height, 0).scale(scale), new Vec3f(start_x + width, start_y - height, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
 		}
 		else{
 			float h = 0.01f / scale;
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y - h, 0).scale(scale), new Vec3f(start_x + width, start_y - h, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x, start_y - h, 0).scale(scale), new V3D(start_x + width, start_y - h, 0).scale(scale) });
 		}
 		if(mirror) addRailRect(scale, -start_x - width, start_y, width, height, false);
 	}
 	
-	public void addRailRectShape(float scale, float start_x, float start_y, float width, float height, Vec3f tl, Vec3f tr, Vec3f bl, Vec3f br, boolean mirror){
-		if(tl == null) tl = new Vec3f();
-		if(tr == null) tr = new Vec3f();
-		if(bl == null) bl = new Vec3f();
-		if(br == null) br = new Vec3f();
-		rail_model.add(new Vec3f[]{ new Vec3f(start_x + bl.x, start_y + tl.y, 0).scale(scale), new Vec3f(start_x + width + br.x, start_y + tr.y, 0).scale(scale) });
+	public void addRailRectShape(float scale, float start_x, float start_y, float width, float height, V3D tl, V3D tr, V3D bl, V3D br, boolean mirror){
+		if(tl == null) tl = new V3D();
+		if(tr == null) tr = new V3D();
+		if(bl == null) bl = new V3D();
+		if(br == null) br = new V3D();
+		rail_model.add(new V3D[]{ new V3D(start_x + bl.x, start_y + tl.y, 0).scale(scale), new V3D(start_x + width + br.x, start_y + tr.y, 0).scale(scale) });
 		if(height > 0){
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new Vec3f(start_x + bl.x, start_y + tl.y, 0).scale(scale) });
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x + width + br.x, start_y + tr.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new V3D(start_x + bl.x, start_y + tl.y, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x + width + br.x, start_y + tr.y, 0).scale(scale), new V3D(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new V3D(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
 		}
 		else{
 			float h = 0.01f / scale;
-			rail_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - h + bl.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - h + br.y, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x + tl.x, start_y - h + bl.y, 0).scale(scale), new V3D(start_x + width + tr.x, start_y - h + br.y, 0).scale(scale) });
 		}
 		if(mirror) addRailRectShape(scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
 	}
@@ -101,7 +102,7 @@ public class RailGaugeModel extends GenericModel {
 	public void renderBuffer(Junction junc){
 		if(!groups.contains("buffer")) return;
 		if(buffer_track == null){
-			buffer_track = new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(0, 0, 0)) }, new Vec316f(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
+			buffer_track = new Track(null, new GridV3D[]{ new GridV3D(new Vec3d(0, 0, 0)) }, new GridV3D(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
 		}
 		if(buffer_track.railmodel == null){ RailRenderer.generateTrackModel(buffer_track, this); }
 		TexUtil.bindTexture(buffer_track.gauge.getModelTexture());

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.particle;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
@@ -9,16 +10,16 @@ import net.fexcraft.lib.common.math.Vec3f;
 public class ParticleEntity {
 	
 	public final Particle particle;
-	public Vec3f pos, prev, temp, dir;
-	public float percent, scale, speed;
+	public V3D pos, prev, temp, dir;
+	public double percent, scale, speed;
 	public RGB color;
 	public int passed;
 	
-	public ParticleEntity(Particle part, Vec3f pos, Vec3f dir, Float speed){
+	public ParticleEntity(Particle part, V3D pos, V3D dir, Double speed){
 		particle = part;
 		this.pos = pos;
-		prev = new Vec3f(pos);
-		temp = new Vec3f();
+		prev = new V3D(pos);
+		temp = new V3D();
 		this.dir = dir == null ? part.dir : dir;
 		this.speed = speed == null ? part.speed : speed;
 		percent = 0;
@@ -27,7 +28,7 @@ public class ParticleEntity {
 		if(particle.alpha == -1) color.alpha = Static.random.nextFloat();
 	}
 	
-	public void setDirSpeed(Vec3f dir, float speed){
+	public void setDirSpeed(V3D dir, float speed){
 		this.dir = dir;
 		this.speed = speed;
 	}
@@ -39,7 +40,7 @@ public class ParticleEntity {
 		GL11.glPushMatrix();
 		GL11.glTranslated(temp.x - cx, temp.y - cy, temp.z - cz);
 		color.glColorApply();
-		GL11.glScalef(scale, scale, scale);
+		GL11.glScaled(scale, scale, scale);
 		particle.model.render(1f);
 		RGB.glColorReset();
 		GL11.glPopMatrix();
@@ -47,20 +48,20 @@ public class ParticleEntity {
 
 	public void update(){
 		prev = pos;
-		pos = new Vec3f();
-		float x = (Static.random.nextFloat() - 0.5f) / 50f, z = (Static.random.nextFloat() - 0.5f) / 50f;
+		pos = new V3D();
+		double x = (Static.random.nextDouble() - 0.5) / 50d, z = (Static.random.nextDouble() - 0.5) / 50d;
 		pos.x = prev.x + dir.x * speed + x;
 		pos.y = prev.y + dir.y * speed;
 		pos.z = prev.z + dir.z * speed + z;
-		percent = passed / (float)particle.persistence;
+		percent = passed / particle.persistence;
 		if(particle.scale_to > 0){
 			scale = particle.scale + (particle.scale_to - particle.scale) * percent;
 		}
 		if(particle.color_to != null){
-			color.packed = mix(particle.color, particle.color_to, percent);
+			color.packed = mix(particle.color, particle.color_to, (float)percent);
 		}
 		if(particle.alpha >= 0 && particle.alpha_to != particle.alpha){
-			color.alpha = particle.alpha + (particle.alpha_to - particle.alpha) * percent;
+			color.alpha = (float)(particle.alpha + (particle.alpha_to - particle.alpha) * percent);
 		}
 		passed++;
 	}

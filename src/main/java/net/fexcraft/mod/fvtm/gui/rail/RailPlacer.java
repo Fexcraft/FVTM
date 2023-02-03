@@ -6,6 +6,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -21,7 +22,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.MapColor;
@@ -55,8 +56,8 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	//
 	private static int itemslot;
 	private static Track demotrack;
-	private static Vec316f begin, end;
-	private static ArrayList<Vec316f> points = new ArrayList<>();
+	private static GridV3D begin, end;
+	private static ArrayList<GridV3D> points = new ArrayList<>();
 	//
 	//private FieldButton fieldbutton;
 	private OrientButton orientbutton;
@@ -145,7 +146,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		for(Junction junc : junctions){
 			this.buttons.put("j" + junc.getVec316f().asIDString(), new JunctionButton(junc));
 		}
-		for(Vec316f point : points){
+		for(GridV3D point : points){
 			this.buttons.put("p" + point.asIDString(), new PointButton(point));
 		}
 		this.buttons.put("terrain", new BasicButton("terrain", guiLeft + 202, guiTop + 188, 202, 188, 10, 10, true));
@@ -211,7 +212,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		if(conn.isOppositeCopy()) return;
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Vec3f vec0, vec1;
+		V3D vec0, vec1;
         float flfl = junc ? 0 : 1, glgl = junc ? 1 : 0;
 		for(int j = 0; j < conn.vecpath.length - 1; j++){
 			vec0 = conn.vecpath[j];
@@ -227,7 +228,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	protected void drawlast(float pticks, int mouseX, int mouseY){
 		for(int i = 0; i < 12; i++){
 			if(i + 1 >= points.size()) break;
-			Vec316f vec = points.get(i + 1);
+			GridV3D vec = points.get(i + 1);
 			fontRenderer.drawString(vec.x + "-" + vec.y + "-" + vec.z, guiLeft + 201, guiTop + 24 + (i * 12), MapColor.BLACK.colorValue);
 		}
 		ttip.clear();
@@ -281,7 +282,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		else if(button.name.equals("field")){
 			int x = (mouseX - guiLeft - zoom.bo) / zoom.cs, y = (mouseY - guiTop - zoom.bo) / zoom.cs;
 			if(x < 0 || y < 0 || x >= zoom.gs || y >= zoom.gs) return true;
-        	Vec316f pos = new Vec316f(POSGRID[x][y].up(), (byte)orient.x, (byte)0, (byte)orient.z);
+        	GridV3D pos = new GridV3D(POSGRID[x][y].up(), (byte)orient.x, (byte)0, (byte)orient.z);
         	Junction junc = system.getJunction(pos);
         	if(mouseButton > 0){
         		if(junc == null){
@@ -372,17 +373,17 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		else if(button.name.startsWith("r")){
 			int i = Integer.parseInt(button.name.replace("r", "")) + 1;
 			if(i < 0 || i >= points.size()) return true;
-			Vec316f vec = points.remove(i);
+			GridV3D vec = points.remove(i);
 			buttons.remove("p" + vec.asIDString());
 			retrack(null);
 		}
 		return false;
 	}
 
-	private void retrack(Vec316f pos){
+	private void retrack(GridV3D pos){
 		if(points.size() < 2 && pos == null) demotrack = null;
-		else if(pos != null) demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
-		else demotrack = new Track(null, points.toArray(new Vec316f[0]), null);
+		else if(pos != null) demotrack = new Track(null, points.toArray(new GridV3D[0]), pos, null);
+		else demotrack = new Track(null, points.toArray(new GridV3D[0]), null);
 	}
 
 	private void resetPoints(){
@@ -431,7 +432,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			this.z = z;
 		}
 
-		public static String get(Vec316f vec){
+		public static String get(GridV3D vec){
 			Orient o = null;
 			if(vec.y == 0){
 				for(Orient or : values()){
@@ -487,7 +488,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	
 	public static class PointButton extends BasicButton {
 		
-		public PointButton(Vec316f vec){
+		public PointButton(GridV3D vec){
 			super("p" + vec, 0, 0, 0, 0, zoom.cs, zoom.cs, true);
 			x = vec.pos.getX() - (cx * 16);
 			y = vec.pos.getZ() - (cz * 16);

@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ public interface JunctionTrackingTileEntity {
 		if(tile_entity instanceof JunctionTrackingTileEntity == false) return;
 		JunctionTrackingTileEntity tile = (JunctionTrackingTileEntity)tile_entity;
     	if(held.hasTagCompound() && held.getTagCompound().hasKey("fvtm:junction")){
-    		Vec316f vector = new Vec316f(held.getTagCompound().getCompoundTag("fvtm:junction"));
+    		GridV3D vector = new GridV3D(held.getTagCompound().getCompoundTag("fvtm:junction"));
     		Junction junc = null;
         	RailSystem sys = SystemManager.get(Systems.RAIL, tile_entity.getWorld());
         	if(sys != null) junc = sys.getJunction(vector, false);
@@ -65,7 +65,7 @@ public interface JunctionTrackingTileEntity {
     	}
 	}
 	
-	public default void linkJunction(World world, BlockPos pos, Vec316f vec){
+	public default void linkJunction(World world, BlockPos pos, GridV3D vec){
 		if(world == null) return;
 		RailSystem system = SystemManager.get(Systems.RAIL, world);
 		if(system == null) return;
@@ -73,9 +73,9 @@ public interface JunctionTrackingTileEntity {
 		if(junc != null) junc.addLinkedTileEntity(pos);
 	}
 
-	public Vec316f getJuncPos();
+	public GridV3D getJuncPos();
 
-	public void setJunction(Vec316f vec316f);
+	public void setJunction(GridV3D gridvecs);
 	
 	public Junction getJunction();
 

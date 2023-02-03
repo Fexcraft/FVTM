@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WireType;
@@ -28,8 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Wire {
 
 	public WireKey key, okey;
-	public Vec3f start, end;
-	public Vec3f[] rootpath = new Vec3f[3], vecpath;
+	public V3D start, end;
+	public V3D[] rootpath = new V3D[3], vecpath;
 	public float length;
 	protected WireUnit unit;
 	protected WireRelay relay;
@@ -38,8 +39,8 @@ public class Wire {
 	//
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
-	public float model_start_angle, model_end_angle;
-	public float model_start_angle_down, model_end_angle_down;
+	public double model_start_angle, model_end_angle;
+	public double model_start_angle_down, model_end_angle_down;
 	@SideOnly(Side.CLIENT)
 	public WireModel deco_s, deco_e;
 	public String deco_start, deco_end;
@@ -47,17 +48,17 @@ public class Wire {
 	@SideOnly(Side.CLIENT)
 	public HashMap<String, WireModel> deco_m;
 	@SideOnly(Side.CLIENT)
-	public HashMap<String, HashMap<String, ArrayList<Vec3f>>> deco_d;
+	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
 	@SideOnly(Side.CLIENT)
 	public HashMap<String, HashMap<String, ArrayList<ModelRendererTurbo>>> deco_g;
 	public float slack = 0;
 	
-	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f s_v, Vec3f e_v){
+	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, V3D s_v, V3D e_v){
 		key = new WireKey(relay, relay0);
 		okey = new WireKey(relay0, relay);
 		type = wiretype;
 		slack = type.default_slack();
-		rootpath = new Vec3f[]{ s_v, null, e_v };
+		rootpath = new V3D[]{ s_v, null, e_v };
 		start = s_v;
 		end = e_v;
 		reslack();
@@ -67,17 +68,17 @@ public class Wire {
 		rootpath[0] = start;
 		rootpath[1] = start.middle(end).add(0, -slack, 0);
 		rootpath[2] = end;
-		vecpath = new Vec3f[rootpath.length];
+		vecpath = new V3D[rootpath.length];
 		construct();
 	}
 	
 	public void construct(){
-		vecpath = new Vec3f[rootpath.length];
+		vecpath = new V3D[rootpath.length];
 		for(int i = 0; i < rootpath.length; i++){
 			vecpath[i] = rootpath[i];
 		}
-		Vec3f[] vecs = curve(vecpath);
-		vecpath = new Vec3f[vecs.length + 2];
+		V3D[] vecs = curve(vecpath);
+		vecpath = new V3D[vecs.length + 2];
 		vecpath[0] = rootpath[0];
 		for(int i = 0; i < vecs.length; i++){
 			vecpath[i + 1] = vecs[i];
@@ -86,7 +87,7 @@ public class Wire {
 		this.length = this.calcLength();
 	}
 	
-	public float getLength(Vec3f[] vecs){
+	public float getLength(V3D[] vecs){
 		vecs = vecs == null ? vecpath : vecs;
 		float temp = 0;
 		for(int i = 0; i < vecs.length - 1; i++){
@@ -104,14 +105,14 @@ public class Wire {
 	 * @param vecpoints
 	 * @return
 	 */
-	private Vec3f[] curve(Vec3f[] vecpoints){
-		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
+	private V3D[] curve(V3D[] vecpoints){
+		ArrayList<V3D> vecs = new ArrayList<V3D>();
 		float length = getLength(vecpoints);
 		float increment = 1 / length / Config.WIRE_SEGMENTATOR;
 		double d = 0; while(d < 1){
-			Vec3f[] moved = vecpoints;
+			V3D[] moved = vecpoints;
 			while(moved.length > 2){
-				Vec3f[] arr = new Vec3f[moved.length - 1];
+				V3D[] arr = new V3D[moved.length - 1];
 				for(int i = 0; i < moved.length - 1; i++){
 					arr[i] = Path.move(moved[i], moved[i + 1], moved[i].dis(moved[i + 1]) * d);
 				}
@@ -120,7 +121,7 @@ public class Wire {
 			d += increment;//0.0625//0.05;
 			vecs.add(Path.move(moved[0], moved[1], moved[0].dis(moved[1]) * d));
 		}
-		return vecs.toArray(new Vec3f[0]);
+		return vecs.toArray(new V3D[0]);
 	}
 
 	/** Only for the READ process. @param relay just to make sure it's not used elsewhere */
@@ -131,8 +132,8 @@ public class Wire {
 
 	public Wire read(NBTTagCompound compound){
 		if(compound.hasKey("wiretype")) type = Resources.WIRES.get(compound.getString("wiretype"));
-		start = new Vec3f(compound.getFloat("sx"), compound.getFloat("sy"), compound.getFloat("sz"));
-		end = new Vec3f(compound.getFloat("ex"), compound.getFloat("ey"), compound.getFloat("ez"));
+		start = new V3D(compound.getFloat("sx"), compound.getFloat("sy"), compound.getFloat("sz"));
+		end = new V3D(compound.getFloat("ex"), compound.getFloat("ey"), compound.getFloat("ez"));
 		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
 		reslack();
 		construct();
@@ -169,12 +170,12 @@ public class Wire {
 
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
-		compound.setFloat("sx", start.x);
-		compound.setFloat("sy", start.y);
-		compound.setFloat("sz", start.z);
-		compound.setFloat("ex", end.x);
-		compound.setFloat("ey", end.y);
-		compound.setFloat("ez", end.z);
+		compound.setDouble("sx", start.x);
+		compound.setDouble("sy", start.y);
+		compound.setDouble("sz", start.z);
+		compound.setDouble("ex", end.x);
+		compound.setDouble("ey", end.y);
+		compound.setDouble("ez", end.z);
 		compound.setFloat("slack", slack);
 		compound.setFloat("length", length);
 		key.save(compound);
@@ -200,7 +201,7 @@ public class Wire {
 		wire.end = start;
 		wire.copy = true;
 		wire.type = type;
-		wire.rootpath = new Vec3f[rootpath.length];
+		wire.rootpath = new V3D[rootpath.length];
 		wire.rootpath[0] = rootpath[2];
 		wire.rootpath[1] = rootpath[1];
 		wire.rootpath[2] = rootpath[0];
@@ -216,26 +217,26 @@ public class Wire {
 		return wire;
 	}
 	
-	public Vec3f getVectorPosition(float distance, boolean reverse){
-		if(reverse) distance = (float)this.oppositePassed(distance);
+	public V3D getVectorPosition(double distance, boolean reverse){
+		if(reverse) distance = this.oppositePassed(distance);
 		if(distance >= this.length){
-			return new Vec3f(vecpath[vecpath.length - 1]);
+			return new V3D(vecpath[vecpath.length - 1]);
 		}
-		float traveled = 0, temp, multi;
+		double traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
 			temp = traveled + (multi = vecpath[i].dis(vecpath[i + 1]));
 			if(temp >= distance){
-				if(temp == distance) return new Vec3f(vecpath[i + 1]);
+				if(temp == distance) return new V3D(vecpath[i + 1]);
 				return vecpath[i + 1].distance(vecpath[i], temp - distance);
 			}
 			else{
 				traveled += multi;
 			}
 		}
-		return new Vec3f(vecpath[0]);
+		return new V3D(vecpath[0]);
 	}
 
-	public float oppositePassed(float sec){
+	public double oppositePassed(double sec){
 		return sec >= length ? 0 : sec <= 0 ? length : this.length - sec;
 	}
 	
@@ -260,10 +261,10 @@ public class Wire {
 		return type;
 	}
 
-	public Vec3f getVectorOnWire(Vec3f ext){
-		Vec3f at = vecpath[0];
-		float dis = ext.dis(vecpath[0]), tes;
-		for(Vec3f vec : vecpath){
+	public V3D getVectorOnWire(V3D ext){
+		V3D at = vecpath[0];
+		double dis = ext.dis(vecpath[0]), tes;
+		for(V3D vec : vecpath){
 			if((tes = vec.dis(ext)) < dis){
 				dis = tes;
 				at = vec;
@@ -272,11 +273,11 @@ public class Wire {
 		return at;
 	}
 	
-	public float getPassedOnWire(Vec3f ext){
+	public float getPassedOnWire(V3D ext){
 		float passed = 0;
-		Vec3f at = getVectorOnWire(ext), last = at;
+		V3D at = getVectorOnWire(ext), last = at;
 		for(int i = 1; i < vecpath.length; i++){
-			float dis = last.dis(vecpath[i]);
+			double dis = last.dis(vecpath[i]);
 			if(dis < 0.001f) break;
 			passed += dis;
 		}

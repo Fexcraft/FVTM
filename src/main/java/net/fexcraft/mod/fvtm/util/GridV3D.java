@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.minecraft.block.state.IBlockState;
@@ -9,34 +10,33 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
- * <i>Junction Vector</i>
- * 
+ *
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class Vec316f implements Comparable<Vec316f> {
-	
+public class GridV3D implements Comparable<GridV3D> {
+
 	public final BlockPos pos;
 	public final byte x, y, z;
-	public final Vec3f vector;
+	public final V3D vector;
 
-	public Vec316f(Vec3d pos){
-		this.pos = new BlockPos(pos);
-		x = (byte)((pos.x - this.pos.getX()) / 0.0625);
-		y = (byte)((pos.y - this.pos.getY()) / 0.0625);
-		z = (byte)((pos.z - this.pos.getZ()) / 0.0625);
-		vector = toVec3f();
+	public GridV3D(Vec3d vec){
+		pos = new BlockPos(vec);
+		x = (byte)((vec.x - this.pos.getX()) / 0.0625);
+		y = (byte)((vec.y - this.pos.getY()) / 0.0625);
+		z = (byte)((vec.z - this.pos.getZ()) / 0.0625);
+		vector = toVec();
 	}
 
-	public Vec316f(Vec3f pos){
-		this.pos = new BlockPos(pos.x, pos.y, pos.z);
-		x = (byte)((pos.x - this.pos.getX()) / 0.0625);
-		y = (byte)((pos.y - this.pos.getY()) / 0.0625);
-		z = (byte)((pos.z - this.pos.getZ()) / 0.0625);
-		vector = toVec3f();
+	public GridV3D(V3D vec){
+		pos = new BlockPos(vec.x, vec.y, vec.z);
+		x = (byte)((vec.x - this.pos.getX()) / 0.0625);
+		y = (byte)((vec.y - this.pos.getY()) / 0.0625);
+		z = (byte)((vec.z - this.pos.getZ()) / 0.0625);
+		vector = toVec();
 	}
 
-	public Vec316f(World world, Vec3d pos, int rgs){
+	public GridV3D(World world, Vec3d pos, int rgs){
 		this(validatePos(world, pos), rgs);
 	}
 
@@ -48,19 +48,19 @@ public class Vec316f implements Comparable<Vec316f> {
 		return pos;
 	}
 
-	public Vec316f(Vec3d pos, int rgs){
+	public GridV3D(Vec3d pos, int rgs){
 		this(pos.x, pos.y, pos.z, rgs);
 	}
 
-	public Vec316f(Vec3f pos, int rgs){
+	public GridV3D(V3D pos, int rgs){
 		this(pos.x, pos.y, pos.z, rgs);
 	}
 
-	public Vec316f(double posx, double posy, double posz, int rgs){
-		this.pos = new BlockPos(posx, posy, posz);
-		byte x = (byte)((posx - this.pos.getX()) / 0.0625);
-		byte y = (byte)((posy - this.pos.getY()) / 0.0625);
-		byte z = (byte)((posz - this.pos.getZ()) / 0.0625);
+	public GridV3D(double posx, double posy, double posz, int rgs){
+		pos = new BlockPos(posx, posy, posz);
+		byte x = (byte)((posx - pos.getX()) / 0.0625);
+		byte y = (byte)((posy - pos.getY()) / 0.0625);
+		byte z = (byte)((posz - pos.getZ()) / 0.0625);
 		switch(rgs){
 			case 1: x = y = z = 0; break;
 			case 2:{
@@ -86,44 +86,44 @@ public class Vec316f implements Comparable<Vec316f> {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		vector = toVec3f();
+		vector = toVec();
 	}
 
-	public Vec316f(NBTTagCompound compound){
+	public GridV3D(NBTTagCompound compound){
 		pos = BlockPos.fromLong(compound.getLong("vec_pos"));
 		x = compound.getByte("pos_x");
 		y = compound.getByte("pos_y");
 		z = compound.getByte("pos_z");
-		vector = toVec3f();
+		vector = toVec();
 	}
 
-	public Vec316f(int px, int py, int pz, byte x, byte y, byte z){
+	public GridV3D(int px, int py, int pz, byte x, byte y, byte z){
 		pos = new BlockPos(px, py, pz);
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		vector = toVec3f();
+		vector = toVec();
 	}
 
-	public Vec316f(BlockPos blkpos, byte x, byte y, byte z){
+	public GridV3D(BlockPos blkpos, byte x, byte y, byte z){
 		pos = new BlockPos(blkpos);
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		vector = toVec3f();
+		vector = toVec();
 	}
 
-	public Vec316f(Vec316f other){
+	public GridV3D(GridV3D other){
 		pos = new BlockPos(other.pos);
 		x = other.x; y = other.y; z = other.z;
-		vector = new Vec3f(other.vector);
+		vector = new V3D(other.vector);
 	}
 
-	public Vec316f(BlockPos blkpos, boolean centered, boolean vcentered){
+	public GridV3D(BlockPos blkpos, boolean centered, boolean vcentered){
 		pos = new BlockPos(blkpos);
 		x = z = (byte)(centered ? 8 : 0);
 		y = (byte)(vcentered ? 8 : 0);
-		vector = toVec3f();
+		vector = toVec();
 	}
 
 	public NBTTagCompound write(){
@@ -135,12 +135,12 @@ public class Vec316f implements Comparable<Vec316f> {
 		return compound;
 	}
 
-	private Vec3f toVec3f(){
-		return new Vec3f(pos.getX() + (x * 0.0625f), pos.getY() + (y * 0.0625f), pos.getZ() + (z * 0.0625f));
+	private V3D toVec(){
+		return new V3D(pos.getX() + (x * 0.0625), pos.getY() + (y * 0.0625), pos.getZ() + (z * 0.0625));
 	}
 
 	@Override
-	public int compareTo(Vec316f o){
+	public int compareTo(GridV3D o){
 		if(o.pos.compareTo(pos) == 0){
 			if(o.y > y) return 1; else if(o.y < y) return -1;
 			if(o.x > x) return 1; else if(o.x < x) return -1;
@@ -149,44 +149,48 @@ public class Vec316f implements Comparable<Vec316f> {
 		}
 		return o.pos.compareTo(pos);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof Vec3f) return ((Vec3f)obj).equals(vector);
-		if(obj instanceof Vec316f == false) return false; Vec316f vec = (Vec316f)obj;
-		if(vec.pos.equals(pos)) return vec.x == x && vec.y == y && vec.z == z; else return false;
+		if(obj instanceof V3D) return obj.equals(vector);
+		//noinspection PointlessBooleanExpression
+		if(obj instanceof GridV3D == false) return false;
+		GridV3D vec = (GridV3D)obj;
+		return vec.pos.equals(pos) && vec.x == x && vec.y == y && vec.z == z;
 	}
-	
+
 	@Override
 	public String toString(){
 		return "(" + vector.x + ", " + vector.y + ", " + vector.z + ")";
 	}
 
 	public String asIDString(){
-		return pos.getX() + "," + pos.getY() + "," + pos.getZ() + "|" + x + "," + y + "," + z;
+		return pos.getX() + "," + pos.getY() + "," + pos.getZ() + "" + x + "," + y + "," + z;
 	}
-	
-	public static Vec316f fromIDString(String str){
-		String[] arr0 = str.split("|"), arr1 = arr0[1].split(","); arr0 = arr0[0].split(",");
+
+	public static GridV3D fromIDString(String str){
+		String[] arr0 = str.split("\\|"), arr1 = arr0[1].split(",");
+		arr0 = arr0[0].split(",");
 		int[] pxyz = new int[3];
 		byte[] xyz = new byte[3];
 		for(int i = 0; i < 3; i++){
 			pxyz[i] = Integer.parseInt(arr0[i]);
 			xyz[i] = Byte.parseByte(arr1[i]);
 		}
-		return new Vec316f(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
+		return new GridV3D(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
 	}
-	
-	public static Vec316f fromIDString(String str, boolean safe){
+
+	public static GridV3D fromIDString(String str, boolean safe){
 		if(!safe) return fromIDString(str); try{
-			String[] arr0 = str.split("|"), arr1 = arr0[1].split(","); arr0 = arr0[0].split(",");
+			String[] arr0 = str.split("\\|"), arr1 = arr0[1].split(",");
+			arr0 = arr0[0].split(",");
 			int[] pxyz = new int[3];
 			byte[] xyz = new byte[3];
 			for(int i = 0; i < 3; i++){
 				pxyz[i] = Integer.parseInt(arr0[i]);
 				xyz[i] = Byte.parseByte(arr1[i]);
 			}
-			return new Vec316f(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
+			return new GridV3D(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -194,8 +198,8 @@ public class Vec316f implements Comparable<Vec316f> {
 		}
 	}
 
-	public Vec316f copy(){
-		return new Vec316f(this);
+	public GridV3D copy(){
+		return new GridV3D(this);
 	}
 
 }

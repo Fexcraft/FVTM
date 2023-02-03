@@ -23,7 +23,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -82,7 +82,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
         	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints");
     		for(int k = 0; k < list.tagCount(); k++){
-            	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new Vec316f(list.getCompoundTagAt(k)).toString()));
+            	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new GridV3D(list.getCompoundTagAt(k)).toString()));
     		}
         }
         else{
@@ -99,7 +99,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(Config.USE_RAIL_MARKERS){
         	RailPlacingUtil.place(world, player, stack, getType(), syscap, vector);
 			return EnumActionResult.SUCCESS;
@@ -120,7 +120,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         return placeTrack(player, world, stack, syscap, vector, player, false);
     }
 	
-	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, Vec316f vector, ICommandSender sender, boolean noblocks){
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, GridV3D vector, ICommandSender sender, boolean noblocks){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
@@ -167,8 +167,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
 	}
 
-	private boolean createdJunction(ICommandSender sender, RailSystem syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
-		if(list.tagCount() != 1) return false; Vec316f vec = getFirstVector(list); if(!vec.equals(vector)) return false;
+	private boolean createdJunction(ICommandSender sender, RailSystem syscap, EntityPlayer player, NBTTagList list, GridV3D vector){
+		if(list.tagCount() != 1) return false; GridV3D vec = getFirstVector(list); if(!vec.equals(vector)) return false;
 		syscap.addJunction(vector); Print.chat(sender, "Junction Created!"); return true;
 	}
 
@@ -177,20 +177,20 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	}
 	
 	@Override
-	public Vec316f[] getVectors(ItemStack stack){
-		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:railpoints")) return new Vec316f[0];
+	public GridV3D[] getVectors(ItemStack stack){
+		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:railpoints")) return new GridV3D[0];
 		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints"));
 	}
 
-	public Vec316f[] getVectors(NBTTagList list){
-		Vec316f[] arr = new Vec316f[list.tagCount()];
+	public GridV3D[] getVectors(NBTTagList list){
+		GridV3D[] arr = new GridV3D[list.tagCount()];
 		for(int i = 0; i < arr.length; i++){
-			arr[i] = new Vec316f(list.getCompoundTagAt(i));
+			arr[i] = new GridV3D(list.getCompoundTagAt(i));
 		} return arr;
 	}
 
-	private Vec316f getFirstVector(NBTTagList list){
-		return new Vec316f(list.getCompoundTagAt(0));
+	private GridV3D getFirstVector(NBTTagList list){
+		return new GridV3D(list.getCompoundTagAt(0));
 	}
 
 	@Override

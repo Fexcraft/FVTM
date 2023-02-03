@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
@@ -294,7 +295,7 @@ public class WireSystem extends DetachedSystem {
 	public void register(BlockTileEntity tile){
 		RelayHolder holder = getHolder(tile.getPos());
 		if(holder == null) holder = addHolder(tile.getPos());
-		for(Entry<String, Vec3f> entry : tile.getBlockData().getRelayData().getVectors(tile).entrySet()){
+		for(Entry<String, V3D> entry : tile.getBlockData().getRelayData().getVectors(tile).entrySet()){
 			holder.add(entry.getKey(), entry.getValue(), false);
 		}
 		holder.setTile(tile);

@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -161,7 +161,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
 	}
 
 	private Track generateNewTrack(){
-		return new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(-.5, 0, 0)) }, new Vec316f(new Vec3d(.5, 0, 0)), null);
+		return new Track(null, new GridV3D[]{ new GridV3D(new Vec3d(-.5, 0, 0)) }, new GridV3D(new Vec3d(.5, 0, 0)), null);
 	}
 
 }

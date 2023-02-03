@@ -21,7 +21,7 @@ import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -160,7 +160,7 @@ public class RailSystem extends DetachedSystem {
 			return null;
 		}
 		
-		public Region get(Vec316f vec, boolean load){
+		public Region get(GridV3D vec, boolean load){
 			Region region = get(RegionKey.getRegionXZ(vec));
 			if(region != null || !load) return region;
 			put(new RegionKey(vec), region = new Region(vec, root, false));
@@ -190,11 +190,11 @@ public class RailSystem extends DetachedSystem {
 		return regions;
 	}
 
-	public Junction getJunction(Vec316f vec){
+	public Junction getJunction(GridV3D vec){
 		Region region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
 	}
 
-	public Junction getJunction(Vec316f vec, boolean load){
+	public Junction getJunction(GridV3D vec, boolean load){
 		Region region = regions.get(vec, load); return region.getJunction(vec);
 	}
 
@@ -202,7 +202,7 @@ public class RailSystem extends DetachedSystem {
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<Vec316f, Junction> entry : region.getJunctions().entrySet()){
+		for(Entry<GridV3D, Junction> entry : region.getJunctions().entrySet()){
 			if(entry.getKey().pos.getX() >> 4 == cx && entry.getKey().pos.getZ() >> 4 == cz){
 				arr.add(entry.getValue());
 			}
@@ -214,7 +214,7 @@ public class RailSystem extends DetachedSystem {
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(pos));
 		if(region == null) return arr;
-		for(Entry<Vec316f, Junction> entry : region.getJunctions().entrySet()){
+		for(Entry<GridV3D, Junction> entry : region.getJunctions().entrySet()){
 			if(entry.getKey().pos.equals(pos)){
 				arr.add(entry.getValue());
 			}
@@ -222,7 +222,7 @@ public class RailSystem extends DetachedSystem {
 		return arr;
 	}
 
-	public boolean delJunction(Vec316f vector){
+	public boolean delJunction(GridV3D vector){
 		Region region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
@@ -250,7 +250,7 @@ public class RailSystem extends DetachedSystem {
 		} return true;
 	}*/
 
-	public void addJunction(Vec316f vector){
+	public void addJunction(GridV3D vector){
 		Region region = regions.get(vector, true);
 		if(region == null) /** this rather an error */ return;
 		Junction junction = new Junction(region, vector);
@@ -260,7 +260,7 @@ public class RailSystem extends DetachedSystem {
 		return;
 	}
 
-	public void updateJuncton(Vec316f vector){
+	public void updateJuncton(GridV3D vector){
 		Region region = regions.get(vector, true);
 		if(region == null) /** This is rather bad. */
 			return;
@@ -421,7 +421,7 @@ public class RailSystem extends DetachedSystem {
 
 	public void sendReload(String string, ICommandSender sender){
 		Region region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
-		if(region != null) region.updateClient(string, new Vec316f(sender.getPositionVector()));
+		if(region != null) region.updateClient(string, new GridV3D(sender.getPositionVector()));
 	}
 
 	public boolean isRemote(){

@@ -5,6 +5,7 @@ import static net.fexcraft.lib.common.Static.sixteenth;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -13,7 +14,7 @@ public class Particle {
 	
 	public ParticleType type;
 	public int persistence, frequency;
-	public Vec3f dir;
+	public V3D dir;
 	public RGB color = RGB.GREEN, color_to;
 	public float scale = sixteenth, scale_to, speed, alpha = 1, alpha_to;
 	public final String id;
@@ -36,7 +37,7 @@ public class Particle {
 	public Particle(String id, JsonMap map){
 		this(id, ParticleType.valueOf(map.getString("type", ParticleType.CUBOID.name()).toUpperCase()));
 		setTiming(map.getInteger("ticks", 200), map.getInteger("frequency", 10));
-		dir = new Vec3f();
+		dir = new V3D();
 		if(map.has("direction")){
 			JsonArray array = map.getArray("direction");
 			dir.x = array.get(0).float_value();
@@ -70,7 +71,7 @@ public class Particle {
 		return this;
 	}
 	
-	public Particle setDirection(Vec3f vector){
+	public Particle setDirection(V3D vector){
 		this.dir = vector;
 		return this;
 	}

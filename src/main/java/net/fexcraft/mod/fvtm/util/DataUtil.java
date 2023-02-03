@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
@@ -172,21 +173,22 @@ public class DataUtil {
 		return new Vec3d(list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2));
 	}
 
-	public static NBTBase writeVec3f(Vec3f vec){
+	public static NBTBase writeVec(V3D vec){
 		NBTTagList list = new NBTTagList();
-		list.appendTag(new NBTTagFloat(vec.x));
-		list.appendTag(new NBTTagFloat(vec.y));
-		list.appendTag(new NBTTagFloat(vec.z));
+		list.appendTag(new NBTTagDouble(vec.x));
+		list.appendTag(new NBTTagDouble(vec.y));
+		list.appendTag(new NBTTagDouble(vec.z));
 		return list;
 	}
 
-	public static Vec3f readVec3f(NBTBase tag){
-		if(tag instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)tag;
+	public static V3D readVec(NBTBase tag){
+		if(tag instanceof NBTTagList == false) return null;
+		NBTTagList list = (NBTTagList)tag;
 		if(list.isEmpty() || list.tagCount() < 3) return null;
-		return new Vec3f(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
+		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
 	}
 
-	public static JsonElement writeVec3fJSON(Vec3f vec){
+	public static JsonElement writeVecJSON(V3D vec){
 		JsonArray array = new JsonArray();
 		array.add(vec.x);
 		array.add(vec.y);
@@ -194,11 +196,11 @@ public class DataUtil {
 		return array;
 	}
 
-	public static Vec3f readVec3f(JsonElement elm){
+	public static V3D readVec(JsonElement elm){
 		if(elm == null || !elm.isJsonArray()) return null;
 		JsonArray array = elm.getAsJsonArray();
 		if(array.size() == 0) return null;
-		return new Vec3f(array.get(0).getAsFloat(), array.get(1).getAsFloat(), array.get(2).getAsFloat());
+		return new V3D(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble());
 	}
 	
 	public static BufferedImage tryDownload(String url){

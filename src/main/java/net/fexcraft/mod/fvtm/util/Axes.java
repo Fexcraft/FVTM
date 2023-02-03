@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import static net.fexcraft.lib.common.Static.PI;
 import static net.fexcraft.lib.common.Static.toRadians;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
 import net.fexcraft.mod.fvtm.util.vector.Vector3f;
@@ -30,21 +31,21 @@ public class Axes {
 	}
 
 	public Vec3d get_vector(float x, float y, float z){
-		float[] arr = VecUtil.rotate(new float[]{ x, y, z }, roll, pitch, yaw);
+		double[] arr = VecUtil.rotate(new double[]{ x, y, z }, roll, pitch, yaw);
 		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
 	public Vec3d get_vector(Vec3d vec){
-		float[] arr = VecUtil.rotate(new float[]{ (float)vec.x, (float)vec.y, (float)vec.z }, roll, pitch, yaw);
+		double[] arr = VecUtil.rotate(new double[]{ vec.x, vec.y, vec.z }, roll, pitch, yaw);
 		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
 	public Vec3d get_vector(Vec3d vec, float yawmod){
-		float[] arr = VecUtil.rotate(new float[]{ (float)vec.x, (float)vec.y, (float)vec.z }, roll, pitch, (yaw + yawmod));
+		double[] arr = VecUtil.rotate(new double[]{ vec.x, vec.y, vec.z }, roll, pitch, (yaw + yawmod));
 		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
-	public Vec3f get_vector(Vec3f relpos){
+	public V3D get_vector(V3D relpos){
 		return VecUtil.rotate(relpos, roll, pitch, yaw);
 	}
 

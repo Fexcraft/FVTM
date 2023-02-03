@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Pos;
@@ -67,7 +68,7 @@ public class ParticleEmitterFunction extends StaticFunction {
 			condition = obj.has("condition") ? obj.get("condition").getAsString() : null;
 			if(obj.has("direction")){
 				JsonArray array = obj.get("direction").getAsJsonArray();
-				dir = new Vec3f(array.get(0).getAsFloat(), array.get(1).getAsFloat(), array.get(2).getAsFloat());
+				dir = new V3D(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble());
 			}
 			else dir = null;
 			speed = obj.has("speed") ? obj.get("speed").getAsFloat() : null;
@@ -78,7 +79,7 @@ public class ParticleEmitterFunction extends StaticFunction {
 		public final String condition;
 		public final int frequency;
 		public final Float speed;
-		public final Vec3f dir;
+		public final V3D dir;
 		public final Pos pos;
 		
 		public Conditional getConditional(){

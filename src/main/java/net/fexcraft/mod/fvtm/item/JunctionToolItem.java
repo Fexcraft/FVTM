@@ -16,7 +16,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +48,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:junction")){
         	NBTTagCompound com = stack.getTagCompound().getCompoundTag("fvtm:junction");
-        	tooltip.add(Formatter.format("&9Junction Selected: &7" + new Vec316f(com).toString()));
+        	tooltip.add(Formatter.format("&9Junction Selected: &7" + new GridV3D(com).toString()));
         }
         else{
         	tooltip.add("No Junction Position Cached.");
@@ -63,7 +63,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
+        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
         	Junction junc = syscap.getJunction(vector);
@@ -87,7 +87,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 		}
 		else{
 	        if(stack.getTagCompound().hasKey("fvtm:junction")){
-	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
+	        	cached = new GridV3D(stack.getTagCompound().getCompoundTag("fvtm:junction"));
 	        	if(cached.equals(vector)){
 	        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, cached.write(), player);
 	                return EnumActionResult.SUCCESS;

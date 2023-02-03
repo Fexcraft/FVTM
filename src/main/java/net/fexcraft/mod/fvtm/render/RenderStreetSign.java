@@ -51,7 +51,7 @@ public class RenderStreetSign extends Render<StreetSign> implements IRenderFacto
         GL11.glPopMatrix();
     }
     
-    public static void drawString(String str, double x, double y, double z, boolean centered, boolean glow, float scale, int color, Float yaw){
+    public static void drawString(String str, double x, double y, double z, boolean centered, boolean glow, float scale, int color, Double yaw){
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix(); GlStateManager.translate(x, y, z);
         GlStateManager.scale(-0.025F, -0.025F, 0.025F);
@@ -61,7 +61,7 @@ public class RenderStreetSign extends Render<StreetSign> implements IRenderFacto
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(true);
-        if(yaw != null) GL11.glRotatef(yaw, 0, 1, 0);
+        if(yaw != null) GL11.glRotated(yaw, 0, 1, 0);
         fontRenderer.drawString(str, centered ? -fontRenderer.getStringWidth(str) / 2 : -24, 0, color);
         if(glow){ GlStateManager.enableLighting(); }
         GlStateManager.disableBlend();

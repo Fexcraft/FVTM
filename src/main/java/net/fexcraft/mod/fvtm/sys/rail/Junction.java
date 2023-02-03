@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.JunctionTrackingTileEntity;
@@ -12,7 +13,7 @@ import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class Junction {
 	
-	private Vec316f vecpos;
+	private GridV3D vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
 	public RailSystem root;
@@ -50,14 +51,18 @@ public class Junction {
 	protected AxisAlignedBB frustumbb;
 	//
 	@SideOnly(Side.CLIENT)
-	public Vec3f signalpos0, signalpos1;
+	public V3D signalpos0;
+    @SideOnly(Side.CLIENT)
+    public V3D signalpos1;
 	@SideOnly(Side.CLIENT)
-	public float signalrot0, signalrot1;
+	public double signalrot0;
 	@SideOnly(Side.CLIENT)
-	public Float bufferrot;
+	public double signalrot1;
+	@SideOnly(Side.CLIENT)
+	public Double bufferrot;
 	
 	/** General Constructor */
-	public Junction(Region region, Vec316f pos){
+	public Junction(Region region, GridV3D pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
 		this.region = region; this.switch0 = this.switch1 = false; type = PathJuncType.STRAIGHT;
 	}
@@ -72,7 +77,7 @@ public class Junction {
 	}
 	
 	public Junction read(NBTTagCompound compound){
-		this.vecpos = new Vec316f(compound.getCompoundTag("Pos"));
+		this.vecpos = new GridV3D(compound.getCompoundTag("Pos"));
 		this.switch0 = compound.getBoolean("Switch0");
 		this.switch1 = compound.getBoolean("Switch1");
 		//this.crossing = compound.getBoolean("Crossing");
@@ -164,11 +169,11 @@ public class Junction {
 		return compound;
 	}
 	
-	public Vec316f getVec316f(){
+	public GridV3D getVec316f(){
 		return vecpos;
 	}
 	
-	public Vec3f getVec3f(){
+	public V3D getVec(){
 		return vecpos.vector;
 	}
 
@@ -395,8 +400,9 @@ public class Junction {
 	@SuppressWarnings("unused")
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
-			if(vecpos.vector.dis(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
-		} return false;
+			if(vecpos.vector.dis(new V3D(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
+		}
+		return false;
 	}
 
 	public boolean onSwitchInteract(EntityPlayer player, SwitchTileEntity tile, boolean left){
@@ -464,7 +470,7 @@ public class Junction {
 
 	public AxisAlignedBB getAABB(){
 		if(frustumbb != null) return frustumbb;
-		Vec3f min = new Vec3f(), max = new Vec3f(), other;
+		V3D min = new V3D(), max = new V3D(), other;
 		for(Track track : tracks){
 			other = track.start.vector;
 			if(other.x < min.x) min.x = other.x;

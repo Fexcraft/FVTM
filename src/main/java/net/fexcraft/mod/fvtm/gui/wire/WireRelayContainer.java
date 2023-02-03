@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -120,8 +121,8 @@ public class WireRelayContainer extends GenericContainer {
 						}
 						BlockTileEntity tile0 = (BlockTileEntity)system.getWorld().getTileEntity(BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint")));
 						RelayData data0 = tile0.getBlockData().getType().getRelayData();
-						Vec3f r0 = data0.getVec3f(stack.getTagCompound().getString("fvtm:wirepoint_slot"), tile0.getPos(), tile0.meta, tile0.data.getType().getBlockType());
-						Vec3f r1 = data.getVec3f(relid, tile.getPos(), tile.meta, tile.data.getType().getBlockType());
+						V3D r0 = data0.getVec(stack.getTagCompound().getString("fvtm:wirepoint_slot"), tile0.getPos(), tile0.meta, tile0.data.getType().getBlockType());
+						V3D r1 = data.getVec(relid, tile.getPos(), tile.meta, tile.data.getType().getBlockType());
 						Wire wire = new Wire(relay0, relay, type, r0, r1);
 						if(relay0.isDuplicate(wire) || relay.isDuplicate(wire)){
 							Print.chat(player, "&cWire has same start/end as another wire.");

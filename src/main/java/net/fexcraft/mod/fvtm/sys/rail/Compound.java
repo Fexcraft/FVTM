@@ -28,7 +28,7 @@ public abstract class Compound {
 	protected final long uid;
 	//
 	protected Track last_stop;
-	protected float last_stop_passed;
+	protected double last_stop_passed;
 	
 	public static class Singular extends Compound {
 		
@@ -219,8 +219,10 @@ public abstract class Compound {
 		return entities;
 	}
 
-	protected void stop(Track track, float pass){
-		if(last_stop == null || last_stop != track) for(RailEntity ent : entities) ent.throttle = 0; last_stop = track; last_stop_passed = pass;
+	protected void stop(Track track, double pass){
+		if(last_stop == null || last_stop != track) for(RailEntity ent : entities) ent.throttle = 0;
+		last_stop = track;
+		last_stop_passed = pass;
 	}
 
 	protected abstract boolean isActive();

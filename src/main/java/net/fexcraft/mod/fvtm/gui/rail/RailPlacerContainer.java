@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Perms;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,7 +46,7 @@ public class RailPlacerContainer extends GenericContainer {
 		}
 		ItemStack stack = player.inventory.getStackInSlot(itemslot);
 		RailGaugeItem item = (RailGaugeItem)stack.getItem();
-		Vec316f vec = new Vec316f(packet.getCompoundTag("pos"));
+		GridV3D vec = new GridV3D(packet.getCompoundTag("pos"));
 		switch(packet.getString("cargo")){
 			case "place":{
 				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());

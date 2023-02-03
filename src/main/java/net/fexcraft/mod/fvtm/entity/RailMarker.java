@@ -3,11 +3,12 @@ package net.fexcraft.mod.fvtm.entity;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
 	
-	public Vec316f position;
+	public GridV3D position;
 	public UUID queueid;
 
     public RailMarker(World world){
@@ -46,9 +47,9 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
         		buffer.writeLong(queueid.getMostSignificantBits());
         		buffer.writeLong(queueid.getLeastSignificantBits());
     		}
-    		buffer.writeFloat(position.vector.x);
-    		buffer.writeFloat(position.vector.y);
-    		buffer.writeFloat(position.vector.z);
+    		buffer.writeDouble(position.vector.x);
+    		buffer.writeDouble(position.vector.y);
+    		buffer.writeDouble(position.vector.z);
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -61,7 +62,7 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
     		long m = buffer.readLong(), l = buffer.readLong();
     		if(m == 0 && l == 0) queueid = null;
     		else queueid = new UUID(m, l);
-    		position = new Vec316f(new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+    		position = new GridV3D(new V3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -74,7 +75,7 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
         	queueid = new UUID(compound.getLong("uuid0"), compound.getLong("uuid1"));
         }
         if(compound.hasKey("position")){
-        	position = new Vec316f(compound.getCompoundTag("position"));
+        	position = new GridV3D(compound.getCompoundTag("position"));
         }
     }
 

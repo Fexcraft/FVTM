@@ -1,12 +1,13 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import com.google.gson.JsonObject;
-import net.fexcraft.mod.fvtm.data.part.Function;
-import net.fexcraft.mod.fvtm.data.part.Part;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -46,5 +47,9 @@ public abstract class BlockFunction {
     }
 
     public void addInformation(ItemStack stack, World world, BlockData data, List<String> list, boolean adv){}
+
+    public boolean onClick(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+        return false;
+    }
 
 }

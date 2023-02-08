@@ -442,6 +442,7 @@ public class Resources {
 		registerFunction("fvtm:tire", TireFunction.class, true);
 		registerFunction("fvtm:transmission", TransmissionFunction.class, true);
 		registerFunction("fvtm:particle_emitter", ParticleEmitterFunction.class, true);
+		registerBlockFunction("fvtm:seat", SeatBlockFunction.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterFunctions(this));
 	}
 

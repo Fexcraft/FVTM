@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -45,6 +46,12 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(world.isRemote) return false;
         if(player.isSneaking()) return true;
+        if(type.getFunctions().size() > 0){
+            BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
+            for(BlockFunction func : tile.data.getFunctions()){
+                if(func.onClick(world, pos, state, player, hand, side, hitX, hitY, hitZ)) return true;
+            }
+        }
         ItemStack held = player.getHeldItem(hand);
         if(held.isEmpty()) return true;
         if(held.getItem() instanceof ItemDye){

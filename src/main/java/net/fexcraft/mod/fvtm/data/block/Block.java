@@ -199,9 +199,13 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	private void parseFunction(JsonElement elm) {
 		try {
-			JsonObject obj = elm.getAsJsonObject();
-			BlockFunction func = Resources.getBlockFunction(obj.get("type").getAsString()).newInstance();
-			functions.add(func.parse(obj));
+			if(!elm.isJsonObject()){
+				functions.add(Resources.getBlockFunction(elm.getAsString()).newInstance().parse(null));
+			}
+			else{
+				JsonObject obj = elm.getAsJsonObject();
+				functions.add(Resources.getBlockFunction(obj.get("type").getAsString()).newInstance().parse(obj));
+			}
 		}
 		catch (Exception e){
 			Print.log("Failed to load BlockFunction for '" + registryname + "' with JSON: " + elm);

@@ -66,6 +66,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected String harveresttoolclass;
 	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot;
 	//
+	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected MultiBlock multiblock;
 	protected RelayData relaydata;
 	
@@ -172,6 +173,14 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
         this.randomrot = JsonUtil.getIfExists(obj, "RandomRotation", false);
+		if(obj.has("Function")){
+			parseFunction(obj.get("Function"));
+		}
+		else if(obj.has("Functions")){
+			obj.get("Functions").getAsJsonArray().forEach(elm -> {
+				parseFunction(elm);
+			});
+		}
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
@@ -186,6 +195,19 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			e.printStackTrace(); Static.stop();
 		}
 		return this;
+	}
+
+	private void parseFunction(JsonElement elm) {
+		try {
+			JsonObject obj = elm.getAsJsonObject();
+			BlockFunction func = Resources.getBlockFunction(obj.get("type").getAsString()).newInstance();
+			functions.add(func.parse(obj));
+		}
+		catch (Exception e){
+			Print.log("Failed to load BlockFunction for '" + registryname + "' with JSON: " + elm);
+			e.printStackTrace();
+			Static.stop();
+		}
 	}
 
 	@Override
@@ -392,6 +414,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public boolean getRandomRot(){
 		return randomrot;
+	}
+
+	public ArrayList<BlockFunction> getFunctions(){
+		return functions;
 	}
 
 }

@@ -14,7 +14,9 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
+import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.util.Properties;
@@ -71,6 +73,12 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
         BlockData data = cache.getBlockData();
         if(data == null) return;
         if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+        if(!data.getFunctions().isEmpty()){
+            for(BlockFunction func : data.getFunctions()){
+                func.addInformation(stack, world, data, tooltip, flag.isAdvanced());
+            }
+            tooltip.add(Formatter.format("&9- - - - - - &7-"));
+        }
         if(type.getModel() == null) return;
         if(type.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));

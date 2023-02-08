@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.JsonArray;
@@ -154,6 +155,7 @@ public class Resources {
 	public static Registry<WireType> WIRES = new Registry<>();
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
+	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	public static HashMap<String, Particle> PARTICLES = new HashMap<>();
@@ -737,6 +739,25 @@ public class Resources {
 
 	public static TreeMap<String, Class<? extends Function>> getFunctions(){
 		return FUNCTIONS;
+	}
+
+	/** Registers a Block Functon class into FVTM Resources.*/
+	public static void registerBlockFunction(ResourceLocation regname, Class<? extends BlockFunction> clazz, boolean override){
+		registerBlockFunction(regname.toString(), clazz, override);
+	}
+
+	/** Registers a Block Functon class into FVTM Resources.*/
+	public static void registerBlockFunction(String regname, Class<? extends BlockFunction> clazz, boolean override){
+		if(BLOCK_FUNCTIONS.containsKey(regname) && !override) return;
+		BLOCK_FUNCTIONS.put(regname, clazz);
+	}
+
+	public static Class<? extends BlockFunction> getBlockFunction(String id){
+		return BLOCK_FUNCTIONS.get(id);
+	}
+
+	public static TreeMap<String, Class<? extends BlockFunction>> getBlockFunctions(){
+		return BLOCK_FUNCTIONS;
 	}
 
 	private static Field flightdata;

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -22,6 +24,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 	protected Textureable texture;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected MultiBlockData multidata;
+	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 
 	public BlockData(Block type){
 		super(type);
@@ -30,6 +33,9 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
 		multidata = type.isFunctional() ? new MultiBlockData(this, type.getMultiBlock()) : null;
+		for(BlockFunction func : type.getFunctions()){
+			functions.add(func.copy(type));
+		}
 	}
 
 	@Override
@@ -118,4 +124,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		return type;
 	}
 
+    public ArrayList<BlockFunction> getFunctions(){
+		return functions;
+    }
 }

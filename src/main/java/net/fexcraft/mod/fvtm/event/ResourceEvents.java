@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.event;
 
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +33,14 @@ public class ResourceEvents extends Event {
 		
 		public void registerFunction(ResourceLocation regname, Class<? extends Function> function){
 			Resources.registerFunction(regname, function, false);
+		}
+
+		public void registerBlockFunction(String regname, Class<? extends BlockFunction> function){
+			Resources.registerBlockFunction(regname, function, false);
+		}
+
+		public void registerBlockFunction(ResourceLocation regname, Class<? extends BlockFunction> function){
+			Resources.registerBlockFunction(regname, function, false);
 		}
 		
 	}

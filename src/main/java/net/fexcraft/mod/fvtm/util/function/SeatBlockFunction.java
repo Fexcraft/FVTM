@@ -52,6 +52,7 @@ public class SeatBlockFunction extends BlockFunction.StaticBlockFunction {
             world.spawnEntity(seat);
             player.startRiding(seat);
             //TODO support for leashed entities
+            return true;
         }
         return false;
     }

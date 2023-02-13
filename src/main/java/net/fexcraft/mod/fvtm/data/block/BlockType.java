@@ -190,4 +190,7 @@ public enum BlockType {
 		return null;
 	}
 
+	public boolean isVariant(){
+		return this == GENERIC_4X4ROT || (this.ordinal() >= GENERIC_2VAR.ordinal() && this.ordinal() <= GENERIC_ROAD.ordinal());
+	}
 }

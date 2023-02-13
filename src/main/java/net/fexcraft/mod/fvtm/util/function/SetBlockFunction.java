@@ -22,7 +22,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 
 	private String nblock = Blocks.STONE.getRegistryName().toString();
 	private float chance;
-	private int meta;
+	private int meta, variant;
 
 	public BlockFunction parse(JsonObject obj){
 		if(obj == null) return this;
@@ -31,6 +31,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 		if(chance > 1) chance = 1;
 		if(chance < 0) chance = 0;
 		meta = obj.has("meta") ? obj.get("meta").getAsInt() : -1;
+		variant = obj.has("variant") ? obj.get("variant").getAsInt() : -1;
 		return this;
 	}
 
@@ -49,18 +50,21 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 			if(block instanceof PlainBase){
 				if(base.type.getBlockType().getProperty() == ((PlainBase)block).type.getBlockType().getProperty()){
 					if(base.type.getBlockType().getProperty() == Properties.FACING){
-						stato.withProperty(Properties.FACING, state.getValue(Properties.FACING));
+						stato = stato.withProperty(Properties.FACING, state.getValue(Properties.FACING));
 					}
 					if(base.type.getBlockType().getProperty() == Properties.ROTATION){
-						stato.withProperty(Properties.ROTATION, state.getValue(Properties.ROTATION));
+						stato = stato.withProperty(Properties.ROTATION, state.getValue(Properties.ROTATION));
 					}
 					if(base.type.getBlockType().getProperty() == Asphalt.HEIGHT){
-						stato.withProperty(Asphalt.HEIGHT, state.getValue(Asphalt.HEIGHT));
+						stato = stato.withProperty(Asphalt.HEIGHT, state.getValue(Asphalt.HEIGHT));
 					}
+				}
+				if(variant >= 0 && base.type.getBlockType().isVariant()){
+					stato = stato.withProperty(base.type.getBlockType().getIntProperty(), variant);
 				}
 			}
 			else if(meta >= 0){
-				stato = state.getBlock().getStateFromMeta(meta);
+				stato = block.getStateFromMeta(meta);
 			}
 			world.setBlockState(pos, stato, 2);
 			return true;

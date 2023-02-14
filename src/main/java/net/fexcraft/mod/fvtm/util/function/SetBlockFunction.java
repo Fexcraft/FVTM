@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.server.CommandSetBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -23,6 +24,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 	private String nblock = Blocks.STONE.getRegistryName().toString();
 	private float chance;
 	private int meta, variant;
+	private String state;
 
 	public BlockFunction parse(JsonObject obj){
 		if(obj == null) return this;
@@ -32,6 +34,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 		if(chance < 0) chance = 0;
 		meta = obj.has("meta") ? obj.get("meta").getAsInt() : -1;
 		variant = obj.has("variant") ? obj.get("variant").getAsInt() : -1;
+		state = obj.has("state") ? obj.get("state").getAsString() : null;
 		return this;
 	}
 
@@ -65,6 +68,14 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 			}
 			else if(meta >= 0){
 				stato = block.getStateFromMeta(meta);
+			}
+			else if(this.state != null){
+				try {
+					stato = CommandSetBlock.convertArgToBlockState(block, this.state);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 			world.setBlockState(pos, stato, 2);
 			return true;

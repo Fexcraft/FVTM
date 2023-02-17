@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.fvtm.util.function.BoolBlockFunction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -25,6 +26,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected MultiBlockData multidata;
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
+	protected ArrayList<BoolBlockFunction> boolfuncs = new ArrayList<>();
 
 	public BlockData(Block type){
 		super(type);
@@ -36,6 +38,11 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		for(BlockFunction func : type.getFunctions()){
 			functions.add(func.copy(type));
 		}
+		functions.forEach(func -> {
+			if(func instanceof BoolBlockFunction){
+				boolfuncs.add((BoolBlockFunction)func);
+			}
+		});
 	}
 
 	@Override
@@ -49,6 +56,9 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
 		if(multidata != null) compound.setTag("MultiBlock", multidata.write(null));
+		NBTTagCompound com = new NBTTagCompound();
+		for(BlockFunction func : functions) func.save(com);
+		if(!com.isEmpty()) compound.setTag("BlockFunction", com);
 		return compound;
 	}
 
@@ -68,6 +78,10 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 			}
 		}
 		if(compound.hasKey("MultiBlock")) multidata.read(compound.getCompoundTag("MultiBlock"));
+		if(compound.hasKey("BlockFunction")){
+			NBTTagCompound com = compound.getCompoundTag("BlockFunction");
+			for(BlockFunction func : functions) func.load(com);
+		}
 		return this;
 	}
 
@@ -126,5 +140,12 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 
     public ArrayList<BlockFunction> getFunctions(){
 		return functions;
+    }
+
+    public boolean getFunctionBool(String key){
+		for(BoolBlockFunction func : boolfuncs){
+			if(func.key().equals(key)) return func.val();
+		}
+		return false;
     }
 }

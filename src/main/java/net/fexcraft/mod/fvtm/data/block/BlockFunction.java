@@ -1,6 +1,10 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import com.google.gson.JsonObject;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -50,6 +54,17 @@ public abstract class BlockFunction {
 
     public boolean onClick(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         return false;
+    }
+
+    public static void sendClientSync(BlockData blockdata, BlockPos pos, int dim){
+        NBTTagCompound com = new NBTTagCompound();
+        com.setString("target_listener", Resources.UTIL_LISTENER);
+        com.setString("task", "block_func_sync");
+        com.setLong("pos", pos.toLong());
+        NBTTagCompound data = new NBTTagCompound();
+        for(BlockFunction func : blockdata.getFunctions()) func.save(com);
+        com.setTag("data", data);
+        PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com), Resources.getTargetPoint(dim, pos));
     }
 
 }

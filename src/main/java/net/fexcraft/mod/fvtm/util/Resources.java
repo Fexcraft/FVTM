@@ -444,6 +444,7 @@ public class Resources {
 		registerFunction("fvtm:particle_emitter", ParticleEmitterFunction.class, true);
 		registerBlockFunction("fvtm:seat", SeatBlockFunction.class, true);
 		registerBlockFunction("fvtm:set_block", SetBlockFunction.class, true);
+		registerBlockFunction("fvtm:bool_value", BoolBlockFunction.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterFunctions(this));
 	}
 
@@ -633,7 +634,6 @@ public class Resources {
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		if(clazz == WireModel.class) return WireModel.EMPTY;
-		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
 		if(clazz == GenericModel.class) return GenericModel.EMPTY;
 		return null;
 	}

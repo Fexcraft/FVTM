@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
 
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
@@ -37,6 +38,7 @@ public class ConditionalPrograms {
 		COND_PROGRAMS.put("fvtm:switch_fork3_state", SwitchFork3State.class);
 		COND_PROGRAMS.put("fvtm:switch_double_state", SwitchDoubleState.class);
 		COND_PROGRAMS.put("fvtm:switch_double_state_side", SwitchDoubleStateSide.class);
+		COND_PROGRAMS.put("fvtm:block_bool_value", BlockBoolValue.class);
 	}
 	
 	public static class Lights extends ConditionalProgram {
@@ -290,7 +292,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public Program parse(String[] args){
-			return new SwitchDoubleStateSide(Boolean.parseBoolean(args[0]), Boolean.parseBoolean(args[1])).transfer(this);
+			return new BlockBoolValue(Boolean.parseBoolean(args[0]), Boolean.parseBoolean(args[1])).transfer(this);
 		}
 		
 	}
@@ -308,6 +310,30 @@ public class ConditionalPrograms {
 			return cond.isMet(data);
 		}
 		
+	}
+
+	public static class BlockBoolValue extends ConditionalProgram {
+
+		private String key;
+		private boolean val = true;
+
+		public BlockBoolValue(){}
+
+		public BlockBoolValue(String key, boolean val){
+			this.key = key;
+			this.val = val;
+		}
+
+		@Override
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.tile != null && ((BlockTileEntity)data.tile).getBlockData().getFunctionBool(key) == val;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockBoolValue(args[0], args.length <= 1 || Boolean.parseBoolean(args[1])).transfer(this);
+		}
+
 	}
 
 }

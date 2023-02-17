@@ -45,6 +45,7 @@ public class SeatBlockFunction extends BlockFunction.StaticBlockFunction {
 
     @Override
     public boolean onClick(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+        if(hand == EnumHand.OFF_HAND) return false;
         if(!player.isRiding()){
             BlockSeat seat = new BlockSeat(world);
             Vec3d vec = offset.to16Double().add(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);

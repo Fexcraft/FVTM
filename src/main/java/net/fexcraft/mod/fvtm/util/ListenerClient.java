@@ -4,7 +4,10 @@ import java.util.UUID;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
@@ -144,6 +147,14 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 						if(road == null) return;
 						road.selected = packet.nbt.getInteger("selected");
 					}
+				}
+				return;
+			}
+			case "block_func_sync":{
+				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+				BlockTileEntity tile = (BlockTileEntity)player.world.getTileEntity(pos);
+				if(tile != null){
+					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(packet.nbt);
 				}
 				return;
 			}

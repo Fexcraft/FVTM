@@ -45,7 +45,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 
 	@Override
 	public boolean onClick(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-		if(Static.random.nextFloat() < (1f - chance)) return false;
+		if(hand == EnumHand.OFF_HAND || Static.random.nextFloat() < (1f - chance)) return false;
 		Block block = Block.getBlockFromName(nblock);
 		if(block != null){
 			PlainBase base = (PlainBase)state.getBlock();

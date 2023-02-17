@@ -106,6 +106,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(WINDOW);
 		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
@@ -118,6 +119,9 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
 		ModelGroup.PROGRAMS.add(new Rotator(0, 0, 0, 0, null, false, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new Translator(0, 0, 0, 0, false));//parsed init only
+		ModelGroup.PROGRAMS.add(new BlockBoolRotator("", true, 0, 0, 0, 0, 0f));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new BlockBoolTranslator("", true, 0, 0, 0, 0));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new BlockBoolVisible("", true));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -683,7 +687,7 @@ public class DefaultPrograms {
 			return new SteeringWheelCentered(Integer.parseInt(args[0]), Float.parseFloat(args[1]));
 		}
 		
-	};
+	}
 	
 	public static abstract class AttributeBased implements Program {
 		
@@ -865,10 +869,10 @@ public class DefaultPrograms {
 	
 	public static class AttributeVisible implements Program {
 		
-		private Attribute<?> attr; private String attribute; boolean ifis;
+		private Attribute<?> attr; private String attribute; boolean equals;
 		
-		public AttributeVisible(String attribute, boolean ifis){
-			this.attribute = attribute; this.ifis = ifis;
+		public AttributeVisible(String attribute, boolean equals){
+			this.attribute = attribute; this.equals = equals;
 		}
 
 		@Override
@@ -877,7 +881,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
 			attr = data.vehicle.getAttribute(attribute); if(attr == null) return;
-			if(attr.boolean_value() != ifis) list.visible = false;
+			if(attr.boolean_value() != equals) list.visible = false;
 		}
 		
 		@Override
@@ -885,7 +889,7 @@ public class DefaultPrograms {
 			list.visible = true;
 		}
 		
-	};
+	}
 	
 	public static abstract class AlwaysGlow extends Transparent implements Program {
 
@@ -2009,6 +2013,209 @@ public class DefaultPrograms {
 			int axis = Integer.parseInt(args[3]);
 			boolean loop = Boolean.parseBoolean(args[4]);
 			return new Translator(min, max, step, axis, loop);
+		}
+
+	}
+
+	public static abstract class BlockBoolBased implements Program {
+
+		private static final TreeMap<String, Integer> linked = new TreeMap<>();
+		protected String key, cacheid;
+
+		public BlockBoolBased(String key){
+			this.key = key;
+		}
+
+		@Override
+		public void init(ModelGroup list){
+			if(cacheid != null) return;
+			if(linked.containsKey(key)){
+				cacheid = key + "_" + linked.get(key);
+				linked.put(key, linked.get(key) + 1);
+			}
+			else{
+				cacheid = key + "_0";
+				linked.put(key, 1);
+			}
+		}
+
+	}
+
+	public static class BlockBoolRotator extends BlockBoolBased {
+
+		private String key;
+		private float min, max, step = 1;
+		private Float current;
+		private int axis;
+		private boolean equals, override;
+		private float defrot;
+
+		public BlockBoolRotator(String key, boolean equals, float min, float max, float step, int axis, Float defrot){
+			super(key);
+			this.equals = equals;
+			this.override = true;
+			this.min = min;
+			this.max = max;
+			this.step = step;
+			this.axis = axis;
+			this.defrot = defrot == null ? 0 : defrot;
+			if(min == max || (min == 0f && max == 0f)){
+				min = -360; max = 360;
+			}
+		}
+
+		public BlockBoolRotator(String key, boolean equals, float min, float max, float step, int axis, Float defrot, boolean notadditive){
+			this(key, equals, min, max, step, axis, defrot);
+			this.override = notadditive;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:block_bool_rotator";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || data.block == null) return;
+			current = data.cache.getValue(cacheid);
+			if(current == null) current = 0f;
+			current = data.block.getFunctionBool(key) == equals ? current + step : current - step;
+			if(current > max) current = max;
+			if(current < min) current = min;
+			list.rotateAxis(current + defrot, axis, override);
+			data.cache.setValue(cacheid, current);
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || data.block == null) return;
+			list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
+			current = 0f;
+		}
+
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			String attr = array.get(0).getAsString();
+			boolean equals = array.get(1).getAsBoolean();
+			float min = array.get(2).getAsFloat();
+			float max = array.get(3).getAsFloat();
+			float step = array.get(4).getAsFloat();
+			int axis = array.get(5).getAsInt();
+			Float defrot = array.size() > 6 && NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
+			return new AttributeRotator(attr, equals, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
+		}
+
+
+		@Override
+		public Program parse(String[] args){
+			String attr = args[0];
+			boolean equals = Boolean.parseBoolean(args[1]);
+			float min = Float.parseFloat(args[2]);
+			float max = Float.parseFloat(args[3]);
+			float step = Float.parseFloat(args[4]);
+			int axis = Integer.parseInt(args[5]);
+			Float defrot = args.length > 6 && NumberUtils.isCreatable(args[6]) ? Float.parseFloat(args[6]) : null;
+			return new AttributeRotator(attr, equals, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
+		}
+
+	}
+
+	public static class BlockBoolTranslator extends BlockBoolBased {
+
+		private boolean bool;
+		private float min, max, step;
+		private Float current;
+		private int axis;
+
+		public BlockBoolTranslator(String key, boolean equals, float min, float max, float step, int axis){
+			super(key);
+			this.bool = equals;
+			this.axis = axis;
+			this.step = step;
+			this.min = min;
+			this.max = max;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:block_bool_translator";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || data.block == null) return;
+			current = data.cache.getValue(cacheid);
+			if(current == null) current = 0f;
+			current = data.block.getFunctionBool(key) == bool ? current + step : current - step;
+			if(current > max) current = max; if(current < min) current = min;
+			//GL11.glPushMatrix();
+			GL11.glTranslatef(
+					axis == 0 ? current * Static.sixteenth : 0,
+					axis == 1 ? current * Static.sixteenth : 0,
+					axis == 2 ? current * Static.sixteenth : 0);
+			data.cache.setValue(cacheid, current);
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || data.block == null) return;
+			GL11.glTranslatef(
+					axis == 0 ? current * -Static.sixteenth : 0,
+					axis == 1 ? current * -Static.sixteenth : 0,
+					axis == 2 ? current * -Static.sixteenth : 0);
+			//GL11.glPopMatrix();
+		}
+
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			String attr = array.get(0).getAsString();
+			boolean equals = array.get(1).getAsBoolean();
+			float min = array.get(2).getAsFloat();
+			float max = array.get(3).getAsFloat();
+			float step = array.get(4).getAsFloat();
+			int axis = array.get(5).getAsInt();
+			return new AttributeTranslator(attr, equals, min, max, step, axis);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			String attr = args[0];
+			boolean equals = Boolean.parseBoolean(args[1]);
+			float min = Float.parseFloat(args[2]);
+			float max = Float.parseFloat(args[3]);
+			float step = Float.parseFloat(args[4]);
+			int axis = Integer.parseInt(args[5]);
+			return new AttributeTranslator(attr, equals, min, max, step, axis);
+		}
+
+	}
+
+	public static class BlockBoolVisible implements Program {
+
+		private String key;
+		private boolean equals;
+
+		public BlockBoolVisible(String key, boolean equals){
+			this.key = key;
+			this.equals = equals;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:block_bool_visible";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.block == null) return;
+			if(data.block.getFunctionBool(key) != equals) list.visible = false;
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			list.visible = true;
 		}
 
 	}

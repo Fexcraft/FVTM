@@ -2103,7 +2103,7 @@ public class DefaultPrograms {
 			float step = array.get(4).getAsFloat();
 			int axis = array.get(5).getAsInt();
 			Float defrot = array.size() > 6 && NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
-			return new AttributeRotator(attr, equals, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
+			return new BlockBoolRotator(attr, equals, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
 		}
 
 
@@ -2116,7 +2116,7 @@ public class DefaultPrograms {
 			float step = Float.parseFloat(args[4]);
 			int axis = Integer.parseInt(args[5]);
 			Float defrot = args.length > 6 && NumberUtils.isCreatable(args[6]) ? Float.parseFloat(args[6]) : null;
-			return new AttributeRotator(attr, equals, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
+			return new BlockBoolRotator(attr, equals, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
 		}
 
 	}
@@ -2176,7 +2176,7 @@ public class DefaultPrograms {
 			float max = array.get(3).getAsFloat();
 			float step = array.get(4).getAsFloat();
 			int axis = array.get(5).getAsInt();
-			return new AttributeTranslator(attr, equals, min, max, step, axis);
+			return new BlockBoolTranslator(attr, equals, min, max, step, axis);
 		}
 
 		@Override
@@ -2187,7 +2187,7 @@ public class DefaultPrograms {
 			float max = Float.parseFloat(args[3]);
 			float step = Float.parseFloat(args[4]);
 			int axis = Integer.parseInt(args[5]);
-			return new AttributeTranslator(attr, equals, min, max, step, axis);
+			return new BlockBoolTranslator(attr, equals, min, max, step, axis);
 		}
 
 	}
@@ -2216,6 +2216,11 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
 			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockBoolVisible(args[0], args.length < 2 || Boolean.parseBoolean(args[1]));
 		}
 
 	}

@@ -292,7 +292,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public Program parse(String[] args){
-			return new BlockBoolValue(Boolean.parseBoolean(args[0]), Boolean.parseBoolean(args[1])).transfer(this);
+			return new BlockBoolValue(args[0], Boolean.parseBoolean(args[1])).transfer(this);
 		}
 		
 	}

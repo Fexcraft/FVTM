@@ -445,6 +445,7 @@ public class Resources {
 		registerBlockFunction("fvtm:seat", SeatBlockFunction.class, true);
 		registerBlockFunction("fvtm:set_block", SetBlockFunction.class, true);
 		registerBlockFunction("fvtm:bool_value", BoolBlockFunction.class, true);
+		registerBlockFunction("fvtm:inventory", InventoryBlockFunction.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterFunctions(this));
 	}
 

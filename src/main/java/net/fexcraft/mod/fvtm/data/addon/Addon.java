@@ -93,7 +93,7 @@ public class Addon extends TypeCore<Addon> {
 
 	@Override
 	public Addon parse(JsonObject obj){
-		registryname = DataUtil.getRegistryName(obj);
+		registryname = DataUtil.getRegistryName((Addon)null, obj);
 		if(registryname == null) return null;
 		this.pack = this;
 		name = JsonUtil.getIfExists(obj, "Name", "Unnamed Addon");

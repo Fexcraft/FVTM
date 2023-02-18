@@ -46,8 +46,9 @@ public class G_4ROT_TE extends BlockBase {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-        worldIn.setBlockState(pos, state.withProperty(FACING, type.getRandomRot() ? EnumFacing.HORIZONTALS[Static.random.nextInt(4)] : placer.getHorizontalFacing().getOpposite()), 2);
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+        super.onBlockPlacedBy(world, pos, state, placer, stack);
+        world.setBlockState(pos, state.withProperty(FACING, type.getRandomRot() ? EnumFacing.HORIZONTALS[Static.random.nextInt(4)] : placer.getHorizontalFacing().getOpposite()), 2);
     }
 
     @Override

@@ -72,4 +72,9 @@ public class BoolBlockFunction extends BlockFunction {
 		return value;
 	}
 
+	public void toggle(BlockTileEntity tile, Boolean to){
+		value = to == null ? !value : to;
+		if(tile == null) return;
+		sendClientSync(tile.getBlockData(), tile.getPos(), tile.getWorld().provider.getDimension());
+	}
 }

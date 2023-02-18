@@ -61,7 +61,7 @@ public class UniItemInvContainer extends GenericContainer {
 		}
 		else if(ID == GuiHandler.BLOCK_INVENTORY_ITEM){
 			blk_tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
-			invhandler = blk_tile.getBlockData().getFunctionInventory();
+			invhandler = blk_tile.getBlockData().getFunctionInventory().inventory();
 			title = blk_tile.getBlockData().getType().getName();
 		}
 		else if(ID == GuiHandler.VEHICLE_INVENTORY_ITEM){
@@ -181,7 +181,12 @@ public class UniItemInvContainer extends GenericContainer {
 		super.onContainerClosed(player);
 		if(mb_tile != null) mb_tile.markDirty();
 		if(con_tile != null) con_tile.markDirty();
-		if(blk_tile != null) blk_tile.markDirty();
+		if(blk_tile != null){
+			blk_tile.markDirty();
+			if(blk_tile.getBlockData().getFunctionInventory().hasBool()){
+				blk_tile.getBlockData().getFunctionInventory().onClose(blk_tile);
+			}
+		}
 		insert.closeInventory(player);
 	}
 

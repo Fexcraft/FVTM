@@ -50,10 +50,10 @@ public class Material extends TypeCore<Material> implements Tabbed, ItemTexturea
 
 	@Override
 	public Material parse(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj);
-		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Material");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);

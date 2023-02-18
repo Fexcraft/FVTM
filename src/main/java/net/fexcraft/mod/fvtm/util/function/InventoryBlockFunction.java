@@ -32,13 +32,13 @@ public class InventoryBlockFunction extends BlockFunction {
 
 	@Override
 	public BlockFunction load(NBTTagCompound com){
-		if(com.hasKey(id())) handler.load(com);
+		if(com.hasKey(id())) handler.load(com.getCompoundTag(id()));
 		return this;
 	}
 
 	@Override
 	public NBTTagCompound save(NBTTagCompound com){
-		com.setTag(id(), handler.save(com));
+		com.setTag(id(), handler.save(new NBTTagCompound()));
 		return com;
 	}
 

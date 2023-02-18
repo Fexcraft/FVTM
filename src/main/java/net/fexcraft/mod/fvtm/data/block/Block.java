@@ -64,7 +64,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
-	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot;
+	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile;
 	//
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected MultiBlock multiblock;
@@ -89,10 +89,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	@Override
 	public Block parse(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj);
-		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
@@ -184,12 +184,13 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
-		boolean sub = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
+		hastile = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
 		if(obj.has("WireRelay")){
 			relaydata = new RelayData(obj.get("WireRelay").getAsJsonObject());
 		}
 		try{
-			this.block = blocktype.getApplicableClass(sub || isFunctional() || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
+			if(!hastile) hastile = isFunctional() || canBeWired();
+			this.block = blocktype.getApplicableClass(hastile, plain_model).getConstructor(Block.class).newInstance(this);
 		}
 		catch(Exception e){
 			e.printStackTrace(); Static.stop();
@@ -422,6 +423,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public ArrayList<BlockFunction> getFunctions(){
 		return functions;
+	}
+
+	public boolean hasEntity(){
+		return hastile;
 	}
 
 }

@@ -1,14 +1,12 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -155,7 +153,14 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		return false;
     }
 
-	public InvHandler getFunctionInventory(){
-		return invfunc.inventory();
+	public InventoryBlockFunction getFunctionInventory(){
+		return invfunc;
+	}
+
+	public BoolBlockFunction getFunctionBoolInst(String key){
+		for(BoolBlockFunction func : boolfuncs){
+			if(func.key().equals(key)) return func;
+		}
+		return null;
 	}
 }

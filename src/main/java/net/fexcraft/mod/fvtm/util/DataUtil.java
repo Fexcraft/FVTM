@@ -38,10 +38,11 @@ import net.minecraft.util.math.Vec3d;
 
 public class DataUtil {
 
-	public static ResourceLocation getRegistryName(JsonObject obj){
+	public static ResourceLocation getRegistryName(Addon addon, JsonObject obj){
 		String regname = obj.has("RegistryName") ? obj.get("RegistryName").getAsString() : null;
 		if(regname == null) return null;
-		return new ResourceLocation(regname.contains(":") ? regname : "fvtm:" + regname);
+		if(regname.contains(":")) return new ResourceLocation(regname);
+		return new ResourceLocation((addon == null ? "fvtm" : addon.getRegistryName().getPath()) + ":" + regname);
 	}
 
 	public static ResourceLocation getRegistryName(String key, JsonObject obj){

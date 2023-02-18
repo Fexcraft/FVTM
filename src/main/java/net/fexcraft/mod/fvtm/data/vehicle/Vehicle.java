@@ -85,10 +85,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	@Override
 	public Vehicle parse(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj);
-		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Vehicle");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);

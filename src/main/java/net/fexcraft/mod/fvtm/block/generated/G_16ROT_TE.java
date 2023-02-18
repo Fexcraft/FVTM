@@ -47,8 +47,9 @@ public class G_16ROT_TE extends BlockBase {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-        worldIn.setBlockState(pos, state.withProperty(ROTATION, type.getRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15), 2);
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+        super.onBlockPlacedBy(world, pos, state, placer, stack);
+        world.setBlockState(pos, state.withProperty(ROTATION, type.getRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15), 2);
     }
 
     @Override

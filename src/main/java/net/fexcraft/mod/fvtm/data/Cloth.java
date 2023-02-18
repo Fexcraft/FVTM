@@ -56,10 +56,10 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 
 	@Override
 	public Cloth parse(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj);
-		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Clothing");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);

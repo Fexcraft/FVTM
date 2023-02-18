@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -32,10 +33,11 @@ public class UniFluidInvContainer extends GenericContainer {
 	protected GenericGui<UniFluidInvContainer> gui;
 	protected MultiblockTileEntity mb_tile;
 	protected ContainerEntity con_tile;
+	protected BlockTileEntity blk_tile;
 	protected InventoryFunction func;
 	protected GenericVehicle entity;
 	protected String inv_id, title;
-	protected boolean coninv;
+	//protected boolean coninv;
 	//
 	protected InvHandler invhandler;
 	protected EntityPlayerMP mpp;
@@ -60,7 +62,12 @@ public class UniFluidInvContainer extends GenericContainer {
 			con_tile = (ContainerEntity)world.getTileEntity(new BlockPos(x, y, z));
 			invhandler = con_tile.getContainerData().getInventory();
 			title = con_tile.getContainerData().getType().getName();
-			coninv = true;
+			//coninv = true;
+		}
+		else if(ID == GuiHandler.BLOCK_INVENTORY_FLUID){
+			blk_tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
+			invhandler = blk_tile.getBlockData().getFunctionInventory();
+			title = blk_tile.getBlockData().getType().getName();
 		}
 		else if(ID == GuiHandler.VEHICLE_INVENTORY_FLUID){
 			entity = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
@@ -143,6 +150,7 @@ public class UniFluidInvContainer extends GenericContainer {
 		fluid_io.closeInventory(player);
 		if(mb_tile != null) mb_tile.markDirty();
 		if(con_tile != null) con_tile.markDirty();
+		if(blk_tile != null) blk_tile.markDirty();
 	}
 
 	@Override

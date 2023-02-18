@@ -69,10 +69,10 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 
 	@Override
 	public RailGauge parse(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj);
-		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Rail Gauge");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);

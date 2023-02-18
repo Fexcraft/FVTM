@@ -90,12 +90,15 @@ public class GuiHandler implements IGuiHandler {
 	/* 94x - container */
 	public static final int CONTAINER_INVENTORY_ITEM = 941;
 	public static final int CONTAINER_INVENTORY_FLUID = 942;
-	/* 95x - generated block */
+	/* 95x - multiblock block */
 	public static final int MULTIBLOCK_INVENTORY_ITEM = 9511;
 	public static final int MULTIBLOCK_INVENTORY_FLUID = 9512;
 	public static final int MULTIBLOCK_CRAFT_MAIN = 952;
 	public static final int MULTIBLOCK_CRAFT_CHOOSE = 953;
 	public static final int MULTIBLOCK_PIPE_ACCESS = 955;
+	/* 96x - generated block */
+	public static final int BLOCK_INVENTORY_ITEM = 961;
+	public static final int BLOCK_INVENTORY_FLUID = 962;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -133,9 +136,11 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			case MULTIBLOCK_PIPE_ACCESS: return new PipeContainer(player, world, x, y, z);
 			//
+			case BLOCK_INVENTORY_ITEM:
 			case VEHICLE_INVENTORY_ITEM:
 			case CONTAINER_INVENTORY_ITEM:
 			case MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvContainer(player, world, ID, x, y, z);
+			case BLOCK_INVENTORY_FLUID:
 			case VEHICLE_INVENTORY_FLUID:
 			case CONTAINER_INVENTORY_FLUID:
 			case MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
@@ -181,9 +186,11 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				case MULTIBLOCK_PIPE_ACCESS: return new PipeUI(player, world, x, y, z);
 				//
+				case BLOCK_INVENTORY_ITEM:
 				case VEHICLE_INVENTORY_ITEM:
 				case CONTAINER_INVENTORY_ITEM:
 				case MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvUi(player, world, ID, x, y, z);
+				case BLOCK_INVENTORY_FLUID:
 				case VEHICLE_INVENTORY_FLUID:
 				case CONTAINER_INVENTORY_FLUID:
 				case MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);

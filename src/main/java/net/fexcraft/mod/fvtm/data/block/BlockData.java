@@ -8,12 +8,14 @@ import java.util.TreeMap;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.function.BoolBlockFunction;
+import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -27,6 +29,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 	protected MultiBlockData multidata;
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected ArrayList<BoolBlockFunction> boolfuncs = new ArrayList<>();
+	protected InventoryBlockFunction invfunc;
 
 	public BlockData(Block type){
 		super(type);
@@ -41,6 +44,9 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		functions.forEach(func -> {
 			if(func instanceof BoolBlockFunction){
 				boolfuncs.add((BoolBlockFunction)func);
+			}
+			if(func instanceof InventoryBlockFunction){
+				invfunc = (InventoryBlockFunction)func;
 			}
 		});
 	}
@@ -148,4 +154,8 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		}
 		return false;
     }
+
+	public InvHandler getFunctionInventory(){
+		return invfunc.inventory();
+	}
 }

@@ -12,12 +12,14 @@ import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -45,8 +47,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
 	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(world.isRemote) return false;
-        if(player.isSneaking()) return true;
-        if(type.getFunctions().size() > 0){
+        if(!player.isSneaking() && type.getFunctions().size() > 0){
             BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
             for(BlockFunction func : tile.data.getFunctions()){
                 if(func.onClick(world, pos, state, player, hand, side, hitX, hitY, hitZ)) return true;
@@ -88,6 +89,17 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
     		SystemManager.get(Systems.WIRE, world, WireSystem.class).deregister(world.getTileEntity(pos));
         }
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+        BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
+        Print.debug(world.isRemote, tile, stack.getTagCompound());
+        if(tile != null){
+            tile.getBlockData().read(stack.getTagCompound());
+            tile.markDirty();
+            tile.sendUpdate();
+        }
     }
 
 }

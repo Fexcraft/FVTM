@@ -43,8 +43,9 @@ public class G_SIMPLE_TE extends BlockBase {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-        worldIn.setBlockState(pos, state, 2);
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+        super.onBlockPlacedBy(world, pos, state, placer, stack);
+        world.setBlockState(pos, state, 2);
     }
 
     @Override

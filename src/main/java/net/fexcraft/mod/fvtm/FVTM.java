@@ -22,9 +22,8 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.Passenger;
-import net.fexcraft.mod.fvtm.data.PlayerData;
-import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -207,7 +206,6 @@ public class FVTM {
 			StreetSignItem.INSTANCE.setCreativeTab(deftab);
 			TrafficSignItem.INSTANCE.setCreativeTab(deftab);
 			//RailItemTemp.INSTANCE.setCreativeTab(deftab);
-			Resources.BLOCKS.forEach(block -> block.linkItem());
 			JunctionToolItem.INSTANCE.setCreativeTab(deftab);
 			SignalItem0.INSTANCE.setCreativeTab(deftab);
 			TrainAdjuster.INSTANCE.setCreativeTab(deftab);
@@ -229,11 +227,12 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		Resources.MATERIALS.forEach(mat -> mat.linkContainerItem());
-		Resources.MATERIALS.forEach(mat -> mat.registerIntoOreDictionary());
-		Resources.CONSUMABLES.forEach(con -> con.linkContainerItem());
-		Resources.CONSUMABLES.forEach(con -> con.registerIntoOreDictionary());
-		Resources.BLOCKS.forEach(con -> con.registerIntoOreDictionary());
+		Resources.MATERIALS.forEach(Material::linkContainerItem);
+		Resources.MATERIALS.forEach(Material::registerIntoOreDictionary);
+		Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
+		Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
+		Resources.BLOCKS.forEach(Block::linkItem);
+		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
 		Resources.loadPresets();
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());

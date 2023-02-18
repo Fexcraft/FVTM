@@ -137,6 +137,7 @@ public class M_4ROT_TE extends BlockBase {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
         world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
         ((MultiblockTileEntity)world.getTileEntity(pos)).setCore(pos, stack).setup();
     }

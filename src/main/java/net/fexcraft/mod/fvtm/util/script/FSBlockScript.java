@@ -43,7 +43,7 @@ public class FSBlockScript implements BlockScript {
 		if(id.endsWith(".script")) id = id.substring(0, id.length() - 7);
 	}
 
-	public BlockScript init(BlockData data){
+	public BlockScript init(MultiBlockData data){
 		Object[] obj = Resources.getInputStream(resloc);
 		script = new Script((InputStream)obj[0], id);
 		if(obj.length > 1){

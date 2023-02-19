@@ -95,7 +95,7 @@ public class Addon extends TypeCore<Addon> {
 	public Addon parse(JsonObject obj){
 		registryname = DataUtil.getRegistryName((Addon)null, obj);
 		if(registryname == null) return null;
-		this.pack = this;
+		pack = this;
 		name = JsonUtil.getIfExists(obj, "Name", "Unnamed Addon");
 		version = JsonUtil.getIfExists(obj, "Version", "0.o");
 		if(obj.has("Authors") && obj.get("Authors").isJsonArray()){

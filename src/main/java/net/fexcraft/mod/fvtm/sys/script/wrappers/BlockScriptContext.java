@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
 import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
@@ -19,12 +20,12 @@ public class BlockScriptContext extends WrapperElm {
 	public HashMap<String, BiFunction<ScrBlock, ArrayList<Elm>, Elm>> exes = new HashMap<>();
 	private FSBlockScript wrapper;
 	private BlockTileEntity entity;
-	protected BlockData data;
+	protected MultiBlockData data;
 	//
 	private NBTTagCompound packet;
 	private Side side;
 
-	public BlockScriptContext(BlockData data, FSBlockScript fscript){
+	public BlockScriptContext(MultiBlockData data, FSBlockScript fscript){
 		this.data = data;
 		wrapper = fscript;
 	}

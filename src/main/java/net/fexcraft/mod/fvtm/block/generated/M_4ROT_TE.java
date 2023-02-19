@@ -204,7 +204,8 @@ public class M_4ROT_TE extends BlockBase {
 
 	@Override
 	public net.minecraft.tileentity.TileEntity createNewTileEntity(World world, int meta){
-		return type.getMultiBlock() != null && type.getMultiBlock().isTickable() ? new MultiblockTickableTE(this) : new MultiblockTileEntity(this);
+		return /*type.getMultiBlock() != null && type.getMultiBlock().isTickable() ? new MultiblockTickableTE(this) :*/ new MultiblockTileEntity(this);
+		//TODO multiblocks
 	}
 
     @Override

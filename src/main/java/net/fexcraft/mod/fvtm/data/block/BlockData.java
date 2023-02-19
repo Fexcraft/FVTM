@@ -24,7 +24,6 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 	
 	protected Textureable texture;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected MultiBlockData multidata;
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected ArrayList<BoolBlockFunction> boolfuncs = new ArrayList<>();
 	protected InventoryBlockFunction invfunc;
@@ -35,7 +34,6 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
-		multidata = type.isFunctional() ? new MultiBlockData(this, type.getMultiBlock()) : null;
 		for(BlockFunction func : type.getFunctions()){
 			functions.add(func.copy(type));
 		}
@@ -59,7 +57,6 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
-		if(multidata != null) compound.setTag("MultiBlock", multidata.write(null));
 		NBTTagCompound com = new NBTTagCompound();
 		for(BlockFunction func : functions) func.save(com);
 		if(!com.isEmpty()) compound.setTag("BlockFunction", com);
@@ -81,7 +78,6 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 				channels.get(str).packed = compound.getInteger("RGB_" + str);
 			}
 		}
-		if(compound.hasKey("MultiBlock")) multidata.read(compound.getCompoundTag("MultiBlock"));
 		if(compound.hasKey("BlockFunction")){
 			NBTTagCompound com = compound.getCompoundTag("BlockFunction");
 			for(BlockFunction func : functions) func.load(com);
@@ -107,10 +103,6 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		ItemStack stack = this.type.newItemStack();
 		stack.setTagCompound(this.write(new NBTTagCompound()));
 		return stack;
-	}
-
-	public MultiBlockData getMultiBlockData(){
-		return multidata;
 	}
 
 	@Override

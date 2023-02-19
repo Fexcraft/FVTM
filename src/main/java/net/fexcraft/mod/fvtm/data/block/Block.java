@@ -67,7 +67,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile;
 	//
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
-	protected MultiBlock multiblock;
 	protected RelayData relaydata;
 	
 	public Block(){}
@@ -181,16 +180,13 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 				parseFunction(elm);
 			});
 		}
-		if(obj.has("MultiBlock")){
-			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
-		}
 		hastile = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
+		if(!hastile && obj.has("HasBlockEntity")) hastile = obj.get("HasBlockEntity").getAsBoolean();
 		if(obj.has("WireRelay")){
 			relaydata = new RelayData(obj.get("WireRelay").getAsJsonObject());
 		}
 		try{
-			if(!hastile) hastile = isFunctional() || canBeWired();
-			this.block = blocktype.getApplicableClass(hastile, plain_model).getConstructor(Block.class).newInstance(this);
+			this.block = blocktype.getApplicableClass(hastile || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
 		}
 		catch(Exception e){
 			e.printStackTrace(); Static.stop();
@@ -254,14 +250,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	@Override
 	public List<NamedResourceLocation> getDefaultTextures(){
 		return textures;
-	}
-
-	public boolean isFunctional(){
-		return multiblock != null;
-	}
-
-	public boolean isDecoration(){
-		return multiblock == null;
 	}
 
 	public boolean isRailBlock(){
@@ -370,10 +358,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public boolean isTranslucent(){
 		return translucent;
-	}
-
-	public MultiBlock getMultiBlock(){
-		return multiblock;
 	}
 
 	public boolean isInvisible(){

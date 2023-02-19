@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonArray;
@@ -25,14 +28,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlock {
-	
-	private ResourceLocation regname;
+public class MultiBlock extends TypeCore<MultiBlock> {
+
 	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
 	private ArrayList<MB_Trigger> triggers = new ArrayList<>();
@@ -42,8 +46,13 @@ public class MultiBlock {
 	private JsonObject scriptdata;
 	private boolean tickable;
 
-	public MultiBlock(ResourceLocation registryname, JsonObject obj){
-		regname = registryname;
+	@Override
+	public MultiBlock parse(JsonObject obj){
+		this.pack = DataUtil.getAddon(obj);
+		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
+		//
 		if(obj.has("Inventories")){
 			JsonObject invs = obj.get("Inventories").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : invs.entrySet()){
@@ -170,6 +179,7 @@ public class MultiBlock {
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
 		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
+		return this;
 	}
 
 	private void parsePatternArray(ArrayList<Entry<Character, BlockPos>> list, int height, int row, String string){
@@ -178,10 +188,6 @@ public class MultiBlock {
 			if(arr[c] == ' ') continue;
 			list.add(new SimpleEntry<>(arr[c], new BlockPos(row, height, c)));
 		}
-	}
-
-	public ResourceLocation getRegName(){
-		return regname;
 	}
 
 	public Map<String, InvHandler> getDefaultInventories(){
@@ -287,4 +293,30 @@ public class MultiBlock {
 		return scriptdata;
 	}
 
+	@Override
+	public DataType getDataType(){
+		return DataType.MULTIBLOCK;
+	}
+
+	@Override
+	public Class<?> getDataClass(){
+		return null;
+	}
+
+	@Override
+	public MultiBlock setRegistryName(ResourceLocation name){
+		registryname = name;
+		return this;
+	}
+
+	@Nullable
+	@Override
+	public ResourceLocation getRegistryName(){
+		return registryname;
+	}
+
+	@Override
+	public Class<MultiBlock> getRegistryType(){
+		return MultiBlock.class;
+	}
 }

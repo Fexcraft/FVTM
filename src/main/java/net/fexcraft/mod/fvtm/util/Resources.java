@@ -20,6 +20,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.JsonArray;
@@ -150,6 +151,7 @@ public class Resources {
 	public static Registry<Consumable> CONSUMABLES = new Registry<>();
 	public static Registry<Container> CONTAINERS = new Registry<>();
 	public static Registry<Block> BLOCKS = new Registry<>();
+	public static Registry<MultiBlock> MULTIBLOCKS = new Registry<>();
 	public static Registry<RailGauge> RAILGAUGES = new Registry<>();
 	public static Registry<Cloth> CLOTHES = new Registry<>();
 	public static Registry<WireType> WIRES = new Registry<>();
@@ -263,6 +265,7 @@ public class Resources {
 		searchInAddonsFor(DataType.WIRE);
 		searchInAddonsFor(DataType.CONTAINER);
 		searchInAddonsFor(DataType.BLOCK);
+		searchInAddonsFor(DataType.MULTIBLOCK);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
 		//

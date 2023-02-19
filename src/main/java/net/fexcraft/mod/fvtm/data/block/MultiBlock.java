@@ -10,8 +10,13 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonArray;
@@ -35,7 +40,7 @@ import javax.annotation.Nullable;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlock extends TypeCore<MultiBlock> {
+public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 
 	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
@@ -44,7 +49,9 @@ public class MultiBlock extends TypeCore<MultiBlock> {
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
 	private JsonObject scriptdata;
+	private MultiBlockItem item;
 	private boolean tickable;
+	private String ctab;
 
 	@Override
 	public MultiBlock parse(JsonObject obj){
@@ -52,6 +59,10 @@ public class MultiBlock extends TypeCore<MultiBlock> {
 		if(pack == null) return null;
 		this.registryname = DataUtil.getRegistryName(pack, obj);
 		if(registryname == null) return null;
+		//
+		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
+		this.description = DataUtil.getStringArray(obj, "Description", true, true);
+		this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		//
 		if(obj.has("Inventories")){
 			JsonObject invs = obj.get("Inventories").getAsJsonObject();
@@ -218,7 +229,7 @@ public class MultiBlock extends TypeCore<MultiBlock> {
 		return clazz != null;
 	}
 
-	public ArrayList<BlockPos> getPositions(Block type, BlockPos corepos, EnumFacing facing){
+	public ArrayList<BlockPos> getPositions(BlockPos corepos, EnumFacing facing){
 		ArrayList<BlockPos> list = new ArrayList<>();
 		Rotation rot = getRotation(facing, false);
 		for(BlockPos pos : blockpos){
@@ -319,4 +330,27 @@ public class MultiBlock extends TypeCore<MultiBlock> {
 	public Class<MultiBlock> getRegistryType(){
 		return MultiBlock.class;
 	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
+	}
+
+	public MultiBlockItem getBlockItem(){
+		return item;
+	}
+
+	@Override
+	public Item getItem(){
+		return item;
+	}
+
+	public ItemStack newItemStack(){
+		return new ItemStack(item, 1);
+	}
+
+	public void linkItem(){
+		item = (MultiBlockItem)Item.REGISTRY.getObject(registryname);
+	}
+
 }

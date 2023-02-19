@@ -57,8 +57,8 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
     	if(type.isRailBlock()) tooltip.add(Formatter.format("&6&oRailway Block"));
-    	else if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
-    	else if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
+    	//else if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
+    	//else if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
     	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
@@ -137,7 +137,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
     	if(!type.getBlockType().isMultiBlock()) return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
-        if(world.isRemote || side != EnumFacing.UP){
+        /*if(world.isRemote || side != EnumFacing.UP){
         	return EnumActionResult.PASS;
         }
         pos = pos.add(0, 1, 0);
@@ -155,7 +155,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
             }
             stack.shrink(1);
             return EnumActionResult.SUCCESS;
-        }
+        }*///TODO multiblock
         return EnumActionResult.PASS;
     }
 

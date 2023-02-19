@@ -119,7 +119,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     			}
     		}
     		else{
-        		items.add(type.newItemStack(this));
+        		items.add(type.newItemStack());
     		}
     	}
     }
@@ -136,46 +136,8 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
     
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-    	if(!type.getBlockType().isMultiBlock()) return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
-        /*if(world.isRemote || side != EnumFacing.UP){
-        	return EnumActionResult.PASS;
-        }
-        pos = pos.add(0, 1, 0);
-        BlockPos core = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.add(0, 1, 0);
-        ArrayList<BlockPos> poslist = type.getMultiBlock().getPositions(type, pos, player.getHorizontalFacing());
-        if(isValidPostitionForMultiBlock(world, player, core, poslist)){
-            ItemStack stack = player.getHeldItem(hand);
-            stack.getTagCompound().setLong("PlacedPos", core.toLong());
-            MultiBlock multi = type.getMultiBlock();
-            for(int i = 0; i < poslist.size(); i++){
-            	net.minecraft.block.Block block = net.minecraft.block.Block.REGISTRY.getObject(multi.getBlocks().get(i).getKey());
-            	EnumFacing facing = player.getHorizontalFacing();
-            	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, MultiBlock.rotate(multi.getBlocks().get(i).getValue(), facing));
-                state.getBlock().onBlockPlacedBy(world, poslist.get(i), state.withProperty(Properties.FACING, facing), player, stack);
-            }
-            stack.shrink(1);
-            return EnumActionResult.SUCCESS;
-        }*///TODO multiblock
-        return EnumActionResult.PASS;
-    }
-
-    public static boolean isValidPostitionForMultiBlock(World world, EntityPlayer player, BlockPos pos, ArrayList<BlockPos> list){
-        BlockPos obstacle = null;
-        IBlockState state = null;
-        for(BlockPos blkpos : list){
-            state = world.getBlockState(blkpos);
-            if(!state.getBlock().isReplaceable(world, blkpos)){
-                obstacle = blkpos;
-                break;
-            }
-        }
-        if(obstacle != null){
-            Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", obstacle.getX(), obstacle.getY(), obstacle.getZ()));
-            return false;
-        }
-        else{
-            return true;
-        }
+    	if(type.getBlockType().isMultiBlock()) return EnumActionResult.PASS;
+        return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 
 	@Override

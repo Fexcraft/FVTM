@@ -22,20 +22,16 @@ public class MultiBlockData {
 	private MultiBlock type;
 	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
 	private BlockScript script;
-	private BlockTileEntity core;
-	private BlockData bdata;
 	
-	public MultiBlockData(BlockTileEntity tile){
-		bdata = tile.getBlockData();
-		type = null;//TODO multiblock
-		core = tile;
+	public MultiBlockData(MultiBlock type){
+		this.type = type;
 		for(Entry<String, InvHandler> entry : type.getDefaultInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen(6));
 		}
 		try{
 			script = type.hasScript() ? type.getScript().getConstructor(JsonObject.class).newInstance(type.getScriptData()) : null;
 			if(script instanceof FSBlockScript){
-				((FSBlockScript)script).init(bdata);
+				((FSBlockScript)script).init(this);
 			}
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
@@ -44,12 +40,12 @@ public class MultiBlockData {
 		}
 	}
 	
-	public MultiBlockData(BlockTileEntity tile, NBTTagCompound compound){
-		this(tile);
+	public MultiBlockData(MultiBlock type, NBTTagCompound compound){
+		this(type);
 		this.read(compound);
 	}
 	
-	public void read(NBTTagCompound compound){
+	public MultiBlockData read(NBTTagCompound compound){
 		for(Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getBlkSavePrefix();
 			if(!compound.hasKey(pre + entry.getKey())) continue;
@@ -58,6 +54,7 @@ public class MultiBlockData {
 		if(script != null){
 			script.read(this, compound);
 		}
+		return this;
 	}
 
 	public MultiBlock getType(){
@@ -78,10 +75,6 @@ public class MultiBlockData {
 	
 	public BlockScript getScript(){
 		return script;
-	}
-	
-	public BlockData getData(){
-		return bdata;
 	}
 
 	public InvHandler getInventory(String inventory){

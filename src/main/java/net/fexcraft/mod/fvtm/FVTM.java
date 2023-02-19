@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -233,6 +234,7 @@ public class FVTM {
 		Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
 		Resources.BLOCKS.forEach(Block::linkItem);
 		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
+		Resources.MULTIBLOCKS.forEach(MultiBlock::linkItem);
 		Resources.loadPresets();
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());

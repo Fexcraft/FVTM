@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,22 +18,24 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  */
 public class MultiBlockData {
-	
+
 	private MultiBlock type;
 	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
 	private BlockScript script;
-	private BlockData data;
+	private BlockTileEntity core;
+	private BlockData bdata;
 	
-	public MultiBlockData(BlockData data, MultiBlock block){
-		this.type = block;
-		this.data = data;
-		for(Entry<String, InvHandler> entry : block.getDefaultInventories().entrySet()){
+	public MultiBlockData(BlockTileEntity tile){
+		bdata = tile.getBlockData();
+		type = null;//TODO multiblock
+		core = tile;
+		for(Entry<String, InvHandler> entry : type.getDefaultInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen(6));
 		}
 		try{
-			script = block.hasScript() ? block.getScript().getConstructor(JsonObject.class).newInstance(block.getScriptData()) : null;
+			script = type.hasScript() ? type.getScript().getConstructor(JsonObject.class).newInstance(type.getScriptData()) : null;
 			if(script instanceof FSBlockScript){
-				((FSBlockScript)script).init(data);
+				((FSBlockScript)script).init(bdata);
 			}
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
@@ -41,8 +44,8 @@ public class MultiBlockData {
 		}
 	}
 	
-	public MultiBlockData(BlockData data, NBTTagCompound compound){
-		this(data, data.getType().getMultiBlock());
+	public MultiBlockData(BlockTileEntity tile, NBTTagCompound compound){
+		this(tile);
 		this.read(compound);
 	}
 	
@@ -78,7 +81,7 @@ public class MultiBlockData {
 	}
 	
 	public BlockData getData(){
-		return data;
+		return bdata;
 	}
 
 	public InvHandler getInventory(String inventory){

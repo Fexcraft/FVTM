@@ -51,6 +51,7 @@ public enum DataType {
 			case CONSUMABLE: return (Registry<T>)Resources.CONSUMABLES;
 			case CONTAINER: return (Registry<T>)Resources.CONTAINERS;
 			case BLOCK: return (Registry<T>)Resources.BLOCKS;
+			case MULTIBLOCK: return (Registry<T>)Resources.MULTIBLOCKS;
 			case RAILGAUGE: return (Registry<T>)Resources.RAILGAUGES;
 			case CLOTH: return (Registry<T>)Resources.CLOTHES;
 			case WIRE: return (Registry<T>)Resources.WIRES;
@@ -78,6 +79,7 @@ public enum DataType {
 			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
+			case MULTIBLOCK:{ Resources.MULTIBLOCKS.register((MultiBlock)core); return; }
 			case RAILGAUGE:{ Resources.RAILGAUGES.register((RailGauge)core); return; }
 			case CLOTH:{ Resources.CLOTHES.register((Cloth)core); return; }
 			case WIRE:{ Resources.WIRES.register((WireType)core); return; }

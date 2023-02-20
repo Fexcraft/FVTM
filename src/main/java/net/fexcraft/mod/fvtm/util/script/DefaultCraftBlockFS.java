@@ -45,7 +45,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	@Override
 	public void read(MultiBlockData data, NBTTagCompound tag){
 		if(script == null){
-			scriptwrapper.init(data.getData());
+			scriptwrapper.init(data);
 			script = scriptwrapper.script();
 			context = scriptwrapper.context();
 			//

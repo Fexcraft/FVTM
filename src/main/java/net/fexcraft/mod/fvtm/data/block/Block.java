@@ -64,7 +64,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
-	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile;
+	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile, tickable;
 	//
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected RelayData relaydata;
@@ -180,6 +180,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 				parseFunction(elm);
 			});
 		}
+		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
 		hastile = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
 		if(!hastile && obj.has("HasBlockEntity")) hastile = obj.get("HasBlockEntity").getAsBoolean();
 		if(obj.has("WireRelay")){
@@ -407,6 +408,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public boolean hasEntity(){
 		return hastile;
+	}
+
+	public boolean isTickable(){
+		return tickable;
 	}
 
 }

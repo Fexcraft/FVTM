@@ -70,6 +70,7 @@ public class MultiBlockData {
 		if(script != null){
 			script.write(this, compound);
 		}
+		compound.setString("type", type.getRegistryName().toString());
 		return compound;
 	}
 	

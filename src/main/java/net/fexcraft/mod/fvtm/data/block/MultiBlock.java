@@ -51,7 +51,6 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 	private Class<? extends BlockScript> clazz;
 	private JsonObject scriptdata;
 	private MultiBlockItem item;
-	private boolean tickable;
 	private String ctab;
 
 	@Override
@@ -190,7 +189,6 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 		if(obj.has("ScriptData")){
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
-		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
 		item = new MultiBlockItem(this);
 		return this;
 	}
@@ -272,10 +270,6 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 				return facing;
 			
 		}
-	}
-
-	public boolean isTickable(){
-		return tickable;
 	}
 
 	public List<MB_Trigger> getTriggers(EnumFacing facing, BlockPos pos, BlockPos core){

@@ -19,8 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock;
+import net.fexcraft.mod.fvtm.data.block.*;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.JsonArray;
@@ -52,8 +51,6 @@ import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.*;
-import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
@@ -496,6 +493,14 @@ public class Resources {
 		return BLOCKS.get(resloc);
 	}
 
+	public static MultiBlock getMultiBlock(String string){
+		return MULTIBLOCKS.get(string);
+	}
+
+	public static MultiBlock getMultiBlock(ResourceLocation resloc){
+		return MULTIBLOCKS.get(resloc);
+	}
+
 	@Deprecated
 	@SideOnly(Side.CLIENT)
 	public static InputStream getModelInputStream(String string){
@@ -675,6 +680,14 @@ public class Resources {
 		if(!compound.hasKey("Block")) return null;
 		Block block = getBlock(compound.getString("Block")); if(block == null) return null;
 		try{ return ((BlockData)block.getDataClass().getConstructor(Block.class).newInstance(block)).read(compound); }
+		catch(Throwable e){ e.printStackTrace(); return null; }
+	}
+
+	public static MultiBlockData getMultiBlockData(NBTTagCompound compound){
+		if(!compound.hasKey("type")) return null;
+		MultiBlock block = getMultiBlock(compound.getString("type"));
+		if(block == null) return null;
+		try{ return ((MultiBlockData)block.getDataClass().getConstructor(MultiBlock.class).newInstance(block)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 	

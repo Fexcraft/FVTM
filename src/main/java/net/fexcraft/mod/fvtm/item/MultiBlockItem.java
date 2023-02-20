@@ -39,7 +39,7 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs ctab;
 
-    public MultiBlockItem(MultiBlock block) throws Exception {
+    public MultiBlockItem(MultiBlock block) {
 		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);

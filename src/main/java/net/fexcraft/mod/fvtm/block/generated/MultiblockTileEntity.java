@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -23,6 +24,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	
 	public List<MB_Trigger> triggers;
 	protected MultiblockTileEntity reference;
+	protected MultiBlockData mdata;
 	protected BlockPos core;
 	protected boolean iscore;
 	
@@ -39,7 +41,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
         }
         else{
         	iscore = true;
-	        data = ((BlockItem)stack.getItem()).getData(stack);
+	        mdata = ((MultiBlockItem)stack.getItem()).getData(stack);
         }
         this.markDirty();
         return this;
@@ -54,7 +56,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	}
 
 	public MultiBlockData getMultiBlockData(){
-		return iscore ? data.getMultiBlockData() : getMultiBlockDataFromCore();
+		return iscore ? mdata : getMultiBlockDataFromCore();
 	}
 	
 	private MultiBlockData getMultiBlockDataFromCore(){
@@ -69,19 +71,19 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	}
 
 	public void setup(){
-		if(data == null || data.getMultiBlockData() == null){
+		if(data == null || mdata == null){
 			//Print.debug("data is null");
 			return;
 		}
 		//Print.debug("data is NOT null");
-		world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
+		world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), mdata);
 	}
 	
 	@Override
 	public void invalidate(){
 		super.invalidate();
-		if(data == null || data.getMultiBlockData() == null) return;
-		world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
+		if(data == null || mdata == null) return;
+		world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), mdata);
 	}
     
     @Override

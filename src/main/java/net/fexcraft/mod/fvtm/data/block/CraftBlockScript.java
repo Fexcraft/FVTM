@@ -116,7 +116,7 @@ public abstract class CraftBlockScript implements BlockScript {
 
 	protected void searchForRecipe(MultiBlockData multidata){
 		if(blockid == null){
-			blockid = multidata.getData().getType().getRegistryName().toString();
+			blockid = multidata.getType().getRegistryName().toString();
 		}
 		ArrayList<Recipe> recipes = SORTED_REGISTRY.get(blockid);
 		if(recipes == null || recipes.isEmpty()) return;
@@ -748,7 +748,7 @@ public abstract class CraftBlockScript implements BlockScript {
 
 	public void setSelectedRecipe(MultiblockTileEntity tile, String string){
 		if(blockid == null){
-			blockid = tile.getMultiBlockData().getData().getType().getRegistryName().toString();
+			blockid = tile.getMultiBlockData().getType().getRegistryName().toString();
 		}
 		this.addCooldown();
 		for(Recipe recipe : SORTED_REGISTRY.get(blockid)){

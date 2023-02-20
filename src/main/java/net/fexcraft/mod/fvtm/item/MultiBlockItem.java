@@ -44,6 +44,7 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
 		this.setRegistryName(block.getRegistryName());
+        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
 		ctab = Resources.getCreativeTab(type);
 	}

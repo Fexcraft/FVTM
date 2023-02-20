@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -90,6 +91,10 @@ public class MultiblockTileEntity extends BlockTileEntity {
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
         if(compound.hasKey("MultiBlockCore")) core = BlockPos.fromLong(compound.getLong("MultiBlockCore"));
+		if(compound.hasKey("MultiBlock")){
+			if(mdata != null) mdata.read(compound.getCompoundTag("MultiBlock"));
+			else mdata = Resources.getMultiBlockData(compound.getCompoundTag("MultiBlock"));
+		}
         if(iscore = core == null) reference = this;
     }
 
@@ -97,6 +102,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
         if(core != null) compound.setLong("MultiBlockCore", core.toLong());
+		if(mdata != null) compound.setTag("MultiBlock", mdata.write(new NBTTagCompound()));
         return compound;
     }
     

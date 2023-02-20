@@ -43,7 +43,6 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
 		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
-		this.setRegistryName(block.getRegistryName());
         this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
 		ctab = Resources.getCreativeTab(type);
@@ -91,6 +90,7 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
         ArrayList<BlockPos> poslist = type.getPositions(pos, player.getHorizontalFacing());
         if(isValidPostitionForMultiBlock(world, player, core, poslist)){
             ItemStack stack = player.getHeldItem(hand);
+            if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setLong("PlacedPos", core.toLong());
             for(int i = 0; i < poslist.size(); i++){
             	net.minecraft.block.Block block = net.minecraft.block.Block.REGISTRY.getObject(type.getBlocks().get(i).getKey());

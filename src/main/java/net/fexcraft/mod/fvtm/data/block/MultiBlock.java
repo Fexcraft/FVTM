@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -190,6 +191,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
 		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
+		item = new MultiBlockItem(this);
 		return this;
 	}
 
@@ -347,10 +349,6 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 
 	public ItemStack newItemStack(){
 		return new ItemStack(item, 1);
-	}
-
-	public void linkItem(){
-		item = (MultiBlockItem)Item.REGISTRY.getObject(registryname);
 	}
 
 }

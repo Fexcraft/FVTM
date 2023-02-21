@@ -10,6 +10,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -84,6 +86,12 @@ public class MultiBlockData {
 
 	public LinkedHashMap<String, InvHandler> getInventories(){
 		return inventories;
+	}
+
+	public ItemStack newItemStack(){
+		ItemStack stack = this.type.newItemStack();
+		stack.setTagCompound(this.write(new NBTTagCompound()));
+		return stack;
 	}
 
 }

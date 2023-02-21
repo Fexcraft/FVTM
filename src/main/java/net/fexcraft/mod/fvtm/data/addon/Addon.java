@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
@@ -95,7 +94,7 @@ public class Addon extends TypeCore<Addon> {
 	public Addon parse(JsonObject obj){
 		registryname = DataUtil.getRegistryName((Addon)null, obj);
 		if(registryname == null) return null;
-		this.pack = this;
+		pack = this;
 		name = JsonUtil.getIfExists(obj, "Name", "Unnamed Addon");
 		version = JsonUtil.getIfExists(obj, "Version", "0.o");
 		if(obj.has("Authors") && obj.get("Authors").isJsonArray()){

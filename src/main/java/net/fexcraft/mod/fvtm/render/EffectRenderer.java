@@ -538,7 +538,7 @@ public class EffectRenderer {
     private static final ModelRendererTurbo blkpreview = new ModelRendererTurbo(null).addBox(0, 0, 0, 14, 14, 14);
     private static ItemStack stack;
 
-	@SubscribeEvent
+	/*@SubscribeEvent
     public void preview(DrawBlockHighlightEvent event){
 		if(!Command.OTHER) return;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty() || stack.getItem() instanceof BlockItem == false) return;
@@ -563,6 +563,6 @@ public class EffectRenderer {
 	        blkpreview.render();
 	        GL11.glPopMatrix();
 		}
-    }
+    }*///TODO multiblock
 
 }

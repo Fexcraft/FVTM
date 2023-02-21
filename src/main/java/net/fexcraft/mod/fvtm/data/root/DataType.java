@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -27,6 +28,7 @@ public enum DataType {
 	CONSUMABLE(".consumable", "consumables", Consumable.class),
 	FUEL(".fuel", "fuels", Fuel.class),
 	BLOCK(".block", "blocks", Block.class),
+	MULTIBLOCK(".multiblock", "blocks", MultiBlock.class),
 	RAILGAUGE(".gauge", "railgauges", RailGauge.class),
 	CLOTH(".cloth", "clothes", Cloth.class),
 	WIRE(".wire", "wires", WireType.class),
@@ -49,6 +51,7 @@ public enum DataType {
 			case CONSUMABLE: return (Registry<T>)Resources.CONSUMABLES;
 			case CONTAINER: return (Registry<T>)Resources.CONTAINERS;
 			case BLOCK: return (Registry<T>)Resources.BLOCKS;
+			case MULTIBLOCK: return (Registry<T>)Resources.MULTIBLOCKS;
 			case RAILGAUGE: return (Registry<T>)Resources.RAILGAUGES;
 			case CLOTH: return (Registry<T>)Resources.CLOTHES;
 			case WIRE: return (Registry<T>)Resources.WIRES;
@@ -76,6 +79,7 @@ public enum DataType {
 			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
+			case MULTIBLOCK:{ Resources.MULTIBLOCKS.register((MultiBlock)core); return; }
 			case RAILGAUGE:{ Resources.RAILGAUGES.register((RailGauge)core); return; }
 			case CLOTH:{ Resources.CLOTHES.register((Cloth)core); return; }
 			case WIRE:{ Resources.WIRES.register((WireType)core); return; }

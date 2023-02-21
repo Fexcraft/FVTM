@@ -37,7 +37,7 @@ public class GBlockCraftContainer extends GenericContainer {
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		script = (CraftBlockScript)tile.getMultiBlockData().getScript();
-		tickable = tile.getMultiBlockData().getType().isTickable();
+		tickable = tile.getBlockData().getType().isTickable();
 		data = tile.getMultiBlockData();
 	}
 

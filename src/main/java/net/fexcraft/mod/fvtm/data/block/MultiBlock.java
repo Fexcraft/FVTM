@@ -9,41 +9,59 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import javax.annotation.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.item.MultiBlockItem;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlock {
-	
-	private ResourceLocation regname;
+public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemTextureable {
+
 	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
 	private ArrayList<MB_Trigger> triggers = new ArrayList<>();
 	private ArrayList<MB_Access> access = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
+	private ResourceLocation itemloc;
 	private JsonObject scriptdata;
-	private boolean tickable;
+	private MultiBlockItem item;
+	private String ctab;
 
-	public MultiBlock(ResourceLocation registryname, JsonObject obj){
-		regname = registryname;
+	@Override
+	public MultiBlock parse(JsonObject obj){
+		this.pack = DataUtil.getAddon(obj);
+		if(pack == null) return null;
+		this.registryname = DataUtil.getRegistryName(pack, obj);
+		if(registryname == null) return null;
+		//
+		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
+		this.description = DataUtil.getStringArray(obj, "Description", true, true);
+		this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+		//
 		if(obj.has("Inventories")){
 			JsonObject invs = obj.get("Inventories").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : invs.entrySet()){
@@ -169,7 +187,9 @@ public class MultiBlock {
 		if(obj.has("ScriptData")){
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
-		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
+		itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		item = new MultiBlockItem(this);
+		return this;
 	}
 
 	private void parsePatternArray(ArrayList<Entry<Character, BlockPos>> list, int height, int row, String string){
@@ -178,10 +198,6 @@ public class MultiBlock {
 			if(arr[c] == ' ') continue;
 			list.add(new SimpleEntry<>(arr[c], new BlockPos(row, height, c)));
 		}
-	}
-
-	public ResourceLocation getRegName(){
-		return regname;
 	}
 
 	public Map<String, InvHandler> getDefaultInventories(){
@@ -212,7 +228,7 @@ public class MultiBlock {
 		return clazz != null;
 	}
 
-	public ArrayList<BlockPos> getPositions(Block type, BlockPos corepos, EnumFacing facing){
+	public ArrayList<BlockPos> getPositions(BlockPos corepos, EnumFacing facing){
 		ArrayList<BlockPos> list = new ArrayList<>();
 		Rotation rot = getRotation(facing, false);
 		for(BlockPos pos : blockpos){
@@ -255,10 +271,6 @@ public class MultiBlock {
 		}
 	}
 
-	public boolean isTickable(){
-		return tickable;
-	}
-
 	public List<MB_Trigger> getTriggers(EnumFacing facing, BlockPos pos, BlockPos core){
 		//Print.debug(pos);
 		//Print.debug(core.subtract(pos));
@@ -287,4 +299,58 @@ public class MultiBlock {
 		return scriptdata;
 	}
 
+	@Override
+	public DataType getDataType(){
+		return DataType.MULTIBLOCK;
+	}
+
+	@Override
+	public Class<?> getDataClass(){
+		return MultiBlockData.class;
+	}
+
+	@Override
+	public MultiBlock setRegistryName(ResourceLocation name){
+		registryname = name;
+		return this;
+	}
+
+	@Nullable
+	@Override
+	public ResourceLocation getRegistryName(){
+		return registryname;
+	}
+
+	@Override
+	public Class<MultiBlock> getRegistryType(){
+		return MultiBlock.class;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
+	}
+
+	public MultiBlockItem getBlockItem(){
+		return item;
+	}
+
+	@Override
+	public Item getItem(){
+		return item;
+	}
+
+	public ItemStack newItemStack(){
+		return new ItemStack(item, 1);
+	}
+
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
+	}
+
+	@Override
+	public boolean no3DItemModel(){
+		return true;
+	}
 }

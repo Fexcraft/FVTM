@@ -64,10 +64,9 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
-	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile;
+	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile, tickable;
 	//
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
-	protected MultiBlock multiblock;
 	protected RelayData relaydata;
 	
 	public Block(){}
@@ -181,16 +180,14 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 				parseFunction(elm);
 			});
 		}
-		if(obj.has("MultiBlock")){
-			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
-		}
+		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
 		hastile = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
+		if(!hastile && obj.has("HasBlockEntity")) hastile = obj.get("HasBlockEntity").getAsBoolean();
 		if(obj.has("WireRelay")){
 			relaydata = new RelayData(obj.get("WireRelay").getAsJsonObject());
 		}
 		try{
-			if(!hastile) hastile = isFunctional() || canBeWired();
-			this.block = blocktype.getApplicableClass(hastile, plain_model).getConstructor(Block.class).newInstance(this);
+			this.block = blocktype.getApplicableClass(hastile || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
 		}
 		catch(Exception e){
 			e.printStackTrace(); Static.stop();
@@ -238,10 +235,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return new ItemStack(item, 1);
 	}
 	
-	public ItemStack newItemStack(Item iitem){
-		return new ItemStack(item == null ? iitem : item, 1);
-	}
-	
 	public Model getModel(){
 		return model;
 	}
@@ -254,14 +247,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	@Override
 	public List<NamedResourceLocation> getDefaultTextures(){
 		return textures;
-	}
-
-	public boolean isFunctional(){
-		return multiblock != null;
-	}
-
-	public boolean isDecoration(){
-		return multiblock == null;
 	}
 
 	public boolean isRailBlock(){
@@ -372,10 +357,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return translucent;
 	}
 
-	public MultiBlock getMultiBlock(){
-		return multiblock;
-	}
-
 	public boolean isInvisible(){
 		return invisible;
 	}
@@ -427,6 +408,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public boolean hasEntity(){
 		return hastile;
+	}
+
+	public boolean isTickable(){
+		return tickable;
 	}
 
 }

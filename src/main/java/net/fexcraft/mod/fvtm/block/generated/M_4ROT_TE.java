@@ -184,16 +184,18 @@ public class M_4ROT_TE extends BlockBase {
 			//Print.debug("Block at " + pos + "is NOT a MultiBlock! " + core);
 			return;
 		}
-		ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), corepos, core.getValue(FACING).getOpposite());
+		ArrayList<BlockPos> positions = data.getType().getPositions(corepos, core.getValue(FACING).getOpposite());
 		positions.forEach(blkpos -> {
 			IBlockState posstate = world.getBlockState(blkpos);
 			if(posstate.getBlock() instanceof M_4ROT_TE || posstate.getBlock() instanceof M_4ROT){
 				MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(blkpos);
 				if(tile != null && tile.iscore){
-					//TODO empty out inventories (drop)
+					for(InvHandler handler : tile.getMultiBlockData().getInventories().values()){
+						handler.dropAllAt(world, tile.getPos());
+					}
 					EntityItem item = new EntityItem(world);
 					item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);
-					item.setItem(tile.getBlockData().newItemStack());
+					item.setItem(tile.getMultiBlockData().newItemStack());
 					world.spawnEntity(item);
 				}
 	            world.setBlockState(blkpos, Blocks.AIR.getDefaultState());
@@ -204,7 +206,7 @@ public class M_4ROT_TE extends BlockBase {
 
 	@Override
 	public net.minecraft.tileentity.TileEntity createNewTileEntity(World world, int meta){
-		return type.getMultiBlock() != null && type.getMultiBlock().isTickable() ? new MultiblockTickableTE(this) : new MultiblockTileEntity(this);
+		return type.isTickable() ? new MultiblockTickableTE(this) : new MultiblockTileEntity(this);
 	}
 
     @Override

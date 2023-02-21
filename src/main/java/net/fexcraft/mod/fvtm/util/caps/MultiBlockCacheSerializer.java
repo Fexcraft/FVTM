@@ -80,7 +80,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 
 		@Override
 		public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data){
-			ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), posfrom, rotation);
+			ArrayList<BlockPos> positions = data.getType().getPositions(posfrom, rotation);
 			for(BlockPos pos : positions){
 				blocks.put(pos, data);
 				cores.put(pos, posfrom);
@@ -89,7 +89,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 
 		@Override
 		public void unregisterMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data){
-			ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), posfrom, rotation);
+			ArrayList<BlockPos> positions = data.getType().getPositions(posfrom, rotation);
 			for(BlockPos pos : positions){
 				blocks.remove(pos);
 				cores.remove(pos);

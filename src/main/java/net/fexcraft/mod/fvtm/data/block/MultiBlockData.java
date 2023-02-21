@@ -7,8 +7,11 @@ import java.util.Map.Entry;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -17,22 +20,20 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  */
 public class MultiBlockData {
-	
+
 	private MultiBlock type;
 	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
 	private BlockScript script;
-	private BlockData data;
 	
-	public MultiBlockData(BlockData data, MultiBlock block){
-		this.type = block;
-		this.data = data;
-		for(Entry<String, InvHandler> entry : block.getDefaultInventories().entrySet()){
+	public MultiBlockData(MultiBlock type){
+		this.type = type;
+		for(Entry<String, InvHandler> entry : type.getDefaultInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen(6));
 		}
 		try{
-			script = block.hasScript() ? block.getScript().getConstructor(JsonObject.class).newInstance(block.getScriptData()) : null;
+			script = type.hasScript() ? type.getScript().getConstructor(JsonObject.class).newInstance(type.getScriptData()) : null;
 			if(script instanceof FSBlockScript){
-				((FSBlockScript)script).init(data);
+				((FSBlockScript)script).init(this);
 			}
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
@@ -41,12 +42,12 @@ public class MultiBlockData {
 		}
 	}
 	
-	public MultiBlockData(BlockData data, NBTTagCompound compound){
-		this(data, data.getType().getMultiBlock());
+	public MultiBlockData(MultiBlock type, NBTTagCompound compound){
+		this(type);
 		this.read(compound);
 	}
 	
-	public void read(NBTTagCompound compound){
+	public MultiBlockData read(NBTTagCompound compound){
 		for(Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getBlkSavePrefix();
 			if(!compound.hasKey(pre + entry.getKey())) continue;
@@ -55,6 +56,7 @@ public class MultiBlockData {
 		if(script != null){
 			script.read(this, compound);
 		}
+		return this;
 	}
 
 	public MultiBlock getType(){
@@ -70,15 +72,12 @@ public class MultiBlockData {
 		if(script != null){
 			script.write(this, compound);
 		}
+		compound.setString("type", type.getRegistryName().toString());
 		return compound;
 	}
 	
 	public BlockScript getScript(){
 		return script;
-	}
-	
-	public BlockData getData(){
-		return data;
 	}
 
 	public InvHandler getInventory(String inventory){
@@ -87,6 +86,12 @@ public class MultiBlockData {
 
 	public LinkedHashMap<String, InvHandler> getInventories(){
 		return inventories;
+	}
+
+	public ItemStack newItemStack(){
+		ItemStack stack = this.type.newItemStack();
+		stack.setTagCompound(this.write(new NBTTagCompound()));
+		return stack;
 	}
 
 }

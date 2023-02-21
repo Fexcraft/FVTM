@@ -1,28 +1,29 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MB_Access;
 import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.item.MultiBlockItem;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MultiblockTileEntity extends BlockTileEntity {
 	
 	public List<MB_Trigger> triggers;
 	protected MultiblockTileEntity reference;
+	protected MultiBlockData mdata;
 	protected BlockPos core;
 	protected boolean iscore;
 	
@@ -39,7 +40,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
         }
         else{
         	iscore = true;
-	        data = ((BlockItem)stack.getItem()).getData(stack);
+	        mdata = ((MultiBlockItem)stack.getItem()).getData(stack);
         }
         this.markDirty();
         return this;
@@ -54,7 +55,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	}
 
 	public MultiBlockData getMultiBlockData(){
-		return iscore ? data.getMultiBlockData() : getMultiBlockDataFromCore();
+		return iscore ? mdata : getMultiBlockDataFromCore();
 	}
 	
 	private MultiBlockData getMultiBlockDataFromCore(){
@@ -69,25 +70,25 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	}
 
 	public void setup(){
-		if(data == null || data.getMultiBlockData() == null){
-			//Print.debug("data is null");
-			return;
-		}
-		//Print.debug("data is NOT null");
-		world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
+		if(mdata == null) return;
+		world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), mdata);
 	}
 	
 	@Override
 	public void invalidate(){
 		super.invalidate();
-		if(data == null || data.getMultiBlockData() == null) return;
-		world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
+		if(data == null || mdata == null) return;
+		world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), mdata);
 	}
     
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
         if(compound.hasKey("MultiBlockCore")) core = BlockPos.fromLong(compound.getLong("MultiBlockCore"));
+		if(compound.hasKey("MultiBlock")){
+			if(mdata != null) mdata.read(compound.getCompoundTag("MultiBlock"));
+			else mdata = Resources.getMultiBlockData(compound.getCompoundTag("MultiBlock"));
+		}
         if(iscore = core == null) reference = this;
     }
 
@@ -95,6 +96,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
         if(core != null) compound.setLong("MultiBlockCore", core.toLong());
+		if(mdata != null) compound.setTag("MultiBlock", mdata.write(new NBTTagCompound()));
         return compound;
     }
     

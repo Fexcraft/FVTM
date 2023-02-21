@@ -9,39 +9,36 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.root.DataType;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.item.BlockItem;
-import net.fexcraft.mod.fvtm.item.MultiBlockItem;
-import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.math.NumberUtils;
+import javax.annotation.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.item.MultiBlockItem;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
+public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemTextureable {
 
 	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
@@ -49,6 +46,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 	private ArrayList<MB_Access> access = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
+	private ResourceLocation itemloc;
 	private JsonObject scriptdata;
 	private MultiBlockItem item;
 	private String ctab;
@@ -189,6 +187,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 		if(obj.has("ScriptData")){
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
+		itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
 		item = new MultiBlockItem(this);
 		return this;
 	}
@@ -345,4 +344,13 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 		return new ItemStack(item, 1);
 	}
 
+	@Override
+	public ResourceLocation getItemTexture(){
+		return itemloc;
+	}
+
+	@Override
+	public boolean no3DItemModel(){
+		return true;
+	}
 }

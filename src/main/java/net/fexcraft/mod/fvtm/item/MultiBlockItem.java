@@ -1,16 +1,17 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.lib.mc.registry.ItemBlock16;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.generated.PlainBase;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.block.*;
-import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -30,11 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
-public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements DataCoreItem<MultiBlockData> {
+public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements DataCoreItem<MultiBlockData>, ItemTextureable.ItemTex<MultiBlock> {
 
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs ctab;
@@ -123,4 +120,8 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
         }
     }
 
+    @Override
+    public TypeCore<MultiBlock> getDataType(){
+        return type;
+    }
 }

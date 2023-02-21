@@ -307,7 +307,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed {
 
 	@Override
 	public Class<?> getDataClass(){
-		return null;
+		return MultiBlockData.class;
 	}
 
 	@Override

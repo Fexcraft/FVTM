@@ -193,7 +193,7 @@ public class M_4ROT_TE extends BlockBase {
 					//TODO empty out inventories (drop)
 					EntityItem item = new EntityItem(world);
 					item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);
-					item.setItem(tile.getBlockData().newItemStack());
+					item.setItem(tile.getMultiBlockData().newItemStack());
 					world.spawnEntity(item);
 				}
 	            world.setBlockState(blkpos, Blocks.AIR.getDefaultState());

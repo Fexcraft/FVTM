@@ -14,10 +14,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
@@ -30,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -217,6 +214,7 @@ public class DataUtil {
 	
 	public static final ResourceLocation RSLC_GENERAL = new ResourceLocation("fvtm:textures/items/ph_general.png");
 	public static final ResourceLocation RSLC_VEHICLE = new ResourceLocation("fvtm:textures/items/ph_vehicle.png");
+	public static final ResourceLocation RSLC_MBLOCK = new ResourceLocation("fvtm:textures/items/ph_multiblock.png");
 	public static final ResourceLocation RSLC_PART = new ResourceLocation("fvtm:textures/items/ph_part.png");
 
 	public static ResourceLocation getItemTexture(ResourceLocation regname, DataType type,  JsonObject obj){
@@ -229,6 +227,7 @@ public class DataUtil {
 				if(net.fexcraft.mod.fvtm.util.TexUtil.isMissing(resloc)){
 					if(type == DataType.VEHICLE) return RSLC_VEHICLE;
 					else if(type == DataType.PART) return RSLC_PART;
+					else if(type == DataType.MULTIBLOCK) return RSLC_MBLOCK;
 					else return RSLC_GENERAL;
 				}
 			}

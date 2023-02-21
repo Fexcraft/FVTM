@@ -1,18 +1,11 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MB_Access;
 import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
@@ -20,6 +13,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MultiblockTileEntity extends BlockTileEntity {
 	
@@ -72,11 +70,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	}
 
 	public void setup(){
-		if(data == null || mdata == null){
-			//Print.debug("data is null");
-			return;
-		}
-		//Print.debug("data is NOT null");
+		if(mdata == null) return;
 		world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), mdata);
 	}
 	

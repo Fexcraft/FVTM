@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
@@ -27,8 +25,8 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ClothItem;
+import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
@@ -65,6 +63,7 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 public class EffectRenderer {
 	
@@ -538,22 +537,23 @@ public class EffectRenderer {
     private static final ModelRendererTurbo blkpreview = new ModelRendererTurbo(null).addBox(0, 0, 0, 14, 14, 14);
     private static ItemStack stack;
 
-	/*@SubscribeEvent
+	@SubscribeEvent
     public void preview(DrawBlockHighlightEvent event){
 		if(!Command.OTHER) return;
-    	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty() || stack.getItem() instanceof BlockItem == false) return;
+    	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty() || stack.getItem() instanceof MultiBlockItem == false) return;
     	if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
-    	BlockItem item = (BlockItem)stack.getItem();
-    	if(!item.getDataType().getBlockType().isMultiBlock() || event.getTarget().sideHit != EnumFacing.UP) return;
+		if(event.getTarget().sideHit != EnumFacing.UP) return;
+    	MultiBlockItem item = (MultiBlockItem)stack.getItem();
     	BlockPos pos = event.getTarget().getBlockPos().add(0, 1, 0);
         pos = event.getPlayer().world.getBlockState(pos).getBlock().isReplaceable(event.getPlayer().world, pos) ? pos : pos.add(0, 1, 0);
-        ArrayList<BlockPos> poslist = item.getDataType().getMultiBlock().getPositions(item.getDataType(), pos, event.getPlayer().getHorizontalFacing());
+        ArrayList<BlockPos> poslist = item.getType().getPositions(pos, event.getPlayer().getHorizontalFacing());
         //
 		EntityPlayer player = event.getPlayer();
 		GlStateManager.disableTexture2D();
         double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
         double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
         double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+		GL11.glPushMatrix();
 		GL11.glTranslated(-x, -y, -z);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		TexUtil.bindTexture(Resources.WHITE_TEXTURE);
@@ -563,6 +563,7 @@ public class EffectRenderer {
 	        blkpreview.render();
 	        GL11.glPopMatrix();
 		}
-    }*///TODO multiblock
+		GL11.glPopMatrix();
+    }
 
 }

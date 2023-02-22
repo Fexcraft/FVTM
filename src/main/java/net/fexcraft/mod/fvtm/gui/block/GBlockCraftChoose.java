@@ -47,7 +47,7 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 	}
 
 	private void loadRecipes(){
-		ArrayList<Recipe> recipes = CraftBlockScript.SORTED_REGISTRY.get(container.tile.getBlockData().getType().getRegistryName().toString());
+		ArrayList<Recipe> recipes = CraftBlockScript.SORTED_REGISTRY.get(container.tile.getMultiBlockData().getType().getRegistryName().toString());
 		for(int i = 0; i < 16; i++){
 			int j = i + 16 * container.page;
 			if(recipes == null || j >= recipes.size()){
@@ -69,7 +69,7 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		if(container.tile != null){
-			texts.get("top").string = container.tile.getBlockData().getType().getName();
+			texts.get("top").string = container.tile.getMultiBlockData().getType().getName();
 		}
 	}
 

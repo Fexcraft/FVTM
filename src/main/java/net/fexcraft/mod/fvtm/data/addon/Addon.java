@@ -579,7 +579,7 @@ public class Addon extends TypeCore<Addon> {
 		}
 		else{ // assume it's a jar.
 			try{
-				String path = "assets/" + registryname.getPath() + "/config/presets/", ext = ".recipe";
+				String path = "assets/" + registryname.getPath() + "/config/recipes/", ext = ".recipe";
 				ZipFile zip = new ZipFile(file);
 				ZipInputStream stream = new ZipInputStream(new FileInputStream(file));
 				while(true){

@@ -87,7 +87,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		if(container.tile != null){
-			texts.get("top").string = container.tile.getBlockData().getType().getName();
+			texts.get("top").string = container.tile.getMultiBlockData().getType().getName();
 		}
 		texts.get("status").string = "Current recipe: " + container.current;
 		if(container.tickable){

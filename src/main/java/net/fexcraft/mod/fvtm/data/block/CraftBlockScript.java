@@ -687,6 +687,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		public void finish(Addon addon){
 			if(recipe.input.isEmpty() && recipe.consume.isEmpty()){
 				Print.debug("Recipe '" + recipe.id + "' for '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "' has no input/consumption, skipping!");
+				return;
 			}
 			RECIPE_REGISTRY.put(recipe.id, recipe);
 			if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());

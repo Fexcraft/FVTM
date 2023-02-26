@@ -5,17 +5,16 @@
  */
 package net.fexcraft.mod.fvtm.sys.script;
 
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.FALSE;
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.NULL;
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.TRUE;
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.asBool;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.FALSE;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.NULL;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.TRUE;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.asBool;
 
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
 import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm;
-import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.sys.script.elm.FltElm;
 import net.fexcraft.mod.fvtm.sys.script.elm.IntElm;
 import net.fexcraft.mod.fvtm.sys.script.elm.NullElm;
@@ -32,7 +31,7 @@ public abstract class ScrExpr {
 	public String target;
 	public ScrExpr next;
 	
-	public abstract Elm process(ScrBlock block, ScrExpr prev, Elm pelm);
+	public abstract ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm);
 
 	public ScrExpr next(ScrExpr expr){
 		next = expr;
@@ -42,7 +41,7 @@ public abstract class ScrExpr {
 	public static class Return extends ScrExpr {
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
 			return next == null ? NULL : next.process(block, this, NULL);
 		}
 
@@ -64,13 +63,13 @@ public abstract class ScrExpr {
 		}
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			Elm elm = block.getElm(target, null);
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			ScrElm elm = block.getElm(target, null);
 			if(next == null) return elm;
 			else if(next instanceof Reference){
 				ScrExpr nex = next;
 				while(nex instanceof Reference){
-					elm = elm.get(block, nex.target);
+					elm = elm.scr_get(block, nex.target);
 					nex = nex.next;
 				}
 				return nex == null ? elm : nex.process(block, this, elm);
@@ -88,8 +87,8 @@ public abstract class ScrExpr {
 	public static class Not extends ScrExpr {
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			return new BoolElm(!next.process(block, this, NULL).bool_val());
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			return new BoolElm(!next.process(block, this, NULL).scr_bln());
 		}
 
 		public String print(){
@@ -101,9 +100,9 @@ public abstract class ScrExpr {
 	public static class Negate extends ScrExpr {
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			Elm elm = next.process(block, this, NULL);
-			return elm.type().decimal() ? new FltElm(-elm.float_val()) : new IntElm(-elm.integer_val());
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			ScrElm elm = next.process(block, this, NULL);
+			return elm.scr_type().decimal() ? new FltElm(-elm.scr_flt()) : new IntElm(-elm.scr_int());
 		}
 
 		public String print(){
@@ -114,7 +113,7 @@ public abstract class ScrExpr {
 
 	public static class Exec extends ScrExpr {
 		
-		private ArrayList<Elm> args;
+		private ArrayList<ScrElm> args;
 
 		public Exec(String tar){
 			target = tar;
@@ -134,7 +133,7 @@ public abstract class ScrExpr {
 					args.add(new StrElm(str.substring(1, str.endsWith("\"") ? str.length() - 1 : str.length())));
 				}
 				else if(NumberUtils.isCreatable(str)){
-					Elm elm = null;
+					ScrElm elm = null;
 					if(str.contains(".")){
 						elm = new FltElm(neg ? -Float.parseFloat(str) : Float.parseFloat(str));
 					}
@@ -152,9 +151,9 @@ public abstract class ScrExpr {
 		}
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			if(next == null) return (pelm == NULL ? NULL.exec(block, target, args) : pelm.exec(block, target, args));
-			else return next.process(block, this, (pelm == NULL ? NULL.exec(block, target, args) : pelm.exec(block, target, args)));
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			if(next == null) return (pelm == NULL ? NULL.scr_exec(block, target, args) : pelm.scr_exec(block, target, args));
+			else return next.process(block, this, (pelm == NULL ? NULL.scr_exec(block, target, args) : pelm.scr_exec(block, target, args)));
 		}
 
 		public String print(){
@@ -180,41 +179,41 @@ public abstract class ScrExpr {
 		}
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			if(!pelm.type().primitive() && oper != ScrOper.SET) return NULL;
-			Elm nex = next.process(block, this, NULL);
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			if(!pelm.scr_type().primitive() && oper != ScrOper.SET) return NULL;
+			ScrElm nex = next.process(block, this, NULL);
 			switch(oper){
 				case SET:{
-					if(pelm.type().decimal()) pelm.set(nex.float_val());
-					else if(pelm.type().integer()) pelm.set(nex.integer_val());
-					else if(pelm.type().bool()) pelm.set(nex.bool_val());
-					else if(pelm.type().string()) pelm.set(nex.string_val());
-					else pelm.set(nex);
+					if(pelm.scr_type().decimal()) pelm.scr_set(nex.scr_flt());
+					else if(pelm.scr_type().integer()) pelm.scr_set(nex.scr_int());
+					else if(pelm.scr_type().bool()) pelm.scr_set(nex.scr_bln());
+					else if(pelm.scr_type().string()) pelm.scr_set(nex.scr_str());
+					else pelm.scr_set(nex);
 					break;
 				}
 				case ADD:{
-					if(pelm.type().decimal()) pelm.set(pelm.float_val() + nex.float_val());
-					else pelm.set(pelm.integer_val() + nex.integer_val());
+					if(pelm.scr_type().decimal()) pelm.scr_set(pelm.scr_flt() + nex.scr_flt());
+					else pelm.scr_set(pelm.scr_int() + nex.scr_int());
 					break;
 				}
 				case SUB:{
-					if(pelm.type().decimal()) pelm.set(pelm.float_val() - nex.float_val());
-					else pelm.set(pelm.integer_val() - nex.integer_val());
+					if(pelm.scr_type().decimal()) pelm.scr_set(pelm.scr_flt() - nex.scr_flt());
+					else pelm.scr_set(pelm.scr_int() - nex.scr_int());
 					break;
 				}
 				case DIV:{
-					if(pelm.type().decimal()) pelm.set(pelm.float_val() / nex.float_val());
-					else pelm.set(pelm.integer_val() / nex.integer_val());
+					if(pelm.scr_type().decimal()) pelm.scr_set(pelm.scr_flt() / nex.scr_flt());
+					else pelm.scr_set(pelm.scr_int() / nex.scr_int());
 					break;
 				}
 				case MUL:{
-					if(pelm.type().decimal()) pelm.set(pelm.float_val() * nex.float_val());
-					else pelm.set(pelm.integer_val() * nex.integer_val());
+					if(pelm.scr_type().decimal()) pelm.scr_set(pelm.scr_flt() * nex.scr_flt());
+					else pelm.scr_set(pelm.scr_int() * nex.scr_int());
 					break;
 				}
 				case MOD:{
-					if(pelm.type().decimal()) pelm.set(pelm.float_val() % nex.float_val());
-					else pelm.set(pelm.integer_val() % nex.integer_val());
+					if(pelm.scr_type().decimal()) pelm.scr_set(pelm.scr_flt() % nex.scr_flt());
+					else pelm.scr_set(pelm.scr_int() % nex.scr_int());
 					break;
 				}
 				default: break;
@@ -237,37 +236,37 @@ public abstract class ScrExpr {
 		}
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			Elm nex = next.process(block, this, NULL);
-			if((pelm.type().string() || nex.type().string()) && oper == ScrOper.ADD){
-				return new StrElm(pelm.string_val() + nex.string_val());
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			ScrElm nex = next.process(block, this, NULL);
+			if((pelm.scr_type().string() || nex.scr_type().string()) && oper == ScrOper.ADD){
+				return new StrElm(pelm.scr_str() + nex.scr_str());
 			}
-			boolean deci = pelm.type().decimal() || nex.type().decimal();
-			Elm res = pelm.type().integer() ? new IntElm(0) : new FltElm(0f);
+			boolean deci = pelm.scr_type().decimal() || nex.scr_type().decimal();
+			ScrElm res = pelm.scr_type().integer() ? new IntElm(0) : new FltElm(0f);
 			switch(oper){
 				case ADD:{
-					if(deci) res.set(pelm.float_val() + nex.float_val());
-					else res.set(pelm.integer_val() + nex.integer_val());
+					if(deci) res.scr_set(pelm.scr_flt() + nex.scr_flt());
+					else res.scr_set(pelm.scr_int() + nex.scr_int());
 					break;
 				}
 				case SUB:{
-					if(deci) res.set(pelm.float_val() - nex.float_val());
-					else res.set(pelm.integer_val() - nex.integer_val());
+					if(deci) res.scr_set(pelm.scr_flt() - nex.scr_flt());
+					else res.scr_set(pelm.scr_int() - nex.scr_int());
 					break;
 				}
 				case DIV:{
-					if(deci) res.set(pelm.float_val() / nex.float_val());
-					else res.set(pelm.integer_val() / nex.integer_val());
+					if(deci) res.scr_set(pelm.scr_flt() / nex.scr_flt());
+					else res.scr_set(pelm.scr_int() / nex.scr_int());
 					break;
 				}
 				case MUL:{
-					if(deci) res.set(pelm.float_val() * nex.float_val());
-					else res.set(pelm.integer_val() * nex.integer_val());
+					if(deci) res.scr_set(pelm.scr_flt() * nex.scr_flt());
+					else res.scr_set(pelm.scr_int() * nex.scr_int());
 					break;
 				}
 				case MOD:{
-					if(deci) res.set(pelm.float_val() % nex.float_val());
-					else res.set(pelm.integer_val() % nex.integer_val());
+					if(deci) res.scr_set(pelm.scr_flt() % nex.scr_flt());
+					else res.scr_set(pelm.scr_int() % nex.scr_int());
 					break;
 				}
 				default: break;
@@ -290,36 +289,36 @@ public abstract class ScrExpr {
 		}
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
-			Elm next = this.next.process(block, this, pelm);
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
+			ScrElm next = this.next.process(block, this, pelm);
 			switch(oper){
-				case GRT: return pelm.float_val() > next.float_val() ? TRUE : FALSE;
-				case GRT_EQL: return pelm.float_val() >= next.float_val() ? TRUE : FALSE;
-				case LES: return pelm.float_val() < next.float_val() ? TRUE : FALSE;
-				case LES_EQL: return pelm.float_val() <= next.float_val() ? TRUE : FALSE;
+				case GRT: return pelm.scr_flt() > next.scr_flt() ? TRUE : FALSE;
+				case GRT_EQL: return pelm.scr_flt() >= next.scr_flt() ? TRUE : FALSE;
+				case LES: return pelm.scr_flt() < next.scr_flt() ? TRUE : FALSE;
+				case LES_EQL: return pelm.scr_flt() <= next.scr_flt() ? TRUE : FALSE;
 				case NOT_EQL:{
-					if(pelm.type().number()){
-						return pelm.float_val() != next.float_val() ? TRUE : FALSE;
+					if(pelm.scr_type().number()){
+						return pelm.scr_flt() != next.scr_flt() ? TRUE : FALSE;
 					}
-					else if(pelm.type().boolcond()){
-						return pelm.bool_val(block, prev, pelm) != next.bool_val(block, prev, pelm) ? TRUE : FALSE;
+					else if(pelm.scr_type().boolcond()){
+						return pelm.scr_bool(block, prev, pelm) != next.scr_bool(block, prev, pelm) ? TRUE : FALSE;
 					}
 					else return !pelm.equals(next) ? TRUE : FALSE;
 				}
 				case EQL:{
-					if(pelm.type().number()){
-						return pelm.float_val() == next.float_val() ? TRUE : FALSE;
+					if(pelm.scr_type().number()){
+						return pelm.scr_flt() == next.scr_flt() ? TRUE : FALSE;
 					}
-					else if(pelm.type().boolcond()){
-						return pelm.bool_val(block, prev, pelm) == next.bool_val(block, prev, pelm) ? TRUE : FALSE;
+					else if(pelm.scr_type().boolcond()){
+						return pelm.scr_bool(block, prev, pelm) == next.scr_bool(block, prev, pelm) ? TRUE : FALSE;
 					}
 					else return pelm.equals(next) ? TRUE : FALSE;
 				}
 				case AND:{
-					return asBool(pelm.bool_val(block, prev, pelm) && next.bool_val(block, prev, pelm));
+					return asBool(pelm.scr_bool(block, prev, pelm) && next.scr_bool(block, prev, pelm));
 				}
 				case OR:{
-					return asBool(pelm.bool_val(block, prev, pelm) || next.bool_val(block, prev, pelm));
+					return asBool(pelm.scr_bool(block, prev, pelm) || next.scr_bool(block, prev, pelm));
 				}
 				default: return FALSE;
 			}
@@ -333,7 +332,7 @@ public abstract class ScrExpr {
 
 	public static class Value extends ScrExpr {
 		
-		private Elm elm;
+		private ScrElm elm;
 
 		public Value(){
 			elm = NullElm.NULL;
@@ -354,12 +353,12 @@ public abstract class ScrExpr {
 		}
 
 		@Override
-		public Elm process(ScrBlock block, ScrExpr prev, Elm pelm){
+		public ScrElm process(ScrBlock block, ScrExpr prev, ScrElm pelm){
 			return next == null ? elm : next.process(block, this, elm);
 		}
 
 		public String print(){
-			return elm.print_val() + (next == null ? "" : next.print());
+			return elm.scr_print() + (next == null ? "" : next.print());
 		}
 
 	}

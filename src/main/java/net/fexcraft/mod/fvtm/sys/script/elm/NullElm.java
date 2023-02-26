@@ -5,58 +5,26 @@
  */
 package net.fexcraft.mod.fvtm.sys.script.elm;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class NullElm extends Elm {
+public class NullElm implements ScrElm {
 
 	public NullElm(){}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return "null";
 	}
 
 	@Override
-	public int integer_val(){
-		return 0;
-	}
-
-	@Override
-	public float float_val(){
-		return 0;
-	}
-
-	@Override
-	public boolean bool_val(){
-		return false;
-	}
-
-	@Override
-	public Type type(){
-		return Type.NULL;
-	}
-
-	@Override
-	public void set(String val){
-		//
-	}
-
-	@Override
-	public void set(int val){
-		//
-	}
-
-	@Override
-	public void set(float val){
-		//
-	}
-
-	@Override
-	public void set(boolean val){
-		//
+	public ScrElmType scr_type(){
+		return ScrElmType.NULL;
 	}
 
 }

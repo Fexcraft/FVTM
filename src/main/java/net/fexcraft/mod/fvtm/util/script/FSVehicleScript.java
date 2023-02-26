@@ -110,7 +110,7 @@ public class FSVehicleScript extends VehicleScript {
 	@Override
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		if(!hasKeyPress) return false;
-		return update.process(context.update(seat, player)).bool_val();
+		return update.process(context.update(seat, player)).scr_bln();
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class FSVehicleScript extends VehicleScript {
 	@Override
 	public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){
 		if(!hasInteract) return false;
-		return interact.process(context.update(entity)).bool_val();
+		return interact.process(context.update(entity)).scr_bln();
 	}
 
 	@Override

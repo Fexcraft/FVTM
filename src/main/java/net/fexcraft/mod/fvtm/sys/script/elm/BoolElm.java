@@ -5,12 +5,15 @@
  */
 package net.fexcraft.mod.fvtm.sys.script.elm;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class BoolElm extends Elm {
+public class BoolElm implements ScrElm {
 	
 	private boolean value;
 
@@ -19,47 +22,47 @@ public class BoolElm extends Elm {
 	}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return value + "";
 	}
 
 	@Override
-	public int integer_val(){
+	public int scr_int(){
 		return value ? 0 : 1;
 	}
 
 	@Override
-	public float float_val(){
+	public float scr_flt(){
 		return value ? 0f : 1f;
 	}
 
 	@Override
-	public boolean bool_val(){
+	public boolean scr_bln(){
 		return value;
 	}
 
 	@Override
-	public Type type(){
-		return Type.BOOLEAN;
+	public ScrElmType scr_type(){
+		return ScrElmType.BOOLEAN;
 	}
 
 	@Override
-	public void set(String val){
+	public void scr_set(String val){
 		value = val.toLowerCase().equals("true");
 	}
 
 	@Override
-	public void set(int val){
+	public void scr_set(int val){
 		value = val > 0;
 	}
 
 	@Override
-	public void set(float val){
+	public void scr_set(float val){
 		value = val > 0;
 	}
 
 	@Override
-	public void set(boolean val){
+	public void scr_set(boolean val){
 		value = val;
 	}
 	
@@ -70,22 +73,22 @@ public class BoolElm extends Elm {
 		}
 
 		@Override
-		public void set(String val){
+		public void scr_set(String val){
 			//
 		}
 
 		@Override
-		public void set(int val){
+		public void scr_set(int val){
 			//
 		}
 
 		@Override
-		public void set(float val){
+		public void scr_set(float val){
 			//
 		}
 
 		@Override
-		public void set(boolean val){
+		public void scr_set(boolean val){
 			//
 		}
 		

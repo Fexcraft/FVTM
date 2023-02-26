@@ -5,12 +5,8 @@
  */
 package net.fexcraft.mod.fvtm.sys.script;
 
-import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_COND;
-import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_LEFT;
-import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_NONE;
-import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_RETURN;
-import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.EXT_RIGHT;
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.NULL;
+import static net.fexcraft.mod.fvtm.sys.script.ScrExprType.*;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.NULL;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -22,7 +18,6 @@ import java.util.function.Supplier;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
-import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
 
 /**
@@ -33,7 +28,7 @@ import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
  */
 public class Script extends ScrBlock {
 
-	public static final ConcurrentHashMap<String, ConcurrentHashMap<String, Elm>> globals = new ConcurrentHashMap<>();
+	public static final ConcurrentHashMap<String, ConcurrentHashMap<String, ScrElm>> globals = new ConcurrentHashMap<>();
 	public final HashMap<String, String> attrmap = new HashMap<>();
 	public final HashMap<String, Conditional> conds = new HashMap<>();
 	public final HashMap<String, ScrBlock> blocks = new HashMap<>();
@@ -91,7 +86,7 @@ public class Script extends ScrBlock {
 					for(String str : args){
 						if(str.length() < 3) continue;
 						String[] s = str.split(" ");
-						act.locals.put(s[1], Elm.from(Elm.Type.from(s[0])));
+						act.locals.put(s[1], ScrElm.from(ScrElmType.from(s[0])));
 						act.parameters.add(s[1]);
 					}
 					blocks.put(name, block = act);
@@ -338,27 +333,27 @@ public class Script extends ScrBlock {
 
 	private boolean checkForDataTypes(ScrBlock block, String line, boolean global){
 		if(global) line = line.substring(7);
-		Two<String, Elm> elm = null;
+		Two<String, ScrElm> elm = null;
 		if(line.startsWith("str ")){
-			elm = Elm.parse(line, Elm.Type.STRING);
+			elm = ScrElm.parse(line, ScrElmType.STRING);
 		}
 		else if(line.startsWith("int ")){
-			elm = Elm.parse(line, Elm.Type.INTEGER);
+			elm = ScrElm.parse(line, ScrElmType.INTEGER);
 		}
 		else if(line.startsWith("flt ")){
-			elm = Elm.parse(line, Elm.Type.FLOAT);
+			elm = ScrElm.parse(line, ScrElmType.FLOAT);
 		}
 		else if(line.startsWith("bln ")){
-			elm = Elm.parse(line, Elm.Type.BOOLEAN);
+			elm = ScrElm.parse(line, ScrElmType.BOOLEAN);
 		}
 		else if(line.startsWith("lis ")){
-			elm = Elm.parse(line, Elm.Type.LIST);
+			elm = ScrElm.parse(line, ScrElmType.LIST);
 		}
 		else if(line.startsWith("obj ")){
-			elm = Elm.parse(line, Elm.Type.OBJ);
+			elm = ScrElm.parse(line, ScrElmType.OBJ);
 		}
 		else if(line.startsWith("cnd ")){
-			elm = Elm.parse(line, Elm.Type.COND);
+			elm = ScrElm.parse(line, ScrElmType.COND);
 		}
 		if(elm != null){
 			if(global){
@@ -376,17 +371,17 @@ public class Script extends ScrBlock {
 	}
 
 	@Override
-	public Elm getElm(String elm, ScrBlock sub){
+	public ScrElm getElm(String elm, ScrBlock sub){
 		if(locals.containsKey(elm)) return locals.get(elm);
 		if(attrmap.containsKey(elm)){
 			VehicleScriptContext con = (VehicleScriptContext)sub.locals.get("context");
-			return con == null ? NULL : con.getAttribute(attrmap.get(elm));
+			return con == null ? NULL : con.vehicle().getVehicleData().getAttribute(attrmap.get(elm));
 		}
 		if(globals.contains(id) && globals.get(id).containsKey(elm)) return globals.get(id).get(elm);
 		return NULL;
 	}
 
-	public Elm getLocalScriptElm(String elm, Supplier<Elm> create){
+	public ScrElm getLocalScriptElm(String elm, Supplier<ScrElm> create){
 		if(locals.containsKey(elm)) return locals.get(elm);
 		else{
 			locals.put(elm, create.get());
@@ -398,8 +393,8 @@ public class Script extends ScrBlock {
 	protected String preprint(String ret, String tab, String tab1, int depth){
 		//if(globals.size() > 0) ret += "\n";
 		if(globals.contains(id)){
-			for(HashMap.Entry<String, Elm> entry : globals.get(id).entrySet()){
-				ret += tab1 + "global " + entry.getValue().type() + " " + entry.getKey() + " = " + entry.getValue().print_val() + "\n";
+			for(HashMap.Entry<String, ScrElm> entry : globals.get(id).entrySet()){
+				ret += tab1 + "global " + entry.getValue().scr_type() + " " + entry.getKey() + " = " + entry.getValue().scr_print() + "\n";
 			}
 		}
 		//if(attrmap.size() > 0) ret += "\n";

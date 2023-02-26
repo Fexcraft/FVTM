@@ -5,7 +5,7 @@
  */
 package net.fexcraft.mod.fvtm.sys.script;
 
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.NULL;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.NULL;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class ScrCond {
 	}
 
 	public boolean isMet(){
-		return cond.process(block.root, null, NULL).bool_val();
+		return cond.process(block.root, null, NULL).scr_bln();
 	}
 
 }

@@ -5,12 +5,15 @@
  */
 package net.fexcraft.mod.fvtm.sys.script.elm;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class FltElm extends Elm {
+public class FltElm implements ScrElm {
 	
 	private float value;
 
@@ -19,32 +22,32 @@ public class FltElm extends Elm {
 	}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return value + "";
 	}
 
 	@Override
-	public int integer_val(){
+	public int scr_int(){
 		return (int)value;
 	}
 
 	@Override
-	public float float_val(){
+	public float scr_flt(){
 		return value;
 	}
 
 	@Override
-	public boolean bool_val(){
+	public boolean scr_bln(){
 		return value > 0;
 	}
 
 	@Override
-	public Type type(){
-		return Type.FLOAT;
+	public ScrElmType scr_type(){
+		return ScrElmType.FLOAT;
 	}
 
 	@Override
-	public void set(String val){
+	public void scr_set(String val){
 		try{
 			value = Float.parseFloat(val);
 		}
@@ -54,17 +57,17 @@ public class FltElm extends Elm {
 	}
 
 	@Override
-	public void set(int val){
+	public void scr_set(int val){
 		value = val;
 	}
 
 	@Override
-	public void set(float val){
+	public void scr_set(float val){
 		value = val;
 	}
 
 	@Override
-	public void set(boolean val){
+	public void scr_set(boolean val){
 		value = val ? 1 : 0;
 	}
 

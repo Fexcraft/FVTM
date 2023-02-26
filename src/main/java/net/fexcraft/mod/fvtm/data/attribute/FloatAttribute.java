@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagFloat;
@@ -86,6 +87,37 @@ public class FloatAttribute extends Attribute<Float> {
 	@Override
 	public Float parseValue(String string){
 		return Float.parseFloat(string);
+	}
+
+	//
+
+	@Override
+	public ScrElmType scr_type(){
+		return ScrElmType.FLOAT;
+	}
+
+	@Override
+	public void scr_set(String val){
+		value(parseValue(val));
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(int val){
+		value(val + 0f);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(float val){
+		value(val);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(boolean val){
+		value(val ? 1f : 0f);
+		sync = true;
 	}
 
 }

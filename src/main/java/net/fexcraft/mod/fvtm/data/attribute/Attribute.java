@@ -21,6 +21,10 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
+import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
  * 5th prototype.
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class Attribute<VT> {
+public abstract class Attribute<VT> implements ScrElm {
 	
 	public static final Comparator<Modifier<?>> MODIFIER_COMPARATOR = new Comparator<Modifier<?>>() {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
@@ -42,7 +46,9 @@ public abstract class Attribute<VT> {
 	private TreeMap<String, AttributeBB> abbs = null;
 	private HashMap<String, ResourceLocation> icons;
 	private String target, origin, group, perm;
-	private boolean editable, external, sync;
+	private boolean editable;
+	private boolean external;
+	protected boolean sync;
 	private VT value, initial;
 	private float min, max;
 	public final String id;
@@ -564,6 +570,68 @@ public abstract class Attribute<VT> {
 			if(!icons.containsKey("false")) icons.put("false", new ResourceLocation("fvtm:textures/gui/icons/attr_tristate_false.png"));
 			if(!icons.containsKey("null")) icons.put("null", new ResourceLocation("fvtm:textures/gui/icons/attr_tristate_null.png"));
 		}
+	}
+
+	//
+
+	@Override
+	public String scr_str(){
+		return string_value();
+	}
+
+	@Override
+	public int scr_int(){
+		return integer_value();
+	}
+
+	@Override
+	public float scr_flt(){
+		return float_value();
+	}
+
+	@Override
+	public boolean scr_bln(){
+		return boolean_value();
+	}
+
+	@Override
+	public ScrElmType scr_type(){
+		return ScrElmType.OBJ;
+	}
+
+	@Override
+	public void scr_set(ScrElm elm){
+		if(elm.scr_type().primitive()){
+			if(elm.scr_type().integer()) scr_set(elm.scr_int());
+			else if(elm.scr_type().decimal()) scr_set(elm.scr_flt());
+			else if(elm.scr_type().bool()) scr_set(elm.scr_bln());
+			else if(elm.scr_type().string()) scr_set(elm.scr_str());
+			else if(elm.scr_type() == ScrElmType.NULL && valuetype() == ValueType.TRISTATE) value(null);
+			sync = true;
+		}
+		else return;
+	}
+
+	@Override
+	public ScrElm scr_exec(ScrBlock block, String act, ArrayList<ScrElm> args){
+		ScrElm val = NULL;
+		switch(act){
+			case "toggle":{
+				val = ScrElm.asBool(toggle_value());
+				((VehicleScriptContext)block.action().getElm("context", null)).vehicle().sendAttributeUpdate(this);
+				return val;
+			}
+			case "sync":{
+				if(sync) ((VehicleScriptContext)block.action().getElm("context", null)).vehicle().sendAttributeUpdate(this);
+				sync = false;
+				return TRUE;
+			}
+			case "value":{
+				return this;
+			}
+			default: break;
+		}
+		return val;
 	}
 
 }

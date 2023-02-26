@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagString;
 
@@ -58,6 +59,37 @@ public class StringAttribute extends Attribute<String> {
 	@Override
 	public String parseValue(String string){
 		return string;
+	}
+
+	//
+
+	@Override
+	public ScrElmType scr_type(){
+		return ScrElmType.STRING;
+	}
+
+	@Override
+	public void scr_set(String val){
+		value(val);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(int val){
+		value(val + "");
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(float val){
+		value(val + "");
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(boolean val){
+		value(val + "");
+		sync = true;
 	}
 
 }

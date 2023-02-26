@@ -5,12 +5,11 @@
  */
 package net.fexcraft.mod.fvtm.sys.script;
 
-import static net.fexcraft.mod.fvtm.sys.script.elm.Elm.NULL;
+import static net.fexcraft.mod.fvtm.sys.script.ScrElm.NULL;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.sys.script.elm.NullElm;
 
 /**
@@ -20,7 +19,7 @@ import net.fexcraft.mod.fvtm.sys.script.elm.NullElm;
  */
 public class ScrBlock {
 	
-	public final HashMap<String, Elm> locals = new HashMap<>();
+	public final HashMap<String, ScrElm> locals = new HashMap<>();
 	public final ArrayList<ScrExpr> exprs = new ArrayList<>();
 	public final ArrayList<ScrBlock> subs = new ArrayList<>();
 	public final ArrayList<ScrTask> tasks = new ArrayList<>();
@@ -37,7 +36,13 @@ public class ScrBlock {
 		this.type = type;
 		if(root != null) root.subs.add(this);
 	}
-	
+
+	public ScrBlock action(){
+		if(type == Type.ACTION) return this;
+		else if(root != null) return root.action();
+		return null;
+	}
+
 	public static enum Type {
 		
 		SCRIPT,
@@ -63,7 +68,7 @@ public class ScrBlock {
 		this.condition = cond;
 	}
 
-	public Elm getElm(String elm, ScrBlock sub){
+	public ScrElm getElm(String elm, ScrBlock sub){
 		if(locals.containsKey(elm)) return locals.get(elm);
 		return root == null ? NullElm.NULL : root.getElm(elm, this);
 	}
@@ -74,8 +79,8 @@ public class ScrBlock {
 		String ret = tab + type.name() + " " + name + "(" + cond + "){\n";
 		ret = preprint(ret, tab, tab1, depth);
 		//if(condition != null && locals.size() > 0) ret += "\n";
-		for(HashMap.Entry<String, Elm> entry : locals.entrySet()){
-			ret += tab1 + entry.getValue().type() + " " + entry.getKey() + " = " + entry.getValue().print_val() + "\n";
+		for(HashMap.Entry<String, ScrElm> entry : locals.entrySet()){
+			ret += tab1 + entry.getValue().scr_type() + " " + entry.getKey() + " = " + entry.getValue().scr_print() + "\n";
 		}
 		/*if(exprs.size() > 0) ret += "\n";
 		for(ScrExpr expr : exprs){
@@ -116,12 +121,12 @@ public class ScrBlock {
 		return tasks.size() == 0 ? null : tasks.get(tasks.size() - 1);
 	}
 
-	public Two<Elm, Boolean> process(){
+	public Two<ScrElm, Boolean> process(){
 		for(ScrTask task : tasks){
 			if(task.type.ifelse()){
 				for(ScrBlock block : task.blocks){
 					if(block.condition == null || block.condition.isMet()){
-						Two<Elm, Boolean> two = block.process();
+						Two<ScrElm, Boolean> two = block.process();
 						if(two.second) return two;
 						break;
 					}

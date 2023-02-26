@@ -1,15 +1,14 @@
 package net.fexcraft.mod.fvtm.sys.script.wrappers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
-import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
 import net.fexcraft.mod.fvtm.sys.script.elm.ListElm;
 import net.fexcraft.mod.fvtm.sys.script.elm.RefElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.minecraft.entity.Entity;
@@ -17,9 +16,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class VehicleScriptContext extends WrapperElm {
+public class VehicleScriptContext implements ScrElm {
 
-	private HashMap<String, AttrWrapper> attrs = new HashMap<>();
 	private FSVehicleScript wrapper;
 	private GenericVehicle entity;
 	private EntityPlayer player;
@@ -31,15 +29,11 @@ public class VehicleScriptContext extends WrapperElm {
 	private NBTTagCompound packet;
 	private Side side;
 	//
-	private AttrList attrslist = new AttrList();
+	private AttrList attrslist = new AttrList(this);
 
 	public VehicleScriptContext(VehicleData data, FSVehicleScript fscript){
 		this.data = data;
-		for(Attribute<?> attr : data.getAttributes().values()){
-			AttrWrapper wrap = new AttrWrapper(attr, this);
-			attrs.put(attr.id(), wrap);
-			attrslist.value().add(wrap);
-		}
+		for(Attribute<?> attr : data.getAttributes().values()) attrslist.value().add(attr);
 		wrapper = fscript;
 	}
 
@@ -79,22 +73,12 @@ public class VehicleScriptContext extends WrapperElm {
 	}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return "{vehicle-context}";
 	}
 
-	public Elm getAttribute(String id){
-		if(attrs.containsKey(id)) return attrs.get(id);
-		Attribute<?> attr = data.getAttribute(id);
-		if(attr == null) return NULL;
-		AttrWrapper wrap = new AttrWrapper(attr, this);
-		attrs.put(id, wrap);
-		attrslist.value().add(wrap);
-		return attrs.get(id);
-	}
-
 	@Override
-	public Elm get(ScrBlock block, String target){
+	public ScrElm scr_get(ScrBlock block, String target){
 		if(target.equals("attributes")){
 			return attrslist;
 		}
@@ -105,11 +89,11 @@ public class VehicleScriptContext extends WrapperElm {
 	}
 
 	@Override
-	public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
-		Elm val = NULL;
+	public ScrElm scr_exec(ScrBlock block, String act, ArrayList<ScrElm> args){
+		ScrElm val = NULL;
 		switch(act){
 			case "sync":{
-				for(Elm elm : args){
+				for(ScrElm elm : args){
 					if(elm instanceof RefElm) sendScriptValueUpdatePacket(block, elm);
 				}
 				return TRUE;
@@ -119,40 +103,40 @@ public class VehicleScriptContext extends WrapperElm {
 		return val;
 	}
 
-	private void sendScriptValueUpdatePacket(ScrBlock block, Elm elm){
+	private void sendScriptValueUpdatePacket(ScrBlock block, ScrElm elm){
 		if(elm == null) return;
 		RefElm ref = (RefElm)elm;
 		elm = ref.getElm(block.getScript());
 		if(elm == NULL) return;
-		if(elm instanceof AttrWrapper){
-			((AttrWrapper)elm).sync();
+		if(elm instanceof Attribute){
+			vehicle().sendAttributeUpdate((Attribute<?>)elm);
 			return;
 		}
 		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("ScriptElm", ref.string_val());
-		if(elm.type().bool()){
-			packet.setBoolean("value", elm.bool_val());
+		packet.setString("ScriptElm", ref.scr_str());
+		if(elm.scr_type().bool()){
+			packet.setBoolean("value", elm.scr_bln());
 		}
-		else if(elm.type().decimal()){
-			packet.setFloat("value", elm.float_val());
+		else if(elm.scr_type().decimal()){
+			packet.setFloat("value", elm.scr_flt());
 		}
-		else if(elm.type().integer()){
-			packet.setInteger("value", elm.integer_val());
+		else if(elm.scr_type().integer()){
+			packet.setInteger("value", elm.scr_int());
 		}
-		else if(elm.type().string()){
-			packet.setString("value", elm.string_val());
+		else if(elm.scr_type().string()){
+			packet.setString("value", elm.scr_str());
 		}
-		else packet.setString("value", elm.string_val());
+		else packet.setString("value", elm.scr_str());
 		wrapper.sendPacket(entity, packet, Side.CLIENT);
 	}
 
 	public void onElmUpdate(NBTTagCompound compound){
-		Elm elm = wrapper.script().getElm(compound.getString("ScriptElm"), null);
+		ScrElm elm = wrapper.script().getElm(compound.getString("ScriptElm"), null);
 		if(elm == null || elm == NULL) return;
-		if(elm.type().bool()) elm.set(compound.getBoolean("value"));
-		else if(elm.type().decimal()) elm.set(compound.getFloat("value"));
-		else if(elm.type().integer()) elm.set(compound.getInteger("value"));
-		else if(elm.type().string()) elm.set(compound.getString("value"));
+		if(elm.scr_type().bool()) elm.scr_set(compound.getBoolean("value"));
+		else if(elm.scr_type().decimal()) elm.scr_set(compound.getFloat("value"));
+		else if(elm.scr_type().integer()) elm.scr_set(compound.getInteger("value"));
+		else if(elm.scr_type().string()) elm.scr_set(compound.getString("value"));
 	}
 
 	@Override
@@ -166,13 +150,19 @@ public class VehicleScriptContext extends WrapperElm {
 	
 	public static class AttrList extends ListElm {
 
-		public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
-			Elm val = NULL;
+		private VehicleScriptContext context;
+
+		public AttrList(VehicleScriptContext context){
+			this.context = context;
+		}
+
+		public ScrElm exec(ScrBlock block, String act, ArrayList<ScrElm> args){
+			ScrElm val = NULL;
 			switch(act){
 				case "sync":{
-					for(Elm elm : this.value()){
-						if(elm instanceof AttrWrapper == false) continue;
-						((AttrWrapper)elm).sync();
+					for(ScrElm elm : this.value()){
+						if(elm instanceof Attribute == false) continue;
+						context.vehicle().sendAttributeUpdate((Attribute)elm);
 					}
 					return TRUE;
 				}

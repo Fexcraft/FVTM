@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagLong;
@@ -96,6 +97,37 @@ public class LongAttribute extends Attribute<Long> {
 	@Override
 	public Long parseValue(String string){
 		return Long.parseLong(string);
+	}
+
+	//
+
+	@Override
+	public ScrElmType scr_type(){
+		return ScrElmType.INTEGER;//there is no direct long support in scripts rn
+	}
+
+	@Override
+	public void scr_set(String val){
+		value(parseValue(val));
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(int val){
+		value(val + 0l);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(float val){
+		value((long)val);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(boolean val){
+		value(val ? 1l : 0l);
+		sync = true;
 	}
 
 }

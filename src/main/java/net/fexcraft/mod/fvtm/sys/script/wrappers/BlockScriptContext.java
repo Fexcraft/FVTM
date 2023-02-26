@@ -6,18 +6,17 @@ import java.util.function.BiFunction;
 
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
-import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockScriptContext extends WrapperElm {
+public class BlockScriptContext implements ScrElm {
 
-	public HashMap<String, BiFunction<ScrBlock, ArrayList<Elm>, Elm>> exes = new HashMap<>();
+	public HashMap<String, BiFunction<ScrBlock, ArrayList<ScrElm>, ScrElm>> exes = new HashMap<>();
 	private FSBlockScript wrapper;
 	private BlockTileEntity entity;
 	protected MultiBlockData data;
@@ -31,12 +30,12 @@ public class BlockScriptContext extends WrapperElm {
 	}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return "{block-context}";
 	}
 
 	@Override
-	public Elm get(ScrBlock block, String target){
+	public ScrElm scr_get(ScrBlock block, String target){
 		if(target.equals("client")){
 			return entity.getWorld().isRemote ? TRUE : FALSE;
 		}
@@ -44,9 +43,9 @@ public class BlockScriptContext extends WrapperElm {
 	}
 
 	@Override
-	public Elm exec(ScrBlock block, String act, ArrayList<Elm> args){
-		Elm val = NULL;
-		BiFunction<ScrBlock, ArrayList<Elm>, Elm> exe = exes.get(act);
+	public ScrElm scr_exec(ScrBlock block, String act, ArrayList<ScrElm> args){
+		ScrElm val = NULL;
+		BiFunction<ScrBlock, ArrayList<ScrElm>, ScrElm> exe = exes.get(act);
 		if(exe != null){
 			return exe.apply(block, args);
 		}
@@ -58,7 +57,7 @@ public class BlockScriptContext extends WrapperElm {
 		return true;
 	}
 
-	public Elm update(MultiblockTickableTE tile){
+	public ScrElm update(MultiblockTickableTE tile){
 		entity = tile;
 		return this;
 	}

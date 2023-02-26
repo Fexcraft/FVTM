@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
-
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
@@ -69,6 +69,37 @@ public class BooleanAttribute extends Attribute<Boolean> {
 	@Override
 	public Boolean parseValue(String string){
 		return Boolean.parseBoolean(string);
+	}
+
+	//
+
+	@Override
+	public ScrElmType scr_type(){
+		return ScrElmType.BOOLEAN;
+	}
+
+	@Override
+	public void scr_set(String val){
+		value(parseValue(val));
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(int val){
+		value(val > 0);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(float val){
+		value(val > 0);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(boolean val){
+		value(val);
+		sync = true;
 	}
 
 }

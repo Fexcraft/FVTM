@@ -7,63 +7,46 @@ package net.fexcraft.mod.fvtm.sys.script.elm;
 
 import java.util.ArrayList;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class ListElm extends Elm {
+public class ListElm implements ScrElm {
 	
-	private ArrayList<Elm> value = new ArrayList<>();
+	private ArrayList<ScrElm> value = new ArrayList<>();
 
 	public ListElm(){}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return value.toString();
 	}
 
 	@Override
-	public int integer_val(){
+	public int scr_int(){
 		return value.size();
 	}
 
 	@Override
-	public float float_val(){
+	public float scr_flt(){
 		return value.size();
 	}
 
 	@Override
-	public boolean bool_val(){
+	public boolean scr_bln(){
 		return value.size() > 1;
 	}
 
 	@Override
-	public Type type(){
-		return Type.LIST;
+	public ScrElmType scr_type(){
+		return ScrElmType.LIST;
 	}
 
-	@Override
-	public void set(String val){
-		//
-	}
-
-	@Override
-	public void set(int val){
-		//
-	}
-
-	@Override
-	public void set(float val){
-		//
-	}
-
-	@Override
-	public void set(boolean val){
-		//
-	}
-
-	public ArrayList<Elm> value(){
+	public ArrayList<ScrElm> value(){
 		return value;
 	}
 

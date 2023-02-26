@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagInt;
@@ -91,6 +92,37 @@ public class IntegerAttribute extends Attribute<Integer> {
 	@Override
 	public Integer parseValue(String string){
 		return Integer.parseInt(string);
+	}
+
+	//
+
+	@Override
+	public ScrElmType scr_type(){
+		return ScrElmType.INTEGER;
+	}
+
+	@Override
+	public void scr_set(String val){
+		value(parseValue(val));
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(int val){
+		value(val);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(float val){
+		value((int)val);
+		sync = true;
+	}
+
+	@Override
+	public void scr_set(boolean val){
+		value(val ? 1 : 0);
+		sync = true;
 	}
 
 }

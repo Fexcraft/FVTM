@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.sys.script.ScrAction;
 import net.fexcraft.mod.fvtm.sys.script.Script;
 import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm;
-import net.fexcraft.mod.fvtm.sys.script.elm.Elm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.script.elm.IntElm;
 import net.fexcraft.mod.fvtm.sys.script.wrappers.BlockScriptContext;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +35,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	protected boolean hasPrepare, hasRunning, hasConsume, hasReady;
 	protected ScrAction prepare, running, consume, ready;
 	private boolean auto_recipe_chooser, instant;
-	private Elm process_speed, cooldown_speed, process_time;
+	private ScrElm process_speed, cooldown_speed, process_time;
 	private ArrayList<Object[]> uielms = new ArrayList<>();
 	
 	public DefaultCraftBlockFS(JsonObject obj){
@@ -53,8 +53,8 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			hasRunning = (running = (ScrAction)script.blocks.get("running")) != null;
 			hasConsume = (consume = (ScrAction)script.blocks.get("consume")) != null;
 			hasReady = (ready = (ScrAction)script.blocks.get("ready")) != null;
-			auto_recipe_chooser = script.getLocalScriptElm("auto_recipe_chooser", () -> new BoolElm(true)).bool_val();
-			instant = script.getLocalScriptElm("instant", () -> new BoolElm(true)).bool_val();
+			auto_recipe_chooser = script.getLocalScriptElm("auto_recipe_chooser", () -> new BoolElm(true)).scr_bln();
+			instant = script.getLocalScriptElm("instant", () -> new BoolElm(true)).scr_bln();
 			process_speed = script.getLocalScriptElm("process_speed", () -> new IntElm(1));
 			cooldown_speed = script.getLocalScriptElm("cooldown_speed", () -> new IntElm(1));
 			process_time = script.getLocalScriptElm("process_time", () -> new IntElm(100));
@@ -67,23 +67,23 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			});
 			context.exes.put("registerConsumable", context.exes.get("register"));*/
 			context.exes.put("addGuiElement", (block, args) -> {
-				String typestr = args.get(0).string_val();
+				String typestr = args.get(0).scr_str();
 				switch(typestr){
 					case "text":{
-						uielms.add(new Object[]{ GuiElement.TEXT, args.get(1).string_val()});
+						uielms.add(new Object[]{ GuiElement.TEXT, args.get(1).scr_str()});
 						break;
 					}
 					case "value":{
-						uielms.add(new Object[]{ GuiElement.TEXT_VALUE, args.get(1).string_val(), args.get(2).string_val()});
+						uielms.add(new Object[]{ GuiElement.TEXT_VALUE, args.get(1).scr_str(), args.get(2).scr_str()});
 						break;
 					}
 					case "progress":
 					case "progressbar":{
 						if(args.size() > 4){
-							uielms.add(new Object[]{ GuiElement.PROGRESS_BAR, args.get(1).string_val(), args.get(2).string_val(), args.get(3).integer_val(), new RGB(args.get(4).string_val()) });
+							uielms.add(new Object[]{ GuiElement.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int(), new RGB(args.get(4).scr_str()) });
 						}
 						else{
-							uielms.add(new Object[]{ GuiElement.PROGRESS_BAR, args.get(1).string_val(), args.get(2).string_val(), args.get(3).integer_val() });
+							uielms.add(new Object[]{ GuiElement.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int() });
 						}
 						break;
 					}
@@ -92,15 +92,15 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 						break;
 					}
 				}
-				return Elm.TRUE;
+				return ScrElm.TRUE;
 			});
 			context.exes.put("sync", (block, args) -> {
-				if(context.entity() == null || context.entity().getWorld().isRemote) return Elm.FALSE;
+				if(context.entity() == null || context.entity().getWorld().isRemote) return ScrElm.FALSE;
 				NBTTagCompound compound = new NBTTagCompound();
-				compound.setString("elm_sync", args.get(0).string_val());
-				compound.setInteger("elm_val", data.getInventory(args.get(0).string_val()).getVarValue());
+				compound.setString("elm_sync", args.get(0).scr_str());
+				compound.setInteger("elm_val", data.getInventory(args.get(0).scr_str()).getVarValue());
 				super.sendPacket(context.entity(), compound);
-				return Elm.TRUE;
+				return ScrElm.TRUE;
 			});
 			if(script.blocks.containsKey("init")){
 				((ScrAction)script.blocks.get("init")).process(context);
@@ -141,18 +141,18 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 
 	@Override
 	public boolean ready(MultiblockTickableTE tile){
-		if(hasReady) return ready.process(context.update(tile)).bool_val();
+		if(hasReady) return ready.process(context.update(tile)).scr_bln();
 		return true;
 	}
 
 	@Override
 	public int process_speed(){
-		return process_speed.integer_val();
+		return process_speed.scr_int();
 	}
 
 	@Override
 	public int cooldown_speed(){
-		return cooldown_speed.integer_val();
+		return cooldown_speed.scr_int();
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 		InvHandler handler = data.getInventory(id);
 		if(handler == null) return false;
 		if(hasConsume){
-			return consume.process(scriptwrapper.context(), Elm.wrap(handler.getVarValue()), Elm.wrap(amount), Elm.wrap(simulate)).bool_val();
+			return consume.process(scriptwrapper.context(), ScrElm.wrap(handler.getVarValue()), ScrElm.wrap(amount), ScrElm.wrap(simulate)).scr_bln();
 		}
 		else{
 			if(simulate) return handler.getVarValue() >= amount;
@@ -192,7 +192,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 
 	@Override
 	public int process_time(){
-		return process_time.integer_val();
+		return process_time.scr_int();
 	}
 
 	@Override

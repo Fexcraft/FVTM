@@ -6,6 +6,8 @@
 package net.fexcraft.mod.fvtm.sys.script.elm;
 
 import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
+import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
 import net.fexcraft.mod.fvtm.sys.script.ScrExpr;
 import net.fexcraft.mod.fvtm.sys.script.ScrExprType;
 import net.fexcraft.mod.fvtm.sys.script.Script;
@@ -15,7 +17,7 @@ import net.fexcraft.mod.fvtm.sys.script.Script;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class CondElm extends Elm {
+public class CondElm implements ScrElm {
 	
 	private ScrExpr value;
 
@@ -24,53 +26,18 @@ public class CondElm extends Elm {
 	}
 
 	@Override
-	public String string_val(){
+	public String scr_str(){
 		return value.print();
 	}
 
 	@Override
-	public int integer_val(){
-		return 0;
+	public boolean scr_bool(ScrBlock block, ScrExpr prev, ScrElm pelm){
+		return value.process(block, prev, pelm).scr_bln();
 	}
 
 	@Override
-	public float float_val(){
-		return 0;
-	}
-
-	@Override
-	public boolean bool_val(){
-		return false;
-	}
-
-	@Override
-	public boolean bool_val(ScrBlock block, ScrExpr prev, Elm pelm){
-		return value.process(block, prev, pelm).bool_val();
-	}
-
-	@Override
-	public Type type(){
-		return Type.COND;
-	}
-
-	@Override
-	public void set(String val){
-		//
-	}
-
-	@Override
-	public void set(int val){
-		//
-	}
-
-	@Override
-	public void set(float val){
-		//
-	}
-
-	@Override
-	public void set(boolean val){
-		//
+	public ScrElmType scr_type(){
+		return ScrElmType.COND;
 	}
 
 }

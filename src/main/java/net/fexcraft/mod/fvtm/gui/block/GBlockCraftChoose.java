@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript_choose_recipe.png");
-	public CraftBlockScript.GuiElement[] elements = {};
 	public Recipe[] recipes = new Recipe[16];
 	private int hovered = -1;
 	private ArrayList<String> hoverlines = new ArrayList<>();

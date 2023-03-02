@@ -150,7 +150,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 	}
 
-	public abstract List<Object[]> getGuiElements();
+	public abstract List<Object[]> getUIElements();
 
 	public String getCurrentRecipe(){
 		return selected == null ? autosel == null ? "none" : autosel.id : selected.id;
@@ -741,10 +741,6 @@ public abstract class CraftBlockScript implements BlockScript {
 		selected = autosel = null;
 		processed = 0;
 		addCooldown();
-	}
-	
-	public static enum GuiElement {
-		TEXT, TEXT_VALUE, PROGRESS_BAR, BUTTONS
 	}
 
 	public void setSelectedRecipe(MultiblockTileEntity tile, String string){

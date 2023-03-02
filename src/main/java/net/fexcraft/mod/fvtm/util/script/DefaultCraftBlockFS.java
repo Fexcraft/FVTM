@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
@@ -13,9 +11,9 @@ import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.sys.script.ScrAction;
+import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.script.Script;
 import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm;
-import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.script.elm.IntElm;
 import net.fexcraft.mod.fvtm.sys.script.wrappers.BlockScriptContext;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,7 +34,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	protected ScrAction prepare, running, consume, ready;
 	private boolean auto_recipe_chooser, instant;
 	private ScrElm process_speed, cooldown_speed, process_time;
-	private ArrayList<Object[]> uielms = new ArrayList<>();
+	private List<Object[]> uielms = new ArrayList<>();
 	
 	public DefaultCraftBlockFS(JsonObject obj){
 		scriptwrapper = new FSBlockScript(obj);
@@ -70,20 +68,20 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 				String typestr = args.get(0).scr_str();
 				switch(typestr){
 					case "text":{
-						uielms.add(new Object[]{ GuiElement.TEXT, args.get(1).scr_str()});
+						//uielms.add(new Object[]{ UIElm.TEXT, args.get(1).scr_str()});
 						break;
 					}
 					case "value":{
-						uielms.add(new Object[]{ GuiElement.TEXT_VALUE, args.get(1).scr_str(), args.get(2).scr_str()});
+						//uielms.add(new Object[]{ UIElm.TEXT_VALUE, args.get(1).scr_str(), args.get(2).scr_str()});
 						break;
 					}
 					case "progress":
 					case "progressbar":{
 						if(args.size() > 4){
-							uielms.add(new Object[]{ GuiElement.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int(), new RGB(args.get(4).scr_str()) });
+							//uielms.add(new Object[]{ UIElm.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int(), new RGB(args.get(4).scr_str()) });
 						}
 						else{
-							uielms.add(new Object[]{ GuiElement.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int() });
+							//uielms.add(new Object[]{ UIElm.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int() });
 						}
 						break;
 					}
@@ -196,7 +194,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getGuiElements(){
+	public List<Object[]> getUIElements(){
 		return uielms;
 	}
 

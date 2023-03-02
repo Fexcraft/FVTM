@@ -2,10 +2,7 @@ package net.fexcraft.mod.fvtm.gui.block;
 
 import java.util.List;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.GuiElement;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,8 +13,10 @@ import net.minecraftforge.fml.relauncher.Side;
 public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript.png");
-	public CraftBlockScript.GuiElement[] elements = {};
-	public List<Object[]> elementdata;
+	private List<Object[]> relms;
+	public Elm[] elements = {};
+	private int footerdepth;
+	private boolean has_status, has_progress, has_choose, has_reset, has_recipe;
 
 	public GBlockCraft(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new GBlockCraftContainer(player, world, x, y, z), player);
@@ -25,41 +24,51 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		this.deftexrect = false;
 		container.gui = this;
 		this.xSize = 256;
-		this.ySize = 176;
+		relms = container.script.getUIElements();
+		this.ySize = 39 + (8 * 14);
+		boolean iv = false;
+		for(Object[] elm : relms) if(elm[0] == GBCElm.ITEMVIEW){ iv = true; break;}
+		if(iv) ySize += GBCElm.ITEMVIEW.h;
 	}
 
 	@Override
 	protected void init(){
-		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 192, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("page", new BasicText(guiLeft + 203, guiTop + 6, 28, MapColor.SNOW.colorValue, "1/pg"));
-		texts.put("status", new BasicText(guiLeft + 9, guiTop + 19, 238, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, container.tickable ? 136 : 238, MapColor.SNOW.colorValue, ""));
-		buttons.put("prev", new BasicButton("prev", guiLeft + 233, guiTop + 6, 233, 6, 8, 8, true));
-		buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 6, 242, 6, 8, 8, true));
-		buttons.put("choose", new BasicButton("choose", guiLeft + 7, guiTop + 45, 7, 45, 120, 12, true));
-		buttons.put("reset", new BasicButton("reset", guiLeft + 129, guiTop + 45, 129, 45, 120, 12, true));
-		texts.put("choose", new BasicText(guiLeft + 10, guiTop + 47, 114, MapColor.SNOW.colorValue, "Choose Recipe"));
-		texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, container.tickable ? "Reset Recipe" : "Craft/Process"));
+		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 244, MapColor.SNOW.colorValue, "loading...."));
+		texts.put("page", new BasicText(guiLeft + 175, guiTop, 40, MapColor.BLACK.colorValue, "-/-"));
+		buttons.put("prev", new BasicButton("prev", guiLeft + 219, guiTop, 219, 122, 14, 14, true));
+		buttons.put("next", new BasicButton("next", guiLeft + 235, guiTop, 235, 122, 14, 14, true));
+		//buttons.put("choose", new BasicButton("choose", guiLeft + 7, guiTop + 45, 7, 45, 120, 12, true));
+		//buttons.put("reset", new BasicButton("reset", guiLeft + 129, guiTop + 45, 129, 45, 120, 12, true));
+		//texts.put("choose", new BasicText(guiLeft + 10, guiTop + 47, 114, MapColor.SNOW.colorValue, "Choose Recipe"));
+		//texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, container.tickable ? "Reset Recipe" : "Craft/Process"));
+		texts.get("top").string = container.tile.getMultiBlockData().getType().getName();
 		initElements();
 	}
 
 	private void initElements(){
 		texts.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
 		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
-		if(!container.tickable) return;
+		//if(!container.tickable) return;
 		//
-		List<Object[]> elms = container.script.getGuiElements();
-		if(elms == null || elms.isEmpty()){
-			elements = new GuiElement[]{};
-			elementdata = null;
-			return;
-		}
-		elements = new CraftBlockScript.GuiElement[elms.size()];
-		for(int i = 0; i < elms.size(); i++){
-			Object[] objs = elms.get(i);
-			elements[i] = (GuiElement)objs[0];
-			switch(elements[i]){
-				case BUTTONS:
+		boolean half = false;
+		int off = 16, pass = 0;
+		elements = new Elm[relms.size()];
+		for(int i = 0; i < elements.length; i++){
+			Object[] objs = relms.get(i);
+			elements[i] = new Elm();
+			GBCElm elm = (GBCElm)objs[0];
+			elements[i].elm = elm;
+			elements[i].off = off;
+			if(elm.full || half){
+				off += elm.h;
+				half = false;
+				if(pass < 8) pass++;
+				else if(pass < 10) pass = 10;
+			}
+			else half = true;
+			String arg = objs.length > 1 ? objs[1].toString() : null;
+			switch(elements[i].elm){
+				/*case BUTTONS:
 					buttons.put("e_" + i, new BasicButton("e_" + i, guiLeft + 7, guiTop + 59 + (i * 14), 7, 45, 120, 12, true));
 					texts.put("e_" + i, new BasicText(guiLeft + 10, guiTop + 61 + (i * 14), 114, MapColor.SNOW.colorValue, (String)objs[1]));
 					if(objs.length > 3){
@@ -78,29 +87,93 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, String.format((String)objs[1], container.data.getInventory((String)objs[2]).getVarValue())));
 					break;
 				default:
+					break;*/
+				case SPACER:
+					break;
+				case ITEMVIEW:
+					break;
+				case ELM_FULL_CLEAR:
+				case ELM_LEFT_CLEAR:
+				case ELM_RIGHT_CLEAR:
+				case ELM_FULL_TEXT:
+				case ELM_LEFT_TEXT:
+				case ELM_RIGHT_TEXT:{
+					int w = elm.full ? 238 : 116;
+					String id = null;
+					if(arg.startsWith("#") && arg.endsWith("#")){
+						switch(arg){
+							case "#status#":{
+								has_status = true;
+								id = "status";
+								break;
+							}
+							case "#recipe#":{
+								has_recipe = true;
+								id = "recipe";
+								break;
+							}
+						}
+					}
+					else if(arg.startsWith("@")){
+
+					}
+					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + 9 + elm.x, guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, arg).autoscale());
+					if(id == null) texts.get("e_" + i).translate();
+					break;
+				}
+				case ELM_TWO_BUTTONS:
+					break;
+				case ELM_LEFT_BUTTON:
+					break;
+				case ELM_RIGHT_BUTTON:
+					break;
+				case ELM_TWO_PROGRESS:
+					break;
+				case ELM_LEFT_PROGRESS:
+					break;
+				case ELM_RIGHT_PROGRESS:
 					break;
 			}
 		}
-		elementdata = elms;
+		if(half) off += elements[elements.length - 1].elm.h;
+		footerdepth = off;
+		texts.get("page").y = guiTop + off + 6;
+		buttons.get("prev").y = guiTop + off + 2;
+		buttons.get("next").y = guiTop + off + 2;
+	}
+
+	public static class Elm {
+
+		protected GBCElm elm;
+		protected Runnable run;
+		protected int off;
+
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		if(container.tile != null){
-			texts.get("top").string = container.tile.getMultiBlockData().getType().getName();
+		if(has_recipe){
+			texts.get("recipe").string = container.current;
 		}
-		texts.get("status").string = "Current recipe: " + container.current;
-		if(container.tickable){
-			texts.get("process").string = container.script.getCooldown() > 0  ? "Cooldown/Paused (" + container.script.getCooldown() + ")" : container.current == null || container.current.equals("none") ? "Idle" : "Working/Processing.";
-		}
-		else{
-			texts.get("process").string = container.ntstatus == null ? "" : container.ntstatus.equals(GBlockCraftContainer.success) ? container.crafted + "x " + container.ntstatus : container.ntstatus;
+		if(has_status){
+			if(container.tickable){
+				texts.get("status").string = container.script.getCooldown() > 0  ? "Cooldown/Paused (" + container.script.getCooldown() + ")" : container.current == null || container.current.equals("none") ? "Idle" : "Working/Processing.";
+			}
+			else{
+				texts.get("status").string = container.ntstatus == null ? "" : container.ntstatus.equals(GBlockCraftContainer.success) ? container.crafted + "x " + container.ntstatus : container.ntstatus;
+			}
 		}
 	}
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, 58);
+		drawElm(GBCElm.HEAD, 0);
+		for(Elm elm : elements){
+			drawElm(elm.elm, elm.off);
+			if(elm.run != null) elm.run.run();
+		}
+		drawElm(GBCElm.FOOTER, elements.length == 0 ? 16 : footerdepth);
+		/*this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, 58);
 		this.drawTexturedModalRect(guiLeft, guiTop + 58 + elements.length * 14, 0, 250, this.xSize, 6);
 		if(!container.tickable){
 			this.drawTexturedModalRect(guiLeft, guiTop + 30, 0, 16, this.xSize, 14);
@@ -140,7 +213,11 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 						break;
 				}
 			}
-		}
+		}*/
+	}
+
+	private void drawElm(GBCElm elm, int yoff){
+		drawTexturedModalRect(guiLeft + elm.x, guiTop + yoff, elm.x, elm.y, elm.full ? 256 : 128, elm.h);
 	}
 
 	@Override

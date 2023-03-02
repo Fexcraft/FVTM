@@ -1,14 +1,14 @@
 package net.fexcraft.mod.fvtm.util.script;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.gui.block.GBCElm;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -22,6 +22,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	
 	protected boolean auto_recipe_chooser, instant;//, update_client;
 	protected int cooldown, process_speed, cooldown_speed, process_time;
+	protected boolean add_def_ui, add_def_itemview, add_def_choose;
 	
 	public DefaultCraftBlockScript(JsonObject obj){
 		auto_recipe_chooser = JsonUtil.getIfExists(obj, "auto_recipe_chooser", false);
@@ -31,6 +32,9 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 		cooldown_speed = JsonUtil.getIfExists(obj, "cooldown_speed", 1).intValue();
 		//update_client = JsonUtil.getIfExists(obj, "update_client", false);//unused
 		process_time = JsonUtil.getIfExists(obj, "process_time", 100).intValue();
+		add_def_ui = JsonUtil.getIfExists(obj, "def_ui", true);
+		add_def_itemview = JsonUtil.getIfExists(obj, "def_ui_itemview", true);
+		add_def_choose = JsonUtil.getIfExists(obj, "def_ui_choose", true);
 	}
 
 	@Override
@@ -89,8 +93,26 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getGuiElements(){
-		return Collections.emptyList();
+	public List<Object[]> getUIElements(){
+		ArrayList list = new ArrayList();
+		if(add_def_ui){
+			list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "#status#" });
+			list.add(new Object[]{ GBCElm.ELM_RIGHT_PROGRESS, "#progress#" });
+			list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "gui.fvtm.block_craft.recipe" });
+			list.add(new Object[]{ GBCElm.ELM_RIGHT_TEXT, "#recipe#" });
+			if(add_def_itemview){
+				list.add(new Object[]{ GBCElm.ITEMVIEW });
+			}
+			if(add_def_choose){
+				addChooseElements(list);
+			}
+		}
+		return list;
+	}
+
+	public static void addChooseElements(List list){
+		list.add(new Object[]{ GBCElm.ELM_LEFT_BUTTON, "gui.fvtm.block_craft.choose", "#choose#" });
+		list.add(new Object[]{ GBCElm.ELM_RIGHT_BUTTON, "gui.fvtm.block_craft.reset", "#reset#" });
 	}
 
 	@Override

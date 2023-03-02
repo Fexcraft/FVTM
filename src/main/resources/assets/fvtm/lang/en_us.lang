@@ -184,6 +184,13 @@ gui.fvtm.vpinfo.mode.compatible.cat=%s (vehicle category)
 gui.fvtm.vpinfo.line.wait=Please wait, searching...
 gui.fvtm.vpinfo.line.none=No results found.
 //
+gui.fvtm.block_craft.status.cooldown=Cooldown/Paused
+gui.fvtm.block_craft.status.idle=Idle
+gui.fvtm.block_craft.status.working=Working/Processing
+gui.fvtm.block_craft.recipe=Current Recipe:
+gui.fvtm.block_craft.choose=Choose Recipe
+gui.fvtm.block_craft.reset=Reset Recipe
+//
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.
 tile.fvtm.constructor.constructor_connect.already_connected=Tile at position has already connection data.

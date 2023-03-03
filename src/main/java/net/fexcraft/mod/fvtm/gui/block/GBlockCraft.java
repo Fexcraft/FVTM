@@ -35,12 +35,20 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 	protected void init(){
 		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 244, MapColor.SNOW.colorValue, "loading...."));
 		texts.put("page", new BasicText(guiLeft + 175, guiTop, 40, MapColor.BLACK.colorValue, "-/-"));
-		buttons.put("prev", new BasicButton("prev", guiLeft + 219, guiTop, 219, 122, 14, 14, true));
-		buttons.put("next", new BasicButton("next", guiLeft + 235, guiTop, 235, 122, 14, 14, true));
-		//buttons.put("choose", new BasicButton("choose", guiLeft + 7, guiTop + 45, 7, 45, 120, 12, true));
-		//buttons.put("reset", new BasicButton("reset", guiLeft + 129, guiTop + 45, 129, 45, 120, 12, true));
-		//texts.put("choose", new BasicText(guiLeft + 10, guiTop + 47, 114, MapColor.SNOW.colorValue, "Choose Recipe"));
-		//texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, container.tickable ? "Reset Recipe" : "Craft/Process"));
+		buttons.put("prev", new BasicButton("prev", guiLeft + 219, guiTop, 219, 122, 14, 14, true){
+			@Override
+			public boolean onclick(int x, int y, int b){
+				updatePage(-1);
+				return true;
+			}
+		});
+		buttons.put("next", new BasicButton("next", guiLeft + 235, guiTop, 235, 122, 14, 14, true){
+			@Override
+			public boolean onclick(int x, int y, int b){
+				updatePage(1);
+				return true;
+			}
+		});
 		texts.get("top").string = container.tile.getMultiBlockData().getType().getName();
 		initElements();
 	}
@@ -66,28 +74,8 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 				else if(pass < 10) pass = 10;
 			}
 			else half = true;
-			String arg = objs.length > 1 ? objs[1].toString() : null;
+			String arg = objs.length > 1 ? objs[1].toString() : "";
 			switch(elements[i].elm){
-				/*case BUTTONS:
-					buttons.put("e_" + i, new BasicButton("e_" + i, guiLeft + 7, guiTop + 59 + (i * 14), 7, 45, 120, 12, true));
-					texts.put("e_" + i, new BasicText(guiLeft + 10, guiTop + 61 + (i * 14), 114, MapColor.SNOW.colorValue, (String)objs[1]));
-					if(objs.length > 3){
-						buttons.put("e_" + i, new BasicButton("e_" + i, guiLeft + 129, guiTop + 59 + (i * 14), 7, 45, 120, 12, true));
-						texts.put("e_" + i, new BasicText(guiLeft + 132, guiTop + 61 + (i * 14), 114, MapColor.SNOW.colorValue, (String)objs[3]));
-					}
-					break;
-				case PROGRESS_BAR:
-					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 136, MapColor.SNOW.colorValue, (String)objs[1]));
-					texts.put("e_" + i + "v", new BasicText(guiLeft + 150, guiTop + 61 + (i * 14), 94, MapColor.SNOW.colorValue, "" + container.data.getInventory((String)objs[2]).getVarValue()));
-					break;
-				case TEXT:
-					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, (String)objs[1]));
-					break;
-				case TEXT_VALUE:
-					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, String.format((String)objs[1], container.data.getInventory((String)objs[2]).getVarValue())));
-					break;
-				default:
-					break;*/
 				case SPACER:
 					break;
 				case ITEMVIEW:
@@ -98,6 +86,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 				case ELM_FULL_TEXT:
 				case ELM_LEFT_TEXT:
 				case ELM_RIGHT_TEXT:{
+					if(arg == null || arg.length() == 0) break;
 					int w = elm.full ? 238 : 116;
 					String id = null;
 					if(arg.startsWith("#") && arg.endsWith("#")){
@@ -117,17 +106,53 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					else if(arg.startsWith("@")){
 
 					}
-					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + 9 + elm.x, guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, arg).autoscale());
+					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + (elm.x > 0 ? elm.x + 3 : 9), guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, arg).autoscale());
 					if(id == null) texts.get("e_" + i).translate();
 					break;
 				}
-				case ELM_TWO_BUTTONS:
-					break;
 				case ELM_LEFT_BUTTON:
-					break;
 				case ELM_RIGHT_BUTTON:
-					break;
-				case ELM_TWO_PROGRESS:
+					int w = elm.full ? 238 : 116;
+					arg = objs.length > 2 ? objs[2].toString() : "";
+					String id = null;
+					Runnable[] run = { null };
+					if(arg.startsWith("#") && arg.endsWith("#")){
+						switch(arg){
+							case "#choose#":{
+								has_choose = true;
+								id = "choose";
+								run[0] = () -> {
+									NBTTagCompound compound = new NBTTagCompound();
+									compound.setString("cargo", "open_chooser");
+									this.container.send(Side.SERVER, compound);
+								};
+								break;
+							}
+							case "#reset#":{
+								has_reset = true;
+								id = "reset";
+								run[0] = () -> {
+									NBTTagCompound compound = new NBTTagCompound();
+									compound.setString("cargo", container.tickable ? "reset_recipe" : "craft_recipe");
+									this.container.send(Side.SERVER, compound);
+								};
+								break;
+							}
+						}
+					}
+					else if(arg.startsWith("@")){
+
+					}
+					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + (elm.x > 0 ? elm.x + 4 : 10), guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, objs[1].toString()).autoscale().translate());
+					if(id == null) id = "e_" + i;
+					int x = elm.x > 0 ? elm.x + 1 : 7, y = 1 + elements[i].off;
+					buttons.put(id, new BasicButton(id, guiLeft + x, guiTop + y, elm.x + (elm.x > 0 ? 1 : 7), elm.y + 1, 120, 12, true){
+						@Override
+						public boolean onclick(int x, int y, int b){
+							if(run[0] != null) run[0].run();
+							return true;
+						}
+					});
 					break;
 				case ELM_LEFT_PROGRESS:
 					break;
@@ -218,29 +243,6 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 
 	private void drawElm(GBCElm elm, int yoff){
 		drawTexturedModalRect(guiLeft + elm.x, guiTop + yoff, elm.x, elm.y, elm.full ? 256 : 128, elm.h);
-	}
-
-	@Override
-	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(button.name.equals("prev")){
-			updatePage(-1);
-			return true;
-		}
-		if(button.name.equals("next")){
-			updatePage(1);
-			return true;
-		}
-		if(button.name.equals("choose")){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", "open_chooser");
-			this.container.send(Side.SERVER, compound);
-		}
-		if(button.name.equals("reset")){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", container.tickable ? "reset_recipe" : "craft_recipe");
-			this.container.send(Side.SERVER, compound);
-		}
-		return false;
 	}
 
 	@Override

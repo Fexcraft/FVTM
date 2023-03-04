@@ -150,7 +150,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 	}
 
-	public abstract List<Object[]> getUIElements();
+	public abstract List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata);
 
 	public String getCurrentRecipe(){
 		return selected == null ? autosel == null ? "none" : autosel.id : selected.id;

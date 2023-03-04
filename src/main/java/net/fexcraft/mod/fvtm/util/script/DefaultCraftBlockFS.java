@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
@@ -194,7 +195,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getUIElements(){
+	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata){
 		return uielms;
 	}
 

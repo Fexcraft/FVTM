@@ -2,7 +2,9 @@ package net.fexcraft.mod.fvtm.gui.block;
 
 import java.util.List;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +17,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript.png");
 	private List<Object[]> relms;
 	public Elm[] elements = {};
-	private int footerdepth;
+	private int footerdepth, maxelm = 12, off = 16;
 	private boolean has_status, has_progress, has_choose, has_reset, has_recipe;
 
 	public GBlockCraft(EntityPlayer player, World world, int x, int y, int z){
@@ -23,26 +25,42 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		this.defbackground = true;
 		this.deftexrect = false;
 		container.gui = this;
-		this.xSize = 256;
-		relms = container.script.getUIElements();
-		this.ySize = 39 + (8 * 14);
-		boolean iv = false;
-		for(Object[] elm : relms) if(elm[0] == GBCElm.ITEMVIEW){ iv = true; break;}
-		if(iv) ySize += GBCElm.ITEMVIEW.h;
+		xSize = 256;
+		int pass = 0;
+		boolean half = false;
+		relms = container.script.getUIElements(container.tile.data, container.data);
+		elements = new Elm[relms.size()];
+		for(int i = 0; i < elements.length; i++) {
+			elements[i] = new Elm();
+			Object[] objs = relms.get(i);
+			GBCElm elm = (GBCElm)objs[0];
+			elements[i].elm = elm;
+			elements[i].off = off;
+			if(elm.full || half){
+				off += elm.h;
+				half = false;
+				if (pass < maxelm) pass++;
+				else if (pass < maxelm + 2) pass = maxelm + 2;
+			}
+			else half = true;
+		}
+		if(half) off += elements[elements.length - 1].elm.h;
+		ySize = 39 + off;
+		footerdepth = off;
 	}
 
 	@Override
 	protected void init(){
 		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 244, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("page", new BasicText(guiLeft + 175, guiTop, 40, MapColor.BLACK.colorValue, "-/-"));
-		buttons.put("prev", new BasicButton("prev", guiLeft + 219, guiTop, 219, 122, 14, 14, true){
+		texts.put("page", new BasicText(guiLeft + 175, guiTop + off + 6, 40, MapColor.BLACK.colorValue, "-/-"));
+		buttons.put("prev", new BasicButton("prev", guiLeft + 219, guiTop + off + 2, 219, 122, 14, 14, true){
 			@Override
 			public boolean onclick(int x, int y, int b){
 				updatePage(-1);
 				return true;
 			}
 		});
-		buttons.put("next", new BasicButton("next", guiLeft + 235, guiTop, 235, 122, 14, 14, true){
+		buttons.put("next", new BasicButton("next", guiLeft + 235, guiTop + off + 2, 235, 122, 14, 14, true){
 			@Override
 			public boolean onclick(int x, int y, int b){
 				updatePage(1);
@@ -58,22 +76,9 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
 		//if(!container.tickable) return;
 		//
-		boolean half = false;
-		int off = 16, pass = 0;
-		elements = new Elm[relms.size()];
 		for(int i = 0; i < elements.length; i++){
 			Object[] objs = relms.get(i);
-			elements[i] = new Elm();
 			GBCElm elm = (GBCElm)objs[0];
-			elements[i].elm = elm;
-			elements[i].off = off;
-			if(elm.full || half){
-				off += elm.h;
-				half = false;
-				if(pass < 8) pass++;
-				else if(pass < 10) pass = 10;
-			}
-			else half = true;
 			String arg = objs.length > 1 ? objs[1].toString() : "";
 			switch(elements[i].elm){
 				case SPACER:
@@ -155,16 +160,37 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					});
 					break;
 				case ELM_LEFT_PROGRESS:
-					break;
 				case ELM_RIGHT_PROGRESS:
+					if(arg == null || arg.length() == 0) break;
+					RGB color = objs.length > 3 ? objs[3] instanceof RGB ? (RGB)objs[3] : new RGB((String)objs[3]) : RGB.GREEN;
+					int ex = elm.x > 0 ? elm.x + 11 : 17, ey = 2 + elements[i].off;
+					if(arg.equals("#progress#")){
+						elements[i].run = () -> {
+							int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
+							if(proc > 0){
+								color.glColorApply();
+								drawTexturedModalRect(guiLeft + ex, guiTop + ey, ex, elm.y + 2, proc, 10);
+								RGB.glColorReset();
+							}
+						};
+					}
+					else{
+						boolean auto = objs[2] instanceof String && objs[2].toString().equalsIgnoreCase("auto");
+						InvHandler inv = container.data.getInventory((String)objs[1]);
+						int max = auto ? inv.capacity() : (int)objs[2];
+						elements[i].run = () -> {
+							int val = inv.getVarValue();
+							int proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
+							if(proc > 0){
+								color.glColorApply();
+								drawTexturedModalRect(guiLeft + ex, guiTop + ey, ex, elm.y + 2, proc, 10);
+								RGB.glColorReset();
+							}
+						};
+					}
 					break;
 			}
 		}
-		if(half) off += elements[elements.length - 1].elm.h;
-		footerdepth = off;
-		texts.get("page").y = guiTop + off + 6;
-		buttons.get("prev").y = guiTop + off + 2;
-		buttons.get("next").y = guiTop + off + 2;
 	}
 
 	public static class Elm {
@@ -198,47 +224,6 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 			if(elm.run != null) elm.run.run();
 		}
 		drawElm(GBCElm.FOOTER, elements.length == 0 ? 16 : footerdepth);
-		/*this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, 58);
-		this.drawTexturedModalRect(guiLeft, guiTop + 58 + elements.length * 14, 0, 250, this.xSize, 6);
-		if(!container.tickable){
-			this.drawTexturedModalRect(guiLeft, guiTop + 30, 0, 16, this.xSize, 14);
-		}
-		else{
-			int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
-			if(proc > 0){
-				RGB.GREEN.glColorApply();
-				this.drawTexturedModalRect(guiLeft + 148, guiTop + 32, 148, 32, proc, 10);
-				RGB.glColorReset();
-			}
-			for(int i = 0; i < elements.length; i++){
-				int offset = i * 14;
-				Object[] objs = elementdata.get(i);
-				switch(elements[i]){
-					case PROGRESS_BAR:{
-						texts.get("e_" + i + "v").string = "" + container.data.getInventory((String)objs[2]).getVarValue();
-						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 30, this.xSize, 14);
-						int max = (int)objs[3], val = container.data.getInventory((String)objs[2]).getVarValue();
-						proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
-						if(proc > 0){
-							(objs.length < 5 ? RGB.GREEN : (RGB)objs[4]).glColorApply();
-							this.drawTexturedModalRect(guiLeft + 148, guiTop + 60 + offset, 148, 32, proc, 10);
-							RGB.glColorReset();
-						}
-						break;
-					}
-					case TEXT_VALUE:
-						texts.get("e_" + i).string = String.format((String)objs[1], container.data.getInventory((String)objs[2]).getVarValue());
-					case TEXT:
-						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 16, this.xSize, 14);
-						break;
-					case BUTTONS:
-						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 44, this.xSize, 14);
-						break;
-					default:
-						break;
-				}
-			}
-		}*/
 	}
 
 	private void drawElm(GBCElm elm, int yoff){

@@ -1,6 +1,9 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -11,16 +14,20 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
+import scala.actors.threadpool.Arrays;
 
 public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript.png");
 	private List<Object[]> relms;
+	private List<String> tips = new ArrayList<>();
+	private AreaMap<List<String>> hoverables = new AreaMap<>();
 	public Elm[] elements = {};
 	private int footerdepth, maxelm = 12, off = 16;
 	private boolean has_status, has_progress, has_choose, has_reset, has_recipe;
@@ -56,8 +63,8 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 
 	@Override
 	protected void init(){
-		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 244, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("page", new BasicText(guiLeft + 175, guiTop + off + 6, 40, MapColor.BLACK.colorValue, "-/-"));
+		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 244, MapColor.SNOW.colorValue, "loading....").hoverable(true));
+		texts.put("page", new BasicText(guiLeft + 175, guiTop + off + 6, 40, MapColor.BLACK.colorValue, "-/-").hoverable(true));
 		buttons.put("prev", new BasicButton("prev", guiLeft + 219, guiTop + off + 2, 219, 122, 14, 14, true){
 			@Override
 			public boolean onclick(int x, int y, int b){
@@ -90,15 +97,23 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					break;
 				case ITEMVIEW:
 					int oy = elements[i].off + 2;
+					for(int j = 0; j < 6; j++){
+						int k = j * 18;
+						hoverables.put(new Area(guiLeft + 130 + k, guiLeft + 130 + 16 + k, guiTop + oy, guiTop + oy + 16), new ArrayList<>());
+					}
 					elements[i].run = () -> {
 						if(container.current != null && !container.current.equals("none")){
 							CraftBlockScript.Recipe recipe = CraftBlockScript.RECIPE_REGISTRY.get(container.current);
 							RenderHelper.enableGUIStandardItemLighting();
 							OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 							GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-							for(int j = 0; j < recipe.getOutput().size(); j++){
+							for(int j = 0; j < 6; j++){
+								List<String> a = hoverables.get(guiLeft + 130 + (j * 18), guiTop + oy);
+								a.clear();
+								if(recipe.getOutput().size() <= j) continue;
 								if(!recipe.getOutput().get(j).getInventoryType().isItem()) continue;
 								itemRender.renderItemAndEffectIntoGUI(recipe.getOutput().get(j).stack, guiLeft + 130 + (j * 18), guiTop + oy);
+								recipe.getOutput().get(j).stack.getItem().addInformation(recipe.getOutput().get(j).stack, player.world, a, ITooltipFlag.TooltipFlags.NORMAL);
 							}
 							RenderHelper.disableStandardItemLighting();
 							TexUtil.bindTexture(texture);
@@ -131,7 +146,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					else if(arg.startsWith("@")){
 
 					}
-					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + (elm.x > 0 ? elm.x + 3 : 9), guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, arg).autoscale());
+					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + (elm.x > 0 ? elm.x + 3 : 9), guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, arg).autoscale().hoverable(true));
 					if(id == null) texts.get("e_" + i).translate();
 					break;
 				}
@@ -168,7 +183,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					else if(arg.startsWith("@")){
 
 					}
-					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + (elm.x > 0 ? elm.x + 4 : 10), guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, objs[1].toString()).autoscale().translate());
+					texts.put(id == null ? "e_" + i : id, new BasicText(guiLeft + (elm.x > 0 ? elm.x + 4 : 10), guiTop + 3 + elements[i].off, w, MapColor.SNOW.colorValue, objs[1].toString()).autoscale().translate().hoverable(true));
 					if(id == null) id = "e_" + i;
 					int x = elm.x > 0 ? elm.x + 1 : 7, y = 1 + elements[i].off;
 					buttons.put(id, new BasicButton(id, guiLeft + x, guiTop + y, elm.x + (elm.x > 0 ? 1 : 7), elm.y + 1, 120, 12, true){
@@ -184,6 +199,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 					if(arg == null || arg.length() == 0) break;
 					RGB color = objs.length > 3 ? objs[3] instanceof RGB ? (RGB)objs[3] : new RGB((String)objs[3]) : RGB.GREEN;
 					int ex = elm.x > 0 ? elm.x + 11 : 17, ey = 2 + elements[i].off;
+					hoverables.put(new Area(guiLeft + ex, guiLeft + ex + 100, guiTop + ey, guiTop + ey + 10), Arrays.asList(new String[]{ "" }));
 					if(arg.equals("#progress#")){
 						elements[i].run = () -> {
 							int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
@@ -192,6 +208,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 								drawTexturedModalRect(guiLeft + ex, guiTop + ey, ex, elm.y + 2, proc, 10);
 								RGB.glColorReset();
 							}
+							hoverables.get(guiLeft + ex, guiTop + ey).set(0, proc + "%");
 						};
 					}
 					else{
@@ -206,6 +223,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 								drawTexturedModalRect(guiLeft + ex, guiTop + ey, ex, elm.y + 2, proc, 10);
 								RGB.glColorReset();
 							}
+							hoverables.get(guiLeft + ex, guiTop + ey).set(0, val + " / " + max);
 						};
 					}
 					break;
@@ -263,6 +281,57 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		compound.setString("cargo", "page");
 		compound.setInteger("page", container.page);
 		this.container.send(Side.SERVER, compound);
+	}
+
+	@Override
+	public void drawlast(float ticks, int x, int y){
+		tips.clear();
+		for(Map.Entry<String, BasicText> text : texts.entrySet()){
+			if(text.getValue().hovered){
+				tips.add(text.getValue().string);
+			}
+		}
+		for(Map.Entry<Area, List<String>> hov : hoverables.entrySet()){
+			if(x >= hov.getKey().x && x <= hov.getKey().xe){
+				if(y >= hov.getKey().y && y <= hov.getKey().ye){
+					tips.addAll(hov.getValue());
+				}
+			}
+		}
+		if(tips.size() > 0) this.drawHoveringText(tips, x, y, fontRenderer);
+	}
+
+	private static class Area {
+
+		public int x, xe, y, ye;
+
+		public Area(int a, int ae, int b, int be){
+			x = a;
+			xe = ae;
+			y = b;
+			ye = be;
+		}
+
+	}
+
+	private static class AreaMap<T> extends HashMap<Area, T>{
+
+		public Entry<Area, T> get(int x, int xe, int y, int ye){
+			for(Entry<Area, T> entry : entrySet()){
+				Area a = entry.getKey();
+				if(a.x == x && a.xe == xe && a.y == y && a.ye == ye) return entry;
+			}
+			return null;
+		}
+
+		public T get(int x, int y){
+			for(Entry<Area, T> entry : entrySet()){
+				Area a = entry.getKey();
+				if(a.x == x && a.y == y) return entry.getValue();
+			}
+			return null;
+		}
+
 	}
 
 }

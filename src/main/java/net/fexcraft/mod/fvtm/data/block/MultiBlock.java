@@ -58,7 +58,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 		this.registryname = DataUtil.getRegistryName(pack, obj);
 		if(registryname == null) return null;
 		//
-		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
+		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed MultiBlock");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		//

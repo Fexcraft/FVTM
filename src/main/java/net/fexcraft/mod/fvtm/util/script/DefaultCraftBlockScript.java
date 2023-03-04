@@ -33,7 +33,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 		cooldown_speed = JsonUtil.getIfExists(obj, "cooldown_speed", 1).intValue();
 		//update_client = JsonUtil.getIfExists(obj, "update_client", false);//unused
 		process_time = JsonUtil.getIfExists(obj, "process_time", 100).intValue();
-		add_def_ui = JsonUtil.getIfExists(obj, "def_ui", true);
+		add_def_ui = JsonUtil.getIfExists(obj, "def_ui_elements", true);
 		add_def_itemview = JsonUtil.getIfExists(obj, "def_ui_itemview", true);
 		add_def_choose = JsonUtil.getIfExists(obj, "def_ui_choose", true);
 	}

@@ -31,7 +31,8 @@ public enum GBCElm {
         full = isfull;
     }
 
-    public static GBCElm by(String str) {
+    public static GBCElm by(String str){
+        if(!str.startsWith("ELM_")) str = "ELM_" + str;
         for(GBCElm elm : GBCElm.values()){
             if(elm.name().equalsIgnoreCase(str)) return elm;
         }

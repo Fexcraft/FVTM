@@ -11,14 +11,9 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
@@ -46,6 +41,9 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 /**
  * 
@@ -122,6 +120,8 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new BlockBoolRotator("", true, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new BlockBoolTranslator("", true, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new BlockBoolVisible("", true));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new Block4x4RotVisible(0));
+		ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
 		//
 		DIDLOAD = true;
 	}
@@ -2221,6 +2221,68 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new BlockBoolVisible(args[0], args.length < 2 || Boolean.parseBoolean(args[1]));
+		}
+
+	}
+
+	public static class Block4x4RotVisible implements Program {
+
+		private int equals;
+
+		public Block4x4RotVisible(int var){
+			this.equals = var;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:block_4x4rot_visible";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.tile == null) return;
+			list.visible = (data.tile.getBlockMetadata() / 4) == equals;
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new Block4x4RotVisible(Integer.parseInt(args[0]));
+		}
+
+	}
+
+	public static class BlockVariantVisible implements Program {
+
+		private int equals;
+
+		public BlockVariantVisible(int var){
+			this.equals = var;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:block_variant_visible";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.tile == null) return;
+			list.visible = data.tile.getBlockMetadata() == equals;
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockVariantVisible(Integer.parseInt(args[0]));
 		}
 
 	}

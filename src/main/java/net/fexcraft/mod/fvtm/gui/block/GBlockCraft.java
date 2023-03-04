@@ -4,8 +4,13 @@ import java.util.List;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -84,6 +89,21 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 				case SPACER:
 					break;
 				case ITEMVIEW:
+					int oy = elements[i].off + 2;
+					elements[i].run = () -> {
+						if(container.current != null && !container.current.equals("none")){
+							CraftBlockScript.Recipe recipe = CraftBlockScript.RECIPE_REGISTRY.get(container.current);
+							RenderHelper.enableGUIStandardItemLighting();
+							OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+							GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+							for(int j = 0; j < recipe.getOutput().size(); j++){
+								if(!recipe.getOutput().get(j).getInventoryType().isItem()) continue;
+								itemRender.renderItemAndEffectIntoGUI(recipe.getOutput().get(j).stack, guiLeft + 130 + (j * 18), guiTop + oy);
+							}
+							RenderHelper.disableStandardItemLighting();
+							TexUtil.bindTexture(texture);
+						}
+					};
 					break;
 				case ELM_FULL_CLEAR:
 				case ELM_LEFT_CLEAR:

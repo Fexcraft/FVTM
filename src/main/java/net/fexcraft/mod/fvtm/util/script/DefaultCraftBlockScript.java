@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.gui.block.GBCElm;
@@ -93,11 +94,13 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getUIElements(){
+	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata){
 		ArrayList list = new ArrayList();
 		if(add_def_ui){
-			list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "#status#" });
-			list.add(new Object[]{ GBCElm.ELM_RIGHT_PROGRESS, "#progress#" });
+			if(bdata.getType().isTickable()){
+				list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "#status#" });
+				list.add(new Object[]{ GBCElm.ELM_RIGHT_PROGRESS, "#progress#" });
+			}
 			list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "gui.fvtm.block_craft.recipe" });
 			list.add(new Object[]{ GBCElm.ELM_RIGHT_TEXT, "#recipe#" });
 			if(add_def_itemview){

@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.gui.block.GBCElm;
 import net.fexcraft.mod.fvtm.sys.script.ScrAction;
 import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.script.Script;
@@ -36,6 +37,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	private boolean auto_recipe_chooser, instant;
 	private ScrElm process_speed, cooldown_speed, process_time;
 	private List<Object[]> uielms = new ArrayList<>();
+	protected ScrElm add_def_ui, add_def_itemview, add_def_choose;
 	
 	public DefaultCraftBlockFS(JsonObject obj){
 		scriptwrapper = new FSBlockScript(obj);
@@ -65,32 +67,18 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 				return Elm.TRUE;
 			});
 			context.exes.put("registerConsumable", context.exes.get("register"));*/
-			context.exes.put("addGuiElement", (block, args) -> {
-				String typestr = args.get(0).scr_str();
-				switch(typestr){
-					case "text":{
-						//uielms.add(new Object[]{ UIElm.TEXT, args.get(1).scr_str()});
-						break;
-					}
-					case "value":{
-						//uielms.add(new Object[]{ UIElm.TEXT_VALUE, args.get(1).scr_str(), args.get(2).scr_str()});
-						break;
-					}
-					case "progress":
-					case "progressbar":{
-						if(args.size() > 4){
-							//uielms.add(new Object[]{ UIElm.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int(), new RGB(args.get(4).scr_str()) });
-						}
-						else{
-							//uielms.add(new Object[]{ UIElm.PROGRESS_BAR, args.get(1).scr_str(), args.get(2).scr_str(), args.get(3).scr_int() });
-						}
-						break;
-					}
-					case "buttons":{
-						//TODO
-						break;
-					}
+			context.exes.put("addUIElement", (block, args) -> {
+				GBCElm elm = GBCElm.by(args.get(0).scr_str());
+				if(elm != null){
+					Object[] objs = new Object[args.size()];
+					objs[0] = elm;
+					for(int i = 1; i < args.size(); i++) objs[i] = args.get(i).scr_str();
+					uielms.add(objs);
 				}
+				return ScrElm.TRUE;
+			});
+			context.exes.put("addChooseElements", (block, args) -> {
+				DefaultCraftBlockScript.addChooseElements(uielms);
 				return ScrElm.TRUE;
 			});
 			context.exes.put("sync", (block, args) -> {
@@ -105,6 +93,10 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 				((ScrAction)script.blocks.get("init")).process(context);
 			}
 			Print.debug(script);
+			//
+			add_def_ui = script.getLocalScriptElm("def_ui_elements", () -> new BoolElm(true));
+			add_def_itemview = script.getLocalScriptElm("def_ui_itemview", () -> new BoolElm(true));
+			add_def_choose = script.getLocalScriptElm("def_ui_choose", () -> new BoolElm(true));
 		}
 		super.read(data, tag);
 		/*for(Entry<String, Elm> entry : consumables.entrySet()){
@@ -196,7 +188,23 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 
 	@Override
 	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata){
-		return uielms;
+		ArrayList list = new ArrayList();
+		if(add_def_ui.scr_bln()){
+			if(bdata.getType().isTickable()){
+				list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "#status#" });
+				list.add(new Object[]{ GBCElm.ELM_RIGHT_PROGRESS, "#progress#" });
+			}
+			list.add(new Object[]{ GBCElm.ELM_LEFT_TEXT, "gui.fvtm.block_craft.recipe" });
+			list.add(new Object[]{ GBCElm.ELM_RIGHT_TEXT, "#recipe#" });
+			if(add_def_itemview.scr_bln()){
+				list.add(new Object[]{ GBCElm.ITEMVIEW });
+			}
+			if(add_def_choose.scr_bln()){
+				DefaultCraftBlockScript.addChooseElements(list);
+			}
+		}
+		list.addAll(uielms);
+		return list;
 	}
 
 	@Override

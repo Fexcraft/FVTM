@@ -19,7 +19,6 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -95,7 +94,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
         Print.debug(world.isRemote, tile, stack.getTagCompound());
-        if(tile != null){
+        if(tile != null && stack.getTagCompound() != null){
             tile.getBlockData().read(stack.getTagCompound());
             tile.markDirty();
             tile.sendUpdate();

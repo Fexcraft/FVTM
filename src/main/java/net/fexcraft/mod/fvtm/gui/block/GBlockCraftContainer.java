@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui.block;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -133,7 +134,7 @@ public class GBlockCraftContainer extends GenericContainer {
 		passed = 0;
 		NBTTagCompound compound = new NBTTagCompound();
 		for(Entry<String, InvHandler> entry : data.getInventories().entrySet()){
-			if(!entry.getValue().type.isVariable()) continue;
+			if(!entry.getValue().type.isVariable() && !entry.getValue().type.isFluid()) continue;
 			compound.setInteger("c_" + entry.getKey(), entry.getValue().getVarValue());
 		}
 		compound.setString("current", script.getCurrentRecipe());

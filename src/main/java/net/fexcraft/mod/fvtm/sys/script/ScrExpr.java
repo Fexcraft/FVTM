@@ -161,7 +161,7 @@ public abstract class ScrExpr {
 			String arg = "";
 			if(args != null){
 				for(int i = 0; i < args.size(); i++){
-					arg += args.get(i);
+					arg += args.get(i).scr_print();
 					if(i < args.size() - 1) arg += ", ";
 				}
 			}

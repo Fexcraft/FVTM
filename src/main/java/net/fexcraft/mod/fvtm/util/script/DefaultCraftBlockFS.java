@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonObject;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.script.Script;
 import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm;
 import net.fexcraft.mod.fvtm.sys.script.elm.IntElm;
+import net.fexcraft.mod.fvtm.sys.script.elm.RefElm;
 import net.fexcraft.mod.fvtm.sys.script.wrappers.BlockScriptContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -57,7 +59,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			auto_recipe_chooser = script.getLocalScriptElm("auto_recipe_chooser", () -> new BoolElm(true)).scr_bln();
 			instant = script.getLocalScriptElm("instant", () -> new BoolElm(true)).scr_bln();
 			process_speed = script.getLocalScriptElm("process_speed", () -> new IntElm(1));
-			cooldown_speed = script.getLocalScriptElm("cooldown_speed", () -> new IntElm(1));
+			cooldown_speed = script.getLocalScriptElm("cooldown_speed", () -> new IntElm(100));
 			process_time = script.getLocalScriptElm("process_time", () -> new IntElm(100));
 			/*context.exes.put("register", (block, args) -> {
 				if(args.isEmpty()) return Elm.FALSE;
@@ -89,6 +91,25 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 				super.sendPacket(context.entity(), compound);
 				return ScrElm.TRUE;
 			});
+			context.exes.put("varValue", (block, args) -> {
+				InvHandler handler = data.getInventory(args.get(0).scr_str());
+				if(args.size() > 1){
+					if(handler != null){
+						handler.setVarValue(block.getElm(args.get(1).scr_str(), null).scr_int());
+						return ScrElm.TRUE;
+					}
+					else return ScrElm.FALSE;
+				}
+				return handler == null ? ScrElm.NULL : ScrElm.wrap(handler.getVarValue());
+			});
+			context.exes.put("varCapacity", (block, args) -> {
+				InvHandler handler = data.getInventory(args.get(0).scr_str());
+				return handler == null ? ScrElm.NULL : ScrElm.wrap(handler.capacity());
+			});
+			context.exes.put("resetRecipe", (block, args) -> {
+				resetRecipe();
+				return ScrElm.TRUE;
+			});
 			if(script.blocks.containsKey("init")){
 				((ScrAction)script.blocks.get("init")).process(context);
 			}
@@ -99,6 +120,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 			add_def_choose = script.getLocalScriptElm("def_ui_choose", () -> new BoolElm(true));
 		}
 		super.read(data, tag);
+		if(scriptwrapper.hasLoad) scriptwrapper.load.process();
 		/*for(Entry<String, Elm> entry : consumables.entrySet()){
 			if(tag.hasKey("elm_" + entry.getKey())){
 				entry.getValue().set(tag.getInteger("elm_" + entry.getKey()));
@@ -109,6 +131,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	@Override
 	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound){
 		super.write(data, compound);
+		if(scriptwrapper.hasSave) scriptwrapper.save.process();
 		/*for(Entry<String, Elm> entry : consumables.entrySet()){
 			compound.setInteger("elm_" + entry.getKey(), entry.getValue().integer_val());
 		}*/

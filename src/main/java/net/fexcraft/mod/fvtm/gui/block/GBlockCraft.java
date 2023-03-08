@@ -204,6 +204,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 						elements[i].run = () -> {
 							int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
 							if(proc > 0){
+								if(proc > 107) proc = 108;
 								color.glColorApply();
 								drawTexturedModalRect(guiLeft + ex, guiTop + ey, ex, elm.y + 2, proc, 10);
 								RGB.glColorReset();
@@ -219,6 +220,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 							int val = inv.getVarValue();
 							int proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
 							if(proc > 0){
+								if(proc > 107) proc = 108;
 								color.glColorApply();
 								drawTexturedModalRect(guiLeft + ex, guiTop + ey, ex, elm.y + 2, proc, 10);
 								RGB.glColorReset();

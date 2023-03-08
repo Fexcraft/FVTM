@@ -66,4 +66,8 @@ public class BlockScriptContext implements ScrElm {
 		return entity;
 	}
 
+	public MultiBlockData mdata(){
+		return data;
+	}
+
 }

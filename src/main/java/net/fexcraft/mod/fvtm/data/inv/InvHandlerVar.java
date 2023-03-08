@@ -22,6 +22,15 @@ public class InvHandlerVar extends InvHandler {
         value = compound.getInteger("Variable_" + id);
 	}
 
+	public NBTTagCompound save(NBTTagCompound compound, String ctag){
+		compound.setInteger(ctag, value());
+		return compound;
+	}
+
+	public void load(NBTTagCompound compound, String ctag){
+		value = compound.getInteger(ctag);
+	}
+
 	@Override
 	public int getVarValue(){
 		return value;

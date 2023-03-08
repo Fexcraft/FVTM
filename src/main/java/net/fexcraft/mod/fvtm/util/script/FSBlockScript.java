@@ -31,9 +31,9 @@ public class FSBlockScript implements BlockScript {
 	private String id;
 	private ResourceLocation resloc;
 	//
-	private ScrAction update, save, load, interact, onpacket;
-	private boolean hasUpdate, hasSave, hasLoad, hasInteract, hasPacket;
-	private BlockScriptContext context;
+	protected ScrAction update, save, load, interact, onpacket;
+	protected boolean hasUpdate, hasSave, hasLoad, hasInteract, hasPacket;
+	protected BlockScriptContext context;
 	
 	public FSBlockScript(){}
 	
@@ -61,10 +61,12 @@ public class FSBlockScript implements BlockScript {
 		return this;
 	}
 
+	@Override
 	public void read(MultiBlockData data, NBTTagCompound tag){
 		
 	}
 
+	@Override
 	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound){
 		
 		return compound;

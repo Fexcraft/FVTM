@@ -168,7 +168,6 @@ public class Resources {
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
 	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
 	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
-	public static final HashMap<String, DirectPipe> DIRPIPES = new HashMap<>();
 	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
 	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//

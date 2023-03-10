@@ -23,17 +23,6 @@ public class InvHandlerFluid extends InvHandler {
 	}
 
 	@Override
-	public NBTTagCompound save(NBTTagCompound compound){
-        tank.writeToNBT(compound);
-        return compound;
-	}
-
-	@Override
-	public void load(NBTTagCompound compound){
-        tank.readFromNBT(compound);
-	}
-
-	@Override
 	public NBTTagCompound save(NBTTagCompound compound, String ctag){
         compound.setTag(ctag, tank.writeToNBT(new NBTTagCompound()));
         return compound;

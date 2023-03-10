@@ -5,21 +5,12 @@ import net.minecraft.nbt.NBTTagCompound;
 public class InvHandlerVar extends InvHandler {
 	
 	protected int value;
-	protected String id;
+	protected String category;
 
 	public InvHandlerVar(String arg, int cap){
 		super(InvType.VARIABLE);
-		id = arg;
+		category = arg == null || arg.length() == 0 ? "fluid" : arg;
 		capacity = cap;
-	}
-
-	public NBTTagCompound save(NBTTagCompound compound){
-		compound.setInteger("Variable_" + id, value());
-        return compound;
-	}
-
-	public void load(NBTTagCompound compound){
-        value = compound.getInteger("Variable_" + id);
 	}
 
 	public NBTTagCompound save(NBTTagCompound compound, String ctag){

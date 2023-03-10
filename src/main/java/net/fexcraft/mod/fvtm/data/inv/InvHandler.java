@@ -54,13 +54,13 @@ public class InvHandler {
 	
 	//
 
-	public NBTTagCompound save(NBTTagCompound compound){
+	/*public NBTTagCompound save(NBTTagCompound compound){
 		return save(compound, null);
 	}
 
 	public void load(NBTTagCompound compound){
 		load(compound, null);
-	}
+	}*/
 
 	public NBTTagCompound save(NBTTagCompound compound, String ctag){
 		return compound;

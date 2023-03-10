@@ -70,13 +70,13 @@ public class InventoryFunction extends Function {
 
 	@Override
 	public Function read(NBTTagCompound compound){
-		inventory.load(compound.getCompoundTag("inventory"));
+		inventory.load(compound, "inventory");
 		return this;
 	}
 
 	@Override
 	public NBTTagCompound write(NBTTagCompound compound){
-		compound.setTag("inventory", inventory.save(new NBTTagCompound()));
+        inventory.save(compound, "inventory");
 		return compound;
 	}
 

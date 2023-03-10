@@ -137,7 +137,7 @@ public class UniItemInvContainer extends GenericContainer {
 				if((stack = invhandler.getStackHandler().insertItem(0, stack, true)).isEmpty() || stack1.getCount() > stack.getCount()){
 					insert.setInventorySlotContents(0, invhandler.getStackHandler().insertItem(0, stack1, false));
 					NBTTagCompound compound = new NBTTagCompound();
-					invhandler.save(compound);
+					invhandler.save(compound, "inventory");
 					compound.setTag("insert", insert.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 					compound.setString("cargo", "inv_update");
 					send(Side.CLIENT, compound);
@@ -153,14 +153,14 @@ public class UniItemInvContainer extends GenericContainer {
 				inventoryItemStacks.set(idx, stack);
 			}
 			if(packet.getString("cargo").equals("update_inv")){
-				invhandler.load(packet);
+				invhandler.load(packet, "inventory");
 				for(int idx = 0; idx < rows; idx++){
 					inventoryItemStacks.set(idx, ((InvSlot)inventorySlots.get(idx)).getReloadedStack());
 				}
 			}
 			if(packet.getString("cargo").equals("reload_slots")) populateSlots();
 			if(packet.getString("cargo").equals("inv_update")){
-				invhandler.load(packet);
+				invhandler.load(packet, "inventory");
 				insert.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("insert")));
 			}
 		}
@@ -200,7 +200,7 @@ public class UniItemInvContainer extends GenericContainer {
             if(i < rows){
     			NBTTagCompound compound = new NBTTagCompound();
     			compound.setString("cargo", "update_inv");
-    			invhandler.save(compound);
+    			invhandler.save(compound, "inventory");
     			send(Side.CLIENT, compound);
             }
             else{

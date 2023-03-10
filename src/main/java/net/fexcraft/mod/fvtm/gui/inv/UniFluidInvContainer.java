@@ -111,7 +111,7 @@ public class UniFluidInvContainer extends GenericContainer {
 		if(!packet.hasKey("cargo")) return;
 		if(!side.isServer()){
 			if(packet.getString("cargo").equals("update_fluid_tank")){
-				invhandler.load(packet.getCompoundTag("state"));
+				invhandler.load(packet, "state");
 				if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
 				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 			}
@@ -191,7 +191,7 @@ public class UniFluidInvContainer extends GenericContainer {
 				if(!player.world.isRemote && anychange){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fluid_tank");
-					compound.setTag("state", invhandler.save(new NBTTagCompound()));
+					invhandler.save(compound, "state");
 					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);

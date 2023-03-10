@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -38,13 +36,13 @@ public class InventoryBlockFunction extends BlockFunction {
 
 	@Override
 	public BlockFunction load(NBTTagCompound com){
-		if(com.hasKey(id())) handler.load(com.getCompoundTag(id()));
+		if(com.hasKey(id())) handler.load(com, id());
 		return this;
 	}
 
 	@Override
 	public NBTTagCompound save(NBTTagCompound com){
-		com.setTag(id(), handler.save(new NBTTagCompound()));
+		handler.save(com, id());
 		return com;
 	}
 

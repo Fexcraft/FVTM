@@ -15,6 +15,8 @@ import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvUi;
 import net.fexcraft.mod.fvtm.gui.inv.UniItemInvContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniItemInvUi;
+import net.fexcraft.mod.fvtm.gui.inv.UniVarInvContainer;
+import net.fexcraft.mod.fvtm.gui.inv.UniVarInvUi;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemChooser;
@@ -82,12 +84,14 @@ public class GuiHandler implements IGuiHandler {
 	public static final int VEHICLE_INVENTORIES = 935;
 	public static final int VEHICLE_INVENTORY_ITEM = 9361;
 	public static final int VEHICLE_INVENTORY_FLUID = 9362;
+	public static final int VEHICLE_INVENTORY_VAR = 9363;
 	public static final int VEHICLE_CONTAINERS = 937;
 	public static final int VEHICLE_CONTAINER = 938;
 	public static final int VEHICLE_CONNECTORS = 939;
 	/* 94x - container */
 	public static final int CONTAINER_INVENTORY_ITEM = 941;
 	public static final int CONTAINER_INVENTORY_FLUID = 942;
+	public static final int CONTAINER_INVENTORY_VAR = 943;
 	/* 95x - multiblock block */
 	public static final int MULTIBLOCK_INVENTORY_ITEM = 9511;
 	public static final int MULTIBLOCK_INVENTORY_FLUID = 9512;
@@ -97,6 +101,7 @@ public class GuiHandler implements IGuiHandler {
 	/* 96x - generated block */
 	public static final int BLOCK_INVENTORY_ITEM = 961;
 	public static final int BLOCK_INVENTORY_FLUID = 962;
+	public static final int BLOCK_INVENTORY_VAR = 963;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -141,6 +146,10 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_INVENTORY_FLUID:
 			case CONTAINER_INVENTORY_FLUID:
 			case MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
+			case BLOCK_INVENTORY_VAR:
+			case VEHICLE_INVENTORY_VAR:
+			case CONTAINER_INVENTORY_VAR:
+			case MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
 			
 		}
 		return null;
@@ -190,6 +199,10 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_INVENTORY_FLUID:
 				case CONTAINER_INVENTORY_FLUID:
 				case MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);
+				case BLOCK_INVENTORY_VAR:
+				case VEHICLE_INVENTORY_VAR:
+				case CONTAINER_INVENTORY_VAR:
+				case MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
 			}
 		}
 		catch(Exception e){

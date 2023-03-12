@@ -8,8 +8,6 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
-import net.fexcraft.mod.fvtm.gui.block.PipeContainer;
-import net.fexcraft.mod.fvtm.gui.block.PipeUI;
 import net.fexcraft.mod.fvtm.gui.construct.*;
 import net.fexcraft.mod.fvtm.gui.deco.DecoEditor;
 import net.fexcraft.mod.fvtm.gui.deco.DecoEditorContainer;
@@ -93,9 +91,9 @@ public class GuiHandler implements IGuiHandler {
 	/* 95x - multiblock block */
 	public static final int MULTIBLOCK_INVENTORY_ITEM = 9511;
 	public static final int MULTIBLOCK_INVENTORY_FLUID = 9512;
+	public static final int MULTIBLOCK_INVENTORY_VAR = 9513;
 	public static final int MULTIBLOCK_CRAFT_MAIN = 952;
 	public static final int MULTIBLOCK_CRAFT_CHOOSE = 953;
-	public static final int MULTIBLOCK_PIPE_ACCESS = 955;
 	/* 96x - generated block */
 	public static final int BLOCK_INVENTORY_ITEM = 961;
 	public static final int BLOCK_INVENTORY_FLUID = 962;
@@ -134,7 +132,6 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
-			case MULTIBLOCK_PIPE_ACCESS: return new PipeContainer(player, world, x, y, z);
 			//
 			case BLOCK_INVENTORY_ITEM:
 			case VEHICLE_INVENTORY_ITEM:
@@ -184,7 +181,6 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				case DECORATION_EDITOR: return new DecoEditor(player, world, x);
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
-				case MULTIBLOCK_PIPE_ACCESS: return new PipeUI(player, world, x, y, z);
 				//
 				case BLOCK_INVENTORY_ITEM:
 				case VEHICLE_INVENTORY_ITEM:

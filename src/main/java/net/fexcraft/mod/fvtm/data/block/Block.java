@@ -414,4 +414,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return tickable;
 	}
 
+    public boolean hasFunction(String str){
+		for(BlockFunction func : functions){
+			if(func.id().equals(str)) return true;
+		}
+		return false;
+    }
 }

@@ -66,7 +66,7 @@ public class InvType {
 	public int guiId(){
 		if(isItem()) return GuiHandler.MULTIBLOCK_INVENTORY_ITEM;
 		if(isFluid()) return GuiHandler.MULTIBLOCK_INVENTORY_FLUID;
-		if(isVariable()) return GuiHandler.MULTIBLOCK_PIPE_ACCESS;
+		if(isVariable()) return GuiHandler.MULTIBLOCK_INVENTORY_VAR;
 		return 0;
 	}
 

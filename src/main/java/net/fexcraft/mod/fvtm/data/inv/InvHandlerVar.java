@@ -5,11 +5,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class InvHandlerVar extends InvHandler {
 	
 	protected int value;
-	protected String category;
+	protected String category, conid;
 
 	public InvHandlerVar(String arg, int cap){
 		super(InvType.VARIABLE);
-		category = arg == null || arg.length() == 0 ? "fluid" : arg;
+		String[] str = arg.split(":");
+		conid = str[0];
+		category = str.length > 1 ? str[1] : "fluid";
 		capacity = cap;
 	}
 

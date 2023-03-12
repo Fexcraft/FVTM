@@ -1,14 +1,18 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -18,7 +22,7 @@ import net.minecraft.world.World;
 public class BarrelBlockFunction extends BlockFunction {
 
 	private int stored, capacity;
-	private String content_cat;
+	private String content_cat, stored_id;
 	private ArrayList<String> compatible = new ArrayList<>();
 
 	public BlockFunction parse(JsonObject obj){
@@ -37,14 +41,20 @@ public class BarrelBlockFunction extends BlockFunction {
 	@Override
 	public BlockFunction load(NBTTagCompound com){
 		if(com.hasKey(id())){
-			stored = com.getInteger("stored");
+			NBTTagCompound nbt = com.getCompoundTag(id());
+			stored = nbt.getInteger("stored");
+			stored_id = nbt.getString("stored_id");
 		}
 		return this;
 	}
 
 	@Override
 	public NBTTagCompound save(NBTTagCompound com){
-		com.setInteger("stored", stored);
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setInteger("stored", stored);
+		if(stored_id != null) nbt.setString("stored_id", stored_id);
+		nbt.setInteger("capacity", capacity);
+		com.setTag(id(), nbt);
 		return com;
 	}
 
@@ -70,6 +80,16 @@ public class BarrelBlockFunction extends BlockFunction {
 		if(hand == EnumHand.OFF_HAND) return false;
 		//
 		return true;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, World world, BlockData data, List<String> list, boolean adv){
+		list.add(Formatter.format("&eContent Category: &7" + content_cat));
+		for(String str : compatible){
+			list.add(Formatter.format("&e- &7" + str));
+		}
+		list.add(Formatter.format("&eStored: &7" + stored + "/" + capacity));
+		list.add(Formatter.format("&e of &7" + (stored_id == null || stored_id.length() == 0 ? "nothing" : stored_id)));
 	}
 
 }

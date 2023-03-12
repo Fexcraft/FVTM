@@ -31,7 +31,7 @@ public class InvHandlerVar extends InvHandler {
 
 	public void load(NBTTagCompound compound, String ctag){
 		value = compound.getInteger(ctag);
-		DataUtil.loadAllItems(compound, stacks, ctag + "-items");
+		if(compound.hasKey(ctag + "-items")) DataUtil.loadAllItems(compound, stacks, ctag + "-items");
 	}
 
 	@Override

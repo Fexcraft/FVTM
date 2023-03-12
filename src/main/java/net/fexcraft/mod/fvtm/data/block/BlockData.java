@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;

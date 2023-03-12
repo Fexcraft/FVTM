@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -84,4 +87,65 @@ public class InvHandlerVar extends InvHandler {
 	public String container_cat(){
 		return concat;
 	}
+
+	private int i = 0, s = 0;
+
+	@Override
+	public void update(MultiblockTickableTE tile, String key){
+		if(tile.getWorld().isRemote) return;
+		if(in){
+			for(ItemStack stack : stacks){
+				if(stack.isEmpty()) continue;
+				if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+				if(!stack.getTagCompound().hasKey("BlockFunction")){
+					BlockData data = ((BlockItem)stack.getItem()).getData(stack.getTagCompound());
+					data.write(stack.getTagCompound());
+				}
+				NBTTagCompound com = stack.getTagCompound().getCompoundTag("BlockFunction").getCompoundTag("fvtm:barrel");
+				if(com.isEmpty()) return;
+				if(!com.hasKey("fvtm:barrel")) com.setTag("fvtm:barrel", new NBTTagCompound());
+				com = com.getCompoundTag("fvtm:barrel");
+				s = com.getInteger("stored");
+				if(s < 1 || !com.getString("stored_id").equals(conid)) continue;
+				if(s > 0){
+					if(s > 10){
+						com.setInteger("stored", s - 10);
+						value -= 10;
+					}
+					else{
+						com.setInteger("stored", 0);
+						value += s;
+					}
+				}
+			}
+		}
+		else{
+			for(ItemStack stack : stacks){
+				if(stack.isEmpty()) continue;
+				if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+				if(!stack.getTagCompound().hasKey("BlockFunction")){
+					BlockData data = ((BlockItem)stack.getItem()).getData(stack.getTagCompound());
+					data.write(stack.getTagCompound());
+				}
+				NBTTagCompound com = stack.getTagCompound().getCompoundTag("BlockFunction").getCompoundTag("fvtm:barrel");
+				if(com.isEmpty()) return;
+				s = com.getInteger("stored");
+				if(s > 0 && !com.getString("stored_id").equals(conid)) continue;
+				s = com.getInteger("stored");
+				i = com.getInteger("capacity") - s;
+				if(i > 0){
+					com.setString("stored_id", conid);
+					if(i < 10){
+						com.setInteger("stored", com.getInteger("capacity"));
+						value -= i;
+					}
+					else{
+						com.setInteger("stored", s + 10);
+						value -= 10;
+					}
+				}
+			}
+		}
+	}
+
 }

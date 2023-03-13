@@ -148,4 +148,7 @@ public class InvHandlerVar extends InvHandler {
 		}
 	}
 
+    public ItemStack stackAt(int index){
+		return stacks.get(index);
+    }
 }

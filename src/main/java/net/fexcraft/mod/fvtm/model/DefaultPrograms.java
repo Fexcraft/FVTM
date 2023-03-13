@@ -21,10 +21,15 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -122,6 +127,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new BlockBoolVisible("", true));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new Block4x4RotVisible(0));
 		ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
+		ModelGroup.PROGRAMS.add(new DisplayBarrel());
 		//
 		DIDLOAD = true;
 	}
@@ -2283,6 +2289,63 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new BlockVariantVisible(Integer.parseInt(args[0]));
+		}
+
+	}
+
+	public static class DisplayBarrel implements Program {
+
+		private String inv;
+		private int index;
+		private Pos pos;
+
+		public DisplayBarrel(){
+			pos = new Pos(0, 0, 0);
+			index = 0;
+		}
+
+		public DisplayBarrel(String inv, int idx, float x, float y, float z){
+			pos = new Pos(x, y, z);
+			this.inv = inv;
+			index = idx;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:display_barrel";
+		}
+
+		private BlockData bdata, odata;
+		private InvHandlerVar var;
+		private Model model;
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.tile == null) return;
+			var = (InvHandlerVar)((MultiblockTileEntity)data.tile).getMultiBlockData().getInventory(inv);
+			if(var == null || var.stackAt(index).isEmpty()) return;
+			bdata = var.stackAt(index).getCapability(Capabilities.VAPDATA, null).getBlockData();
+			if(bdata.getType().getModel() == null) return;
+			pos.translate();
+			TexUtil.bindTexture(bdata.getTexture().getTexture());
+			odata = data.block;
+			data.block = bdata;
+			data.color = bdata;
+			bdata.getType().getModel().render(data);
+			pos.translateR();
+			data.block = odata;
+			data.color = odata;
+			TexUtil.bindTexture(data.block.getTexture().getTexture());
+		}
+
+		@Override
+		public boolean isPostRender(){
+			return false;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new DisplayBarrel(args[0], Integer.parseInt(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]), Float.parseFloat(args[4]));
 		}
 
 	}

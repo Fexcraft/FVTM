@@ -126,7 +126,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 						aabbs.put(entry.getKey(), list.toArray(new AxisAlignedBB[0]));
 					}
 					else{
-						if(entry.getKey().startsWith("collision") && array.size() == 1 && array.get(0).getAsString().equals("null")){
+						if(entry.getKey().startsWith("collision") && array.get(0).getAsString().equals("null")){
 							aabbs.put(entry.getKey(), NULL_AABB_ARRAY);
 						}
 						else{

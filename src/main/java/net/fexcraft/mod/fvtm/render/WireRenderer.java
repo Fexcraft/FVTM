@@ -66,14 +66,14 @@ public class WireRenderer {
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //GL11.glTranslated(-cx, -cy, -cz);
+        GL11.glTranslated(-cx, -cy, -cz);
         for(WireRegion reg : wiredata.getRegions().values()){
         	for(RelayHolder holder : reg.getHolders().values()){
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB())) continue;
                 	GL11.glPushMatrix();
                 	TexUtil.bindTexture(Resources.NULL_TEXTURE);
-                	GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
+                	GL11.glTranslated(relay.pos.x, relay.pos.y, relay.pos.z);
                 	if(Command.OTHER){// && relays[i].wires.isEmpty()){
                 		model.render();
                 	}

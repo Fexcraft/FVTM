@@ -131,9 +131,9 @@ public class WireRenderer {
         		if(wire.vecpath == null || wire.getWireType() == null) continue;
         		if(wire.wiremodel == null) generateWireModel(wire);
         		TexUtil.bindTexture(wire.getWireType().getTexture());
-        		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.disableCull();
+        		if(wire.getWireType().getModel().wire_nocull) GlStateManager.disableCull();
         		wire.wiremodel.render();
-        		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.enableCull();
+        		if(wire.getWireType().getModel().wire_nocull) GlStateManager.enableCull();
         		if(relay.getTile() != null){
         			CURRENT = wire;
     				ANGLE = wire.model_end_angle;

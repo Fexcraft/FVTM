@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.model.WirePrograms.DownwardAngled;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -17,14 +16,14 @@ public class WireModel extends GenericModel {
 	public static final WireModel EMPTY = new WireModel();
 	public HashMap<Integer, ArrayList<V3D[]>> wire_model = new HashMap<>();
 	//public HashMap<Integer, Object[]> wire_data = new HashMap<>();
-	public boolean wire_tempcull = false;
+	public boolean wire_nocull = false;
 	protected ResourceLocation texture = Resources.NULL_TEXTURE;
 	protected ArrayList<String> accepts = new ArrayList<>();
 	protected String key, decotype = "relay";
 	
 	@Override
 	public WireModel parse(ModelData data){
-		wire_tempcull = data.get("WireCulling", false);
+		wire_nocull = data.get("NoWireCulling", false);
 		List<String> wires = data.getList("Wire");
 		if(wires.isEmpty()) return this;
 		for(int i = 0; i < wires.size(); i++){
@@ -53,7 +52,7 @@ public class WireModel extends GenericModel {
 		if(height > 0){
 			wire_model.get(idx).add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
 			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
+			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + width, start_y - height, 0).scale(scale), new V3D(start_x, start_y - height, 0).scale(scale) });
 		}
 		else{
 			float h = 0.01f / scale;

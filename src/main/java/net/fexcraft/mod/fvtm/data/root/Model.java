@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.block.state.IBlockState;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import net.fexcraft.mod.fvtm.data.DecorationData;
@@ -59,6 +60,7 @@ public interface Model {
 		
 		public Entity entity;
 		public TileEntity tile;
+		public IBlockState blockstate;
 		
 		public VehicleData vehicle;
 		public ContainerData container;
@@ -113,7 +115,7 @@ public interface Model {
 		}
 
 
-		public ModelRenderData set(BlockData data, TileEntity tileent, RenderCache renca, boolean item){
+		public ModelRenderData set(BlockData data, TileEntity tileent, RenderCache renca, IBlockState state, boolean item){
 			entity = null;
 			block = data;
 			tile = tileent;
@@ -121,6 +123,7 @@ public interface Model {
 			color = data;
 			texture = data;
 			itemrender = item;
+			blockstate = state;
 			return this;
 		}
 

@@ -1,16 +1,20 @@
 package net.fexcraft.mod.fvtm.block;
 
+import static net.fexcraft.mod.fvtm.util.Properties.BASE;
+import static net.fexcraft.mod.fvtm.util.Properties.DOWN;
+import static net.fexcraft.mod.fvtm.util.Properties.UP;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.mod.fvtm.block.generated.G_POSTLIKE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -36,12 +40,8 @@ public class StreetPost extends BlockFence {
         this.setHardness(50.0F);
         this.setResistance(280.0F);
 	}
-	
-    public static final PropertyBool UP = PropertyBool.create("up");
-    public static final PropertyBool DOWN = PropertyBool.create("down");
-    public static final PropertyBool BASE = PropertyBool.create("base");
     //
-    protected static final AxisAlignedBB[] BOUNDING_BOXES = new AxisAlignedBB[] {
+    public static final AxisAlignedBB[] BOUNDING_BOXES = new AxisAlignedBB[] {
     		new AxisAlignedBB(0.375D, 0.25D, 0.375D, 0.625D, 0.75D, 0.625D),
     		new AxisAlignedBB(0.375D, 0.25D, 0.375D, 0.625D, 0.75D, 1.0D  ),
     		new AxisAlignedBB(0.0D  , 0.25D, 0.375D, 0.625D, 0.75D, 0.625D),
@@ -109,25 +109,26 @@ public class StreetPost extends BlockFence {
     
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos){
-        return state.withProperty(NORTH, canFenceConnectTo(worldIn, pos, EnumFacing.NORTH))
-                    .withProperty(EAST,  canFenceConnectTo(worldIn, pos, EnumFacing.EAST))
-                    .withProperty(SOUTH, canFenceConnectTo(worldIn, pos, EnumFacing.SOUTH))
-                    .withProperty(WEST,  canFenceConnectTo(worldIn, pos, EnumFacing.WEST))
-                    .withProperty(UP  ,  canFenceConnectTo(worldIn, pos, EnumFacing.UP  ))
-                    .withProperty(DOWN,  canFenceConnectTo(worldIn, pos, EnumFacing.DOWN))
+        return state.withProperty(NORTH, canConnect(worldIn, pos, EnumFacing.NORTH))
+                    .withProperty(EAST,  canConnect(worldIn, pos, EnumFacing.EAST))
+                    .withProperty(SOUTH, canConnect(worldIn, pos, EnumFacing.SOUTH))
+                    .withProperty(WEST,  canConnect(worldIn, pos, EnumFacing.WEST))
+                    .withProperty(UP  ,  canConnect(worldIn, pos, EnumFacing.UP  ))
+                    .withProperty(DOWN,  canConnect(worldIn, pos, EnumFacing.DOWN))
         			.withProperty(BASE,  isSolidUnder(worldIn, pos, state));
     }
-    
-    private boolean isSolidUnder(IBlockAccess worldIn, BlockPos pos, IBlockState state){
+
+    public static boolean isSolidUnder(IBlockAccess world, BlockPos pos, IBlockState state){
     	BlockPos offset = pos.offset(EnumFacing.DOWN);
-    	IBlockState block = worldIn.getBlockState(offset);
-		return block.isSideSolid(worldIn, offset, EnumFacing.UP);
+    	IBlockState block = world.getBlockState(offset);
+        if(block.getBlock() instanceof G_POSTLIKE) return false;
+		return block.isSideSolid(world, offset, EnumFacing.UP);
 	}
 
-	public boolean canFenceConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing){
+	public boolean canConnect(IBlockAccess world, BlockPos pos, EnumFacing facing){
         BlockPos other = pos.offset(facing);
         Block block = world.getBlockState(other).getBlock();
-        return block instanceof BlockFence || block.canBeConnectedTo(world, other, facing.getOpposite()) || canConnectTo(world, other, facing.getOpposite());
+        return block instanceof BlockFence || block.canBeConnectedTo(world, other, facing.getOpposite()) || block instanceof G_POSTLIKE || canConnectTo(world, other, facing.getOpposite());
     }
     
     @Override

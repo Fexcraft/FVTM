@@ -59,7 +59,7 @@ public class G_POSTLIKE extends PlainBase {
         String str = "north=" + state.getValue(NORTH) + ",south=" + state.getValue(SOUTH);
         str += "west=" + state.getValue(WEST) + ",east=" + state.getValue(EAST);
         str += "up=" + state.getValue(UP) + ",down=" + state.getValue(DOWN);
-        return str + "base=" + state.getValue(BASE);
+        return str;
     }
 
     @Override

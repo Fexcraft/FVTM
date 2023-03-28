@@ -138,11 +138,21 @@ public class G_POSTLIKE extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", stateToStr(state))){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
-		}
+        addColl("north=" + state.getValue(NORTH), pos, entitybox, boxes);
+        addColl("south=" + state.getValue(SOUTH), pos, entitybox, boxes);
+        addColl("west=" + state.getValue(WEST), pos, entitybox, boxes);
+        addColl("east=" + state.getValue(EAST), pos, entitybox, boxes);
+        addColl("up=" + state.getValue(UP), pos, entitybox, boxes);
+        addColl("down=" + state.getValue(DOWN), pos, entitybox, boxes);
+        addColl("base=" + state.getValue(BASE), pos, entitybox, boxes);
 	}
+
+    private void addColl(String string, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
+        for(AxisAlignedBB aabb : type.getAABB("collision", string)){
+            if(entitybox == null) boxes.add(aabb);
+            else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+        }
+    }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
@@ -19,6 +17,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import org.lwjgl.opengl.GL11;
 
 public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockModel {
 
@@ -137,6 +136,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
             if(group.has_pre_prog){
                 for(ModelGroup.Program program : group.pre_programs) program.preRender(group, RENDERDATA.set((BlockData)null, null, null, state, false));
             }
+            if(!group.visible) continue;
             polis.addAll(group);
         }
 		return polis;

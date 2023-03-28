@@ -23,8 +23,8 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 	public static final HashMap<String, Class<? extends ConditionalProgram>> COND_PROGRAMS = new HashMap<>();
 	//
 	private ArrayList<Program> all_programs = new ArrayList<>();
-	private ArrayList<Program> pre_programs = new ArrayList<>();
-	private ArrayList<Program> pst_programs = new ArrayList<>();
+	protected ArrayList<Program> pre_programs = new ArrayList<>();
+	protected ArrayList<Program> pst_programs = new ArrayList<>();
 	public float /*rotX, rotY, rotZ, offX, offY, offZ,*/ scale = 0.0625F;
 	public boolean visible = true, has_pre_prog = false, has_pst_prog;
 	private boolean hasinit = false;

@@ -128,6 +128,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new Block4x4RotVisible(0));
 		ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
+		ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
 		//
 		DIDLOAD = true;
 	}
@@ -2374,6 +2375,48 @@ public class DefaultPrograms {
 	
 	public static void enableAlphaTest(){
 		if(!was_alpha_tested) GL11.glEnable(GL11.GL_ALPHA_TEST);
+	}
+
+	public static class TextureSetter implements Program {
+
+		private String texloc, otex;
+
+		public TextureSetter(String str){
+			texloc = str;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:set_texture";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(list.size() == 0) return;
+			otex = list.get(0).getTexture();
+			for(ModelRendererTurbo mrt : list){
+				mrt.setTexture(texloc);
+			}
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(list.size() == 0) return;
+			for(ModelRendererTurbo mrt : list){
+				mrt.setTexture(otex);
+			}
+		}
+
+		@Override
+		public Program parse(JsonElement elm){
+			return new TextureSetter(elm.getAsJsonArray().get(0).getAsString());
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new TextureSetter(args[0]);
+		}
+
 	}
 	
 }

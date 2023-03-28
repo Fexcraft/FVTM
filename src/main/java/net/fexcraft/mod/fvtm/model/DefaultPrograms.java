@@ -2397,6 +2397,7 @@ public class DefaultPrograms {
 			for(ModelRendererTurbo mrt : list){
 				mrt.setTexture(texloc);
 			}
+			Print.debug(texloc);
 		}
 
 		@Override

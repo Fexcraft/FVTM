@@ -13,14 +13,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.block.StreetPost;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemLead;
@@ -43,46 +41,25 @@ public class G_POSTLIKE extends PlainBase {
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState){
-        if(!isActualState){
-            state = state.getActualState(worldIn, pos);
-        }
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, StreetPost.PILLAR_AABB);
-        if(((Boolean)state.getValue(NORTH)).booleanValue()){
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, StreetPost.NORTH_AABB);
-        }
-        if(((Boolean)state.getValue(EAST)).booleanValue()){
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, StreetPost.EAST_AABB);
-        }
-        if(((Boolean)state.getValue(SOUTH)).booleanValue()){
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, StreetPost.SOUTH_AABB);
-        }
-        if(((Boolean)state.getValue(WEST)).booleanValue()){
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, StreetPost.WEST_AABB);
-        }
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+        return type.getAABB("default", stateToStr(state))[0];
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        state = this.getActualState(state, source, pos);
-        return StreetPost.BOUNDING_BOXES[getBoundingBoxIdx(state)];
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
+        return type.getAABB("selection", stateToStr(state))[0].offset(pos);
     }
 
-    private static int getBoundingBoxIdx(IBlockState state){
-        int i = 0;
-        if(((Boolean)state.getValue(NORTH)).booleanValue()){
-            i |= 1 << EnumFacing.NORTH.getHorizontalIndex();
-        }
-        if(((Boolean)state.getValue(EAST)).booleanValue()){
-            i |= 1 << EnumFacing.EAST.getHorizontalIndex();
-        }
-        if(((Boolean)state.getValue(SOUTH)).booleanValue()){
-            i |= 1 << EnumFacing.SOUTH.getHorizontalIndex();
-        }
-        if(((Boolean)state.getValue(WEST)).booleanValue()){
-            i |= 1 << EnumFacing.WEST.getHorizontalIndex();
-        }
-        return i;
+    @Nullable @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
+        return type.getAABB("collision", stateToStr(state))[0];
+    }
+
+    private String stateToStr(IBlockState state){
+        String str = "north=" + state.getValue(NORTH) + ",south=" + state.getValue(SOUTH);
+        str += "west=" + state.getValue(WEST) + ",east=" + state.getValue(EAST);
+        str += "up=" + state.getValue(UP) + ",down=" + state.getValue(DOWN);
+        return str + "base=" + state.getValue(BASE);
     }
 
     @Override
@@ -161,7 +138,7 @@ public class G_POSTLIKE extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "")){
+		for(AxisAlignedBB aabb : type.getAABB("collision", stateToStr(state))){
 			if(entitybox == null) boxes.add(aabb);
 			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
 		}

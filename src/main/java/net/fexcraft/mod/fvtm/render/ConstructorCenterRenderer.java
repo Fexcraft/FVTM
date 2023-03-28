@@ -50,7 +50,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	tile.updateLiftState();
             	TexUtil.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
-            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null, false));
+            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null, null, false));
                 GL11.glPopMatrix();
             }
             else if(tile.getVehicleData().getType().getVehicleType().isRailVehicle()){
@@ -139,7 +139,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         	Model model = tile.getBlockData().getType().getModel();
         	if(model != null){
                 TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-                model.render(RENDERDATA.set(tile.getBlockData(), null, null, false));
+                model.render(RENDERDATA.set(tile.getBlockData(), null, null, null, false));
         	}
         }
         else{

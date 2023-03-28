@@ -34,6 +34,7 @@ public enum BlockType {
 	FORK2_SWITCH_4ROT(F2SW_4ROT_TE.class, null, 4),
 	FORK3_SWITCH_4ROT(F3SW_4ROT_TE.class, null, 4),
 	DOUBLE_SWITCH_4ROT(DBSW_4ROT_TE.class, null, 4),
+	GENERIC_POST_LIKE(null, G_POSTLIKE.class, 4),
 	;
 	
 	public final Class<? extends net.minecraft.block.Block> blockclass, plainclass;

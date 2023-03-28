@@ -12,6 +12,10 @@ import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.util.Properties;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 
 public class ConditionalPrograms {
 	
@@ -39,6 +43,9 @@ public class ConditionalPrograms {
 		COND_PROGRAMS.put("fvtm:switch_double_state", SwitchDoubleState.class);
 		COND_PROGRAMS.put("fvtm:switch_double_state_side", SwitchDoubleStateSide.class);
 		COND_PROGRAMS.put("fvtm:block_bool_value", BlockBoolValue.class);
+		COND_PROGRAMS.put("fvtm:block_facing", BlockFacing.class);
+		COND_PROGRAMS.put("fvtm:block_rotation", BlockRotation.class);
+		COND_PROGRAMS.put("fvtm:block_state_property", BlockStateProperty.class);
 	}
 	
 	public static class Lights extends ConditionalProgram {
@@ -324,6 +331,10 @@ public class ConditionalPrograms {
 			this.val = val;
 		}
 
+		public BlockBoolValue(EnumFacing byName, boolean val) {
+			super();
+		}
+
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
 			return data.tile != null && ((BlockTileEntity)data.tile).getBlockData().getFunctionBool(key) == val;
@@ -331,7 +342,91 @@ public class ConditionalPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			return new BlockBoolValue(args[0], args.length <= 1 || Boolean.parseBoolean(args[1])).transfer(this);
+			return new BlockBoolValue(args[0], args.length == 1 || Boolean.parseBoolean(args[1])).transfer(this);
+		}
+
+	}
+
+	public static class BlockFacing extends ConditionalProgram {
+
+		private EnumFacing facing;
+		private boolean val = true;
+
+		public BlockFacing(){
+			facing = EnumFacing.NORTH;
+		}
+
+		public BlockFacing(EnumFacing facing, boolean val){
+			this.facing = facing;
+			this.val = val;
+		}
+
+		@Override
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.blockstate != null && (data.blockstate.getValue(Properties.FACING) == facing) == val;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockFacing(EnumFacing.byName(args[0]), args.length == 1 || Boolean.parseBoolean(args[1])).transfer(this);
+		}
+
+	}
+
+	public static class BlockRotation extends ConditionalProgram {
+
+		private int rot;
+		private boolean val = true;
+
+		public BlockRotation(){
+			rot = 0;
+		}
+
+		public BlockRotation(int rot, boolean val){
+			this.rot = rot;
+			this.val = val;
+		}
+
+		@Override
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.blockstate != null && (data.blockstate.getValue(Properties.ROTATION) == rot) == val;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockRotation(Integer.parseInt(args[0]), args.length == 1 || Boolean.parseBoolean(args[1])).transfer(this);
+		}
+
+	}
+
+	public static class BlockStateProperty extends ConditionalProgram {
+
+		private String key, value;
+		private boolean bool = true;
+
+		public BlockStateProperty(){}
+
+		public BlockStateProperty(String key, String value, boolean bool){
+			this.key = key;
+			this.value = value;
+			this.bool = bool;
+		}
+
+		@Override
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return data.blockstate != null && (data.blockstate.getValue(gp(data.blockstate)).toString().equals(value)) == bool;
+		}
+
+		private IProperty<?> gp(IBlockState blockstate){
+			for(IProperty<?> prop : blockstate.getPropertyKeys()){
+				if(prop.getName().equals(key)) return prop;
+			}
+			return null;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockStateProperty(args[0], args[1], args.length == 2 || Boolean.parseBoolean(args[2])).transfer(this);
 		}
 
 	}

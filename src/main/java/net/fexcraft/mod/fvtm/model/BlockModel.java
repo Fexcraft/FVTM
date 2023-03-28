@@ -132,9 +132,23 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 
 	@Override
 	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
-		ArrayList<ModelRendererTurbo> list = new ArrayList<>();
-		for(ModelGroup tlist : groups) list.addAll(tlist);
-		return list;
+		ArrayList<ModelRendererTurbo> polis = new ArrayList<>();
+		for(ModelGroup group : groups){
+            if(group.has_pre_prog){
+                for(ModelGroup.Program program : group.pre_programs) program.preRender(group, RENDERDATA.set((BlockData)null, null, null, state, false));
+            }
+            polis.addAll(group);
+        }
+		return polis;
 	}
+
+    @Override
+    public void reset(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
+        for(ModelGroup group : groups){
+            if(group.has_pst_prog){
+                for(ModelGroup.Program program : group.pst_programs) program.postRender(group, RENDERDATA.set((BlockData)null, null, null, state, false));
+            }
+        }
+    }
 	
 }

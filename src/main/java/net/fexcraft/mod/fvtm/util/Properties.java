@@ -25,5 +25,8 @@ public class Properties {
     public static final PropertyInteger VARIANTS3 = PropertyInteger.create("variant", 0, 2);
     public static final PropertyInteger VARIANTS2 = PropertyInteger.create("variant", 0, 1);
     public static final PropertyBool POWERED = PropertyBool.create("powered");
+    public static final PropertyBool UP = PropertyBool.create("up");
+    public static final PropertyBool DOWN = PropertyBool.create("down");
+    public static final PropertyBool BASE = PropertyBool.create("base");
 
 }

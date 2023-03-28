@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
@@ -414,7 +415,9 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue(gp(data.blockstate)).toString().equals(value)) == bool;
+			IProperty prop = gp(data.blockstate);
+			Print.debug(prop.getName() + " " + data.blockstate.getValue(prop) + " " + key + " " + value + " " + bool);
+			return data.blockstate != null && (data.blockstate.getValue(prop).toString().equals(value)) == bool;
 		}
 
 		private IProperty<?> gp(IBlockState blockstate){

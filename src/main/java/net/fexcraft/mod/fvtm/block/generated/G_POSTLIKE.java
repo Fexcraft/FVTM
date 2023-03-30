@@ -56,9 +56,14 @@ public class G_POSTLIKE extends PlainBase {
     }
 
     private String stateToStr(IBlockState state){
-        String str = "north=" + state.getValue(NORTH) + ",south=" + state.getValue(SOUTH);
-        str += "west=" + state.getValue(WEST) + ",east=" + state.getValue(EAST);
-        str += "up=" + state.getValue(UP) + ",down=" + state.getValue(DOWN);
+        String str = "";
+        if(state.getValue(NORTH)) str += "north";
+        if(state.getValue(SOUTH)) str += "-south";
+        if(state.getValue(WEST)) str += "-west";
+        if(state.getValue(EAST)) str += "-east";
+        if(state.getValue(UP)) str += "-up";
+        if(state.getValue(DOWN)) str += "-down";
+        if(str.startsWith("-")) str = str.substring(1);
         return str;
     }
 

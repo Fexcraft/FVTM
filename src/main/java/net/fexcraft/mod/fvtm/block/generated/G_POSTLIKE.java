@@ -55,16 +55,26 @@ public class G_POSTLIKE extends PlainBase {
         return type.getAABB("collision", stateToStr(state))[0];
     }
 
-    private String stateToStr(IBlockState state){
+    private String[] stateToStr(IBlockState state){
         String str = "";
         if(state.getValue(NORTH)) str += "north";
         if(state.getValue(SOUTH)) str += "-south";
         if(state.getValue(WEST)) str += "-west";
         if(state.getValue(EAST)) str += "-east";
-        if(state.getValue(UP)) str += "-up";
-        if(state.getValue(DOWN)) str += "-down";
         if(str.startsWith("-")) str = str.substring(1);
-        return str;
+        boolean dw = state.getValue(DOWN);
+        if(state.getValue(UP)){
+            if(dw){
+                return str.length() == 0 ? new String[]{ "up-down" } : new String[]{ str, str + "-up-down" };
+            }
+            else return str.length() == 0 ? new String[]{ "up" } : new String[]{ str, str + "-up" };
+        }
+        else if(dw){
+            return str.length() == 0 ? new String[]{ "down" } : new String[]{ str, str + "-down" };
+        }
+        else{
+            return new String[]{ str };
+        }
     }
 
     @Override
@@ -141,8 +151,8 @@ public class G_POSTLIKE extends PlainBase {
         super.breakBlock(world, pos, state);
     }
 
-	@Override
-	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
+    @Override
+    protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
         addColl("north=" + state.getValue(NORTH), pos, entitybox, boxes);
         addColl("south=" + state.getValue(SOUTH), pos, entitybox, boxes);
         addColl("west=" + state.getValue(WEST), pos, entitybox, boxes);
@@ -150,7 +160,7 @@ public class G_POSTLIKE extends PlainBase {
         addColl("up=" + state.getValue(UP), pos, entitybox, boxes);
         addColl("down=" + state.getValue(DOWN), pos, entitybox, boxes);
         addColl("base=" + state.getValue(BASE), pos, entitybox, boxes);
-	}
+    }
 
     private void addColl(String string, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
         for(AxisAlignedBB aabb : type.getAABB("collision", string)){

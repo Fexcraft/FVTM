@@ -264,6 +264,25 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	public TreeMap<String, AxisAlignedBB[]> getAABBs(){
 		return aabbs;
 	}
+
+	public AxisAlignedBB[] getAABB(String type, String... states){
+		if(type.equals("selection")){
+			for(String state : states){
+				if(aabbs.containsKey("selection#" + state)) return aabbs.get("selection#" + state);
+			}
+			if(aabbs.containsKey("selection#normal")) return aabbs.get("selection#normal");
+		}
+		else if(type.equals("collision")){
+			for(String state : states){
+				if(aabbs.containsKey("collision#" + state)) return aabbs.get("collision#" + state);
+			}
+			if(aabbs.containsKey("collision#normal")) return aabbs.get("collision#normal");
+		}
+		for(String state : states){
+			if(aabbs.containsKey(state)) return aabbs.get(state);
+		}
+		return aabbs.containsKey("normal") ? aabbs.get("normal") : FULL_BLOCK_AABB_ARRAY;
+	}
 	
 	public AxisAlignedBB[] getAABB(String type, String state){
 		if(type.equals("selection")){

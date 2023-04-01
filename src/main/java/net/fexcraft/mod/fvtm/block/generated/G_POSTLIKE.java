@@ -42,17 +42,17 @@ public class G_POSTLIKE extends PlainBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", stateToStr(state))[0];
+        return type.getAABB("default", stateToStr(getActualState(state, source, pos)))[0];
     }
 
     @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", stateToStr(state))[0].offset(pos);
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos){
+        return type.getAABB("selection", stateToStr(getActualState(state, world, pos)))[0].offset(pos);
     }
 
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", stateToStr(state))[0];
+        return type.getAABB("collision", stateToStr(getActualState(state, world, pos)))[0];
     }
 
     private String[] stateToStr(IBlockState state){
@@ -153,6 +153,8 @@ public class G_POSTLIKE extends PlainBase {
 
     @Override
     protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
+        state = getActualState(state, world, pos);
+        addColl("", pos, entitybox, boxes);
         addColl("north=" + state.getValue(NORTH), pos, entitybox, boxes);
         addColl("south=" + state.getValue(SOUTH), pos, entitybox, boxes);
         addColl("west=" + state.getValue(WEST), pos, entitybox, boxes);
@@ -187,6 +189,21 @@ public class G_POSTLIKE extends PlainBase {
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
         return true;
+    }
+
+    @Override
+    public boolean isFullBlock(IBlockState state){
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state){
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state){
+        return false;
     }
 
 }

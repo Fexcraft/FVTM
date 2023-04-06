@@ -138,7 +138,7 @@ public class DefaultPrograms {
 		@Override
 		public String getId(){ return "fvtm:rgb_primary"; }
 		@Override
-		public void preRender(ModelGroup list, ModelRenderData data){ data.color.getPrimaryColor().glColorApply(); }
+		public void preRender(ModelGroup list, ModelRenderData data){ if(data.color != null) data.color.getPrimaryColor().glColorApply(); }
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
 	};
@@ -148,7 +148,7 @@ public class DefaultPrograms {
 		@Override
 		public String getId(){ return "fvtm:rgb_secondary"; }
 		@Override
-		public void preRender(ModelGroup list, ModelRenderData data){ data.color.getSecondaryColor().glColorApply(); }
+		public void preRender(ModelGroup list, ModelRenderData data){ if(data.color != null) data.color.getSecondaryColor().glColorApply(); }
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
 	};

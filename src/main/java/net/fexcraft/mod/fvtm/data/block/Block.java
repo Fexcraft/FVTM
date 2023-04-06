@@ -64,7 +64,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
-	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent, invisible, randomrot, hastile, tickable;
+	protected boolean isweblike, fullblock, fullcube, opaque, cutout, translucent;
+	protected boolean invisible, randomrot, hastile, tickable, ladder;
 	//
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected RelayData relaydata;
@@ -172,6 +173,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
         this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
         this.randomrot = JsonUtil.getIfExists(obj, "RandomRotation", false);
+		this.ladder = JsonUtil.getIfExists(obj, "Ladder", false);
 		if(obj.has("Function")){
 			parseFunction(obj.get("Function"));
 		}
@@ -439,4 +441,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		}
 		return false;
     }
+
+	public boolean isLadder(){
+		return ladder;
+	}
 }

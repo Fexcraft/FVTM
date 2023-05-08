@@ -45,6 +45,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
@@ -129,6 +130,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
 		ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
+		ModelGroup.PROGRAMS.add(new BlockFacePlayer(0));
 		//
 		DIDLOAD = true;
 	}
@@ -2415,6 +2417,46 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new TextureSetter(args[0]);
+		}
+
+	}
+
+	public static class BlockFacePlayer implements Program {
+
+		private float off;
+
+		public BlockFacePlayer(float var){
+			this.off = var;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:block_face_player";
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			if(data.tile == null) return;
+			GL11.glPushMatrix();
+			GL11.glRotated(-data.block.getType().getBlockType().getRotationForMeta(data.tile.getBlockMetadata()), 0, 1, 0);
+			double d0 = Minecraft.getMinecraft().player.posX - (data.tile.getPos().getX() + 0.5F);
+			double d1 = Minecraft.getMinecraft().player.posZ - (data.tile.getPos().getZ() + 0.5F);
+			d0 = MathHelper.atan2(d1, d0);
+			if(d0 >= (float)Math.PI) d0 -= ((float)Math.PI * 2F);
+			if(d0 < -(float)Math.PI) d0 += ((float)Math.PI * 2F);
+			GL11.glRotated(Static.toDegrees(d0) + 90, 0, 1, 0);
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.tile == null) return;
+			GL11.glPopMatrix();
+			//GL11.glRotated(data.block.getType().getBlockType().getRotationForMeta(data.tile.getBlockMetadata()), 0, 1, 0);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new BlockFacePlayer(args.length > 0 ? Float.parseFloat(args[0]) : 0);
 		}
 
 	}

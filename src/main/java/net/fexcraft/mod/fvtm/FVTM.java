@@ -74,6 +74,8 @@ import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.impl.IDLM;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -115,6 +117,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
+		IDLManager.INSTANCE[0] = new IDLM();
 		REGISTERER = new AutoRegisterer(MODID);
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());

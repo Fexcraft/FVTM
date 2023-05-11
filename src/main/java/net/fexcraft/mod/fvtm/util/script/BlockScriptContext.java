@@ -1,15 +1,14 @@
-package net.fexcraft.mod.fvtm.sys.script.wrappers;
+package net.fexcraft.mod.fvtm.util.script;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 
+import net.fexcraft.lib.script.ScrBlock;
+import net.fexcraft.lib.script.ScrElm;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
-import net.fexcraft.mod.fvtm.sys.script.ScrElm;
-import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;

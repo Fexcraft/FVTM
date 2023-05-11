@@ -1,16 +1,15 @@
-package net.fexcraft.mod.fvtm.sys.script.wrappers;
+package net.fexcraft.mod.fvtm.util.script;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.script.ScrBlock;
+import net.fexcraft.lib.script.ScrElm;
+import net.fexcraft.lib.script.elm.ListElm;
+import net.fexcraft.lib.script.elm.RefElm;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.sys.script.ScrBlock;
-import net.fexcraft.mod.fvtm.sys.script.elm.ListElm;
-import net.fexcraft.mod.fvtm.sys.script.elm.RefElm;
-import net.fexcraft.mod.fvtm.sys.script.ScrElm;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.script.ScrAction;
+import net.fexcraft.lib.script.ScrElm;
+import net.fexcraft.lib.script.Script;
+import net.fexcraft.lib.script.elm.BoolElm;
+import net.fexcraft.lib.script.elm.IntElm;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -13,13 +17,6 @@ import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.gui.block.GBCElm;
-import net.fexcraft.mod.fvtm.sys.script.ScrAction;
-import net.fexcraft.mod.fvtm.sys.script.ScrElm;
-import net.fexcraft.mod.fvtm.sys.script.Script;
-import net.fexcraft.mod.fvtm.sys.script.elm.BoolElm;
-import net.fexcraft.mod.fvtm.sys.script.elm.IntElm;
-import net.fexcraft.mod.fvtm.sys.script.elm.RefElm;
-import net.fexcraft.mod.fvtm.sys.script.wrappers.BlockScriptContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 

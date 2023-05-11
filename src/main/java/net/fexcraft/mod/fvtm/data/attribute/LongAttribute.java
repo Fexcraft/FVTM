@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
-
-import net.fexcraft.mod.fvtm.sys.script.ScrElmType;
+import net.fexcraft.lib.script.ScrElmType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagLong;

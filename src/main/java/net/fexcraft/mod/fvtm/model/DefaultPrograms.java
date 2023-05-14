@@ -80,6 +80,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(BACK_LIGHTS_SIGNAL_LEFT);
 		ModelGroup.PROGRAMS.add(BACK_LIGHTS_SIGNAL_RIGHT);
 		ModelGroup.PROGRAMS.add(WINDOW);
+		ModelGroup.PROGRAMS.add(new WindowTinted());
 		ModelGroup.PROGRAMS.add(WHEEL_AUTO_ALL);
 		ModelGroup.PROGRAMS.add(WHEEL_AUTO_STEERING);
 		ModelGroup.PROGRAMS.add(WHEEL_AUTO_ALL_OPPOSITE);
@@ -386,17 +387,7 @@ public class DefaultPrograms {
 	
 	public static final class Window implements Program {
 		
-		protected RGB color = new RGB(0x007208).setAlpha(0.3f);
-		
 		public Window(){}
-		
-		public Window(int color){
-			this.color = new RGB(color).setAlpha(0.3f);
-		}
-
-		public Window(int color, float alpha){
-			this.color = new RGB(color).setAlpha(alpha);
-		}
 
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
@@ -404,12 +395,10 @@ public class DefaultPrograms {
             enableBlend();
             GL11.glDepthMask(false);
             enableAlpha();
-            this.color.glColorApply();
 		}
 
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
-            RGB.glColorReset();
             disableAlpha();
             GL11.glDepthMask(true);
             disableBlend();
@@ -421,19 +410,52 @@ public class DefaultPrograms {
 			return "fvtm:window";
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			return new Window(Integer.parseInt(elm.getAsJsonArray().get(0).getAsString().replace("#", "").replace("0x", ""), 16));
+	}
+
+	public static final class WindowTinted implements Program {
+
+		protected RGB color = new RGB(0x007208).setAlpha(0.3f);
+
+		public WindowTinted(){}
+
+		public WindowTinted(int color){
+			this.color = new RGB(color).setAlpha(0.3f);
 		}
-		
+
+		public WindowTinted(int color, float alpha){
+			this.color = new RGB(color).setAlpha(alpha);
+		}
+
+		@Override
+		public void preRender(ModelGroup list, ModelRenderData data){
+			GlStateManager.pushMatrix();
+			enableBlend();
+			GL11.glDepthMask(false);
+			enableAlpha();
+			this.color.glColorApply();
+		}
+
+		@Override
+		public void postRender(ModelGroup list, ModelRenderData data){
+			RGB.glColorReset();
+			disableAlpha();
+			GL11.glDepthMask(true);
+			disableBlend();
+			GlStateManager.popMatrix();
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:window_tinted";
+		}
 
 		@Override
 		public Program parse(String[] args){
 			int color = args.length > 0 ? Integer.parseInt(args[0].replace("#", "").replace("0x", ""), 16) : 0x007208;
 			float alpha = args.length > 1 ? Float.parseFloat(args[1]) : 0.3f;
-			return new Window(color, alpha);
+			return new WindowTinted(color, alpha);
 		}
-		
+
 	}
 	
 	public static final Program WHEEL_AUTO_ALL = new Program(){

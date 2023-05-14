@@ -352,6 +352,10 @@ public abstract class Attribute<VT> implements ScrElm {
 		}
 		return (Attribute<U>)this;
 	}
+
+	public TreeMap<String, AttributeBB> getBBs(){
+		return abbs;
+	}
 	
 	//
 

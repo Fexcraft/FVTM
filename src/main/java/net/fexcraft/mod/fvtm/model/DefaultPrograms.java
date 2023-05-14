@@ -390,7 +390,13 @@ public class DefaultPrograms {
 		
 		public Window(){}
 		
-		public Window(int color){ this.color = new RGB(color).setAlpha(0.3f); }
+		public Window(int color){
+			this.color = new RGB(color).setAlpha(0.3f);
+		}
+
+		public Window(int color, float alpha){
+			this.color = new RGB(color).setAlpha(alpha);
+		}
 
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
@@ -423,7 +429,9 @@ public class DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			return new Window(Integer.parseInt(args[0].replace("#", "").replace("0x", ""), 16));
+			int color = args.length > 0 ? Integer.parseInt(args[0].replace("#", "").replace("0x", ""), 16) : 0x007208;
+			float alpha = args.length > 1 ? Float.parseFloat(args[1]) : 0.3f;
+			return new Window(color, alpha);
 		}
 		
 	}

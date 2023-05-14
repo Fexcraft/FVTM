@@ -9,8 +9,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +21,7 @@ import net.fexcraft.lib.script.ScrElm;
 import net.fexcraft.lib.script.ScrElmType;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.script.VehicleScriptContext;
 import net.minecraft.nbt.NBTBase;
@@ -44,6 +43,7 @@ public abstract class Attribute<VT> implements ScrElm {
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
 	private HashMap<String, ResourceLocation> icons;
+	private HashMap<KeyPress, Float> passkeys;
 	private String target, origin, group, perm;
 	private boolean editable;
 	private boolean external;
@@ -312,7 +312,7 @@ public abstract class Attribute<VT> implements ScrElm {
 	
 	public TreeSet<Modifier<?>> getModifiers(){ return modifiers; }
 	
-	public Attribute<?> updateValue(VehicleData data, @Nullable VehicleEntity ent, AttrUpdate call){
+	public Attribute<?> updateValue(VehicleData data, VehicleEntity ent, AttrUpdate call){
 		for(Modifier<?> mod : modifiers){
 			if(mod.update() != call) continue;
 			value(mod.modify(data, ent, this, call));
@@ -344,7 +344,7 @@ public abstract class Attribute<VT> implements ScrElm {
 
 	public <U> Attribute<U> copyAABBs(Attribute<?> original){
 		if(original.hasBBs()){
-			this.abbs = new TreeMap<>();
+			if(abbs == null) abbs = new TreeMap<>();
 			original.abbs.forEach((key, value) -> {
 				if(abbs.containsKey(key)) abbs.get(key).copy(value);
 				else abbs.put(key, value.copy());
@@ -353,10 +353,28 @@ public abstract class Attribute<VT> implements ScrElm {
 		return (Attribute<U>)this;
 	}
 	
-	public TreeMap<String, AttributeBB> getBBs(){
-		return abbs;
+	//
+
+	public boolean hasPassKeys(){
+		return passkeys != null && passkeys.size() > 0;
 	}
-	
+
+	public <U> Attribute<U> copyPassengerKeys(Attribute<?> original){
+		if(original.hasPassKeys()){
+			if(passkeys == null) passkeys = new HashMap<>();
+			passkeys.putAll(original.passkeys);
+		}
+		return (Attribute<U>)this;
+	}
+
+	public HashMap<KeyPress, Float> getPassKeys(){
+		return passkeys;
+	}
+
+	public Float getPassKey(KeyPress str){
+		return passkeys == null ? null : passkeys.get(str);
+	}
+
 	//
 	
 	public NBTTagCompound write(NBTTagCompound compound){
@@ -434,7 +452,7 @@ public abstract class Attribute<VT> implements ScrElm {
 		return attr.minmax(min(), max()).value(value())//.setSeat(seat())
 			.target(target()).group(group()).origin(origin)
 			.editable(editable()).external(external()).sync(sync()).icons(icons, true)
-			.perm(perm()).copyAABBs(this).copySeats(this);
+			.perm(perm()).copyAABBs(this).copySeats(this).copyPassengerKeys(this);
 	}
 
 	protected abstract Attribute<VT> copyNewInstance();
@@ -533,6 +551,19 @@ public abstract class Attribute<VT> implements ScrElm {
 				arr.add(entry.getValue().getAsString());
 			}
 			attr.icons(arr.toArray(new String[0]));
+		}
+		if(obj.has("passenger_keys")){
+			attr.passkeys = new HashMap<>();
+			for(Entry<String, JsonElement> entry : obj.getAsJsonObject("passenger_keys").entrySet()){
+				try{
+					KeyPress press = KeyPress.valueOf(entry.getKey().toUpperCase());
+					float val = entry.getValue().getAsString().equals("toggle") ? 0 : entry.getValue().getAsFloat();
+					attr.passkeys.put(press, val);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
 		}
 		return attr;
 	}

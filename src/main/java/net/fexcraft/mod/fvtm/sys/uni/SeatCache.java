@@ -1,11 +1,14 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.util.Axes;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -185,6 +188,19 @@ public class SeatCache {
         	clicktimer += 10;
         	return bool;
 		}
+        else if(!seatdata.driver && !key.driverOnly() && vehicle.world.isRemote){
+			if(clicktimer > 0) return false;
+			Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values().stream().filter(pr -> (pr.valuetype().isTristate() || pr.valuetype().isNumber()) && pr.seats().contains(seatdata.name)).collect(Collectors.toList());
+			for(Attribute<?> attr : attributes){
+				Float val = attr.getPassKey(key);
+				if(val != null){
+					KeyPress mouse = val == 0 ? KeyPress.RESET : val > 0 ? KeyPress.MOUSE_MAIN : KeyPress.MOUSE_RIGHT;
+					ToggableHandler.sendToggle(attr, vehicle, mouse, val, player);
+				}
+			}
+			clicktimer += 10;
+            return  false;
+        }
 		/*else if(key.dismount() && vehicle.world.isRemote && passenger != null){
 			passenger.dismountRidingEntity();
 			return true;

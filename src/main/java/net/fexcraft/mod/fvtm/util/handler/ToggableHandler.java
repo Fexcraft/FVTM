@@ -103,6 +103,10 @@ public class ToggableHandler {
 		if(attr.id().equals(last) && Time.getDate() < tilltime){
 			/*Print.debug(player, "skipping till cooldown");*/ return true;
 		}
+		return sendToggle(attr, entity, press, null, player);
+	}
+
+	public static boolean sendToggle(Attribute<?> attr, VehicleEntity entity, KeyPress press, Float val, EntityPlayer player){
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
 		packet.setString("task", "attr_toggle");
@@ -116,13 +120,13 @@ public class ToggableHandler {
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.float_value() + attr.getBB(attr.string_value()).increase;
+					float flaot = attr.float_value() + (val != null ? val : attr.getBB(attr.string_value()).increase);
 					packet.setFloat("value", flaot);
 					attr.value(flaot);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = attr.integer_value() + (int)attr.getBB(attr.string_value()).increase;
+					int ent = attr.integer_value() + (int)(val != null ? val : attr.getBB(attr.string_value()).increase);
 					packet.setFloat("value", ent);
 					attr.value(ent);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
@@ -135,13 +139,13 @@ public class ToggableHandler {
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.float_value() - attr.getBB(attr.string_value()).decrease;
+					float flaot = attr.float_value() - (val != null ? val : attr.getBB(attr.string_value()).decrease);
 					packet.setFloat("value", flaot);
 					attr.value(flaot);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = attr.integer_value() - (int)attr.getBB(attr.string_value()).decrease;
+					int ent = attr.integer_value() - (int)(val != null ? val : attr.getBB(attr.string_value()).decrease);
 					packet.setFloat("value", ent);
 					attr.value(ent);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
@@ -155,21 +159,20 @@ public class ToggableHandler {
 					Print.bar(player, "&7Resetting: &6" + attr.id());
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.getBB(attr.string_value()).reset;
+					float flaot = val != null ? val : attr.getBB(attr.string_value()).reset;
 					packet.setFloat("value", flaot);
 					attr.value(flaot);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = (int)attr.getBB(attr.string_value()).reset;
+					int ent = (int)(val != null ? val : attr.getBB(attr.string_value()).reset);
 					packet.setFloat("value", ent);
 					attr.value(ent);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
-			default:
-				return false;
+			default: return false;
 		}
 		entity.getVehicleData().getScripts().forEach(script -> {
 			script.onAttributeToggle(entity.getEntity(), attr, old, player);

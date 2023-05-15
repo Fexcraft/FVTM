@@ -139,13 +139,13 @@ public class ToggableHandler {
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.float_value() - (val != null ? val : attr.getBB(attr.string_value()).decrease);
+					float flaot = attr.float_value() - (val != null ? -val : attr.getBB(attr.string_value()).decrease);
 					packet.setFloat("value", flaot);
 					attr.value(flaot);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = attr.integer_value() - (int)(val != null ? val : attr.getBB(attr.string_value()).decrease);
+					int ent = attr.integer_value() - (int)(val != null ? -val : attr.getBB(attr.string_value()).decrease);
 					packet.setFloat("value", ent);
 					attr.value(ent);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));

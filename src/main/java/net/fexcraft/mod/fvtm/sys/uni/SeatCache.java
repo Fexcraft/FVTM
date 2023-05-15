@@ -188,7 +188,7 @@ public class SeatCache {
         	clicktimer += 10;
         	return bool;
 		}
-        else if(!seatdata.driver && !key.driverOnly() && vehicle.world.isRemote){
+        else if(!seatdata.driver && vehicle.world.isRemote){
 			if(clicktimer > 0) return false;
 			Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values().stream().filter(pr -> (pr.valuetype().isTristate() || pr.valuetype().isNumber()) && pr.seats().contains(seatdata.name)).collect(Collectors.toList());
 			for(Attribute<?> attr : attributes){
@@ -199,7 +199,7 @@ public class SeatCache {
 				}
 			}
 			clicktimer += 10;
-            return  false;
+            return true;
         }
 		/*else if(key.dismount() && vehicle.world.isRemote && passenger != null){
 			passenger.dismountRidingEntity();

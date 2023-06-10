@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.SwivelPointMover;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -17,15 +15,15 @@ public class SPM_DI implements SwivelPointMover {
 	private boolean pos, bool, loop;//, ret;
 	public boolean moved;
 	
-	public SPM_DI(JsonObject obj){
-		this(obj.get("attribute").getAsString(), obj.get("var").getAsString());
-		speed = JsonUtil.getIfExists(obj, "speed", 1).floatValue();
-		bool = JsonUtil.getIfExists(obj, "bool_based", false);
-		min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();
-		max = JsonUtil.getIfExists(obj, "max", Integer.MAX_VALUE).floatValue();
-		def = JsonUtil.getIfExists(obj, "def", 0).floatValue();
-		loop = JsonUtil.getIfExists(obj, "loop", false);
-		//ret = JsonUtil.getIfExists(obj, "return", false);
+	public SPM_DI(JsonMap map){
+		this(map.get("attribute").string_value(), map.get("var").string_value());
+		speed = map.getFloat("speed", 1);
+		bool = map.getBoolean("bool_based", false);
+		min = map.getFloat("min", Integer.MIN_VALUE);
+		max = map.getFloat("max", Integer.MAX_VALUE);
+		def = map.getFloat("def", 0);
+		loop = map.getBoolean("loop", false);
+		//ret = map.getBoolean("return", false);
 	}
 	
 	public SPM_DI(String key, String value){

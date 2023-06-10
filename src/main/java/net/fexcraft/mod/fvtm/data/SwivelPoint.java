@@ -3,10 +3,8 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonObject;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -43,53 +41,53 @@ public class SwivelPoint {
 	//
 	public ArrayList<SwivelPointMover> movers;
 
-	public SwivelPoint(JsonObject obj){
-		this.id = JsonUtil.getIfExists(obj, "id", DEFAULT);
-		this.position = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
+	public SwivelPoint(JsonMap map){
+		this.id = map.getString("id", DEFAULT);
+		this.position = map.has("pos") ? Pos.frJson(map.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
 		this.prevpos = new Vec3d(position.x, position.y, position.z);
-		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : DEFAULT;
-		axe.set_rotation(JsonUtil.getIfExists(obj, "yaw", 0).floatValue(), JsonUtil.getIfExists(obj, "pitch", 0).floatValue(), JsonUtil.getIfExists(obj, "roll", 0).floatValue(), true);
-		if(obj.has("movers")){
+		this.parid = map.getString("parent", DEFAULT);
+		axe.set_rotation(map.getFloat("yaw", 0), map.getFloat("pitch", 0), map.getFloat("roll", 0), true);
+		if(map.has("movers")){
 			movers = new ArrayList<>();
-			JsonElement movs = obj.get("movers");
-			if(movs.isJsonObject()){
-				movs.getAsJsonObject().entrySet().forEach(entry -> {
+			JsonObject movs = map.get("movers");
+			if(movs.isMap()){
+				movs.asMap().entries().forEach(entry -> {
 					parseMover(entry.getKey(), entry.getValue());
 				});
 			}
-			else if(movs.isJsonArray()){
-				movs.getAsJsonArray().forEach(elm -> {
-					parseMover(null, elm);
+			else if(movs.isArray()){
+				movs.asArray().value.forEach(val -> {
+					parseMover(null, val);
 				});
 			}
 		}
 	}
 
-	private void parseMover(String key, JsonElement elm){
-		if(elm.isJsonPrimitive()){
-			if(elm.getAsString().endsWith(".class")){
+	private void parseMover(String key, JsonObject json){
+		if(json.isMap()){
+			JsonMap map = json.asMap();
+			if(map.has("class")){
 	            try{
-	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(elm.getAsString().replace(".class", ""));
-	            	movers.add(clazz.newInstance());
+	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(map.get("class").string_value().replace(".class", ""));
+	            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(map));
 	            }
 	            catch(Exception e){
 	            	e.printStackTrace();
 	            }
 			}
-			else movers.add(new SPM_DI(key == null ? "arrinit" : key, elm.getAsString()));
+			else movers.add(new SPM_DI(map));
 		}
-		if(elm.isJsonObject()){
-			JsonObject json = elm.getAsJsonObject();
-			if(json.has("class")){
-	            try{
-	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
-	            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
-	            }
-	            catch(Exception e){
-	            	e.printStackTrace();
-	            }
+		else if(!json.isArray()){
+			if(json.string_value().endsWith(".class")){
+				try{
+					Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.string_value().replace(".class", ""));
+					movers.add(clazz.newInstance());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
-			else movers.add(new SPM_DI(json.getAsJsonObject()));
+			else movers.add(new SPM_DI(key == null ? "arrinit" : key, json.string_value()));
 		}
 	}
 
@@ -256,7 +254,7 @@ public class SwivelPoint {
 		return getRelativeVector(vec.x, vec.y, vec.z);
 	}
 
-	public Vec3d getRelativeVector(Vec3d root, boolean render){
+	public Vec3d  getRelativeVector(Vec3d root, boolean render){
 		Vec3d rel = axe.get_vector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
 			Vec3d new0 = position.add(rel);

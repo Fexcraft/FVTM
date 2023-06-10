@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
@@ -188,7 +189,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
 			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
 				try{
-					SwivelPoint point = new SwivelPoint(elm.getAsJsonObject());
+					SwivelPoint point = new SwivelPoint(JsonHandler.parse(elm.toString(), true).asMap());
 					rotpoints.put(point.id, point);
 				}
 				catch(Exception e){

@@ -14,6 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
@@ -159,7 +160,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
 			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
 				try{
-					SwivelPoint point = new SwivelPoint(elm.getAsJsonObject());
+					SwivelPoint point = new SwivelPoint(JsonHandler.parse(elm.toString(), true).asMap());
 					rotpoints.put(point.id, point);
 				}
 				catch(Exception e){

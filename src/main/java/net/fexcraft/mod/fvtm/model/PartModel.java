@@ -120,9 +120,9 @@ public class PartModel extends GenericModel implements FCLItemModel {
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
 		Vec3f rot = EffectRenderer.getRotations(point, ticks);
-		GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+		GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
 		data.getInstalledRot().rotate();
 	}
 
@@ -134,9 +134,9 @@ public class PartModel extends GenericModel implements FCLItemModel {
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
+		GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
 		data.getInstalledRot().rotate();
 	}
 	

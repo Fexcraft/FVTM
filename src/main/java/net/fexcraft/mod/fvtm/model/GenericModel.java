@@ -16,6 +16,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
 import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
+import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,7 @@ public class GenericModel implements Model {
 	private ArrayList<String> creators = new ArrayList<>();
 	public Transforms transforms = new Transforms();
 	public GroupList groups = new GroupList();
+	public GroupList sorted = new GroupList();
 	public int textureX, textureY;
 	public boolean smooth_shading;
 	private boolean locked;
@@ -42,7 +44,7 @@ public class GenericModel implements Model {
 	public void render(ModelRenderData data){
 		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(ModelGroup list : groups) list.render(data);
+		for(ModelGroup list : sorted) list.render(data);
 		transforms.deapply();
 	}
 	
@@ -204,7 +206,37 @@ public class GenericModel implements Model {
 	public void lock(){
 		if(locked) return;
 		for(ModelGroup list : groups) list.initPrograms();
+		sort();
 		this.locked = true;
+	}
+
+	@Override
+	public void sort(){
+		sorted.clear();
+		ArrayList<ModelGroup> nor = new ArrayList<>();
+		ArrayList<ModelGroup> bln = new ArrayList<>();
+		ArrayList<ModelGroup> las = new ArrayList<>();
+		ArrayList<ModelGroup> sep = new ArrayList<>();
+		RenderOrder order = RenderOrder.NORMAL;
+		for(ModelGroup group : groups){
+			order = RenderOrder.NORMAL;
+			if(group.has_pre_prog){
+				for(Program prog : group.pre_programs){
+					if(prog.getRenderOrder().ordinal() > order.ordinal()) order = prog.getRenderOrder();
+				}
+			}
+			switch(order){
+				case BLENDED: bln.add(group); break;
+				case LAST: las.add(group); break;
+				case SEPARATE: sep.add(group); break;
+				case NORMAL:
+				default: nor.add(group); break;
+			}
+		}
+		sorted.addAll(nor);
+		sorted.addAll(bln);
+		sorted.addAll(las);
+		sorted.addAll(sep);
 	}
 	
 	public static ModelGroup.Program parseProgram(JsonElement elm) throws Exception {

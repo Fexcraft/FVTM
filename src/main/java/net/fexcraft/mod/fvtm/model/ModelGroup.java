@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
+import net.fexcraft.mod.fvtm.data.root.Model.RenderOrder;
 
 /**
  * Similar concept as the TurboList inside FMT v2
@@ -137,6 +138,8 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 		public default boolean isPreRender(){ return true; }
 		
 		public default boolean isPostRender(){ return true; }
+
+		public default RenderOrder getRenderOrder(){ return RenderOrder.NORMAL; }
 		
 	}
 	

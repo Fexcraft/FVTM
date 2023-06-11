@@ -54,6 +54,9 @@ public interface Model {
 	
 	/** Locks the model. Adding creators and initialising groups is then disabled. */
 	public void lock();
+
+	/** Sorts all groups based on render order. */
+	public void sort();
 	
 	/** Reusable object for rendering. */
 	public static class ModelRenderData {
@@ -76,7 +79,6 @@ public interface Model {
 		public boolean itemrender;
 		
 		public RenderCache cache;
-		
 
 		public ModelRenderData set(VehicleData data, Entity ent, RenderCache renca, boolean item){
 			entity = ent;
@@ -259,6 +261,10 @@ public interface Model {
 		 */
 		public Object[] load(String name, ModelData confdata, Supplier<Model> model) throws Exception;
 		
+	}
+
+	public static enum RenderOrder {
+		NORMAL, BLENDED, LAST, SEPARATE
 	}
 	
 }

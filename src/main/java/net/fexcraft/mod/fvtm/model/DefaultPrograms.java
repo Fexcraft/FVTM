@@ -11,10 +11,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
@@ -95,6 +91,9 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(STEERING_WHEEL_ZN);
 		ModelGroup.PROGRAMS.add(STEERING_WHEEL_XN);
 		ModelGroup.PROGRAMS.add(STEERING_WHEEL_YN);
+		ModelGroup.PROGRAMS.add(STEERING_WHEEL_CZ);
+		ModelGroup.PROGRAMS.add(STEERING_WHEEL_CX);
+		ModelGroup.PROGRAMS.add(STEERING_WHEEL_CY);
 		//
 		ModelGroup.PROGRAMS.add(LIGHTS_RAIL_FORWARD);
 		ModelGroup.PROGRAMS.add(LIGHTS_RAIL_BACKWARD);
@@ -183,11 +182,6 @@ public class DefaultPrograms {
 		public void postRender(ModelGroup list, ModelRenderData data){
 			RGB.glColorReset();
 		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return new RGBCustom(new RGB(elm.getAsJsonArray().get(0).getAsString()));
-		}
 
 		@Override
 		public Program parse(String[] args){
@@ -217,11 +211,6 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
 			RGB.glColorReset();
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return new RGBChannel(elm.getAsJsonArray().get(0).getAsString());
 		}
 
 		@Override
@@ -412,7 +401,7 @@ public class DefaultPrograms {
 		}
 		@Override
 		public RenderOrder getRenderOrder(){
-			return RenderOrder.BLENDED;
+			return RenderOrder.LAST;
 		}
 		
 	}
@@ -463,7 +452,7 @@ public class DefaultPrograms {
 
 		@Override
 		public RenderOrder getRenderOrder(){
-			return RenderOrder.BLENDED;
+			return RenderOrder.LAST;
 		}
 
 	}
@@ -687,11 +676,6 @@ public class DefaultPrograms {
 			list.rotateAxis(-rotated, axis, apply);
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			return new SteeringWheel(elm.getAsJsonArray().get(0).getAsInt(), elm.getAsJsonArray().get(1).getAsFloat());
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -723,11 +707,6 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value() * ratio, x, y, z);
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return new SteeringWheelCentered(elm.getAsJsonArray().get(0).getAsInt(), elm.getAsJsonArray().get(1).getAsFloat());
 		}
 		
 
@@ -815,19 +794,6 @@ public class DefaultPrograms {
 			current = 0f;
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			String attr = array.get(0).getAsString();
-			boolean boolstate = array.get(1).getAsBoolean();
-			float min = array.get(2).getAsFloat();
-			float max = array.get(3).getAsFloat();
-			float step = array.get(4).getAsFloat();
-			int axis = array.get(5).getAsInt();
-			Float defrot = array.size() > 6 && NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
-			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -890,18 +856,6 @@ public class DefaultPrograms {
 				axis == 2 ? current * -Static.sixteenth : 0);
 			//GL11.glPopMatrix();
 		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			String attr = array.get(0).getAsString();
-			boolean boolstate = array.get(1).getAsBoolean();
-			float min = array.get(2).getAsFloat();
-			float max = array.get(3).getAsFloat();
-			float step = array.get(4).getAsFloat();
-			int axis = array.get(5).getAsInt();
-			return new AttributeTranslator(attr, boolstate, min, max, step, axis);
-		}
 
 		@Override
 		public Program parse(String[] args){
@@ -936,6 +890,11 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
 			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new AttributeVisible(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
 		}
 		
 	}
@@ -987,15 +946,6 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			if(array.size() == 0) return this; 
-			float x = array.get(0).getAsFloat();
-			float y = array.get(1).getAsFloat();
-			return new Transparent(x, y);
-		}
-
-		@Override
 		public Program parse(String[] args){
 			if(args.length < 2) return this;
 			float x = Float.parseFloat(args[0]);
@@ -1029,6 +979,11 @@ public class DefaultPrograms {
 			list.visible = true;
 		}
 
+		@Override
+		public Program parse(String[] args){
+			return new IDSpecific(args[0]);
+		}
+
 	}
 	
 	public static class IDSpecificArray implements Program {
@@ -1048,6 +1003,11 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
 			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new IDSpecificArray(args);
 		}
 
 	}
@@ -1088,12 +1048,6 @@ public class DefaultPrograms {
 		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
 		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return new Scale(elm.getAsJsonArray().get(0).getAsFloat());
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -1185,6 +1139,11 @@ public class DefaultPrograms {
 		public boolean isPostRender(){
 			return false;
 		}
+
+		@Override
+		public RenderOrder getRenderOrder(){
+			return RenderOrder.SEPARATE;
+		}
 		
 	}
 	
@@ -1226,25 +1185,6 @@ public class DefaultPrograms {
 			);
 			beam.setPredicate(predicate);
 			return beam;
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			float sx = array.get(0).getAsFloat();
-			float sy = array.get(1).getAsFloat();
-			float sz = array.get(2).getAsFloat();
-			float expw = array.get(3).getAsFloat();
-			float exph = array.get(4).getAsFloat();
-			float x = array.get(5).getAsFloat();
-			float y = array.get(6).getAsFloat();
-			float z = array.get(7).getAsFloat();
-			float rx = array.size() > 8 ? array.get(8).getAsFloat() : 0;
-			float ry = array.size() > 9 ? array.get(9).getAsFloat() : 0;
-			float rz = array.size() > 10 ? array.get(10).getAsFloat() : 0;
-			String sp = array.size() > 11 ? array.get(11).getAsString() : "vehicle";
-			String rs = array.size() > 12 ? array.get(12).getAsString() : null;
-			return init(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
 		}
 		
 
@@ -1386,11 +1326,6 @@ public class DefaultPrograms {
 			list.rotateAxis(0, axis, true);
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			return parse(JsonUtil.jsonArrayToStringArray(elm.getAsJsonArray()).toArray(new String[0]));
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -1471,16 +1406,6 @@ public class DefaultPrograms {
 			list.rotateAxis(override ? defrot : -(rot + defrot), axis, override);
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			int axis = array.get(0).getAsInt();
-			int to = array.get(1).getAsInt();
-			int def = array.get(2).getAsInt();
-			boolean set = array.get(3).getAsBoolean();
-			return new RotationSetter(axis, def, to, set);
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -1522,16 +1447,6 @@ public class DefaultPrograms {
 		public void postRender(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
 		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			float x = array.get(0).getAsFloat();
-			float y = array.get(1).getAsFloat();
-			float z = array.get(2).getAsFloat();
-			float s = array.size() > 3 ? array.get(3).getAsFloat() : Static.sixteenth;
-			return new TranslationSetter(x, y, z, s);
-		}
 
 		@Override
 		public Program parse(String[] args){
@@ -1569,11 +1484,6 @@ public class DefaultPrograms {
 		@Override
 		public boolean isPostRender(){
 			return false;
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return new TextureBinder(elm.getAsJsonArray().get(0).getAsString());
 		}
 
 		@Override
@@ -1761,23 +1671,6 @@ public class DefaultPrograms {
 			return attr != null && attr.boolean_value();
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonObject obj = elm.getAsJsonObject();
-			float px = JsonUtil.getIfExists(obj, "x", 0).floatValue();
-			float py = JsonUtil.getIfExists(obj, "y", 0).floatValue();
-			float pz = JsonUtil.getIfExists(obj, "z", 0).floatValue();
-			float rx = JsonUtil.getIfExists(obj, "rx", 0).floatValue();
-			float ry = JsonUtil.getIfExists(obj, "ry", 0).floatValue();
-			float rz = JsonUtil.getIfExists(obj, "rz", 0).floatValue();
-			float scale = JsonUtil.getIfExists(obj, "scale", 0).floatValue();
-			boolean cen = JsonUtil.getIfExists(obj, "centered", true);
-			String text = JsonUtil.getIfExists(obj, "text", "");
-			int color = new RGB(JsonUtil.getIfExists(obj, "color", RGB.BLACK.packed).intValue()).packed;
-			boolean glow = JsonUtil.getIfExists(obj, "glow", true);
-			return new TextRenderer(px, py, pz, rx, ry, rz, scale, cen, text).setColor(color).setGlow(glow);
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -1821,23 +1714,6 @@ public class DefaultPrograms {
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			text = attr.string_value();
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonObject obj = elm.getAsJsonObject();
-			float px = JsonUtil.getIfExists(obj, "x", 0).floatValue();
-			float py = JsonUtil.getIfExists(obj, "y", 0).floatValue();
-			float pz = JsonUtil.getIfExists(obj, "z", 0).floatValue();
-			float rx = JsonUtil.getIfExists(obj, "rx", 0).floatValue();
-			float ry = JsonUtil.getIfExists(obj, "ry", 0).floatValue();
-			float rz = JsonUtil.getIfExists(obj, "rz", 0).floatValue();
-			float scale = JsonUtil.getIfExists(obj, "scale", 0).floatValue();
-			boolean cen = JsonUtil.getIfExists(obj, "centered", true);
-			String attr = JsonUtil.getIfExists(obj, "attr", "");
-			int color = new RGB(JsonUtil.getIfExists(obj, "color", RGB.BLACK.packed).intValue()).packed;
-			boolean glow = JsonUtil.getIfExists(obj, "glow", true);
-			return new AttributeTextRenderer(attr, px, py, pz, rx, ry, rz, scale, cen).setColor(color).setGlow(glow);
 		}
 		
 
@@ -1949,19 +1825,6 @@ public class DefaultPrograms {
 			list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
 		}
 		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			float min = array.get(0).getAsFloat();
-			float max = array.get(1).getAsFloat();
-			float step = array.get(2).getAsFloat();
-			int axis = array.get(3).getAsInt();
-			float dero = array.get(4).getAsFloat();
-			boolean loop = array.get(5).getAsBoolean();
-			boolean noad = array.size() > 6 ? array.get(6).getAsBoolean() : true;
-			return new Rotator(min, max, step, axis, dero, loop, noad);
-		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -2046,17 +1909,6 @@ public class DefaultPrograms {
 				axis == 1 ? current * -Static.sixteenth : 0,
 				axis == 2 ? current * -Static.sixteenth : 0);
 			//GL11.glPopMatrix();
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			float min = array.get(0).getAsFloat();
-			float max = array.get(1).getAsFloat();
-			float step = array.get(2).getAsFloat();
-			int axis = array.get(3).getAsInt();
-			boolean loop = array.get(4).getAsBoolean();
-			return new Translator(min, max, step, axis, loop);
 		}
 
 		@Override
@@ -2147,19 +1999,6 @@ public class DefaultPrograms {
 			current = 0f;
 		}
 
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			String attr = array.get(0).getAsString();
-			boolean equals = array.get(1).getAsBoolean();
-			float min = array.get(2).getAsFloat();
-			float max = array.get(3).getAsFloat();
-			float step = array.get(4).getAsFloat();
-			int axis = array.get(5).getAsInt();
-			Float defrot = array.size() > 6 && NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
-			return new BlockBoolRotator(attr, equals, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
-		}
-
 
 		@Override
 		public Program parse(String[] args){
@@ -2219,18 +2058,6 @@ public class DefaultPrograms {
 					axis == 1 ? current * -Static.sixteenth : 0,
 					axis == 2 ? current * -Static.sixteenth : 0);
 			//GL11.glPopMatrix();
-		}
-
-		@Override
-		public Program parse(JsonElement elm){
-			JsonArray array = elm.getAsJsonArray();
-			String attr = array.get(0).getAsString();
-			boolean equals = array.get(1).getAsBoolean();
-			float min = array.get(2).getAsFloat();
-			float max = array.get(3).getAsFloat();
-			float step = array.get(4).getAsFloat();
-			int axis = array.get(5).getAsInt();
-			return new BlockBoolTranslator(attr, equals, min, max, step, axis);
 		}
 
 		@Override
@@ -2452,11 +2279,6 @@ public class DefaultPrograms {
 			for(ModelRendererTurbo mrt : list){
 				mrt.setTexture(otex);
 			}
-		}
-
-		@Override
-		public Program parse(JsonElement elm){
-			return new TextureSetter(elm.getAsJsonArray().get(0).getAsString());
 		}
 
 		@Override

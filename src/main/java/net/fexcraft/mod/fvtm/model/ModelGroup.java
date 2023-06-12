@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.function.BiPredicate;
 
-import com.google.gson.JsonElement;
-
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.data.root.Model.RenderOrder;
@@ -120,11 +118,8 @@ public class ModelGroup extends ArrayList<ModelRendererTurbo> {
 		public default void preRender(ModelGroup list, ModelRenderData data){}
 		
 		public default void postRender(ModelGroup list, ModelRenderData data){}
-
-		/** For creating instances from JTMT/OBJ/FMF if necessary. */
-		public default Program parse(JsonElement elm){ return this; }
 		
-		/** For creating instances from JTMT/OBJ/FMF if necessary. */
+		/** For creating instances from String arguments if necessary. */
 		public default Program parse(String[] args){ return this; }
 		
 		public default <T extends Program> T register(){

@@ -8,7 +8,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -68,7 +67,7 @@ public class GenericModel implements Model {
 					Object[] objs = (Object[])obj;
 					if(!groups.contains(objs[0].toString())) continue;
 					try{
-						groups.get(objs[0].toString()).addProgram(parseProgram((JsonElement)objs[1]));
+						groups.get(objs[0].toString()).addProgram(parseProgram(objs[1].toString().split(" ")));
 					}
 					catch(Exception e){
 						e.printStackTrace();
@@ -93,15 +92,13 @@ public class GenericModel implements Model {
 						if(json.has("ifmet")){
 							JsonArray array = json.get("ifmet").getAsJsonArray();
 							for(JsonElement elm : array){
-								if(elm.isJsonPrimitive()) prog.add(parseProgram(elm.getAsString().trim().split(" "), 0));
-								else prog.add(parseProgram(elm));
+								prog.add(parseProgram(elm.getAsString().trim().split(" "), 0));
 							}
 						}
 						if(json.has("else")){
 							JsonArray array = json.get("else").getAsJsonArray();
 							for(JsonElement elm : array){
-								if(elm.isJsonPrimitive()) prog.addElse(parseProgram(elm.getAsString().trim().split(" "), 0));
-								else prog.addElse(parseProgram(elm));
+								prog.addElse(parseProgram(elm.getAsString().trim().split(" "), 0));
 							}
 						}
 						if(json.has("args")){
@@ -239,31 +236,17 @@ public class GenericModel implements Model {
 		sorted.addAll(sep);
 	}
 	
-	public static ModelGroup.Program parseProgram(JsonElement elm) throws Exception {
-		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
-		ModelGroup.Program prog = ModelGroup.PROGRAMS.get(id);
-		if(prog == null){
-			throw new Exception("PROGRAM WITH ID '" + id + "' NOT FOUND!");
-		}
-		return prog.parse(elm);
-	}
-	
 	private static ModelGroup.Program parseProgram(String[] args) throws Exception {
 		return parseProgram(args, 1);
 	}
 	
 	private static ModelGroup.Program parseProgram(String[] args, int atidx) throws Exception {
 		if(args[atidx].startsWith("#")) return null;
-		if(args[atidx].startsWith("[") || args[atidx].startsWith("{")){
-			return parseProgram(JsonUtil.getFromString(args[atidx]));
+		ModelGroup.Program prog = ModelGroup.PROGRAMS.get(args[atidx]);
+		if(prog == null){
+			throw new Exception("PROGRAM WITH ID '" + args[atidx] + "' NOT FOUND!");
 		}
-		else{
-			ModelGroup.Program prog = ModelGroup.PROGRAMS.get(args[atidx]);
-			if(prog == null){
-				throw new Exception("PROGRAM WITH ID '" + args[atidx] + "' NOT FOUND!");
-			}
-			return prog.parse(Arrays.copyOfRange(args, atidx + 1, args.length));
-		}
+		return prog.parse(Arrays.copyOfRange(args, atidx + 1, args.length));
 	}
 
 	@Override

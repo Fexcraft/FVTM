@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
+import net.fexcraft.mod.fvtm.data.root.Model.RenderOrder;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
@@ -409,6 +410,10 @@ public class DefaultPrograms {
 		public String getId(){
 			return "fvtm:window";
 		}
+		@Override
+		public RenderOrder getRenderOrder(){
+			return RenderOrder.BLENDED;
+		}
 		
 	}
 
@@ -454,6 +459,11 @@ public class DefaultPrograms {
 			int color = args.length > 0 ? Integer.parseInt(args[0].replace("#", "").replace("0x", ""), 16) : 0x007208;
 			float alpha = args.length > 1 ? Float.parseFloat(args[1]) : 0.3f;
 			return new WindowTinted(color, alpha);
+		}
+
+		@Override
+		public RenderOrder getRenderOrder(){
+			return RenderOrder.BLENDED;
 		}
 
 	}
@@ -991,6 +1001,11 @@ public class DefaultPrograms {
 			float x = Float.parseFloat(args[0]);
 			float y = Float.parseFloat(args[1]);
 			return new Transparent(x, y);
+		}
+
+		@Override
+		public RenderOrder getRenderOrder(){
+			return RenderOrder.BLENDED;
 		}
 		
 	}

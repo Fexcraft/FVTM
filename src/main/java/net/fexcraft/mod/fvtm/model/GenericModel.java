@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -16,6 +17,8 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
 import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
+import net.fexcraft.mod.fvtm.model.SortedModelGroup.GenericSortedModelGroup;
+import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
@@ -33,7 +36,7 @@ public class GenericModel implements Model {
 	private ArrayList<String> creators = new ArrayList<>();
 	public Transforms transforms = new Transforms();
 	public GroupList groups = new GroupList();
-	public GroupList sorted = new GroupList();
+	public TreeMap<RenderOrder, SortedModelGroup> sorted = new TreeMap<>();
 	public int textureX, textureY;
 	public boolean smooth_shading;
 	private boolean locked;
@@ -43,7 +46,7 @@ public class GenericModel implements Model {
 	public void render(ModelRenderData data){
 		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
-		for(ModelGroup list : sorted) list.render(data);
+		for(SortedModelGroup sort : sorted.values()) sort.render(data);
 		transforms.deapply();
 	}
 	
@@ -217,10 +220,8 @@ public class GenericModel implements Model {
 		RenderOrder order = RenderOrder.NORMAL;
 		for(ModelGroup group : groups){
 			order = RenderOrder.NORMAL;
-			if(group.has_pre_prog){
-				for(Program prog : group.pre_programs){
-					if(prog.getRenderOrder().ordinal() > order.ordinal()) order = prog.getRenderOrder();
-				}
+			for(Program prog : group.getAllPrograms()){
+				if(prog.getRenderOrder().ordinal() > order.ordinal()) order = prog.getRenderOrder();
 			}
 			switch(order){
 				case BLENDED: bln.add(group); break;
@@ -230,10 +231,10 @@ public class GenericModel implements Model {
 				default: nor.add(group); break;
 			}
 		}
-		sorted.addAll(nor);
-		sorted.addAll(bln);
-		sorted.addAll(las);
-		sorted.addAll(sep);
+		if(nor.size() > 0) sorted.put(RenderOrder.NORMAL, new GenericSortedModelGroup(nor));
+		if(bln.size() > 0) sorted.put(RenderOrder.BLENDED, new GenericSortedModelGroup(bln));
+		if(las.size() > 0) sorted.put(RenderOrder.LAST, new GenericSortedModelGroup(las));
+		if(sep.size() > 0) sorted.put(RenderOrder.SEPARATE, new SeparateSortedModelGroup(sep));
 	}
 	
 	private static ModelGroup.Program parseProgram(String[] args) throws Exception {
@@ -304,7 +305,7 @@ public class GenericModel implements Model {
 	}
 	
 	public static final class GroupList extends ArrayList<ModelGroup> {
-		
+
 		@Override
 		public boolean add(ModelGroup list){
 			//list.initPrograms();

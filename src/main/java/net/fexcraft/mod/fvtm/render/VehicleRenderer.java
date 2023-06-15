@@ -4,15 +4,16 @@ import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,9 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class VehicleRenderer {
 	
@@ -51,6 +54,14 @@ public class VehicleRenderer {
             GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
             SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
+			if(Command.OTHER){
+				for(SwivelPoint point : vehicle.getVehicleData().getRotationPoints().values()){
+					Vec3d vec = point.getRelativeVector(0, 0, 0);
+					GL11.glTranslated(vec.x, vec.y, vec.z);
+					DebugModels.CENTERSPHERE.render(1f);
+					GL11.glTranslated(-vec.x, -vec.y, -vec.z);
+				}
+			}
             //
 	        int i = getBrightness(x, y, z), j = i % 65536, k = i / 65536;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);

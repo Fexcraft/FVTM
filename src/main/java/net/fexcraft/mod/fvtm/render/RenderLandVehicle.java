@@ -39,14 +39,14 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
         if(Config.RENDER_VEHICLES_SEPARATELY || vehicle.getVehicleData() == null || vehicle.rotpoint == null){ return; }
         GL11.glPushMatrix();
         {
-        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
+        	SeparateRenderCache.SORTED_VEH_POS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
             GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
-            EffectRenderer.RENDER_VEHROT.put(vehicle.getEntityId(), rot);
+            SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
             //
             GL11.glPushMatrix();
             RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);

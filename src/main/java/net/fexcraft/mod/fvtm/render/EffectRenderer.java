@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
+import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -23,21 +25,21 @@ import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
+import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -66,120 +68,58 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 public class EffectRenderer {
-	
-	public static final ArrayList<LightBeam> LIGHTRAYS = new ArrayList<>();
-	public static final ArrayList<VehicleData> LIGHTRAYDATAS = new ArrayList<>();
-	public static final ArrayList<VehicleEntity> LIGHTRAYVEHS = new ArrayList<>();
-	public static final ArrayList<LightBeam> BLOCK_LIGHTRAYS = new ArrayList<>();
-	public static final ArrayList<BlockData> BLOCK_LIGHTRAYDATAS = new ArrayList<>();
-	public static final ArrayList<TileEntity> BLOCK_LIGHTRAYTILES = new ArrayList<>();
-	public static final HashMap<Integer, Vec3f> RENDER_VEHROT = new HashMap<>();
-	public static final HashMap<Integer, double[]> RENDER_VEHPOS = new HashMap<>();
+
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
 	private static ArrayList<Vec3d> toggpos = new ArrayList<>();
 	private static ContainerHolder tempholder;
-	public static ResourceLocation last;
 	
     @SubscribeEvent
     public void renderLights(RenderWorldLastEvent event){
-    	if(Config.DISABLE_LIGHT_BEAMS || (LIGHTRAYS.size() == 0 && BLOCK_LIGHTRAYS.size() == 0)) return;
+    	if(SORTED_VEH_QUEUE.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double cx = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
         double cy = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * event.getPartialTicks();
         double cz = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * event.getPartialTicks();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		TexUtil.bindTexture(LIGHT_TEXTURE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDepthMask(false);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.SRC_ALPHA);
-        if(LIGHTRAYS.size() > 0){
+        if(SORTED_VEH_QUEUE.size() > 0){
             GL11.glPushMatrix();
             GL11.glTranslated(-cx, -cy, -cz);
-            for(int i = 0; i < LIGHTRAYS.size(); i++){
-            	LightBeam light = LIGHTRAYS.get(i);
-            	VehicleData data = LIGHTRAYDATAS.get(i);
-            	VehicleEntity veh = LIGHTRAYVEHS.get(i);
-            	if(light.tex != null){
-            		if(last == null || !last.equals(light.tex)){
-            			TexUtil.bindTexture(last = light.tex);
-            		}
-            	}
-            	else if(last != null){
-            		last = null;
-            		TexUtil.bindTexture(LIGHT_TEXTURE);
-            	}
-            	double[] vehpos = RENDER_VEHPOS.get(veh.getEntity().getEntityId());
+            for(int i = 0; i < SORTED_VEH_QUEUE.size(); i++){
+            	SeparateSortedModelGroup sroup = SORTED_VEH_QUEUE.get(i);
+            	VehicleEntity veh = SORTED_VEH_ENTITY.get(i);
+            	double[] vehpos = SORTED_VEH_POS.get(veh.getEntity().getEntityId());
             	if(vehpos == null) continue;
                 GL11.glPushMatrix();
                 GL11.glTranslated(vehpos[0], vehpos[1], vehpos[2]);
                 //
-                Vec3f vehrot = RENDER_VEHROT.get(veh.getEntity().getEntityId());
+                Vec3f vehrot = SORTED_VEH_ROT.get(veh.getEntity().getEntityId());
                 GL11.glRotatef(vehrot.x, 0.0F, 1.0F, 0.0F);
                 GL11.glRotatef(vehrot.y, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(vehrot.z, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(180f, 0f, 0f, 1f);
-                if(light.swivel == null || light.swivel.equals("vehicle")){
-                    GL11.glTranslated(light.pos.x, light.pos.y, light.pos.z);
-                }
-                else{
-            		SwivelPoint point = data.getRotationPoint(light.swivel);
-            		Vec3d pos = point.getRelativeVector(light.pos, true);
-            		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
-            		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
-                    GL11.glTranslated(pos.x, pos.y, pos.z);
-            		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
-            		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-                }
-                GL11.glColor4f(1, 1, 1, 0.5F);
-            	light.shape.render();
-                GL11.glColor4f(1, 1, 1, 0.5F);
-            	light.shape.render();
+				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.getEntity(), veh.getEntity().getCapability(RENDERCACHE, null), null, null, false).sep());
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();
         }
-        if(BLOCK_LIGHTRAYS.size() > 0){
+        if(SORTED_BLK_QUEUE.size() > 0){
             GL11.glPushMatrix();
             GL11.glTranslated(-cx, -cy, -cz);
-        	last = null;
-            for(int i = 0; i < BLOCK_LIGHTRAYS.size(); i++){
-            	LightBeam light = BLOCK_LIGHTRAYS.get(i);
-            	BlockData data = BLOCK_LIGHTRAYDATAS.get(i);
-            	TileEntity tile = BLOCK_LIGHTRAYTILES.get(i);
-            	if(light.tex != null){
-            		if(last == null || !last.equals(light.tex)){
-            			TexUtil.bindTexture(last = light.tex);
-            		}
-            	}
-            	else if(last != null){
-            		last = null;
-            		TexUtil.bindTexture(LIGHT_TEXTURE);
-            	}
+            for(int i = 0; i < SORTED_BLK_QUEUE.size(); i++){
+            	SeparateSortedModelGroup sgroup = SORTED_BLK_QUEUE.get(i);
+            	BlockData data = SORTED_BLK_DATA.get(i);
+            	TileEntity tile = SORTED_BLK_ENTITY.get(i);
                 GL11.glPushMatrix();
                 GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);
                 GL11.glRotated(data.getType().getBlockType().getRotationForMeta(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);
                 //GL11.glRotatef(180f, 0f, 0f, 1f);
-                GL11.glTranslated(light.pos.x, light.pos.y, light.pos.z);
-                GL11.glColor4f(1, 1, 1, 0.5F);
-            	light.shape.render();
-                GL11.glColor4f(1, 1, 1, 0.5F);
-            	light.shape.render();
+                sgroup.render(BlockModel.RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false).sep());
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();
         }
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glDepthMask(true);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_BLEND);
-        LIGHTRAYS.clear();
-        LIGHTRAYDATAS.clear();
-        LIGHTRAYVEHS.clear();
-        BLOCK_LIGHTRAYS.clear();
-        BLOCK_LIGHTRAYDATAS.clear();
-        BLOCK_LIGHTRAYTILES.clear();
-        last = null;
+		SeparateRenderCache.clear();
+        LightBeam.last = null;
     }
 
 	public static void renderHotInstallInfo(GenericVehicle vehicle){

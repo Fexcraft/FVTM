@@ -13,6 +13,7 @@ public class ClothModel extends GenericModel {
 	
 	@Override
 	public ClothModel parse(ModelData data){
+		super.parse(data);
 		if(data.contains("SetGroupAs")){
 			List<String> list = data.getList("SetGroupAs");
 			for(String string : list){

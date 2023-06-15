@@ -76,7 +76,7 @@ public interface Model {
 		public CompDataRoot trafficsign_compdata;
 		public ClothItem cloth_item;
 		public ArrayList<String> cloth_groups;
-		public boolean itemrender;
+		public boolean itemrender, separaterender;
 		
 		public RenderCache cache;
 
@@ -89,6 +89,7 @@ public interface Model {
 			part_category = null;
 			cache = renca;
 			itemrender = item;
+			separaterender = false;
 			return this;
 		}
 
@@ -102,6 +103,7 @@ public interface Model {
 			part_category = key;
 			cache = renca;
 			itemrender = item;
+			separaterender = false;
 			return this;
 		}
 
@@ -126,6 +128,7 @@ public interface Model {
 			texture = data;
 			itemrender = item;
 			blockstate = state;
+			separaterender = false;
 			return this;
 		}
 
@@ -170,6 +173,12 @@ public interface Model {
 			part_category = null;
 			cache = null;
 			itemrender = false;
+			separaterender = false;
+			return this;
+		}
+
+		public ModelRenderData sep(){
+			separaterender = true;
 			return this;
 		}
 	}

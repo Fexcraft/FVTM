@@ -20,6 +20,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -29,7 +30,6 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.data.root.Model.RenderOrder;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -132,6 +132,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
 		ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
 		ModelGroup.PROGRAMS.add(new BlockFacePlayer(0, 0, 0));
+		ModelGroup.PROGRAMS.add(new RenderOrderSetter(null));
 		//
 		DIDLOAD = true;
 	}
@@ -1094,6 +1095,8 @@ public class DefaultPrograms {
 		public String swivel;
 		public ResourceLocation tex;
 		protected Predicate<ModelRenderData> predicate;
+		public static ResourceLocation last;
+		private boolean skipped;
 		
 		public LightBeam(){}
 		
@@ -1120,24 +1123,59 @@ public class DefaultPrograms {
 
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
-			if(data.itemrender) return;
-			if(data.entity == null){
-				if(data.tile == null || data.block == null || (predicate != null && !predicate.test(data))) return;
-				EffectRenderer.BLOCK_LIGHTRAYS.add(this);
-				EffectRenderer.BLOCK_LIGHTRAYDATAS.add(data.block);
-				EffectRenderer.BLOCK_LIGHTRAYTILES.add(data.tile);
+			if(data.itemrender || !data.separaterender || Config.DISABLE_LIGHT_BEAMS) return;
+			skipped = false;
+			if(!predicate.test(data)){
+				skipped = true;
+				return;
 			}
 			else{
-				if(/*data.entity == null ||*/ (predicate != null && !predicate.test(data))) return;
-				EffectRenderer.LIGHTRAYS.add(this);
-				EffectRenderer.LIGHTRAYDATAS.add(data.vehicle);
-				EffectRenderer.LIGHTRAYVEHS.add((VehicleEntity)data.entity);
+				TexUtil.bindTexture(EffectRenderer.LIGHT_TEXTURE);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glDepthMask(false);
+				GL11.glEnable(GL11.GL_ALPHA_TEST);
+				GlStateManager.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.SRC_ALPHA);
+				if(tex != null){
+					if(last == null || !last.equals(tex)){
+						TexUtil.bindTexture(last = tex);
+					}
+				}
+				else if(last != null){
+					last = null;
+					TexUtil.bindTexture(EffectRenderer.LIGHT_TEXTURE);
+				}
+				GL11.glPushMatrix();
+				if(swivel == null || swivel.equals("vehicle")){
+					GL11.glTranslated(pos.x, pos.y, pos.z);
+				}
+				else{
+					SwivelPoint point = data.vehicle.getRotationPoint(swivel);
+					Vec3d pos = point.getRelativeVector(this.pos, true);
+					GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+					GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+					GL11.glTranslated(pos.x, pos.y, pos.z);
+					GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+					GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+				}
+				GL11.glColor4f(1, 1, 1, 0.5F);
+				shape.render();
+				GL11.glColor4f(1, 1, 1, 0.5F);
+				shape.render();
+				GL11.glPopMatrix();
 			}
 		}
-		
+
 		@Override
-		public boolean isPostRender(){
-			return false;
+		public void postRender(ModelGroup list, ModelRenderData data){
+			if(data.itemrender || !data.separaterender || Config.DISABLE_LIGHT_BEAMS) return;
+			if(skipped){
+				skipped = false;
+				return;
+			}
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glDepthMask(true);
+			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+			GL11.glDisable(GL11.GL_BLEND);
 		}
 
 		@Override
@@ -1186,7 +1224,6 @@ public class DefaultPrograms {
 			beam.setPredicate(predicate);
 			return beam;
 		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -2331,6 +2368,34 @@ public class DefaultPrograms {
 			float y = args.length > 1 ? Float.parseFloat(args[1]) : 0;
 			float z = args.length > 2 ? Float.parseFloat(args[2]) : 0;
 			return new BlockFacePlayer(x, y, z);
+		}
+
+	}
+
+	public static class RenderOrderSetter implements Program {
+
+		private HashMap<RenderOrder, RenderOrderSetter> map = new HashMap<>();
+		private RenderOrder order;
+
+		private RenderOrderSetter(RenderOrder ord){
+			if(ord == null){
+				ord = RenderOrder.NORMAL;
+				map.put(ord, this);
+				map.put(RenderOrder.BLENDED, new RenderOrderSetter(RenderOrder.BLENDED));
+				map.put(RenderOrder.LAST, new RenderOrderSetter(RenderOrder.LAST));
+				map.put(RenderOrder.SEPARATE, new RenderOrderSetter(RenderOrder.SEPARATE));
+			}
+			this.order = order;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:render_order";
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return map.get(RenderOrder.valueOf(args[0].toUpperCase()));
 		}
 
 	}

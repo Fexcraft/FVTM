@@ -43,14 +43,14 @@ public class VehicleRenderer {
             z = vehicle.lastTickPosZ + (vehicle.posZ - vehicle.lastTickPosZ) * ticks;
         	if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(vehicle.renderbox == null ? vehicle.getEntityBoundingBox() : vehicle.renderbox.offset(x, y, z))) continue;
         	//
-        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
+        	SeparateRenderCache.SORTED_VEH_POS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x - cx, y - cy, z - cz);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
             GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
-            EffectRenderer.RENDER_VEHROT.put(vehicle.getEntityId(), rot);
+            SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
             //
 	        int i = getBrightness(x, y, z), j = i % 65536, k = i / 65536;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);

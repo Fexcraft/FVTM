@@ -34,6 +34,7 @@ public class SwivelPoint {
 	public SwivelPoint parent;
 	protected Vec3d position, prevpos;//, prerot;
 	private Axes axe = new Axes(), prevaxe = new Axes();
+	public ArrayList<SwivelPoint> subs = new ArrayList<>();
 	// sync
 	private static final int ticker = LandVehicle.servtick;
 	private int servticker;
@@ -168,6 +169,7 @@ public class SwivelPoint {
 	public void linkToParent(VehicleData data){
 		parent = data.getRotationPoint(parid);
 		if(parent.id.equals(id)) parent = null;
+		if(parent != null && !parent.subs.contains(this)) parent.subs.add(this);
 	}
 
 	public SwivelPoint clone(String string){
@@ -246,6 +248,14 @@ public class SwivelPoint {
 		Vec3d rel = axe.get_vector((float)x, (float)y, (float)z);
 		if(parent != null){
 			return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
+		}
+		return rel;
+	}
+
+	public Vec3d getPrevRelativeVector(double x, double y, double z){
+		Vec3d rel = prevaxe.get_vector((float)x, (float)y, (float)z);
+		if(parent != null){
+			return parent.getPrevRelativeVector(prevpos.x + rel.x, prevpos.y + rel.y, prevpos.z + rel.z);
 		}
 		return rel;
 	}

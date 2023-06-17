@@ -2,14 +2,11 @@ package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -17,6 +14,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import org.lwjgl.opengl.GL11;
 
 public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFactory<LandVehicle> {
 
@@ -50,32 +48,23 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
             //
             GL11.glPushMatrix();
             RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
-            {
-	            GL11.glRotatef(180f, 0f, 0f, 1f);
-	            Model modVehicle = vehicle.getVehicleData().getType().getModel();
-	            if(modVehicle != null){
-	                this.bindTexture(vehicle.getVehicleData().getCurrentTexture());
-	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false));
-	                if(vehicle.getVehicleData().getParts().size() > 0){
-	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
-	                    	TexUtil.bindTexture(entry.getValue().getCurrentTexture());
-	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
-	                    		GL11.glPushMatrix();
-	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
-		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
-	            	            GL11.glPopMatrix();
-	                    	}
-	                    	else{
-		                    	entry.getValue().getInstalledPos().translate();
-		                    	entry.getValue().getInstalledRot().rotate();
-		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
-		                    	entry.getValue().getInstalledRot().rotateR();
-		                        entry.getValue().getInstalledPos().translateR();
-	                    	}
-	                	}
-	                }
-	            }
-            }
+			{
+				Model modVehicle = vehicle.getVehicleData().getType().getModel();
+				if(modVehicle != null){
+					GL11.glPushMatrix();
+					GL11.glRotatef(180f, 0f, 0f, 1f);
+					TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
+					modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false));
+					GL11.glPopMatrix();
+				}
+				else {
+					TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
+					DebugModels.CENTERSPHERE.render(1);
+				}
+				if(vehicle.getVehicleData().getParts().size() > 0){
+					VehicleRenderer.renderPoint(vehicle.getRotPoint(), vehicle, vehicle.getVehicleData(), cache, ticks);
+				}
+			}
             EffectRenderer.renderHotInstallInfo(vehicle);
             GL11.glPopMatrix();
             //

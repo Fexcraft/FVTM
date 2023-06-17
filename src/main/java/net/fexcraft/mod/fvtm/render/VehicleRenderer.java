@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -10,8 +11,8 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DebugModels;
-import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -27,8 +28,8 @@ import org.lwjgl.opengl.GL11;
 
 public class VehicleRenderer {
 	
-	private static MutableBlockPos pos =  new BlockPos.MutableBlockPos(0, 0, 0);
-	private static ArrayList<Entity> entities = new ArrayList<>();
+	private static final MutableBlockPos pos =  new BlockPos.MutableBlockPos(0, 0, 0);
+	private static final ArrayList<Entity> entities = new ArrayList<>();
 	
     public static void renderVehicles(World world, double cx, double cy, double cz, float ticks){
     	if(!Config.RENDER_VEHICLES_SEPARATELY) return;
@@ -48,20 +49,20 @@ public class VehicleRenderer {
         	//
         	SeparateRenderCache.SORTED_VEH_POS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x - cx, y - cy, z - cz);
-            GL11.glPushMatrix();
-            Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
-            GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
-            SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
 			if(Command.OTHER){
 				for(SwivelPoint point : vehicle.getVehicleData().getRotationPoints().values()){
-					Vec3d vec = point.getRelativeVector(0, 0, 0);
+					Vec3d vec = point.getRelativeVector(0, 0.1f, 0);
 					GL11.glTranslated(vec.x, vec.y, vec.z);
 					DebugModels.CENTERSPHERE.render(1f);
 					GL11.glTranslated(-vec.x, -vec.y, -vec.z);
 				}
 			}
+            GL11.glPushMatrix();
+			Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
+			GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
+			GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+            SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
             //
 	        int i = getBrightness(x, y, z), j = i % 65536, k = i / 65536;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
@@ -69,30 +70,37 @@ public class VehicleRenderer {
             GL11.glPushMatrix();
             RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
             {
-	            GL11.glRotatef(180f, 0f, 0f, 1f);
 	            Model modVehicle = vehicle.getVehicleData().getType().getModel();
 	            if(modVehicle != null){
+					GL11.glPushMatrix();
+					GL11.glRotatef(180f, 0f, 0f, 1f);
 	                TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
 	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false));
-	                if(vehicle.getVehicleData().getParts().size() > 0){
-	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
-	                    	TexUtil.bindTexture(entry.getValue().getCurrentTexture());
-	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
-	                    		GL11.glPushMatrix();
-	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
-		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
-	            	            GL11.glPopMatrix();
-	                    	}
-	                    	else{
-		                    	entry.getValue().getInstalledPos().translate();
-		                    	entry.getValue().getInstalledRot().rotate();
-		                        entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
-		                    	entry.getValue().getInstalledRot().rotateR();
-		                        entry.getValue().getInstalledPos().translateR();
-	                    	}
-	                	}
-	                }
+					GL11.glPopMatrix();
 	            }
+				else {
+					TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
+					DebugModels.CENTERSPHERE.render(1);
+				}
+				if(vehicle.getVehicleData().getParts().size() > 0){
+					renderPoint(vehicle.getRotPoint(), vehicle, vehicle.getVehicleData(), cache, ticks);
+					/*for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
+						TexUtil.bindTexture(entry.getValue().getCurrentTexture());
+						if(entry.getValue().isInstalledOnSwivelPoint()){
+							GL11.glPushMatrix();
+							PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
+							entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
+							GL11.glPopMatrix();
+						}
+						else{
+							entry.getValue().getInstalledPos().translate();
+							entry.getValue().getInstalledRot().rotate();
+							entry.getValue().getType().getModel().render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, entry.getValue(), entry.getKey(), false));
+							entry.getValue().getInstalledRot().rotateR();
+							entry.getValue().getInstalledPos().translateR();
+						}
+					}*/
+				}
             }
             EffectRenderer.renderHotInstallInfo(vehicle);
             GL11.glPopMatrix();
@@ -105,6 +113,35 @@ public class VehicleRenderer {
         }
 		GL11.glPopMatrix();
     }
+
+	public static void renderPoint(SwivelPoint point, GenericVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+		ArrayList<Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
+		if(parts == null) return;
+		boolean veh = false;
+		GL11.glPushMatrix();
+		if(!(veh = point.isVehicle())){
+			Vec3d temp0 = point.getPos();
+			Vec3d temp1 = point.getPrevPos();
+			Vec3d temp2 = new Vec3d(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
+			Vec3f rot = EffectRenderer.getRotations(point, ticks);
+			GL11.glTranslated(-temp2.x, -temp2.y, temp2.z);
+			GL11.glRotatef(-rot.x, 0.0F, 1.0F, 0.0F);
+			GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+		}
+		GL11.glRotatef(180f, 0f, 0f, 1f);
+		for(Entry<String, PartData> entry : parts){
+			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
+			entry.getValue().getInstalledPos().translate();
+			entry.getValue().getInstalledRot().rotate();
+			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle, cache, entry.getValue(), entry.getKey(), false));
+			entry.getValue().getInstalledRot().rotateR();
+			entry.getValue().getInstalledPos().translateR();
+		}
+		GL11.glRotatef(-180f, 0f, 0f, 1f);
+		for(SwivelPoint sub : point.subs) renderPoint(sub, vehicle, data, cache, ticks);
+		GL11.glPopMatrix();
+	}
 
 	@Deprecated
 	public static int getBrightness(double x, double y, double z){

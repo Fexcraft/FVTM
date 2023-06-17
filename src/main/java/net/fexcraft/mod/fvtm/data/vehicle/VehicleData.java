@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
@@ -36,6 +36,7 @@ import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.ColorFunction;
@@ -74,6 +75,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected TreeMap<String, PartSlots> psproviders = new TreeMap<>();
+	public HashMap<String, ArrayList<Entry<String, PartData>>> sorted_parts = new HashMap<>();
 	protected SwivelPoint rootpoint;
 	protected String displayname;
 
@@ -387,6 +389,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				PartSlots ps = data.getValue().getFunction(PartSlotsFunction.class, "fvtm:part_slots").getPartSlotss();
 				if(!ps.isEmpty()) psproviders.put(data.getKey(), ps);
 			}
+		}
+		if(type.getModel() != null){
+			((VehicleModel)type.getModel()).sortparts(this);
 		}
 	}
 

@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAIL_BLOCKS;
+import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
+
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -15,9 +17,8 @@ import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -214,11 +215,11 @@ public class RailPlacingUtil {
 			}
 			else{
 				Track track = new Track(junc, ntrack.points.toArray(new GridV3D[0]), gauge);
-				if(track.length > Config.MAX_RAIL_TRACK_LENGTH){
+				if(track.length > MAX_RAIL_TRACK_LENGTH){
 					Print.chat(player, "&cTrack length exceeds the configured max length.");
 					return;
 				}
-				track.blockless = Config.DISABLE_RAIL_BLOCKS;
+				track.blockless = DISABLE_RAIL_BLOCKS;
 				Junction second = sys.getJunction(track.start);
 				if(second == null){
 					sys.addJunction(track.start);

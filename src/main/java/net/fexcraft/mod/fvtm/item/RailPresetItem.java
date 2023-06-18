@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -16,10 +19,9 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.VecUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,11 +76,11 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || player.isSneaking() || Config.DISABLE_RAILS){ return EnumActionResult.PASS; }
+        if(world.isRemote || player.isSneaking() || DISABLE_RAILS){ return EnumActionResult.PASS; }
         RailSystem syscap =SystemManager.get(Systems.RAIL, world);
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);
-        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID);
         Junction start = syscap.getJunction(vector);
         if(start != null && start.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");
@@ -117,7 +119,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		if(con % seg > seg / 2) con++;
 		for(int i = 0; i < vecs.length; i++){
 			if(i != 0 && i != vecs.length - 1) vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector));
-			else vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector), Config.RAIL_PLACING_GRID);
+			else vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector), RAIL_PLACING_GRID);
 		} return vecs;
 	}
 

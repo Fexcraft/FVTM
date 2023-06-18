@@ -73,18 +73,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	public Block(){}
 
 	@Override
-	public Block setRegistryName(ResourceLocation name){
-		registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<Block> getRegistryType(){
-		return Block.class;
 	}
 
 	@Override

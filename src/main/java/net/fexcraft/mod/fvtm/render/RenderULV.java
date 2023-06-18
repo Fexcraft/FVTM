@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -9,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +35,7 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
 
     @Override
     public void doRender(ULandVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
-        if(Config.RENDER_VEHICLES_SEPARATELY || vehicle.getVehicleData() == null || vehicle.rotpoint == null){ return; }
+        if(RENDER_VEHICLES_SEPARATELY || vehicle.getVehicleData() == null || vehicle.rotpoint == null){ return; }
         GL11.glPushMatrix();
         {
         	SeparateRenderCache.SORTED_VEH_POS.put(vehicle.getEntityId(), new double[]{ x, y, z });

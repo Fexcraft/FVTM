@@ -1,18 +1,18 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_PARTICLES;
+
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction.EmitterData;
 import net.minecraft.client.Minecraft;
@@ -124,7 +124,7 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	public void add(GenericVehicle vehicle){
-		if(Config.DISABLE_PARTICLES) return;
+		if(DISABLE_PARTICLES) return;
 		for(Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:particle_emitter")) continue;
 			ParticleEmitterFunction func = entry.getValue().getFunction("fvtm:particle_emitter");

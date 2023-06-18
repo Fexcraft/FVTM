@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
+import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +53,6 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
@@ -336,7 +338,7 @@ public class Addon extends TypeCore<Addon> {
 		switch(data){
 			case BLOCK:{
 				Block block = (Block)core;
-				if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
+				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 					return;
 				}
@@ -360,7 +362,7 @@ public class Addon extends TypeCore<Addon> {
 			}
 			case VEHICLE:{
 				Vehicle veh = (Vehicle)core;
-				if(Config.RENDER_VEHILE_MODELS_AS_ITEMS && !veh.no3DItemModel()){
+				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.no3DItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
 					return;
 				}

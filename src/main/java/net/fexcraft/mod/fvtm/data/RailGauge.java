@@ -8,11 +8,9 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
@@ -23,8 +21,8 @@ import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -53,18 +51,8 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 	public RailGauge(){}
 
 	@Override
-	public RailGauge setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<RailGauge> getRegistryType(){
-		return RailGauge.class;
 	}
 
 	@Override

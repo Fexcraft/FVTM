@@ -1,11 +1,12 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -19,10 +20,9 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -192,7 +192,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private boolean CMODE(){
-		if(!Config.VEHICLES_NEED_FUEL) return true;
+		if(!VEHICLES_NEED_FUEL) return true;
 		if(entity != null){
 	    	Entity con = entity.getDriver();
 	    	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;

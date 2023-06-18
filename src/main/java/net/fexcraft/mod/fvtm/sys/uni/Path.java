@@ -1,11 +1,12 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import static net.fexcraft.mod.fvtm.Config.RAIL_SEGMENTATOR;
+
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.Vector3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -76,7 +77,7 @@ public abstract class Path {
 	private V3D[] curve(V3D[] vecpoints){
 		ArrayList<V3D> vecs = new ArrayList<V3D>();
 		double length = getLength(vecpoints);
-		double increment = 1 / length / Config.RAIL_SEGMENTATOR, d = 0;
+		double increment = 1 / length / RAIL_SEGMENTATOR, d = 0;
 		while(d < 1){
 			V3D[] moved = vecpoints;
 			while(moved.length > 2){

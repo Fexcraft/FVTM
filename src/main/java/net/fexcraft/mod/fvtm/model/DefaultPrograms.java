@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.model;
 
+import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,7 +37,6 @@ import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.Minecraft;
@@ -1123,7 +1125,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
-			if(data.itemrender || !data.separaterender || Config.DISABLE_LIGHT_BEAMS) return;
+			if(data.itemrender || !data.separaterender || DISABLE_LIGHT_BEAMS) return;
 			skipped = false;
 			if(!predicate.test(data)){
 				skipped = true;
@@ -1167,7 +1169,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void postRender(ModelGroup list, ModelRenderData data){
-			if(data.itemrender || !data.separaterender || Config.DISABLE_LIGHT_BEAMS) return;
+			if(data.itemrender || !data.separaterender || DISABLE_LIGHT_BEAMS) return;
 			if(skipped){
 				skipped = false;
 				return;
@@ -1297,13 +1299,13 @@ public class DefaultPrograms {
 		Print.debug("Setting up blinker-toggle timer.");
 		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
-		while((mid += Config.BLINKER_INTERVAL) < date);
+		while((mid += BLINKER_INTERVAL) < date);
 		(BLINKER_TIMER = new Timer()).schedule(new TimerTask(){
 			@Override
 			public void run(){
 				BLINKER_TOGGLE = !BLINKER_TOGGLE;
 			}
-		}, new Date(mid), Config.BLINKER_INTERVAL);
+		}, new Date(mid), BLINKER_INTERVAL);
 	}
 	
 	public static class Gauge implements Program {

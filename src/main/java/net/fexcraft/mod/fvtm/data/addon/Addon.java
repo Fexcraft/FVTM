@@ -135,7 +135,7 @@ public class Addon extends TypeCore<Addon> {
 		if(obj.has("SupplyTextures")){
 			JsonObject supp = obj.get("SupplyTextures").getAsJsonObject();
 			supp.entrySet().forEach(entry -> {
-				supp_tex.put(entry.getKey(), new TextureSupply(entry.getKey(), entry.getValue().getAsJsonObject()));
+				supp_tex.put(entry.getKey(), new TextureSupply(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap()));
 			});
 		}
 		if(obj.has("WireDecos")){
@@ -215,18 +215,8 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	@Override
-	public Addon setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<Addon> getRegistryType(){
-		return Addon.class;
 	}
 	
 	public List<String> getAuthors(){
@@ -370,7 +360,7 @@ public class Addon extends TypeCore<Addon> {
 			}
 			default: break;
 		}
-		if(loc.isFullLite() || isItemModelMissing(core)){
+		if(loc.isConfigPack() || isItemModelMissing(core)){
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
 		}
 	}
@@ -387,7 +377,7 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	private void checkLangFile(TypeCore<?> core){
-		if(lang == null) lang = new File((loc.isLitePack() ? file : file.getParentFile()), (loc.isLitePack() ? "" : "/src/main/resources") + "/assets/" + registryname.getPath() + "/lang/en_us.lang");
+		if(lang == null) lang = new File((loc.isNotAMod() ? file : file.getParentFile()), (loc.isNotAMod() ? "" : "/src/main/resources") + "/assets/" + registryname.getPath() + "/lang/en_us.lang");
 		String regname = (core instanceof Block ? "tile." : "item.") + core.getRegistryName().toString() + ".name=";
 		if(!containsLangEntry(regname)){
 			try{
@@ -401,7 +391,7 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	private void checkItemJson(TypeCore<?> core, DataType data){
-		File json = new File((loc.isLitePack() ? file : file.getParentFile()), (loc.isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
+		File json = new File((loc.isNotAMod() ? file : file.getParentFile()), (loc.isNotAMod() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
 		if(!json.exists()){
 			if(!json.getParentFile().exists()) json.getParentFile().mkdirs();
 			JsonObject obj = new JsonObject();
@@ -420,7 +410,7 @@ public class Addon extends TypeCore<Addon> {
 	private static BufferedImage img, img_veh, img_part;
 
 	private void checkItemIcon(TypeCore<?> core, DataType data){
-		File icon = new File((loc.isLitePack() ? file : file.getParentFile()), (loc.isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");;
+		File icon = new File((loc.isNotAMod() ? file : file.getParentFile()), (loc.isNotAMod() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");;
 		if(!icon.exists()){
 			if(!icon.getParentFile().exists()) icon.getParentFile().mkdirs();
 			BufferedImage image = null;

@@ -11,12 +11,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -39,7 +39,7 @@ public class ConstPainter extends ConstGui {
 		super(player, world, x, y, z);
 		help_url += "#painter";
 		colorable = container.hasBlock() ? container.entity.getBlockData() : container.hasContainer() ? container.entity.getContainerData() : container.hasVehicle() ? container.entity.getVehicleData() : null;
-		palette_file = new File(Config.getConfig().getConfigFile().getParentFile(), "/fvtm/custom_palette.fvtm");
+		palette_file = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/custom_palette.fvtm");
 		if(!palette_file.exists()) palette_file.getParentFile().mkdirs();
 		loadCustomPalette();
 	}

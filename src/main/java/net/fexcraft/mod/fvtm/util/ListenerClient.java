@@ -1,10 +1,11 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
+
 import java.util.UUID;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
@@ -17,7 +18,6 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +45,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			case "config_sync":{
-				ULandVehicle.SYNC_RATE = packet.nbt.hasKey("u12_sync_rate") ? packet.nbt.getInteger("u12_sync_rate") : Config.U12_SYNC_RATE;
+				ULandVehicle.SYNC_RATE = packet.nbt.hasKey("u12_sync_rate") ? packet.nbt.getInteger("u12_sync_rate") : U12_SYNC_RATE;
 				return;
 			}
 			case "lock_state":{

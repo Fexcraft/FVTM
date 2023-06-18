@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAIL_BLOCKS;
 import static net.fexcraft.mod.fvtm.block.RailBlock.HEIGHT;
 
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
@@ -81,7 +81,7 @@ public class TrackPlacer {
 		RailGauge type = track.getGauge();
 		float width = type.getBlockWidth();
 		boolean creative = player != null && player.capabilities.isCreativeMode;
-		boolean regblocks = this.blocks && !Config.DISABLE_RAIL_BLOCKS;
+		boolean regblocks = this.blocks && !DISABLE_RAIL_BLOCKS;
 		if(register ? creative ? regblocks : useitems : (!track.blockless && regblocks)){
 			double angle, half = (width * 0.5f) - 0.25f;
 			ArrayList<GridV3D> path = new ArrayList<>();

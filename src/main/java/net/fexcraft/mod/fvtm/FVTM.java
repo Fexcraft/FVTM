@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.block.VPInfo;
@@ -71,7 +72,6 @@ import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.fexcraft.mod.uni.IDLManager;
@@ -102,13 +102,12 @@ import net.minecraftforge.fml.relauncher.Side;
  *
  */
 @Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION,
-	acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl;after:trackapi",
-	guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory")
+	acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl")
 public class FVTM {
 
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
-	public static final String VERSION = "3.8.73";
+	public static final String VERSION = "3.9.74";
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
@@ -118,8 +117,19 @@ public class FVTM {
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
 		IDLManager.INSTANCE[0] = new IDLM();
+		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
+		Config.addListener(() -> {
+			TrafficSignLibrary.load(true);
+			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
+			ULandVehicle.SYNC_RATE = Config.U12_SYNC_RATE;
+		});
+		if(event.getSide().isClient()){
+			Config.addListener(() -> {
+				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
+			});
+		}
+		//
 		REGISTERER = new AutoRegisterer(MODID);
-		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");

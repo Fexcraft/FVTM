@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni12;
 
+import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
@@ -45,7 +46,6 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -288,7 +288,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     
     @Override
     public void setDead(){
-        if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
+        if(VEHICLES_DROP_CONTENTS && !world.isRemote){
             for(String part : vehicle.getInventories()){
             	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory");
             	if(func == null) continue;
@@ -666,7 +666,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     @SideOnly(Side.CLIENT)
     @Override
     public boolean isInRangeToRenderDist(double dist){
-        return Config.RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
+        return RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
     }
     
     @Nullable
@@ -1020,7 +1020,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
             }//TODO TRACKED DEFINITION
             else*/{
-                val = acx * Config.U12_MOTION_SCALE;
+                val = acx * U12_MOTION_SCALE;
                 wheel.motionX *= 0.25;
                 wheel.motionZ *= 0.25;
                 wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
@@ -1197,7 +1197,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
     private boolean processConsumption(EngineFunction engine){
     	if(engine == null) return false;
-    	if(!Config.VEHICLES_NEED_FUEL || isDriverInCreative()) return true;
+    	if(!VEHICLES_NEED_FUEL || isDriverInCreative()) return true;
     	if(vehicle.getAttributeInteger("fuel_stored", 0) <= 0) return false;
     	if(accumulator < 20){
     		if(engine.isOn()){

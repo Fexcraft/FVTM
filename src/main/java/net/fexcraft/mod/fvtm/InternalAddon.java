@@ -1,11 +1,12 @@
 package net.fexcraft.mod.fvtm;
 
+import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
+
 import java.io.File;
 import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -14,7 +15,6 @@ import net.fexcraft.mod.fvtm.data.addon.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 
@@ -59,7 +59,7 @@ public class InternalAddon extends Addon {
 			obj.addProperty("TiesTexture", "fvtm:textures/blocks/standard_gauge_wood.png");
 			obj.addProperty("ModelTexture", "fvtm:textures/blocks/30px_standard_gauge.png");
 			obj.add("PreSets", new JsonArray());
-			data.register(gauge = new RailGauge().parse(obj)); int r = Config.RAIL_PLACING_GRID;
+			data.register(gauge = new RailGauge().parse(obj)); int r = RAIL_PLACING_GRID;
 			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new GridV3D(0, 0, 0, r), new GridV3D(4, 0, 0, r)).setSegmentation(8));
 			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new GridV3D(0, 0, 0, r), new GridV3D(8, 0, 0, r)).setSegmentation(8));
 			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new GridV3D(0, 0, 0, r), new GridV3D(16, 0, 0, r)).setSegmentation(8));

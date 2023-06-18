@@ -1,5 +1,10 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAIL_BLOCKS;
+import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
+import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -7,13 +12,11 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
@@ -21,16 +24,13 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Perms;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -92,32 +92,16 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || Config.DISABLE_RAILS){ return EnumActionResult.PASS; }
+        if(world.isRemote || DISABLE_RAILS){ return EnumActionResult.PASS; }
         RailSystem syscap = SystemManager.get(Systems.RAIL, world);
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
-        if(Config.USE_RAIL_MARKERS){
-        	RailPlacingUtil.place(world, player, stack, getType(), syscap, vector);
-			return EnumActionResult.SUCCESS;
-        }
-        if(player.isSneaking()){
-        	if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
-    			stack.getTagCompound().removeTag("fvtm:railpoints");
-    			Print.chat(player, "&bItem Point(s) Cache reset.");
-        	}
-        	else{
-        		if(Perms.RAIL_PLACER_GUI.has(player)){
-        			player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, world, getSlotOf(player, stack), 0, 0);
-        		}
-        	}
-			return EnumActionResult.SUCCESS;
-		}
-		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        return placeTrack(player, world, stack, syscap, vector, player, false);
+        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID);
+		RailPlacingUtil.place(world, player, stack, getType(), syscap, vector);
+		return EnumActionResult.SUCCESS;
     }
 	
 	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, GridV3D vector, ICommandSender sender, boolean noblocks){
@@ -145,12 +129,12 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
 			Track track = new Track(junk, getVectors(list), vector, type);
-			if(track.length > Config.MAX_RAIL_TRACK_LENGTH){
+			if(track.length > MAX_RAIL_TRACK_LENGTH){
 				Print.chat(sender, "&cTrack length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
 			Junction second = syscap.getJunction(track.start);
-			track.blockless = Config.DISABLE_RAIL_BLOCKS || noblocks;
+			track.blockless = DISABLE_RAIL_BLOCKS || noblocks;
 			if(second != null){
 				if(!TrackPlacer.set(sender, player, world, null, track).place().blocks(!noblocks).consume().result()) return EnumActionResult.SUCCESS;
 				second.addnew(track);

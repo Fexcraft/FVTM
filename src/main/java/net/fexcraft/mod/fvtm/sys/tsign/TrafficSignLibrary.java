@@ -7,15 +7,14 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;

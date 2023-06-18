@@ -309,21 +309,10 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 		return MultiBlockData.class;
 	}
 
-	@Override
-	public MultiBlock setRegistryName(ResourceLocation name){
-		registryname = name;
-		return this;
-	}
-
 	@Nullable
 	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<MultiBlock> getRegistryType(){
-		return MultiBlock.class;
 	}
 
 	@Override

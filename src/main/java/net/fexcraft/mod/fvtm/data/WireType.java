@@ -36,19 +36,8 @@ public class WireType extends TypeCore<WireType> implements Tabbed, ItemTexturea
 	public WireType(){}
 
 	@Override
-	public WireType setRegistryName(ResourceLocation name){
-		this.registryname = name;
-		return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<WireType> getRegistryType(){
-		return WireType.class;
 	}
 
 	@Override

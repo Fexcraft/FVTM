@@ -1,11 +1,12 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import static net.fexcraft.mod.fvtm.Config.WIRE_SEGMENTATOR;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.model.WireModel;
@@ -13,7 +14,6 @@ import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -108,7 +108,7 @@ public class Wire {
 	private V3D[] curve(V3D[] vecpoints){
 		ArrayList<V3D> vecs = new ArrayList<V3D>();
 		float length = getLength(vecpoints);
-		float increment = 1 / length / Config.WIRE_SEGMENTATOR;
+		float increment = 1 / length / WIRE_SEGMENTATOR;
 		double d = 0; while(d < 1){
 			V3D[] moved = vecpoints;
 			while(moved.length > 2){

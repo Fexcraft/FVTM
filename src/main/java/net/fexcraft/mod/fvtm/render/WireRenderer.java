@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
@@ -7,10 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.fexcraft.lib.common.math.*;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.TexturedVertex;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.WireModel;
@@ -27,13 +29,13 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class WireRenderer {
     
@@ -60,7 +62,7 @@ public class WireRenderer {
 	private static WireSystem wiredata;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
-    	if(Config.DISABLE_RAILS) return;
+    	if(DISABLE_RAILS) return;
 	    wiredata = SystemManager.get(Systems.WIRE, world);
 	    if(wiredata == null || wiredata.getRegions() == null) return;
         //

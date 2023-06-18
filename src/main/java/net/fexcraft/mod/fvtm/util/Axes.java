@@ -4,7 +4,6 @@ import static net.fexcraft.lib.common.Static.PI;
 import static net.fexcraft.lib.common.Static.toRadians;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
 import net.fexcraft.mod.fvtm.util.vector.Vector3f;
 import net.minecraft.entity.Entity;

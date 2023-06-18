@@ -31,18 +31,8 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemText
 	public Consumable(){}
 
 	@Override
-	public Consumable setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<Consumable> getRegistryType(){
-		return Consumable.class;
 	}
 
 	@Override

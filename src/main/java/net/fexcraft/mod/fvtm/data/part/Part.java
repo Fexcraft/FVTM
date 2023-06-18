@@ -73,18 +73,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	public Part(){}
 
 	@Override
-	public Part setRegistryName(ResourceLocation name){
-		registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<Part> getRegistryType(){
-		return Part.class;
 	}
 
 	@Override

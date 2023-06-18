@@ -19,18 +19,8 @@ public class Fuel extends TypeCore<Fuel> {
 	public Fuel(){}
 
 	@Override
-	public Fuel setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<Fuel> getRegistryType(){
-		return Fuel.class;
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
@@ -12,9 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
+public abstract class TypeCore<SELF> {
+
+	public ResourceLocation getRegistryName(){ return registryname; }
 	
 	public abstract SELF parse(JsonObject obj);
 	
@@ -38,7 +38,7 @@ public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
 	protected List<String> description;
 	protected String name;
 	protected Addon pack;
-	
+
 	//
 	
 	public static abstract class TypeCoreItem<SELF extends TypeCore<SELF>> extends Item {

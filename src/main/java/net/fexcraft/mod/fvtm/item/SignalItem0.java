@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -17,7 +19,6 @@ import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -63,7 +64,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 			return EnumActionResult.FAIL;
 		}
 		ItemStack stack = player.getHeldItem(hand);
-		GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+		GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID);
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		Junction junction = syscap.getJunction(vector, true);
 		if(junction == null){ return EnumActionResult.PASS; }

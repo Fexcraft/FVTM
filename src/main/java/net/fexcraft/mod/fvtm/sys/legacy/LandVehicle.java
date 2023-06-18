@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
@@ -42,7 +45,6 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -207,7 +209,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     
     @Override
     public void setDead(){
-        if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
+        if(VEHICLES_DROP_CONTENTS && !world.isRemote){
             for(String part : vehicle.getInventories()){
             	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory");
             	if(func == null) continue;
@@ -523,7 +525,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @SideOnly(Side.CLIENT)
     @Override
     public boolean isInRangeToRenderDist(double dist){
-        return Config.RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
+        return RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
     }
     
     @Nullable
@@ -774,7 +776,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		else{
 			if(getVehicleType().isWaterVehicle()){
 		        Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
+		        boolean canThrustCreatively = !VEHICLES_NEED_FUEL || isDriverInCreative();
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
 		        boolean consumed = processConsumption(engine);
 		        for(WheelEntity wheel : wheels){
@@ -838,7 +840,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 			}
 			else{
 				Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
+		        boolean canThrustCreatively = !VEHICLES_NEED_FUEL || isDriverInCreative();
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
 		        boolean consumed = processConsumption(engine);
 		        for(WheelEntity wheel : wheels){

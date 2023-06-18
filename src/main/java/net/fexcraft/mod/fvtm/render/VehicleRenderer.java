@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -32,7 +32,7 @@ public class VehicleRenderer {
 	private static final ArrayList<Entity> entities = new ArrayList<>();
 	
     public static void renderVehicles(World world, double cx, double cy, double cz, float ticks){
-    	if(!Config.RENDER_VEHICLES_SEPARATELY) return;
+    	if(!RENDER_VEHICLES_SEPARATELY) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //GL11.glTranslated(-cx, -cy, -cz);

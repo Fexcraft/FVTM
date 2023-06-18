@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,13 +21,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fexcraft.mod.fvtm.data.block.*;
-import org.apache.commons.io.FilenameUtils;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
@@ -37,6 +35,7 @@ import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLBlockModelLoader;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -45,12 +44,24 @@ import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.Cloth;
+import net.fexcraft.mod.fvtm.data.Consumable;
+import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.data.TextureSupply;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.*;
+import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
@@ -93,7 +104,6 @@ import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.*;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -137,6 +147,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.io.FilenameUtils;
 
 public class Resources {
 	
@@ -216,24 +227,12 @@ public class Resources {
 				Print.log("LiteAddon loading from ResourcePacks will be skipped.");
 			}
 			if(respackfile != null){
-				if(Config.LOAD_ALL_RESOURCEPACKS){
-					for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntriesAll()){
-						try{
-							checkEntry(entry.getResourcePack());
-						}
-						catch(Exception e){
-							e.printStackTrace();
-						}
+				for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntriesAll()){
+					try{
+						checkEntry(entry.getResourcePack());
 					}
-				}
-				else{
-					for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()){
-						try{
-							checkEntry(entry.getResourcePack());
-						}
-						catch(Exception e){
-							e.printStackTrace();
-						}
+					catch(Exception e){
+						e.printStackTrace();
 					}
 				}
 			}
@@ -242,7 +241,7 @@ public class Resources {
 			searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
 		}
 		searchAddonsInFolder(new File(configroot, "packs/"), AddonLocation.LITEPACK, true);
-		if(Config.LOAD_LITE_FROM_MODS) searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
+		if(Config.LOAD_PACKS_FROM_MODS) searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
 		//
 		//TODO check addon on/off state
 		if(event.getSide().isClient()){
@@ -957,7 +956,7 @@ public class Resources {
 		}
 		if(event.player.world != null && !event.player.world.isRemote){
 			NBTTagCompound cfgsync = new NBTTagCompound();
-			cfgsync.setInteger("u12_sync_rate", Config.U12_SYNC_RATE);
+			cfgsync.setInteger("u12_sync_rate", U12_SYNC_RATE);
 			cfgsync.setString("task", "config_sync");
 			cfgsync.setString("target_listener", Resources.UTIL_LISTENER);
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);

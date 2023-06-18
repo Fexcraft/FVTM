@@ -105,6 +105,7 @@ import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.function.*;
+import net.fexcraft.mod.uni.IDL;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -240,8 +241,8 @@ public class Resources {
 		else{
 			searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
 		}
-		searchAddonsInFolder(new File(configroot, "packs/"), AddonLocation.LITEPACK, true);
-		if(Config.LOAD_PACKS_FROM_MODS) searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.LITEPACK, false);
+		searchAddonsInFolder(new File(configroot, "packs/"), AddonLocation.CONFIGPACK, true);
+		if(Config.LOAD_PACKS_FROM_MODS) searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.CONFIGPACK, false);
 		//
 		//TODO check addon on/off state
 		if(event.getSide().isClient()){
@@ -535,7 +536,7 @@ public class Resources {
 		if(stream != null) return new Object[]{ stream };
 		try{
 			Addon addon = getAddon(resloc.getNamespace());
-			if(addon != null && addon.getLoc().isLitePack()){
+			if(addon != null && addon.getLoc().isConfigPack()){
 				if(addon.getContainerType() == ContainerType.DIR){
 					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
 					if(file.exists()) stream = new FileInputStream(file);
@@ -1151,8 +1152,9 @@ public class Resources {
 							break;
 						}
 					}
-					if(holder != null){
-						holder.getDefaultTextures().addAll(texsupp.textures());
+					if(holder == null) continue;
+					for(IDL tex : texsupp.textures()){
+						holder.getDefaultTextures().add((NamedResourceLocation)tex);
 					}
 				}
 			}
@@ -1217,7 +1219,7 @@ public class Resources {
 	public static void loadLitePackLang() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
 		ArrayList<Addon> lites = new ArrayList<>();
 		for(Addon addon : ADDONS){
-			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
+			if(addon.getLoc() == AddonLocation.CONFIGPACK) lites.add(addon);
 		}
 		if(lites.size() == 0) return;
 		i18n_locale = ObfuscationReflectionHelper.findField(net.minecraft.client.resources.I18n.class, "field_135054_a");
@@ -1278,7 +1280,7 @@ public class Resources {
 	public static void loadLitePackTextureLocations(){
 		ArrayList<Addon> lites = new ArrayList<>();
 		for(Addon addon : ADDONS){
-			if(addon.getLoc() == AddonLocation.LITEPACK) lites.add(addon);
+			if(addon.getLoc() == AddonLocation.CONFIGPACK) lites.add(addon);
 		}
 		if(lites.size() == 0) return;
 		for(Addon addon : lites){

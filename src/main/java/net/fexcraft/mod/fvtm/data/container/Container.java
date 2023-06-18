@@ -53,18 +53,8 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected boolean no3ditem;
 
 	@Override
-	public Container setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<Container> getRegistryType(){
-		return Container.class;
 	}
 
 	@Override

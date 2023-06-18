@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail.vis;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
@@ -10,7 +12,6 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -44,7 +45,6 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -164,7 +164,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void setDead(){
     	if(rek == null || rek.data() == null){ super.setDead(); return; }
-        if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
+        if(VEHICLES_DROP_CONTENTS && !world.isRemote){
             for(String part : rek.data().getInventories()){
             	InventoryFunction func = rek.data().getPart(part).getFunction("fvtm:inventory");
             	if(func == null) continue;
@@ -405,7 +405,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @SideOnly(Side.CLIENT) @Override
     public boolean isInRangeToRenderDist(double dist){
-        return Config.RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
+        return RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
     }
     
     @Nullable

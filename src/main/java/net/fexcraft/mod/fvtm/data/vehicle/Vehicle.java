@@ -69,19 +69,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected VehicleItem item;
 
 	@Override
-	public Vehicle setRegistryName(ResourceLocation name){
-		this.registryname = name;
-		return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<Vehicle> getRegistryType(){
-		return Vehicle.class;
 	}
 
 	@Override

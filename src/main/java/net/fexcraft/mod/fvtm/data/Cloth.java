@@ -40,18 +40,8 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	public Cloth(){}
 
 	@Override
-	public Cloth setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<Cloth> getRegistryType(){
-		return Cloth.class;
 	}
 
 	@Override

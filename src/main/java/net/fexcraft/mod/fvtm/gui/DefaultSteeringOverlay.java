@@ -1,12 +1,10 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import static net.fexcraft.mod.fvtm.Config.OVERLAY_ON_BOTTOM;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -22,13 +20,15 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Default Steering Overlay
@@ -281,11 +281,11 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks, GenericVehicle ent, VehicleData data){
 		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
-		int yoff = Config.OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
-		root.drawTexturedModalRect(0, yoff, 0, 0, 256, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
+		int yoff = OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
+		root.drawTexturedModalRect(0, yoff, 0, 0, 256, OVERLAY_ON_BOTTOM ? 40 : 45);
 		boolean wide = root.width > 256 + 158;
 		if(wide){
-			root.drawTexturedModalRect(root.width - 158, yoff, 0, root.toggables ? 166 : 211, 158, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
+			root.drawTexturedModalRect(root.width - 158, yoff, 0, root.toggables ? 166 : 211, 158, OVERLAY_ON_BOTTOM ? 40 : 45);
 		}
 		if(root.toggables) root.drawTexturedModalRect(root.width - 150 + (scroll % row * 16), yoff + 8 + (scroll >= row ? 16 : 0), 240, 240, 16, 16);
 		boolean noengine = !data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine");

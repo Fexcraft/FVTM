@@ -1,30 +1,29 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
 import java.util.Collection;
-import java.util.TreeMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.registry.CreativeTab;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.client.CTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class AddonTab extends CreativeTab {
-	
-    private static TreeMap<ResourceLocation, AddonTab> TABS = new TreeMap<>();
-    public static final String DEFAULT = "default";
+public class AddonTab extends CreativeTab implements CTab {
+
     private NonNullList<ItemStack> list;
     private int icon, sec;
 	private Addon addon;
 
 	public AddonTab(Addon addon, String string){
 		super(addon.getRegistryName().toString() + (string.equals(DEFAULT) ? "" : "." + string));
-		TABS.put(new ResourceLocation(super.getTabLabel()), this);
+		TABS.put(IDLManager.getIDLCached(super.getTabLabel()), this);
 		this.addon = addon;
 	}
 
@@ -50,11 +49,11 @@ public class AddonTab extends CreativeTab {
         } return icon >= list.size() ? ItemStack.EMPTY : list.get(icon);
     }
     
-    public static final AddonTab getTab(ResourceLocation addonid){
-    	return TABS.get(addonid);
+    public static final AddonTab getTab(IDL addonid){
+    	return (AddonTab)TABS.get(addonid);
     }
 
-	public static Collection<AddonTab> getTabs(){
+	public static Collection<CTab> getTabs(){
 		return TABS.values();
 	}
 

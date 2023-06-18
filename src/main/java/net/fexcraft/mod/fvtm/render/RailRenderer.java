@@ -1,11 +1,15 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+
 import java.util.ArrayList;
 
-import net.fexcraft.lib.common.math.*;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.TexturedVertex;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -23,10 +27,9 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,6 +44,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 public class RailRenderer {
     
@@ -162,7 +166,7 @@ public class RailRenderer {
     
     //@SubscribeEvent
     public static void renderRails(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
-    	if(Config.DISABLE_RAILS) return;
+    	if(DISABLE_RAILS) return;
 	    raildata = SystemManager.get(Systems.RAIL, world, RailSystem.class);
 	    if(raildata == null || raildata.getRegions() == null) return;
         //if(raildata.isLoading()) return;

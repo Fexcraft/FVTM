@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.wire;
 
+import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +9,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
@@ -25,7 +26,6 @@ import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -114,7 +114,7 @@ public class WireRelayContainer extends GenericContainer {
 					}
 					if(stack.getTagCompound().hasKey("fvtm:wirepoint")){
 						WireRelay relay0 = system.getRelay(new WireKey(stack.getTagCompound().getLong("fvtm:wirepoint"), stack.getTagCompound().getString("fvtm:wirepoint_slot")));
-						if(relay0.pos.dis(relay.pos) > Config.MAX_WIRE_LENGTH){
+						if(relay0.pos.dis(relay.pos) > MAX_WIRE_LENGTH){
 							Print.chat(player, "&cWire length exceeds the configured max length.");
 							player.closeScreen();
 							return;

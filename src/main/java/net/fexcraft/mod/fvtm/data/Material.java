@@ -34,18 +34,8 @@ public class Material extends TypeCore<Material> implements Tabbed, ItemTexturea
 	public Material(){}
 
 	@Override
-	public Material setRegistryName(ResourceLocation name){
-		this.registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<Material> getRegistryType(){
-		return Material.class;
 	}
 
 	@Override

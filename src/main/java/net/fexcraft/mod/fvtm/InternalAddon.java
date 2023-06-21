@@ -11,7 +11,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
-import net.fexcraft.mod.fvtm.data.addon.AddonTab;
+import net.fexcraft.mod.fvtm.data.impl.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.util.GridV3D;

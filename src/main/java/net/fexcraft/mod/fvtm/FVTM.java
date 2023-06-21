@@ -74,11 +74,19 @@ import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.client.CTab;
+import net.fexcraft.mod.uni.impl.ClothMaterialManager;
+import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
 import net.fexcraft.mod.uni.impl.IDLM;
+import net.fexcraft.mod.uni.item.ClothMaterial;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -116,6 +124,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
+		EnvInfo.CLIENT = event.getSide().isClient();
 		IDLManager.INSTANCE[0] = new IDLM();
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		Config.addListener(() -> {
@@ -123,11 +132,17 @@ public class FVTM {
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
 			ULandVehicle.SYNC_RATE = Config.U12_SYNC_RATE;
 		});
-		if(event.getSide().isClient()){
+		ClothMaterial.MANAGER[0] = new ClothMaterialManager();
+		FvtmRegistry.NONE_CLOTH_MAT = IDLManager.getIDLCached("fvtm:none");
+		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
+		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
+		if(EnvInfo.CLIENT){
 			Config.addListener(() -> {
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
 			});
+			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
 		}
+
 		//
 		REGISTERER = new AutoRegisterer(MODID);
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());

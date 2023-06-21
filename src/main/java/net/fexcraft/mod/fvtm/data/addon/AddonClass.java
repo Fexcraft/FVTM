@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
+@Deprecated
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AddonClass {

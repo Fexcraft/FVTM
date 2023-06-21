@@ -27,7 +27,7 @@ public class ClothItem extends ItemArmor implements ItemTex<Cloth> {
 	private Cloth type;
 	
 	public ClothItem(Cloth cloth){
-		super(cloth.getArMaterial(), 0, cloth.getEquitmentSlot());
+		super((ArmorMaterial)cloth.getMaterial().getLocalMaterial(), 0, cloth.getEquitmentSlot());
 		if(cloth.getMaxDamage() > 0) this.setMaxDamage(cloth.getMaxDamage());
 		//
         (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);

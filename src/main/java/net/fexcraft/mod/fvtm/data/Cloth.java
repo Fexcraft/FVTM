@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.data;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -15,9 +15,9 @@ import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.model.ClothModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,7 +31,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	protected ClothItem item;
 	protected String ctab, modelid;
 	protected EntityEquipmentSlot eq_slot;
-	protected ArmorMaterial material;
+	protected ClothMaterial material;
 	protected ClothModel model;
 	protected ModelData modeldata;
 	protected ResourceLocation texture;
@@ -69,17 +69,12 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 		return this;
 	}
 
-	private ArmorMaterial parseMaterial(JsonObject obj){
-		if(obj.has("ArmorMaterial") || obj.has("ClothMaterial")){
-			String mat = (obj.has("ArmorMaterial") ? obj.get("ArmorMaterial") : obj.get("ClothMaterial")).getAsString().toLowerCase();
-			if(mat.contains(":")){
-				return Resources.getClothMaterial(mat);
-			}
-			for(ArmorMaterial armat : ArmorMaterial.values()){
-				if(armat.getName().equals(mat)) return armat;
-			}
+	private ClothMaterial parseMaterial(JsonObject obj){
+		if(obj.has("ClothMaterial")){
+			String mat = obj.get("ClothMaterial").getAsString().toLowerCase();
+			return ClothMaterial.get(mat.contains(":") ? mat : getAddon().getRegistryName().getPath() + ":" + mat);
 		}
-		return Resources.NONE_MAT;
+		return ClothMaterial.get(FvtmRegistry.NONE_CLOTH_MAT);
 	}
 
 	@Override
@@ -118,7 +113,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 		return eq_slot;
 	}
 
-	public ArmorMaterial getArMaterial(){
+	public ClothMaterial getMaterial(){
 		return material;
 	}
 

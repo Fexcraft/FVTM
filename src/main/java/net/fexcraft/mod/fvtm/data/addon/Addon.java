@@ -37,6 +37,7 @@ import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.container.Container;
+import net.fexcraft.mod.fvtm.data.impl.AddonTab;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -53,12 +54,13 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
+import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -66,6 +68,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
+@Deprecated
 public class Addon extends TypeCore<Addon> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();
@@ -125,11 +128,7 @@ public class Addon extends TypeCore<Addon> {
 		this.registerer = new AutoRegisterer(this.getRegistryName().getPath());
 		if(obj.has("ClothMaterials")){
 			obj.get("ClothMaterials").getAsJsonObject().entrySet().forEach(entry -> {
-				JsonObject data = entry.getValue().getAsJsonObject();
-				int durr = JsonUtil.getIfExists(data, "durability", 1f).intValue();
-				int[] ams = data.has("damage_reduction") ? JsonUtil.getIntegerArray(data.get("damage_reduction").getAsJsonArray()) : new int[]{ 0, 0, 0, 0 };
-				float tgh = JsonUtil.getIfExists(obj, "toughness", 0f).floatValue();
-				armats.put(entry.getKey(), EnumHelper.addArmorMaterial(entry.getKey(), Resources.NULL_TEXTURE.toString(), durr, ams, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, tgh));
+				armats.put(entry.getKey(), ((ClothMaterialWrapper) ClothMaterial.create(IDLManager.getIDLCached(registryname.getPath() + ":" + entry.getKey()), JsonHandler.parse(entry.getValue().toString(), true).asMap())).material);
 			});
 		}
 		if(obj.has("SupplyTextures")){

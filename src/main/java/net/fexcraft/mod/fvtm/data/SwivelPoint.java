@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Axes;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.handler.SPM_DI;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
@@ -50,7 +51,7 @@ public class SwivelPoint {
 		axe.set_rotation(map.getFloat("yaw", 0), map.getFloat("pitch", 0), map.getFloat("roll", 0), true);
 		if(map.has("movers")){
 			movers = new ArrayList<>();
-			JsonObject movs = map.get("movers");
+			JsonValue movs = map.get("movers");
 			if(movs.isMap()){
 				movs.asMap().entries().forEach(entry -> {
 					parseMover(entry.getKey(), entry.getValue());
@@ -64,13 +65,13 @@ public class SwivelPoint {
 		}
 	}
 
-	private void parseMover(String key, JsonObject json){
+	private void parseMover(String key, JsonValue json){
 		if(json.isMap()){
 			JsonMap map = json.asMap();
 			if(map.has("class")){
 	            try{
 	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(map.get("class").string_value().replace(".class", ""));
-	            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(map));
+	            	movers.add(clazz.getConstructor(JsonValue.class).newInstance(map));
 	            }
 	            catch(Exception e){
 	            	e.printStackTrace();
@@ -248,14 +249,6 @@ public class SwivelPoint {
 		Vec3d rel = axe.get_vector((float)x, (float)y, (float)z);
 		if(parent != null){
 			return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
-		}
-		return rel;
-	}
-
-	public Vec3d getPrevRelativeVector(double x, double y, double z){
-		Vec3d rel = prevaxe.get_vector((float)x, (float)y, (float)z);
-		if(parent != null){
-			return parent.getPrevRelativeVector(prevpos.x + rel.x, prevpos.y + rel.y, prevpos.z + rel.z);
 		}
 		return rel;
 	}

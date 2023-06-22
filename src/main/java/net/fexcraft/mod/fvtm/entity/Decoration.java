@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     		buffer.writeInt(size);
     		buffer.writeInt(decos.size());
     		for(DecorationData deco : decos){
-    			ByteBufUtils.writeTag(buffer, deco.write());
+    			ByteBufUtils.writeTag(buffer, deco.write().cast());
     		}
     	}
     	catch(Exception e){
@@ -61,7 +62,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         	decos.clear();
         	int amount = buffer.readInt();
         	for(int i = 0; i < amount; i++){
-        		decos.add(new DecorationData(ByteBufUtils.readTag(buffer), world.isRemote));
+        		decos.add(new DecorationData(new TagCWI(ByteBufUtils.readTag(buffer)), world.isRemote));
         	}
         	checksize();
     	}
@@ -76,7 +77,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
         decos.clear();
         if(compound.hasKey("decorations")){
         	NBTTagList list = (NBTTagList)compound.getTag("decorations");
-        	for(int i = 0; i < list.tagCount(); i++) decos.add(new DecorationData(list.getCompoundTagAt(i), world.isRemote));
+        	for(int i = 0; i < list.tagCount(); i++) decos.add(new DecorationData(new TagCWI(list.getCompoundTagAt(i)), world.isRemote));
         }
         checksize();
     }
@@ -94,7 +95,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     protected void writeEntityToNBT(NBTTagCompound compound){
     	compound.setInteger("size", size);
     	NBTTagList list = new NBTTagList();
-    	for(DecorationData deco : decos) list.appendTag(deco.write());
+    	for(DecorationData deco : decos) list.appendTag(deco.write().cast());
     	if(list.tagCount() > 0) compound.setTag("decorations", list);
     }
     

@@ -57,6 +57,8 @@ import net.fexcraft.mod.fvtm.model.TrafficSignPrograms;
 import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.render.*;
+import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
+import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -80,7 +82,9 @@ import net.fexcraft.mod.uni.client.CTab;
 import net.fexcraft.mod.uni.impl.ClothMaterialManager;
 import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
 import net.fexcraft.mod.uni.impl.IDLM;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ClothMaterial;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.util.ResourceLocation;
@@ -126,6 +130,7 @@ public class FVTM {
 	public void initPre(FMLPreInitializationEvent event){
 		EnvInfo.CLIENT = event.getSide().isClient();
 		IDLManager.INSTANCE[0] = new IDLM();
+		TagCW.IMPL[0] = TagCWI.class;
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		Config.addListener(() -> {
 			TrafficSignLibrary.load(true);
@@ -141,8 +146,8 @@ public class FVTM {
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
 			});
 			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
+			ConditionRegistry.BUILDER = CondBuilder.run();
 		}
-
 		//
 		REGISTERER = new AutoRegisterer(MODID);
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());

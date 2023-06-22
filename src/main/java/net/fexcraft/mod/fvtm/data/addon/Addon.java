@@ -27,6 +27,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fexcraft.app.json.JsonHandler;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
@@ -138,7 +139,7 @@ public class Addon extends TypeCore<Addon> {
 			});
 		}
 		if(obj.has("WireDecos")){
-			Resources.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), obj.get("WireDecos").getAsJsonObject());
+			Resources.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), JsonHandler.parse(obj.get("WireDecos").toString(), true).asMap());
 		}
 		if(obj.has("Particles") && Static.isClient()){
 			JsonObject par = obj.get("Particles").getAsJsonObject();
@@ -149,7 +150,7 @@ public class Addon extends TypeCore<Addon> {
 		if(obj.has("Conditions")){
 			JsonObject par = obj.get("Conditions").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : par.entrySet()){
-				net.fexcraft.app.json.JsonObject<?> jsn = JsonHandler.parse(entry.getValue().toString(), true);
+				JsonValue<?> jsn = JsonHandler.parse(entry.getValue().toString(), true);
 				Condition cond = null;
 				if(jsn.isArray()){
 					cond = new Condition(registryname.getPath() + ":" + entry.getKey(), jsn.asArray());

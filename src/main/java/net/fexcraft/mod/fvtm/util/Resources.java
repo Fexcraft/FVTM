@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
 
 import java.io.Closeable;
 import java.io.File;
@@ -93,7 +95,6 @@ import net.fexcraft.mod.fvtm.model.loaders.FMFModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.JTMTModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
 import net.fexcraft.mod.fvtm.model.loaders.SMPTBJavaModelLoader;
-import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -175,9 +176,6 @@ public class Resources {
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
-	public static final HashMap<String, JsonMap> WIRE_DECO_CACHE = new HashMap<>();
-	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
-	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
 	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;

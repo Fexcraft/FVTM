@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.data.addon;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,6 +35,7 @@ import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -139,7 +142,7 @@ public class Addon extends TypeCore<Addon> {
 			});
 		}
 		if(obj.has("WireDecos")){
-			Resources.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), JsonHandler.parse(obj.get("WireDecos").toString(), true).asMap());
+			FvtmRegistry.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), JsonHandler.parse(obj.get("WireDecos").toString(), true).asMap());
 		}
 		if(obj.has("Particles") && Static.isClient()){
 			JsonObject par = obj.get("Particles").getAsJsonObject();
@@ -194,10 +197,10 @@ public class Addon extends TypeCore<Addon> {
 				JsonObject decos = entry.getValue().getAsJsonObject();
 				for(Entry<String, JsonElement> entr : decos.entrySet()){
 					String key = getRegistryName().getPath() + ":" + entr.getKey();
-					Resources.DECORATIONS.put(key, new DecorationData(key, category, entr.getValue()));
+					DECORATIONS.put(key, new DecorationData(key, category, JsonHandler.parse(entr.getValue().toString(), true)));
 				}
-				if(decos.size() > 0 && !Resources.DECORATION_CATEGORIES.contains(category)){
-					Resources.DECORATION_CATEGORIES.add(category);
+				if(decos.size() > 0 && !DECORATION_CATEGORIES.contains(category)){
+					DECORATION_CATEGORIES.add(category);
 				}
 			}
 		}

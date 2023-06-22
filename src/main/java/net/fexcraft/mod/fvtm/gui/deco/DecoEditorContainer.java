@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.gui.deco;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
+
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -22,7 +24,7 @@ public class DecoEditorContainer extends GenericContainer {
 	public DecoEditorContainer(EntityPlayer player, World world, int entid){
 		super(player);
 		entity = (Decoration)world.getEntityByID(entid);
-		if(Resources.DECORATION_CATEGORIES.isEmpty()){
+		if(DECORATION_CATEGORIES.isEmpty()){
 			player.closeScreen();
 			Print.chat(player, "error, no decorations installed");
 		}
@@ -34,7 +36,7 @@ public class DecoEditorContainer extends GenericContainer {
 		String cargo = packet.getString("cargo");
 		switch(cargo){
 			case "add":{
-				DecorationData deco = Resources.DECORATIONS.get(packet.getString("key"));
+				DecorationData deco = DECORATIONS.get(packet.getString("key"));
 				entity.decos.add(deco.copy());
 				if(side.isServer()) send(Side.CLIENT, packet);
 				else{

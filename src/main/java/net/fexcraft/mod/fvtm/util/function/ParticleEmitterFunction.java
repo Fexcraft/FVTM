@@ -6,18 +6,16 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -63,7 +61,7 @@ public class ParticleEmitterFunction extends StaticFunction {
 		public EmitterData(JsonObject obj){
 			Pos pos = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true) : Pos.NULL;
 			this.pos = new Pos(pos.x, -pos.y, -pos.z);
-			particle = obj.has("particle") ? Resources.PARTICLES.get(obj.get("particle").getAsString()) : null;
+			particle = obj.has("particle") ? FvtmRegistry.PARTICLES.get(obj.get("particle").getAsString()) : null;
 			frequency = obj.has("frequency") ? obj.get("frequency").getAsInt() : 0;
 			condition = obj.has("condition") ? obj.get("condition").getAsString() : null;
 			if(obj.has("direction")){

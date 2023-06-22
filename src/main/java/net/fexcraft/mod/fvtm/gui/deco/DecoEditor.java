@@ -1,17 +1,18 @@
 package net.fexcraft.mod.fvtm.gui.deco;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 
-import javax.swing.JColorChooser;
+import javax.swing.*;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
@@ -39,7 +40,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 		this.xSize = this.ySize = 256;
 		this.deftexrect = false;
 		this.defbackground = false;
-		if(Resources.DECORATION_CATEGORIES.isEmpty()){
+		if(DECORATION_CATEGORIES.isEmpty()){
 			player.closeScreen();
 		}
 		container.gui = this;
@@ -51,7 +52,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 		buttons.put("l_prev", new BasicButton("prev", 2, 2, 2, 2, 12, 12, true){
 			public boolean onclick(int mx, int my, int button){
 				category--;
-				if(category < 0) category = Resources.DECORATION_CATEGORIES.size() - 1;
+				if(category < 0) category = DECORATION_CATEGORIES.size() - 1;
 				updateCategorySearch();
 				return true;
 			}
@@ -59,7 +60,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 		buttons.put("l_next", new BasicButton("next", 125, 2, 125, 2, 12, 12, true){
 			public boolean onclick(int mx, int my, int button){
 				category++;
-				if(category >= Resources.DECORATION_CATEGORIES.size()) category = 0;
+				if(category >= DECORATION_CATEGORIES.size()) category = 0;
 				updateCategorySearch();
 				return true;
 			}
@@ -334,7 +335,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 			fields.get("rot" + i).setText(miss ? "0" : (i == 0 ? data.rotx : i == 1 ? data.roty : data.rotz) + "");
 			fields.get("scl" + i).setText(miss ? "0" : (i == 0 ? data.sclx : i == 1 ? data.scly : data.sclz) + "");
 		}
-		texts.get("texc").string = miss ? "" : data.textures.get(data.seltex).getName();
+		texts.get("texc").string = miss ? "" : data.textures.get(data.seltex).name();
 		selcol = colidx;
 		if(!miss) colors.addAll(data.getColorChannels().keySet());
 		if(selcol >= colors.size() || selcol < 0) selcol = 0;
@@ -346,7 +347,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	}
 	
 	protected void updateCategorySearch(){
-		texts.get("cat").string = Resources.DECORATION_CATEGORIES.get(category);
+		texts.get("cat").string = DECORATION_CATEGORIES.get(category);
 		texts.get("cat").visible = !search;
 		fields.get("search").setVisible(search);
 		updateResults();
@@ -355,13 +356,13 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	protected void updateResults(){
 		results.clear();
 		if(search){
-			for(DecorationData deco : Resources.DECORATIONS.values()){
+			for(DecorationData deco : DECORATIONS.values()){
 				if(deco.key().contains(searchstr) || format(deco.key()).contains(searchstr)) results.add(deco);
 			}
 		}
 		else{
-			String cat = Resources.DECORATION_CATEGORIES.get(category);
-			for(DecorationData deco : Resources.DECORATIONS.values()){
+			String cat = DECORATION_CATEGORIES.get(category);
+			for(DecorationData deco : DECORATIONS.values()){
 				if(deco.category().equals(cat)) results.add(deco);
 			}
 		}

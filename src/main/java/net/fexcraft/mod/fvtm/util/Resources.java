@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
@@ -22,8 +23,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
@@ -174,7 +176,7 @@ public class Resources {
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
-	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
+	public static final HashMap<String, JsonMap> WIRE_DECO_CACHE = new HashMap<>();
 	public static final HashMap<String, DecorationData> DECORATIONS = new HashMap<>();
 	public static final ArrayList<String> DECORATION_CATEGORIES = new ArrayList<>();
 	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
@@ -1167,8 +1169,8 @@ public class Resources {
 	}
 
 	public static void loadWireDecorations(boolean client){
-		for(Entry<String, JsonObject> cache : WIRE_DECO_CACHE.entrySet()){
-			for(Entry<String, JsonElement> entry : cache.getValue().entrySet()){
+		for(Entry<String, JsonMap> cache : WIRE_DECO_CACHE.entrySet()){
+			for(Entry<String, JsonValue<?>> entry : cache.getValue().entries()){
 				if(client){
 					parseWireDecoModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
 				}
@@ -1179,20 +1181,22 @@ public class Resources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private static void parseWireDecoModel(String key, JsonElement value){
+	private static void parseWireDecoModel(String key, JsonValue value){
 		String name = null;
-		JsonArray array = null;
-		if(value.isJsonArray()){
-			array = value.getAsJsonArray();
-			name = array.get(0).getAsString();
+		List<JsonValue<?>> array = null;
+		if(value.isArray()){
+			array = value.asArray().value;
+			name = array.get(0).string_value();
 		}
 		else{
-			name = value.getAsString();
+			name = value.string_value();
 		}
 		WireModel model = (WireModel)getModel(name, new ModelData(), WireModel.class);
-		if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).getAsString()));
-		if(array.size() > 2) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
-		if(array.size() > 3) model.decotype(array.get(3).getAsString());
+		if(array != null){
+			if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).string_value()));
+			if(array.size() > 2) model.accepts(array.get(2).asArray().toStringList());
+			if(array.size() > 3) model.decotype(array.get(3).string_value());
+		}
 		WireModel.DECOS.put(key, model.key(key));
 	}
 	

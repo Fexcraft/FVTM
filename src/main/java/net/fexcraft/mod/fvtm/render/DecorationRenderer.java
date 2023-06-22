@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -52,7 +53,7 @@ public class DecorationRenderer {
 			            if(data.rotz != 0f) GL11.glRotatef(data.rotz, 0, 0, 1);
 			            if(data.rotx != 0f) GL11.glRotatef(data.rotx, 1, 0, 0);
 			            if(data.sclx != 1f || data.scly != 1f || data.sclz != 1f) GL11.glScalef(data.sclx, data.scly, data.sclz);
-						TexUtil.bindTexture(data.textures.get(data.seltex));
+						TexUtil.bindTexture((ResourceLocation)data.textures.get(data.seltex));
 						data.model.render(RENDERDATA.set(data, ent, cache));
 						GL11.glPopMatrix();
 					}

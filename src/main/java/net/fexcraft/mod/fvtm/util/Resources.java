@@ -168,7 +168,6 @@ public class Resources {
 	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
-	public static HashMap<String, Particle> PARTICLES = new HashMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final HashMap<String, Model> MODELS = new HashMap<>();

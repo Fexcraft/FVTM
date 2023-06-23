@@ -364,7 +364,7 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue(Properties.FACING) == facing) == val;
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(Properties.FACING) == facing) == val;
 		}
 
 		@Override
@@ -390,7 +390,7 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue(Properties.ROTATION) == rot) == val;
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(Properties.ROTATION) == rot) == val;
 		}
 
 		@Override
@@ -415,9 +415,9 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			IProperty prop = gp(data.blockstate);
-			Print.debug(prop.getName() + " " + data.blockstate.getValue(prop) + " " + key + " " + value + " " + bool);
-			return data.blockstate != null && (data.blockstate.getValue(prop).toString().equals(value)) == bool;
+			IProperty prop = gp((IBlockState)data.blockstate);
+			Print.debug(prop.getName() + " " + ((IBlockState)data.blockstate).getValue(prop) + " " + key + " " + value + " " + bool);
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(prop).toString().equals(value)) == bool;
 		}
 
 		private IProperty<?> gp(IBlockState blockstate){

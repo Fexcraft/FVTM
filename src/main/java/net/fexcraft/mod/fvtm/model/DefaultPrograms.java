@@ -43,6 +43,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -1345,7 +1346,7 @@ public class DefaultPrograms {
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			current = attr.float_value() < minval ? minval : attr.float_value();
-			if(current > maxval(data.entity, data.vehicle)) current = maxval;
+			if(current > maxval((Entity)data.entity, data.vehicle)) current = maxval;
 			list.rotateAxis(minrot + ((current - minval) / valdiff()) * rotdiff, axis, true);
 		}
 
@@ -1561,7 +1562,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if(data.texture == null || data.tile == null) return;
-			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(data.tile.getBlockMetadata() / 4));
+			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata() / 4));
 		}
 
 		@Override
@@ -1580,7 +1581,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
-			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(data.tile.getBlockMetadata()));
+			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata()));
 		}
 
 		@Override
@@ -2161,7 +2162,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if(data.tile == null) return;
-			list.visible = (data.tile.getBlockMetadata() / 4) == equals;
+			list.visible = (((TileEntity)data.tile).getBlockMetadata() / 4) == equals;
 		}
 
 		@Override
@@ -2192,7 +2193,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if(data.tile == null) return;
-			list.visible = data.tile.getBlockMetadata() == equals;
+			list.visible = ((TileEntity)data.tile).getBlockMetadata() == equals;
 		}
 
 		@Override
@@ -2344,11 +2345,11 @@ public class DefaultPrograms {
 		public void preRender(ModelGroup list, ModelRenderData data){
 			if(data.tile == null) return;
 			GL11.glPushMatrix();
-			GL11.glRotated(-data.block.getType().getBlockType().getRotationForMeta(data.tile.getBlockMetadata()), 0, 1, 0);
+			GL11.glRotated(-data.block.getType().getBlockType().getRotationForMeta(((TileEntity)data.tile).getBlockMetadata()), 0, 1, 0);
 			pos.translate();
-			double d0 = Minecraft.getMinecraft().player.posX - (data.tile.getPos().getX() + 0.5F);
-			double d1 = Minecraft.getMinecraft().player.posZ - (data.tile.getPos().getZ() + 0.5F);
-			double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (data.tile.getPos().getY() + 0.5F);
+			double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.tile).getPos().getX() + 0.5F);
+			double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.tile).getPos().getZ() + 0.5F);
+			double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (((TileEntity)data.tile).getPos().getY() + 0.5F);
 			d2 = -Math.atan2(d2, Math.sqrt(d0 * d0 + d1 * d1));
 			d0 = MathHelper.atan2(d1, d0);
 			//if(d0 >= (float)Math.PI) d0 -= ((float)Math.PI * 2F);

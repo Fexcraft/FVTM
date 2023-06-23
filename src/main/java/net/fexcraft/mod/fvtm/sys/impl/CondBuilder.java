@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.event.ConditionEvent;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -86,37 +88,37 @@ public class CondBuilder {
 						case "equal":
 						case "=":{
 							return data -> {
-								return data.tile.getBlockMetadata() == meta;
+								return ((TileEntity)data.tile).getBlockMetadata() == meta;
 							};
 						}
 						case "nequal":
 						case "!=":{
 							return data -> {
-								return data.tile.getBlockMetadata() != meta;
+								return ((TileEntity)data.tile).getBlockMetadata() != meta;
 							};
 						}
 						case "lequal":
 						case "<=":{
 							return data -> {
-								return data.tile.getBlockMetadata() <= meta;
+								return ((TileEntity)data.tile).getBlockMetadata() <= meta;
 							};
 						}
 						case "gequal":
 						case ">=":{
 							return data -> {
-								return data.tile.getBlockMetadata() >= meta;
+								return ((TileEntity)data.tile).getBlockMetadata() >= meta;
 							};
 						}
 						case "less":
 						case "<":{
 							return data -> {
-								return data.tile.getBlockMetadata() < meta;
+								return ((TileEntity)data.tile).getBlockMetadata() < meta;
 							};
 						}
 						case "greater":
 						case ">":{
 							return data -> {
-								return data.tile.getBlockMetadata() > meta;
+								return ((TileEntity)data.tile).getBlockMetadata() > meta;
 							};
 						}
 					}
@@ -157,42 +159,42 @@ public class CondBuilder {
 						case "equal":
 						case "=":{
 							return data -> {
-								World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
+								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() == value;
 							};
 						}
 						case "nequal":
 						case "!=":{
 							return data -> {
-								World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
+								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() != value;
 							};
 						}
 						case "lequal":
 						case "<=":{
 							return data -> {
-								World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
+								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() <= value;
 							};
 						}
 						case "gequal":
 						case ">=":{
 							return data -> {
-								World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
+								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() >= value;
 							};
 						}
 						case "less":
 						case "<":{
 							return data -> {
-								World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
+								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() < value;
 							};
 						}
 						case "greater":
 						case ">":{
 							return data -> {
-								World world = data.entity == null ? data.tile == null ? null : data.tile.getWorld() : data.entity.world;
+								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() > value;
 							};
 						}

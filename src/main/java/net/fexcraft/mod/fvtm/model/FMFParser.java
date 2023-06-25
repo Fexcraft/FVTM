@@ -107,8 +107,8 @@ public class FMFParser {
 	
 	private static void readPolygons(InputStream stream, ModelGroup list, int tx, int ty) throws IOException {
 		int r = -1, tv = 0;
-		ArrayList<TexturedVertex> verts = null;
-		ArrayList<Vec3f> norms = null;
+		ArrayList<TexturedVertex> verts = new ArrayList<>();
+		ArrayList<Vec3f> norms = new ArrayList<>();
 		ModelRendererTurbo mrt = null;
 		BoxBuilder box = null;
 		CylinderBuilder cyl = null;
@@ -120,11 +120,7 @@ public class FMFParser {
 			mrt = new ModelRendererTurbo(list, 0, 0, tx, ty);
 			if(r == PB) cuv = box = new BoxBuilder(mrt);
 			else if(r == PC) cuv = cyl = new CylinderBuilder(mrt);
-			else if(r == PO){
-				verts = new ArrayList<>();
-				norms = new ArrayList<>();
-				tv = 0;
-			}
+			//
 			while(true){
 				if((r = stream.read()) == -1) break;
 				if(r == PE){
@@ -147,7 +143,8 @@ public class FMFParser {
 					case PT:{
 						if(type == PO){
 							float[] fl = readFloats(stream, 2);
-							verts.get(tv++).setTexturePosition(fl[0], fl[1]);
+							TexturedVertex vert = verts.get(tv).setTexturePosition(fl[0], fl[1]);
+							verts.set(tv++, vert);
 							continue;
 						}
 						int[] in = readIntegers(stream, 2);
@@ -160,16 +157,12 @@ public class FMFParser {
 					}
 					case PDF:{
 						if(type == PO){
-							int a = stream.read();
-							TexturedVertex[] vrts = new TexturedVertex[a];
-							for(int i = 0; i < a; i++) vrts[i] = verts.get(i);
-							TexturedPolygon poly = new TexturedPolygon(vrts);
-							if(norms.size() > 0){
-								for(int i = 0; i < a; i++){
-									poly.getNormalVerts().add(norms.get(i));
-								}
-							}
+							TexturedPolygon poly = new TexturedPolygon(verts.toArray(new TexturedVertex[0]));
+							if(norms.size() > 0) poly.getNormalVerts().addAll(norms);
 							mrt.copyTo(poly);
+							verts.clear();
+							norms.clear();
+							tv = 0;
 							continue;
 						}
 						boolean[] arr = new boolean[6];

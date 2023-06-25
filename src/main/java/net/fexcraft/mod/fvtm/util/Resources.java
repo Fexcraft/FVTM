@@ -611,7 +611,7 @@ public class Resources {
 			model.parse(data).lock();
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			e.printStackTrace(); Static.stop();
 		}
 		MODELS.put(name, model);
 		if(bake && model instanceof BlockModel){

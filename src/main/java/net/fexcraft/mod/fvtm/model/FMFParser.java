@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
@@ -72,7 +73,14 @@ public class FMFParser {
 				}
 				case AE:{
 					if(larray == null) continue;
-					((ArrayList<String>)data.get(larray)).add(readString(stream));
+					Object obj = data.get(larray);
+					if(obj instanceof List == false){
+						ArrayList list = new ArrayList<>();
+						list.add(obj.toString());
+						list.add(readString(stream));
+						data.put(larray, list);
+					}
+					else ((List<String>)obj).add(readString(stream));
 					break;
 				}
 				default: break;
@@ -129,44 +137,40 @@ public class FMFParser {
 					case PP:{
 						float[] fl = readFloats(stream, 3);
 						mrt.setRotationPoint(fl[0], fl[1], fl[2]);
-						break;
+						continue;
 					}
 					case PR:{
 						float[] fl = readFloats(stream, 3);
 						mrt.setRotationAngle(fl[0], fl[1], fl[2]);
-						break;
+						continue;
 					}
 					case PT:{
 						if(type == PO){
 							float[] fl = readFloats(stream, 2);
 							verts.get(tv++).setTexturePosition(fl[0], fl[1]);
-							break;
+							continue;
 						}
 						int[] in = readIntegers(stream, 2);
 						mrt.setTextureOffset(in[0], in[1]);
-						break;
+						continue;
 					}
 					case PL:{
 						mrt.setColor(new RGB(readIntegers(stream, 1)[0]));
-						break;
+						continue;
 					}
 					case PDF:{
 						if(type == PO){
-							int a = readIntegers(stream, 1)[0];
-							int[] idx = readIntegers(stream, a);
+							int a = stream.read();
 							TexturedVertex[] vrts = new TexturedVertex[a];
-							for(int i = 0; i < idx.length; i++){
-								vrts[i] = verts.get(idx[i]);
-							}
+							for(int i = 0; i < a; i++) vrts[i] = verts.get(i);
 							TexturedPolygon poly = new TexturedPolygon(vrts);
 							if(norms.size() > 0){
-								idx = readIntegers(stream, a);
-								for(int i = 0; i < idx.length; i++){
-									poly.getNormalVerts().add(norms.get(idx[i]));
+								for(int i = 0; i < a; i++){
+									poly.getNormalVerts().add(norms.get(i));
 								}
 							}
 							mrt.copyTo(poly);
-							break;
+							continue;
 						}
 						boolean[] arr = new boolean[6];
 						arr[0] = stream.read() > 0;
@@ -176,7 +180,7 @@ public class FMFParser {
 						arr[4] = stream.read() > 0;
 						arr[5] = stream.read() > 0;
 						cuv.removePolygons(arr);
-						break;
+						continue;
 					}
 					case PDU:{
 						boolean[] arr = new boolean[6];
@@ -187,25 +191,25 @@ public class FMFParser {
 						arr[4] = stream.read() > 0;
 						arr[5] = stream.read() > 0;
 						cuv.setDetachedUV(arr);
-						break;
+						continue;
 					}
 					case PCU:{
 						int in = stream.read();
 						cuv.setPolygonUV(in, readFloats(stream, stream.read()));
-						break;
+						continue;
 					}
 					case PM:{
 						mrt.boxName = readString(stream);
-						break;
+						continue;
 					}
 					case PRO:{
 						int[] ro = new int[]{ stream.read(), stream.read(), stream.read() };
 						mrt.setRotationOrder(getRotationOrder(ro));
-						break;
+						continue;
 					}
 					case PTM:{
 						mrt.texName = readString(stream);
-						break;
+						continue;
 					}
 					default: break;
 				}

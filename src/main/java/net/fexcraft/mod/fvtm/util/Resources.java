@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
 
@@ -59,6 +60,7 @@ import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -151,19 +153,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.FilenameUtils;
 
 public class Resources {
-	
-	public static Registry<Addon> ADDONS = new Registry<>();
-	public static Registry<Part> PARTS = new Registry<>();
-	public static Registry<Vehicle> VEHICLES = new Registry<>();
-	public static Registry<Material> MATERIALS = new Registry<>();
-	public static Registry<Fuel> ALLFUELS = new Registry<>();
-	public static Registry<Consumable> CONSUMABLES = new Registry<>();
-	public static Registry<Container> CONTAINERS = new Registry<>();
-	public static Registry<Block> BLOCKS = new Registry<>();
-	public static Registry<MultiBlock> MULTIBLOCKS = new Registry<>();
-	public static Registry<RailGauge> RAILGAUGES = new Registry<>();
-	public static Registry<Cloth> CLOTHES = new Registry<>();
-	public static Registry<WireType> WIRES = new Registry<>();
+
+	public static RegistryOld<Part> PARTS = new RegistryOld<>();
+	public static RegistryOld<Vehicle> VEHICLES = new RegistryOld<>();
+	public static RegistryOld<Material> MATERIALS = new RegistryOld<>();
+	public static RegistryOld<Fuel> ALLFUELS = new RegistryOld<>();
+	public static RegistryOld<Consumable> CONSUMABLES = new RegistryOld<>();
+	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
+	public static RegistryOld<Block> BLOCKS = new RegistryOld<>();
+	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
+	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
+	public static RegistryOld<Cloth> CLOTHES = new RegistryOld<>();
+	public static RegistryOld<WireType> WIRES = new RegistryOld<>();
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
@@ -179,70 +180,11 @@ public class Resources {
 	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
-	private File configroot; 
+	private File configroot;
 	
 	public Resources(FMLPreInitializationEvent event){
 		configroot = new File(event.getModConfigurationDirectory(), "/fvtm/");
-		if(!configroot.exists()) configroot.mkdirs(); //addonconfig = new File(configpath, "/addonpacks.fex");
-		//
-		String addonclass = AddonClass.class.getCanonicalName();
-		Set<ASMData> addons = event.getAsmData().getAll(addonclass);
-		for(ASMData entry : addons){
-			try{
-				Class<?> clazz = Class.forName(entry.getClassName());
-				AddonClass addon = clazz.getAnnotation(AddonClass.class);
-				String id = addon.registryname().contains(":") ? addon.registryname().split(":")[1] : addon.registryname();
-				ContainerType type = entry.getCandidate().getSourceType();
-				File file = entry.getCandidate().getModContainer();
-				if(addon.hasJson()){
-					InputStream stream = Resources.class.getClassLoader().getResourceAsStream("assets/" + id + "/addonpack.fvtm");
-					if(stream == null) continue;
-					JsonObject obj = JsonUtil.getObjectFromInputStream(stream);
-					ADDONS.register(new Addon(type, file).parse(obj));
-				}
-				else{
-					ADDONS.register((Addon)clazz.getConstructor(ContainerType.class, File.class).newInstance(type, file));
-					// TODO find out how to get the actual instance of the mod.
-				}
-				Print.log("Registered FVTM Addon with ID '" + addon.registryname() + "'!");
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		if(event.getSide().isClient()){
-			try{
-				respackfile = ReflectionHelper.findField(net.minecraft.client.resources.AbstractResourcePack.class, "resourcePackFile", "field_110597_b");
-			}
-			catch(Exception e){
-				Print.log("Failed to get field. [RESPACKLOADER:ERR:0]");
-				Print.log("LiteAddon loading from ResourcePacks will be skipped.");
-			}
-			catch(Error e){
-				Print.log("Failed to get field. [RESPACKLOADER:ERR:00]");
-				Print.log("LiteAddon loading from ResourcePacks will be skipped.");
-			}
-			if(respackfile != null){
-				for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntriesAll()){
-					try{
-						checkEntry(entry.getResourcePack());
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		else{
-			searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
-		}
-		searchAddonsInFolder(new File(configroot, "packs/"), AddonLocation.CONFIGPACK, true);
-		if(Config.LOAD_PACKS_FROM_MODS) searchAddonsInFolder(new File(event.getModConfigurationDirectory().getParent(), "/mods/"), AddonLocation.CONFIGPACK, false);
-		//
-		//TODO check addon on/off state
-		if(event.getSide().isClient()){
-			loadLitePackTextureLocations();
-		}
+		if(!configroot.exists()) configroot.mkdirs();
 		//
 		registerAttributeTypes();
 		registerModifierImpls();
@@ -268,55 +210,10 @@ public class Resources {
 			MODEL_LOADERS.add(new SMPTBJavaModelLoader());
 		}
 	}
-	
-	public static void searchAddonsInFolder(File packfolder, AddonLocation loc, boolean create){
-		if(!packfolder.exists()){
-			if(!create) return;
-			packfolder.mkdir();
-		}
-		for(File file : packfolder.listFiles()){
-			if(file.isHidden()) continue;
-			if(file.isDirectory()){
-				File assets = new File(file, "assets/");
-				if(assets.exists()){
-					for(File fl : assets.listFiles()){
-						if(!fl.isDirectory()) continue;
-						File dec = new File(fl, "addonpack.fvtm");
-						if(dec.exists()){
-							JsonObject obj = JsonUtil.get(dec);
-							if(isDuplicate(obj)) continue;
-							ADDONS.register(new Addon(ContainerType.DIR, file, loc).parse(obj));
-						}
-					}
-				}
-			}
-			else if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
-				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
-				if(array.size() > 0){
-					JsonObject obj = array.get(0).getAsJsonObject();
-					if(isDuplicate(obj)) continue;
-					Addon addon = new Addon(ContainerType.JAR, file, loc).parse(obj);
-					ADDONS.register(addon);
-					if(file.getName().endsWith(".jar") || (obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean())){
-						addToClassPath(addon, file);
-					}
-				}
-			}
-		}
-	}
-
-	private static boolean isDuplicate(JsonObject obj){
-		if(!obj.has("RegistryName")) return false;
-		String regname = obj.get("RegistryName").getAsString();
-		for(Addon addon : ADDONS){
-			if(addon.getRegistryName().toString().equals(regname)) return true;
-		}
-		return false;
-	}
 
 	private static Method cl_method;
 
-	private static void addToClassPath(Addon addon, File file){
+	private static void addToClassPath(AddonOld addon, File file){
 		if(file.isDirectory()) return;
 		try{
 			cl_method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
@@ -336,37 +233,8 @@ public class Resources {
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void checkEntry(net.minecraft.client.resources.IResourcePack pack) {
-		for(String str : pack.getResourceDomains()){
-			if(Static.dev()){
-				try {
-					Print.log("Checking " + respackfile.get(pack) + " " + str);
-					Print.log("Result: " + pack.resourceExists(new ResourceLocation(str + ":addonpack.fvtm")));
-				}
-				catch(IllegalArgumentException | IllegalAccessException e){
-					e.printStackTrace();
-				}
-			}
-			ResourceLocation resloc = new ResourceLocation(str + ":addonpack.fvtm");
-			if(pack.resourceExists(resloc)){
-				try {
-					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack), AddonLocation.RESOURCEPACK);
-					JsonObject obj = JsonUtil.getObjectFromInputStream(pack.getInputStream(resloc));
-					if(obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean() && !addon.getFile().isDirectory()){
-						addToClassPath(addon, addon.getFile());
-					}
-					ADDONS.register(addon.parse(obj));
-				}
-				catch(IllegalArgumentException | IllegalAccessException | IOException e){
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 	public static final void loadPresets(){
-		for(Addon addon : ADDONS){
+		for(AddonOld addon : ADDONS){
 			addon.loadPresets();
 		}
 		File file = new File("./config/fvtm/presets/");
@@ -390,7 +258,7 @@ public class Resources {
 	}
 
 	public static void loadRecipes(){
-		for(Addon addon : ADDONS){
+		for(AddonOld addon : ADDONS){
 			addon.loadRecipes();
 		}
 	}
@@ -445,7 +313,7 @@ public class Resources {
 	}
 
 	private void searchInAddonsFor(DataType datatype){
-		for(Addon addon : ADDONS){
+		for(AddonOld addon : ADDONS){
 			try{
 				addon.searchFor(datatype);
 			}
@@ -530,7 +398,7 @@ public class Resources {
 		InputStream stream = getModelInputStream(resloc, false);
 		if(stream != null) return new Object[]{ stream };
 		try{
-			Addon addon = getAddon(resloc.getNamespace());
+			AddonOld addon = getAddon(resloc.getNamespace());
 			if(addon != null && addon.getLoc().isConfigPack()){
 				if(addon.getContainerType() == ContainerType.DIR){
 					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
@@ -1115,7 +983,7 @@ public class Resources {
 	}
 
 	public static void linkTextureSuppliers(){
-		for(Addon addon : ADDONS){
+		for(AddonOld addon : ADDONS){
 			if(addon.getTextureSuppliers().isEmpty()) continue;
 			for(TextureSupply texsupp : addon.getTextureSuppliers().values()){
 				for(String tar : texsupp.targets()){
@@ -1147,7 +1015,7 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static CreativeTabs getCreativeTab(Tabbed type){
 		String tab = type.getCreativeTab();
-		Addon addon = null;
+		AddonOld addon = null;
 		if(tab.contains(":")){
 			String[] split = tab.split(":");
 			addon = getAddon(split[0]);
@@ -1158,8 +1026,8 @@ public class Resources {
 		return addon.getCreativeTab(tab);
 	}
 
-	public static Addon getAddon(String string){
-		for(Addon addon : ADDONS){
+	public static AddonOld getAddon(String string){
+		for(AddonOld addon : ADDONS){
 			if(addon.getRegistryName().getPath().equals(string)) return addon;
 		}
 		return null;
@@ -1202,8 +1070,8 @@ public class Resources {
 
 	@SideOnly(Side.CLIENT)
 	public static void loadLitePackLang() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
-		ArrayList<Addon> lites = new ArrayList<>();
-		for(Addon addon : ADDONS){
+		ArrayList<AddonOld> lites = new ArrayList<>();
+		for(AddonOld addon : ADDONS){
 			if(addon.getLoc() == AddonLocation.CONFIGPACK) lites.add(addon);
 		}
 		if(lites.size() == 0) return;
@@ -1216,7 +1084,7 @@ public class Resources {
 		String code = net.minecraft.client.Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().toLowerCase();
 		boolean nonus = !code.equals("en_us");
 		//
-		for(Addon addon : lites){
+		for(AddonOld addon : lites){
 			if(addon.getContainerType() == ContainerType.DIR){
 				if(!addon.getFile().isDirectory()) return;
 				//
@@ -1262,24 +1130,6 @@ public class Resources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void loadLitePackTextureLocations(){
-		ArrayList<Addon> lites = new ArrayList<>();
-		for(Addon addon : ADDONS){
-			if(addon.getLoc() == AddonLocation.CONFIGPACK) lites.add(addon);
-		}
-		if(lites.size() == 0) return;
-		for(Addon addon : lites){
-			if(addon.getContainerType() == ContainerType.DIR){
-				if(!addon.getFile().isDirectory()) return;
-				TexUtil.searchIn(addon, new File(addon.getFile(), "assets/" + addon.getRegistryName().getPath() + "/textures/"), null);
-			}
-			else{
-				TexUtil.searchInZip(addon);
-			}
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
 	public static void loadDecoModels(){
 		for(DecorationData deco : DECORATIONS.values()){
 			Model model = Resources.getModel(deco.modelid, deco.modeldata, GenericModel.class);
@@ -1292,7 +1142,7 @@ public class Resources {
 		InputStream stream = getModelInputStream(resloc, false);
 		if(stream != null) return new Object[]{ stream };
 		try{
-			Addon addon = getAddon(resloc.getNamespace());
+			AddonOld addon = getAddon(resloc.getNamespace());
 			if(addon != null){
 				if(addon.getContainerType() == ContainerType.DIR){
 					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());

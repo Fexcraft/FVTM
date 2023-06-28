@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.google.gson.JsonObject;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -85,7 +85,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 
 	public static class Library {
 		
-		public HashMap<String, JsonObject> presets = new LinkedHashMap<>();
+		public HashMap<String, JsonMap> presets = new LinkedHashMap<>();
 		public HashMap<String, String> backgrounds = new LinkedHashMap<>();
 		public HashMap<String, String> components = new LinkedHashMap<>();
 		public HashMap<String, String> fonts = new LinkedHashMap<>();
@@ -113,7 +113,7 @@ public class TrafficSignLibrary extends DetachedSystem {
 		
 		@Override
 		public void load(){
-			for(Entry<String, JsonObject> entry : presets.entrySet()) PRESETS.put(id + ":" + entry.getKey(), entry.getValue());
+			for(Entry<String, JsonMap> entry : presets.entrySet()) PRESETS.put(id + ":" + entry.getKey(), entry.getValue());
 			for(Entry<String, String> entry : backgrounds.entrySet()) BACKGROUNDS.put(id + ":" + entry.getKey(), entry.getValue());
 			for(Entry<String, String> entry : components.entrySet()) COMPONENTS.put(id + ":" + entry.getKey(), entry.getValue());
 			for(Entry<String, String> entry : fonts.entrySet()) FONTS.put(id + ":" + entry.getKey(), entry.getValue());

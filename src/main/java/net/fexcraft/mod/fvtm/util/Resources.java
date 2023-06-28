@@ -19,18 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -57,8 +52,6 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.WireType;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
@@ -120,7 +113,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
@@ -138,7 +130,6 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -147,7 +138,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.FilenameUtils;
@@ -208,52 +198,6 @@ public class Resources {
 			MODEL_LOADERS.add(new FMFModelLoader());
 			MODEL_LOADERS.add(new ObjModelLoader());
 			MODEL_LOADERS.add(new SMPTBJavaModelLoader());
-		}
-	}
-
-	private static Method cl_method;
-
-	private static void addToClassPath(AddonOld addon, File file){
-		if(file.isDirectory()) return;
-		try{
-			cl_method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
-			cl_method.setAccessible(true);
-		}
-		catch(Exception e){
-			Print.log("Failed to get method. [RESPACKLOADER:ERR:1]");
-			Print.log("LiteAddon JavaModel loading will be skipped.");
-		}
-		try {
-			ClassLoader loader = Resources.class.getClassLoader();
-			cl_method.invoke(loader, file.toURI().toURL());
-			FCLRegistry.scanForModels(file, loader);
-		}
-		catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | MalformedURLException e){
-			e.printStackTrace();
-		}
-	}
-
-	public static final void loadPresets(){
-		for(AddonOld addon : ADDONS){
-			addon.loadPresets();
-		}
-		File file = new File("./config/fvtm/presets/");
-		if(!file.exists()) file.mkdirs();
-		File[] files = file.listFiles();
-		for(File fl : files){
-			try{
-				JsonObject obj = JsonUtil.get(fl);
-				if(obj.entrySet().isEmpty()) continue;
-				Vehicle vehicle = Resources.VEHICLES.get(obj.get("Vehicle").getAsString());
-				VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
-				data.read(JsonToNBT.getTagFromJson(obj.toString()));
-				data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
-				PresetTab.INSTANCE.add(data.newItemStack());
-			}
-			catch(Exception e){
-				e.printStackTrace();
-				Static.stop();
-			}
 		}
 	}
 

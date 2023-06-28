@@ -9,18 +9,18 @@ import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.WireType;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
-import net.fexcraft.mod.fvtm.util.Registry;
+import net.fexcraft.mod.fvtm.util.RegistryOld;
 import net.fexcraft.mod.fvtm.util.Resources;
 
 public enum DataType {
 	
-	ADDON(".fvtm", null, Addon.class),
+	ADDON(".fvtm", null, AddonOld.class),
 	PART(".part", "parts", Part.class),
 	VEHICLE(".vehicle", "vehicles", Vehicle.class),
 	MATERIAL(".material", "materials", Material.class),
@@ -41,27 +41,27 @@ public enum DataType {
 		this.suffix = suffix; this.cfg_folder = cfg_folder; this.core = type;
 	}
 
-	public <T extends TypeCore<T>> Registry<T> getRegistry(){
+	public <T extends TypeCore<T>> RegistryOld<T> getRegistry(){
 		switch(this){
-			case ADDON: return (Registry<T>)Resources.ADDONS;
-			case PART: return (Registry<T>)Resources.PARTS;
-			case VEHICLE: return (Registry<T>)Resources.VEHICLES;
-			case MATERIAL: return (Registry<T>)Resources.MATERIALS;
-			case FUEL: return (Registry<T>)Resources.ALLFUELS;
-			case CONSUMABLE: return (Registry<T>)Resources.CONSUMABLES;
-			case CONTAINER: return (Registry<T>)Resources.CONTAINERS;
-			case BLOCK: return (Registry<T>)Resources.BLOCKS;
-			case MULTIBLOCK: return (Registry<T>)Resources.MULTIBLOCKS;
-			case RAILGAUGE: return (Registry<T>)Resources.RAILGAUGES;
-			case CLOTH: return (Registry<T>)Resources.CLOTHES;
-			case WIRE: return (Registry<T>)Resources.WIRES;
+			case ADDON: return (RegistryOld<T>)Resources.ADDONS;
+			case PART: return (RegistryOld<T>)Resources.PARTS;
+			case VEHICLE: return (RegistryOld<T>)Resources.VEHICLES;
+			case MATERIAL: return (RegistryOld<T>)Resources.MATERIALS;
+			case FUEL: return (RegistryOld<T>)Resources.ALLFUELS;
+			case CONSUMABLE: return (RegistryOld<T>)Resources.CONSUMABLES;
+			case CONTAINER: return (RegistryOld<T>)Resources.CONTAINERS;
+			case BLOCK: return (RegistryOld<T>)Resources.BLOCKS;
+			case MULTIBLOCK: return (RegistryOld<T>)Resources.MULTIBLOCKS;
+			case RAILGAUGE: return (RegistryOld<T>)Resources.RAILGAUGES;
+			case CLOTH: return (RegistryOld<T>)Resources.CLOTHES;
+			case WIRE: return (RegistryOld<T>)Resources.WIRES;
 			default: return null;
 		}
 	}
 
 	public void register(TypeCore<?> core){
 		switch(this){
-			case ADDON:{ Resources.ADDONS.register((Addon)core); return; }
+			case ADDON:{ Resources.ADDONS.register((AddonOld)core); return; }
 			case PART:{ Resources.PARTS.register((Part)core); return; }
 			case VEHICLE:{ Resources.VEHICLES.register((Vehicle)core); return; }
 			case MATERIAL:{ Resources.MATERIALS.register((Material)core); return; }

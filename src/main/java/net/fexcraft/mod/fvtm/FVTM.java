@@ -274,7 +274,6 @@ public class FVTM {
 		Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
 		Resources.BLOCKS.forEach(Block::linkItem);
 		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
-		Resources.loadPresets();
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}

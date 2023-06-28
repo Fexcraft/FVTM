@@ -132,6 +132,8 @@ public class FVTM {
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.IMPL[0] = TagCWI.class;
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
+		FvtmResources.INSTANCE = new ResourcesImpl();
+		FvtmResources.INSTANCE.init();
 		Config.addListener(() -> {
 			TrafficSignLibrary.load(true);
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);

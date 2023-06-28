@@ -14,7 +14,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -96,13 +96,13 @@ public class Command extends CommandBase {
             case "packs":{
             	Print.chat(sender, "");
             	Print.chat(sender, "&0[&2FVTM Packs&0]&6 = = = = = =");
-            	for(Addon addon : Resources.ADDONS){
+            	for(AddonOld addon : Resources.ADDONS){
             		Print.chat(sender, "&e" + addon.getRegistryName().getPath() + " &b- &7" + addon.getName());
             	}
             	break;
             }
             case "pack-info":{
-            	Addon addon = Resources.getAddon(args[1]);
+            	AddonOld addon = Resources.getAddon(args[1]);
             	if(addon == null){
             		Print.chat(sender, "not found");
             		return;

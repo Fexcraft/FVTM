@@ -73,7 +73,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Ferdinand Calo' (FEX___96)
  */
 @Deprecated
-public class Addon extends TypeCore<Addon> {
+public class AddonOld extends TypeCore<AddonOld> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
@@ -88,19 +88,19 @@ public class Addon extends TypeCore<Addon> {
 	protected HashMap<String, CreativeTabs> creativetabs;
 	protected AutoRegisterer registerer;
 	
-	public Addon(ContainerType type, File file){
+	public AddonOld(ContainerType type, File file){
 		this(type, file, AddonLocation.MODJAR);
 	}
 	
-	public Addon(ContainerType type, File file, AddonLocation loc){
+	public AddonOld(ContainerType type, File file, AddonLocation loc){
 		this.contype = type;
 		this.file = file;
 		this.loc = loc;
 	}
 
 	@Override
-	public Addon parse(JsonObject obj){
-		registryname = DataUtil.getRegistryName((Addon)null, obj);
+	public AddonOld parse(JsonObject obj){
+		registryname = DataUtil.getRegistryName((AddonOld)null, obj);
 		if(registryname == null) return null;
 		pack = this;
 		name = JsonUtil.getIfExists(obj, "Name", "Unnamed Addon");
@@ -235,7 +235,7 @@ public class Addon extends TypeCore<Addon> {
 	public String getLicense(){ return license; }
 	public String getUpdateId(){ return update_id; }
 	
-	public Addon setEnabled(boolean bool){
+	public AddonOld setEnabled(boolean bool){
 		this.enabled = bool; return this;
 	}
 	

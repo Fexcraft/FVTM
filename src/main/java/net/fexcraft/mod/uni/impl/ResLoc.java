@@ -23,4 +23,12 @@ public class ResLoc extends ResourceLocation implements IDL {
         return getPath();
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof IDL){
+            return colon().equals(((IDL)obj).colon());
+        }
+        else return colon().equals(obj.toString());
+    }
+
 }

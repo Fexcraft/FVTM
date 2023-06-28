@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.registry.CreativeTab;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.data.addon.AddonNew;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.client.CTab;
 import net.minecraft.item.ItemStack;
@@ -20,15 +20,15 @@ public class AddonTab extends CreativeTab implements CTab {
 
     private NonNullList<ItemStack> list;
     private int icon, sec;
-	private Addon addon;
+	private AddonOld addon;
 
 	@Deprecated
-	public AddonTab(Addon addon, String string){
+	public AddonTab(AddonOld addon, String string){
 		super(addon.getRegistryName().toString() + (string.equals(DEFAULT) ? "" : "." + string));
 		this.addon = addon;
 	}
 
-	public AddonTab(AddonNew addon, String string){
+	public AddonTab(Addon addon, String string){
 		super(addon.getID().colon() + (string.equals(DEFAULT) ? "" : "." + string));
 		//this.addon = addon;
 	}
@@ -43,7 +43,7 @@ public class AddonTab extends CreativeTab implements CTab {
         return addon.getName();
     }
 
-    public Addon getAddon(){
+    public AddonOld getAddon(){
         return addon;
     }
 

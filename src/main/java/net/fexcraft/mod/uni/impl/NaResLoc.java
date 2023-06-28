@@ -33,4 +33,12 @@ public class NaResLoc extends NamedResourceLocation implements IDL {
         return getName();
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof IDL){
+            return colon().equals(((IDL)obj).colon());
+        }
+        else return colon().equals(obj.toString());
+    }
+
 }

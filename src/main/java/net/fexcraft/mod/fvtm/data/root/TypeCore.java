@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ public abstract class TypeCore<SELF> {
 	/** @return null if absent */
 	public abstract Class<?> getDataClass();
 	
-	public Addon getAddon(){ return pack; }
+	public AddonOld getAddon(){ return pack; }
 
 	public String getName(){ return name; }
 
@@ -37,7 +37,7 @@ public abstract class TypeCore<SELF> {
 	protected ResourceLocation registryname;
 	protected List<String> description;
 	protected String name;
-	protected Addon pack;
+	protected AddonOld pack;
 
 	//
 	

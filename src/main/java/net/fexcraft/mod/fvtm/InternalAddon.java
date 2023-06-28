@@ -9,7 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.impl.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 
 @AddonClass(registryname = "fvtm:fvtm", hasJson = false)
-public class InternalAddon extends Addon {
+public class InternalAddon extends AddonOld {
 	
 	public static final ResourceLocation REGNAME = new ResourceLocation("fvtm:fvtm");
 	public static final ResourceLocation STANDARD_GAUGE = new ResourceLocation("fvtm:standard");

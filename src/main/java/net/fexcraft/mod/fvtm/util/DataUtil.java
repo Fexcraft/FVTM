@@ -19,7 +19,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -35,7 +35,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class DataUtil {
 
-	public static ResourceLocation getRegistryName(Addon addon, JsonObject obj){
+	public static ResourceLocation getRegistryName(AddonOld addon, JsonObject obj){
 		String regname = obj.has("RegistryName") ? obj.get("RegistryName").getAsString() : null;
 		if(regname == null) return null;
 		if(regname.contains(":")) return new ResourceLocation(regname);
@@ -46,11 +46,11 @@ public class DataUtil {
 		return obj.has(key) ? new ResourceLocation(obj.get(key).getAsString()) : null;
 	}
 
-	public static Addon getAddon(JsonObject obj){
+	public static AddonOld getAddon(JsonObject obj){
 		if(obj.has("Addon")){
 			String addin = obj.get("Addon").getAsString();
 			if(addin.contains(":")) addin = addin.split(":")[1];
-			Addon addon = Resources.getAddon(addin);
+			AddonOld addon = Resources.getAddon(addin);
 			if(addon != null) return addon;
 		}
 		return Resources.ADDONS.get(InternalAddon.REGNAME);

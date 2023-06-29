@@ -20,6 +20,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -52,7 +53,7 @@ public class DataUtil {
 		if(obj.has("Addon")){
 			String addin = obj.get("Addon").getAsString();
 			if(addin.contains(":")) addin = addin.split(":")[1];
-			Addon addon = Resources.getAddon(addin);
+			Addon addon = FvtmRegistry.getAddon(addin);
 			if(addon != null) return addon;
 		}
 		return ADDONS.get(InternalAddon.REGNAME);

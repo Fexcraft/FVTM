@@ -5,7 +5,6 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
@@ -72,14 +71,14 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	private ClothMaterial parseMaterial(JsonObject obj){
 		if(obj.has("ClothMaterial")){
 			String mat = obj.get("ClothMaterial").getAsString().toLowerCase();
-			return ClothMaterial.get(mat.contains(":") ? mat : getAddon().getRegistryName().getPath() + ":" + mat);
+			return ClothMaterial.get(mat.contains(":") ? mat : getAddon().getID().id() + ":" + mat);
 		}
 		return ClothMaterial.get(FvtmRegistry.NONE_CLOTH_MAT);
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.MATERIAL;
+	public ContentType getDataType(){
+		return ContentType.MATERIAL;
 	}
 
 	@Override

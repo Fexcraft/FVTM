@@ -18,7 +18,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.TransmissionFunction;
@@ -42,8 +41,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 
     public VehicleItem(Vehicle core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
+        //TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}
@@ -121,10 +119,6 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
-    	}
-    	if(tab == PresetTab.INSTANCE){
-    		if(tab == PresetTab.INSTANCE) (PresetTab.INSTANCE.ITEMS = items).clear();
-    		for(ItemStack stack : PresetTab.INSTANCE.get()){ items.add(stack); }
     	}
     }
     

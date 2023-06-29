@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +35,7 @@ import net.fexcraft.lib.mc.render.FCLBlockModelLoader;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -44,16 +44,9 @@ import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.data.Fuel;
-import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.TextureSupply;
-import net.fexcraft.mod.fvtm.data.WireType;
+import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -67,13 +60,11 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -130,7 +121,6 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -180,17 +170,17 @@ public class Resources {
 		registerModifierImpls();
 		registerFunctions();
 		//
-		searchInAddonsFor(DataType.FUEL);
-		searchInAddonsFor(DataType.MATERIAL);
-		searchInAddonsFor(DataType.CONSUMABLE);
-		searchInAddonsFor(DataType.CLOTH);
-		searchInAddonsFor(DataType.RAILGAUGE);
-		searchInAddonsFor(DataType.WIRE);
-		searchInAddonsFor(DataType.CONTAINER);
-		searchInAddonsFor(DataType.BLOCK);
-		searchInAddonsFor(DataType.MULTIBLOCK);
-		searchInAddonsFor(DataType.PART);
-		searchInAddonsFor(DataType.VEHICLE);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.FUEL);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MATERIAL);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONSUMABLE);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CLOTH);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.RAILGAUGE);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONTAINER);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.BLOCK);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MULTIBLOCK);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.PART);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.VEHICLE);
 		//
 		if(event.getSide().isClient()){
 			MODEL_LOADERS.add(new ClassModelLoader());
@@ -198,12 +188,6 @@ public class Resources {
 			MODEL_LOADERS.add(new FMFModelLoader());
 			MODEL_LOADERS.add(new ObjModelLoader());
 			MODEL_LOADERS.add(new SMPTBJavaModelLoader());
-		}
-	}
-
-	public static void loadRecipes(){
-		for(AddonOld addon : ADDONS){
-			addon.loadRecipes();
 		}
 	}
 
@@ -254,18 +238,6 @@ public class Resources {
 		registerBlockFunction("fvtm:inventory", InventoryBlockFunction.class, true);
 		registerBlockFunction("fvtm:barrel", BarrelBlockFunction.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterFunctions(this));
-	}
-
-	private void searchInAddonsFor(DataType datatype){
-		for(AddonOld addon : ADDONS){
-			try{
-				addon.searchFor(datatype);
-			}
-			catch(Throwable thr){
-				thr.printStackTrace();
-				Static.stop();
-			}
-		}
 	}
 
 	public static Part getPart(String string){
@@ -342,9 +314,9 @@ public class Resources {
 		InputStream stream = getModelInputStream(resloc, false);
 		if(stream != null) return new Object[]{ stream };
 		try{
-			AddonOld addon = getAddon(resloc.getNamespace());
-			if(addon != null && addon.getLoc().isConfigPack()){
-				if(addon.getContainerType() == ContainerType.DIR){
+			Addon addon = getAddon(resloc.getNamespace());
+			if(addon != null && addon.getLocation().isConfigPack()){
+				if(addon.getFile().isDirectory()){
 					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
 					if(file.exists()) stream = new FileInputStream(file);
 				}
@@ -927,7 +899,7 @@ public class Resources {
 	}
 
 	public static void linkTextureSuppliers(){
-		for(AddonOld addon : ADDONS){
+		for(Addon addon : ADDONS){
 			if(addon.getTextureSuppliers().isEmpty()) continue;
 			for(TextureSupply texsupp : addon.getTextureSuppliers().values()){
 				for(String tar : texsupp.targets()){
@@ -959,20 +931,20 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static CreativeTabs getCreativeTab(Tabbed type){
 		String tab = type.getCreativeTab();
-		AddonOld addon = null;
+		Addon addon = null;
 		if(tab.contains(":")){
 			String[] split = tab.split(":");
 			addon = getAddon(split[0]);
 			if(addon == null) return null;
-			return addon.getCreativeTab(split[1]);
+			return (CreativeTabs)addon.getCreativeTab(split[1]);
 		}
-		addon = ((TypeCore<?>)type).getAddon();
-		return addon.getCreativeTab(tab);
+		addon = ((Content<?>)type).getAddon();
+		return (CreativeTabs)addon.getCreativeTab(tab);
 	}
 
-	public static AddonOld getAddon(String string){
-		for(AddonOld addon : ADDONS){
-			if(addon.getRegistryName().getPath().equals(string)) return addon;
+	public static Addon getAddon(String string){
+		for(Addon addon : ADDONS){
+			if(addon.getID().id().equals(string)) return addon;
 		}
 		return null;
 	}
@@ -1014,9 +986,9 @@ public class Resources {
 
 	@SideOnly(Side.CLIENT)
 	public static void loadLitePackLang() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, FileNotFoundException {
-		ArrayList<AddonOld> lites = new ArrayList<>();
-		for(AddonOld addon : ADDONS){
-			if(addon.getLoc() == AddonLocation.CONFIGPACK) lites.add(addon);
+		ArrayList<Addon> lites = new ArrayList<>();
+		for(Addon addon : ADDONS){
+			if(addon.getLocation() == AddonLocation.CONFIGPACK) lites.add(addon);
 		}
 		if(lites.size() == 0) return;
 		i18n_locale = ObfuscationReflectionHelper.findField(net.minecraft.client.resources.I18n.class, "field_135054_a");
@@ -1028,11 +1000,11 @@ public class Resources {
 		String code = net.minecraft.client.Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().toLowerCase();
 		boolean nonus = !code.equals("en_us");
 		//
-		for(AddonOld addon : lites){
-			if(addon.getContainerType() == ContainerType.DIR){
+		for(Addon addon : lites){
+			if(addon.getFile().isDirectory()){
 				if(!addon.getFile().isDirectory()) return;
 				//
-				File folder = new File(addon.getFile(), "assets/" + addon.getRegistryName().getPath() + "/lang/");
+				File folder = new File(addon.getFile(), "assets/" + addon.getID().id() + "/lang/");
 				if(!folder.exists()) folder.mkdirs();
 				for(File file : folder.listFiles()){
 					if(file.getName().toLowerCase().equals("en_us.lang")){
@@ -1046,7 +1018,7 @@ public class Resources {
 				}
 			}
 			else{
-				String path = "assets/" + addon.getRegistryName().getPath() + "/lang/", extension = ".lang";
+				String path = "assets/" + addon.getID().id() + "/lang/", extension = ".lang";
 				try{
 					ZipFile zip = new ZipFile(addon.getFile());
 					ZipInputStream stream = new ZipInputStream(new FileInputStream(addon.getFile()));
@@ -1086,9 +1058,9 @@ public class Resources {
 		InputStream stream = getModelInputStream(resloc, false);
 		if(stream != null) return new Object[]{ stream };
 		try{
-			AddonOld addon = getAddon(resloc.getNamespace());
+			Addon addon = getAddon(resloc.getNamespace());
 			if(addon != null){
-				if(addon.getContainerType() == ContainerType.DIR){
+				if(addon.getFile().isDirectory()){
 					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
 					if(file.exists()) stream = new FileInputStream(file);
 				}

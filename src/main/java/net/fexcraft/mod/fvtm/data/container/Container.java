@@ -11,10 +11,10 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -99,8 +99,8 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.CONTAINER;
+	public ContentType getDataType(){
+		return ContentType.CONTAINER;
 	}
 
 	@Override

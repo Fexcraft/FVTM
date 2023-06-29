@@ -20,6 +20,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -190,8 +191,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.VEHICLE;
+	public ContentType getDataType(){
+		return ContentType.VEHICLE;
 	}
 
 	@Override

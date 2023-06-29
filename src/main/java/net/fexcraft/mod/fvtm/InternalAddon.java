@@ -1,33 +1,31 @@
 package net.fexcraft.mod.fvtm;
 
-import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
-
 import java.io.File;
 import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.impl.AddonTab;
-import net.fexcraft.mod.fvtm.data.root.DataType;
-import net.fexcraft.mod.fvtm.item.RailPresetItem;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 
 @AddonClass(registryname = "fvtm:fvtm", hasJson = false)
 public class InternalAddon extends AddonOld {
 	
-	public static final ResourceLocation REGNAME = new ResourceLocation("fvtm:fvtm");
+	public static final IDL REGNAME = IDLManager.getIDLCached("fvtm:fvtm");
 	public static final ResourceLocation STANDARD_GAUGE = new ResourceLocation("fvtm:standard");
 	public static InternalAddon INSTANCE;
 
 	public InternalAddon(ContainerType type, File file){
 		super(type, file);
-		registryname = REGNAME;
+		//registryname = REGNAME;
 		INSTANCE = this;
 		name = "FVTM [Internal Addon]";
 		version = FVTM.VERSION;
@@ -41,9 +39,9 @@ public class InternalAddon extends AddonOld {
 		}
 	}
 	
-	/** This addon is shipped with the FVTM jar, so we don't search for content. Edit: except the default rail gauge now. */ @Override
-	public void searchFor(DataType data){
-		if(data == DataType.RAILGAUGE){
+	/** This addon is shipped with the FVTM jar, so we don't search for content. Edit: except the default rail gauge now. */
+	public void searchFor(ContentType data){
+		if(data == ContentType.RAILGAUGE){
 			JsonObject obj = new JsonObject(); RailGauge gauge;
 			obj.addProperty("RegistryName", STANDARD_GAUGE.toString());
 			obj.addProperty("Addon", REGNAME.toString());
@@ -59,11 +57,11 @@ public class InternalAddon extends AddonOld {
 			obj.addProperty("TiesTexture", "fvtm:textures/blocks/standard_gauge_wood.png");
 			obj.addProperty("ModelTexture", "fvtm:textures/blocks/30px_standard_gauge.png");
 			obj.add("PreSets", new JsonArray());
-			data.register(gauge = new RailGauge().parse(obj)); int r = RAIL_PLACING_GRID;
-			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new GridV3D(0, 0, 0, r), new GridV3D(4, 0, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new GridV3D(0, 0, 0, r), new GridV3D(8, 0, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new GridV3D(0, 0, 0, r), new GridV3D(16, 0, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new GridV3D(0, 0, 0, r), new GridV3D(32, 0, 0, r)).setSegmentation(8));
+			//data.register(gauge = new RailGauge().parse(obj)); int r = RAIL_PLACING_GRID;
+			//gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new GridV3D(0, 0, 0, r), new GridV3D(4, 0, 0, r)).setSegmentation(8));
+			//gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new GridV3D(0, 0, 0, r), new GridV3D(8, 0, 0, r)).setSegmentation(8));
+			//gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new GridV3D(0, 0, 0, r), new GridV3D(16, 0, 0, r)).setSegmentation(8));
+			//gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new GridV3D(0, 0, 0, r), new GridV3D(32, 0, 0, r)).setSegmentation(8));
 			//
 			/*gauge.getPresets().add(new RailPresetItem(gauge, "16_curve_90_right",
 				new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),
@@ -74,8 +72,8 @@ public class InternalAddon extends AddonOld {
 				new Vec316f(16, 0, 0, r), new Vec316f(16, 0, -14, r),
 				new Vec316f(16, 0, -16, r)).setSegmentation(4));*/
 			//
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_up", new GridV3D(0, 0, 0, r), new GridV3D(2, 0, 0, r),new GridV3D(14, 1, 0, r), new GridV3D(16, 1, 0, r)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_down", new GridV3D(0, 0, 0, r), new GridV3D(2, 0, 0, r),new GridV3D(14, -1, 0, r), new GridV3D(16, -1, 0, r)).setSegmentation(8));
+			//gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_up", new GridV3D(0, 0, 0, r), new GridV3D(2, 0, 0, r),new GridV3D(14, 1, 0, r), new GridV3D(16, 1, 0, r)).setSegmentation(8));
+			//gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_down", new GridV3D(0, 0, 0, r), new GridV3D(2, 0, 0, r),new GridV3D(14, -1, 0, r), new GridV3D(16, -1, 0, r)).setSegmentation(8));
 		}
 		return;
 	}

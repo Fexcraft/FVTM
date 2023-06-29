@@ -16,9 +16,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -300,8 +300,8 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.MULTIBLOCK;
+	public ContentType getDataType(){
+		return ContentType.MULTIBLOCK;
 	}
 
 	@Override

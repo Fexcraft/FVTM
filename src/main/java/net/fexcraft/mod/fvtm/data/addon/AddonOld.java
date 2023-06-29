@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
-import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
-import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
@@ -31,39 +29,26 @@ import com.google.gson.JsonObject;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.impl.AddonTab;
-import net.fexcraft.mod.fvtm.data.part.Part;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.BlockModel;
-import net.fexcraft.mod.fvtm.model.ContainerModel;
-import net.fexcraft.mod.fvtm.model.ItemPlaceholderModel;
-import net.fexcraft.mod.fvtm.model.PartModel;
-import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.PresetTab;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.relauncher.Side;
@@ -100,9 +85,9 @@ public class AddonOld extends TypeCore<AddonOld> {
 
 	@Override
 	public AddonOld parse(JsonObject obj){
-		registryname = DataUtil.getRegistryName((AddonOld)null, obj);
+		registryname = DataUtil.getRegistryName((Addon)null, obj);
 		if(registryname == null) return null;
-		pack = this;
+		//pack = this;
 		name = JsonUtil.getIfExists(obj, "Name", "Unnamed Addon");
 		version = JsonUtil.getIfExists(obj, "Version", "0.o");
 		if(obj.has("Authors") && obj.get("Authors").isJsonArray()){
@@ -208,8 +193,8 @@ public class AddonOld extends TypeCore<AddonOld> {
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.ADDON;
+	public ContentType getDataType(){
+		return ContentType.ADDON;
 	}
 
 	@Override
@@ -256,118 +241,6 @@ public class AddonOld extends TypeCore<AddonOld> {
 		return obj;
 	}
 
-	public void searchFor(DataType data) throws InstantiationException, IllegalAccessException {
-		if(data == DataType.ADDON) return;
-		if(!this.isEnabled()){
-			Print.log("Skipping " + data.name() + " search for Addon '" + registryname.toString() + "' since it's marked as not enabled!");
-			return;
-		}
-		if(contype == ContainerType.DIR){
-			if(!file.isDirectory()) return;
-			//
-			File folder = new File(file, "assets/" + registryname.getPath() + "/config/" + data.cfg_folder + "/");
-			if(!folder.exists()){ folder.mkdirs(); }
-			ArrayList<File> candidates = findFiles(folder, data.suffix);
-			for(File file : candidates){
-				try{
-					JsonObject obj = JsonUtil.get(file);
-					TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
-					if(core == null){
-						if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
-						continue;
-					}
-					data.register(core); //Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
-					if(Static.side().isClient()){
-						checkIfHasCustomModel(data, core);
-					}
-					if(Static.dev()){
-						if(generatelang) checkLangFile(core);
-						if(generatejson) checkItemJson(core, data);
-						if(generateicon) checkItemIcon(core, data);
-					}
-				}
-				catch(Throwable t){
-					t.printStackTrace();
-					Print.log("Failed to load config from file '" + file + "'!"); Static.stop();
-				}
-			}
-		}
-		else{ //assume it's a jar.
-			String lastentryname = null;
-			try{
-				String path = "assets/" + registryname.getPath() + "/config/" + data.cfg_folder + "/";
-				ZipFile zip = new ZipFile(file);
-				ZipInputStream stream = new ZipInputStream(new FileInputStream(file));
-				while(true){
-					ZipEntry entry = stream.getNextEntry();
-					if(entry == null){
-						break;
-					}
-					lastentryname = entry.getName();
-					if(entry.getName().startsWith(path) && entry.getName().endsWith(data.suffix)){
-						JsonObject obj = JsonUtil.getObjectFromInputStream(zip.getInputStream(entry));
-						TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
-						if(core == null){
-							if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
-							continue;
-						}
-						data.register(core); //Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-						if(Static.side().isClient()){
-							checkIfHasCustomModel(data, core);
-						}
-					}
-				}
-				zip.close();
-				stream.close();
-			}
-			catch(Throwable e){
-				e.printStackTrace();
-				if(lastentryname != null) Print.log("Failed to load config from zip entry '" + lastentryname + "'!"); Static.stop();
-			}
-		}
-	}
-
-	private void checkIfHasCustomModel(DataType data, TypeCore<?> core){
-		switch(data){
-			case BLOCK:{
-				Block block = (Block)core;
-				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
-					return;
-				}
-				break;
-			}
-			case CONTAINER:{
-				Container con = (Container)core;
-				if(!con.no3DItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
-					return;
-				}
-				break;
-			}
-			case PART:{
-				Part part = (Part)core;
-				if(!part.no3DItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
-					return;
-				}
-				break;
-			}
-			case VEHICLE:{
-				Vehicle veh = (Vehicle)core;
-				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.no3DItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
-					return;
-				}
-				break;
-			}
-			default: break;
-		}
-		if(loc.isConfigPack() || isItemModelMissing(core)){
-			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ItemPlaceholderModel.INSTANCE);
-		}
-	}
-
 	private boolean isItemModelMissing(TypeCore<?> type){
 		try{
 			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getRegistryName().getNamespace(), "textures/items/" + type.getRegistryName().getPath() + ".png"));
@@ -393,7 +266,7 @@ public class AddonOld extends TypeCore<AddonOld> {
 		}
 	}
 
-	private void checkItemJson(TypeCore<?> core, DataType data){
+	private void checkItemJson(TypeCore<?> core, ContentType data){
 		File json = new File((loc.isNotAMod() ? file : file.getParentFile()), (loc.isNotAMod() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
 		if(!json.exists()){
 			if(!json.getParentFile().exists()) json.getParentFile().mkdirs();
@@ -412,18 +285,18 @@ public class AddonOld extends TypeCore<AddonOld> {
 	private static final String gitph = "https://raw.githubusercontent.com/Fexcraft/FVTM/1.12.2/placeholders/ph_%s.png";
 	private static BufferedImage img, img_veh, img_part;
 
-	private void checkItemIcon(TypeCore<?> core, DataType data){
+	private void checkItemIcon(TypeCore<?> core, ContentType data){
 		File icon = new File((loc.isNotAMod() ? file : file.getParentFile()), (loc.isNotAMod() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");;
 		if(!icon.exists()){
 			if(!icon.getParentFile().exists()) icon.getParentFile().mkdirs();
 			BufferedImage image = null;
-			if(data == DataType.VEHICLE){
+			if(data == ContentType.VEHICLE){
 				if(img_veh == null){
 					img_veh = DataUtil.tryDownload(String.format(gitph, "vehicle"));
 				}
 				image = img_veh;
 			}
-			else if(data == DataType.PART){
+			else if(data == ContentType.PART){
 				if(img_part == null){
 					img_part = DataUtil.tryDownload(String.format(gitph, "part"));
 				}
@@ -488,53 +361,6 @@ public class AddonOld extends TypeCore<AddonOld> {
 		if(creativetabs.containsKey(id))
 			return creativetabs.get(id);
 		else return getDefaultCreativeTab();
-	}
-
-	public void loadPresets(){
-		if(!this.isEnabled()){
-			Print.log("Skipping PRESET search for Addon '" + registryname.toString() + "' since it's marked as not enabled!");
-			return;
-		}
-		if(contype == ContainerType.DIR){
-			if(!file.isDirectory()) return;
-			//
-			File folder = new File(file, "assets/" + registryname.getPath() + "/config/presets/");
-			if(!folder.exists()){
-				folder.mkdirs();
-			}
-			ArrayList<File> candidates = findFiles(folder, ".json");
-			for(File file : candidates){
-				try{
-					JsonObject obj = JsonUtil.get(file);
-					if(obj.entrySet().isEmpty()) continue;
-					Vehicle vehicle = Resources.VEHICLES.get(new ResourceLocation(obj.get("Vehicle").getAsString()));
-					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
-					data.read(JsonToNBT.getTagFromJson(obj.toString()));
-					data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
-					PresetTab.INSTANCE.add(data.newItemStack());
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		else{ // assume it's a jar.
-			JsonArray array = ZipUtil.getJsonObjectsAt(file, "assets/" + registryname.getPath() + "/config/presets/", ".json");
-			for(JsonElement elm : array){
-				try{
-					JsonObject obj = elm.getAsJsonObject();
-					if(obj.entrySet().isEmpty()) continue;
-					Vehicle vehicle = Resources.VEHICLES.get(obj.get("Vehicle").getAsString());
-					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
-					data.read(JsonToNBT.getTagFromJson(obj.toString()));
-					data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
-					PresetTab.INSTANCE.add(data.newItemStack());
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 
 	public void loadRecipes(){

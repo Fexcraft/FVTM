@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
+
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
@@ -108,7 +110,7 @@ public class TexUtil {
 
 	public static Object[] getZipIS(String addonid, String path){
 		try{
-			Addon addon = Resources.getAddon(addonid);
+			Addon addon = getAddon(addonid);
 			ZipFile zip = new ZipFile(addon.getFile());
 			ZipInputStream stream = new ZipInputStream(new FileInputStream(addon.getFile()));
 			InputStream is = null;

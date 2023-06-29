@@ -35,7 +35,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
 		super(material); this.setHasSubtypes(true);
 		this.setMaxStackSize(type.isFuelContainer() ? 1 : material.getMaxStackSize());
 		this.setMaxDamage(material.getMaxDamage());
-        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}

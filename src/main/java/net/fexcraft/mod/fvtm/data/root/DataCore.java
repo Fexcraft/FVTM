@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.root;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -27,7 +28,7 @@ public abstract class DataCore<TYPE extends TypeCore<TYPE>, SELF> {
 	
 	public TYPE getType(){ return type; }
 	
-	public DataType getDataType(){
+	public ContentType getDataType(){
 		return type.getDataType();
 	}
 	

@@ -39,8 +39,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
 
     public ContainerItem(Container core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -98,7 +99,7 @@ public class Command extends CommandBase {
             	break;
             }
             case "pack-info":{
-            	Addon addon = Resources.getAddon(args[1]);
+            	Addon addon = getAddon(args[1]);
             	if(addon == null){
             		Print.chat(sender, "not found");
             		return;

@@ -12,16 +12,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -242,8 +241,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.PART;
+	public ContentType getDataType(){
+		return ContentType.PART;
 	}
 
 	@Override

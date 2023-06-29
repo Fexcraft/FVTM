@@ -32,7 +32,7 @@ public class ConsumableItem extends ItemFood implements ItemTex<Consumable> {
     public ConsumableItem(Consumable consumable){
 		super(consumable.getHealAmount(), consumable.isAlwaysEdible()); this.type = consumable;
 		this.setMaxStackSize(consumable.getMaxStackSize()); this.setHasSubtypes(true);
-        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+        //TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}

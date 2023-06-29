@@ -6,17 +6,11 @@ import java.lang.reflect.InvocationTargetException;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
-import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
-import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.RailEntity;
-import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
@@ -43,13 +37,6 @@ import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
-import net.fexcraft.mod.fvtm.item.JunctionToolItem;
-import net.fexcraft.mod.fvtm.item.RoadToolItem;
-import net.fexcraft.mod.fvtm.item.SignalItem0;
-import net.fexcraft.mod.fvtm.item.StreetSignItem;
-import net.fexcraft.mod.fvtm.item.TrafficSignItem;
-import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
@@ -132,8 +119,7 @@ public class FVTM {
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.IMPL[0] = TagCWI.class;
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
-		FvtmResources.INSTANCE = new ResourcesImpl();
-		FvtmResources.INSTANCE.init();
+		(FvtmResources.INSTANCE = new ResourcesImpl()).init();
 		Config.addListener(() -> {
 			TrafficSignLibrary.load(true);
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
@@ -241,8 +227,8 @@ public class FVTM {
 		Resources.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){
-			net.minecraft.creativetab.CreativeTabs deftab = InternalAddon.INSTANCE.getDefaultCreativeTab();
-			ConstructorBlock.INSTANCE.setCreativeTab(deftab);
+			//TODO internal addon net.minecraft.creativetab.CreativeTabs deftab = InternalAddon.INSTANCE.getDefaultCreativeTab();
+			/*ConstructorBlock.INSTANCE.setCreativeTab(deftab);
 			ConstCenterBlock.INSTANCE.setCreativeTab(deftab);
 			DisplayBlock.INSTANCE.setCreativeTab(deftab);
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(deftab);
@@ -255,7 +241,7 @@ public class FVTM {
 			RoadToolItem.INSTANCE.setCreativeTab(deftab);
 			Asphalt.INSTANCE.setCreativeTab(deftab);
 			DecorationItem.INSTANCE.setCreativeTab(deftab);
-			VPInfo.INSTANCE.setCreativeTab(deftab);
+			VPInfo.INSTANCE.setCreativeTab(deftab);*/
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
@@ -282,7 +268,7 @@ public class FVTM {
 	public void initPost(FMLPostInitializationEvent event){
 		Packets.init();
 		Resources.registerDefaultRecipes();
-		Resources.loadRecipes();
+		FvtmResources.loadRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.wire.RecServer());

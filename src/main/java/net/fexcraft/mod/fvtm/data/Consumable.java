@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -61,8 +60,8 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemText
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.MATERIAL;
+	public ContentType getDataType(){
+		return ContentType.MATERIAL;
 	}
 
 	@Override

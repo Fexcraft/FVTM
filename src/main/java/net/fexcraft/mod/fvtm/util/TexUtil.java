@@ -12,7 +12,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -109,7 +108,7 @@ public class TexUtil {
 
 	public static Object[] getZipIS(String addonid, String path){
 		try{
-			AddonOld addon = Resources.getAddon(addonid);
+			Addon addon = Resources.getAddon(addonid);
 			ZipFile zip = new ZipFile(addon.getFile());
 			ZipInputStream stream = new ZipInputStream(new FileInputStream(addon.getFile()));
 			InputStream is = null;

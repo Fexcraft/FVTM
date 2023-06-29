@@ -1,7 +1,8 @@
 package net.fexcraft.mod.fvtm.data;
 
-import com.google.gson.JsonObject;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 
+import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
@@ -9,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +54,7 @@ public class Material extends TypeCore<Material> implements Tabbed, ItemTexturea
 		this.isVehicleKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
 		this.isFuelContainer = JsonUtil.getIfExists(obj, "FuelContainer", false);
 		this.fuel_capacity = JsonUtil.getIfExists(obj, "FuelCapacity", 5000).intValue();
-		this.fuel = obj.has("FuelType") ? Resources.getFuel(obj.get("FuelType").getAsString()) : null;
+		this.fuel = obj.has("FuelType") ? getFuel(obj.get("FuelType").getAsString()) : null;
 		this.fuelgroup = obj.has("FuelGroup") ? obj.get("FuelGroup").getAsString() : null;
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");

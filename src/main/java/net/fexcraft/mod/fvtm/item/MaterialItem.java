@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -63,10 +66,10 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
     		if(type.isFuelContainer() && !type.isUniversalFuelContainer()){
-    			for(Fuel fuel : Resources.ALLFUELS){
+    			for(Fuel fuel : FUELS){
     				if(!type.isValidFuel(fuel)) continue;
         			NBTTagCompound compound = new NBTTagCompound();
-        			compound.setString("StoredFuelType", fuel.getRegistryName().toString());
+        			compound.setString("StoredFuelType", fuel.getID().colon());
         			compound.setInteger("StoredFuelAmount", type.getFuelCapacity());
         			ItemStack stack = type.newItemStack(); stack.setTagCompound(compound);
         			items.add(stack); continue;
@@ -95,7 +98,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
     
     public Fuel getStoredFuelType(ItemStack stack){
     	if(!type.isFuelContainer()) return null; if(type.getFuelType() != null) return type.getFuelType();
-    	if(stack.hasTagCompound()) return Resources.getFuel(stack.getTagCompound().getString("StoredFuelType"));
+    	if(stack.hasTagCompound()) return getFuel(stack.getTagCompound().getString("StoredFuelType"));
     	else return null;
     }
     

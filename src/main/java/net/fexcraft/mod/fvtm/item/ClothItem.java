@@ -30,7 +30,7 @@ public class ClothItem extends ItemArmor implements ItemTex<Cloth> {
 		super((ArmorMaterial)cloth.getMaterial().getLocalMaterial(), 0, cloth.getEquitmentSlot());
 		if(cloth.getMaxDamage() > 0) this.setMaxDamage(cloth.getMaxDamage());
 		//
-        (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry  (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}

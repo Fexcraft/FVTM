@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
@@ -71,8 +70,8 @@ public class WireType extends TypeCore<WireType> implements Tabbed, ItemTexturea
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.WIRE;
+	public ContentType getDataType(){
+		return ContentType.WIRE;
 	}
 
 	@Override

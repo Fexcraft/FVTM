@@ -34,8 +34,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         //this.setRegistryName(core.getRegistryName());
         //this.setUnlocalizedName(this.getRegistryName().toString());
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
 	}

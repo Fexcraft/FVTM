@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.addon.AddonOld;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
@@ -31,14 +31,14 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_part_info.png");
 	private static final String CAT_PRE = "# ", SUB_PRE = "  ";
 	private boolean vehmode = true;
-	private List<AddonOld> vehpacks, partpacks;
+	private List<Addon> vehpacks, partpacks;
 	private List<Vehicle> vehicles;
 	private List<Part> parts;
 	private List<String> etexts = new ArrayList<>();
 	private List<String> itexts = new ArrayList<>();
 	private List<String> tips = new ArrayList<>();
 	private int pack_idx = 0, sel_idx = 0, scroll;
-	private AddonOld addon;
+	private Addon addon;
 	private Vehicle veh;
 	private Part part;
 	private VehMode vmode = VehMode.REQUIRED;

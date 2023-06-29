@@ -14,8 +14,8 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
@@ -205,8 +205,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.BLOCK;
+	public ContentType getDataType(){
+		return ContentType.BLOCK;
 	}
 
 	@Override

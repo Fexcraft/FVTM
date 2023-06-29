@@ -12,7 +12,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
@@ -125,8 +124,8 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.RAILGAUGE;
+	public ContentType getDataType(){
+		return ContentType.RAILGAUGE;
 	}
 
 	@Override

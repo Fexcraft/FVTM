@@ -1,9 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
 import java.io.Closeable;
 import java.io.File;
@@ -137,7 +135,6 @@ public class Resources {
 	public static RegistryOld<Part> PARTS = new RegistryOld<>();
 	public static RegistryOld<Vehicle> VEHICLES = new RegistryOld<>();
 	public static RegistryOld<Material> MATERIALS = new RegistryOld<>();
-	public static RegistryOld<Fuel> ALLFUELS = new RegistryOld<>();
 	public static RegistryOld<Consumable> CONSUMABLES = new RegistryOld<>();
 	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
 	public static RegistryOld<Block> BLOCKS = new RegistryOld<>();
@@ -145,7 +142,6 @@ public class Resources {
 	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
 	public static RegistryOld<Cloth> CLOTHES = new RegistryOld<>();
 	public static RegistryOld<WireType> WIRES = new RegistryOld<>();
-	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
@@ -594,20 +590,12 @@ public class Resources {
 		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.VEHICLE_UPDATE_RANGE);
 	}
 
-	public static Fuel getFuel(String id){
-		return ALLFUELS.get(id);
-	}
-
-	public static Fuel getFuel(ResourceLocation resloc){
-		return ALLFUELS.get(resloc);
+	public static String getFuelName(ResourceLocation id){
+		return getFuelName(id.toString());
 	}
 
 	public static String getFuelName(String id){
-		return getFuelName(new ResourceLocation(id));
-	}
-
-	public static String getFuelName(ResourceLocation resloc){
-		Fuel fuel = getFuel(resloc); return fuel == null ? "not-found" : fuel.getName();
+		Fuel fuel = getFuel(id); return fuel == null ? "not-found" : fuel.getName();
 	}
 	
 	@SubscribeEvent
@@ -940,13 +928,6 @@ public class Resources {
 		}
 		addon = ((Content<?>)type).getAddon();
 		return (CreativeTabs)addon.getCreativeTab(tab);
-	}
-
-	public static Addon getAddon(String string){
-		for(Addon addon : ADDONS){
-			if(addon.getID().id().equals(string)) return addon;
-		}
-		return null;
 	}
 
 	public static void loadWireDecorations(boolean client){

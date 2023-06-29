@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,8 +29,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	
 	public PlainBase(Block type){
 		super(type.getMaterial(), type.getMapColor()); this.type = type;
-		type.getAddon().getFCLRegisterer().addBlock(
-			type.getRegistryName().getPath(), this, BlockItem.class, type.getBlockType().getMetaVariants(), null);
+		//TODO block registry type.getAddon().getFCLRegisterer().addBlock(type.getRegistryName().getPath(), this, BlockItem.class, type.getBlockType().getMetaVariants(), null);
 		this.setHardness(type.getHardness());
 		this.setLightLevel(type.getLightLevel());
 		this.setResistance(type.getResistance());

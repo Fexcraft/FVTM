@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.util.ResourceLocation;
@@ -40,8 +39,8 @@ public class Fuel extends TypeCore<Fuel> {
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.FUEL;
+	public ContentType getDataType(){
+		return ContentType.FUEL;
 	}
 
 	@Override

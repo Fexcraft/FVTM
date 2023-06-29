@@ -527,8 +527,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					break;
 				}
 				if(val.startsWith("pack-")){
-					ResourceLocation loc = new ResourceLocation(val.substring(5));
-					if(loc.equals(this.getType().getAddon().getRegistryName())){
+					if(val.substring(5).equals(getType().getAddon().getID().colon())){
 						pass = !not;
 						break;
 					}

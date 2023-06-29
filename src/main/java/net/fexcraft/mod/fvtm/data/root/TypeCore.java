@@ -5,25 +5,27 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.addon.AddonOld;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+@Deprecated
 public abstract class TypeCore<SELF> {
 
 	public ResourceLocation getRegistryName(){ return registryname; }
 	
 	public abstract SELF parse(JsonObject obj);
 	
-	public abstract DataType getDataType();
+	public abstract ContentType getDataType();
 	
 	/** @return null if absent */
 	public abstract Class<?> getDataClass();
 	
-	public AddonOld getAddon(){ return pack; }
+	public Addon getAddon(){ return pack; }
 
 	public String getName(){ return name; }
 
@@ -37,7 +39,7 @@ public abstract class TypeCore<SELF> {
 	protected ResourceLocation registryname;
 	protected List<String> description;
 	protected String name;
-	protected AddonOld pack;
+	protected Addon pack;
 
 	//
 	

@@ -45,7 +45,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		super(core);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(64);
-		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
 		path = vecs; if(Static.side().isServer()) return;
         this.setCreativeTab(Resources.getCreativeTab(type));
     }

@@ -145,7 +145,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
             return false;
         }
         ItemStack stack = player.getHeldItem(hand);
-        if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
+        if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem ){//TODO && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
             locked = !locked;
             Print.chat(player, "Toggled sign status.");
             return true;

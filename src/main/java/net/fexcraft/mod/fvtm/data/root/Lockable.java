@@ -24,7 +24,7 @@ public interface Lockable {
 	}
 
 	public static boolean isKey(Item item){
-		return item instanceof MaterialItem && ((MaterialItem)item).getType().isVehicleKey();
+		return item instanceof MaterialItem ;//TODO && ((MaterialItem)item).getType().isVehicleKey();
 	}
 
 	public static void toggle(Lockable lockable, ICommandSender sender, ItemStack stack){

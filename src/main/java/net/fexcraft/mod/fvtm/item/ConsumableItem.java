@@ -7,9 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -25,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ConsumableItem extends ItemFood implements ItemTex<Consumable> {
+public class ConsumableItem extends ItemFood {//implements ItemTex<Consumable> {
 	
 	private Consumable type;
 
@@ -34,7 +32,7 @@ public class ConsumableItem extends ItemFood implements ItemTex<Consumable> {
 		this.setMaxStackSize(consumable.getMaxStackSize()); this.setHasSubtypes(true);
         //TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
     @SideOnly(Side.CLIENT)
@@ -112,7 +110,7 @@ public class ConsumableItem extends ItemFood implements ItemTex<Consumable> {
         //}
     }
 
-	@Override
+	//@Override
 	public TypeCore<Consumable> getDataType(){
 		return type;
 	}

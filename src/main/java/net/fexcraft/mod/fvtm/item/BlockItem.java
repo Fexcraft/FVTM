@@ -1,13 +1,11 @@
 package net.fexcraft.mod.fvtm.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -15,13 +13,7 @@ import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock;
-import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
-import net.fexcraft.mod.fvtm.util.Properties;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -37,7 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, ItemTex<Block> {
+public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {//}, ItemTex<Block> {
 	
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs ctab;
@@ -50,7 +42,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
 		if(Static.side().isServer()) return;
-		ctab = Resources.getCreativeTab(type);
+		//TODO ctab = Resources.getCreativeTab(type);
 	}
 
     @SideOnly(Side.CLIENT)
@@ -140,7 +132,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData>, I
         return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 
-	@Override
+	//@Override
 	public Block getDataType(){
 		return type;
 	}

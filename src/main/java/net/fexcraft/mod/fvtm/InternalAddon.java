@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
 import java.io.File;
-import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,13 +9,12 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonOld;
-import net.fexcraft.mod.fvtm.data.impl.AddonTab;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 
-@AddonClass(registryname = "fvtm:fvtm", hasJson = false)
+@AddonClass(registryname = "fvtm:fvtm")
 public class InternalAddon extends AddonOld {
 	
 	public static final IDL REGNAME = IDLManager.getIDLCached("fvtm:fvtm");
@@ -35,7 +33,7 @@ public class InternalAddon extends AddonOld {
 		license = "https://fexcraft.net/license?id=mods";
 		registerer = FVTM.getRegisterer();
 		if(Static.side().isClient()){
-			(creativetabs = new HashMap<>()).put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
+			//(creativetabs = new HashMap<>()).put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 		}
 	}
 	

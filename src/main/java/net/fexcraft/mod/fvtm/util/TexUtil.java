@@ -14,6 +14,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -30,6 +31,10 @@ public class TexUtil {
 	public static final HashMap<ResourceLocation, Object> litex = new HashMap<>(); 
 	public static final Minecraft mc = Minecraft.getMinecraft();
 	//private static int curr;
+
+	public static void bindTexture(IDL idl){
+		bindTexture((ResourceLocation)idl);
+	}
 	
 	public static void bindTexture(ResourceLocation loc){
 		//curr = GL11.glGetInteger(GL11.GL_TEXTURE_2D);

@@ -7,13 +7,14 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.model.ClothModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -24,7 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
+public class Cloth extends TypeCore<Cloth> implements ItemTextureable {
 	
 	protected short maxHealth;
 	protected ClothItem item;
@@ -34,7 +35,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	protected ClothModel model;
 	protected ModelData modeldata;
 	protected ResourceLocation texture;
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	
 	public Cloth(){}
 
@@ -62,7 +63,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 			modeldata = DataUtil.getModelData(obj);
 		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+        this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
 		this.item = new ClothItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.ClothCreated(this, obj));
 		return this;
@@ -103,7 +104,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 		return this.maxHealth;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
@@ -130,7 +131,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed, ItemTextureable {
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 

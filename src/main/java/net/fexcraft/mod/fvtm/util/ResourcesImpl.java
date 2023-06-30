@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -29,13 +30,38 @@ import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ResourcesImpl extends FvtmResources {
 
+	private final ASMDataTable asmdata;
 	private Field respackfile = null;
+
+	public ResourcesImpl(ASMDataTable asmdata){
+		this.asmdata = asmdata;
+	}
+
+	@Override
+	public void searchASMPacks(){
+		asmdata.getAll(AddonClass.class.getCanonicalName()).forEach(entry -> {
+			try{
+				Class<?> clazz = Class.forName(entry.getClassName());
+				AddonClass adn = clazz.getAnnotation(AddonClass.class);
+				String regname = adn.registryname();
+				if(regname.contains(":")) regname = regname.split(":")[1];
+				String res = clazz.getClassLoader().getResource("assets/" + regname + "/addonpack.fvtm").toString();
+				res = res.substring(res.indexOf("file:/") + 6, res.indexOf("!"));
+				JsonMap map = JsonHandler.parse(clazz.getClassLoader().getResourceAsStream("assets/" + regname + "/addonpack.fvtm"));
+				ADDONS.add(new Addon(new File(res), regname.equals("fvtm") ? AddonLocation.INTERNAL : AddonLocation.MODJAR).parse(map));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		});
+	}
 
 	@Override
 	public boolean searchPacksInResourcePacks(){
@@ -75,7 +101,8 @@ public class ResourcesImpl extends FvtmResources {
 			if(!pack.resourceExists(resloc)) continue;
 			try{
 				Addon addon = new Addon((File)respackfile.get(pack), AddonLocation.RESOURCEPACK);
-				JsonMap map = JsonHandler.parse(addon.getFile());
+				File file = addon.getFile().isDirectory() ? new File(addon.getFile(), "assets/" + str + "/addonpack.fvtm") : addon.getFile();
+				JsonMap map = JsonHandler.parse(file);
 				ADDONS.register(addon.parse(map));
 			}
 			catch(IllegalArgumentException | IllegalAccessException e){
@@ -107,7 +134,7 @@ public class ResourcesImpl extends FvtmResources {
 		switch(contype){
 			case BLOCK:{
 				Block block = null;//TODO
-				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.no3DItemModel()){
+				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockModel.EMPTY);
 					return;
 				}
@@ -115,7 +142,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			case CONTAINER:{
 				Container con = null;//TODO
-				if(!con.no3DItemModel()){
+				if(!con.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ContainerModel.EMPTY);
 					return;
 				}
@@ -123,7 +150,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			case PART:{
 				Part part = null;//TODO
-				if(!part.no3DItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
+				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), PartModel.EMPTY);
 					return;
 				}
@@ -131,7 +158,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			case VEHICLE:{
 				Vehicle veh = null;//TODO
-				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.no3DItemModel()){
+				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), VehicleModel.EMPTY);
 					return;
 				}

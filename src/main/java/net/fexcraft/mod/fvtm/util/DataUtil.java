@@ -214,7 +214,7 @@ public class DataUtil {
         } catch (Exception e){ e.printStackTrace(); }
 		return null;
 	}
-	
+
 	public static final ResourceLocation RSLC_GENERAL = new ResourceLocation("fvtm:textures/items/ph_general.png");
 	public static final ResourceLocation RSLC_VEHICLE = new ResourceLocation("fvtm:textures/items/ph_vehicle.png");
 	public static final ResourceLocation RSLC_MBLOCK = new ResourceLocation("fvtm:textures/items/ph_multiblock.png");

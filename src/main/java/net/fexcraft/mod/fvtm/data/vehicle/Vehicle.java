@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -25,13 +24,22 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
-import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -41,7 +49,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, Tabbed, ItemTextureable {
+public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, ItemTextureable {
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
@@ -63,7 +71,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected ResourceLocation keytype;
 	protected int maxkeys;
 	protected PartSlots partslots;
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	protected boolean no3ditem;
 	//
 	protected VehicleType type;
@@ -183,7 +191,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		this.overlayid = obj.has("Overlay") ? obj.get("Overlay").getAsString() : "default";
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new VehicleItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.VehicleCreated(this, obj));
@@ -307,7 +315,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return categories;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
@@ -329,12 +337,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 	
 	@Override
-	public boolean no3DItemModel(){
+	public boolean noCustomItemModel(){
 		return no3ditem;
 	}
 

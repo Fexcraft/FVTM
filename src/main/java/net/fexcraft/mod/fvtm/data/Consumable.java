@@ -1,13 +1,13 @@
 package net.fexcraft.mod.fvtm.data;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +16,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemTextureable {
+public class Consumable extends TypeCore<Consumable> implements ItemTextureable {
 	
 	protected byte maxStackSize;
 	protected ConsumableItem item;
@@ -25,7 +25,7 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemText
     private int healamount, useduration;
     private float saturation;
     private boolean wolffood, drinkable, alwaysedible;
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	
 	public Consumable(){}
 
@@ -55,7 +55,7 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemText
         this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
 		this.item = new ConsumableItem(this); return this;
 	}
 
@@ -129,13 +129,13 @@ public class Consumable extends TypeCore<Consumable> implements Tabbed, ItemText
         return alwaysedible;
     }
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 

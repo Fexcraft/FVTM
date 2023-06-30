@@ -14,7 +14,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -25,7 +24,6 @@ import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.ICommandSender;
@@ -41,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem, ItemTex<RailGauge> {
+public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem{;//}, ItemTex<RailGauge> {
 
     public RailGaugeItem(RailGauge core){
 		super(core);
@@ -49,7 +47,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		this.setMaxStackSize(64);
 		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
     }
 
     @SideOnly(Side.CLIENT)
@@ -182,7 +180,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		return true;
 	}
 
-	@Override
+	//@Override
 	public TypeCore<RailGauge> getDataType(){
 		return type;
 	}

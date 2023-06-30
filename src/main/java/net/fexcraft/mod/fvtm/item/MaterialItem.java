@@ -1,25 +1,20 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
@@ -32,21 +27,22 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO eventually a capability storing cached fuel data.
-public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Material> {
+public class MaterialItem extends Item {//TypeCoreItem<Material> implements ItemTex<Material> {
 
     public MaterialItem(Material material){
-		super(material); this.setHasSubtypes(true);
-		this.setMaxStackSize(type.isFuelContainer() ? 1 : material.getMaxStackSize());
-		this.setMaxDamage(material.getMaxDamage());
+		super();//material);
+		this.setHasSubtypes(true);
+		//TODO this.setMaxStackSize(type.isFuelContainer() ? 1 : material.getMaxStackSize());
+		//TODO this.setMaxDamage(material.getMaxDamage());
 		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+        /*tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         if(type.getOreDictionaryId() != null){
         	tooltip.add(Formatter.format("&9OreDict: &7" + type.getOreDictionaryId()));
@@ -58,12 +54,12 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
         	tooltip.add(Formatter.format("&9Container: &7" + (type.isUniversalFuelContainer() ? "universal" : type.getFuelType() == null ? type.getFuelGroup() : type.getFuelType().getName())));
         	tooltip.add(Formatter.format("&9Fuel Stored: &7" + this.getStoredFuelName(stack)));
         	tooltip.add(Formatter.format("&9Fuel Amount: &7" + this.getStoredFuelAmount(stack) + "mB"));
-        }
+        }*///TODO
     }
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
-    	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
+    	/*if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
     		if(type.isFuelContainer() && !type.isUniversalFuelContainer()){
     			for(Fuel fuel : FUELS){
@@ -75,7 +71,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
         			items.add(stack); continue;
     			}
     		}
-    	}
+    	}*///TODO
     }
     
     @Override
@@ -86,29 +82,29 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
     
     @Override
     public int getItemBurnTime(ItemStack stack){
-    	return type.getItemBurnTime() * stack.getCount();
+    	return 0;//TODO type.getItemBurnTime() * stack.getCount();
     }
     
     public String getLockCode(ItemStack stack){
-    	if(!type.isVehicleKey()) return null;
+    	//TODO if(!type.isVehicleKey()) return null;
     	if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
     	if(!stack.getTagCompound().hasKey("LockCode")) stack.getTagCompound().setString("LockCode", Lockable.newCode());
     	return stack.getTagCompound().getString("LockCode");
     }
     
     public Fuel getStoredFuelType(ItemStack stack){
-    	if(!type.isFuelContainer()) return null; if(type.getFuelType() != null) return type.getFuelType();
+    	//TODO if(!type.isFuelContainer()) return null; if(type.getFuelType() != null) return type.getFuelType();
     	if(stack.hasTagCompound()) return getFuel(stack.getTagCompound().getString("StoredFuelType"));
     	else return null;
     }
     
     public int getStoredFuelAmount(ItemStack stack){
-    	if(!type.isFuelContainer() || !stack.hasTagCompound()) return 0;
+    	//TODO if(!type.isFuelContainer() || !stack.hasTagCompound()) return 0;
     	return stack.getTagCompound().getInteger("StoredFuelAmount");
     }
     
     public String getStoredFuelName(ItemStack stack){
-    	if(!type.isFuelContainer()) return "Nothing."; if(type.getFuelType() != null) return type.getFuelType().getName();
+    	//TODO if(!type.isFuelContainer()) return "Nothing."; if(type.getFuelType() != null) return type.getFuelType().getName();
     	if(stack.hasTagCompound()) return Resources.getFuelName(stack.getTagCompound().getString("StoredFuelType"));
     	else return "none";
     }
@@ -122,12 +118,7 @@ public class MaterialItem extends TypeCoreItem<Material> implements ItemTex<Mate
 	public void insertFuel(ItemStack stack, int stored){
 		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setInteger("StoredFuelAmount", stack.getTagCompound().getInteger("StoredFuelAmount") + stored);
-		if(stack.getTagCompound().getInteger("StoredFuelAmount") > type.getFuelCapacity()) stack.getTagCompound().setInteger("StoredFuelAmount", type.getFuelCapacity());
-	}
-
-	@Override
-	public TypeCore<Material> getDataType(){
-		return type;
+		//TODO if(stack.getTagCompound().getInteger("StoredFuelAmount") > type.getFuelCapacity()) stack.getTagCompound().setInteger("StoredFuelAmount", type.getFuelCapacity());
 	}
 
 }

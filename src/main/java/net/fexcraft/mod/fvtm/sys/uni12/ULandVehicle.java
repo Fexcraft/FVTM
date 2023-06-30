@@ -720,7 +720,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	return true;
         }
         if(!stack.isEmpty()){
-            if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
+            if(stack.getItem() instanceof MaterialItem ){//TODO && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
             	player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
             	return true;
             }

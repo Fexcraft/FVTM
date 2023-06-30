@@ -17,7 +17,6 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
@@ -119,7 +118,7 @@ public class FVTM {
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.IMPL[0] = TagCWI.class;
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
-		(FvtmResources.INSTANCE = new ResourcesImpl()).init();
+		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		Config.addListener(() -> {
 			TrafficSignLibrary.load(true);
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
@@ -198,6 +197,7 @@ public class FVTM {
 			}
 		}*/
 		//
+		FvtmResources.INSTANCE.init();
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		MinecraftForge.EVENT_BUS.register(new RVStore());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
@@ -254,8 +254,8 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		Resources.MATERIALS.forEach(Material::linkContainerItem);
-		Resources.MATERIALS.forEach(Material::registerIntoOreDictionary);
+		//TODO items MATERIALS.forEach(material -> material.getItemWrapper().linkContainer());
+		//TODO oredict registry MATERIALS.forEach(Material::registerIntoOreDictionary);
 		Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
 		Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
 		Resources.BLOCKS.forEach(Block::linkItem);

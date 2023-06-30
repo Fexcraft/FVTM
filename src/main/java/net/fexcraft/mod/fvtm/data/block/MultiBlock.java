@@ -20,11 +20,12 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -38,7 +39,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemTextureable {
+public class MultiBlock extends TypeCore<MultiBlock> implements ItemTextureable {
 
 	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
@@ -46,7 +47,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 	private ArrayList<MB_Access> access = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
-	private ResourceLocation itemloc;
+	private IDL itemloc;
 	private JsonObject scriptdata;
 	private MultiBlockItem item;
 	private String ctab;
@@ -187,7 +188,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 		if(obj.has("ScriptData")){
 			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
-		itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
 		item = new MultiBlockItem(this);
 		return this;
 	}
@@ -315,7 +316,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 		return registryname;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
@@ -334,12 +335,12 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 
 	@Override
-	public boolean no3DItemModel(){
+	public boolean noCustomItemModel(){
 		return true;
 	}
 }

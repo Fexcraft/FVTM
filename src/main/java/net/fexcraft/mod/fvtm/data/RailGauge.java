@@ -14,7 +14,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
@@ -22,6 +21,8 @@ import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +30,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextureable {
+public class RailGauge extends TypeCore<RailGauge> implements ItemTextureable {
 	
 	/** In "micro blocks" (1 = 1/16th of a block). */
 	protected int width;
@@ -45,7 +46,7 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 	protected RailGaugeModel model;
 	protected ModelData modeldata;
 	protected ArrayList<RailPresetItem> presets;
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	
 	public RailGauge(){}
 
@@ -93,7 +94,7 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 		}
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
 		this.item = new RailGaugeItem(this);
 		//
 		if(obj.has("PreSets")){
@@ -196,13 +197,13 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed, ItemTextur
 		return blockheight;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 

@@ -61,8 +61,8 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -134,7 +134,6 @@ public class Resources {
 
 	public static RegistryOld<Part> PARTS = new RegistryOld<>();
 	public static RegistryOld<Vehicle> VEHICLES = new RegistryOld<>();
-	public static RegistryOld<Material> MATERIALS = new RegistryOld<>();
 	public static RegistryOld<Consumable> CONSUMABLES = new RegistryOld<>();
 	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
 	public static RegistryOld<Block> BLOCKS = new RegistryOld<>();
@@ -156,12 +155,8 @@ public class Resources {
 	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
-	private File configroot;
 	
 	public Resources(FMLPreInitializationEvent event){
-		configroot = new File(event.getModConfigurationDirectory(), "/fvtm/");
-		if(!configroot.exists()) configroot.mkdirs();
-		//
 		registerAttributeTypes();
 		registerModifierImpls();
 		registerFunctions();
@@ -917,7 +912,7 @@ public class Resources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static CreativeTabs getCreativeTab(Tabbed type){
+	public static CreativeTabs getCreativeTab(WithItem type){
 		String tab = type.getCreativeTab();
 		Addon addon = null;
 		if(tab.contains(":")){

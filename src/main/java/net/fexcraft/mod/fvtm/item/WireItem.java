@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.WireType;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -22,7 +21,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem, ItemTex<WireType> {
+public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem {//}, ItemTex<WireType> {
 
     public WireItem(WireType core){
 		super(core);
@@ -44,7 +42,7 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
 		this.setMaxStackSize(64);
 		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
     }
 
     @SideOnly(Side.CLIENT)
@@ -112,7 +110,7 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
 		return true;
 	}
 
-	@Override
+	//@Override
 	public TypeCore<WireType> getDataType(){
 		return type;
 	}

@@ -38,7 +38,6 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.impl.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
@@ -106,11 +105,11 @@ public class AddonOld extends TypeCore<AddonOld> {
 		if(Static.side().isClient()){
 			creativetabs = new HashMap<>();
 			if(!obj.has("CreativeTabs") /*|| obj.get("CreativeTabs").getAsJsonArray().size() == 0*/){
-				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
+				//this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 			}
 			else{
 				obj.get("CreativeTabs").getAsJsonArray().forEach(elm -> {
-					this.creativetabs.put(elm.getAsString(), new AddonTab(this, elm.getAsString()));
+					//this.creativetabs.put(elm.getAsString(), new AddonTab(this, elm.getAsString()));
 				});
 			}
 		}

@@ -20,7 +20,6 @@ import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -47,7 +46,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		this.setMaxStackSize(64);
 		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
 		path = vecs; if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
     }
     
     public RailPresetItem setSegmentation(int segments){

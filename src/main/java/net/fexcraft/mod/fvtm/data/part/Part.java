@@ -26,7 +26,6 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
@@ -41,6 +40,8 @@ import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -49,7 +50,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, Tabbed, ItemTextureable {
+public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, ItemTextureable {
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
@@ -66,7 +67,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected ArrayList<JsonElement> scripts_data = new ArrayList<>();
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	protected boolean no3ditem;
 	
 	public Part(){}
@@ -202,7 +203,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 			modeldata = DataUtil.getModelData(obj);
 		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new PartItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.PartCreated(this, obj));
@@ -324,18 +325,18 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		return rotpoints;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 	
 	@Override
-	public boolean no3DItemModel(){
+	public boolean noCustomItemModel(){
 		return no3ditem;
 	}
 

@@ -88,7 +88,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
                     }
                 }
             }
-            else if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
+            else if(stack.getItem() instanceof MaterialItem ){//TODO && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
                 if(te.getVehicleData() == null){
                     Print.bar(player, "No VehicleData.");
                 }

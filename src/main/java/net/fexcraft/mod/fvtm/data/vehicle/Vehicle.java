@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,7 +20,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -140,10 +142,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		this.trailer = obj.has("Trailer") ? obj.get("Trailer").getAsBoolean() : obj.has("Wagon") ? obj.get("Wagon").getAsBoolean() : false;
 		if(obj.has("FrontConnector")){
-			this.def_front_conn = Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()).to16Double();
+			this.def_front_conn = toV3(Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()));
 		}
 		if(obj.has("RearConnector")){
-			this.def_rear_conn = Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()).to16Double();
+			this.def_rear_conn = toV3(Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()));
 		}
 		if(obj.has("CouplerRange")){
 			this.coupler_range = obj.get("CouplerRange").getAsFloat();

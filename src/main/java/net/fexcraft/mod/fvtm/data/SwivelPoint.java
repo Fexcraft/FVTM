@@ -1,17 +1,18 @@
 package net.fexcraft.mod.fvtm.data;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Axes;
-import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.handler.SPM_DI;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
@@ -45,7 +46,7 @@ public class SwivelPoint {
 
 	public SwivelPoint(JsonMap map){
 		this.id = map.getString("id", DEFAULT);
-		this.position = map.has("pos") ? Pos.frJson(map.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
+		this.position = map.has("pos") ? toV3(Pos.frJson(map.get("pos"), true)) : new Vec3d(0, 0, 0);
 		this.prevpos = new Vec3d(position.x, position.y, position.z);
 		this.parid = map.getString("parent", DEFAULT);
 		axe.set_rotation(map.getFloat("yaw", 0), map.getFloat("pitch", 0), map.getFloat("roll", 0), true);

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 

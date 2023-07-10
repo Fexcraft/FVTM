@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.util.function;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
@@ -33,7 +35,7 @@ public class ContainerFunction extends StaticFunction {
 	}
 
 	public ContainerSlot getAsNewSlot(String category){
-		return new ContainerSlot(category, (byte)length, position.to16Double(), rotation, onlytype, rotpoint);
+		return new ContainerSlot(category, (byte)length, toV3(position), rotation, onlytype, rotpoint);
 	}
 
 }

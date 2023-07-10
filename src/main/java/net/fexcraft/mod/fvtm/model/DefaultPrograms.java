@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model;
 
 import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.util.function.Predicate;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -1222,7 +1223,7 @@ public class DefaultPrograms {
 					.setPolygonUV(5, new float[]{ 0.0f, 12.0f, 16.0f, 12.0f, 16.0f, 16.0f, 0.0f, 16.0f })
 					.build()
 				),
-				new Pos(x, y, z).to16Double(), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
+				toV3(new Pos(x, y, z)), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
 			);
 			beam.setPredicate(predicate);
 			return beam;

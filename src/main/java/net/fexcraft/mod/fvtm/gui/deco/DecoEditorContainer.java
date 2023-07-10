@@ -4,7 +4,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraftforge.fml.relauncher.Side;

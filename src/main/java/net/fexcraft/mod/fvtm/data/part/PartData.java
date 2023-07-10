@@ -1,16 +1,18 @@
 package net.fexcraft.mod.fvtm.data.part;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.frNBT;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toNBT;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.Rot;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,7 +43,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setString("Part", type.getRegistryName().toString());
-		currentpos.toNBT("CurrentPos", compound);
+		toNBT(currentpos, "CurrentPos", compound);
 		currentrot.toNBT("CurrentRot", compound);
 		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.setString("SwivelPoint", rotpoint);
 		//
@@ -61,7 +63,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		//if(!compound.hasKey("Part")) return null;
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
-		currentpos = Pos.fromNBT("CurrentPos", compound);
+		currentpos = frNBT("CurrentPos", compound);
 		currentrot = Rot.fromNBT("CurrentRot", compound);
 		rotpoint = compound.hasKey("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//

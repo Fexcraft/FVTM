@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_PARTICLES;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -151,7 +152,7 @@ public class EntitySystem extends DetachedSystem {
 			this.part = key;
 			this.data = data;
 			this.edata = edata;
-			off = data.getInstalledPos().add(edata.pos).to16Double();
+			off = toV3(data.getInstalledPos().add(edata.pos));
 			freq = edata.frequency == 0 ? edata.particle.frequency : edata.frequency;
 			dir = edata.dir == null ? edata.particle.dir : edata.dir;
 			speed = edata.speed == null ? edata.particle.speed : edata.speed;

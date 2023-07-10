@@ -33,7 +33,6 @@ import net.fexcraft.lib.mc.render.FCLBlockModelLoader;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -42,7 +41,14 @@ import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.Cloth;
+import net.fexcraft.mod.fvtm.data.Consumable;
+import net.fexcraft.mod.fvtm.data.Content;
+import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.data.TextureSupply;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
@@ -161,17 +167,7 @@ public class Resources {
 		registerModifierImpls();
 		registerFunctions();
 		//
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.FUEL);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MATERIAL);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONSUMABLE);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CLOTH);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.RAILGAUGE);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONTAINER);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.BLOCK);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MULTIBLOCK);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.PART);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.VEHICLE);
+		// search in packs for //
 		//
 		if(event.getSide().isClient()){
 			MODEL_LOADERS.add(new ClassModelLoader());
@@ -909,20 +905,6 @@ public class Resources {
 				}
 			}
 		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static CreativeTabs getCreativeTab(WithItem type){
-		String tab = type.getCreativeTab();
-		Addon addon = null;
-		if(tab.contains(":")){
-			String[] split = tab.split(":");
-			addon = getAddon(split[0]);
-			if(addon == null) return null;
-			return (CreativeTabs)addon.getCreativeTab(split[1]);
-		}
-		addon = ((Content<?>)type).getAddon();
-		return (CreativeTabs)addon.getCreativeTab(tab);
 	}
 
 	public static void loadWireDecorations(boolean client){

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -12,7 +14,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
@@ -66,7 +68,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		String regname = data.getType().getRegistryName().toString();
 		Vec3d conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
 		if(idata.relative){
-			conn = conn.add(part.getInstalledPos().to16Double());
+			conn = conn.add(toV3(part.getInstalledPos()));
 		}
 		data.setConnector(conn, front);
 		Print.chatnn(sender, "handler.install.fvtm.connector.success");
@@ -103,22 +105,22 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		
 		public ConnectorData(JsonObject obj){
 			if(obj.has("Front") && obj.get("Front").isJsonArray()){
-				front.put("*", Pos.fromJson(obj.get("Front"), true).to16Double());
+				front.put("*", toV3(Pos.fromJson(obj.get("Front"), true)));
 			}
 			if(obj.has("Rear") && obj.get("Rear").isJsonArray()){
-				rear.put("*", Pos.fromJson(obj.get("Rear"), true).to16Double());
+				rear.put("*", toV3(Pos.fromJson(obj.get("Rear"), true)));
 			}
 			//
 			if(obj.has("Front") && obj.get("Front").isJsonObject()){
 				JsonObject jsn = obj.get("Front").getAsJsonObject();
 				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
-					front.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).to16Double());
+					front.put(entry.getKey(), toV3(Pos.fromJson(entry.getValue(), true)));
 				}
 			}
 			if(obj.has("Rear") && obj.get("Rear").isJsonObject()){
 				JsonObject jsn = obj.get("Rear").getAsJsonObject();
 				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
-					rear.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).to16Double());
+					rear.put(entry.getKey(), toV3(Pos.fromJson(entry.getValue(), true)));
 				}
 			}
 			//

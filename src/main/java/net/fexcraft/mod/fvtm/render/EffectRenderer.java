@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
 import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -12,7 +13,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -141,12 +142,12 @@ public class EffectRenderer {
 							if(str.equals(type)){
 								Pos pes = pos.add(ps.getValue().get(i).pos);
 								if(point.isVehicle()){
-									temp = pes.to16Double();
+									temp = toV3(pes);
 					            	GL11.glTranslated(temp.x, temp.y, temp.z);
 								}
 								else{
 									GL11.glPushMatrix();
-									Vec3d vec = point.getRelativeVector(pes.to16Double(), true);
+									Vec3d vec = point.getRelativeVector(toV3(pes), true);
 									GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 									GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 									GL11.glTranslated(vec.x, vec.y, vec.z);
@@ -178,12 +179,12 @@ public class EffectRenderer {
 				for(int i = 0; i < ps.getValue().size(); i++){
 					Pos pes = pos.add(ps.getValue().get(i).pos);
 					if(point.isVehicle()){
-						temp = pes.to16Double();
+						temp = toV3(pes);
 		            	GL11.glTranslated(temp.x, temp.y, temp.z);
 					}
 					else{
 						GL11.glPushMatrix();
-						Vec3d vec = point.getRelativeVector(pes.to16Double(), true);
+						Vec3d vec = point.getRelativeVector(toV3(pes), true);
 						GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 						GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 						GL11.glTranslated(vec.x, vec.y, vec.z);

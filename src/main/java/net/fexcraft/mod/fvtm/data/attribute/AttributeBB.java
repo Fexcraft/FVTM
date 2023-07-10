@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 
 /**

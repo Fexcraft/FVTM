@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
@@ -111,7 +113,7 @@ public class PartModel extends GenericModel implements FCLItemModel {
 
 	public static void translateAndRotatePartOnSwivelPoint(VehicleData vehicle, PartData data, float ticks){
 		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
-		Vec3d pos = data.getInstalledPos().to16Double();
+		Vec3d pos = toV3(data.getInstalledPos());
 		Vec3d temp0 = point.getRelativeVector(pos, true);
 		Vec3d temp1 = point.getPrevRelativeVector(pos, true);
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
@@ -128,7 +130,7 @@ public class PartModel extends GenericModel implements FCLItemModel {
 
 	public static void translateAndRotatePartOnSwivelPointFast(VehicleData vehicle, PartData data){
 		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
-		Vec3d pos = point.getRelativeVector(data.getInstalledPos().to16Double(), true);
+		Vec3d pos = point.getRelativeVector(toV3(data.getInstalledPos()), true);
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 		GL11.glTranslated(pos.x, pos.y, pos.z);

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.MATERIALS;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -22,18 +24,27 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.ItemPlaceholderModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.IWI;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class ResourcesImpl extends FvtmResources {
 
@@ -181,6 +192,44 @@ public class ResourcesImpl extends FvtmResources {
 			//e.printStackTrace();
 			return true;
 		}
+	}
+
+	public void createContentItems(){
+		MATERIALS.forEach(mat -> {
+			ItemWrapper wrapper = new IWI(new MaterialItem(mat));
+			FvtmRegistry.CONTENT_ITEMS.put(mat.getID(), wrapper);
+			FvtmRegistry.ITEMS.put(mat.getID().colon(), wrapper);
+			mat.setItemWrapper(wrapper);
+		});
+	}
+
+	@Override
+	public ItemWrapper getItemWrapper(String id){
+		Item item = Item.REGISTRY.getObject(new ResourceLocation(id));
+		return item == null ? null : new IWI(item);
+	}
+
+	@Override
+	public StackWrapper newStack(ItemWrapper item){
+		return new SWI(item);
+	}
+
+	@SubscribeEvent
+	public void registerItems(RegistryEvent.Register<Item> event){
+		IForgeRegistry<Item> reg = event.getRegistry();
+		//
+		for(ItemWrapper item : FvtmRegistry.CONTENT_ITEMS.values()){
+			reg.register(item.local());
+		}
+		if(EnvInfo.CLIENT){
+			for(ItemWrapper item : FvtmRegistry.CONTENT_ITEMS.values()){
+				regItemModelLoc(item.local());
+			}
+		}
+	}
+
+	private void regItemModelLoc(Item item){
+		net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 
 }

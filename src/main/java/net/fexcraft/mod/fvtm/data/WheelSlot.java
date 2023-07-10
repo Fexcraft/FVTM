@@ -1,9 +1,12 @@
 package net.fexcraft.mod.fvtm.data;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.frNBT;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toNBT;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -50,7 +53,7 @@ public class WheelSlot {
 	}
 	
 	public WheelSlot read(NBTTagCompound compound){
-		position = Pos.fromNBT(null, compound);
+		position = frNBT(null, compound);
 		yrot = compound.getFloat("y_rot");
 		connector = compound.hasKey("connector") ? compound.getFloat("connector") : 0f;
 		max_radius = compound.hasKey("max_radius") ? compound.getFloat("max_radius") : 16f;
@@ -91,7 +94,7 @@ public class WheelSlot {
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
-		position.toNBT(null, compound);
+		toNBT(position, null, compound);
 		compound.setFloat("y_rot", yrot);
 		if(connector > 0f) compound.setFloat("connector", connector);
 		compound.setFloat("max_radius", max_radius);

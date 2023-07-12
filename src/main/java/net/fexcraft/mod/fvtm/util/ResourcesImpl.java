@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.CONSUMABLES;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.MATERIALS;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
@@ -31,6 +33,7 @@ import net.fexcraft.mod.fvtm.model.ItemPlaceholderModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -195,12 +198,15 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	public void createContentItems(){
-		MATERIALS.forEach(mat -> {
-			ItemWrapper wrapper = new IWI(new MaterialItem(mat));
-			FvtmRegistry.CONTENT_ITEMS.put(mat.getID(), wrapper);
-			FvtmRegistry.ITEMS.put(mat.getID().colon(), wrapper);
-			mat.setItemWrapper(wrapper);
-		});
+		MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), new MaterialItem(mat))));
+		CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ConsumableItem((con)))));
+	}
+
+	private ItemWrapper wrapwrapper(IDL id, Item item){
+		ItemWrapper wrapper = new IWI(item);
+		FvtmRegistry.CONTENT_ITEMS.put(id, wrapper);
+		FvtmRegistry.ITEMS.put(id.colon(), wrapper);
+		return wrapper;
 	}
 
 	@Override

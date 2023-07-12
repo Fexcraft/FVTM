@@ -22,7 +22,6 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
@@ -288,8 +287,8 @@ public class FVTM {
 		}
 		//TODO items MATERIALS.forEach(material -> material.getItemWrapper().linkContainer());
 		//TODO oredict registry MATERIALS.forEach(Material::registerIntoOreDictionary);
-		Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
-		Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
+		//TODO items Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
+		//TODO oredict Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
 		Resources.BLOCKS.forEach(Block::linkItem);
 		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
 		//

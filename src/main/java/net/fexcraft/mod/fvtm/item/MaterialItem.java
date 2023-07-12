@@ -33,7 +33,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//TODO eventually a capability storing cached fuel data.
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class MaterialItem extends Item implements ContentItem<Material> {
 
 	private Material material;
@@ -135,11 +137,11 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 
 	@Override
 	public Material getContent(){
-		return null;
+		return material;
 	}
 
 	@Override
-	public ContentType getType(){
+	public ContentType getConsumable(){
 		return ContentType.MATERIAL;
 	}
 

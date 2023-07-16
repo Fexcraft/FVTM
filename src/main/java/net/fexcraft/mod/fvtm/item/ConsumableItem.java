@@ -35,7 +35,7 @@ public class ConsumableItem extends ItemFood implements ContentItem<Consumable> 
     public ConsumableItem(Consumable consumable){
 		super(consumable.getHealAmount(), consumable.isAlwaysEdible());
         this.consumable = consumable;
-		setMaxStackSize(consumable.getMaxStackSize());
+		setMaxStackSize(consumable.getMaxStack());
         setHasSubtypes(true);
         setRegistryName(consumable.getID().colon());
         setTranslationKey(consumable.getID().colon());
@@ -112,7 +112,7 @@ public class ConsumableItem extends ItemFood implements ContentItem<Consumable> 
     }
 
     @Override
-    public ContentType getConsumable(){
+    public ContentType getType(){
         return ContentType.CONSUMABLE;
     }
 

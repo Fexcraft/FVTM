@@ -141,7 +141,7 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 	}
 
 	@Override
-	public ContentType getConsumable(){
+	public ContentType getType(){
 		return ContentType.MATERIAL;
 	}
 

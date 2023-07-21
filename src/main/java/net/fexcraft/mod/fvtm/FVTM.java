@@ -144,6 +144,9 @@ public class FVTM {
 		};
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.IMPL[0] = TagCWI.class;
+		if(EnvInfo.CLIENT){
+			//uireg
+		}
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);

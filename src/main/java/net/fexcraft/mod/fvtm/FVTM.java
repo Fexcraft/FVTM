@@ -83,6 +83,10 @@ import net.fexcraft.mod.uni.impl.IDLM;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.ui.UIButton;
+import net.fexcraft.mod.uni.ui.UIText;
+import net.fexcraft.mod.uni.uimpl.UUIButton;
+import net.fexcraft.mod.uni.uimpl.UUIText;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
@@ -145,7 +149,8 @@ public class FVTM {
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.IMPL[0] = TagCWI.class;
 		if(EnvInfo.CLIENT){
-			//uireg
+			UIButton.IMPLEMENTATION = UUIButton.class;
+			UIText.IMPLEMENTATION = UUIText.class;
 		}
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.uni.uimpl;
 
+import java.io.IOException;
 import java.util.TreeMap;
 
 import net.fexcraft.mod.uni.ui.UIButton;
@@ -44,7 +45,9 @@ public class UniUI<CON extends UniCon> extends GuiContainer {
 		buttons.clear();
 		texts.clear();
 		fields.clear();
-		//
+		buttons.putAll(ui.buttons);
+		texts.putAll(ui.texts);
+		fields.putAll(ui.fields);
 	}
 
 	@Override
@@ -58,10 +61,10 @@ public class UniUI<CON extends UniCon> extends GuiContainer {
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		buttons.forEach((key, button) -> {
 			button.hovered(mx, my);
-			//button.draw(this, ticks, mx, my);
+			button.draw(this, ticks, mx, my);
 		});
 		texts.forEach((key, text) -> {
-			//text.draw(this, ticks, mx, my);
+			text.draw(this, ticks, mx, my);
 		});
 		//fields.forEach((key, elm) -> elm.drawTextBox());
 		postdraw(ticks, mx, my);
@@ -84,5 +87,12 @@ public class UniUI<CON extends UniCon> extends GuiContainer {
 	}
 
 	protected void postdraw(float ticks, int mx, int my){}
+
+
+	@Override
+	protected void mouseClicked(int mx, int my, int mb) throws IOException {
+		if(ui.onClick(mx, my, mb)) return;
+		super.mouseClicked(mx, my, mb);
+	}
 
 }

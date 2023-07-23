@@ -1,6 +1,7 @@
 package net.fexcraft.mod.uni.uimpl;
 
 import java.io.IOException;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import net.fexcraft.mod.uni.ui.UIButton;
@@ -11,6 +12,7 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import org.lwjgl.input.Mouse;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -94,5 +96,47 @@ public class UniUI<CON extends UniCon> extends GuiContainer {
 		if(ui.onClick(mx, my, mb)) return;
 		super.mouseClicked(mx, my, mb);
 	}
+
+	@Override
+	protected void keyTyped(char c, int code) throws IOException {
+		boolean invbutton = this.mc.gameSettings.keyBindInventory.isActiveAndMatches(code);
+		boolean keytyped = false;
+		if(!fields.isEmpty()){
+			boolean bool = false;
+			for(Entry<String, UIField> entry : fields.entrySet()){
+				if(entry.getValue().visible && entry.getValue().keytyped(c, code)){
+					bool = true;
+					break;
+				}
+			}
+			if(!bool){
+				super.keyTyped(c, code);
+			}
+			else keytyped = true;
+		}
+		if(code == 1 || (invbutton && !keytyped)) mc.player.closeScreen();
+	}
+
+	@Override
+	public void handleMouseInput() throws IOException {
+		super.handleMouseInput();
+		int e = Mouse.getEventDWheel();
+		if(e == 0) return;
+		int am = e > 0 ? -1 : 1;
+		int x = Mouse.getEventX() * width / mc.displayWidth;
+		int y = this.height - Mouse.getEventY() * height / mc.displayHeight - 1;
+		boolean exit = false;
+		for(UIButton button : buttons.values()){
+			if(exit) break;
+			if(button.hovered(x, y)) exit = button.onscroll(am, x, y);
+		}
+		for(UIText text : texts.values()){
+			if(exit) break;
+			if(text.hovered(x, y)) exit = text.onscroll(am, x, y);
+		}
+		if(!exit) scrollwheel(am, x, y);
+	}
+
+	public void scrollwheel(int am, int x, int y){}
 
 }

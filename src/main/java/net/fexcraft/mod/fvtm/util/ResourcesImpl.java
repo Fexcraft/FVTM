@@ -8,6 +8,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.MATERIALS;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -218,6 +219,28 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public StackWrapper newStack(ItemWrapper item){
 		return new SWI(item);
+	}
+
+	@Override
+	public JsonMap getJsonC(String loc){
+		try{
+			return JsonHandler.parse(getModelInputStream(new ResourceLocation(loc), true));
+		}
+		catch(IOException e){
+			if(EnvInfo.DEV) throw new RuntimeException(e);
+		}
+		return new JsonMap();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(ResourceLocation resloc, boolean log){
+		try{
+			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(resloc).getInputStream();
+		}
+		catch(IOException e){
+			if(log) e.printStackTrace();
+			return null;
+		}
 	}
 
 	@SubscribeEvent

@@ -17,20 +17,19 @@ import org.lwjgl.input.Mouse;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class UniUI<CON extends UniCon> extends GuiContainer {
+public class UniUI extends GuiContainer {
 
 	protected TreeMap<String, UIButton> buttons = new TreeMap<>();
 	protected TreeMap<String, UIText> texts = new TreeMap<>();
 	protected TreeMap<String, UIField> fields = new TreeMap<>();
 	//
-	protected CON container;
+	protected UniCon container;
 	protected UserInterface ui;
 
-	public UniUI(UserInterface ui, CON container, EntityPlayer player){
-		super(container);
+	public UniUI(UserInterface ui, UniCon con, EntityPlayer player){
+		super(con == null ? con = new UniCon(ui.container) : con);
 		this.ui = ui;
-		this.container = container;
-		container.setPlayer(player);
+		(container = con).setup(this, player);
 		xSize = ui.width;
 		ySize = ui.height;
 	}
@@ -79,11 +78,12 @@ public class UniUI<CON extends UniCon> extends GuiContainer {
 			if(!tab.visible) continue;
 			int tx = tab.enabled ? tab.hovered ? tab.htx : tab.tx : tab.dtx;
 			int ty = tab.enabled ? tab.hovered ? tab.hty : tab.ty : tab.dty;
+			ui.bindTexture(tab.texture);
 			if(tab.absolute){
-				drawTexturedModalRect(tab.x, tab.y, 0, 0, tx, ty);
+				drawTexturedModalRect(tab.x < 0 ? width + tab.x : tab.x, tab.y < 0 ? height + tab.y : tab.y, tx, ty, tab.width, tab.height);
 			}
 			else{
-				drawTexturedModalRect(guiLeft + tab.x, guiTop + tab.y, 0, 0, tx, ty);
+				drawTexturedModalRect(guiLeft + tab.x, guiTop + tab.y, tx, ty, tab.width, tab.height);
 			}
 		}
 	}

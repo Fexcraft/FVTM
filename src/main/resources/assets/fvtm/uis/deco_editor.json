@@ -1,0 +1,27 @@
+{
+	"_info_": "Decoration Editor UI",
+	"background": false,
+	"size": [ 256, 256 ],
+	"tabs": {
+		"left": {
+			"texture": "fvtm:textures/gui/deco_editor_left.png",
+			"size": [ 144, 198 ],
+			"pos": [ 0, 0 ],
+			"absolute": true
+		},
+		"left+": {
+			"texture": "fvtm:textures/gui/deco_editor_left.png",
+			"size": [ 15, 40 ],
+			"pos": [ 144, 2 ],
+			"uv": [ 144, 2 ],
+			"absolute": true
+		},
+		"right": {
+			"texture": "fvtm:textures/gui/deco_editor_right.png",
+			"size": [ 144, 188 ],
+			"pos": [ -144, 0 ],
+			"uv": [ 112, 0 ],
+			"absolute": true
+		}
+	}
+}

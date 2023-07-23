@@ -4,13 +4,14 @@ import java.util.HashMap;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.construct.*;
-import net.fexcraft.mod.fvtm.gui.deco.DecoEditor;
-import net.fexcraft.mod.fvtm.gui.deco.DecoEditorContainer;
+import net.fexcraft.mod.fvtm.gui.deco.DecoContainer;
+import net.fexcraft.mod.fvtm.gui.deco.DecoEditorNew;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvUi;
 import net.fexcraft.mod.fvtm.gui.inv.UniItemInvContainer;
@@ -38,6 +39,8 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
+import net.fexcraft.mod.uni.uimpl.CIImpl;
+import net.fexcraft.mod.uni.uimpl.UIImpl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -48,7 +51,7 @@ public class GuiHandler implements IGuiHandler {
 	public static NBTTagCompound CLIENT_GUIDATA_CACHE;
 	public static final HashMap<String, NBTTagCompound> SERVER_GUIDATA_CACHE = new HashMap<>();
 	public static final String LISTENERID = "fvtm:gui";
-	
+
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	public static final int JUNCTION_ADJUSTER = 701;
@@ -135,7 +138,8 @@ public class GuiHandler implements IGuiHandler {
 			case WIRE_RELAY_EDIT:
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
 			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
-			case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
+			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
+			case DECORATION_EDITOR: return new DecoContainer(new CIImpl(FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json")));
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
 			case BLOCK_INVENTORY_ITEM:
@@ -188,7 +192,8 @@ public class GuiHandler implements IGuiHandler {
 				case WIRE_RELAY_EDIT: return new WireRelayEditor(player, world, x, y, z);
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
 				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
-				case DECORATION_EDITOR: return new DecoEditor(player, world, x);
+				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
+				case DECORATION_EDITOR: return new DecoEditorNew(new UIImpl(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json")), player, x);
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//
 				case BLOCK_INVENTORY_ITEM:

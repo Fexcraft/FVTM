@@ -1,8 +1,8 @@
 package net.fexcraft.mod.uni.uimpl;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UIField;
@@ -19,9 +19,9 @@ import org.lwjgl.input.Mouse;
  */
 public class UniUI extends GuiContainer {
 
-	protected TreeMap<String, UIButton> buttons = new TreeMap<>();
-	protected TreeMap<String, UIText> texts = new TreeMap<>();
-	protected TreeMap<String, UIField> fields = new TreeMap<>();
+	protected LinkedHashMap<String, UIButton> buttons = new LinkedHashMap<>();
+	protected LinkedHashMap<String, UIText> texts = new LinkedHashMap<>();
+	protected LinkedHashMap<String, UIField> fields = new LinkedHashMap<>();
 	//
 	protected UniCon container;
 	protected UserInterface ui;

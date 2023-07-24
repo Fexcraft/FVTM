@@ -31,16 +31,22 @@
 	},
 	"buttons": {
 		"cat_prev": {
+			"texture": "fvtm:textures/gui/deco_editor_left.png",
+			"absolute": "true",
 			"size": [ 12, 12 ],
 			"pos": [ 2, 2 ]
 		},
-		"cat_ext": {
+		"cat_next": {
+			"texture": "fvtm:textures/gui/deco_editor_left.png",
+			"absolute": "true",
 			"size": [ 12, 12 ],
-			"pos": [ 15, 2 ]
+			"pos": [ 125, 2 ]
 		},
 		"search": {
-			"size": [ 16, 12 ],
-			"pos": [ 2, 2 ]
+			"texture": "fvtm:textures/gui/deco_editor_left.png",
+			"absolute": "true",
+			"size": [ 12, 12 ],
+			"pos": [ 16, 2 ]
 		}
 	}
 }

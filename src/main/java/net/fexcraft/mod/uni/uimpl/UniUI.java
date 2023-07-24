@@ -61,11 +61,11 @@ public class UniUI extends GuiContainer {
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		buttons.forEach((key, button) -> {
-			button.hovered(mx, my);
-			button.draw(this, ticks, mx, my);
+			button.hovered(guiLeft, guiTop, mx, my);
+			button.draw(this, ticks, guiLeft, guiTop, mx, my);
 		});
 		texts.forEach((key, text) -> {
-			text.draw(this, ticks, mx, my);
+			text.draw(this, ticks, guiLeft, guiTop, mx, my);
 		});
 		//fields.forEach((key, elm) -> elm.drawTextBox());
 		postdraw(ticks, mx, my);
@@ -93,7 +93,7 @@ public class UniUI extends GuiContainer {
 
 	@Override
 	protected void mouseClicked(int mx, int my, int mb) throws IOException {
-		if(ui.onClick(mx, my, mb)) return;
+		if(ui.onClick(guiLeft, guiTop, mx, my, mb)) return;
 		super.mouseClicked(mx, my, mb);
 	}
 
@@ -128,11 +128,11 @@ public class UniUI extends GuiContainer {
 		boolean exit = false;
 		for(UIButton button : buttons.values()){
 			if(exit) break;
-			if(button.hovered(x, y)) exit = button.onscroll(am, x, y);
+			if(button.hovered(guiLeft, guiTop, x, y)) exit = button.onscroll(am, x, y);
 		}
 		for(UIText text : texts.values()){
 			if(exit) break;
-			if(text.hovered(x, y)) exit = text.onscroll(am, x, y);
+			if(text.hovered(guiLeft, guiTop, x, y)) exit = text.onscroll(am, x, y);
 		}
 		if(!exit) scrollwheel(am, x, y);
 	}

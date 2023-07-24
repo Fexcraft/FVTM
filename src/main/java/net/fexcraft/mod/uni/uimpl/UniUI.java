@@ -126,13 +126,15 @@ public class UniUI extends GuiContainer {
 		int x = Mouse.getEventX() * width / mc.displayWidth;
 		int y = this.height - Mouse.getEventY() * height / mc.displayHeight - 1;
 		boolean exit = false;
-		for(UIButton button : buttons.values()){
+		for(Entry<String, UIButton> entry : buttons.entrySet()){
 			if(exit) break;
-			if(button.hovered(guiLeft, guiTop, x, y)) exit = button.onscroll(am, x, y);
+			if(entry.getValue().hovered(guiLeft, guiTop, x, y)){
+				exit = entry.getValue().onscroll(guiLeft, guiTop, x, y, am) || ui.onScroll(entry.getValue(), entry.getKey(), guiLeft, guiTop, x, y, am);
+			}
 		}
 		for(UIText text : texts.values()){
 			if(exit) break;
-			if(text.hovered(guiLeft, guiTop, x, y)) exit = text.onscroll(am, x, y);
+			if(text.hovered(guiLeft, guiTop, x, y)) exit = text.onscroll(guiLeft, guiTop, x, y, am);
 		}
 		if(!exit) scrollwheel(am, x, y);
 	}

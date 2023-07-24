@@ -31,7 +31,7 @@ public class UUIText extends UIText {
 	}
 
 	@Override
-	public void draw(Object ui, float ticks, int mx, int my){
+	public void draw(Object ui, float ticks, int gl, int gt, int mx, int my){
 		if(!visible) return;
 		hovered(mx, my);
 		if(scale == 0 || (scale < 0 && ((UniUI)ui).mc.fontRenderer.getStringWidth(value) < width)){

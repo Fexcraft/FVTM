@@ -17,7 +17,12 @@ public class UIImpl extends UserInterface {
 	}
 
 	@Override
-	public boolean processAction(UIButton button, String id, int x, int y, int b){
+	public boolean onAction(UIButton button, String id, int l, int t, int x, int y, int b){
+		return false;
+	}
+
+	@Override
+	public boolean onScroll(UIButton button, String id, int gl, int gt, int mx, int my, int am){
 		return false;
 	}
 

@@ -7,7 +7,12 @@
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
 			"size": [ 144, 198 ],
 			"pos": [ 0, 0 ],
-			"absolute": true
+			"absolute": true,
+			"buttons": [
+				"cat_prev",
+				"cat_next",
+				"search"
+			]
 		},
 		"left+": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
@@ -22,6 +27,20 @@
 			"pos": [ -144, 0 ],
 			"uv": [ 112, 0 ],
 			"absolute": true
+		}
+	},
+	"buttons": {
+		"cat_prev": {
+			"size": [ 12, 12 ],
+			"pos": [ 2, 2 ]
+		},
+		"cat_ext": {
+			"size": [ 12, 12 ],
+			"pos": [ 15, 2 ]
+		},
+		"search": {
+			"size": [ 16, 12 ],
+			"pos": [ 2, 2 ]
 		}
 	}
 }

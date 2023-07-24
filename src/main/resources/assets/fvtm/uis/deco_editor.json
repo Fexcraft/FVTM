@@ -11,7 +11,35 @@
 			"buttons": [
 				"cat_prev",
 				"cat_next",
-				"search"
+				"search",
+				"mode_add",
+				"mode_list",
+				"list_up",
+				"list_down",
+				"entry_0",
+				"entry_1",
+				"entry_2",
+				"entry_3",
+				"entry_4",
+				"entry_5",
+				"entry_6",
+				"entry_7",
+				"entry_8",
+				"entry_9",
+				"entry_10",
+				"entry_11",
+				"add_0",
+				"add_1",
+				"add_2",
+				"add_3",
+				"add_4",
+				"add_5",
+				"add_6",
+				"add_7",
+				"add_8",
+				"add_9",
+				"add_10",
+				"add_11"
 			]
 		},
 		"left+": {
@@ -43,10 +71,162 @@
 			"pos": [ 125, 2 ]
 		},
 		"search": {
-			"texture": "fvtm:textures/gui/deco_editor_left.png",
 			"absolute": "true",
 			"size": [ 12, 12 ],
 			"pos": [ 16, 2 ]
+		},
+		"mode_add": {
+			"absolute": "true",
+			"size": [ 12, 12 ],
+			"pos": [ 140, 9 ]
+		},
+		"mode_list": {
+			"absolute": "true",
+			"size": [ 12, 12 ],
+			"pos": [ 140, 23 ]
+		},
+		"list_up": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 131, 21 ]
+		},
+		"list_down": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 131, 175 ]
+		},
+		"entry_0": {
+			"texture": "fvtm:textures/gui/deco_editor_left.png",
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 21 ]
+		},
+		"entry_1": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 35 ]
+		},
+		"entry_2": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 49 ]
+		},
+		"entry_3": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 63 ]
+		},
+		"entry_4": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 77 ]
+		},
+		"entry_5": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 91 ]
+		},
+		"entry_6": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 105 ]
+		},
+		"entry_7": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 119 ]
+		},
+		"entry_8": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 133 ]
+		},
+		"entry_9": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 147 ]
+		},
+		"entry_10": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 161 ]
+		},
+		"entry_11": {
+			"absolute": "true",
+			"size": [ 120, 12 ],
+			"pos": [ 2, 175 ]
+		},
+		"add_0": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 21 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_1": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 35 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_2": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 49 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_3": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 63 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_4": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 77 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_5": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 91 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_6": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 105 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_7": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 119 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_8": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 133 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_9": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 147 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_10": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 161 ],
+			"uv": [ 146, 58 ]
+		},
+		"add_11": {
+			"absolute": "true",
+			"size": [ 7, 12 ],
+			"pos": [ 123, 175 ],
+			"uv": [ 146, 58 ]
 		}
 	}
 }

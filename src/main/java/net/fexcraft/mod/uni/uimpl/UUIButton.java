@@ -18,12 +18,13 @@ public class UUIButton extends UIButton {
 	}
 
 	@Override
-	public void draw(Object ui, float ticks, int mx, int my){
+	public void draw(Object gui, float ticks, int mx, int my){
 		if(!visible) return;
+		if(texture != null) ui.bindTexture(texture);
 		rgb = enabled ? hovered ? hcolor : ecolor : dcolor;
 		RGB.glColorReset();
 		rgb.glColorApply();
-		((UniUI)ui).drawTexturedModalRect(x, y, tx, ty, width, height);
+		((UniUI)gui).drawTexturedModalRect(x, y, tx, ty, width, height);
 		RGB.glColorReset();
 	}
 

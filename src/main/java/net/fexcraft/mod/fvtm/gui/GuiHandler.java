@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
+
 import java.util.HashMap;
 
 import net.fexcraft.lib.common.Static;
@@ -10,6 +12,7 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.construct.*;
+import net.fexcraft.mod.fvtm.gui.deco.DecoContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvUi;
 import net.fexcraft.mod.fvtm.gui.inv.UniItemInvContainer;
@@ -37,7 +40,6 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
-import net.fexcraft.mod.fvtm.ui.DecoContainer;
 import net.fexcraft.mod.fvtm.ui.DecoEditor;
 import net.fexcraft.mod.uni.uimpl.UniCon;
 import net.fexcraft.mod.uni.uimpl.UniUI;
@@ -139,7 +141,10 @@ public class GuiHandler implements IGuiHandler {
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
 			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
-			case DECORATION_EDITOR: return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), x));
+			case DECORATION_EDITOR:{
+				if(DECORATION_CATEGORIES.isEmpty()) return null;
+				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), world, x));
+			}
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
 			case BLOCK_INVENTORY_ITEM:
@@ -193,7 +198,10 @@ public class GuiHandler implements IGuiHandler {
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
 				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
-				case DECORATION_EDITOR: return new UniUI(new DecoEditor(FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json"), x), null, player);
+				case DECORATION_EDITOR: {
+					if(DECORATION_CATEGORIES.isEmpty()) return null;
+					return new UniUI(new DecoEditor(FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json"), x), null, player);
+				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//
 				case BLOCK_INVENTORY_ITEM:

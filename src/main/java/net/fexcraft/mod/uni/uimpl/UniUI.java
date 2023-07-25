@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UIField;
 import net.fexcraft.mod.uni.ui.UITab;
@@ -12,6 +13,7 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -78,7 +80,7 @@ public class UniUI extends GuiContainer {
 			if(!tab.visible) continue;
 			int tx = tab.enabled ? tab.hovered ? tab.htx : tab.tx : tab.dtx;
 			int ty = tab.enabled ? tab.hovered ? tab.hty : tab.ty : tab.dty;
-			ui.bindTexture(tab.texture);
+			bindTexture(tab.texture);
 			if(tab.absolute){
 				drawTexturedModalRect(tab.x < 0 ? width + tab.x : tab.x, tab.y < 0 ? height + tab.y : tab.y, tx, ty, tab.width, tab.height);
 			}
@@ -140,5 +142,9 @@ public class UniUI extends GuiContainer {
 	}
 
 	public void scrollwheel(int am, int x, int y){}
+
+	public void bindTexture(IDL texture){
+		mc.renderEngine.bindTexture((ResourceLocation)texture);
+	}
 
 }

@@ -77,9 +77,9 @@ public class UniUI extends GuiContainer {
 
 	public void drawbackground(float ticks, int mx, int my){
 		for(UITab tab : ui.tabs.values()){
-			if(!tab.visible) continue;
-			int tx = tab.enabled ? tab.hovered ? tab.htx : tab.tx : tab.dtx;
-			int ty = tab.enabled ? tab.hovered ? tab.hty : tab.ty : tab.dty;
+			if(!tab.visible()) continue;
+			int tx = tab.enabled() ? tab.hovered() ? tab.htx : tab.tx : tab.dtx;
+			int ty = tab.enabled() ? tab.hovered() ? tab.hty : tab.ty : tab.dty;
 			bindTexture(tab.texture);
 			if(tab.absolute){
 				drawTexturedModalRect(tab.x < 0 ? width + tab.x : tab.x, tab.y < 0 ? height + tab.y : tab.y, tx, ty, tab.width, tab.height);
@@ -106,7 +106,7 @@ public class UniUI extends GuiContainer {
 		if(!fields.isEmpty()){
 			boolean bool = false;
 			for(Entry<String, UIField> entry : fields.entrySet()){
-				if(entry.getValue().visible && entry.getValue().keytyped(c, code)){
+				if(entry.getValue().visible() && entry.getValue().keytyped(c, code)){
 					bool = true;
 					break;
 				}

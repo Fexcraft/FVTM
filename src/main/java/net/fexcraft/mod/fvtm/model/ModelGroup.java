@@ -6,8 +6,6 @@ import java.util.TreeMap;
 import java.util.function.BiPredicate;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
-import net.fexcraft.mod.fvtm.data.root.Model.RenderOrder;
 
 /**
  * Similar concept as the TurboList inside FMT v2

@@ -13,7 +13,6 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
 import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;

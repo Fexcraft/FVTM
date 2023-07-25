@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;

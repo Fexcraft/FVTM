@@ -2,9 +2,9 @@ package net.fexcraft.mod.fvtm.model.loaders;
 
 import java.util.function.Supplier;
 
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelLoader;
 
 public class ClassModelLoader implements ModelLoader {
 

@@ -28,7 +28,7 @@ import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;

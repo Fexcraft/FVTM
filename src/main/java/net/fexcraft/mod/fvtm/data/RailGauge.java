@@ -13,7 +13,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;

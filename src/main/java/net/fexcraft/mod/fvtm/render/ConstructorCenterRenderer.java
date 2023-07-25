@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.PartModel;

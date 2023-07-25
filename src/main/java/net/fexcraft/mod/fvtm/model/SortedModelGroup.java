@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
 
-import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
 import net.minecraft.tileentity.TileEntity;

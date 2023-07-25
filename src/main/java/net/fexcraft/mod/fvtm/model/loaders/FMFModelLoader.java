@@ -4,9 +4,9 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.util.function.Supplier;
 
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelLoader;
 import net.fexcraft.mod.fvtm.model.FMFParser;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.util.Resources;

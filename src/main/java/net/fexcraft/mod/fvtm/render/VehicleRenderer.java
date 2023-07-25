@@ -10,7 +10,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DebugModels;

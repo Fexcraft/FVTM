@@ -62,9 +62,9 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelLoader;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelLoader;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -153,7 +153,7 @@ public class Resources {
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
-	public static final ArrayList<Model.ModelLoader> MODEL_LOADERS = new ArrayList<>();
+	public static final ArrayList<ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	

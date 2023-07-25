@@ -7,7 +7,6 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.render.VehicleRenderer;

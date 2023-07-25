@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.WireModel;

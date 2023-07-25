@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model.block;
 
 import java.util.ArrayList;
 
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;

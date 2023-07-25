@@ -11,7 +11,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.TrafficSignModel;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.util.Resources;

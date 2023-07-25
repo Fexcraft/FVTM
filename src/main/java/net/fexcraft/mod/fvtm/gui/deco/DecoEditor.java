@@ -49,22 +49,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	@Override
 	protected void init(){
 		int black = MapColor.BLACK.colorValue;
-		buttons.put("l_prev", new BasicButton("prev", 2, 2, 2, 2, 12, 12, true){
-			public boolean onclick(int mx, int my, int button){
-				category--;
-				if(category < 0) category = DECORATION_CATEGORIES.size() - 1;
-				updateCategorySearch();
-				return true;
-			}
-		});
-		buttons.put("l_next", new BasicButton("next", 125, 2, 125, 2, 12, 12, true){
-			public boolean onclick(int mx, int my, int button){
-				category++;
-				if(category >= DECORATION_CATEGORIES.size()) category = 0;
-				updateCategorySearch();
-				return true;
-			}
-		});
 		buttons.put("l_search", new BasicButton("search", 16, 2, 16, 2, 12, 12, true){
 			public boolean onclick(int mx, int my, int button){
 				search = !search;

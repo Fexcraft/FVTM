@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
 import java.util.HashMap;
 
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -200,7 +201,8 @@ public class GuiHandler implements IGuiHandler {
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
 				case DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;
-					return new UniUI(new DecoEditor(FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json"), x), null, player);
+					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json");
+					return new UniUI(new DecoEditor(map, new DecoContainer(map, world, x)), null, player);
 				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//

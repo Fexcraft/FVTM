@@ -83,13 +83,9 @@ import net.fexcraft.mod.uni.impl.IDLM;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UITab;
 import net.fexcraft.mod.uni.ui.UIText;
-import net.fexcraft.mod.uni.ui.UserInterface;
-import net.fexcraft.mod.uni.uimpl.CIImpl;
-import net.fexcraft.mod.uni.uimpl.UIImpl;
 import net.fexcraft.mod.uni.uimpl.UUIButton;
 import net.fexcraft.mod.uni.uimpl.UUITab;
 import net.fexcraft.mod.uni.uimpl.UUIText;
@@ -154,9 +150,7 @@ public class FVTM {
 		};
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.IMPL[0] = TagCWI.class;
-		ContainerInterface.IMPLEMENTATION = CIImpl.class;
 		if(EnvInfo.CLIENT){
-			UserInterface.IMPLEMENTATION = UIImpl.class;
 			UITab.IMPLEMENTATION = UUITab.class;
 			UIButton.IMPLEMENTATION = UUIButton.class;
 			UIText.IMPLEMENTATION = UUIText.class;

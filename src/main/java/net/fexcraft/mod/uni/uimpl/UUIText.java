@@ -1,6 +1,7 @@
 package net.fexcraft.mod.uni.uimpl;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.uni.ui.UIElement;
 import net.fexcraft.mod.uni.ui.UIText;
 import net.fexcraft.mod.uni.ui.UserInterface;
 import net.minecraft.client.resources.I18n;
@@ -10,14 +11,6 @@ public class UUIText extends UIText {
 
 	public UUIText(UserInterface ui, JsonMap map) throws Exception {
 		super(ui, map);
-	}
-
-	public boolean hovered(int mx, int my){
-		return hovered = mx >= x && mx <= x + width && my >= y && my <= y + height;
-	}
-
-	public boolean scrollwheel(int am, int x, int y){
-		return false;
 	}
 
 	@Override
@@ -31,18 +24,39 @@ public class UUIText extends UIText {
 	}
 
 	@Override
-	public void draw(Object ui, float ticks, int gl, int gt, int mx, int my){
+	public void draw(Object gui, UIElement root, float ticks, int gl, int gt, int mx, int my){
 		if(!visible) return;
-		hovered(mx, my);
-		if(scale == 0 || (scale < 0 && ((UniUI)ui).mc.fontRenderer.getStringWidth(value) < width)){
-			((UniUI)ui).mc.fontRenderer.drawString(value, x, y, hovered ? hover.packed : color.packed, shadow);
+		UniUI uui = (UniUI)gui;
+		int xx = 0, yy = 0, textwidth = uui.mc.fontRenderer.getStringWidth(value);
+		if(root != null){
+			if(centered){
+				xx = root.x + (root.width / 2) + x - (textwidth / 2);
+				yy = root.y + (root.height / 2) + y - (height / 2);
+			}
+			else{
+				xx = x < 0 ? root.x + root.width + x - textwidth : root.x + x;
+				yy = y < 0 ? root.y + root.height + y - height : root.y + y;
+			}
+			if(!root.absolute){
+				xx += gl;
+				yy += gt;
+			}
+			hovered = root.hovered();
 		}
 		else{
-			float scale = this.scale < 0 ? (float)width / ((UniUI)ui).mc.fontRenderer.getStringWidth(value) : this.scale;
+			hovered(gl, gt, mx, my);
+			xx = absolute ? x < 0 ? width + x : x : gl + x;
+			yy = absolute ? y < 0 ? height + y : y : gt + y;
+		}
+		if(scale == 0 || (scale < 0 && textwidth < width)){
+			uui.mc.fontRenderer.drawString(value, xx, yy, hovered ? hover.packed : color.packed, shadow);
+		}
+		else{
+			float scale = this.scale < 0 ? (float)width / uui.mc.fontRenderer.getStringWidth(value) : this.scale;
 			GL11.glPushMatrix();
-			GL11.glTranslatef(x, y, 0);
+			GL11.glTranslatef(xx, yy, 0);
 			GL11.glScalef(scale, scale, scale);
-			((UniUI)ui).mc.fontRenderer.drawString(value, 0, 0, hovered ? hover.packed : color.packed, shadow);
+			uui.mc.fontRenderer.drawString(value, 0, 0, hovered ? hover.packed : color.packed, shadow);
 			GL11.glPopMatrix();
 		}
 	}

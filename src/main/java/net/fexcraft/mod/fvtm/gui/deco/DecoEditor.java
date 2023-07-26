@@ -49,58 +49,8 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	@Override
 	protected void init(){
 		int black = MapColor.BLACK.colorValue;
-		buttons.put("l_search", new BasicButton("search", 16, 2, 16, 2, 12, 12, true){
-			public boolean onclick(int mx, int my, int button){
-				search = !search;
-				updateCategorySearch();
-				return true;
-			}
-		});
-		buttons.put("l_add", new BasicButton("add", 140, 9, 140, 9, 12, 12, true){
-			public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
-				TexUtil.bindTexture(texl);
-				super.draw(gui, pticks, mouseX, mouseY);
-			}
-			public boolean onclick(int mx, int my, int button){
-				listmode = false;
-				updateResults();
-				return true;
-			}
-		});
-		buttons.put("l_list", new BasicButton("list", 140, 23, 140, 23, 12, 12, true){
-			public boolean onclick(int mx, int my, int button){
-				listmode = true;
-				updateEntries();
-				return true;
-			}
-		});
-		buttons.put("l_lup", new BasicButton("lup", 131, 21, 131, 21, 7, 12, true){
-			public boolean onclick(int mx, int my, int button){
-				if(listmode) scroll0--;
-				else scroll1--;
-				if(scroll0 < 0) scroll0 = 0;
-				if(scroll1 < 1) scroll1 = 0;
-				updateEntries();
-				return true;
-			}
-		});
-		buttons.put("l_ldw", new BasicButton("ldw", 131, 175, 131, 175, 7, 12, true){
-			public boolean onclick(int mx, int my, int button){
-				if(listmode) scroll0++;
-				else scroll1++;
-				updateEntries();
-				return true;
-			}
-		});
 		for(int i = 0; i < rows; i++){
 			int j  = i;
-			buttons.put("l_entry" + i, new BasicButton("entry" + i, 2, 21 + (i * 14), 2, 21 + (i * 14), 120, 12, true){
-				public boolean onclick(int mx, int my, int button){
-					select(selected = scroll0 + j, selcol);
-					updateEntries();
-					return true;
-				}
-			});
 			buttons.put("l_entry_add" + i, new BasicButton("entry_add" + i, 123, 21 + (i * 14), 146, 58, 7, 12, true){
 				public boolean onclick(int mx, int my, int button){
 					NBTTagCompound com = new NBTTagCompound();
@@ -293,7 +243,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				return true;
 			}
 		});
-		texts.put("cat", new BasicText(30, 4, 91, black, "category").autoscale());
 		texts.put("pos", new BasicText(width - 136, 5, 132, black, I18n.format("gui.fvtm.decoration_editor.position")));
 		texts.put("rot", new BasicText(width - 136, 33, 132, black, I18n.format("gui.fvtm.decoration_editor.rotation")));
 		texts.put("scl", new BasicText(width - 136, 61, 132, black, I18n.format("gui.fvtm.decoration_editor.scale")));

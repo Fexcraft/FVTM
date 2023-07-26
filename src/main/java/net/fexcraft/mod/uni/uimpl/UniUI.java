@@ -64,10 +64,13 @@ public class UniUI extends GuiContainer {
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		buttons.forEach((key, button) -> {
 			button.hovered(guiLeft, guiTop, mx, my);
-			button.draw(this, ticks, guiLeft, guiTop, mx, my);
+			button.draw(this, null, ticks, guiLeft, guiTop, mx, my);
+		});
+		buttons.forEach((key, button) -> {
+			if(button.text != null) button.text.draw(this, button, ticks, guiLeft, guiTop, mx, my);
 		});
 		texts.forEach((key, text) -> {
-			text.draw(this, ticks, guiLeft, guiTop, mx, my);
+			text.draw(this, null, ticks, guiLeft, guiTop, mx, my);
 		});
 		//fields.forEach((key, elm) -> elm.drawTextBox());
 		postdraw(ticks, mx, my);

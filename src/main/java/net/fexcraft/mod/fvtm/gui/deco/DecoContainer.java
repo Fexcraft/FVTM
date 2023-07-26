@@ -28,6 +28,9 @@ public class DecoContainer extends ContainerInterface {
 			case "decos.key":{
 				return entity.decos.get((int)objs[0]).key();
 			}
+			case "decos.at":{
+				return entity.decos.get((int)objs[0]);
+			}
 		}
 		return null;
 	}

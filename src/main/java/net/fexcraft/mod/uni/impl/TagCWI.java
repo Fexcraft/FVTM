@@ -64,7 +64,13 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
-	public <C> C cast(){
+	public <C> C local(){
 		return (C)compound;
 	}
+
+	@Override
+	public Object direct(){
+		return compound;
+	}
+
 }

@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.uimpl.UniCon;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -15,7 +18,7 @@ public class Packets {
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
 	
 	public static final void init(){
-		Print.log("[FVTM] Starting Packet Handler initialization.");
+		FvtmLogger.LOGGER.log("Starting Packet Handler initialization.");
 		//
 		instance.registerMessage(PKTH_SeatUpdate.Client.class, PKT_SeatUpdate.class, 0, Side.CLIENT);
 		instance.registerMessage(PKTH_SeatUpdate.Server.class, PKT_SeatUpdate.class, 1, Side.SERVER);
@@ -28,7 +31,20 @@ public class Packets {
 		instance.registerMessage(PKTH_VehKeyPressState.Client.class, PKT_VehKeyPressState.class, 8, Side.CLIENT);
 		instance.registerMessage(PKTH_VehKeyPressState.Server.class, PKT_VehKeyPressState.class, 9, Side.SERVER);
 		//
-		Print.log("[FVTM] Done initialising Packet Handler.");
+		instance.registerMessage(PKTH_UT.Client.class, PKT_UT.class, 10, Side.CLIENT);
+		instance.registerMessage(PKTH_UT.Server.class, PKT_UT.class, 10, Side.SERVER);
+		//
+		FvtmLogger.LOGGER.log("Done initialising Packet Handler.");
+		FvtmLogger.LOGGER.log("Starting Packet Listener registration.");
+		PKTH_UT.LIS_SERVER.put("ui", (com, player) -> {
+			((UniCon)player.openContainer).container().packet(new TagCWI(com), false);
+		});
+		if(EnvInfo.CLIENT){
+			PKTH_UT.LIS_CLIENT.put("ui", (com, player) -> {
+				((UniCon)player.openContainer).container().packet(new TagCWI(com), false);
+			});
+		}
+		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
 	}
 	
 	public static final void sendToServer(IMessage packet){

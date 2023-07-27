@@ -144,7 +144,7 @@ public class GuiHandler implements IGuiHandler {
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
 			case DECORATION_EDITOR:{
 				if(DECORATION_CATEGORIES.isEmpty()) return null;
-				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), world, x));
+				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), world, x), player);
 			}
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//

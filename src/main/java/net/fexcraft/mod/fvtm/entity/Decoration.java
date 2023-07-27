@@ -46,7 +46,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     		buffer.writeInt(size);
     		buffer.writeInt(decos.size());
     		for(DecorationData deco : decos){
-    			ByteBufUtils.writeTag(buffer, deco.write().cast());
+    			ByteBufUtils.writeTag(buffer, deco.write().local());
     		}
     	}
     	catch(Exception e){
@@ -95,7 +95,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
     protected void writeEntityToNBT(NBTTagCompound compound){
     	compound.setInteger("size", size);
     	NBTTagList list = new NBTTagList();
-    	for(DecorationData deco : decos) list.appendTag(deco.write().cast());
+    	for(DecorationData deco : decos) list.appendTag(deco.write().local());
     	if(list.tagCount() > 0) compound.setTag("decorations", list);
     }
     

@@ -1,13 +1,12 @@
 package net.fexcraft.mod.fvtm.gui.deco;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -35,27 +34,6 @@ public class DecoEditorContainer extends GenericContainer {
 		if(!packet.hasKey("cargo")) return;
 		String cargo = packet.getString("cargo");
 		switch(cargo){
-			case "add":{
-				DecorationData deco = DECORATIONS.get(packet.getString("key"));
-				entity.decos.add(deco.copy());
-				if(side.isServer()) send(Side.CLIENT, packet);
-				else{
-					entity.decos.get(entity.decos.size() - 1).copy(deco);
-					gui.updateEntries();
-				}
-				break;
-			}
-			case "rem":{
-				entity.decos.remove(packet.getInteger("idx"));
-				if(side.isServer()){
-					send(Side.CLIENT, packet);
-				}
-				else{
-					gui.updateEntries();
-					gui.select(-1, -1);
-				}
-				break;
-			}
 			case "pos":{
 				DecorationData deco = entity.decos.get(packet.getInteger("idx"));
 				Pos pos = null;

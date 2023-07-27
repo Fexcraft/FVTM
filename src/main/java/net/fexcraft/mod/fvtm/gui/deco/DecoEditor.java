@@ -49,28 +49,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	@Override
 	protected void init(){
 		int black = MapColor.BLACK.colorValue;
-		for(int i = 0; i < rows; i++){
-			int j  = i;
-			buttons.put("l_entry_add" + i, new BasicButton("entry_add" + i, 123, 21 + (i * 14), 146, 58, 7, 12, true){
-				public boolean onclick(int mx, int my, int button){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("cargo", "add");
-					com.setString("key", results.get(scroll1 + j).key());
-					container.send(Side.SERVER, com);
-					return true;
-				}
-			});
-			buttons.put("l_entry_rem" + i, new BasicButton("entry_rem" + i, 123, 21 + (i * 14), 146, 44, 7, 12, true){
-				public boolean onclick(int mx, int my, int button){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("cargo", "rem");
-					com.setInteger("idx", scroll1 + j);
-					container.send(Side.SERVER, com);
-					return true;
-				}
-			});
-			texts.put("entry" + i, new BasicText(4, 23 + (i * 14), 116, black, "").autoscale());
-		}
 		for(int i = 0; i < 3; i++){
 			int j = i;
 			buttons.put("r_pos" + i, new BasicButton("pos" + i, width - 105 + (i * 46), 17, 151 + 46, 17, 10, 10, true){

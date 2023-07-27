@@ -29,9 +29,9 @@ public class UniUI extends GuiContainer {
 	protected UserInterface ui;
 
 	public UniUI(UserInterface ui, UniCon con, EntityPlayer player){
-		super(con == null ? con = new UniCon(ui.container) : con);
+		super(con == null ? con = new UniCon(ui.container, player) : con);
 		this.ui = ui;
-		(container = con).setup(this, player);
+		(container = con).setup(this);
 		xSize = ui.width;
 		ySize = ui.height;
 	}

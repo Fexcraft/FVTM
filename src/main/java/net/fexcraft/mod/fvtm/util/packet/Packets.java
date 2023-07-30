@@ -41,7 +41,7 @@ public class Packets {
 		});
 		if(EnvInfo.CLIENT){
 			PKTH_UT.LIS_CLIENT.put("ui", (com, player) -> {
-				((UniCon)player.openContainer).container().packet(new TagCWI(com), false);
+				((UniCon)player.openContainer).container().packet(new TagCWI(com), true);
 			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");

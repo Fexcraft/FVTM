@@ -6,7 +6,6 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.uni.Pos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -34,41 +33,6 @@ public class DecoEditorContainer extends GenericContainer {
 		if(!packet.hasKey("cargo")) return;
 		String cargo = packet.getString("cargo");
 		switch(cargo){
-			case "pos":{
-				DecorationData deco = entity.decos.get(packet.getInteger("idx"));
-				Pos pos = null;
-				switch(packet.getInteger("axis")){
-					case 0: pos = new Pos(packet.getFloat("value"), deco.offset.y, deco.offset.z); break;
-					case 1: pos = new Pos(deco.offset.x, packet.getFloat("value"), deco.offset.z); break;
-					case 2: pos = new Pos(deco.offset.x, deco.offset.y, packet.getFloat("value")); break;
-					default: return;
-				}
-				deco.offset = pos;
-				if(side.isServer()) send(Side.CLIENT, packet);
-				break;
-			}
-			case "rot":{
-				DecorationData deco = entity.decos.get(packet.getInteger("idx"));
-				switch(packet.getInteger("axis")){
-					case 0: deco.rotx = packet.getFloat("value"); break;
-					case 1: deco.roty = packet.getFloat("value"); break;
-					case 2: deco.rotz = packet.getFloat("value"); break;
-					default: return;
-				}
-				if(side.isServer()) send(Side.CLIENT, packet);
-				break;
-			}
-			case "scale":{
-				DecorationData deco = entity.decos.get(packet.getInteger("idx"));
-				switch(packet.getInteger("axis")){
-					case 0: deco.sclx = packet.getFloat("value"); break;
-					case 1: deco.scly = packet.getFloat("value"); break;
-					case 2: deco.sclz = packet.getFloat("value"); break;
-					default: return;
-				}
-				if(side.isServer()) send(Side.CLIENT, packet);
-				break;
-			}
 			case "tex":{
 				DecorationData deco = entity.decos.get(packet.getInteger("idx"));
 				int sel = packet.getInteger("sel");
@@ -76,7 +40,7 @@ public class DecoEditorContainer extends GenericContainer {
 					deco.seltex = sel;
 					if(side.isServer()) send(Side.CLIENT, packet);
 					else{
-						gui.select(gui.selected, gui.selcol);
+						//gui.select(gui.selected, gui.selcol);
 					}
 				}
 				break;
@@ -86,7 +50,7 @@ public class DecoEditorContainer extends GenericContainer {
 				deco.getColorChannel(packet.getString("channel")).packed = packet.getInteger("rgb");
 				if(side.isServer()) send(Side.CLIENT, packet);
 				else{
-					gui.select(gui.selected, gui.selcol);
+					//gui.select(gui.selected, gui.selcol);
 				}
 				break;
 			}

@@ -7,6 +7,9 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class UUIText extends UIText {
 
 	public UUIText(UserInterface ui, JsonMap map) throws Exception {

@@ -55,7 +55,16 @@ public class UUIField extends UIField {
 
 	@Override
 	public boolean onclick(int mx, int my, int mb){
-		return field.mouseClicked(mx, my, mb);
+		boolean bool = field.mouseClicked(mx, my, mb);
+		if(field.isFocused()){
+			for(UIField uif : ui.fields.values()){
+				UUIField uuif = (UUIField) uif;
+				if(uuif.field.isFocused() && uuif.field != field){
+					uuif.field.setFocused(false);
+				}
+			}
+		}
+		return bool;
 	}
 
 	@Override

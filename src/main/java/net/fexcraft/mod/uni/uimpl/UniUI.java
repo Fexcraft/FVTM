@@ -21,9 +21,10 @@ import org.lwjgl.input.Mouse;
  */
 public class UniUI extends GuiContainer {
 
-	protected LinkedHashMap<String, UIButton> buttons = new LinkedHashMap<>();
-	protected LinkedHashMap<String, UIText> texts = new LinkedHashMap<>();
-	protected LinkedHashMap<String, UIField> fields = new LinkedHashMap<>();
+	//protected LinkedHashMap<String, UIButton> buttons = new LinkedHashMap<>();
+	//protected LinkedHashMap<String, UIText> texts = new LinkedHashMap<>();
+	//protected LinkedHashMap<String, UIField> fields = new LinkedHashMap<>();
+	protected LinkedHashMap<String, UITab> tabs = new LinkedHashMap<>();
 	//
 	protected UniCon container;
 	protected UserInterface ui;
@@ -45,12 +46,16 @@ public class UniUI extends GuiContainer {
 	@Override
 	public void initGui(){
 		super.initGui();
-		buttons.clear();
+		ui.screen_width = width;
+		ui.screen_height = height;
+		/*buttons.clear();
 		texts.clear();
 		fields.clear();
 		buttons.putAll(ui.buttons);
 		texts.putAll(ui.texts);
-		fields.putAll(ui.fields);
+		fields.putAll(ui.fields);*/
+		tabs.clear();
+		tabs.putAll(ui.tabs);
 	}
 
 	@Override
@@ -62,21 +67,28 @@ public class UniUI extends GuiContainer {
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		buttons.forEach((key, button) -> {
-			button.hovered(guiLeft, guiTop, mx, my);
-			button.draw(this, null, ticks, guiLeft, guiTop, mx, my);
-		});
-		buttons.forEach((key, button) -> {
-			if(button.text != null) button.text.draw(this, button, ticks, guiLeft, guiTop, mx, my);
-		});
-		texts.forEach((key, text) -> {
-			text.draw(this, null, ticks, guiLeft, guiTop, mx, my);
-		});
-		//fields.forEach((key, elm) -> elm.drawTextBox());
+		for(UITab tab : tabs.values()){
+			if(!tab.visible()) continue;
+			tab.buttons.forEach((key, button) -> {
+				button.hovered(guiLeft, guiTop, mx, my);
+				button.draw(this, null, ticks, guiLeft, guiTop, mx, my);
+			});
+			tab.buttons.forEach((key, button) -> {
+				if(button.text != null) button.text.draw(this, button, ticks, guiLeft, guiTop, mx, my);
+			});
+			tab.texts.forEach((key, text) -> {
+				text.draw(this, null, ticks, guiLeft, guiTop, mx, my);
+			});
+			tab.fields.forEach((key, field) -> {
+				field.draw(this, null, ticks, guiLeft, guiTop, mx, my);
+			});
+		}
 		postdraw(ticks, mx, my);
 	}
 
-	protected void predraw(float ticks, int mx, int my){}
+	protected void predraw(float ticks, int mx, int my){
+		ui.predraw(ticks, mx, my);
+	}
 
 	public void drawbackground(float ticks, int mx, int my){
 		for(UITab tab : ui.tabs.values()){
@@ -93,7 +105,9 @@ public class UniUI extends GuiContainer {
 		}
 	}
 
-	protected void postdraw(float ticks, int mx, int my){}
+	protected void postdraw(float ticks, int mx, int my){
+		ui.postdraw(ticks, mx, my);
+	}
 
 
 	@Override
@@ -106,12 +120,14 @@ public class UniUI extends GuiContainer {
 	protected void keyTyped(char c, int code) throws IOException {
 		boolean invbutton = this.mc.gameSettings.keyBindInventory.isActiveAndMatches(code);
 		boolean keytyped = false;
-		if(!fields.isEmpty()){
+		for(UITab tab : tabs.values()){
+			if(!tab.visible() || tab.fields.isEmpty()) continue;
 			boolean bool = false;
-			for(Entry<String, UIField> entry : fields.entrySet()){
-				if(entry.getValue().visible() && entry.getValue().keytyped(c, code)){
+			for(UIField field : tab.fields.values()){
+				if(bool) break;
+				if(field.visible() && field.keytyped(c, code)){
 					bool = true;
-					break;
+					//break;
 				}
 			}
 			if(!bool){
@@ -131,20 +147,25 @@ public class UniUI extends GuiContainer {
 		int x = Mouse.getEventX() * width / mc.displayWidth;
 		int y = this.height - Mouse.getEventY() * height / mc.displayHeight - 1;
 		boolean exit = false;
-		for(Entry<String, UIButton> entry : buttons.entrySet()){
-			if(exit) break;
-			if(entry.getValue().hovered(guiLeft, guiTop, x, y)){
-				exit = entry.getValue().onscroll(guiLeft, guiTop, x, y, am) || ui.onScroll(entry.getValue(), entry.getKey(), guiLeft, guiTop, x, y, am);
+		for(UITab tab : tabs.values()){
+			if(!tab.visible()) continue;
+			for(Entry<String, UIButton> entry : tab.buttons.entrySet()){
+				if(exit) break;
+				if(entry.getValue().hovered(guiLeft, guiTop, x, y)){
+					exit = entry.getValue().onscroll(guiLeft, guiTop, x, y, am) || ui.onScroll(entry.getValue(), entry.getKey(), guiLeft, guiTop, x, y, am);
+				}
 			}
-		}
-		for(UIText text : texts.values()){
-			if(exit) break;
-			if(text.hovered(guiLeft, guiTop, x, y)) exit = text.onscroll(guiLeft, guiTop, x, y, am);
+			for(UIText text : tab.texts.values()){
+				if(exit) break;
+				if(text.hovered(guiLeft, guiTop, x, y)) exit = text.onscroll(guiLeft, guiTop, x, y, am);
+			}
 		}
 		if(!exit) scrollwheel(am, x, y);
 	}
 
-	public void scrollwheel(int am, int x, int y){}
+	public void scrollwheel(int am, int x, int y){
+		ui.scrollwheel(am, x, y);
+	}
 
 	public void bindTexture(IDL texture){
 		mc.renderEngine.bindTexture((ResourceLocation)texture);

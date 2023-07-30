@@ -16,7 +16,7 @@ public class UUIField extends UIField {
 
 	public UUIField(UserInterface ui, JsonMap map) throws Exception {
 		super(ui, map);
-		field = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, width, height){
+		field = new GuiTextField(ui._fields++, Minecraft.getMinecraft().fontRenderer, 0, 0, width, height){
 			@Override
 			public void writeText(String text){
 				if(regex != null) text = text.replaceAll(regex, "");
@@ -26,14 +26,15 @@ public class UUIField extends UIField {
 		field.setEnableBackgroundDrawing(background);
 		field.setTextColor(color);
 		field.setText(value);
+		field.setEnabled(enabled);
+		field.setVisible(visible);
 	}
 
 	@Override
 	public void draw(Object gui, UIElement root, float ticks, int gl, int gt, int mx, int my){
 		if(!visible()) return;
-		UniUI uui = (UniUI)gui;
-		field.x = absolute ? x < 0 ? uui.width + x : x : gl + x;
-		field.y = absolute ? y < 0 ? uui.height + y : y : gt + y;
+		field.x = absolute ? x < 0 ? ui.screen_width + x : x : gl + x;
+		field.y = absolute ? y < 0 ? ui.screen_height + y : y : gt + y;
 		field.drawTextBox();
 	}
 
@@ -45,6 +46,11 @@ public class UUIField extends UIField {
 	@Override
 	public void visible(boolean bool){
 		field.setVisible(visible = bool);
+	}
+
+	@Override
+	public void enabled(boolean bool){
+		field.setEnabled(enabled = bool);
 	}
 
 	@Override
@@ -60,6 +66,10 @@ public class UUIField extends UIField {
 	@Override
 	public void text(String text){
 		field.setText(text);
+	}
+
+	public String text(){
+		return field.getText();
 	}
 
 }

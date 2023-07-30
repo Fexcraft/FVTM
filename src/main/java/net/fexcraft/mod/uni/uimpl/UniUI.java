@@ -69,6 +69,7 @@ public class UniUI extends GuiContainer {
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		for(UITab tab : tabs.values()){
 			if(!tab.visible()) continue;
+			bindTexture(tab.texture);
 			tab.buttons.forEach((key, button) -> {
 				button.hovered(guiLeft, guiTop, mx, my);
 				button.draw(this, null, ticks, guiLeft, guiTop, mx, my);

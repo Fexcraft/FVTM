@@ -48,8 +48,8 @@ public class UUIText extends UIText {
 		}
 		else{
 			hovered(gl, gt, mx, my);
-			xx = absolute ? x < 0 ? width + x : x : gl + x;
-			yy = absolute ? y < 0 ? height + y : y : gt + y;
+			xx = absolute ? x < 0 ? uui.width + x : x : gl + x;
+			yy = absolute ? y < 0 ? uui.height + y : y : gt + y;
 		}
 		if(scale == 0 || (scale < 0 && textwidth < width)){
 			uui.mc.fontRenderer.drawString(value, xx, yy, hovered ? hover.packed : color.packed, shadow);

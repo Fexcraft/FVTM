@@ -55,6 +55,8 @@
 			],
 			"texts": [
 				"cat"
+			],
+			"fields": [
 			]
 		},
 		"left+": {
@@ -69,7 +71,25 @@
 			"size": [ 144, 188 ],
 			"pos": [ -144, 0 ],
 			"uv": [ 112, 0 ],
-			"absolute": true
+			"absolute": true,
+			"buttons": [
+
+			],
+			"texts": [
+				"pos",
+				"rot",
+				"scl",
+				"tex",
+				"texc",
+				"channel"
+			],
+			"fields": [
+				"pos0", "pos1", "pos2",
+				"rot0", "rot1", "rot2",
+				"scl0", "scl1", "scl2",
+				"rgb", "hex",
+				"search"
+			]
 		}
 	},
 	"buttons": {
@@ -396,6 +416,135 @@
 			"autoscale": true,
 			"color": "000000",
 			"value": "category"
+		},
+		"pos": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 5 ],
+			"value": "gui.fvtm.decoration_editor.position",
+			"translate": true
+		},
+		"rot": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 33 ],
+			"value": "gui.fvtm.decoration_editor.rotation",
+			"translate": true
+		},
+		"scl": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 61 ],
+			"value": "gui.fvtm.decoration_editor.scale",
+			"translate": true
+		},
+		"tex": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 89 ],
+			"value": "gui.fvtm.decoration_editor.texture",
+			"translate": true
+		},
+		"texc": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -136, 102 ],
+			"autoscale": true,
+			"color": "cfcfcf",
+			"value": "-"
+		},
+		"channel": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -136, 127 ],
+			"autoscale": true,
+			"color": "cfcfcf",
+			"value": "-"
+		}
+	},
+	"fields": {
+		"pos0": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -135, 18 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos1": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -89, 18 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos2": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -43, 18 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot0": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -135, 46 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot1": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -89, 46 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot2": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -43, 46 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl0": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -135, 74 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl1": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -89, 74 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl2": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -43, 74 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rgb": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -135, 147 ],
+			"background": false,
+			"numberfield": true
+		},
+		"hex": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -135, 167 ],
+			"background": false,
+			"numberfield": true
+		},
+		"search": {
+			"absolute": true,
+			"size": [ 93, 10 ],
+			"pos": [ 29, 3 ],
+			"background": true
 		}
 	}
 }

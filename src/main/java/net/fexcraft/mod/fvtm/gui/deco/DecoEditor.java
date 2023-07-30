@@ -105,9 +105,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 					return true;
 				}
 			});
-			fields.put("pos" + i, new NumberField(3 + i, fontRenderer, width - 135 + (i * 46), 18, 27, 8, false));
-			fields.put("rot" + i, new NumberField(3 + i, fontRenderer, width - 135 + (i * 46), 46, 27, 8, false));
-			fields.put("scl" + i, new NumberField(3 + i, fontRenderer, width - 135 + (i * 46), 74, 27, 8, false));
 		}
 		buttons.put("r_t-", new BasicButton("t-", width - 25, 101, 231, 101, 10, 10, true){
 			public boolean onclick(int mx, int my, int button){
@@ -221,15 +218,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				return true;
 			}
 		});
-		texts.put("pos", new BasicText(width - 136, 5, 132, black, I18n.format("gui.fvtm.decoration_editor.position")));
-		texts.put("rot", new BasicText(width - 136, 33, 132, black, I18n.format("gui.fvtm.decoration_editor.rotation")));
-		texts.put("scl", new BasicText(width - 136, 61, 132, black, I18n.format("gui.fvtm.decoration_editor.scale")));
-		texts.put("tex", new BasicText(width - 136, 89, 132, black, I18n.format("gui.fvtm.decoration_editor.texture")));
-		texts.put("texc", new BasicText(width - 135, 102, 107, 0xcfcfcf, "-").autoscale());
-		texts.put("channel", new BasicText(width - 135, 127, 107, 0xcfcfcf, "-").autoscale());
-		fields.put("search", new TextField(1, fontRenderer, 29, 3, 93, 10, true));
-		fields.put("rgb", new TextField(1, fontRenderer, width - 135, 147, 107, 8, false));
-		fields.put("hex", new TextField(2, fontRenderer, width - 135, 167, 107, 8, false));
 		updateCategorySearch();
 		//updateResults();
 		//updateEntries();
@@ -307,42 +295,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 
 	private String format(String key){
 		return I18n.format("fvtm.decoration." + key);
-	}
-
-	@Override
-	public void predraw(float ticks, int mx, int my){
-		if(!fields.get("search").getText().equals(searchstr)){
-			searchstr = fields.get("search").getText();
-			updateResults();
-		}
-	}
-
-	@Override
-	public void drawbackground(float ticks, int mx, int my){
-		TexUtil.bindTexture(texl);
-		drawTexturedModalRect(0, 0, 0, 0, 144, 198);
-		drawTexturedModalRect(144, 2, 144, 2, 15, 40);
-		TexUtil.bindTexture(texr);
-		drawTexturedModalRect(width - 144, 0, 112, 0, 144, 188);
-	}
-	
-	@Override
-	public void scrollwheel(int a, int x, int y){
-		if(x > 1 && x < 139 && y > 20 && y < 188){
-			scroll(a);
-		}
-	}
-
-	private void scroll(int a){
-		if(listmode){
-			scroll0 += a > 0 ? 1 : -1;
-			if(scroll0 < 0) scroll0 = 0;
-		}
-		else{
-			scroll1 += a > 0 ? 1 : -1;
-			if(scroll1 < 0) scroll1 = 0;
-		}
-		updateEntries();
 	}
 
 }

@@ -84,9 +84,11 @@ import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UIButton;
+import net.fexcraft.mod.uni.ui.UIField;
 import net.fexcraft.mod.uni.ui.UITab;
 import net.fexcraft.mod.uni.ui.UIText;
 import net.fexcraft.mod.uni.uimpl.UUIButton;
+import net.fexcraft.mod.uni.uimpl.UUIField;
 import net.fexcraft.mod.uni.uimpl.UUITab;
 import net.fexcraft.mod.uni.uimpl.UUIText;
 import net.minecraft.creativetab.CreativeTabs;
@@ -154,6 +156,7 @@ public class FVTM {
 			UITab.IMPLEMENTATION = UUITab.class;
 			UIButton.IMPLEMENTATION = UUIButton.class;
 			UIText.IMPLEMENTATION = UUIText.class;
+			UIField.IMPLEMENTATION = UUIField.class;
 		}
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());

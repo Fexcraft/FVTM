@@ -73,7 +73,9 @@
 			"uv": [ 112, 0 ],
 			"absolute": true,
 			"buttons": [
-
+				"pos0", "pos1", "pos2",
+				"rot0", "rot1", "rot2",
+				"scl0", "scl1", "scl2"
 			],
 			"texts": [
 				"pos",
@@ -406,6 +408,60 @@
 			"size": [ 7, 12 ],
 			"pos": [ 123, 175 ],
 			"uv": [ 146, 44 ]
+		},
+		"pos0": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -105, 17 ],
+			"uv": [ 197, 17 ]
+		},
+		"pos1": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -59, 17 ],
+			"uv": [ 197, 17 ]
+		},
+		"pos2": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -13, 17 ],
+			"uv": [ 197, 17 ]
+		},
+		"rot0": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -105, 45 ],
+			"uv": [ 197, 45 ]
+		},
+		"rot1": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -59, 45 ],
+			"uv": [ 197, 45 ]
+		},
+		"rot2": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -13, 45 ],
+			"uv": [ 197, 45 ]
+		},
+		"scl0": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -105, 73 ],
+			"uv": [ 197, 73 ]
+		},
+		"scl1": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -59, 73 ],
+			"uv": [ 197, 73 ]
+		},
+		"scl2": {
+			"absolute": "true",
+			"size": [ 10, 10 ],
+			"pos": [ -13, 73 ],
+			"uv": [ 197, 73 ]
 		}
 	},
 	"texts": {

@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.gui.deco;
 
-import static net.fexcraft.lib.common.Static.sixteenth;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 
 import java.awt.*;
@@ -15,7 +13,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.block.material.MapColor;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -49,63 +46,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 	@Override
 	protected void init(){
 		int black = MapColor.BLACK.colorValue;
-		for(int i = 0; i < 3; i++){
-			int j = i;
-			buttons.put("r_pos" + i, new BasicButton("pos" + i, width - 105 + (i * 46), 17, 151 + 46, 17, 10, 10, true){
-				public boolean onclick(int mx, int my, int button){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("cargo", "pos");
-					com.setInteger("axis", j);
-					com.setInteger("idx", selected);
-					com.setFloat("value", fields.get("pos" + j).getValue());
-					container.send(Side.SERVER, com);
-					return true;
-				}
-				public boolean scrollwheel(int am, int x, int y){
-					float val = fields.get("pos" + j).getValue();
-					val += am > 0 ? -1 : 1;
-					fields.get("pos" + j).setText(val + "");
-					onclick(x, y, 0);
-					return true;
-				}
-			});
-			buttons.put("r_rot" + i, new BasicButton("rot" + i, width - 105 + (i * 46), 45, 151 + 46, 45, 10, 10, true){
-				public boolean onclick(int mx, int my, int button){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("cargo", "rot");
-					com.setInteger("axis", j);
-					com.setInteger("idx", selected);
-					com.setFloat("value", fields.get("rot" + j).getValue());
-					container.send(Side.SERVER, com);
-					return true;
-				}
-				public boolean scrollwheel(int am, int x, int y){
-					float val = fields.get("rot" + j).getValue();
-					val += am > 0 ? -1 : 1;
-					fields.get("rot" + j).setText(val + "");
-					onclick(x, y, 0);
-					return true;
-				}
-			});
-			buttons.put("r_scl" + i, new BasicButton("scl" + i, width - 105 + (i * 46), 73, 151 + 46, 73, 10, 10, true){
-				public boolean onclick(int mx, int my, int button){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("cargo", "scale");
-					com.setInteger("axis", j);
-					com.setInteger("idx", selected);
-					com.setFloat("value", fields.get("scl" + j).getValue());
-					container.send(Side.SERVER, com);
-					return true;
-				}
-				public boolean scrollwheel(int am, int x, int y){
-					float val = fields.get("scl" + j).getValue();
-					val += am > 0 ? -sixteenth : sixteenth;
-					fields.get("scl" + j).setText(val + "");
-					onclick(x, y, 0);
-					return true;
-				}
-			});
-		}
 		buttons.put("r_t-", new BasicButton("t-", width - 25, 101, 231, 101, 10, 10, true){
 			public boolean onclick(int mx, int my, int button){
 				if(selected < 0 || selected >= container.entity.decos.size()) return true;
@@ -135,7 +75,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				if(colors.isEmpty()) return true;
 				selcol--;
 				if(selcol < 0) selcol = colors.size() - 1;
-				select(selected, selcol);
+				//select(selected, selcol);
 				return true;
 			}
 		});
@@ -148,7 +88,7 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				if(colors.isEmpty()) return true;
 				selcol++;
 				if(selcol >= colors.size()) selcol = 0;
-				select(selected, selcol);
+				//select(selected, selcol);
 				return true;
 			}
 		});
@@ -218,83 +158,6 @@ public class DecoEditor extends GenericGui<DecoEditorContainer> {
 				return true;
 			}
 		});
-		updateCategorySearch();
-		//updateResults();
-		//updateEntries();
-		select(-1, -1);
-	}
-
-	protected void select(int idx, int colidx){
-		selected = idx;
-		colors.clear();
-		DecorationData data = idx < 0 || idx >= container.entity.decos.size() ? null : container.entity.decos.get(idx);
-		boolean miss = data == null;
-		for(int i = 0; i < 3; i++){
-			fields.get("pos" + i).setText(miss ? "0" : (i == 0 ? data.offset.x : i == 1 ? data.offset.y : data.offset.z) + "");
-			fields.get("rot" + i).setText(miss ? "0" : (i == 0 ? data.rotx : i == 1 ? data.roty : data.rotz) + "");
-			fields.get("scl" + i).setText(miss ? "0" : (i == 0 ? data.sclx : i == 1 ? data.scly : data.sclz) + "");
-		}
-		texts.get("texc").string = miss ? "" : data.textures.get(data.seltex).name();
-		selcol = colidx;
-		if(!miss) colors.addAll(data.getColorChannels().keySet());
-		if(selcol >= colors.size() || selcol < 0) selcol = 0;
-		texts.get("channel").string = miss ? "" : colors.isEmpty() ? I18n.format("gui.fvtm.decoration_editor.no_color_channels") : colors.get(selcol);
-		RGB color = miss || colors.isEmpty() ? RGB.WHITE : data.getColorChannel(colors.get(selcol));
-		byte[] ar = color.toByteArray();
-		fields.get("rgb").setText((ar[0] + 128) + ", " + (ar[1] + 128) + ", " + (ar[2] + 128));
-		fields.get("hex").setText("#" + Integer.toHexString(color.packed));
-	}
-	
-	protected void updateCategorySearch(){
-		texts.get("cat").string = DECORATION_CATEGORIES.get(category);
-		texts.get("cat").visible = !search;
-		fields.get("search").setVisible(search);
-		updateResults();
-	}
-
-	protected void updateResults(){
-		results.clear();
-		if(search){
-			for(DecorationData deco : DECORATIONS.values()){
-				if(deco.key().contains(searchstr) || format(deco.key()).contains(searchstr)) results.add(deco);
-			}
-		}
-		else{
-			String cat = DECORATION_CATEGORIES.get(category);
-			for(DecorationData deco : DECORATIONS.values()){
-				if(deco.category().equals(cat)) results.add(deco);
-			}
-		}
-		updateEntries();
-	}
-
-	protected void updateEntries(){
-		int j = 0;
-		boolean over;
-		if(listmode){
-			for(int i = 0; i < rows; i++){
-				j = scroll0 + i;
-				over = j >= container.entity.decos.size();
-				texts.get("entry" + i).string = over ? "" : format(container.entity.decos.get(j).key());
-				buttons.get("l_entry_rem" + i).visible = true;
-				buttons.get("l_entry_add" + i).visible = false;
-				buttons.get("l_entry" + i).enabled = selected != j;
-			}
-		}
-		else{
-			for(int i = 0; i < rows; i++){
-				j = scroll1 + i;
-				over = j >= results.size();
-				texts.get("entry" + i).string = over ? "" : format(results.get(j).key());
-				buttons.get("l_entry_rem" + i).visible = false;
-				buttons.get("l_entry_add" + i).visible = true;
-				buttons.get("l_entry" + i).enabled = true;
-			}
-		}
-	}
-
-	private String format(String key){
-		return I18n.format("fvtm.decoration." + key);
 	}
 
 }

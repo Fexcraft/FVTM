@@ -45,4 +45,10 @@ public class UniCon extends Container {
 		return con;
 	}
 
+	@Override
+	public void onContainerClosed(EntityPlayer player){
+		super.onContainerClosed(player);
+		con.onClosed();
+	}
+
 }

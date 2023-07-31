@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.construct.*;
-import net.fexcraft.mod.fvtm.gui.deco.DecoContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvContainer;
 import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvUi;
 import net.fexcraft.mod.fvtm.gui.inv.UniItemInvContainer;

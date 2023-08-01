@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import org.lwjgl.opengl.GL11;
 
@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
 public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerEntity> {
-	
+
 	private double off;
 
     @Override

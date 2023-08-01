@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
+import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
@@ -28,6 +29,7 @@ import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
@@ -157,6 +159,7 @@ public class FVTM {
 			UIButton.IMPLEMENTATION = UUIButton.class;
 			UIText.IMPLEMENTATION = UUIText.class;
 			UIField.IMPLEMENTATION = UUIField.class;
+			GLO.SUPPLIER = () -> new GLObject();
 		}
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());

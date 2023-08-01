@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;

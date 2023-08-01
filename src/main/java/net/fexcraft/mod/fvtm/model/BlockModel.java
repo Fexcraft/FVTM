@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -19,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
 
-public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockModel {
+public class BlockModel extends DefaultModel implements FCLItemModel, FCLBlockModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
 	
@@ -120,7 +122,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
             {
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
-                super.bindTexture(model.bindtex ? data.getCurrentTexture() : Resources.WHITE_TEXTURE);
+                bindTexture(model.bindtex ? data.getCurrentTexture() : Resources.WHITE_TEXTURE);
                 model.render(RENDERDATA.set(data, null, null, null, true));
                 GL11.glPopMatrix();
             }
@@ -134,10 +136,10 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
 		ArrayList<ModelRendererTurbo> polis = new ArrayList<>();
 		for(ModelGroup group : groups){
             if(group.has_pre_prog){
-                for(ModelGroup.Program program : group.pre_programs) program.preRender(group, RENDERDATA.set((BlockData)null, null, null, state, false));
+                for(Program program : group.pre_programs) program.pre(group, RENDERDATA.set((BlockData)null, null, null, state, false));
             }
             if(!group.visible) continue;
-            polis.addAll(group);
+            //TODO polis.addAll(group);
         }
 		return polis;
 	}
@@ -146,7 +148,7 @@ public class BlockModel extends GenericModel implements FCLItemModel, FCLBlockMo
     public void reset(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
         for(ModelGroup group : groups){
             if(group.has_pst_prog){
-                for(ModelGroup.Program program : group.pst_programs) program.postRender(group, RENDERDATA.set((BlockData)null, null, null, state, false));
+                for(Program program : group.pst_programs) program.post(group, RENDERDATA.set((BlockData)null, null, null, state, false));
             }
         }
     }

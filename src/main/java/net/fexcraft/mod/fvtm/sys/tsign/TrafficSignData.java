@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.tsign;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import java.util.ArrayList;
 import java.util.HashMap;

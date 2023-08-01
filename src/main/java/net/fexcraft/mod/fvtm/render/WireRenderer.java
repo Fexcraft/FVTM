@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -302,7 +303,7 @@ public class WireRenderer {
 				wire.deco_d.put(entry.getKey(), new HashMap<>());
 				wire.deco_g.put(entry.getKey(), new HashMap<>());
 				for(ModelGroup list : deco.groups){
-					for(ModelGroup.Program program : list.getAllPrograms()){
+					for(Program program : list.getAllPrograms()){
 						if(program instanceof WirePrograms.SpacedDeco == false) continue;
 						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
 						break;

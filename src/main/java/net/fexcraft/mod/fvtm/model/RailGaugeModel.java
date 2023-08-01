@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.util.math.Vec3d;
 
-public class RailGaugeModel extends GenericModel {
+public class RailGaugeModel extends DefaultModel {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public ArrayList<V3D[]> rail_model = new ArrayList<>();

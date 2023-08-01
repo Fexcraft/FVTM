@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.model.WirePrograms.DownwardAngled;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
-public class WireModel extends GenericModel {
+public class WireModel extends DefaultModel {
 	
 	public static final HashMap<String, WireModel> DECOS = new HashMap<>();
 	public static final WireModel EMPTY = new WireModel();

@@ -174,9 +174,7 @@ public class FVTM {
 		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
 		if(EnvInfo.CLIENT){
-			Config.addListener(() -> {
-				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
-			});
+			Config.addListener(DefaultPrograms::setupBlinkerTimer);
 			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
 			ConditionRegistry.BUILDER = CondBuilder.run();
 		}

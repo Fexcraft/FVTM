@@ -1,26 +1,24 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
-
-import org.lwjgl.opengl.GL11;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.BlockModel;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 @fTESR
 public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCenterEntity> {
@@ -50,7 +48,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	tile.updateLiftState();
             	TexUtil.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
-            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null, null, false));
+            	for(ConstructorLiftModel model : tile.models) model.render(RENDERDATA.set((BlockData)null, tile, null, null, false));
                 GL11.glPopMatrix();
             }
             else if(tile.getVehicleData().getType().getVehicleType().isRailVehicle()){

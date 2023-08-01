@@ -377,7 +377,7 @@ public class Resources {
 			model.parse(data).lock();
 		}
 		catch(Exception e){
-			e.printStackTrace(); Static.stop();
+			e.printStackTrace(); //Static.stop();
 		}
 		MODELS.put(name, model);
 		if(bake && model instanceof BlockModel){
@@ -404,7 +404,7 @@ public class Resources {
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		if(clazz == WireModel.class) return WireModel.EMPTY;
-		if(clazz == GenericModel.class) return GenericModel.EMPTY;
+		if(clazz == DefaultModel.class) return DefaultModel.EMPTY;
 		return null;
 	}
 
@@ -1001,8 +1001,8 @@ public class Resources {
 	@SideOnly(Side.CLIENT)
 	public static void loadDecoModels(){
 		for(DecorationData deco : DECORATIONS.values()){
-			Model model = Resources.getModel(deco.modelid, deco.modeldata, GenericModel.class);
-			if(model != null && model != GenericModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
+			Model model = Resources.getModel(deco.modelid, deco.modeldata, DefaultModel.class);
+			if(model != null && model != DefaultModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
 		}
 	}
 

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 
 @fTESR
 public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntity> {
-	
+
 	private static float heightoffset = 0;
 
     @Override

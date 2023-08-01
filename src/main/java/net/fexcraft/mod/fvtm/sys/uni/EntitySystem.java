@@ -11,7 +11,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.entity.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
@@ -159,7 +159,7 @@ public class EntitySystem extends DetachedSystem {
 		}
 
 		public boolean invalid(Collection<ParticleEntity> particles, int mul){
-			if(edata.getConditional() == null || edata.getConditional().isMet(GenericModel.RENDERDATA.set(vehicle.getVehicleData(), vehicle, null, data, part, false))){
+			if(edata.getConditional() == null || edata.getConditional().isMet(DefaultModel.RENDERDATA.set(vehicle.getVehicleData(), vehicle, null, data, part, false))){
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());

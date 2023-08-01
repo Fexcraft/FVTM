@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 import org.lwjgl.opengl.GL11;
 
-public class ClothModel extends GenericModel {
+public class ClothModel extends DefaultModel {
 
 	public static final ClothModel EMPTY = new ClothModel();
 	protected TreeMap<String, ArrayList<String>> cloth_groups = new TreeMap<>();
@@ -50,7 +50,7 @@ public class ClothModel extends GenericModel {
 			cloth_groups.put(playermodelpart, arrlist);
 		}
 		if(x == 0f && y == 0f && z == 0f) return;
-		group.translate(x, y, z);
+		group.translate(x, y, z, false);
 	}
 
 	@Override

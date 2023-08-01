@@ -18,7 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
-public class VehicleModel extends GenericModel implements FCLItemModel {
+public class VehicleModel extends DefaultModel implements FCLItemModel {
 	
 	public static final VehicleModel EMPTY = new VehicleModel();
 	@Deprecated public static final String[] defval = new String[]{ "chassis", "body", "body_colored_primary", "body_colored_secondary",

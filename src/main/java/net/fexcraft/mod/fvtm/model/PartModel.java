@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,7 +20,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
-public class PartModel extends GenericModel implements FCLItemModel {
+public class PartModel extends DefaultModel implements FCLItemModel {
 
 	public static final PartModel EMPTY = new PartModel();
     //public static final RGB windowcolor = new RGB(0x007208).setAlpha(0.3f);

@@ -50,7 +50,7 @@ public class DebugModels {
 			.addShapeBox(0, 0, 0, 1, 0.5f, 9, 0, 0, 0, -0.1f, -0.1f, 0, -1.5f, -0.1f, 0, -1.5f, 0, 0, -0.1f, 0, 0, 0, 0, 0, -1.4f, 0, 0, -1.4f, 0, 0, 0)
 			.setRotationPoint(7, -2.5f, -4.5f).setRotationAngle(0, 0, 0)
 		);
-		group0.translate(0, -4, 0);
+		group0.translate(0, -4, 0, false);
 		//
 		arm_left = new ModelGroup("arm_left");
 		arm_left.add(new ModelRendererTurbo(arm_left, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f)
@@ -60,7 +60,7 @@ public class DebugModels {
 			.addShapeBox(-0.1f, 0, -0.1f, 4.2f, 0.2f, 4.2f, 0, -0.5f, 0, 0, -0.5f, 0, 0, -0.5f, 0, -0.5f, -0.5f, 0, -0.5f, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-2, -24.2f, 4).setRotationAngle(0, 0, 0).setName("arm_leftcp")
 		);
-		arm_left.translate(0, 22, -5);
+		arm_left.translate(0, 22, -5, false);
 		//
 		arm_right = new ModelGroup("arm_right");
 		arm_right.add(new ModelRendererTurbo(arm_right, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f)
@@ -70,7 +70,7 @@ public class DebugModels {
 			.addShapeBox(-0.1f, 0, -0.1f, 4.2f, 0.2f, 4.2f, 0, -0.5f, 0, -0.5f, -0.5f, 0, -0.5f, -0.5f, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-2, -24.2f, -8).setRotationAngle(0, 0, 0).setName("arm_rightcp")
 		);
-		arm_right.translate(0, 22, +5);
+		arm_right.translate(0, 22, +5, false);
 		//
 		chest = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 12, 8.2f).setRotationPoint(-2, 0, -4).setName("chest");
 		leg = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2, 4.2f, 10, 4.1f).setRotationPoint(0, 0, 0).setName("leg_left");

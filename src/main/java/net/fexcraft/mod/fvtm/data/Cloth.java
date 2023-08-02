@@ -5,12 +5,13 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.model.ClothModel;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.IDL;
@@ -123,7 +124,7 @@ public class Cloth extends TypeCore<Cloth> implements ItemTextureable {
 	
 	@Override
 	public void loadModel(){
-		this.model = (ClothModel)Resources.getModel(modelid, modeldata, ClothModel.class);
+		this.model = (ClothModel)FvtmResources.getModel(modelid, modeldata, ClothModel.class);
 	}
 	
 	public ResourceLocation getTexture(){

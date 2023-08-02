@@ -28,11 +28,8 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.model.BlockModel;
-import net.fexcraft.mod.fvtm.model.ContainerModel;
-import net.fexcraft.mod.fvtm.model.ItemPlaceholderModel;
-import net.fexcraft.mod.fvtm.model.PartModel;
-import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
@@ -50,6 +47,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class ResourcesImpl extends FvtmResources {
 
 	private final ASMDataTable asmdata;
@@ -230,6 +230,39 @@ public class ResourcesImpl extends FvtmResources {
 			if(EnvInfo.DEV) throw new RuntimeException(e);
 		}
 		return new JsonMap();
+	}
+
+	@Override
+	public void initModelPrograms(){
+		DefaultPrograms.init();
+		ConditionalPrograms.init();
+		WirePrograms.init();
+		TrafficSignPrograms.init();
+	}
+
+	@Override
+	public void initModels(){
+		super.initModels();
+		getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
+		Resources.PARTS.forEach(part -> part.loadModel());
+		Resources.VEHICLES.forEach(veh -> veh.loadModel());
+		Resources.CONTAINERS.forEach(con -> con.loadModel());
+		Resources.BLOCKS.forEach(block -> block.loadModel());
+		Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());
+		Resources.CLOTHES.forEach(cloth -> cloth.loadModel());
+		Resources.WIRES.forEach(cloth -> cloth.loadModel());
+		TrafficSignLibrary.loadModels();
+	}
+
+	@Override
+	public InputStream getModelInputStream(IDL loc, boolean log){
+		try{
+			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource((ResourceLocation)loc).getInputStream();
+		}
+		catch(IOException e){
+			if(log) e.printStackTrace();
+			return null;
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

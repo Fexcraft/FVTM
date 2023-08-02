@@ -3,10 +3,11 @@ package net.fexcraft.mod.fvtm.data;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.WireItem;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -106,7 +107,7 @@ public class WireType extends TypeCore<WireType> implements ItemTextureable {
 	
 	@Override
 	public void loadModel(){
-		this.model = (WireModel)Resources.getModel(modelid, modeldata, WireModel.class);
+		this.model = (WireModel)FvtmResources.getModel(modelid, modeldata, WireModel.class);
 	}
 	
 	public ResourceLocation getTexture(){

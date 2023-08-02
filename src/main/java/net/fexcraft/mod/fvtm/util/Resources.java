@@ -1,19 +1,21 @@
 package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
+import static net.fexcraft.mod.fvtm.FvtmResources.getModel;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -26,13 +28,11 @@ import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.render.FCLBlockModel;
-import net.fexcraft.lib.mc.render.FCLBlockModelLoader;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -42,7 +42,6 @@ import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
@@ -62,9 +61,6 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.ModelData;
-import net.fexcraft.mod.fvtm.model.ModelLoader;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -76,12 +72,8 @@ import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.model.*;
-import net.fexcraft.mod.fvtm.model.loaders.ClassModelLoader;
-import net.fexcraft.mod.fvtm.model.loaders.FMFModelLoader;
-import net.fexcraft.mod.fvtm.model.loaders.JTMTModelLoader;
-import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
-import net.fexcraft.mod.fvtm.model.loaders.SMPTBJavaModelLoader;
+import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -96,6 +88,7 @@ import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.function.*;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -130,7 +123,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.io.FilenameUtils;
 
 public class Resources {
 
@@ -148,12 +140,10 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
-	public static final HashMap<String, Model> MODELS = new HashMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
-	public static final ArrayList<ModelLoader> MODEL_LOADERS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	
@@ -164,13 +154,7 @@ public class Resources {
 		//
 		// search in packs for //
 		//
-		if(event.getSide().isClient()){
-			MODEL_LOADERS.add(new ClassModelLoader());
-			MODEL_LOADERS.add(new JTMTModelLoader());
-			MODEL_LOADERS.add(new FMFModelLoader());
-			MODEL_LOADERS.add(new ObjModelLoader());
-			MODEL_LOADERS.add(new SMPTBJavaModelLoader());
-		}
+		// init model loaders //
 	}
 
 	private void registerAttributeTypes(){
@@ -260,152 +244,6 @@ public class Resources {
 
 	public static MultiBlock getMultiBlock(ResourceLocation resloc){
 		return MULTIBLOCKS.get(resloc);
-	}
-
-	@Deprecated
-	@SideOnly(Side.CLIENT)
-	public static InputStream getModelInputStream(String string){
-		return getModelInputStream(new ResourceLocation(string), true);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static InputStream getModelInputStream(String string, boolean log){
-		return getModelInputStream(new ResourceLocation(string), log);
-	}
-
-	@Deprecated
-	@SideOnly(Side.CLIENT)
-	public static InputStream getModelInputStream(ResourceLocation resloc){
-		return getModelInputStream(resloc, true);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static InputStream getModelInputStream(ResourceLocation resloc, boolean log){
-		try{
-			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(resloc).getInputStream();
-		}
-		catch(IOException e){
-			if(log) e.printStackTrace();
-			return null;
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static Object[] getModelInputStreamWithFallback(ResourceLocation resloc){
-		Closeable[] close = null;
-		InputStream stream = getModelInputStream(resloc, false);
-		if(stream != null) return new Object[]{ stream };
-		try{
-			Addon addon = getAddon(resloc.getNamespace());
-			if(addon != null && addon.getLocation().isConfigPack()){
-				if(addon.getFile().isDirectory()){
-					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
-					if(file.exists()) stream = new FileInputStream(file);
-				}
-				else{
-					String filename = "assets/" + resloc.getNamespace() + "/" + resloc.getPath();
-					ZipFile zip = new ZipFile(addon.getFile());
-					ZipInputStream zipstream = new ZipInputStream(new FileInputStream(addon.getFile()));
-					close = new Closeable[]{ zip, zipstream };
-					while(true){
-						ZipEntry entry = zipstream.getNextEntry();
-						if(entry == null) break;
-						if(entry.getName().equals(filename)){
-							stream = zip.getInputStream(entry);
-							break;
-						}
-					}
-				}
-			}
-		}
-		catch(Throwable e){
-			//e.printStackTrace();
-		}
-		return close == null ? new Object[]{ stream } : new Object[]{ stream, close };
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public static Model getModel(String name, ModelData data, Class<? extends Model> clazz){
-		if(name == null || name.equals("") || name.equals("null")){
-			return getEmptyModelFromClass(clazz);
-		}
-		boolean bake = name.startsWith("baked|");
-		if(bake) name = name.substring(6);
-		Model model = null;
-		if(MODELS.containsKey(name)){
-			if(bake && getEmptyModelFromClass(clazz) instanceof BlockModel){
-				return getEmptyModelFromClass(clazz);
-			}
-			return MODELS.get(name);
-		}
-		if(FCLRegistry.getModel(name) != null){
-			try{
-				model = (Model)((Class<?>)FCLRegistry.getModel(name)).newInstance();
-				model.parse(data).lock();
-			}
-			catch(Exception e){
-				e.printStackTrace();
-				return getEmptyModelFromClass(clazz);
-			}
-			catch(NoClassDefFoundError e){
-				e.printStackTrace();
-				return getEmptyModelFromClass(clazz);
-			}
-			MODELS.put(name, model);
-			return model;
-		}
-		ModelLoader loader = getModelLoader(name, FilenameUtils.getExtension(name));
-		if(loader == null) return getEmptyModelFromClass(clazz);
-		try{
-			Object[] ret = loader.load(name, data, () -> {
-				try{
-					return clazz.getConstructor().newInstance();
-				}
-				catch(Exception e){
-					e.printStackTrace();
-					return getEmptyModelFromClass(clazz);
-				}
-				catch(NoClassDefFoundError e){
-					e.printStackTrace();
-					return getEmptyModelFromClass(clazz);
-				}
-			});
-			if(ret.length == 0 || ret[0] == null) return getEmptyModelFromClass(clazz);
-			model = (Model)ret[0];
-			if(ret.length > 1) data = (ModelData)ret[1];
-			data.convert();
-			model.parse(data).lock();
-		}
-		catch(Exception e){
-			e.printStackTrace(); //Static.stop();
-		}
-		MODELS.put(name, model);
-		if(bake && model instanceof BlockModel){
-			FCLBlockModelLoader.addBlockModel(new ResourceLocation(name), (FCLBlockModel)model);
-			return getEmptyModelFromClass(clazz);
-		}
-		return model;
-	}
-
-	private static ModelLoader getModelLoader(String name, String extension){
-		for(ModelLoader loader : MODEL_LOADERS){
-			if(loader.accepts(name, extension)) return loader;
-		}
-		return null;
-	}
-
-	private static Model getEmptyModelFromClass(Class<? extends Model> clazz){
-		//if(clazz == BlockModel.class) return BlockModel.EMPTY;
-		if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
-		if(clazz == PartModel.class) return PartModel.EMPTY;
-		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
-		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
-		if(clazz == BlockModel.class) return BlockModel.EMPTY;
-		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
-		if(clazz == ClothModel.class) return ClothModel.EMPTY;
-		if(clazz == WireModel.class) return WireModel.EMPTY;
-		if(clazz == DefaultModel.class) return DefaultModel.EMPTY;
-		return null;
 	}
 
 	public static PartData getPartData(NBTTagCompound compound){
@@ -998,17 +836,9 @@ public class Resources {
 		locale_check_uni.invoke(i18n_locale.get(null));
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static void loadDecoModels(){
-		for(DecorationData deco : DECORATIONS.values()){
-			Model model = Resources.getModel(deco.modelid, deco.modeldata, DefaultModel.class);
-			if(model != null && model != DefaultModel.EMPTY) MODELS.put(deco.modelid, deco.model = model);
-		}
-	}
-
 	public static Object[] getInputStream(ResourceLocation resloc){
 		Closeable[] close = null;
-		InputStream stream = getModelInputStream(resloc, false);
+		InputStream stream = FvtmResources.INSTANCE.getModelInputStream(IDLManager.getIDL(resloc.toString()), false);
 		if(stream != null) return new Object[]{ stream };
 		try{
 			Addon addon = getAddon(resloc.getNamespace());

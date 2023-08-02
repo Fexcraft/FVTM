@@ -12,15 +12,15 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
@@ -169,7 +169,7 @@ public class RailGauge extends TypeCore<RailGauge> implements ItemTextureable {
 	
 	@Override
 	public void loadModel(){
-		this.model = (RailGaugeModel)Resources.getModel(modelid, modeldata, RailGaugeModel.class);
+		this.model = (RailGaugeModel)FvtmResources.getModel(modelid, modeldata, RailGaugeModel.class);
 	}
 	
 	public ResourceLocation getRailTexture(){

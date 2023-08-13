@@ -29,6 +29,9 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
+import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
+import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
@@ -234,6 +237,30 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void initModelPrograms(){
+		Transforms.GET_TRANSFORM = args -> {
+			switch(args[0]){
+				case "translation":
+				case "translate":
+				case "trans":
+				case "tra":
+				case "tr":
+					return new TF_Translate(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+				case "rotation":
+				case "rotate":
+				case "rot":
+					return new TF_Rotate(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]), Float.parseFloat(args[4]));
+				case "scale":
+					if(args.length < 3){
+						float scale = Float.parseFloat(args[1]);
+						return new TF_Scale(scale, scale, scale);
+					}
+					else return new TF_Scale(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+				case "gl_rescale_normal":
+				case "rescale_normal":
+					return Transforms.TF_RESCALE_NORMAL;
+				default: return null;
+			}
+		};
 		DefaultPrograms.init();
 		ConditionalPrograms.init();
 		WirePrograms.init();

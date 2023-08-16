@@ -81,7 +81,7 @@ public abstract class Modifier<VT> {
 
 	public abstract String string_value();
 	
-	public abstract boolean valid_valuetype(ValueType type);
+	public abstract boolean valid_valuetype(AttrValueType type);
 	
 	public VT value(){
 		return value;

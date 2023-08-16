@@ -49,7 +49,7 @@ public class StringModifier extends Modifier<String> {
 	}
 
 	@Override
-	public boolean valid_valuetype(ValueType type){
+	public boolean valid_valuetype(AttrValueType type){
 		return type.isString();
 	}
 

@@ -84,8 +84,8 @@ public class LongAttribute extends Attribute<Long> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.INTEGER;
+	public AttrValueType valuetype(){
+		return AttrValueType.INTEGER;
 	}
 
 	@Override

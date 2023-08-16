@@ -46,8 +46,8 @@ public class StringAttribute extends Attribute<String> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.STRING;
+	public AttrValueType valuetype(){
+		return AttrValueType.STRING;
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class IntegerModifier extends Modifier<Integer> {
 	}
 
 	@Override
-	public boolean valid_valuetype(ValueType type){
+	public boolean valid_valuetype(AttrValueType type){
 		return type.isNumber() && !type.isBoolean();
 	}
 

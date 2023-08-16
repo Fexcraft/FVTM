@@ -337,7 +337,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	@Override
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player, boolean state){
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
-        if(!seat.driver && key.driverOnly()) return false;
+        if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
         	if(key.synced()){
                 Packets.sendToServer(key.sync_state() ? new PKT_VehKeyPressState(this, player, key, state) : new PKT_VehKeyPress(key));

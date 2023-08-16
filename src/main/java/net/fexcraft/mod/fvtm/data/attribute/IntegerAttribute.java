@@ -79,8 +79,8 @@ public class IntegerAttribute extends Attribute<Integer> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.INTEGER;
+	public AttrValueType valuetype(){
+		return AttrValueType.INTEGER;
 	}
 
 	@Override

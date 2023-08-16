@@ -205,7 +205,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		for(VehicleScript script : rek.data().getScripts()) if(script.onKeyPress(key, seat, player)) return true;
-        if(!seat.driver && key.driverOnly()) return false;
+        if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
             Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
         }

@@ -57,8 +57,8 @@ public class BooleanAttribute extends Attribute<Boolean> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.BOOLEAN;
+	public AttrValueType valuetype(){
+		return AttrValueType.BOOLEAN;
 	}
 
 	@Override

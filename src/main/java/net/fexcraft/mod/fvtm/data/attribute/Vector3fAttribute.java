@@ -74,8 +74,8 @@ public class Vector3fAttribute extends Attribute<Vec3f> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.VECTOR;
+	public AttrValueType valuetype(){
+		return AttrValueType.VECTOR;
 	}
 
 	@Override

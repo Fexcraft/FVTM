@@ -54,8 +54,8 @@ public class TriStateAttribute extends Attribute<Boolean> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.TRISTATE;
+	public AttrValueType valuetype(){
+		return AttrValueType.TRISTATE;
 	}
 
 	@Override

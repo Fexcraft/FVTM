@@ -299,7 +299,7 @@ public abstract class Attribute<VT> implements ScrElm {
 	/** Must be same as Registry Entry. */
 	public abstract String type();
 	
-	public abstract ValueType valuetype();
+	public abstract AttrValueType valuetype();
 
 	public abstract VT parseValue(String string);
 	
@@ -640,7 +640,7 @@ public abstract class Attribute<VT> implements ScrElm {
 			else if(elm.scr_type().decimal()) scr_set(elm.scr_flt());
 			else if(elm.scr_type().bool()) scr_set(elm.scr_bln());
 			else if(elm.scr_type().string()) scr_set(elm.scr_str());
-			else if(elm.scr_type() == ScrElmType.NULL && valuetype() == ValueType.TRISTATE) value(null);
+			else if(elm.scr_type() == ScrElmType.NULL && valuetype() == AttrValueType.TRISTATE) value(null);
 			sync = true;
 		}
 		else return;

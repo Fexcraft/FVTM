@@ -74,8 +74,8 @@ public class FloatAttribute extends Attribute<Float> {
 	}
 
 	@Override
-	public ValueType valuetype(){
-		return ValueType.FLOAT;
+	public AttrValueType valuetype(){
+		return AttrValueType.FLOAT;
 	}
 
 	@Override

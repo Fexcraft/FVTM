@@ -50,7 +50,7 @@ public class FloatModifier extends Modifier<Float> {
 	}
 
 	@Override
-	public boolean valid_valuetype(ValueType type){
+	public boolean valid_valuetype(AttrValueType type){
 		return type.isNumber() && !type.isBoolean();
 	}
 

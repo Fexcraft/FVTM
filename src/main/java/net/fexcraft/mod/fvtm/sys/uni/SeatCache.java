@@ -182,7 +182,7 @@ public class SeatCache {
 
 	public boolean onKeyPress(KeyPress key, EntityPlayer player){
 		if(key == null) return false;
-		else if(key.toggableInput() && vehicle.world.isRemote){
+		else if(key.toggable_input() && vehicle.world.isRemote){
     		if(clicktimer > 0) return false;
     		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, ItemStack.EMPTY);
         	clicktimer += 10;
@@ -190,10 +190,10 @@ public class SeatCache {
 		}
         else if(!seatdata.driver && vehicle.world.isRemote){
 			if(clicktimer > 0) return false;
-			Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values().stream().filter(pr -> (pr.valuetype().isTristate() || pr.valuetype().isNumber()) && pr.seats().contains(seatdata.name)).collect(Collectors.toList());
+			Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values().stream().filter(pr -> (pr.valuetype.isTristate() || pr.valuetype.isNumber()) && pr.access.contains(seatdata.name)).collect(Collectors.toList());
 			boolean bool = false;
 			for(Attribute<?> attr : attributes){
-				Float val = attr.getPassKey(key);
+				Float val = attr.getKeyValue(key);
 				if(val != null){
 					KeyPress mouse = val == 0 ? KeyPress.RESET : val > 0 ? KeyPress.MOUSE_MAIN : KeyPress.MOUSE_RIGHT;
 					if(bool = ToggableHandler.sendToggle(attr, vehicle, mouse, val, player)) break;

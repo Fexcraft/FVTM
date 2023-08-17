@@ -108,23 +108,23 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.keytype = obj.has("KeyType") ? new ResourceLocation(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
 		//
 		if(obj.has("Attributes")){
-			JsonArray array = obj.get("Attributes").getAsJsonArray();
-			for(JsonElement elm : array){
-				Attribute<?> attr = Attribute.parse(elm.getAsJsonObject());
-				if(attr != null) this.attributes.put(attr.id(), attr);
+			JsonObject attrs = obj.get("Attributes").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : attrs.entrySet()){
+				Attribute<?> attr = Attribute.parse(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
+				if(attr != null) this.attributes.put(attr.id, attr);
 			}
 		}
 		// Check for missing attributes / fill in default values;
 		List<Attribute<?>> attrs = type.getDefaultAttributesForType(this);
 		for(Attribute<?> attr : attrs){
-			if(!attributes.containsKey(attr.id())){
+			if(!attributes.containsKey(attr.id)){
 				//Attribute<?> copy = attr.copy(null);
 				//attributes.put(copy.id(), copy);
-				attributes.put(attr.id(), attr);
+				attributes.put(attr.id, attr);
 			}
 			else{
-				attributes.get(attr.id()).minmax(attr.min(), attr.max()).group(attr.group()).sync(attr.sync()).icons(attr.icons(), false);
-				
+				attributes.get(attr.id).limit(attr.min, attr.max).group(attr.group).sync(attr.sync);
+				attributes.get(attr.id).icons.putAll(attr.icons);
 			}
 		}
 		//

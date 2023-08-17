@@ -138,7 +138,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
         rotpoint = vehicle.getRotationPoint("vehicle");
-        this.setSize(vehicle.getAttribute("hitbox_width").float_value(), vehicle.getAttribute("hitbox_height").float_value());
+        this.setSize(vehicle.getAttribute("hitbox_width").asFloat(), vehicle.getAttribute("hitbox_height").asFloat());
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCap Implementation Found!");}
@@ -321,31 +321,31 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case LIGHTS: {
                 if(doorToggleTimer <= 0){
-                	if(vehicle.getAttribute("lights").boolean_value()){
-                		if(vehicle.getAttribute("lights_long").boolean_value()){
-                    		vehicle.getAttribute("lights").value(false);
-                    		vehicle.getAttribute("lights_long").value(false);
+                	if(vehicle.getAttribute("lights").asBoolean()){
+                		if(vehicle.getAttribute("lights_long").asBoolean()){
+                    		vehicle.getAttribute("lights").set(false);
+                    		vehicle.getAttribute("lights_long").set(false);
                 		}
                 		else{
-                    		vehicle.getAttribute("lights_long").value(true);
+                    		vehicle.getAttribute("lights_long").set(true);
                 		}
                 	}
                 	else{
-                		vehicle.getAttribute("lights").value(true);
+                		vehicle.getAttribute("lights").set(true);
                 	}
                 	//
                     LandVehicle trailer = this.trailer;
                     while(trailer != null){
-                        trailer.vehicle.getAttribute("lights").value(vehicle.getAttribute("lights").boolean_value());
-                        trailer.vehicle.getAttribute("lights_long").value(vehicle.getAttribute("lights_long").boolean_value());
+                        trailer.vehicle.getAttribute("lights").set(vehicle.getAttribute("lights").asBoolean());
+                        trailer.vehicle.getAttribute("lights_long").set(vehicle.getAttribute("lights_long").asBoolean());
                         trailer = trailer.trailer;
                     }
                 	//TODO find a way for fog lights
                     doorToggleTimer = 10;
                     NBTTagCompound nbt = new NBTTagCompound();
                     nbt.setString("task", "toggle_lights");
-                    nbt.setBoolean("lights", vehicle.getAttribute("lights").boolean_value());
-                    nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").boolean_value());
+                    nbt.setBoolean("lights", vehicle.getAttribute("lights").asBoolean());
+                    nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").asBoolean());
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
                 return true;
@@ -437,7 +437,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             rotpoint.getAxes().set_rotation(yaw, pitch, roll, true);
         }
         this.throttle = throttle; serverWY = (float)steeringYaw;
-        vehicle.getAttribute("fuel_stored").value(fuel);
+        vehicle.getAttribute("fuel_stored").set(fuel);
 	}
 	
 	/*@Override
@@ -675,12 +675,12 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 --serverPositionTransitionTicker; setPosition(x, y, z);
                 rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
-            vehicle.getAttribute("steering_angle").value(wheelsYaw);
+            vehicle.getAttribute("steering_angle").set(wheelsYaw);
             double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
-        	vehicle.getAttribute("wheel_angle").value(wheelsAngle);
-        	vehicle.getAttribute("throttle").value((float)throttle);
-        	vehicle.getAttribute("speed").value((float)speed);
+        	vehicle.getAttribute("wheel_angle").set(wheelsAngle);
+        	vehicle.getAttribute("throttle").set((float)throttle);
+        	vehicle.getAttribute("speed").set((float)speed);
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null){
@@ -694,7 +694,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 //wheelsAngle += throttle * 20; if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
                 //animation stuff }*/
             //
-            if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").integer_value() > 0) && lata.max_throttle != 0){
+            if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").asInteger() > 0) && lata.max_throttle != 0){
                 throttle *= 0.98F;
             }
             this.onUpdateMovement(); if(trailer != null){ trailer.alignTrailer(); }
@@ -733,7 +733,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.deg_yaw();
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
-        	vehicle.getAttribute("throttle").value((float)throttle);
+        	vehicle.getAttribute("throttle").set((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
@@ -963,7 +963,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         			consumed += engine.getIdleFuelConsumption();
         		}
         		else{
-        			consumed += engine.getFuelConsumption(vehicle.getAttribute("fuel_secondary").string_value()) * throttle;
+        			consumed += engine.getFuelConsumption(vehicle.getAttribute("fuel_secondary").asString()) * throttle;
         		}
     		}
     		accumulator++;
@@ -976,7 +976,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     			vehicle.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
     			bool = true;
     		}
-    		if(engine.isOn() && vehicle.getAttribute("fuel_stored").float_value() <= 0){
+    		if(engine.isOn() && vehicle.getAttribute("fuel_stored").asFloat() <= 0){
     			NBTTagCompound compound  = new NBTTagCompound();
     			compound.setString("task", "engine_toggle");
     			compound.setBoolean("engine_toggle_result", false);
@@ -1137,12 +1137,12 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     break;
                 }
                 case "toggle_lights": {
-                    vehicle.getAttribute("lights").value(pkt.nbt.getBoolean("lights"));
-                    vehicle.getAttribute("lights_long").value(pkt.nbt.getBoolean("lights_long"));
+                    vehicle.getAttribute("lights").set(pkt.nbt.getBoolean("lights"));
+                    vehicle.getAttribute("lights_long").set(pkt.nbt.getBoolean("lights_long"));
                     LandVehicle trailer = this.trailer;
                     while(trailer != null){
-                        trailer.vehicle.getAttribute("lights").value(pkt.nbt.getBoolean("lights"));
-                        trailer.vehicle.getAttribute("lights_long").value(pkt.nbt.getBoolean("lights_long"));
+                        trailer.vehicle.getAttribute("lights").set(pkt.nbt.getBoolean("lights"));
+                        trailer.vehicle.getAttribute("lights_long").set(pkt.nbt.getBoolean("lights_long"));
                         trailer = trailer.trailer;
                     }
                     break;

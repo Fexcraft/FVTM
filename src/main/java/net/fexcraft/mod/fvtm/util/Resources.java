@@ -137,7 +137,6 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
-	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
@@ -148,41 +147,13 @@ public class Resources {
 	private static Field respackfile = null;
 	
 	public Resources(FMLPreInitializationEvent event){
-		registerAttributeTypes();
-		registerModifierImpls();
+		//registerAttributeTypes();
+		//registerModifierImpls();
 		registerFunctions();
 		//
 		// search in packs for //
 		//
 		// init model loaders //
-	}
-
-	private void registerAttributeTypes(){
-		registerAttributeType("string", StringAttribute.class, true);
-		registerAttributeType("text", StringAttribute.class, true);
-		registerAttributeType("float", FloatAttribute.class, true);
-		registerAttributeType("double", FloatAttribute.class, true);
-		registerAttributeType("integer", IntegerAttribute.class, true);
-		registerAttributeType("number", IntegerAttribute.class, true);
-		registerAttributeType("long", LongAttribute.class, true);
-		registerAttributeType("boolean", BooleanAttribute.class, true);
-		registerAttributeType("bool", BooleanAttribute.class, true);
-		registerAttributeType("tristate", TriStateAttribute.class, true);
-		registerAttributeType("threestate", TriStateAttribute.class, true);
-		registerAttributeType("ternary", TriStateAttribute.class, true);
-		registerAttributeType("vec3", Vector3fAttribute.class, true);
-		registerAttributeType("vec3f", Vector3fAttribute.class, true);
-		registerAttributeType("vector", Vector3fAttribute.class, true);
-		registerAttributeType("vector3", Vector3fAttribute.class, true);
-		registerAttributeType("vector3f", Vector3fAttribute.class, true);
-		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
-	}
-
-	private void registerModifierImpls(){
-		registerModifierImpl("string", StringModifier.class, true);
-		registerModifierImpl("float", FloatModifier.class, true);
-		registerModifierImpl("integer", IntegerModifier.class, true);
-		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterModifierImpls(this));
 	}
 
 	private void registerFunctions(){
@@ -311,29 +282,6 @@ public class Resources {
 
 	public static TreeMap<String, Class<? extends Attribute<?>>> getAttributeTypes(){
 		return ATTRIBUTE_TYPES;
-	}
-
-	/** Registers a Attribute class into FVTM Resources.*/
-	public static void registerModifierImpl(ResourceLocation regname, Class<? extends Modifier<?>> clazz, boolean override){
-		registerModifierImpl(regname.toString(), clazz, override);
-	}
-	
-	/** Registers a Attribute class into FVTM Resources.*/
-	public static void registerModifierImpl(String regname, Class<? extends Modifier<?>> clazz, boolean override){
-		if(MODIFIER_IMPLS.containsKey(regname) && !override) return;
-		MODIFIER_IMPLS.put(regname, clazz);
-	}
-	
-	public static Class<? extends Modifier<?>> getModifierImpl(ResourceLocation regname){
-		return getModifierImpl(regname.toString());
-	}
-	
-	public static Class<? extends Modifier<?>> getModifierImpl(String id){
-		return MODIFIER_IMPLS.get(id);
-	}
-
-	public static TreeMap<String, Class<? extends Modifier<?>>> getModifierImpl(){
-		return MODIFIER_IMPLS;
 	}
 	
 	/** Registers a Functon class into FVTM Resources.*/

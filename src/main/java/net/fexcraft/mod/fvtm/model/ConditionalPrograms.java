@@ -109,7 +109,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value();
+			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean();
 		}
 		
 	}
@@ -118,7 +118,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value();
+			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean();
 		}
 		
 	}

@@ -10,7 +10,6 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -71,28 +70,28 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 		this.buttons.put("reset", reset = new BasicButton("reset", guiLeft + 194, guiTop + 169, 194, 169, 7, 12, true));
 		this.fields.put("field", field = new TextField(0, fontRenderer, guiLeft + 8, guiTop + 170, 176, 10, true));
 		texts.get("status").string = veh.getEntityId() + " | " + veh.getName();
-		field.setText(attr.string_value());
+		field.setText(attr.asString());
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		info[0].string = INFO[0] + ": " + attr.id();
+		info[0].string = INFO[0] + ": " + attr.id;
 		info[1].string = INFO[1] + ": " + attr.type();
-		info[2].string = INFO[2] + ": " + attr.initial() + (attr.valuetype().isNumber() ? minmax(attr) : "");
-		info[3].string = INFO[3] + ": " + attr.string_value();
-		info[4].string = INFO[4] + ": " + attr.editable();
-		info[5].string = INFO[5] + ": " + attr.external();
-		info[6].string = INFO[6] + ": " + (attr.hasPerm() ? attr.perm() : none);
-		info[7].string = INFO[7] + ": " + attr.seats().size();
-		info[8].string = INFO[8] + ": " + attr.getModifiers().size();
-		info[9].string = INFO[9] + ": " + (attr.group() == null ? "" : attr.group());
+		info[2].string = INFO[2] + ": " + attr.initial() + (attr.valuetype.isNumber() ? minmax(attr) : "");
+		info[3].string = INFO[3] + ": " + attr.asString();
+		info[4].string = INFO[4] + ": " + attr.editable;
+		info[5].string = INFO[5] + ": " + attr.external;
+		info[6].string = INFO[6] + ": " + (attr.hasPerm() ? attr.perm : none);
+		info[7].string = INFO[7] + ": " + attr.access.size();
+		info[8].string = INFO[8] + ": ----- ";
+		info[9].string = INFO[9] + ": " + (attr.group == null ? "" : attr.group);
 	}
 
 	private String minmax(Attribute<?> attr){
-		if(attr.min() == Integer.MIN_VALUE && attr.max() == Integer.MAX_VALUE) return "";
-		if(attr.min() == Integer.MIN_VALUE) return " (max " + attr.max() + ")";
-		if(attr.max() == Integer.MAX_VALUE) return " (min " + attr.min() + ")";
-		return " (" + attr.min() + " - " + attr.max() + ")";
+		if(attr.min == Integer.MIN_VALUE && attr.max == Integer.MAX_VALUE) return "";
+		if(attr.min == Integer.MIN_VALUE) return " (max " + attr.max + ")";
+		if(attr.max == Integer.MAX_VALUE) return " (min " + attr.min + ")";
+		return " (" + attr.min + " - " + attr.max + ")";
 	}
 
 	@Override
@@ -128,7 +127,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 				packet.setString("target_listener", "fvtm:gui");
 				packet.setString("task", "attr_update");
 				packet.setString("value", field.getText());
-				packet.setString("attr", attr.id());
+				packet.setString("attr", attr.id);
 				packet.setInteger("entity", veh.getEntity().getEntityId());
 				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 				return true;
@@ -138,7 +137,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 				packet.setString("target_listener", "fvtm:gui");
 				packet.setString("task", "attr_update");
 				packet.setBoolean("reset", true);
-				packet.setString("attr", attr.id());
+				packet.setString("attr", attr.id);
 				packet.setInteger("entity", veh.getEntity().getEntityId());
 				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 				return true;
@@ -156,17 +155,15 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 			}
 		}
 		if(info[6].hovered(mouseX, mouseY)){
-			ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attr.perm());
+			ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attr.perm);
 		}
 		if(info[7].hovered(mouseX, mouseY)){
-			for(String str : attr.seats()){
+			for(String str : attr.access){
 				ttip.add(str);
 			}
 		}
 		if(info[8].hovered(mouseX, mouseY)){
-			for(Modifier<?> mod : attr.getModifiers()){
-				ttip.add(mod.id() + (mod.origin() == null ? "" : " [" + mod.origin() + "]"));
-			}
+			//
 		}
 		if(help.hovered(mouseX, mouseY)){
 			ttip.add(I18n.format(BUTINFO[0]));

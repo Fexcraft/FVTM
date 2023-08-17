@@ -121,7 +121,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		else{
 			Attribute<?> attr = index < offset.size() ? root.seat().vehicle.getVehicleData().getAttribute(offset.get(index)) : getSoftAttr(index - offset.size());
 			if(attr == null) return;
-			Print.bar(root.mc.player, Formatter.format("&eA&7: &a" + attr.id() + " &7: &b" + attr.string_value()));
+			Print.bar(root.mc.player, Formatter.format("&eA&7: &a" + attr.id + " &7: &b" + attr.asString()));
 		}
 	}
 
@@ -164,9 +164,9 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(attr == null) return;
 		packet.setString("target_listener", GuiHandler.LISTENERID);
 		packet.setString("task", "attr_toggle");
-		packet.setString("attr", attr.id());
+		packet.setString("attr", attr.id);
 		if(i > 1) packet.setBoolean("reset", true);
-		packet.setBoolean("bool", !attr.valuetype().isBoolean() ? i < 0 : i > 0);
+		packet.setBoolean("bool", !attr.valuetype.isBoolean() ? i < 0 : i > 0);
 		packet.setInteger("entity", root.seat().vehicle.getEntityId());
 		Print.debug(packet);
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
@@ -176,7 +176,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public Attribute<?> getSoftAttr(int index){
 		int i = 0;
 		for(Attribute<?> attr : attributes){
-			if(hard_attr.contains(attr.id())) continue;
+			if(hard_attr.contains(attr.id)) continue;
 			if(i == index) return attr;
 			i++;
 		}
@@ -308,23 +308,23 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 				offset.add("parking/hand brake");
 			}
 			if(!railed){
-				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("lights_fog");
-				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("lights_long");
 			}
-			root.mc.getTextureManager().bindTexture(data.getAttribute("lights").getCurrentIcon());
+			root.mc.getTextureManager().bindTexture(data.getAttribute("lights").getCurrentIcon().local());
 			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 			offset.add("lights");
 			if(turnsig){
-				root.mc.getTextureManager().bindTexture(data.getAttribute("turn_lights").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("turn_lights").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("turn_lights");
 			}
 			if(warnsig){
-				root.mc.getTextureManager().bindTexture(data.getAttribute("warning_lights").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("warning_lights").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("warning_lights");
 			}
@@ -332,7 +332,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		//
 		int a = offset.size(), m = page * row2;
 		for(Attribute<?> attr : attributes){
-			if(hard_attr.contains(attr.id())) continue;
+			if(hard_attr.contains(attr.id)) continue;
 			if(a < m){
 				a++;
 				continue;
@@ -340,7 +340,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 			if(a >= m + row2) break;
 			int x = root.width - 150 + (a % 9) * 16;
 			int y = a - m > 8 ? 24 : 8;
-			root.mc.getTextureManager().bindTexture(attr.getCurrentIcon());
+			root.mc.getTextureManager().bindTexture(attr.getCurrentIcon().local());
 			root.drawRectIcon(x, yoff + y, 16, 16);
 			a++;
 		}
@@ -456,7 +456,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		attributes.clear();
 		if(root.seat() == null || root.seat().vehicle == null) return;
 		for(Attribute<?> attr : root.seat().vehicle.getVehicleData().getAttributes().values()){
-			if(attr.seats().contains(root.seat().seatdata.name)){
+			if(attr.access.contains(root.seat().seatdata.name)){
 				attributes.add(attr);
 			}
 		}

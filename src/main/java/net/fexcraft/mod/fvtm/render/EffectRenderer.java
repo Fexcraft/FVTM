@@ -16,8 +16,8 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.AttributeBB;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
@@ -127,7 +127,7 @@ public class EffectRenderer {
 		SwivelPoint point;
 		if(!Command.HOTSWAP){
 			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
-			if(vehicle.getVehicleData().getAttribute("collision_range").float_value() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
+			if(vehicle.getVehicleData().getAttribute("collision_range").asFloat() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
@@ -221,7 +221,7 @@ public class EffectRenderer {
 	public static void renderToggableInfo(GenericVehicle vehicle){
 		if(!Command.TOGGABLE) return;
     	GL11.glPushMatrix();
-    	float scal = vehicle.getVehicleData().getAttribute("collision_range").float_value() * 16;
+    	float scal = vehicle.getVehicleData().getAttribute("collision_range").asFloat() * 16;
     	GL11.glScalef(scal, scal, scal);
     	GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glLineWidth(2f);
@@ -234,10 +234,10 @@ public class EffectRenderer {
         preMeshCalls();
         GlStateManager.disableLighting();
 		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
-			if(!attr.hasBBs()) continue;
-			for(AttributeBB box : attr.getBBs().values()){
+			if(!attr.hasBoxes()) continue;
+			for(AttrBox box : attr.actboxes.values()){
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(box.swivel_point);
-				Vec3d temp = point.getRelativeVector(box.pos.x16, -box.pos.y16, -box.pos.z16);
+				Vec3d temp = point.getRelativeVector(box.pos.x, -box.pos.y, -box.pos.z);
 	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
 				boolean depth = temp.add(vehicle.getEntity().getPositionVector()).distanceTo(Minecraft.getMinecraft().player.getPositionVector()) < 4;
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
@@ -253,7 +253,7 @@ public class EffectRenderer {
 					drawString(box.id, scal * 2, RGB.WHITE.packed, false, true, depth);
 		        	GL11.glTranslatef(0, -by, 0);
 		        	GL11.glTranslatef(0, -(by = scal * .5f), 0);
-					drawString(attr.id(), scal * 2, RGB.WHITE.packed, false, true, depth);
+					drawString(attr.id, scal * 2, RGB.WHITE.packed, false, true, depth);
 		        	GL11.glTranslatef(0, by, 0);
 			        preMeshCalls();
 			        toggpos.add(temp);

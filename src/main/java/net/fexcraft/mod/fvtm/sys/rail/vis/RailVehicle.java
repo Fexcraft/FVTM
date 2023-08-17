@@ -108,7 +108,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
 		if(compound != null) rek = new Reltrs(SystemManager.get(Systems.RAIL, world, RailSystem.class), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
-        this.setSize(rek.data().getAttribute("hitbox_width").float_value(), rek.data().getAttribute("hitbox_height").float_value());
+        this.setSize(rek.data().getAttribute("hitbox_width").asFloat(), rek.data().getAttribute("hitbox_height").asFloat());
         if(seats == null) seats = new SeatCache[rek.data().getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
@@ -269,19 +269,19 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case LIGHTS: {
                 if(toggletimer <= 0){
-                	boolean bool = !rek.data().getAttribute("lights").boolean_value();
-                	rek.data().getAttribute("lights").value(bool);
+                	boolean bool = !rek.data().getAttribute("lights").asBoolean();
+                	rek.data().getAttribute("lights").set(bool);
                     NBTTagCompound nbt = new NBTTagCompound(); nbt.setString("task", "toggle_lights");
-                    nbt.setBoolean("lights", rek.data().getAttribute("lights").boolean_value());
+                    nbt.setBoolean("lights", rek.data().getAttribute("lights").asBoolean());
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                     toggletimer = 10;
                     //
                     if(rek.ent().getCompound().isMultiple()){
                     	for(RailEntity ent : rek.ent().getCompound().getEntitites()){
-                    		ent.vehdata.getAttribute("lights").value(bool);
+                    		ent.vehdata.getAttribute("lights").set(bool);
                     		if(ent.entity != null){
     	                        NBTTagCompound com = new NBTTagCompound(); com.setString("task", "toggle_lights");
-    	                        com.setBoolean("lights", rek.data().getAttribute("lights").boolean_value());
+    	                        com.setBoolean("lights", rek.data().getAttribute("lights").asBoolean());
     	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.entity, com);
                     		}
                     	}
@@ -335,7 +335,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationRoll = roll;
             rotpoint.getAxes().set_rotation(yaw, pitch, roll, true);
         }
-        this.throttle = throttle; rek.data().getAttribute("fuel_stored").value(fuel);
+        this.throttle = throttle; rek.data().getAttribute("fuel_stored").set(fuel);
 	}
 
     @Override
@@ -532,8 +532,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 --sptt; setPosition(x, y, z);
                 rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
-        	rek.data().getAttribute("throttle").value((float)throttle);
-        	rek.data().getAttribute("speed").value((float)speed);
+        	rek.data().getAttribute("throttle").set((float)throttle);
+        	rek.data().getAttribute("speed").set((float)speed);
         	//rek.data().getAttribute("rpm").value(rpm / 100 * 100);
         	//
             V3D bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
@@ -542,8 +542,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
         		float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - rotpoint.getAxes().deg_yaw());
         		float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - rotpoint.getAxes().deg_yaw());
-        		rek.data().getAttribute("bogie_front_angle").value(front);
-        		rek.data().getAttribute("bogie_rear_angle").value(rear);
+        		rek.data().getAttribute("bogie_front_angle").set(front);
+        		rek.data().getAttribute("bogie_rear_angle").set(rear);
         	}
     		//
         	
@@ -572,7 +572,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
         if(rek.current != null && rek.current.getUnit() != null){
-        	rek.data().getAttribute("section_on").value(rek.current.getUnit().section().getUID());
+        	rek.data().getAttribute("section_on").set(rek.current.getUnit().section().getUID());
         }
         for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
         for(SeatCache seat : seats) seat.updatePosition();
@@ -580,7 +580,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         checkForCollisions();
         if(!world.isRemote && ticksExisted % servtick == 0){
         	throttle = rek.ent().throttle;
-        	rek.data().getAttribute("throttle").value((float)throttle);
+        	rek.data().getAttribute("throttle").set((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
         }
@@ -726,7 +726,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     break;
                 }
                 case "toggle_lights": {
-                	rek.data().getAttribute("lights").value(pkt.nbt.getBoolean("lights"));
+                	rek.data().getAttribute("lights").set(pkt.nbt.getBoolean("lights"));
                 	break;
                 }
                 case "update_track":{
@@ -758,7 +758,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	break;
                 }
                 case "update_forward":{
-                	rek.data().getAttribute("forward").value(pkt.nbt.getBoolean("forward"));
+                	rek.data().getAttribute("forward").set(pkt.nbt.getBoolean("forward"));
                 	break;
                 }
             }

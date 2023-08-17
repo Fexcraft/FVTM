@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
@@ -43,6 +44,7 @@ import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -55,6 +57,7 @@ import net.minecraftforge.registries.IForgeRegistry;
  */
 public class ResourcesImpl extends FvtmResources {
 
+	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	private final ASMDataTable asmdata;
 	private Field respackfile = null;
 
@@ -290,6 +293,14 @@ public class ResourcesImpl extends FvtmResources {
 			if(log) e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public boolean isModPresent(String id){
+		if(LOADED_MODS.containsKey(id)) return LOADED_MODS.get(id);
+		boolean bool = Loader.isModLoaded(id);
+		LOADED_MODS.put(id, bool);
+		return bool;
 	}
 
 	@SideOnly(Side.CLIENT)

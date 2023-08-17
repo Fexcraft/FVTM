@@ -1,7 +1,9 @@
 package net.fexcraft.mod.uni.impl;
 
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -39,6 +41,16 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public TagCW getCompound(String key){
+		return new TagCWI(compound.getCompoundTag(key));
+	}
+
+	@Override
+	public TagLW getList(String key){
+		return new TagLWI((NBTTagList)compound.getTag(key));
+	}
+
+	@Override
 	public boolean has(String key){
 		return compound.hasKey(key);
 	}
@@ -61,6 +73,21 @@ public class TagCWI implements TagCW {
 	@Override
 	public void set(String key, boolean val){
 		compound.setBoolean(key, val);
+	}
+
+	@Override
+	public void set(String key, TagCW val){
+		compound.setTag(key, val.local());
+	}
+
+	@Override
+	public void set(String key, TagLW val){
+		compound.setTag(key, val.local());
+	}
+
+	@Override
+	public int size(){
+		return compound.getSize();
 	}
 
 	@Override

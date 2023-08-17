@@ -32,7 +32,7 @@ public class VehicleScriptContext implements ScrElm {
 
 	public VehicleScriptContext(VehicleData data, FSVehicleScript fscript){
 		this.data = data;
-		for(Attribute<?> attr : data.getAttributes().values()) attrslist.value().add(attr);
+		//TODO for(Attribute<?> attr : data.getAttributes().values()) attrslist.value().add(attr);
 		wrapper = fscript;
 	}
 

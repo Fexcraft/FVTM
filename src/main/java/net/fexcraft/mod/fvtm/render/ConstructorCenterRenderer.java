@@ -42,7 +42,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         GL11.glRotated(offrot, 0, 1, 0); offrot = null; GL11.glRotated(90, 0, 1D, 0);
         boolean vehicle = tile.getVehicleData() != null;
         //
-        if(vehicle && tile.getVehicleData().getAttribute("constructor_show").boolean_value()){
+        if(vehicle && tile.getVehicleData().getAttribute("constructor_show").asBoolean()){
             if(tile.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	GL11.glPushMatrix();
             	tile.updateLiftState();
@@ -53,7 +53,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             }
             else if(tile.getVehicleData().getType().getVehicleType().isRailVehicle()){
         		if(tile.track == null) tile.track = generateNewTrack();
-        		if(tile.track.gauge == null) tile.track.gauge = getGauge(tile.getVehicleData().getAttribute("gauge").integer_value());
+        		if(tile.track.gauge == null) tile.track.gauge = getGauge(tile.getVehicleData().getAttribute("gauge").asInteger());
             	if(tile.track.railmodel == null){ RailRenderer.generateTrackModel(tile.track, tile.track.gauge.getModel()); }
             	int l = 0;
             	if(tile.getVehicleData().getFrontConnector() != null && tile.getVehicleData().getRearConnector() != null){

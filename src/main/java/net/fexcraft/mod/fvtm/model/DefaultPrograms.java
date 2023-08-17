@@ -39,7 +39,6 @@ import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.Pos;
-import net.fexcraft.mod.uni.impl.IDLM;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -291,14 +290,14 @@ public class DefaultPrograms {
 	
 	public static final Program LIGHTS_RAIL_FORWARD = new AlwaysGlow(){
 		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value(); }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean(); }
 		@Override
 		public String id(){ return "fvtm:lights_rail_forward"; }
 	};
 	
 	public static final Program LIGHTS_RAIL_BACKWARD = new AlwaysGlow(){
 		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value(); }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean(); }
 		@Override
 		public String id(){ return "fvtm:lights_rail_backward"; }
 	};
@@ -472,16 +471,16 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
-			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
-			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};
@@ -496,16 +495,16 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
-			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
-			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").float_value(), 0, 0, 1);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};
@@ -521,12 +520,12 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -543,12 +542,12 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -578,12 +577,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};
@@ -595,12 +594,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};
@@ -612,12 +611,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};
@@ -629,12 +628,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};
@@ -673,7 +672,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotate(rotated = data.vehicle.getAttribute("steering_angle").float_value() * ratio, axis, apply);
+			list.rotate(rotated = data.vehicle.getAttribute("steering_angle").asFloat() * ratio, axis, apply);
 		}
 		
 		@Override
@@ -706,12 +705,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute("steering_angle").float_value() * ratio, x, y, z);
+			GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat() * ratio, x, y, z);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").float_value() * ratio, x, y, z);
+			GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat() * ratio, x, y, z);
 		}
 		
 
@@ -785,7 +784,7 @@ public class DefaultPrograms {
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			current = data.cache.getValue(cacheid);
 			if(current == null) current = 0f;
-			current = boolstatebased ? (attr.boolean_value() ? current + step : current - step) : attr.float_value() * step;
+			current = boolstatebased ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat() * step;
 			if(current > max) current = max;
 			if(current < min) current = min;
 			list.rotate(current + defrot, axis, override);
@@ -842,7 +841,7 @@ public class DefaultPrograms {
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			current = data.cache.getValue(cacheid);
 			if(current == null) current = 0f;
-			current = bool ? (attr.boolean_value() ? current + step : current - step) : attr.float_value();
+			current = bool ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat();
 			if(current > max) current = max; if(current < min) current = min;
 			//GL11.glPushMatrix();
 			GL11.glTranslatef(
@@ -889,7 +888,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			attr = data.vehicle.getAttribute(attribute); if(attr == null) return;
-			if(attr.boolean_value() != equals) list.visible = false;
+			if(attr.asBoolean() != equals) list.visible = false;
 		}
 		
 		@Override
@@ -1289,7 +1288,7 @@ public class DefaultPrograms {
 		AlwaysGlow glow = new AlwaysGlow(){
 			@Override
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getAttribute(attr_id).boolean_value();
+				return data.vehicle.getAttribute(attr_id).asBoolean();
 			}
 		};
 		CUSTOM_LIGHTS.put(attr_id, glow);
@@ -1346,13 +1345,13 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
-			current = attr.float_value() < minval ? minval : attr.float_value();
+			current = attr.asFloat() < minval ? minval : attr.asFloat();
 			if(current > maxval((Entity)data.entity, data.vehicle)) current = maxval;
 			list.rotate(minrot + ((current - minval) / valdiff()) * rotdiff, axis, true);
 		}
 
 		private float maxval(Entity ent, VehicleData data){
-			if(maxvalattr != null && (mvattr = data.getAttribute(maxvalattr)) != null) return maxval = mvattr.float_value();
+			if(maxvalattr != null && (mvattr = data.getAttribute(maxvalattr)) != null) return maxval = mvattr.asFloat();
 			else if(limit != null) return maxval = limit.getMaxValue(maxval, ent, data);
 			else return maxval;
 		}
@@ -1709,7 +1708,7 @@ public class DefaultPrograms {
 		
 		protected boolean attr(VehicleData data){
 			attr = data.getAttribute(attrid);
-			return attr != null && attr.boolean_value();
+			return attr != null && attr.asBoolean();
 		}
 		
 
@@ -1754,7 +1753,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
-			text = attr.string_value();
+			text = attr.asString();
 		}
 		
 

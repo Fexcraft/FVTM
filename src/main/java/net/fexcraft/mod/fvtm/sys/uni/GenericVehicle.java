@@ -244,7 +244,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox(){
-        return this.getEntityBoundingBox().grow(getVehicleData().getAttribute("collision_range").float_value() + 2);
+        return this.getEntityBoundingBox().grow(getVehicleData().getAttribute("collision_range").asFloat() + 2);
     }
 	
 	@Override
@@ -261,27 +261,27 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
 		packet.setString("task", "attr_update");
-		packet.setString("attr", attr.id());
+		packet.setString("attr", attr.id);
 		packet.setInteger("entity", getEntityId());
-		if(attr.valuetype().isTristate()){
-			if(attr.tristate_value() == null){
+		if(attr.valuetype.isTristate()){
+			if(attr.asTristate() == null){
 				packet.setBoolean("value", false);
 				packet.setBoolean("reset", true);
 			}
 			else{
-				packet.setBoolean("value", attr.boolean_value());
+				packet.setBoolean("value", attr.asBoolean());
 			}
 		}
-		else if(attr.valuetype().isFloat()){
-			packet.setFloat("value", attr.float_value());
+		else if(attr.valuetype.isFloat()){
+			packet.setFloat("value", attr.asFloat());
 		}
-		else if(attr.valuetype().isInteger()){
-			packet.setInteger("value", attr.integer_value());
+		else if(attr.valuetype.isInteger()){
+			packet.setInteger("value", attr.asInteger());
 		}
-		else if(attr.valuetype().isString()){
-			packet.setString("value", attr.string_value());
+		else if(attr.valuetype.isString()){
+			packet.setString("value", attr.asString());
 		}
-		else packet.setString("value", attr.string_value());
+		else packet.setString("value", attr.asString());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
 	}
 

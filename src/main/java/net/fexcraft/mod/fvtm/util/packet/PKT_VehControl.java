@@ -22,7 +22,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         yaw = veh.getRotPoint().getAxes().deg_yaw();
         pitch = veh.getRotPoint().getAxes().deg_pitch();
         roll = veh.getRotPoint().getAxes().deg_roll();
-        fuel = veh.getVehicleData().getAttribute("fuel_stored").integer_value();
+        fuel = veh.getVehicleData().getAttribute("fuel_stored").asInteger();
         steeringYaw = veh.wheelsYaw; throttle = veh.throttle;
         if(veh instanceof ULandVehicle) rpm = ((ULandVehicle)veh).rpm;
     }

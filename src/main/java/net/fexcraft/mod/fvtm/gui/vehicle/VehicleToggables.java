@@ -42,9 +42,9 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		SeatCache seat = veh.getSeatOf(player);
 		veh.getVehicleData().getAttributes().values().forEach(attr -> {
 			if(seat == null){
-				if(attr.external()) attributes.add(attr);
+				if(attr.external) attributes.add(attr);
 			}
-			else if(seat.seatdata.driver || (attr.seats().contains(seat.seatdata.name))){
+			else if(seat.seatdata.driver || (attr.access.contains(seat.seatdata.name))){
 				attributes.add(attr);
 			}
 		});
@@ -103,13 +103,13 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			return true;
 		}
 		if(button.name.equals("sedt")){
-			attributes.removeIf(attr -> !attr.editable());
+			attributes.removeIf(attr -> !attr.editable);
 			return true;
 		}
 		if(button.name.equals("sext")){
 			attributes.clear();
 			veh.getVehicleData().getAttributes().values().forEach(attr -> {
-				if(attr.external()){
+				if(attr.external){
 					attributes.add(attr);
 				}
 			});
@@ -120,7 +120,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			SeatCache seat = veh.getSeatOf(player);
 			if(seat == null) return true;
 			veh.getVehicleData().getAttributes().values().forEach(attr -> {
-				if(seat.seatdata.driver || (attr.seats().contains(seat.seatdata.name))){
+				if(seat.seatdata.driver || (attr.access.contains(seat.seatdata.name))){
 					attributes.add(attr);
 				}
 			});
@@ -132,11 +132,11 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			Attribute<?> attr = attributes.get(scroll + row);
 			packet.setString("target_listener", "fvtm:gui");
 			packet.setString("task", "attr_toggle");
-			packet.setString("attr", attr.id());
-			if(!attr.valuetype().isBoolean() && mouseButton != 0){
+			packet.setString("attr", attr.id);
+			if(!attr.valuetype.isBoolean() && mouseButton != 0){
 				packet.setBoolean("reset", true);
 			}
-			packet.setBoolean("bool", !attr.boolean_value());
+			packet.setBoolean("bool", !attr.asBoolean());
 			packet.setInteger("entity", veh.getEntity().getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 			return true;
@@ -167,9 +167,9 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				togg[k].enabled = togg[k].visible = false;
 			}
 			else{
-				rows[k].string = attributes.get(l).id();
+				rows[k].string = attributes.get(l).id;
 				edit[k].enabled = edit[k].visible = true;
-				togg[k].enabled = togg[k].visible = attributes.get(l).valuetype().isTristate();
+				togg[k].enabled = togg[k].visible = attributes.get(l).valuetype.isTristate();
 			}
 		}
 	}
@@ -187,14 +187,14 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				int k = scroll + i;
 				if(k < attributes.size()){
 					Attribute<?> attr = attributes.get(k);
-					ttip.add(PARAGRAPH_SIGN + "6V: " + PARAGRAPH_SIGN + "7" + attr.string_value());
-					if(attr.group() != null){
-						ttip.add(PARAGRAPH_SIGN + "bG: " + PARAGRAPH_SIGN + "7" + attr.group());
+					ttip.add(PARAGRAPH_SIGN + "6V: " + PARAGRAPH_SIGN + "7" + attr.asString());
+					if(attr.group != null){
+						ttip.add(PARAGRAPH_SIGN + "bG: " + PARAGRAPH_SIGN + "7" + attr.group);
 					}
 					if(attr.hasPerm()){
-						ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attributes.get(i).perm());
+						ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attributes.get(i).perm);
 					}
-					if(!attr.editable()){
+					if(!attr.editable){
 						ttip.add(PARAGRAPH_SIGN + "o" + PARAGRAPH_SIGN + "e" + NOT_EDITABLE);
 					}
 				}

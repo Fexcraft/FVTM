@@ -2,8 +2,11 @@ package net.fexcraft.mod.fvtm.data.part;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -21,7 +24,6 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
@@ -54,7 +56,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, ItemTextureable {
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
-	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
+	protected LinkedHashMap<String, String> attr_mods = new LinkedHashMap<>();
 	protected List<NamedResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
@@ -91,17 +93,16 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		this.textures = DataUtil.getTextures(obj);
 		//
 		if(obj.has("Attributes")){
-			JsonArray array = obj.get("Attributes").getAsJsonArray();
-			for(JsonElement elm : array){
-				Attribute<?> attr = Attribute.parse(elm.getAsJsonObject());
+			JsonObject attrs = obj.get("Attributes").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : attrs.entrySet()){
+				Attribute<?> attr = Attribute.parse(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
 				if(attr != null) this.attributes.add(attr);
 			}
 		}
-		if(obj.has("Modifiers")){
-			JsonArray array = obj.get("Modifiers").getAsJsonArray();
-			for(JsonElement elm : array){
-				Modifier<?> mod = Modifier.parse(elm.getAsJsonObject());
-				if(mod != null) this.modifiers.add(mod);
+		if(obj.has("AttributeModifiers")){
+			JsonObject mods = obj.get("AttributeModifiers").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : obj.entrySet()){
+				attr_mods.put(entry.getKey(), entry.getValue().getAsString());
 			}
 		} 
 		if(obj.has("Function") || obj.has("Functions")){
@@ -286,10 +287,6 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	public Collection<Attribute<?>> getBaseAttributes(){
 		return attributes;
 	}
-	
-	public Collection<Modifier<?>> getBaseModifiers(){
-		return modifiers;
-	}
 
 	@Override
 	public List<NamedResourceLocation> getDefaultTextures(){
@@ -339,6 +336,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	@Override
 	public boolean noCustomItemModel(){
 		return no3ditem;
+	}
+
+	public HashMap<String, String> getStaticModifiers(){
+		return attr_mods;
 	}
 
 }

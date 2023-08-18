@@ -420,7 +420,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(Command.OTHER && root.seat().vehicle.wheels != null){//debug info
 			for(int i = 0; i < root.seat().vehicle.wheels.length; i++){
 				WheelEntity wheel = root.seat().vehicle.wheels[i];
-				root.mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering() ? "steering, " : "") + (wheel.slot.powered(root.seat().vehicle.getVehicleData()) ? "powered" : "idle")), 7, 62 + (i * 11), 0xffffff);
+				root.mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering ? "steering, " : "") + (wheel.slot.powered(root.seat().vehicle.getVehicleData()) ? "powered" : "idle")), 7, 62 + (i * 11), 0xffffff);
 			}
 		}
 		else if(STRS.size() > 0){

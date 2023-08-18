@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -185,6 +186,12 @@ public class DataUtil {
 	public static V3D readVec(NBTBase tag){
 		if(tag instanceof NBTTagList == false) return null;
 		NBTTagList list = (NBTTagList)tag;
+		if(list.isEmpty() || list.tagCount() < 3) return null;
+		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
+	}
+
+	public static V3D readVec(TagLW tag){
+		NBTTagList list = tag.local();
 		if(list.isEmpty() || list.tagCount() < 3) return null;
 		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
 	}

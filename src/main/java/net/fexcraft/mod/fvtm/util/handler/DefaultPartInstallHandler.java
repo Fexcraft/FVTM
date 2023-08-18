@@ -115,7 +115,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				}
 				if(slots.copy_rot) rosult = rosult.add(mount.getInstalledRot());
 			}
-			result = result.add(slots.get(idx).pos);
+			result = result.add(new Pos(slots.get(idx).pos));
 		}
 		if(idata != null) compatible = idata.compatible;
 		if(compatible != null && !compatible.isEmpty()){

@@ -309,7 +309,7 @@ public class ToggableHandler {
 				aabbs.put(attr.id, new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
 			else{
-				Pos pos = slots.get(index).pos;
+				Pos pos = new Pos(slots.get(index).pos);
 				if(!source.equals(PartSlots.VEHPARTSLOTS)) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
 				temp = point.getRelativeVector(pos.x16, point.isVehicle() ? -pos.y16 : pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());

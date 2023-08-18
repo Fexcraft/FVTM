@@ -39,7 +39,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(data.getWheelSlots().get(cat).pos());
+		part.setInstalledPos(new Pos(data.getWheelSlots().get(cat).position));
 		BogieFunction func = part.getFunction("fvtm:bogie");
 		if(func != null) func.setBogie(cat);
 		BogieData idata = part.getType().getInstallationHandlerData();

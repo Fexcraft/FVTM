@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -19,7 +20,7 @@ public class PartSlotsFunction extends StaticFunction {
 
 	public PartSlotsFunction(Part part, JsonObject obj){
 		super(part, obj);
-		partslots = new PartSlots(part, obj);
+		partslots = new PartSlots(part, JsonHandler.parse(obj.toString(), true).asMap());
 	}
 
 	@Override

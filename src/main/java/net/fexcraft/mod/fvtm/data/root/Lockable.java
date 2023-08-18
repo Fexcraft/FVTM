@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+@Deprecated
 public interface Lockable {
 	
 	public static final ResourceLocation DEFAULT_KEY = new ResourceLocation("gep:key");

@@ -19,7 +19,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -140,15 +139,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
-		NBTTagList wlist = new NBTTagList();
+		/*NBTTagList wlist = new NBTTagList();
 		for(Entry<String, WheelSlot> entry : wheels.entrySet()){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("id", entry.getKey());
 			entry.getValue().write(com);
 			wlist.appendTag(com);
 		}
-		compound.setTag("WheelSlots", wlist);
-		wlist = new NBTTagList();
+		compound.setTag("WheelSlots", wlist);*/
+		NBTTagList wlist = new NBTTagList();
 		for(Entry<String, Vec3d> vec : wheelpos.entrySet()){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("id", vec.getKey());
@@ -249,15 +248,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//
 		this.refreshModificableDataByParts();
 		//
-		NBTTagList wlist = (NBTTagList)compound.getTag("WheelSlots");
+		/*NBTTagList wlist = (NBTTagList)compound.getTag("WheelSlots");
 		if(wlist != null){
 			for(NBTBase base : wlist){
 				NBTTagCompound com = (NBTTagCompound)base;
 				WheelSlot slot = wheels.get(com.getString("id"));
 				if(slot != null) slot.read(com); else continue;
 			}
-		}
-		wlist = (NBTTagList)compound.getTag("WheelPos");
+		}*/
+		NBTTagList wlist = (NBTTagList)compound.getTag("WheelPos");
 		if(wlist != null){ wheelpos.clear();
 			for(NBTBase base : wlist){
 				NBTTagCompound com = (NBTTagCompound)base;
@@ -304,7 +303,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(PartData part : parts.values()){
 			if(part.hasFunction("fvtm:wheel_positions")){
 				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
-				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos())));
+				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos().toV3D())));
 			}
 		}
 		//

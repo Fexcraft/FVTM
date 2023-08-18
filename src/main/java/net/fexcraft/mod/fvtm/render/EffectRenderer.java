@@ -139,7 +139,7 @@ public class EffectRenderer {
 						String type = ps.getValue().get(i).type;
 						for(String str : part.getType().getCategories()){
 							if(str.equals(type)){
-								Pos pes = pos.add(ps.getValue().get(i).pos);
+								Pos pes = pos.add(new Pos(ps.getValue().get(i).pos));
 								if(point.isVehicle()){
 									temp = toV3(pes);
 					            	GL11.glTranslated(temp.x, temp.y, temp.z);
@@ -176,7 +176,7 @@ public class EffectRenderer {
 				Pos pos = ps.getKey().equals(VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
 				point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 				for(int i = 0; i < ps.getValue().size(); i++){
-					Pos pes = pos.add(ps.getValue().get(i).pos);
+					Pos pes = pos.add(new Pos(ps.getValue().get(i).pos));
 					if(point.isVehicle()){
 						temp = toV3(pes);
 		            	GL11.glTranslated(temp.x, temp.y, temp.z);

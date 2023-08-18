@@ -993,15 +993,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	double motx = cos * wheel.motionX + sin * wheel.motionZ;
         	double moty = cos * wheel.motionZ - sin * wheel.motionX;
             double stew = wheelsYaw * 3.14159265F / 180F;
-            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
+            double steer = wheel.slot.steering ? Math.signum(motx) * stew : 0;
             double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
-            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
-        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
+            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking && pbrake ? wheeldata.function.brake_grip : 1);
+        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering)) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
         	double trac = wheeldata.function.getGripFor(mat, rainfall) * ((consumed ? thr : 0) - brake * Math.signum(motx));//grip inclusion here is for testing
         	double dragx = -rr * motx - ar * motx * Math.abs(motx);
         	double dragy = -rr * moty - ar * moty * Math.abs(moty);
         	double totalx = dragx + trac;
-        	double totaly = dragy + (wheel.slot.steering() ? Math.cos(stew) * frict : 0);
+        	double totaly = dragy + (wheel.slot.steering ? Math.cos(stew) * frict : 0);
         	double acx = (totalx / mass) * TICKA;
         	double acy = (totaly / mass) * TICKA;
         	accx += acx;
@@ -1026,7 +1026,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
                 wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
                 //
-                if(wheel.slot.steering()){
+                if(wheel.slot.steering){
                 	if(motx > 0.01f || motx < -0.01f){
                         val = acy * 0.05;
                         wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;

@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +65,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		currentpos = frNBT("CurrentPos", compound);
-		currentrot = Rot.fromNBT("CurrentRot", compound);
+		currentrot = Rot.fromNBT("CurrentRot", new TagCWI(compound));
 		rotpoint = compound.hasKey("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
 		texture.load(compound, type);

@@ -25,7 +25,7 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
+import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
@@ -79,7 +79,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
-	private LegacyData lata;
+	private SimplePhysData lata;
 	private VehicleData vehicle;
 	public SwivelPoint rotpoint;
 	//

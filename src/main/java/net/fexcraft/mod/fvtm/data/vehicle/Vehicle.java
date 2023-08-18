@@ -23,7 +23,6 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -61,7 +60,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid, ctab, overlayid;
-	protected LegacyData legacy_data;
+	protected SimplePhysData legacy_data;
 	protected Uni12Data uni12_data;
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
@@ -133,12 +132,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			for(JsonElement elm : array){
 				JsonObject json = elm.getAsJsonObject();
 				String id = json.get("id").getAsString();
-				this.defwheelpos.put(id, new WheelSlot(json));
+				this.defwheelpos.put(id, new WheelSlot(JsonHandler.parse(json.toString(), true).asMap()));
 			}
 		}
 		//
 		if(obj.has("LegacyData")){
-			this.legacy_data = new LegacyData(obj.get("LegacyData").getAsJsonObject());
+			this.legacy_data = new SimplePhysData(JsonHandler.parse(obj.get("LegacyData").toString(), true).asMap());
 		}
 		this.trailer = obj.has("Trailer") ? obj.get("Trailer").getAsBoolean() : obj.has("Wagon") ? obj.get("Wagon").getAsBoolean() : false;
 		if(obj.has("FrontConnector")){
@@ -185,7 +184,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20), null, 0));
 			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20), null, 0));
 		}
-		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? obj.get("PartSlots").getAsJsonArray() : new JsonArray());
+		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? JsonHandler.parse(obj.get("PartSlots").toString(), false).asArray() : new net.fexcraft.app.json.JsonArray());
 		//
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
@@ -257,7 +256,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return defwheelpos;
 	}
 
-	public LegacyData getLegacyData(){
+	public SimplePhysData getLegacyData(){
 		return legacy_data;
 	}
 

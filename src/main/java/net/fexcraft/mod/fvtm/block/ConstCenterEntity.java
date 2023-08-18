@@ -6,11 +6,11 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.nbt.NBTTagCompound;
@@ -184,7 +184,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 			if(lowest < point.pos.y16) lowest = point.pos.y16;
 		}
 		for(WheelSlot ws : data.getWheelSlots().values()){
-			if(slot < ws.pos().y16) slot = ws.pos().y16;
+			if(slot < ws.position.y) slot = (float)ws.position.y;
 		}
 		wheeloff = -16;
 		if(data.getWheelPositions().size() > 0){

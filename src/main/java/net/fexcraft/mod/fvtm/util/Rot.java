@@ -1,15 +1,17 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.lib.common.math.V3D;
-import org.lwjgl.opengl.GL11;
-
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
+import org.lwjgl.opengl.GL11;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Rot {
 	
 	public static final Rot NULL = new Rot();
@@ -32,9 +34,9 @@ public class Rot {
 	}
 	
 	public Rot(JsonArray array){
-		this(array.size() > 0 ? array.get(0).getAsFloat() : 0,
-			array.size() > 1 ? array.get(1).getAsFloat() : 0,
-			array.size() > 2 ?  array.get(2).getAsFloat() : 0);
+		this(array.size() > 0 ? array.get(0).float_value() : 0,
+			array.size() > 1 ? array.get(1).float_value() : 0,
+			array.size() > 2 ?  array.get(2).float_value() : 0);
 	}
 
 	private void check(){
@@ -50,9 +52,9 @@ public class Rot {
 		return nell;
 	}
 
-	public static Rot fromNBT(String key, NBTTagCompound compound){
-		if(!compound.hasKey(key)) return new Rot();
-		V3D vec = DataUtil.readVec(compound.getTag(key));
+	public static Rot fromNBT(String key, TagCW compound){
+		if(!compound.has(key)) return new Rot();
+		V3D vec = DataUtil.readVec(compound.getList(key));
 		return new Rot(vec);
 	}
 

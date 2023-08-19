@@ -31,6 +31,11 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public double getDouble(String key){
+		return compound.getDouble(key);
+	}
+
+	@Override
 	public int getInteger(String key){
 		return compound.getInteger(key);
 	}
@@ -63,6 +68,11 @@ public class TagCWI implements TagCW {
 	@Override
 	public void set(String key, float val){
 		compound.setFloat(key, val);
+	}
+
+	@Override
+	public void set(String key, double val){
+		compound.setDouble(key, val);
 	}
 
 	@Override

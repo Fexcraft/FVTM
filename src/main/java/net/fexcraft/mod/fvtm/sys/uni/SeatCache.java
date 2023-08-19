@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.util.Axes;
+import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
@@ -35,8 +35,8 @@ public class SeatCache {
     protected SwivelPoint point;
     //
     public Seat seatdata;
-    public Axes looking, prevlooking;
-    public Axes passlooking, prevpasslooking;
+    public Pivot looking, prevlooking;
+    public Pivot passlooking, prevpasslooking;
     //
     //private double pass_x, pass_y, pass_z;
     private float pass_yaw, pass_pitch;//, pass_roll;
@@ -58,8 +58,8 @@ public class SeatCache {
 	}
 
 	public void resetAxes(){
-        prevlooking = new Axes(); looking = new Axes();
-        passlooking = new Axes(); prevpasslooking = new Axes();
+        prevlooking = new Pivot(); looking = new Pivot();
+        passlooking = new Pivot(); prevpasslooking = new Pivot();
         looking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
         prevlooking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
 	}

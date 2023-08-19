@@ -16,7 +16,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.util.Axes;
+import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -240,7 +240,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		return relpos.add(posX, posY, posZ);
 	}
 	
-	private static final Axes calcaxis = new Axes();
+	private static final Pivot calcaxis = new Pivot();
 	
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox(){

@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -1153,7 +1154,7 @@ public class DefaultPrograms {
 				}
 				else{
 					SwivelPoint point = data.vehicle.getRotationPoint(swivel);
-					Vec3d pos = point.getRelativeVector(this.pos, true);
+					V3D pos = point.getRelativeVector(this.pos.x, this.pos.y, this.pos.z);
 					GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 					GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 					GL11.glTranslated(pos.x, pos.y, pos.z);

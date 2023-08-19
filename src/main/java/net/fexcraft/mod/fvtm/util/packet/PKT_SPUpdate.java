@@ -22,9 +22,9 @@ public class PKT_SPUpdate implements IPacket, IMessage {
 		posX = point.getPos().x;
 		posY = point.getPos().y;
 		posZ = point.getPos().z;
-		yaw = point.getAxes().deg_yaw();
-		pitch = point.getAxes().deg_pitch();
-		roll = point.getAxes().deg_roll();
+		yaw = point.getPivot().deg_yaw();
+		pitch = point.getPivot().deg_pitch();
+		roll = point.getPivot().deg_roll();
 		pointid = point.id;
 	}
 

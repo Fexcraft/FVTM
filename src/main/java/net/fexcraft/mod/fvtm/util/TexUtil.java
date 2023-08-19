@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
+
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
@@ -11,9 +13,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.IOUtils;
-
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -23,12 +24,17 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.IOUtils;
 
 public class TexUtil {
 	
 	public static final HashMap<ResourceLocation, Object> litex = new HashMap<>(); 
 	public static final Minecraft mc = Minecraft.getMinecraft();
 	//private static int curr;
+
+	public static void bindTexture(IDL idl){
+		bindTexture((ResourceLocation)idl);
+	}
 	
 	public static void bindTexture(ResourceLocation loc){
 		//curr = GL11.glGetInteger(GL11.GL_TEXTURE_2D);
@@ -57,13 +63,13 @@ public class TexUtil {
 				searchIn(addon, file, sub + file.getName() + "/");
 			}
 			else if(file.getName().endsWith(".png")){
-				litex.put(new ResourceLocation(addon.getRegistryName().getPath(), sub + file.getName()), file);
+				litex.put(new ResourceLocation(addon.getID().id(), sub + file.getName()), file);
 			}
 		}
 	}
 
 	public static void searchInZip(Addon addon){
-		String path = "assets/" + addon.getRegistryName().getPath() + "/textures/", suffix = ".png";
+		String path = "assets/" + addon.getID().id() + "/textures/", suffix = ".png";
 		try{
 			ZipInputStream stream = new ZipInputStream(new FileInputStream(addon.getFile()));
 			while(true){
@@ -71,7 +77,7 @@ public class TexUtil {
 				if(entry == null) break;
 				if(entry.getName().startsWith(path) && entry.getName().endsWith(suffix)){
 					String name = entry.getName();
-					litex.put(new ResourceLocation(addon.getRegistryName().getPath(), name.substring(name.indexOf("textures/"))), name);
+					litex.put(new ResourceLocation(addon.getID().id(), name.substring(name.indexOf("textures/"))), name);
 				}
 			}
 			stream.close();
@@ -109,7 +115,7 @@ public class TexUtil {
 
 	public static Object[] getZipIS(String addonid, String path){
 		try{
-			Addon addon = Resources.getAddon(addonid);
+			Addon addon = getAddon(addonid);
 			ZipFile zip = new ZipFile(addon.getFile());
 			ZipInputStream stream = new ZipInputStream(new FileInputStream(addon.getFile()));
 			InputStream is = null;

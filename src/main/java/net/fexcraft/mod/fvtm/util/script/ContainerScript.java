@@ -4,8 +4,8 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.attribute.AttrVector;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.Vector3fAttribute;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
@@ -44,8 +44,8 @@ public class ContainerScript extends VehicleScript {
 	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
 		if(entity.world.isRemote || attr == null) return;
 		boolean bool;
-		if(!attr.id().startsWith("container_script:break")){
-			if(!attr.id().startsWith("container_script:place")){
+		if(!attr.id.startsWith("container_script:break")){
+			if(!attr.id.startsWith("container_script:place")){
 				return;
 			}
 			else bool = false;
@@ -62,13 +62,13 @@ public class ContainerScript extends VehicleScript {
     	}
     	String holderid = ent.getVehicleData().getAttributeString("container_script:holder", "holder");
     	String rotpoint = ent.getVehicleData().getAttributeString("container_script:rotpoint", "lcc_holder");
-    	Vector3fAttribute vecattr = (Vector3fAttribute)ent.getVehicleData().getAttribute("container_script:offset");
-    	Vec3d offset = vecattr == null ? Vec3d.ZERO : vecattr.vec3d_value();
+    	AttrVector vecattr = (AttrVector) ent.getVehicleData().getAttribute("container_script:offset");
+    	Vec3d offset = vecattr == null ? Vec3d.ZERO : new Vec3d(vecattr.value.x, vecattr.value.y, vecattr.value.z);
     	if(bool){
-    		ContainerScript.tryBreak(ent, player, holderid, rotpoint, offset, attr.id().endsWith("_single"));
+    		ContainerScript.tryBreak(ent, player, holderid, rotpoint, offset, attr.id.endsWith("_single"));
     	}
     	else{
-    		ContainerScript.tryPlace(ent, player, holderid, rotpoint, offset, attr.id().endsWith("_single"));
+    		ContainerScript.tryPlace(ent, player, holderid, rotpoint, offset, attr.id.endsWith("_single"));
     	}
 	}
 	

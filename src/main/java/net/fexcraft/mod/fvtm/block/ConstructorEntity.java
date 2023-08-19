@@ -337,7 +337,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		}
 		if(cent.models != null){
 			for(ConstructorLiftModel model : cent.models){
-				model.clearDisplayLists();
+				model.clearGLData();
 			}
 			cent.models = null;
 		}

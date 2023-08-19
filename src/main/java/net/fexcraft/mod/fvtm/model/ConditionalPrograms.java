@@ -7,11 +7,9 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
-import net.fexcraft.mod.fvtm.model.ModelGroup.ConditionalProgram;
-import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
-import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
+import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
+import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.minecraft.block.properties.IProperty;
@@ -111,7 +109,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").boolean_value();
+			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean();
 		}
 		
 	}
@@ -120,7 +118,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").boolean_value();
+			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean();
 		}
 		
 	}
@@ -364,7 +362,7 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue(Properties.FACING) == facing) == val;
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(Properties.FACING) == facing) == val;
 		}
 
 		@Override
@@ -390,7 +388,7 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue(Properties.ROTATION) == rot) == val;
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(Properties.ROTATION) == rot) == val;
 		}
 
 		@Override
@@ -415,9 +413,9 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			IProperty prop = gp(data.blockstate);
-			Print.debug(prop.getName() + " " + data.blockstate.getValue(prop) + " " + key + " " + value + " " + bool);
-			return data.blockstate != null && (data.blockstate.getValue(prop).toString().equals(value)) == bool;
+			IProperty prop = gp((IBlockState)data.blockstate);
+			Print.debug(prop.getName() + " " + ((IBlockState)data.blockstate).getValue(prop) + " " + key + " " + value + " " + bool);
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(prop).toString().equals(value)) == bool;
 		}
 
 		private IProperty<?> gp(IBlockState blockstate){

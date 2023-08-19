@@ -1,14 +1,22 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+
 import java.util.ArrayList;
 
-import net.fexcraft.lib.common.math.*;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.TexturedVertex;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.frl.Polygon;
+import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -23,10 +31,9 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,6 +48,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 public class RailRenderer {
     
@@ -162,7 +170,7 @@ public class RailRenderer {
     
     //@SubscribeEvent
     public static void renderRails(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
-    	if(Config.DISABLE_RAILS) return;
+    	if(DISABLE_RAILS) return;
 	    raildata = SystemManager.get(Systems.RAIL, world, RailSystem.class);
 	    if(raildata == null || raildata.getRegions() == null) return;
         //if(raildata.isLoading()) return;
@@ -428,12 +436,12 @@ public class RailRenderer {
 				vec = track.getVectorPosition0(accu + 0.1, false);
 				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
 				vec = track.getVectorPosition0(accu, false);
-				for(ModelRendererTurbo mrt : model.get("ties", false)){
-					for(TexturedPolygon poly : mrt.getFaces()){
-						TexturedVertex[] verts = new TexturedVertex[poly.getVertices().length];
+				for(Polyhedron<GLObject> hedron : model.get("ties")){
+					for(Polygon poly : hedron.polygons){
+						TexturedVertex[] verts = new TexturedVertex[poly.vertices.length];
 						for(int m = 0; m < verts.length; m++){
-							TexturedVertex org = poly.getVertices()[m];
-							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.textureX, org.textureY);
+							Vertex org = poly.vertices[m];
+							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
 							double dx = (verts[m].vector.x * Static.sixteenth) + vec.x - cen.x;
 							double dy = (verts[m].vector.y * Static.sixteenth) + vec.y - cen.y;
 							double dz = (verts[m].vector.z * Static.sixteenth) + vec.z - cen.z;

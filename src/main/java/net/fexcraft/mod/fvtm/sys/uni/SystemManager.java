@@ -1,5 +1,9 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
+import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,7 +18,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -89,14 +92,14 @@ public class SystemManager {
 			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);
 		}
 		//
-		if(!Config.DISABLE_RAILS){
+		if(!DISABLE_RAILS){
 			if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new ConcurrentHashMap<>());
 			RailSystem sys = new RailSystem(world);
 			SYSTEMS.get(Systems.RAIL).put(dim, sys);
 			SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
 		}
 		//
-		if(!Config.DISABLE_WIRES){
+		if(!DISABLE_WIRES){
 			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
 			WireSystem sys = new WireSystem(world);
 			SYSTEMS.get(Systems.WIRE).put(dim, sys);
@@ -113,7 +116,7 @@ public class SystemManager {
 	private static long getDate(){
 		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
-		while((mid += Config.UNLOAD_INTERVAL) < date);
+		while((mid += UNLOAD_INTERVAL) < date);
 		return mid;
 	}
 

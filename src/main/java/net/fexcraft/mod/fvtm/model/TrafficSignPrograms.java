@@ -1,13 +1,8 @@
 package net.fexcraft.mod.fvtm.model;
 
-import org.lwjgl.opengl.GL11;
-
-import com.google.gson.JsonElement;
-
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
-import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
+import org.lwjgl.opengl.GL11;
 
 public class TrafficSignPrograms {
 
@@ -27,23 +22,18 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public String getId(){
+		public String id(){
 			return "fvtm:ts_rgb_channel";
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, ModelRenderData data){
+		public void pre(ModelGroup list, ModelRenderData data){
 			data.trafficsign_compdata.channels[channel].glColorApply();
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, ModelRenderData data){
+		public void post(ModelGroup list, ModelRenderData data){
 			RGB.glColorReset();
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return new ColorChannel(elm.getAsJsonArray().get(0).getAsInt());
 		}
 
 		@Override
@@ -58,17 +48,17 @@ public class TrafficSignPrograms {
 		public SignBase(){}
 
 		@Override
-		public String getId(){
+		public String id(){
 			return "fvtm:ts_sign_base";
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, ModelRenderData data){
+		public void pre(ModelGroup list, ModelRenderData data){
 			list.visible = ((BaseData)data.trafficsign_compdata).base;
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, ModelRenderData data){
+		public void post(ModelGroup list, ModelRenderData data){
 			list.visible = true;
 		}
 		
@@ -94,12 +84,12 @@ public class TrafficSignPrograms {
 		}
 
 		@Override
-		public String getId(){
+		public String id(){
 			return "fvtm:ts_sign_border";
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, ModelRenderData data){
+		public void pre(ModelGroup list, ModelRenderData data){
 			if(!(list.visible = ((BaseData)data.trafficsign_compdata).sides[index])) return;
 			GL11.glPushMatrix();
 			switch(index){
@@ -111,16 +101,11 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, ModelRenderData data){
+		public void post(ModelGroup list, ModelRenderData data){
 			if(list.visible){
 				GL11.glPopMatrix();
 			}
 			list.visible = true;
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return parse(elm.getAsJsonArray().get(0).getAsString());
 		}
 
 		@Override
@@ -175,12 +160,12 @@ public class TrafficSignPrograms {
 		}
 
 		@Override
-		public String getId(){
+		public String id(){
 			return "fvtm:ts_sign_border_edge";
 		}
 		
 		@Override
-		public void preRender(ModelGroup list, ModelRenderData data){
+		public void pre(ModelGroup list, ModelRenderData data){
 			BaseData base = (BaseData)data.trafficsign_compdata;
 			if(!base.sides[idx0] || !base.sides[idx1]) list.visible = false;
 			if(!list.visible) return;
@@ -194,16 +179,11 @@ public class TrafficSignPrograms {
 		}
 		
 		@Override
-		public void postRender(ModelGroup list, ModelRenderData data){
+		public void post(ModelGroup list, ModelRenderData data){
 			if(list.visible){
 				GL11.glPopMatrix();
 			}
 			list.visible = true;
-		}
-		
-		@Override
-		public Program parse(JsonElement elm){
-			return parse(elm.getAsJsonArray().get(0).getAsString());
 		}
 
 		@Override

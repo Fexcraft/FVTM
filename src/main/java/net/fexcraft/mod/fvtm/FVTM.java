@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
+import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
@@ -13,6 +14,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.block.VPInfo;
@@ -21,15 +23,12 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
@@ -49,13 +48,11 @@ import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
-import net.fexcraft.mod.fvtm.model.BlockModel;
-import net.fexcraft.mod.fvtm.model.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
-import net.fexcraft.mod.fvtm.model.TrafficSignPrograms;
-import net.fexcraft.mod.fvtm.model.WirePrograms;
-import net.fexcraft.mod.fvtm.model.loaders.ObjModelLoader;
+import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.*;
+import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
+import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -71,12 +68,35 @@ import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.client.CTab;
+import net.fexcraft.mod.uni.impl.ClothMaterialManager;
+import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
+import net.fexcraft.mod.uni.impl.IDLM;
+import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.impl.TagLWI;
+import net.fexcraft.mod.uni.item.ClothMaterial;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.ui.UIButton;
+import net.fexcraft.mod.uni.ui.UIField;
+import net.fexcraft.mod.uni.ui.UITab;
+import net.fexcraft.mod.uni.ui.UIText;
+import net.fexcraft.mod.uni.uimpl.UUIButton;
+import net.fexcraft.mod.uni.uimpl.UUIField;
+import net.fexcraft.mod.uni.uimpl.UUITab;
+import net.fexcraft.mod.uni.uimpl.UUIText;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -89,6 +109,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
@@ -100,13 +121,12 @@ import net.minecraftforge.fml.relauncher.Side;
  *
  */
 @Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION,
-	acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl;after:trackapi",
-	guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory")
+	acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl")
 public class FVTM {
 
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
-	public static final String VERSION = "3.8.73";
+	public static final String VERSION = "3.9.74";
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
@@ -115,8 +135,48 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
+		EnvInfo.CLIENT = event.getSide().isClient();
+		EnvInfo.DEV = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
+		Logger logger = event.getModLog();
+		FvtmLogger.LOGGER = new FvtmLogger(){
+			@Override
+			public void log(Object obj){
+				logger.info(obj);
+			}
+			@Override
+			public void log(String str){
+				logger.info(str);
+			}
+		};
+		IDLManager.INSTANCE[0] = new IDLM();
+		TagCW.SUPPLIER[0] = () -> new TagCWI();
+		TagLW.SUPPLIER[0] = () -> new TagLWI();
+		if(EnvInfo.CLIENT){
+			UITab.IMPLEMENTATION = UUITab.class;
+			UIButton.IMPLEMENTATION = UUIButton.class;
+			UIText.IMPLEMENTATION = UUIText.class;
+			UIField.IMPLEMENTATION = UUIField.class;
+			GLO.SUPPLIER = () -> new GLObject();
+		}
+		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
+		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
+		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);
+		Config.addListener(() -> {
+			TrafficSignLibrary.load(true);
+			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
+			ULandVehicle.SYNC_RATE = Config.U12_SYNC_RATE;
+		});
+		ClothMaterial.MANAGER[0] = new ClothMaterialManager();
+		FvtmRegistry.NONE_CLOTH_MAT = IDLManager.getIDLCached("fvtm:none");
+		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
+		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
+		if(EnvInfo.CLIENT){
+			Config.addListener(DefaultPrograms::setupBlinkerTimer);
+			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
+			ConditionRegistry.BUILDER = CondBuilder.run();
+		}
+		//
 		REGISTERER = new AutoRegisterer(MODID);
-		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
@@ -177,24 +237,18 @@ public class FVTM {
 			}
 		}*/
 		//
+		FvtmResources.INSTANCE.init();
+		FvtmResources.INSTANCE.registerAttributes();
+		//FvtmResources.INSTANCE.registerFunctions();
+		FvtmResources.INSTANCE.searchContent();
+		FvtmResources.INSTANCE.createContentItems();
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		MinecraftForge.EVENT_BUS.register(new RVStore());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
-			DefaultPrograms.init();
-			ConditionalPrograms.init();
-			WirePrograms.init();
-			TrafficSignPrograms.init();
-	        Resources.getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
-			Resources.PARTS.forEach(part -> part.loadModel());
-			Resources.VEHICLES.forEach(veh -> veh.loadModel());
-			Resources.CONTAINERS.forEach(con -> con.loadModel());
-			Resources.BLOCKS.forEach(block -> block.loadModel());
-			Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());
-			Resources.CLOTHES.forEach(cloth -> cloth.loadModel());
-			Resources.WIRES.forEach(cloth -> cloth.loadModel());
-			TrafficSignLibrary.loadModels();
-			Resources.loadDecoModels();
-			ObjModelLoader.clearCache();
+			FvtmResources.INSTANCE.initModelLoaders();
+			FvtmResources.INSTANCE.initModelPrograms();
+			FvtmResources.INSTANCE.initModels();
+			FvtmResources.INSTANCE.initModelsClear();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
 		Resources.loadWireDecorations(event.getSide().isClient());
@@ -206,21 +260,20 @@ public class FVTM {
 		Resources.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){
-			net.minecraft.creativetab.CreativeTabs deftab = InternalAddon.INSTANCE.getDefaultCreativeTab();
-			ConstructorBlock.INSTANCE.setCreativeTab(deftab);
-			ConstCenterBlock.INSTANCE.setCreativeTab(deftab);
-			DisplayBlock.INSTANCE.setCreativeTab(deftab);
-			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(deftab);
-			StreetSignItem.INSTANCE.setCreativeTab(deftab);
-			TrafficSignItem.INSTANCE.setCreativeTab(deftab);
-			//RailItemTemp.INSTANCE.setCreativeTab(deftab);
-			JunctionToolItem.INSTANCE.setCreativeTab(deftab);
-			SignalItem0.INSTANCE.setCreativeTab(deftab);
-			TrainAdjuster.INSTANCE.setCreativeTab(deftab);
-			RoadToolItem.INSTANCE.setCreativeTab(deftab);
-			Asphalt.INSTANCE.setCreativeTab(deftab);
-			DecorationItem.INSTANCE.setCreativeTab(deftab);
-			VPInfo.INSTANCE.setCreativeTab(deftab);
+			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
+			ConstructorBlock.INSTANCE.setCreativeTab(tab);
+			ConstCenterBlock.INSTANCE.setCreativeTab(tab);
+			DisplayBlock.INSTANCE.setCreativeTab(tab);
+			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
+			StreetSignItem.INSTANCE.setCreativeTab(tab);
+			TrafficSignItem.INSTANCE.setCreativeTab(tab);
+			JunctionToolItem.INSTANCE.setCreativeTab(tab);
+			SignalItem0.INSTANCE.setCreativeTab(tab);
+			TrainAdjuster.INSTANCE.setCreativeTab(tab);
+			RoadToolItem.INSTANCE.setCreativeTab(tab);
+			Asphalt.INSTANCE.setCreativeTab(tab);
+			DecorationItem.INSTANCE.setCreativeTab(tab);
+			VPInfo.INSTANCE.setCreativeTab(tab);
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
@@ -233,13 +286,12 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		Resources.MATERIALS.forEach(Material::linkContainerItem);
-		Resources.MATERIALS.forEach(Material::registerIntoOreDictionary);
-		Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
-		Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
+		//TODO items MATERIALS.forEach(material -> material.getItemWrapper().linkContainer());
+		//TODO oredict registry MATERIALS.forEach(Material::registerIntoOreDictionary);
+		//TODO items Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
+		//TODO oredict Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
 		Resources.BLOCKS.forEach(Block::linkItem);
 		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
-		Resources.loadPresets();
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}
@@ -248,7 +300,7 @@ public class FVTM {
 	public void initPost(FMLPostInitializationEvent event){
 		Packets.init();
 		Resources.registerDefaultRecipes();
-		Resources.loadRecipes();
+		FvtmResources.loadRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.wire.RecServer());

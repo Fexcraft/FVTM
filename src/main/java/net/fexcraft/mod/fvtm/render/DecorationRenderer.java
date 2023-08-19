@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
-
-import org.lwjgl.opengl.GL11;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -12,10 +10,11 @@ import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class DecorationRenderer {
 
@@ -30,8 +29,6 @@ public class DecorationRenderer {
 			Decoration deco = (Decoration)ent;
 			GL11.glPushMatrix();
 			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
-			GlStateManager.rotate(180, 0, 1, 0);
-			GlStateManager.rotate(180, 0, 0, 1);
 			if(deco.decos.size() == 0){
 				DebugModels.TRAFFICSIGNCUBE.render(0.5f);
 				RGB.glColorReset();
@@ -52,7 +49,7 @@ public class DecorationRenderer {
 			            if(data.rotz != 0f) GL11.glRotatef(data.rotz, 0, 0, 1);
 			            if(data.rotx != 0f) GL11.glRotatef(data.rotx, 1, 0, 0);
 			            if(data.sclx != 1f || data.scly != 1f || data.sclz != 1f) GL11.glScalef(data.sclx, data.scly, data.sclz);
-						TexUtil.bindTexture(data.textures.get(data.seltex));
+						TexUtil.bindTexture((ResourceLocation)data.textures.get(data.seltex));
 						data.model.render(RENDERDATA.set(data, ent, cache));
 						GL11.glPopMatrix();
 					}

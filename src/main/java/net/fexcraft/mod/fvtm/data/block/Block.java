@@ -8,24 +8,25 @@ import java.util.TreeMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -37,7 +38,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed, ItemTextureable {
+public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, ItemTextureable {
 	
 	public static final AxisAlignedBB[] FULL_BLOCK_AABB_ARRAY = new AxisAlignedBB[]{ net.minecraft.block.Block.FULL_BLOCK_AABB };
 	public static final AxisAlignedBB[] NULL_AABB_ARRAY = new AxisAlignedBB[]{ null };
@@ -48,7 +49,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected String modelid, ctab;
 	protected Model model;
 	protected ModelData modeldata;
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	protected boolean no3ditem;
 	//
 	protected boolean plain_model, hideitem;
@@ -73,18 +74,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	public Block(){}
 
 	@Override
-	public Block setRegistryName(ResourceLocation name){
-		registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<Block> getRegistryType(){
-		return Block.class;
 	}
 
 	@Override
@@ -170,7 +161,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.invisible = JsonUtil.getIfExists(obj, "Invisible", false);
 		this.hideitem = JsonUtil.getIfExists(obj, "HideItem", false);
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
         this.randomrot = JsonUtil.getIfExists(obj, "RandomRotation", false);
 		this.ladder = JsonUtil.getIfExists(obj, "Ladder", false);
@@ -215,8 +206,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.BLOCK;
+	public ContentType getDataType(){
+		return ContentType.BLOCK;
 	}
 
 	@Override
@@ -243,7 +234,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, modeldata, BlockModel.class);
+		this.model = FvtmResources.getModel(modelid, modeldata, BlockModel.class);
 	}
 
 	@Override
@@ -396,7 +387,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return channels;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
@@ -410,12 +401,12 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 	
 	@Override
-	public boolean no3DItemModel(){
+	public boolean noCustomItemModel(){
 		return no3ditem;
 	}
 

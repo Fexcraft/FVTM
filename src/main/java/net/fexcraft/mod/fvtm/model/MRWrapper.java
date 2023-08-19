@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.model;
 
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import java.util.ArrayList;
 

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,11 +15,9 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -266,7 +266,7 @@ public class WireSystem extends DetachedSystem {
 
 	@Override
 	public void addTimerTask(long time){
-		timer.schedule(new TimedTask(this), new Date(time), Config.UNLOAD_INTERVAL);
+		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
 	}
 	
 	public static class TimedTask extends TimerTask {

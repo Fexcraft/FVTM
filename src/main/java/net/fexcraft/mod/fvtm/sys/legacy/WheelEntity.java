@@ -2,8 +2,8 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.WTD;

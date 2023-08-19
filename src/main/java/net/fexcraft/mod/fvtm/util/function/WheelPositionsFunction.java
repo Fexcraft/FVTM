@@ -5,10 +5,10 @@ import java.util.HashMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 
 public class WheelPositionsFunction extends StaticFunction {
 	
@@ -19,7 +19,7 @@ public class WheelPositionsFunction extends StaticFunction {
 		for(JsonElement elm : array){
 			JsonObject json = elm.getAsJsonObject();
 			String id = json.get("id").getAsString();
-			this.wheels.put(id, new WheelSlot(json));
+			this.wheels.put(id, new WheelSlot(JsonHandler.parse(json.toString(), true).asMap()));
 		}
 	}
 

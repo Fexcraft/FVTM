@@ -5,15 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.google.gson.JsonElement;
-
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.script.ScrAction;
+import net.fexcraft.lib.script.Script;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
-import net.fexcraft.mod.fvtm.sys.script.ScrAction;
-import net.fexcraft.mod.fvtm.sys.script.Script;
-import net.fexcraft.mod.fvtm.sys.script.wrappers.VehicleScriptContext;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;

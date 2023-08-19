@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.util.function;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
+import java.util.List;
+
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
-import net.minecraft.block.BlockStone;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,8 +18,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class SeatBlockFunction extends BlockFunction.StaticBlockFunction {
 
@@ -48,7 +49,7 @@ public class SeatBlockFunction extends BlockFunction.StaticBlockFunction {
         if(hand == EnumHand.OFF_HAND) return false;
         if(!player.isRiding()){
             BlockSeat seat = new BlockSeat(world);
-            Vec3d vec = offset.to16Double().add(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            Vec3d vec = toV3(offset).add(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             seat.setPosition(vec.x, vec.y, vec.z);
             world.spawnEntity(seat);
             player.startRiding(seat);

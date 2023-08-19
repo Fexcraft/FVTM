@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+@Deprecated
 public interface Lockable {
 	
 	public static final ResourceLocation DEFAULT_KEY = new ResourceLocation("gep:key");
@@ -24,7 +25,7 @@ public interface Lockable {
 	}
 
 	public static boolean isKey(Item item){
-		return item instanceof MaterialItem && ((MaterialItem)item).getType().isVehicleKey();
+		return item instanceof MaterialItem ;//TODO && ((MaterialItem)item).getType().isVehicleKey();
 	}
 
 	public static void toggle(Lockable lockable, ICommandSender sender, ItemStack stack){

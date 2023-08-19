@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
@@ -10,7 +12,6 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -163,7 +164,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
                     core.container = null;
             	}
                 //
-                if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
+                if(VEHICLES_DROP_CONTENTS && !world.isRemote){
                     getContainerData().getInventory().dropAllAt(world, blkpos);
                 }
             }

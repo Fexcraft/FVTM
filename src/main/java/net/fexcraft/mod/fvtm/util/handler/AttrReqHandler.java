@@ -27,11 +27,11 @@ public class AttrReqHandler {
 		VehicleEntity veh = (VehicleEntity)world.getEntityByID(packet.getInteger("entity"));
 		String attribute = packet.getString("attr");
 		final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
-		if(!attr.editable() && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+		if(!attr.editable && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm) : true)){
 			Print.chat(player, "No permission. [ED]");
 			return;
 		}
-		if(player.getRidingEntity() != veh.getEntity() && !attr.external() &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+		if(player.getRidingEntity() != veh.getEntity() && !attr.external &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm) : true)){
 			Print.chat(player, "No permission. [EX]");
 			return;
 		}
@@ -42,12 +42,12 @@ public class AttrReqHandler {
 		veh.getVehicleData().getScripts().forEach(script -> {
 			script.onAttributeToggle(veh.getEntity(), attr, old, player);
 		});
-		if(!attr.sync()) return;
+		if(!attr.sync) return;
 		if(veh.getVehicleType().isRailVehicle()){
 			RailVehicle rail = (RailVehicle)veh;
 			Compound com = rail.rek.ent().getCompound();
 			if(com.isSingular() || !com.isHead(rail.rek.ent()) && !com.isEnd(rail.rek.ent())) return;
-			boolean mirror = attr.valuetype().isBoolean() && attr.group() != null && attr.group().contains("mirror_lr");
+			boolean mirror = attr.valuetype.isBoolean() && attr.group != null && attr.group.contains("mirror_lr");
 			NBTTagCompound compound = packet.copy();
 			if(mirror){
 				com.forEachMirror(com.isHead(rail.rek.ent()), new String[]{ attribute }, flip -> {
@@ -97,22 +97,22 @@ public class AttrReqHandler {
 	}
 
 	private static void toggleAttr(Attribute<?> attr, boolean bool, NBTTagCompound nbt, boolean check, Object syncval){
-		if(check && attr.sync()){
-			attr.value(syncval);
+		if(check && attr.sync){
+			attr.set(syncval);
 			return;
 		}
-		if(attr.valuetype().isTristate()){
-			if(attr.valuetype().isBoolean() || !nbt.hasKey("reset")){
-				attr.value(bool);
-				nbt.setBoolean("bool", attr.boolean_value());
+		if(attr.valuetype.isTristate()){
+			if(attr.valuetype.isBoolean() || !nbt.hasKey("reset")){
+				attr.set(bool);
+				nbt.setBoolean("bool", attr.asBoolean());
 			}
 			else{
-				attr.value(null);
+				attr.set(null);
 				nbt.setBoolean("reset", true);
 			}
 		}
-		else if(attr.valuetype().isNumber()){
-			attr.value(attr.valuetype().isInteger() ? nbt.getInteger("value") : nbt.getFloat("value"));
+		else if(attr.valuetype.isNumber()){
+			attr.set(attr.valuetype.isInteger() ? nbt.getInteger("value") : nbt.getFloat("value"));
 		}
 		else{
 			Print.log("no code for toggling this attribute type yet");
@@ -123,11 +123,11 @@ public class AttrReqHandler {
 		boolean reset = packet.hasKey("reset") && packet.getBoolean("reset");
 		VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.getInteger("entity"));
 		Attribute<?> attr = veh.getVehicleData().getAttribute(packet.getString("attr"));
-		if(!attr.editable() && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+		if(!attr.editable && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm) : true)){
 			Print.chat(player, "No permission. [ED]");
 			return;
 		}
-		if(player.getRidingEntity() != veh.getEntity() && !attr.external() &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+		if(player.getRidingEntity() != veh.getEntity() && !attr.external &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm) : true)){
 			Print.chat(player, "No permission. [EX]");
 			return;
 		}
@@ -135,7 +135,7 @@ public class AttrReqHandler {
 			attr.reset();
 		}
 		else{
-			attr.value(attr.parseValue(packet.getString("value")));
+			attr.set(attr.parse(packet.getString("value")));
 		}
 		((GenericVehicle)veh).sendAttributeUpdate(attr);
 	}
@@ -156,12 +156,12 @@ public class AttrReqHandler {
 			Print.debug("Received packet for entity not found on client side!");
 			return;
 		}
-		if(attr.valuetype().isTristate()){
-			if(attr.valuetype().isBoolean() || !packet.hasKey("reset")) attr.value(bool);
-			else attr.value(null);
+		if(attr.valuetype.isTristate()){
+			if(attr.valuetype.isBoolean() || !packet.hasKey("reset")) attr.set(bool);
+			else attr.set(null);
 		}
-		else if(attr.valuetype().isNumber()){
-			attr.value(attr.valuetype().isInteger() ? packet.getInteger("value") : packet.getFloat("value"));
+		else if(attr.valuetype.isNumber()){
+			attr.set(attr.valuetype.isInteger() ? packet.getInteger("value") : packet.getFloat("value"));
 		}
 		else{
 			Print.log("no code for toggling this attribute type yet");
@@ -171,24 +171,24 @@ public class AttrReqHandler {
 	public static void processUpdateResponse(World world, EntityPlayer player, NBTTagCompound packet){
 		VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.getInteger("entity"));
 		Attribute<?> attr = veh.getVehicleData().getAttribute(packet.getString("attr"));
-		if(attr.valuetype().isTristate()){
+		if(attr.valuetype.isTristate()){
 			if(packet.hasKey("reset") && packet.getBoolean("reset")){
-				attr.value(null);
+				attr.set(null);
 			}
 			else{
-				attr.value(packet.getBoolean("value"));
+				attr.set(packet.getBoolean("value"));
 			}
 		}
-		else if(attr.valuetype().isFloat()){
-			attr.value(packet.getFloat("value"));
+		else if(attr.valuetype.isFloat()){
+			attr.set(packet.getFloat("value"));
 		}
-		else if(attr.valuetype().isInteger()){
-			attr.value(packet.getInteger("value"));
+		else if(attr.valuetype.isInteger()){
+			attr.set(packet.getInteger("value"));
 		}
-		else if(attr.valuetype().isString()){
-			attr.value(packet.getString("value"));
+		else if(attr.valuetype.isString()){
+			attr.set(packet.getString("value"));
 		}
-		else attr.value(packet.getString("value"));
+		else attr.set(packet.getString("value"));
 	}
 
 }

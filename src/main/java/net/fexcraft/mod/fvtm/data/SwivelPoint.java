@@ -3,21 +3,19 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
-import net.fexcraft.mod.fvtm.util.Axes;
+import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.handler.SPM_DI;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -30,121 +28,124 @@ import net.minecraft.util.math.Vec3d;
 public class SwivelPoint {
 
 	public static final String DEFAULT = "vehicle";
-	//
-	public final String id, parid;
+	public final String id;
+	public final String rid;
 	public String origin;
 	public SwivelPoint parent;
-	protected Vec3d position, prevpos;//, prerot;
-	private Axes axe = new Axes(), prevaxe = new Axes();
+	public V3D position;
+	public V3D prevpos;
+	private Pivot cpivot = new Pivot();
+	private Pivot ppivot = new Pivot();
+	public ArrayList<SwivelPoint> subs = new ArrayList<>();
 	// sync
-	private static final int ticker = LandVehicle.servtick;
+	private static final int ticker = 5;
 	private int servticker;
 	private Vec3d servpos, servrot;
 	//
 	public ArrayList<SwivelPointMover> movers;
 
-	public SwivelPoint(JsonObject obj){
-		this.id = JsonUtil.getIfExists(obj, "id", DEFAULT);
-		this.position = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
-		this.prevpos = new Vec3d(position.x, position.y, position.z);
-		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : DEFAULT;
-		axe.set_rotation(JsonUtil.getIfExists(obj, "yaw", 0).floatValue(), JsonUtil.getIfExists(obj, "pitch", 0).floatValue(), JsonUtil.getIfExists(obj, "roll", 0).floatValue(), true);
-		if(obj.has("movers")){
+	public SwivelPoint(JsonMap map){
+		id = map.getString("id", DEFAULT);
+		position = map.has("pos") ? Pos.frJson(map.get("pos"), true).toV3D() : new V3D();
+		prevpos = position.copy();
+		rid = map.getString("parent", DEFAULT);
+		cpivot.set_rotation(map.getFloat("yaw", 0), map.getFloat("pitch", 0), map.getFloat("roll", 0), true);
+		if(map.has("movers")){
 			movers = new ArrayList<>();
-			JsonElement movs = obj.get("movers");
-			if(movs.isJsonObject()){
-				movs.getAsJsonObject().entrySet().forEach(entry -> {
+			JsonValue movs = map.get("movers");
+			if(movs.isMap()){
+				movs.asMap().entries().forEach(entry -> {
 					parseMover(entry.getKey(), entry.getValue());
 				});
 			}
-			else if(movs.isJsonArray()){
-				movs.getAsJsonArray().forEach(elm -> {
-					parseMover(null, elm);
+			else if(movs.isArray()){
+				movs.asArray().value.forEach(val -> {
+					parseMover(null, val);
 				});
 			}
 		}
 	}
 
-	private void parseMover(String key, JsonElement elm){
-		if(elm.isJsonPrimitive()){
-			if(elm.getAsString().endsWith(".class")){
+	private void parseMover(String key, JsonValue json){
+		if(json.isMap()){
+			JsonMap map = json.asMap();
+			if(map.has("class")){
 	            try{
-	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(elm.getAsString().replace(".class", ""));
-	            	movers.add(clazz.newInstance());
+	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(map.get("class").string_value().replace(".class", ""));
+	            	movers.add(clazz.getConstructor(JsonValue.class).newInstance(map));
 	            }
 	            catch(Exception e){
 	            	e.printStackTrace();
 	            }
 			}
-			else movers.add(new SPM_DI(key == null ? "arrinit" : key, elm.getAsString()));
+			else movers.add(new SPM_DI(map));
 		}
-		if(elm.isJsonObject()){
-			JsonObject json = elm.getAsJsonObject();
-			if(json.has("class")){
-	            try{
-	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
-	            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
-	            }
-	            catch(Exception e){
-	            	e.printStackTrace();
-	            }
+		else if(!json.isArray()){
+			if(json.string_value().endsWith(".class")){
+				try{
+					Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.string_value().replace(".class", ""));
+					movers.add(clazz.newInstance());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
-			else movers.add(new SPM_DI(json.getAsJsonObject()));
+			else movers.add(new SPM_DI(key == null ? "arrinit" : key, json.string_value()));
 		}
 	}
 
-	public SwivelPoint(String id, String parid){
+	public SwivelPoint(String id, String rid){
 		this.id = id;
-		this.parid = parid;
-		position = new Vec3d(0, 0, 0);
-		prevpos = new Vec3d(0, 0, 0);
+		this.rid = rid;
+		position = new V3D();
+		prevpos = new V3D();
 	}
 
-	public SwivelPoint(VehicleData data, NBTTagCompound com){
-		this.id = com.getString("id");
-		this.parid = com.hasKey("parent") ? com.getString("parent") : null;
-		this.read(this, data, com);
+	public SwivelPoint(VehicleData data, TagCW com){
+		id = com.getString("id");
+		rid = com.has("parent") ? com.getString("parent") : null;
+		read(this, data, com);
 	}
 
-	public Axes getAxes(){
-		return axe;
+	public Pivot getPivot(){
+		return cpivot;
 	}
 
-	public Axes getPrevAxes(){
-		return prevaxe;
+	public Pivot getPrevPivot(){
+		return ppivot;
 	}
 
 	public void updatePrevAxe(){
-		prevaxe = axe.clone();
+		ppivot.copy(cpivot);
 	}
 
-	public void loadAxes(Entity entityfrom, NBTTagCompound compound){
+	public void loadPivot(TagCW com){
 		updatePrevAxe();
-		axe = Axes.read(entityfrom, compound);
+		cpivot = Pivot.read(com);
 	}
 
-	public NBTTagCompound saveAxes(Entity entityfrom, NBTTagCompound compound){
-		return axe.write(entityfrom, compound);
+	public void savePivot(TagCW com){
+		cpivot.save(com);
 	}
 
-	public NBTTagCompound write(NBTTagCompound compound){
-		compound.setString("id", id);
-		compound.setString("parent", parent == null ? parid : parent.id);
-		if(origin != null) compound.setString("origin", origin);
-		axe.write(null, compound);
-		compound.setDouble("pos_x", position.x);
-		compound.setDouble("pos_y", position.y);
-		compound.setDouble("pos_z", position.z);
+	public TagCW write(TagCW compound){
+		compound.set("id", id);
+		compound.set("parent", parent == null ? rid : parent.id);
+		if(origin != null) compound.set("origin", origin);
+		cpivot.save(compound);
+		compound.set("pos_x", position.x);
+		compound.set("pos_y", position.y);
+		compound.set("pos_z", position.z);
 		return compound;
 	}
 
-	public SwivelPoint read(SwivelPoint point, VehicleData data, NBTTagCompound com){
+	public SwivelPoint read(SwivelPoint point, VehicleData data, TagCW com){
 		if(point == null) point = new SwivelPoint(com.getString("id"), com.getString("parent"));
-		point.origin = com.hasKey("origin") ? com.getString("origin") : null;
-		point.position = new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
-		point.prevpos = new Vec3d(point.position.x, point.position.y, point.position.z);
-		point.axe = Axes.read(null, com);
-		point.prevaxe = point.axe.clone();
+		point.origin = com.has("origin") ? com.getString("origin") : null;
+		point.position = new V3D(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
+		point.prevpos = new V3D(point.position.x, point.position.y, point.position.z);
+		point.cpivot = Pivot.read(com);
+		point.ppivot.copy(cpivot);
 		if(origin != null){
 			PartData part = data.getPart(origin.split("\\|")[0]);
 			if(part != null){
@@ -168,17 +169,18 @@ public class SwivelPoint {
 	}
 
 	public void linkToParent(VehicleData data){
-		parent = data.getRotationPoint(parid);
+		parent = data.getRotationPoint(rid);
 		if(parent.id.equals(id)) parent = null;
+		if(parent != null && !parent.subs.contains(this)) parent.subs.add(this);
 	}
 
 	public SwivelPoint clone(String string){
-		SwivelPoint point = new SwivelPoint(id, parid);
-		point.position = new Vec3d(position.x, position.y, position.z);
-		point.prevpos = new Vec3d(prevpos.x, prevpos.y, prevpos.z);
+		SwivelPoint point = new SwivelPoint(id, rid);
+		point.position = new V3D(position.x, position.y, position.z);
+		point.prevpos = new V3D(prevpos.x, prevpos.y, prevpos.z);
 		point.origin = string;
-		point.axe = this.axe.clone();
-		point.prevaxe = this.prevaxe.clone();
+		point.cpivot = cpivot.copy();
+		point.ppivot = ppivot.copy();
 		if(movers != null){
 			point.movers = new ArrayList<>();
 			for(SwivelPointMover mover : movers){
@@ -188,17 +190,17 @@ public class SwivelPoint {
 		return point;
 	}
 
-	public Vec3d getPos(){
+	public V3D getPos(){
 		return position;
 	}
 
-	public Vec3d getPrevPos(){
+	public V3D getPrevPos(){
 		return prevpos;
 	}
 
 	public void setPos(double posX, double posY, double posZ){
-		prevpos = new Vec3d(position.x, position.y, position.z);
-		position = new Vec3d(posX, posY, posZ);
+		prevpos = new V3D(position.x, position.y, position.z);
+		position = new V3D(posX, posY, posZ);
 	}
 
 	public void updateClient(Entity entity){
@@ -224,10 +226,10 @@ public class SwivelPoint {
 		double y = position.y + (servpos.y - position.y) / servticker;
 		double z = position.z + (servpos.z - position.z) / servticker;
 		setPos(x, y, z);
-		double yaw = MathHelper.wrapDegrees(servrot.x - axe.deg_yaw());
-		double pitch = MathHelper.wrapDegrees(servrot.y - axe.deg_pitch());
-		double roll = MathHelper.wrapDegrees(servrot.z - axe.deg_roll());
-		axe.set_rotation(axe.deg_yaw() + yaw / servticker, axe.deg_pitch() + pitch / servticker, axe.deg_roll() + roll / servticker, true);
+		double yaw = MathHelper.wrapDegrees(servrot.x - cpivot.deg_yaw());
+		double pitch = MathHelper.wrapDegrees(servrot.y - cpivot.deg_pitch());
+		double roll = MathHelper.wrapDegrees(servrot.z - cpivot.deg_roll());
+		cpivot.set_rotation(cpivot.deg_yaw() + yaw / servticker, cpivot.deg_pitch() + pitch / servticker, cpivot.deg_roll() + roll / servticker, true);
 		--servticker;
 	}
 
@@ -240,58 +242,29 @@ public class SwivelPoint {
 		else{
 			setPos(pkt.posX, pkt.posY, pkt.posZ);
 			updatePrevAxe();
-			getAxes().set_rotation(pkt.yaw, pkt.pitch, pkt.roll, true);
+			cpivot.set_rotation(pkt.yaw, pkt.pitch, pkt.roll, true);
 		}
 	}
 
-	public Vec3d getRelativeVector(double x, double y, double z){
-		Vec3d rel = axe.get_vector((float)x, (float)y, (float)z);
+	public V3D getRelativeVector(double x, double y, double z){
+		V3D rel = cpivot.get_vector(x, y, z);
 		if(parent != null){
 			return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
 		}
 		return rel;
 	}
 
-	public Vec3d getRelativeVector(Vec3d vec){
+	public V3D getRelativeVector(V3D vec){
 		return getRelativeVector(vec.x, vec.y, vec.z);
 	}
 
-	public Vec3d getRelativeVector(Vec3d root, boolean render){
-		Vec3d rel = axe.get_vector(root, isVehicle() ? 90 : 0);
+	public V3D getPrevRelativeVector(V3D root){
+		V3D rel = ppivot.get_vector(root);
 		if(parent != null){
-			Vec3d new0 = position.add(rel);
-			if(parent.isVehicle() && render) return new0;
-			return parent.getRelativeVector(new0, render);
+			return parent.getPrevRelativeVector(prevpos.add(rel));
 		}
 		return rel;
 	}
-
-	public Vec3d getPrevRelativeVector(Vec3d root, boolean render){
-		Vec3d rel = prevaxe.get_vector(root, isVehicle() ? 90 : 0);
-		if(parent != null){
-			Vec3d new0 = prevpos.add(rel);
-			if(parent.isVehicle() && render) return new0;
-			return parent.getPrevRelativeVector(new0, render);
-		}
-		return rel;
-	}
-
-	// UNTESTED
-	/*private Vec3d calcRelativeRot(Vec3d root){
-		if(root == null){
-			root = new Vec3d(axe.getYaw(), axe.getPitch(), axe.getRoll());
-		}
-		else{
-			root = root.add(axe.getYaw(), axe.getPitch(), axe.getRoll());
-		}
-		if(parent != null && !parent.isVehicle()) root = parent.calcRelativeRot(root);
-		return root;
-	}
-
-	public Vec3d getRelativeRot(){
-		if(prerot == null) prerot = calcRelativeRot(null);
-		return prerot;
-	}*/
 
 	public final boolean isVehicle(){
 		return id.equals(DEFAULT);

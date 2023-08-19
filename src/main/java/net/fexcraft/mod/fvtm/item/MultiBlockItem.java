@@ -11,10 +11,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.util.Properties;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,7 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements DataCoreItem<MultiBlockData>, ItemTextureable.ItemTex<MultiBlock> {
+public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements DataCoreItem<MultiBlockData>{;//}, ItemTex<MultiBlock> {
 
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs ctab;
@@ -40,9 +38,9 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
 		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
-        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
-		ctab = Resources.getCreativeTab(type);
+		//TODO ctab = Resources.getCreativeTab(type);
 	}
 
     @SideOnly(Side.CLIENT)
@@ -120,7 +118,7 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
         }
     }
 
-    @Override
+    //@Override
     public TypeCore<MultiBlock> getDataType(){
         return type;
     }

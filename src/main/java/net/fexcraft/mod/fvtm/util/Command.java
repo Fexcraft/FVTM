@@ -1,26 +1,23 @@
 package net.fexcraft.mod.fvtm.util;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
-import java.io.File;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
+
 import java.util.HashMap;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
-import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
@@ -96,20 +93,20 @@ public class Command extends CommandBase {
             case "packs":{
             	Print.chat(sender, "");
             	Print.chat(sender, "&0[&2FVTM Packs&0]&6 = = = = = =");
-            	for(Addon addon : Resources.ADDONS){
-            		Print.chat(sender, "&e" + addon.getRegistryName().getPath() + " &b- &7" + addon.getName());
+            	for(Addon addon : ADDONS){
+            		Print.chat(sender, "&e" + addon.getID().id() + " &b- &7" + addon.getName());
             	}
             	break;
             }
             case "pack-info":{
-            	Addon addon = Resources.getAddon(args[1]);
+            	Addon addon = getAddon(args[1]);
             	if(addon == null){
             		Print.chat(sender, "not found");
             		return;
             	}
             	Print.chat(sender, "");
             	Print.chat(sender, "&0[&2FVTM Pack Info&0]&6 = = = = = =");
-            	Print.chat(sender, "&2ID: &7" + addon.getRegistryName().getPath());
+            	Print.chat(sender, "&2ID: &7" + addon.getID().id());
             	Print.chat(sender, "&2Name: &7" + addon.getName());
             	Print.chat(sender, "&2Version: &7" + addon.getVersion());
             	if(addon.getAuthors().size() > 0){
@@ -120,9 +117,9 @@ public class Command extends CommandBase {
                 		else Print.chat(sender, "&7- " + Static.getPlayerNameByUUID(uuid));
                 	}
             	}
-            	Print.chat(sender, "&2URL: &7" + addon.getURL());
+            	Print.chat(sender, "&2Website: &7" + addon.getWebsite());
             	Print.chat(sender, "&2License: &7" + addon.getLicense());
-            	Print.chat(sender, "&6Type: &7" + addon.getLoc().name().toLowerCase());
+            	Print.chat(sender, "&6Type: &7" + addon.getLocation().name().toLowerCase());
             	break;
             }
             case "vpinfo":{
@@ -150,7 +147,7 @@ public class Command extends CommandBase {
             			else{
             				giveKeyItem(player, data.getType().getKeyType(), data.getLockCode());
             				Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
-            				attr.value(attr.integer_value() + 1);
+            				attr.set(attr.asInteger() + 1);
             			}
             		}
             		else if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
@@ -165,7 +162,7 @@ public class Command extends CommandBase {
             			else{
             				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLockCode());
             				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
-            				attr.value(attr.integer_value() + 1);
+            				attr.set(attr.asInteger() + 1);
             			}
             		}
             		else{
@@ -241,7 +238,7 @@ public class Command extends CommandBase {
             	}
             	break;
             }
-            case "preset":{
+            /*case "preset":{
             	if(args.length < 2){
             		Print.chat(sender, "&9Preset commands:");
             		Print.chat(sender, "&7- /fvtm preset print");
@@ -312,7 +309,7 @@ public class Command extends CommandBase {
             		Print.chat(sender, "You need to hold a VehicleItem in hand."); return;
             	}
             	break;
-            }
+            }*/
             case "attr":{
             	if(args.length < 2){
             		Print.chat(sender, "&9Attribute commands:");
@@ -339,7 +336,7 @@ public class Command extends CommandBase {
                 		return;
                 	}
                 	if(args[1].equals("see")){
-                		Print.chat(sender, attr.string_value());
+                		Print.chat(sender, attr.asString());
                 		return;
                 	}
                 	else if(args[1].equals("set")){
@@ -352,8 +349,8 @@ public class Command extends CommandBase {
                 		}
                 		else{
                 			Attribute<?> base = data.getType().getBaseAttributes().get(args[2]);
-                			attr.initial(base.initial());
-                			attr.value(base.value());
+                			attr.setI(base.initial);
+                			attr.set(base.value);
                 			data.write(stack.getTagCompound());
                     		Print.chat(sender, "Attribute reset.");
                 		}

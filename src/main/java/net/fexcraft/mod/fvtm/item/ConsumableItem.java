@@ -5,11 +5,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.data.ContentItem;
+import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -25,123 +25,95 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ConsumableItem extends ItemFood implements ItemTex<Consumable> {
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
+public class ConsumableItem extends ItemFood implements ContentItem<Consumable> {
 	
-	private Consumable type;
+	private Consumable consumable;
 
     public ConsumableItem(Consumable consumable){
-		super(consumable.getHealAmount(), consumable.isAlwaysEdible()); this.type = consumable;
-		this.setMaxStackSize(consumable.getMaxStackSize()); this.setHasSubtypes(true);
-        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-        if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+		super(consumable.getHealAmount(), consumable.isAlwaysEdible());
+        this.consumable = consumable;
+		setMaxStackSize(consumable.getMaxStack());
+        setHasSubtypes(true);
+        setRegistryName(consumable.getID().colon());
+        setTranslationKey(consumable.getID().colon());
+        if(!EnvInfo.CLIENT) return;
+        setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(consumable));
 	}
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
-        tooltip.add(Formatter.format("&9Type: &7" + (type.isDrinkable() ? "drink/beverage" : "food")));
-        tooltip.add(Formatter.format("&9Heal Amout: &7" + type.getHealAmount()));
-        tooltip.add(Formatter.format("&9Saturation: &7" + type.getSaturation()));
-        if(type.isWolfFood()){
+        tooltip.add(Formatter.format("&9Name: &7" + consumable.getName()));
+        for(String s : consumable.getDescription()) tooltip.add(Formatter.format(I18n.format(s)));
+        tooltip.add(Formatter.format("&9Type: &7" + (consumable.isDrinkable() ? "drink/beverage" : "food")));
+        tooltip.add(Formatter.format("&9Heal Amout: &7" + consumable.getHealAmount()));
+        tooltip.add(Formatter.format("&9Saturation: &7" + consumable.getSaturation()));
+        if(consumable.isWolfFood()){
             tooltip.add(Formatter.format("&9&oLiked by wolves."));
         }
-        //TAN data
-        if(type.isAlwaysEdible()){
-            tooltip.add(Formatter.format("&8&oAlways " + (type.isDrinkable() ? "drinkable" : "edible") + "."));
+        if(consumable.isAlwaysEdible()){
+            tooltip.add(Formatter.format("&8&oAlways " + (consumable.isDrinkable() ? "drinkable" : "edible") + "."));
         }
-        if(type.getOreDictionaryId() != null){
-        	tooltip.add(Formatter.format("&9OreDict: &7" + type.getOreDictionaryId()));
+        if(consumable.getOreDictId() != null){
+        	tooltip.add(Formatter.format("&9OreDict: &7" + consumable.getOreDictId()));
         }
     }
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
-    		items.add(type.newItemStack());
+    		items.add(consumable.getNewStack().local());
     	}
     }
 
     @Override
     public EnumAction getItemUseAction(ItemStack stack){
-        return type.isDrinkable() ? EnumAction.DRINK : EnumAction.EAT;
+        return consumable.isDrinkable() ? EnumAction.DRINK : EnumAction.EAT;
     }
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack){
-        return type.getItemUseDuration();
+        return consumable.getItemUseDuration();
     }
 
     @Override
     public boolean isWolfsFavoriteMeat(){
-        return type.isWolfFood();
+        return consumable.isWolfFood();
     }
 
     @Override
     public int getHealAmount(ItemStack stack){
-        return type.getHealAmount();
+        return consumable.getHealAmount();
     }
 
     @Override
     public float getSaturationModifier(ItemStack stack){
-        return type.getSaturation();
+        return consumable.getSaturation();
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
         ItemStack itemstack = player.getHeldItem(hand);
-        /*if(con.isDrinkable() && GenericTrigger.TOUGHASNAILS){
-            if(((toughasnails.thirst.ThirstHandler) toughasnails.api.thirst.ThirstHelper.getThirstData(player)).isThirsty() || con.alwaysEdible()){
-                player.setActiveHand(hand);
-                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
-            }
-            else{
-                return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
-            }
-        }
-        else{*/
-            if(player.canEat(type.isAlwaysEdible())){
-                player.setActiveHand(hand);
-                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
-            }
-            else{
-                return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
-            }
-        //}
-    }
-
-	@Override
-	public TypeCore<Consumable> getDataType(){
-		return type;
-	}
-
-    /*@Override
-    public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity){
-        if(world.isRemote || entity instanceof EntityPlayer == false){
-            return stack;
-        }
-        if(type.isDrinkable() && GenericTrigger.TOUGHASNAILS){
-            EntityPlayer player = (EntityPlayer) entity;
-            toughasnails.api.stat.capability.IThirst thirst = toughasnails.api.thirst.ThirstHelper.getThirstData(player);
-            thirst.addStats(type.getTANData().getThirst(), type.getTANData().getHydration());
-            //
-            if(player.world.rand.nextFloat() < type.getTANData().getPoisonChance() && GenericTrigger.getTaNBooleanValue("toughasnals.enable_thirst")){
-                player.addPotionEffect(new PotionEffect(toughasnails.api.TANPotions.thirst, 600));
-            }
-            //
-            if(type.getContainerItemStack() == null){
-                stack.shrink(1);
-            }
-            else{
-                return type.getContainerItemStack().copy();
-            }
-            return stack;
+        if(player.canEat(consumable.isAlwaysEdible())){
+            player.setActiveHand(hand);
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
         }
         else{
-            return super.onItemUseFinish(stack, world, entity);
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
         }
-    }*/
+    }
+
+    @Override
+    public Consumable getContent(){
+        return consumable;
+    }
+
+    @Override
+    public ContentType getType(){
+        return ContentType.CONSUMABLE;
+    }
 
 }

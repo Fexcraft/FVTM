@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
@@ -11,7 +13,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class ContainerModel extends GenericModel implements FCLItemModel {
+public class ContainerModel extends DefaultModel implements FCLItemModel {
 	
 	public static final ContainerModel EMPTY = new ContainerModel();
 	@Deprecated public static final String[] defval = new String[]{ "body", "body_colored_primary", "body_door_open_colored_primary",

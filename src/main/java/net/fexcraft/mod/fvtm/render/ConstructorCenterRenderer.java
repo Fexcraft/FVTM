@@ -1,26 +1,24 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.GenericModel.RENDERDATA;
-
-import org.lwjgl.opengl.GL11;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.BlockModel;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 @fTESR
 public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCenterEntity> {
@@ -44,18 +42,18 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         GL11.glRotated(offrot, 0, 1, 0); offrot = null; GL11.glRotated(90, 0, 1D, 0);
         boolean vehicle = tile.getVehicleData() != null;
         //
-        if(vehicle && tile.getVehicleData().getAttribute("constructor_show").boolean_value()){
+        if(vehicle && tile.getVehicleData().getAttribute("constructor_show").asBoolean()){
             if(tile.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	GL11.glPushMatrix();
             	tile.updateLiftState();
             	TexUtil.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
-            	for(ConstructorLiftModel model : tile.models) model.render(BlockModel.RENDERDATA.set((BlockData)null, tile, null, null, false));
+            	for(ConstructorLiftModel model : tile.models) model.render(RENDERDATA.set((BlockData)null, tile, null, null, false));
                 GL11.glPopMatrix();
             }
             else if(tile.getVehicleData().getType().getVehicleType().isRailVehicle()){
         		if(tile.track == null) tile.track = generateNewTrack();
-        		if(tile.track.gauge == null) tile.track.gauge = getGauge(tile.getVehicleData().getAttribute("gauge").integer_value());
+        		if(tile.track.gauge == null) tile.track.gauge = getGauge(tile.getVehicleData().getAttribute("gauge").asInteger());
             	if(tile.track.railmodel == null){ RailRenderer.generateTrackModel(tile.track, tile.track.gauge.getModel()); }
             	int l = 0;
             	if(tile.getVehicleData().getFrontConnector() != null && tile.getVehicleData().getRearConnector() != null){

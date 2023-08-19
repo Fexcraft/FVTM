@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,17 +13,13 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
-import net.fexcraft.mod.fvtm.data.attribute.AttrUpdate;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -36,6 +33,7 @@ import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.ColorFunction;
@@ -44,6 +42,9 @@ import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -74,6 +75,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected TreeMap<String, PartSlots> psproviders = new TreeMap<>();
+	public HashMap<String, ArrayList<Entry<String, PartData>>> sorted_parts = new HashMap<>();
 	protected SwivelPoint rootpoint;
 	protected String displayname;
 
@@ -85,8 +87,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			rotpoints.put(point.id, point.clone(null));
 		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
-			Attribute<?> copy = attr.copy(null);
-			attributes.put(copy.id(), copy);
+			Attribute<?> copy = attr.createCopy(null);
+			attributes.put(copy.id, copy);
 		}
 		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
 			this.wheels.put(entry.getKey(), entry.getValue().copy(null));
@@ -129,7 +131,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//
 		NBTTagList alist = new NBTTagList();
 		for(Attribute<?> attr : attributes.values()){
-			alist.appendTag(attr.write(new NBTTagCompound()));
+			alist.appendTag(attr.save(TagCW.create()).local());
 		}
 		compound.setTag("Attributes", alist);
 		//
@@ -137,15 +139,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
-		NBTTagList wlist = new NBTTagList();
+		/*NBTTagList wlist = new NBTTagList();
 		for(Entry<String, WheelSlot> entry : wheels.entrySet()){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("id", entry.getKey());
 			entry.getValue().write(com);
 			wlist.appendTag(com);
 		}
-		compound.setTag("WheelSlots", wlist);
-		wlist = new NBTTagList();
+		compound.setTag("WheelSlots", wlist);*/
+		NBTTagList wlist = new NBTTagList();
 		for(Entry<String, Vec3d> vec : wheelpos.entrySet()){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("id", vec.getKey());
@@ -170,7 +172,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			NBTTagList points = new NBTTagList();
 			for(SwivelPoint point : rotpoints.values()){
 				if(point.id.equals("vehicle")) continue;
-				points.appendTag(point.write(new NBTTagCompound()));
+				points.appendTag(point.write(new TagCWI()).local());
 			}
 			if(!points.isEmpty()) compound.setTag("SwivelPoints", points);
 		}
@@ -204,26 +206,31 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		NBTTagList alist = (NBTTagList)compound.getTag("Attributes");
 		if(alist != null){
 			for(NBTBase base : alist){
-				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("id")) continue;
+				NBTTagCompound com = (NBTTagCompound)base;
+				if(!com.hasKey("id")) continue;
 				if(com.getString("id").startsWith("turn_light_")) continue;
 				Attribute<?> attr = getAttribute(com.getString("id"));
 				if(attr != null){
-					attr.read(com);
+					attr.load(new TagCWI(com));
 				}
 				else{
-					attr = Attribute.parse(com);
-					if(attr != null) attributes.put(attr.id(), attr);
+					attr = Attribute.parse(new TagCWI(com));
+					if(attr != null) attributes.put(attr.id, attr);
 				}
 			}
 		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
-			if(!attributes.containsKey(attr.id())){
-				Attribute<?> copy = attr.copy(null);
-				attributes.put(copy.id(), copy);
+			if(!attributes.containsKey(attr.id)){
+				Attribute<?> copy = attr.createCopy(null);
+				attributes.put(copy.id, copy);
 			}
-			attributes.get(attr.id()).copyAABBs(attr).external(attr.external()).perm(attr.perm());
+			Attribute<?> attri = attributes.get(attr.id);
+			attri.copyBoxesFrom(attr);
+			attri.perm = attr.perm;
 		}
-		if(Static.isClient()) for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
+		if(EnvInfo.CLIENT){
+			for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
+		}
 		//
 		texture.load(compound, type);
 		//
@@ -241,15 +248,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//
 		this.refreshModificableDataByParts();
 		//
-		NBTTagList wlist = (NBTTagList)compound.getTag("WheelSlots");
+		/*NBTTagList wlist = (NBTTagList)compound.getTag("WheelSlots");
 		if(wlist != null){
 			for(NBTBase base : wlist){
 				NBTTagCompound com = (NBTTagCompound)base;
 				WheelSlot slot = wheels.get(com.getString("id"));
 				if(slot != null) slot.read(com); else continue;
 			}
-		}
-		wlist = (NBTTagList)compound.getTag("WheelPos");
+		}*/
+		NBTTagList wlist = (NBTTagList)compound.getTag("WheelPos");
 		if(wlist != null){ wheelpos.clear();
 			for(NBTBase base : wlist){
 				NBTTagCompound com = (NBTTagCompound)base;
@@ -268,10 +275,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(NBTBase base : points){
 				NBTTagCompound com = (NBTTagCompound)base;
 				if(rotpoints.containsKey(com.getString("id"))){
-					rotpoints.get(com.getString("id")).read(null, this, com);
+					rotpoints.get(com.getString("id")).read(null, this, new TagCWI(com));
 				}
 				else{
-					SwivelPoint point = new SwivelPoint(this, com);
+					SwivelPoint point = new SwivelPoint(this, new TagCWI(com));
 					rotpoints.put(point.id, point);
 				}
 			}
@@ -296,7 +303,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(PartData part : parts.values()){
 			if(part.hasFunction("fvtm:wheel_positions")){
 				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
-				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos())));
+				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos().toV3D())));
 			}
 		}
 		//
@@ -367,14 +374,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		//
 		for(Attribute<?> attr : attributes.values()){
-			if(attr.origin() == null) continue;
-			String origin = attr.origin().split("\\|")[0];
+			if(attr.origin == null) continue;
+			String origin = attr.origin.split("\\|")[0];
 			PartData part = parts.get(origin);
 			if(part == null) continue;
 			for(Attribute<?> ettr : part.getType().getBaseAttributes()){
-				if(ettr.id().equals(attr.id())){
-					attr.copyAABBs(ettr);
-					attr.external(ettr.external());
+				if(ettr.id.equals(attr.id)){
+					attr.copyBoxesFrom(ettr);
 					break;
 				}
 			}
@@ -387,6 +393,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				PartSlots ps = data.getValue().getFunction(PartSlotsFunction.class, "fvtm:part_slots").getPartSlotss();
 				if(!ps.isEmpty()) psproviders.put(data.getKey(), ps);
 			}
+		}
+		if(type.getModel() != null){
+			((VehicleModel)type.getModel()).sortparts(this);
 		}
 	}
 
@@ -419,30 +428,30 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	/** Null-Safe attribute value check. Works with tri-state attributes too. */
 	public Boolean getAttributeBoolean(String id, boolean def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.tristate_value();
+		return attr == null ? def : attr.asTristate();
 	}
 
 	/** Null-Safe attribute value check. Works with integer attributes too. */
 	public float getAttributeFloat(String id, float def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.float_value();
+		return attr == null ? def : attr.asFloat();
 	}
 
 	/** Null-Safe attribute value check. */
 	public int getAttributeInteger(String id, int def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.integer_value();
+		return attr == null ? def : attr.asInteger();
 	}
 
 	/** Null-Safe attribute value check. Works with other attribute types too. */
 	public String getAttributeString(String id, String def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.string_value();
+		return attr == null ? def : attr.asString();
 	}
 
 	public Boolean getAttributeTristate(String id, Boolean def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.tristate_value();
+		return attr == null ? def : attr.asTristate();
 	}
 	
 	/** @return null if installed successfully. */
@@ -455,7 +464,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			//
 			if(!hotinst){
 				this.resetAttributes();
-				this.updateAttributes(null, AttrUpdate.INITIAL);
+				//TODO replace with static modifiers
+				//this.updateAttributes(null, AttrUpdate.INITIAL);
 			}
 			//
 			this.refreshModificableDataByParts();
@@ -473,7 +483,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			//
 			if(!hotinst){
 				this.resetAttributes();
-				this.updateAttributes(null, AttrUpdate.INITIAL);
+				//TODO replace with static modifiers
+				//this.updateAttributes(null, AttrUpdate.INITIAL);
 			}
 			//
 			this.refreshModificableDataByParts();
@@ -500,7 +511,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	private void insertAttributesFromPart(PartData data, String catin){
 		String dataid = catin + "|" + data.getType().getRegistryName().toString();
 		for(Attribute<?> attr : data.getType().getBaseAttributes()){
-			String[] valid = attr.target().split(",");
+			String[] valid = attr.target.split(",");
 			boolean pass = false;
 			boolean not = false;
 			for(String val : valid){
@@ -522,54 +533,34 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					break;
 				}
 				if(val.startsWith("pack-")){
-					ResourceLocation loc = new ResourceLocation(val.substring(5));
-					if(loc.equals(this.getType().getAddon().getRegistryName())){
+					if(val.substring(5).equals(getType().getAddon().getID().colon())){
 						pass = !not;
 						break;
 					}
 				}
 			}
-			if(pass && !this.getAttributes().containsKey(attr.id())){
-				this.getAttributes().put(attr.id(), attr.copy(dataid));
-			}
-		}
-		//Print.console(data.getType().getBaseAttributes());
-		//Print.console(attributes);
-		//add modifiers
-		for(Modifier<?> mod : data.getType().getBaseModifiers()){
-			String target = mod.target().contains(":") ? mod.target().split(":")[1] : mod.target();
-			if(this.getAttributes().containsKey(target)){
-				this.getAttributes().get(target).addModifier(mod.copy(dataid));
+			if(pass && !this.getAttributes().containsKey(attr.id)){
+				this.getAttributes().put(attr.id, attr.createCopy(dataid));
 			}
 		}
 	}
 
 	private void removeAttributesFromPart(PartData data, String category){
 		String datain = category + "|" + data.getType().getRegistryName().toString();
-		this.attributes.entrySet().removeIf(pre -> pre.getValue().origin() != null && pre.getValue().origin().equals(datain));
-		for(Attribute<?> attr : this.attributes.values()){
-			attr.getModifiers().removeIf(pre -> pre.origin() != null && pre.origin().equals(datain));
-		}
+		this.attributes.entrySet().removeIf(pre -> pre.getValue().origin != null && pre.getValue().origin.equals(datain));
 	}
 
 	public void resetAttributes(){
 		for(Attribute<?> attr : attributes.values()){ attr.reset(); }
 	}
 
-	public void updateAttributes(VehicleEntity ent, AttrUpdate call){
-		for(Attribute<?> attr : attributes.values()){ attr.updateValue(this, ent, call); }
-	}
-
 	public void clearAttributes(){
 		if(!attributes.isEmpty()) attributes.clear();
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
-			if(!attr.target().startsWith("self")) continue;
-			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
+			if(!attr.target.startsWith("self")) continue;
+			Attribute<?> copy = attr.createCopy(null);
+			attributes.put(copy.id, copy);
 		}
-	}
-
-	public void clearModifiers(){
-		for(Attribute<?> attr : attributes.values()) attr.getModifiers().clear();
 	}
 	
 	public java.util.Map<String, PartData> getParts(){
@@ -641,7 +632,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public double getThrottle(){
-		return getAttribute("throttle").float_value();
+		return getAttribute("throttle").asFloat();
 	}
 
 	public ArrayList<String> getInventories(){
@@ -655,39 +646,39 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public boolean getLightsState(){
-		return getAttribute("lights").boolean_value();
+		return getAttribute("lights").asBoolean();
 	}
 
 	public boolean getFogLightsState(){
-		return getAttribute("lights_fog").boolean_value();
+		return getAttribute("lights_fog").asBoolean();
 	}
 
 	public boolean getLongLightsState(){
-		return getAttribute("lights_long").boolean_value();
+		return getAttribute("lights_long").asBoolean();
 	}
 
 	public boolean getSpecialLightsState(){
-		return getAttribute("lights_other").boolean_value();
+		return getAttribute("lights_other").asBoolean();
 	}
 
 	public boolean getTurnLightLeft(){
-		return Boolean.FALSE.equals(getAttribute("turn_lights").tristate_value());
+		return Boolean.FALSE.equals(getAttribute("turn_lights").asTristate());
 	}
 
 	public boolean getTurnLightRight(){
-		return Boolean.TRUE.equals(getAttribute("turn_lights").tristate_value());
+		return Boolean.TRUE.equals(getAttribute("turn_lights").asTristate());
 	}
 
 	public boolean getWarningLights(){
-		return getAttribute("warning_lights").boolean_value();
+		return getAttribute("warning_lights").asBoolean();
 	}
 
 	public int getStoredFuel(){
-		return getAttribute("fuel_stored").integer_value();
+		return getAttribute("fuel_stored").asInteger();
 	}
 
 	public int getFuelCapacity(){
-		return getAttribute("fuel_capacity").integer_value();
+		return getAttribute("fuel_capacity").asInteger();
 	}
 
 	public VehicleScript getVehicleScript(String string){
@@ -718,7 +709,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 	
 	public List<Attribute<?>> getAttributes(String group){
-		return attributes.values().stream().filter(pre -> pre.group() != null && pre.group().equals(group)).collect(Collectors.toList());
+		return attributes.values().stream().filter(pre -> pre.group != null && pre.group.equals(group)).collect(Collectors.toList());
 	}
 	
 	public boolean isPreset(){
@@ -799,7 +790,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 	
 	public List<Attribute<?>> getAttributeGroup(String group){
-		return attributes.values().stream().filter(attr -> attr.group() != null && attr.group().equals(group)).collect(Collectors.toList());
+		return attributes.values().stream().filter(attr -> attr.group != null && attr.group.equals(group)).collect(Collectors.toList());
 	}
 
 	public TreeMap<String, PartSlots> getPartSlotProviders(){
@@ -826,7 +817,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public int getAttributeIndex(Attribute<?> attribute){
-		return new ArrayList<>(attributes.keySet()).indexOf(attribute.id());
+		return new ArrayList<>(attributes.keySet()).indexOf(attribute.id);
 	}
 
 	public Attribute<?> getAttributeByIndex(int idx){

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+
 import java.awt.image.BufferedImage;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,11 +20,13 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.InternalAddon;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.data.root.DataType;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -39,7 +43,7 @@ public class DataUtil {
 		String regname = obj.has("RegistryName") ? obj.get("RegistryName").getAsString() : null;
 		if(regname == null) return null;
 		if(regname.contains(":")) return new ResourceLocation(regname);
-		return new ResourceLocation((addon == null ? "fvtm" : addon.getRegistryName().getPath()) + ":" + regname);
+		return new ResourceLocation((addon == null ? "fvtm" : addon.getID().id()) + ":" + regname);
 	}
 
 	public static ResourceLocation getRegistryName(String key, JsonObject obj){
@@ -50,10 +54,10 @@ public class DataUtil {
 		if(obj.has("Addon")){
 			String addin = obj.get("Addon").getAsString();
 			if(addin.contains(":")) addin = addin.split(":")[1];
-			Addon addon = Resources.getAddon(addin);
+			Addon addon = FvtmRegistry.getAddon(addin);
 			if(addon != null) return addon;
 		}
-		return Resources.ADDONS.get(InternalAddon.REGNAME);
+		return ADDONS.get(InternalAddon.REGNAME);
 	}
 	
 	public static List<String> getStringArray(JsonObject obj, String key, boolean split, boolean immutable){
@@ -186,6 +190,12 @@ public class DataUtil {
 		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
 	}
 
+	public static V3D readVec(TagLW tag){
+		NBTTagList list = tag.local();
+		if(list.isEmpty() || list.tagCount() < 3) return null;
+		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
+	}
+
 	public static JsonElement writeVecJSON(V3D vec){
 		JsonArray array = new JsonArray();
 		array.add(vec.x);
@@ -211,13 +221,13 @@ public class DataUtil {
         } catch (Exception e){ e.printStackTrace(); }
 		return null;
 	}
-	
+
 	public static final ResourceLocation RSLC_GENERAL = new ResourceLocation("fvtm:textures/items/ph_general.png");
 	public static final ResourceLocation RSLC_VEHICLE = new ResourceLocation("fvtm:textures/items/ph_vehicle.png");
 	public static final ResourceLocation RSLC_MBLOCK = new ResourceLocation("fvtm:textures/items/ph_multiblock.png");
 	public static final ResourceLocation RSLC_PART = new ResourceLocation("fvtm:textures/items/ph_part.png");
 
-	public static ResourceLocation getItemTexture(ResourceLocation regname, DataType type,  JsonObject obj){
+	public static ResourceLocation getItemTexture(ResourceLocation regname, ContentType type, JsonObject obj){
 		if(obj.has("ItemTexture")){
 			return new ResourceLocation(obj.get("ItemTexture").getAsString());
 		}
@@ -225,9 +235,9 @@ public class DataUtil {
 			ResourceLocation resloc = new ResourceLocation(regname.getNamespace(), "textures/items/" + regname.getPath() + ".png");
 			if(Static.side().isClient()){
 				if(net.fexcraft.mod.fvtm.util.TexUtil.isMissing(resloc)){
-					if(type == DataType.VEHICLE) return RSLC_VEHICLE;
-					else if(type == DataType.PART) return RSLC_PART;
-					else if(type == DataType.MULTIBLOCK) return RSLC_MBLOCK;
+					if(type == ContentType.VEHICLE) return RSLC_VEHICLE;
+					else if(type == ContentType.PART) return RSLC_PART;
+					else if(type == ContentType.MULTIBLOCK) return RSLC_MBLOCK;
 					else return RSLC_GENERAL;
 				}
 			}

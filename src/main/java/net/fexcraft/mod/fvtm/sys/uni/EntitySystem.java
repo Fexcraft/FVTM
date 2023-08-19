@@ -1,18 +1,19 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_PARTICLES;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
-import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.entity.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction.EmitterData;
 import net.minecraft.client.Minecraft;
@@ -82,7 +83,7 @@ public class EntitySystem extends DetachedSystem {
 		});
 		if(expired.size() > 0){
 			for(ParticleEntity part : expired){
-				Particle particle = Resources.PARTICLES.get(part.particle.next);
+				Particle particle = FvtmRegistry.PARTICLES.get(part.particle.next);
 				if(particle != null) particles.add(new ParticleEntity(particle, new V3D(part.pos), null, null));
 			}
 			expired.clear();
@@ -124,7 +125,7 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	public void add(GenericVehicle vehicle){
-		if(Config.DISABLE_PARTICLES) return;
+		if(DISABLE_PARTICLES) return;
 		for(Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:particle_emitter")) continue;
 			ParticleEmitterFunction func = entry.getValue().getFunction("fvtm:particle_emitter");
@@ -151,14 +152,14 @@ public class EntitySystem extends DetachedSystem {
 			this.part = key;
 			this.data = data;
 			this.edata = edata;
-			off = data.getInstalledPos().add(edata.pos).to16Double();
+			off = toV3(data.getInstalledPos().add(edata.pos));
 			freq = edata.frequency == 0 ? edata.particle.frequency : edata.frequency;
 			dir = edata.dir == null ? edata.particle.dir : edata.dir;
 			speed = edata.speed == null ? edata.particle.speed : edata.speed;
 		}
 
 		public boolean invalid(Collection<ParticleEntity> particles, int mul){
-			if(edata.getConditional() == null || edata.getConditional().isMet(GenericModel.RENDERDATA.set(vehicle.getVehicleData(), vehicle, null, data, part, false))){
+			if(edata.getConditional() == null || edata.getConditional().isMet(DefaultModel.RENDERDATA.set(vehicle.getVehicleData(), vehicle, null, data, part, false))){
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());

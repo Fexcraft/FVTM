@@ -5,16 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.script.ScrAction;
+import net.fexcraft.lib.script.Script;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockScript;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.sys.script.ScrAction;
-import net.fexcraft.mod.fvtm.sys.script.Script;
-import net.fexcraft.mod.fvtm.sys.script.wrappers.BlockScriptContext;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.event;
 
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
-import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
+import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class ConditionEvent extends Event {

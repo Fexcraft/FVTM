@@ -12,8 +12,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
@@ -116,7 +115,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				}
 				if(slots.copy_rot) rosult = rosult.add(mount.getInstalledRot());
 			}
-			result = result.add(slots.get(idx).pos);
+			result = result.add(new Pos(slots.get(idx).pos));
 		}
 		if(idata != null) compatible = idata.compatible;
 		if(compatible != null && !compatible.isEmpty()){

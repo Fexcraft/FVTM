@@ -15,10 +15,8 @@ import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -35,14 +33,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerItem extends TypeCoreItem<Container> implements DataCoreItem<ContainerData>, ItemTex<Container> {
+public class ContainerItem extends TypeCoreItem<Container> implements DataCoreItem<ContainerData> {//}, ItemTex<Container> {
 
     public ContainerItem(Container core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
     @SideOnly(Side.CLIENT)
@@ -125,7 +122,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         }
     }
 
-	@Override
+	//@Override
 	public TypeCore<Container> getDataType(){
 		return type;
 	}

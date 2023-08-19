@@ -11,15 +11,12 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.PresetTab;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.TransmissionFunction;
 import net.minecraft.client.resources.I18n;
@@ -38,14 +35,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<VehicleData>, JunctionGridItem, ItemTex<Vehicle>  {
+public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<VehicleData>, JunctionGridItem {//}, ItemTex<Vehicle>  {
 
     public VehicleItem(Vehicle core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
+        //TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
     @SideOnly(Side.CLIENT)
@@ -61,13 +57,13 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         if(data.hasPart("engine")){
             tooltip.add(Formatter.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
             tooltip.add(Formatter.format("&9Fuel Group: &7" + data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup()[0]));
-            tooltip.add(Formatter.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").integer_value() + "mB"));
+            tooltip.add(Formatter.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").asInteger() + "mB"));
         }
         if(data.hasPart("transmission")){
         	TransmissionFunction func = data.getFunctionInPart("transmission", "fvtm:transmission");
             tooltip.add(Formatter.format("&9Transmission: &7" + (func == null ? "disfunctional" : func.isAutomatic() ? "automatic" : "manual")));
         }
-        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").float_value() + "kg"));
+        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").asFloat() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));
     	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLockCode()));
         //temporary
@@ -122,10 +118,6 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
     	}
-    	if(tab == PresetTab.INSTANCE){
-    		if(tab == PresetTab.INSTANCE) (PresetTab.INSTANCE.ITEMS = items).clear();
-    		for(ItemStack stack : PresetTab.INSTANCE.get()){ items.add(stack); }
-    	}
     }
     
     @Override
@@ -142,7 +134,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	return type.getVehicleType().isRailVehicle();
     }
 
-	@Override
+	//@Override
 	public TypeCore<Vehicle> getDataType(){
 		return type;
 	}

@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.SwivelPointMover;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -17,15 +15,15 @@ public class SPM_DI implements SwivelPointMover {
 	private boolean pos, bool, loop;//, ret;
 	public boolean moved;
 	
-	public SPM_DI(JsonObject obj){
-		this(obj.get("attribute").getAsString(), obj.get("var").getAsString());
-		speed = JsonUtil.getIfExists(obj, "speed", 1).floatValue();
-		bool = JsonUtil.getIfExists(obj, "bool_based", false);
-		min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();
-		max = JsonUtil.getIfExists(obj, "max", Integer.MAX_VALUE).floatValue();
-		def = JsonUtil.getIfExists(obj, "def", 0).floatValue();
-		loop = JsonUtil.getIfExists(obj, "loop", false);
-		//ret = JsonUtil.getIfExists(obj, "return", false);
+	public SPM_DI(JsonMap map){
+		this(map.get("attribute").string_value(), map.get("var").string_value());
+		speed = map.getFloat("speed", 1);
+		bool = map.getBoolean("bool_based", false);
+		min = map.getFloat("min", Integer.MIN_VALUE);
+		max = map.getFloat("max", Integer.MAX_VALUE);
+		def = map.getFloat("def", 0);
+		loop = map.getBoolean("loop", false);
+		//ret = map.getBoolean("return", false);
 	}
 	
 	public SPM_DI(String key, String value){
@@ -72,16 +70,16 @@ public class SPM_DI implements SwivelPointMover {
 	public void update(VehicleEntity entity, SwivelPoint point){
 		if(attr == null){
 			attr = entity.getVehicleData().getAttribute(attribute);
-			last = bool ? attr.float_value() : def;
+			last = bool ? attr.asFloat() : def;
 			move(point, axe, pos, last);
 			//Print.bar(Minecraft.getMinecraft().player, get(point) + "=" + last);
 		}
 		if(bool){
-			if(attr.valuetype().isTristate()){
-				last += attr.conditional_tristate(0f, speed, -speed);
+			if(attr.valuetype.isTristate()){
+				last += attr.tristate(0f, speed, -speed);
 			}
 			else{
-				if(attr.boolean_value()) last += speed;
+				if(attr.asBoolean()) last += speed;
 			}
 			if(last > max){
 				if(loop) last = min + (last - max);
@@ -95,12 +93,12 @@ public class SPM_DI implements SwivelPointMover {
 			move(point, axe, pos, last);
 			return;
 		}
-		if(last != attr.float_value()){
+		if(last != attr.asFloat()){
 			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
-			float diff = attr.float_value() - last;
+			float diff = attr.asFloat() - last;
 			if(diff < 0.001 && diff > -0.001) return;
 			if(Math.abs(diff) <= speed){
-				move(point, axe, pos, last = attr.float_value());
+				move(point, axe, pos, last = attr.asFloat());
 			}
 			else{
 				last += diff > 0 ? speed : -speed;

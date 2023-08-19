@@ -1,9 +1,7 @@
 package net.fexcraft.mod.fvtm.event;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -27,13 +25,13 @@ public class TypeEvents<T extends TypeCore<T>> extends Event {
 		return config;
 	}
 	
-	public static class MaterialCreated extends TypeEvents<Material> {
+	/*public static class MaterialCreated extends TypeEvents<Material> {
 
 		public MaterialCreated(TypeCore<Material> type, JsonObject obj){
 			super(type, obj);
 		}
 		
-	}
+	}*/
 	
 	public static class PartCreated extends TypeEvents<Part> {
 		

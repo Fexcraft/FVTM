@@ -8,15 +8,12 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,16 +25,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartData>, ItemTex<Part> {
+public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartData>{;//}, ItemTex<Part> {
 
     public PartItem(Part core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         //this.setRegistryName(core.getRegistryName());
         //this.setUnlocalizedName(this.getRegistryName().toString());
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
     @SideOnly(Side.CLIENT)
@@ -64,13 +60,8 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         if(type.getBaseAttributes().size() > 0){
         	tooltip.add(Formatter.format("&0&9This part has &7%s &9Attribute/s.", type.getBaseAttributes().size()));
         }
-        if(type.getBaseModifiers().size() > 0){
-        	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getBaseModifiers().size()));
-        	if(Static.dev()){
-        		for(Modifier<?> mod : type.getBaseModifiers()){
-                    tooltip.add(Formatter.format("&9" + mod.id() + ": &7" + mod.target() + " / " + mod.string_value() + " [" + mod.impl() + "]"));
-        		}
-        	}
+        if(type.getStaticModifiers().size() > 0){
+        	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getStaticModifiers().size()));
         }
         if(type.getDefaultFunctions().size() > 0){
         	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getDefaultFunctions().size()));
@@ -118,7 +109,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
     	}
     }
 
-	@Override
+	//@Override
 	public TypeCore<Part> getDataType(){
 		return type;
 	}

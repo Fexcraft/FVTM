@@ -7,9 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,17 +20,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ClothItem extends ItemArmor implements ItemTex<Cloth> {
+public class ClothItem extends ItemArmor {;//implements ItemTex<Cloth> {
 	
 	private Cloth type;
 	
 	public ClothItem(Cloth cloth){
-		super(cloth.getArMaterial(), 0, cloth.getEquitmentSlot());
+		super((ArmorMaterial)cloth.getMaterial().getLocalMaterial(), 0, cloth.getEquitmentSlot());
 		if(cloth.getMaxDamage() > 0) this.setMaxDamage(cloth.getMaxDamage());
 		//
-        (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+		//TODO item registry  (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(Resources.getCreativeTab(type));
+        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
 	}
 
 	@Override
@@ -62,7 +60,7 @@ public class ClothItem extends ItemArmor implements ItemTex<Cloth> {
         super.addInformation(stack, world, tooltip, flag);
     }
 
-	@Override
+	//@Override
 	public TypeCore<Cloth> getDataType(){
 		return type;
 	}

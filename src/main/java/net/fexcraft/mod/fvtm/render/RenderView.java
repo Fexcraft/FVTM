@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.entity.RenderViewEntity;
-import net.fexcraft.mod.fvtm.sys.particle.ParticleRenderer;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;

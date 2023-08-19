@@ -18,7 +18,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper.InputType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
@@ -486,7 +486,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		
 	}
 
-	public static void parseRecipes(Addon addon, String filename, InputStream stream){
+	public static void parseRecipes(AddonOld addon, String filename, InputStream stream){
 		try{
 			Scanner scanner = new Scanner(stream);
 			String line = null;
@@ -544,7 +544,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		
 		public void read(String line);
 		
-		public void finish(Addon addon);
+		public void finish(AddonOld addon);
 		
 	}
 	
@@ -579,7 +579,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 
 		@Override
-		public void finish(Addon addon){
+		public void finish(AddonOld addon){
 			RecipeRegistry.addBluePrintRecipe(category.length() == 0 ? addon.getRegistryName().getPath() + ".recipes" : category, out, stacks.toArray(new ItemStack[0]));
 		}
 		
@@ -604,7 +604,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 
 		@Override
-		public void finish(Addon addon){
+		public void finish(AddonOld addon){
 			ITEMGROUPS.put(id, Ingredient.fromStacks(stacks.toArray(new ItemStack[0])));
 		}
 		
@@ -684,7 +684,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 
 		@Override
-		public void finish(Addon addon){
+		public void finish(AddonOld addon){
 			if(recipe.input.isEmpty() && recipe.consume.isEmpty()){
 				Print.debug("Recipe '" + recipe.id + "' for '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "' has no input/consumption, skipping!");
 				return;

@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.function.BiPredicate;
 
-import net.fexcraft.mod.fvtm.data.root.Model.ModelRenderData;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 
 /** Some Predefined Conditions, to be used with custom FunctionalProgram extensions. */

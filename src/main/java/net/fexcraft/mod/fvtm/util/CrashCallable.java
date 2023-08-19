@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+
 import java.io.File;
 
 import net.minecraftforge.fml.common.ICrashCallable;
@@ -8,41 +10,41 @@ public class CrashCallable implements ICrashCallable {
 
 	@Override
 	public String call() throws Exception {
-		String[] lines = new String[Resources.ADDONS.size()];
+		String[] lines = new String[ADDONS.size()];
 		int size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.get(i).getRegistryName().getPath().length() > size){
-				size = Resources.ADDONS.get(i).getRegistryName().getPath().length();
+			if(ADDONS.get(i).getID().id().length() > size){
+				size = ADDONS.get(i).getID().id().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] = "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.get(i).getRegistryName().getPath());
+			lines[i] = "| " + String.format("%-" + (size + 1) + "s", ADDONS.get(i).getID().id());
 		}
 		//
 		size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.get(i).getName().length() > size){
-				size = Resources.ADDONS.get(i).getName().length();
+			if(ADDONS.get(i).getName().length() > size){
+				size = ADDONS.get(i).getName().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] += "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.get(i).getName());
+			lines[i] += "| " + String.format("%-" + (size + 1) + "s", ADDONS.get(i).getName());
 		}
 		//
 		size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.get(i).getVersion().length() > size){
-				size = Resources.ADDONS.get(i).getVersion().length();
+			if(ADDONS.get(i).getVersion().length() > size){
+				size = ADDONS.get(i).getVersion().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] += "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.get(i).getVersion());
+			lines[i] += "| " + String.format("%-" + (size + 1) + "s", ADDONS.get(i).getVersion());
 		}
 		//
 		size = 4;
 		File file;
 		for(int i = 0; i < lines.length; i++){
-			file = Resources.ADDONS.get(i).getFile();
+			file = ADDONS.get(i).getFile();
 			String filename = file == null ? "null" : file.toString();
 			lines[i] += "| " + String.format("%-64s", "..." + (filename.length() > 64 ? filename.substring(filename.length() - 64) : filename));
 		}

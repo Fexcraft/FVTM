@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,23 +15,32 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
-import net.fexcraft.mod.fvtm.data.root.*;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -39,7 +50,7 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, Tabbed, ItemTextureable {
+public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, ItemTextureable {
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
@@ -49,7 +60,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid, ctab, overlayid;
-	protected LegacyData legacy_data;
+	protected SimplePhysData legacy_data;
 	protected Uni12Data uni12_data;
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
@@ -61,26 +72,15 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected ResourceLocation keytype;
 	protected int maxkeys;
 	protected PartSlots partslots;
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	protected boolean no3ditem;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
 
 	@Override
-	public Vehicle setRegistryName(ResourceLocation name){
-		this.registryname = name;
-		return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return this.registryname;
-	}
-
-	@Override
-	public Class<Vehicle> getRegistryType(){
-		return Vehicle.class;
 	}
 
 	@Override
@@ -107,23 +107,23 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.keytype = obj.has("KeyType") ? new ResourceLocation(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
 		//
 		if(obj.has("Attributes")){
-			JsonArray array = obj.get("Attributes").getAsJsonArray();
-			for(JsonElement elm : array){
-				Attribute<?> attr = Attribute.parse(elm.getAsJsonObject());
-				if(attr != null) this.attributes.put(attr.id(), attr);
+			JsonObject attrs = obj.get("Attributes").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : attrs.entrySet()){
+				Attribute<?> attr = Attribute.parse(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
+				if(attr != null) this.attributes.put(attr.id, attr);
 			}
 		}
 		// Check for missing attributes / fill in default values;
-		List<Attribute<?>> attrs = type.getDefaultAttributesForType(this);
+		List<Attribute<?>> attrs = type.getDefaultAttributesForType(trailer);
 		for(Attribute<?> attr : attrs){
-			if(!attributes.containsKey(attr.id())){
+			if(!attributes.containsKey(attr.id)){
 				//Attribute<?> copy = attr.copy(null);
 				//attributes.put(copy.id(), copy);
-				attributes.put(attr.id(), attr);
+				attributes.put(attr.id, attr);
 			}
 			else{
-				attributes.get(attr.id()).minmax(attr.min(), attr.max()).group(attr.group()).sync(attr.sync()).icons(attr.icons(), false);
-				
+				attributes.get(attr.id).limit(attr.min, attr.max).group(attr.group).sync(attr.sync);
+				attributes.get(attr.id).icons.putAll(attr.icons);
 			}
 		}
 		//
@@ -132,19 +132,19 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			for(JsonElement elm : array){
 				JsonObject json = elm.getAsJsonObject();
 				String id = json.get("id").getAsString();
-				this.defwheelpos.put(id, new WheelSlot(json));
+				this.defwheelpos.put(id, new WheelSlot(JsonHandler.parse(json.toString(), true).asMap()));
 			}
 		}
 		//
 		if(obj.has("LegacyData")){
-			this.legacy_data = new LegacyData(obj.get("LegacyData").getAsJsonObject());
+			this.legacy_data = new SimplePhysData(JsonHandler.parse(obj.get("LegacyData").toString(), true).asMap());
 		}
 		this.trailer = obj.has("Trailer") ? obj.get("Trailer").getAsBoolean() : obj.has("Wagon") ? obj.get("Wagon").getAsBoolean() : false;
 		if(obj.has("FrontConnector")){
-			this.def_front_conn = Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()).to16Double();
+			this.def_front_conn = toV3(Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()));
 		}
 		if(obj.has("RearConnector")){
-			this.def_rear_conn = Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()).to16Double();
+			this.def_rear_conn = toV3(Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()));
 		}
 		if(obj.has("CouplerRange")){
 			this.coupler_range = obj.get("CouplerRange").getAsFloat();
@@ -159,7 +159,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
 			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
 				try{
-					SwivelPoint point = new SwivelPoint(elm.getAsJsonObject());
+					SwivelPoint point = new SwivelPoint(JsonHandler.parse(elm.toString(), true).asMap());
 					rotpoints.put(point.id, point);
 				}
 				catch(Exception e){
@@ -184,7 +184,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20), null, 0));
 			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20), null, 0));
 		}
-		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? obj.get("PartSlots").getAsJsonArray() : new JsonArray());
+		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? JsonHandler.parse(obj.get("PartSlots").toString(), false).asArray() : new net.fexcraft.app.json.JsonArray());
 		//
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
@@ -192,7 +192,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		this.overlayid = obj.has("Overlay") ? obj.get("Overlay").getAsString() : "default";
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new VehicleItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.VehicleCreated(this, obj));
@@ -200,8 +200,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.VEHICLE;
+	public ContentType getDataType(){
+		return ContentType.VEHICLE;
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, modeldata, VehicleModel.class);
+		this.model = FvtmResources.getModel(modelid, modeldata, VehicleModel.class);
 	}
 
 	public <ATTR extends Attribute<?>> ATTR getBaseAttribute(String id){
@@ -256,7 +256,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return defwheelpos;
 	}
 
-	public LegacyData getLegacyData(){
+	public SimplePhysData getLegacyData(){
 		return legacy_data;
 	}
 
@@ -316,7 +316,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return categories;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
@@ -338,12 +338,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 	
 	@Override
-	public boolean no3DItemModel(){
+	public boolean noCustomItemModel(){
 		return no3ditem;
 	}
 

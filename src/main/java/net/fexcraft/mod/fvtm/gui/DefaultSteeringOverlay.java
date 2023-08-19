@@ -1,12 +1,10 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import static net.fexcraft.mod.fvtm.Config.OVERLAY_ON_BOTTOM;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -22,13 +20,15 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Default Steering Overlay
@@ -121,7 +121,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		else{
 			Attribute<?> attr = index < offset.size() ? root.seat().vehicle.getVehicleData().getAttribute(offset.get(index)) : getSoftAttr(index - offset.size());
 			if(attr == null) return;
-			Print.bar(root.mc.player, Formatter.format("&eA&7: &a" + attr.id() + " &7: &b" + attr.string_value()));
+			Print.bar(root.mc.player, Formatter.format("&eA&7: &a" + attr.id + " &7: &b" + attr.asString()));
 		}
 	}
 
@@ -164,9 +164,9 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(attr == null) return;
 		packet.setString("target_listener", GuiHandler.LISTENERID);
 		packet.setString("task", "attr_toggle");
-		packet.setString("attr", attr.id());
+		packet.setString("attr", attr.id);
 		if(i > 1) packet.setBoolean("reset", true);
-		packet.setBoolean("bool", !attr.valuetype().isBoolean() ? i < 0 : i > 0);
+		packet.setBoolean("bool", !attr.valuetype.isBoolean() ? i < 0 : i > 0);
 		packet.setInteger("entity", root.seat().vehicle.getEntityId());
 		Print.debug(packet);
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
@@ -176,7 +176,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public Attribute<?> getSoftAttr(int index){
 		int i = 0;
 		for(Attribute<?> attr : attributes){
-			if(hard_attr.contains(attr.id())) continue;
+			if(hard_attr.contains(attr.id)) continue;
 			if(i == index) return attr;
 			i++;
 		}
@@ -281,11 +281,11 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks, GenericVehicle ent, VehicleData data){
 		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
-		int yoff = Config.OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
-		root.drawTexturedModalRect(0, yoff, 0, 0, 256, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
+		int yoff = OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
+		root.drawTexturedModalRect(0, yoff, 0, 0, 256, OVERLAY_ON_BOTTOM ? 40 : 45);
 		boolean wide = root.width > 256 + 158;
 		if(wide){
-			root.drawTexturedModalRect(root.width - 158, yoff, 0, root.toggables ? 166 : 211, 158, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
+			root.drawTexturedModalRect(root.width - 158, yoff, 0, root.toggables ? 166 : 211, 158, OVERLAY_ON_BOTTOM ? 40 : 45);
 		}
 		if(root.toggables) root.drawTexturedModalRect(root.width - 150 + (scroll % row * 16), yoff + 8 + (scroll >= row ? 16 : 0), 240, 240, 16, 16);
 		boolean noengine = !data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine");
@@ -308,23 +308,23 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 				offset.add("parking/hand brake");
 			}
 			if(!railed){
-				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("lights_fog");
-				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("lights_long");
 			}
-			root.mc.getTextureManager().bindTexture(data.getAttribute("lights").getCurrentIcon());
+			root.mc.getTextureManager().bindTexture(data.getAttribute("lights").getCurrentIcon().local());
 			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 			offset.add("lights");
 			if(turnsig){
-				root.mc.getTextureManager().bindTexture(data.getAttribute("turn_lights").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("turn_lights").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("turn_lights");
 			}
 			if(warnsig){
-				root.mc.getTextureManager().bindTexture(data.getAttribute("warning_lights").getCurrentIcon());
+				root.mc.getTextureManager().bindTexture(data.getAttribute("warning_lights").getCurrentIcon().local());
 				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
 				offset.add("warning_lights");
 			}
@@ -332,7 +332,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		//
 		int a = offset.size(), m = page * row2;
 		for(Attribute<?> attr : attributes){
-			if(hard_attr.contains(attr.id())) continue;
+			if(hard_attr.contains(attr.id)) continue;
 			if(a < m){
 				a++;
 				continue;
@@ -340,7 +340,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 			if(a >= m + row2) break;
 			int x = root.width - 150 + (a % 9) * 16;
 			int y = a - m > 8 ? 24 : 8;
-			root.mc.getTextureManager().bindTexture(attr.getCurrentIcon());
+			root.mc.getTextureManager().bindTexture(attr.getCurrentIcon().local());
 			root.drawRectIcon(x, yoff + y, 16, 16);
 			a++;
 		}
@@ -420,7 +420,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(Command.OTHER && root.seat().vehicle.wheels != null){//debug info
 			for(int i = 0; i < root.seat().vehicle.wheels.length; i++){
 				WheelEntity wheel = root.seat().vehicle.wheels[i];
-				root.mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering() ? "steering, " : "") + (wheel.slot.powered(root.seat().vehicle.getVehicleData()) ? "powered" : "idle")), 7, 62 + (i * 11), 0xffffff);
+				root.mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering ? "steering, " : "") + (wheel.slot.powered(root.seat().vehicle.getVehicleData()) ? "powered" : "idle")), 7, 62 + (i * 11), 0xffffff);
 			}
 		}
 		else if(STRS.size() > 0){
@@ -456,7 +456,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		attributes.clear();
 		if(root.seat() == null || root.seat().vehicle == null) return;
 		for(Attribute<?> attr : root.seat().vehicle.getVehicleData().getAttributes().values()){
-			if(attr.seats().contains(root.seat().seatdata.name)){
+			if(attr.access.contains(root.seat().seatdata.name)){
 				attributes.add(attr);
 			}
 		}

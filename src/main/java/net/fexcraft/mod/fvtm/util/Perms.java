@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import static net.minecraftforge.server.permission.DefaultPermissionLevel.ALL;
 import static net.minecraftforge.server.permission.DefaultPermissionLevel.OP;
 
-import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.server.permission.PermissionAPI;
 

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.JUNCTION_ADJUSTER;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
@@ -17,7 +19,6 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -57,13 +58,13 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || Config.DISABLE_RAILS){ return EnumActionResult.PASS; }
+        if(world.isRemote || DISABLE_RAILS){ return EnumActionResult.PASS; }
         RailSystem syscap = SystemManager.get(Systems.RAIL, world);
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
+        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID), cached;
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
         	Junction junc = syscap.getJunction(vector);

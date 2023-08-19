@@ -1,18 +1,17 @@
 package net.fexcraft.mod.fvtm.model;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable.ItemTex;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class ItemPlaceholderModel implements FCLItemModel {
 	
@@ -22,10 +21,10 @@ public class ItemPlaceholderModel implements FCLItemModel {
 	
 	@Override
 	public void renderItem(TransformType type, ItemStack stack, EntityLivingBase entity){
-		if(stack.getItem() instanceof ItemTex == false) return;
-		TypeCore<?> tyco = ((ItemTex<?>)stack.getItem()).getDataType();
+		if(stack.getItem() instanceof TextureableItem == false) return;
+		Content<?> tyco = ((TextureableItem<?>)stack.getItem()).getContentType();
 		if(tyco == null || tyco instanceof ItemTextureable == false) return;
-		ResourceLocation itex = ((ItemTextureable)tyco).getItemTexture();
+		IDL itex = ((ItemTextureable)tyco).getItemTexture();
 		//
 		boolean rd3 = type == TransformType.THIRD_PERSON_LEFT_HAND || type == TransformType.THIRD_PERSON_RIGHT_HAND;
 		GL11.glPushMatrix();

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.model;
 
-import net.fexcraft.mod.fvtm.model.ModelGroup.FunctionalProgram;
+import net.fexcraft.mod.fvtm.model.Program.FunctionalProgram;
 
 public class FunctionalPrograms {
 	

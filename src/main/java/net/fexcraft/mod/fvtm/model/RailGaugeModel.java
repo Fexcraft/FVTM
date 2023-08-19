@@ -6,7 +6,6 @@ import java.util.List;
 import net.fexcraft.lib.common.math.V3D;
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -15,7 +14,7 @@ import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.minecraft.util.math.Vec3d;
 
-public class RailGaugeModel extends GenericModel {
+public class RailGaugeModel extends DefaultModel {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public ArrayList<V3D[]> rail_model = new ArrayList<>();

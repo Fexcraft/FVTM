@@ -1,13 +1,16 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.util.Axes;
+import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
@@ -32,8 +35,8 @@ public class SeatCache {
     protected SwivelPoint point;
     //
     public Seat seatdata;
-    public Axes looking, prevlooking;
-    public Axes passlooking, prevpasslooking;
+    public Pivot looking, prevlooking;
+    public Pivot passlooking, prevpasslooking;
     //
     //private double pass_x, pass_y, pass_z;
     private float pass_yaw, pass_pitch;//, pass_roll;
@@ -55,8 +58,8 @@ public class SeatCache {
 	}
 
 	public void resetAxes(){
-        prevlooking = new Axes(); looking = new Axes();
-        passlooking = new Axes(); prevpasslooking = new Axes();
+        prevlooking = new Pivot(); looking = new Pivot();
+        passlooking = new Pivot(); prevpasslooking = new Pivot();
         looking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
         prevlooking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
 	}
@@ -179,12 +182,26 @@ public class SeatCache {
 
 	public boolean onKeyPress(KeyPress key, EntityPlayer player){
 		if(key == null) return false;
-		else if(key.toggableInput() && vehicle.world.isRemote){
+		else if(key.toggable_input() && vehicle.world.isRemote){
     		if(clicktimer > 0) return false;
     		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, ItemStack.EMPTY);
         	clicktimer += 10;
         	return bool;
 		}
+        else if(!seatdata.driver && vehicle.world.isRemote){
+			if(clicktimer > 0) return false;
+			Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values().stream().filter(pr -> (pr.valuetype.isTristate() || pr.valuetype.isNumber()) && pr.access.contains(seatdata.name)).collect(Collectors.toList());
+			boolean bool = false;
+			for(Attribute<?> attr : attributes){
+				Float val = attr.getKeyValue(key);
+				if(val != null){
+					KeyPress mouse = val == 0 ? KeyPress.RESET : val > 0 ? KeyPress.MOUSE_MAIN : KeyPress.MOUSE_RIGHT;
+					if(bool = ToggableHandler.sendToggle(attr, vehicle, mouse, val, player)) break;
+				}
+			}
+			clicktimer += 10;
+            return bool;
+        }
 		/*else if(key.dismount() && vehicle.world.isRemote && passenger != null){
 			passenger.dismountRidingEntity();
 			return true;

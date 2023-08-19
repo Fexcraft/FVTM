@@ -100,13 +100,13 @@ public class VehicleContainer extends GenericContainer {
 			}
 			else{
 				if(packet.getString("cargo").equals("update_fuel_tank")){
-					veh.getVehicleData().getAttribute("fuel_stored").value(packet.getInteger("state"));
+					veh.getVehicleData().getAttribute("fuel_stored").set(packet.getInteger("state"));
 					if(packet.hasKey("stack")) fuel.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack")));
 				}
 				if(packet.getString("cargo").equals("update_fuel_data")){
-					veh.getVehicleData().getAttribute("fuel_primary").value(packet.getString("primary"));
-					veh.getVehicleData().getAttribute("fuel_secondary").value(packet.getString("secondary"));
-					veh.getVehicleData().getAttribute("fuel_quality").value(packet.getFloat("quality"));
+					veh.getVehicleData().getAttribute("fuel_primary").set(packet.getString("primary"));
+					veh.getVehicleData().getAttribute("fuel_secondary").set(packet.getString("secondary"));
+					veh.getVehicleData().getAttribute("fuel_quality").set(packet.getFloat("quality"));
 				}
 				if(packet.getString("cargo").equals("update_stack")){
 					inventorySlots.get(packet.getInteger("index")).putStack(new ItemStack(packet.getCompoundTag("stack")));
@@ -175,9 +175,9 @@ public class VehicleContainer extends GenericContainer {
 					if(pass){
 						int stored = item.getStoredFuelAmount(stack);
 						if(stored > 0){
-							boolean considerempty = veh.getVehicleData().getAttribute("fuel_stored").integer_value() <= 1000;
-							int in = veh.getVehicleData().getAttribute("fuel_stored").integer_value();
-							int cantake = veh.getVehicleData().getAttribute("fuel_capacity").integer_value() - in;
+							boolean considerempty = veh.getVehicleData().getAttribute("fuel_stored").asInteger() <= 1000;
+							int in = veh.getVehicleData().getAttribute("fuel_stored").asInteger();
+							int cantake = veh.getVehicleData().getAttribute("fuel_capacity").asInteger() - in;
 							if(cantake < stored) stored = cantake;
 							if(stored > 100) stored = 100;
 							if(stored > 0){
@@ -186,36 +186,36 @@ public class VehicleContainer extends GenericContainer {
 								anychange = true;
 								//
 								boolean morechanges = false;
-								if(veh.getVehicleData().getAttribute("fuel_primary").string_value().length() == 0){
-									veh.getVehicleData().getAttribute("fuel_primary").value(fuel.getPrimaryGroup());
+								if(veh.getVehicleData().getAttribute("fuel_primary").asString().length() == 0){
+									veh.getVehicleData().getAttribute("fuel_primary").set(fuel.getPrimaryGroup());
 									morechanges = true;
 								}
 								Attribute<?> seco = veh.getVehicleData().getAttribute("fuel_secondary");
 								Attribute<?> qual = veh.getVehicleData().getAttribute("fuel_quality");
-								if(!seco.string_value().equals(fuel.secondary)){
-									seco.value(considerempty ? fuel.secondary : "mixed");
+								if(!seco.asString().equals(fuel.secondary)){
+									seco.set(considerempty ? fuel.secondary : "mixed");
 									morechanges = true;
 								}
-								float oldqual = qual.float_value();
-								int stor = veh.getVehicleData().getAttribute("fuel_stored").integer_value();
+								float oldqual = qual.asFloat();
+								int stor = veh.getVehicleData().getAttribute("fuel_stored").asInteger();
 								if(!considerempty){
 									if(fuel.quality != oldqual){
 										float per0 = in / stor, per1 = stored / stor;
-										qual.value(per0 * oldqual + per1 * fuel.quality);
+										qual.set(per0 * oldqual + per1 * fuel.quality);
 										// TODO check this for correctness.
 									}
-									if(!morechanges) morechanges = qual.float_value() != oldqual;
+									if(!morechanges) morechanges = qual.asFloat() != oldqual;
 								}
 								else{
-									qual.value(fuel.quality);
+									qual.set(fuel.quality);
 									morechanges = true;
 								}
 								if(morechanges){
 									NBTTagCompound compound = new NBTTagCompound();
 									compound.setString("cargo", "update_fuel_data");
-									compound.setString("primary", veh.getVehicleData().getAttribute("fuel_primary").string_value());
-									compound.setString("secondary", seco.string_value());
-									compound.setFloat("quality", qual.float_value());
+									compound.setString("primary", veh.getVehicleData().getAttribute("fuel_primary").asString());
+									compound.setString("secondary", seco.asString());
+									compound.setFloat("quality", qual.asFloat());
 									this.send(Side.CLIENT, compound);
 								}
 							}
@@ -226,7 +226,7 @@ public class VehicleContainer extends GenericContainer {
 				if(!player.world.isRemote && anychange){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fuel_tank");
-					compound.setInteger("state", veh.getVehicleData().getAttribute("fuel_stored").integer_value());
+					compound.setInteger("state", veh.getVehicleData().getAttribute("fuel_stored").asInteger());
 					compound.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);
 				}

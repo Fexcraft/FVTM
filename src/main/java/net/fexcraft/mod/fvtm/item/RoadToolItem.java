@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
+import static net.fexcraft.mod.fvtm.Config.ROAD_PLACING_GRID;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +11,6 @@ import javax.annotation.Nullable;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
@@ -22,9 +24,8 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Compat;
-import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -131,14 +132,14 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	Print.chat(player, "&cNo permission to use this item.");
         	return EnumActionResult.FAIL;
         }
-        GridV3D vector = new GridV3D(world, new Vec3d(pos.down()).add(hitX, hitY, hitZ), Config.ROAD_PLACING_GRID);
+        GridV3D vector = new GridV3D(world, new Vec3d(pos.down()).add(hitX, hitY, hitZ), ROAD_PLACING_GRID);
     	RoadPlacingUtil.place(world, player, stack, vector);
 		return EnumActionResult.SUCCESS;
     }
 
 	@SuppressWarnings("deprecation")
 	public boolean placeRoad(EntityPlayer player, World world, ItemStack stack, GridV3D vector, Road _road, ICommandSender sender){
-		if(_road.length > Config.MAX_ROAD_LENGTH){
+		if(_road.length > MAX_ROAD_LENGTH){
 			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
 			return false;
 		}

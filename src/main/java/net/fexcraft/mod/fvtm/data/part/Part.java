@@ -2,8 +2,11 @@ package net.fexcraft.mod.fvtm.data.part;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -12,26 +15,25 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.Modifier;
-import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Model.ModelData;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -41,6 +43,8 @@ import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -49,10 +53,10 @@ import net.minecraftforge.common.MinecraftForge;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, Tabbed, ItemTextureable {
+public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, ItemTextureable {
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
-	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
+	protected LinkedHashMap<String, String> attr_mods = new LinkedHashMap<>();
 	protected List<NamedResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
@@ -66,24 +70,14 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected ArrayList<JsonElement> scripts_data = new ArrayList<>();
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
-	protected ResourceLocation itemloc;
+	protected IDL itemloc;
 	protected boolean no3ditem;
 	
 	public Part(){}
 
 	@Override
-	public Part setRegistryName(ResourceLocation name){
-		registryname = name; return this;
-	}
-
-	@Override
 	public ResourceLocation getRegistryName(){
 		return registryname;
-	}
-
-	@Override
-	public Class<Part> getRegistryType(){
-		return Part.class;
 	}
 
 	@Override
@@ -99,17 +93,16 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		this.textures = DataUtil.getTextures(obj);
 		//
 		if(obj.has("Attributes")){
-			JsonArray array = obj.get("Attributes").getAsJsonArray();
-			for(JsonElement elm : array){
-				Attribute<?> attr = Attribute.parse(elm.getAsJsonObject());
+			JsonObject attrs = obj.get("Attributes").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : attrs.entrySet()){
+				Attribute<?> attr = Attribute.parse(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
 				if(attr != null) this.attributes.add(attr);
 			}
 		}
-		if(obj.has("Modifiers")){
-			JsonArray array = obj.get("Modifiers").getAsJsonArray();
-			for(JsonElement elm : array){
-				Modifier<?> mod = Modifier.parse(elm.getAsJsonObject());
-				if(mod != null) this.modifiers.add(mod);
+		if(obj.has("AttributeModifiers")){
+			JsonObject mods = obj.get("AttributeModifiers").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : obj.entrySet()){
+				attr_mods.put(entry.getKey(), entry.getValue().getAsString());
 			}
 		} 
 		if(obj.has("Function") || obj.has("Functions")){
@@ -188,7 +181,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
 			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
 				try{
-					SwivelPoint point = new SwivelPoint(elm.getAsJsonObject());
+					SwivelPoint point = new SwivelPoint(JsonHandler.parse(elm.toString(), true).asMap());
 					rotpoints.put(point.id, point);
 				}
 				catch(Exception e){
@@ -212,7 +205,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 			modeldata = DataUtil.getModelData(obj);
 		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-        this.itemloc = DataUtil.getItemTexture(registryname, getDataType(), obj);
+		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
         this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
 		this.item = new PartItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.PartCreated(this, obj));
@@ -251,8 +244,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	}
 
 	@Override
-	public DataType getDataType(){
-		return DataType.PART;
+	public ContentType getDataType(){
+		return ContentType.PART;
 	}
 
 	@Override
@@ -287,16 +280,12 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	
 	@Override
 	public void loadModel(){
-		this.model = Resources.getModel(modelid, modeldata, PartModel.class);
+		this.model = FvtmResources.getModel(modelid, modeldata, PartModel.class);
 	}
 	
 	@Nullable
 	public Collection<Attribute<?>> getBaseAttributes(){
 		return attributes;
-	}
-	
-	public Collection<Modifier<?>> getBaseModifiers(){
-		return modifiers;
 	}
 
 	@Override
@@ -334,19 +323,23 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		return rotpoints;
 	}
 
-	@Override
+	//@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
 
 	@Override
-	public ResourceLocation getItemTexture(){
+	public IDL getItemTexture(){
 		return itemloc;
 	}
 	
 	@Override
-	public boolean no3DItemModel(){
+	public boolean noCustomItemModel(){
 		return no3ditem;
+	}
+
+	public HashMap<String, String> getStaticModifiers(){
+		return attr_mods;
 	}
 
 }

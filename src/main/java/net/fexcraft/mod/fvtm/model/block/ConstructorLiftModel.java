@@ -3,22 +3,23 @@ package net.fexcraft.mod.fvtm.model.block;
 
 import java.util.ArrayList;
 
+import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.1.7 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-public class ConstructorLiftModel extends GenericModel {
+public class ConstructorLiftModel extends DefaultModel {
 	
 	public ModelGroup engine;
 	public ModelGroup pillar;
@@ -33,8 +34,8 @@ public class ConstructorLiftModel extends GenericModel {
 
 	public ConstructorLiftModel(LiftingPoint point, LiftingPoint counter){
 		super();
-		textureX = 64;
-		textureY = 64;
+		tex_width = 64;
+		tex_height = 64;
 		this.addToCreators("Ferdinand (FEX___96)");
 		float dis = 0;
 		boolean singular = point.isSingular() || counter == null;
@@ -53,52 +54,52 @@ public class ConstructorLiftModel extends GenericModel {
 		//
 		if(point.pos.z >= 0){
 			engine = new ModelGroup("engine");
-			engine.add(new ModelRendererTurbo(engine, 25, 16, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 8, 12, 0, 1, 1, 4,
+			engine.add(new ModelRendererTurbo(engine, 25, 16, tex_width, tex_height).addHollowCylinder(0, 0, 0, 4, 0.001f, 8, 12, 0, 1, 1, 4,
 				null, new boolean[]{ true, true, false, true })
 				.setRotationPoint(0, -15, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 25, 25, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 1, 0.75f, 4,
+			engine.add(new ModelRendererTurbo(engine, 25, 25, tex_width, tex_height).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 				null, new boolean[]{ true, true, false, true })
 				.setRotationPoint(0, -7, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 25, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 0.75f, 1, 4,
+			engine.add(new ModelRendererTurbo(engine, 25, 14, tex_width, tex_height).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 0.75f, 1, 4,
 				null, new boolean[]{ false, true, false, true })
 				.setRotationPoint(0, -16, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 25, 29, textureX, textureY).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 1, 4,
+			engine.add(new ModelRendererTurbo(engine, 25, 29, tex_width, tex_height).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 1, 4,
 				null, new boolean[]{ true, true, false, true })
 				.setRotationPoint(0, -6, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 25, 37, textureX, textureY).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 0.75f, 4,
+			engine.add(new ModelRendererTurbo(engine, 25, 37, tex_width, tex_height).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 				null, new boolean[]{ true, false, false, true })
 				.setRotationPoint(0, -5, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 25, 46, textureX, textureY)
+			engine.add(new ModelRendererTurbo(engine, 25, 46, tex_width, tex_height)
 				.addBox(0, 0, 0, 1, 6, 3, 0, 1f, new boolean[]{ true, false, false, false, false, false })
 				.setRotationPoint(-4, -14, 4).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 32, 46, textureX, textureY)
+			engine.add(new ModelRendererTurbo(engine, 32, 46, tex_width, tex_height)
 				.addBox(0, 0, 0, 1, 6, 3, 0, 1f, new boolean[]{ false, true, false, false, false, false })
 				.setRotationPoint(3, -14, 4).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 52, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 1, 0.001f, 8, 8, 0, 1, 1, 5,
+			engine.add(new ModelRendererTurbo(engine, 52, 14, tex_width, tex_height).addHollowCylinder(0, 0, 0, 1, 0.001f, 8, 8, 0, 1, 1, 5,
 				new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
 				.setRotationPoint(0, -24, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 42, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
+			engine.add(new ModelRendererTurbo(engine, 42, 14, tex_width, tex_height).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
 				new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
 				.setRotationPoint(2, -24, 4).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
 			);
-			engine.add(new ModelRendererTurbo(engine, 47, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
+			engine.add(new ModelRendererTurbo(engine, 47, 14, tex_width, tex_height).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
 				new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
 				.setRotationPoint(-2, -24, 5).setRotationAngle(0, 0, 0)
 				.setTextured(true).setLines(false)
@@ -108,7 +109,7 @@ public class ConstructorLiftModel extends GenericModel {
 		else rotation = 180;
 		//
 		pillar = new ModelGroup("pillar");
-		pillar.add(new ModelRendererTurbo(pillar, 5, 56, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 56, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -116,7 +117,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -8, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 56, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 56, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -126,7 +127,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -8, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 56, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 56, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -136,7 +137,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -8, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 48, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 48, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -144,7 +145,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -16, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 48, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 48, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -154,7 +155,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -16, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 48, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 48, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -164,7 +165,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -16, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 40, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 40, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -172,7 +173,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -24, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 40, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 40, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -182,7 +183,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -24, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 40, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 40, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -192,7 +193,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -24, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 32, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 32, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -200,7 +201,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -32, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 32, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 32, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -210,7 +211,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -32, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 32, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 32, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -220,7 +221,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -32, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 24, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 24, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -228,7 +229,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -40, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 24, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 24, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -238,7 +239,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -40, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 24, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 24, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -248,7 +249,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -40, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 16, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 16, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -256,7 +257,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -48, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 16, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 16, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -266,7 +267,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -48, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 16, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 16, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -276,7 +277,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -48, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 8, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 8, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -284,7 +285,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -56, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 8, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 8, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -294,7 +295,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -56, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 8, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 8, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -304,7 +305,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -56, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 5, 0, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 5, 0, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(6, 8, 3)
 			.removePolygons(0, 1, 2, 3)
 			.setPolygonUV(4, new float[]{ 12.0f, 0.0f })
@@ -312,7 +313,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-3, -64, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 16, 0, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 16, 0, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0)
 			.removePolygons(0, 2, 3)
@@ -322,7 +323,7 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(-4, -64, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 0, 0, textureX, textureY).newBoxBuilder()
+		pillar.add(new ModelRendererTurbo(pillar, 0, 0, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, 0).setSize(1, 8, 4)
 			.setCorners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1)
 			.removePolygons(1, 2, 3)
@@ -332,98 +333,98 @@ public class ConstructorLiftModel extends GenericModel {
 			.setRotationPoint(3, -64, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 56, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 56, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -8, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 56, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 56, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -8, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 48, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 48, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -16, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 48, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 48, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -16, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 40, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 40, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -24, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 40, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 40, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -24, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 32, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 32, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -32, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 32, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 32, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -32, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 24, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 24, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -40, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 24, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 24, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -40, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 16, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 16, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -48, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 16, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 16, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -48, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 8, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 8, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -56, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 8, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 8, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -56, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 58, 0, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 58, 0, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(-3, -64, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 61, 0, textureX, textureY)
+		pillar.add(new ModelRendererTurbo(pillar, 61, 0, tex_width, tex_height)
 			.addBox(0, 0, 0, 1, 8, 1, 0, 1f, new boolean[]{ false, false, true, true, false, true })
 			.setRotationPoint(2, -64, -0.5f).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 25, 0, textureX, textureY).addBox(0, 0, 0, 8, 1, 5)
+		pillar.add(new ModelRendererTurbo(pillar, 25, 0, tex_width, tex_height).addBox(0, 0, 0, 8, 1, 5)
 			.setRotationPoint(-4, -65, -1).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		pillar.add(new ModelRendererTurbo(pillar, 25, 7, textureX, textureY).addBox(0, 0, 0, 8, 1, 5)
+		pillar.add(new ModelRendererTurbo(pillar, 25, 7, tex_width, tex_height).addBox(0, 0, 0, 8, 1, 5)
 			.setRotationPoint(-4, -0.1f, -1).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(pillar);
 		//
 		glider = new ModelGroup("glider");
-		glider.add(new ModelRendererTurbo(glider, 25, 60, textureX, textureY)
+		glider.add(new ModelRendererTurbo(glider, 25, 60, tex_width, tex_height)
 			.addShapeBox(0, 0, 0, 8, 2, 2, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-4, -2, -2).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
@@ -432,12 +433,12 @@ public class ConstructorLiftModel extends GenericModel {
 		//
 		Vec3f hol0 = new Vec3f(singular ? 3 : dis, -4, -zoff - 1);
 		holder0 = new ModelGroup("holder0");
-		holder0.add(new ModelRendererTurbo(holder0, 48, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
+		holder0.add(new ModelRendererTurbo(holder0, 48, 42, tex_width, tex_height).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
 			.setRotationPoint(hol0.x, hol0.y + 0.5f, hol0.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		holder0.add(new ModelRendererTurbo(holder0, 48, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
+		holder0.add(new ModelRendererTurbo(holder0, 48, 35, tex_width, tex_height).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
 			.setRotationPoint(hol0.x, hol0.y, hol0.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
@@ -446,12 +447,12 @@ public class ConstructorLiftModel extends GenericModel {
 		//
 		Vec3f hol1 = new Vec3f(singular ? -3 : -dis, -4, -zoff - 1);
 		holder1 = new ModelGroup("holder1");
-		holder1.add(new ModelRendererTurbo(holder1, 39, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
+		holder1.add(new ModelRendererTurbo(holder1, 39, 42, tex_width, tex_height).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
 			.setRotationPoint(hol1.x, hol1.y + 0.5f, hol1.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
-		holder1.add(new ModelRendererTurbo(holder1, 39, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
+		holder1.add(new ModelRendererTurbo(holder1, 39, 35, tex_width, tex_height).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
 			.setRotationPoint(hol1.x, hol1.y, hol1.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
@@ -460,7 +461,7 @@ public class ConstructorLiftModel extends GenericModel {
 		//
 		Vec3f ar0m = new Vec3f(3, -2, -1);
 		arm0 = new ModelGroup("arm0");
-		arm0.add(new ModelRendererTurbo(arm0, 39, 49, textureX, textureY).newBoxBuilder()
+		arm0.add(new ModelRendererTurbo(arm0, 39, 49, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, -0.5f).setSize((int)ar0m.dis(hol0) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
 			.setPolygonUV(0, new float[]{ 16.0f, 0.0f })
@@ -476,7 +477,7 @@ public class ConstructorLiftModel extends GenericModel {
 		//
 		Vec3f ar1m = new Vec3f(-3, -2, -1);
 		arm1 = new ModelGroup("arm1");
-		arm1.add(new ModelRendererTurbo(arm1, 39, 54, textureX, textureY).newBoxBuilder()
+		arm1.add(new ModelRendererTurbo(arm1, 39, 54, tex_width, tex_height).newBoxBuilder()
 			.setOffset(0, 0, -0.5f).setSize((int)ar1m.dis(hol1) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
 			.setPolygonUV(0, new float[]{ 16.0f, 0.0f })

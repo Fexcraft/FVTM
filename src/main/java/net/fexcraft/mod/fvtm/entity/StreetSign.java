@@ -231,7 +231,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
             return false;
         }
         ItemStack stack = player.getHeldItem(hand);
-        if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
+        if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem ){//TODO && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
             /*if(this.isLocked()){
                 this.unlock(world, player, stack, (KeyItem)stack.getItem());
             }

@@ -11,13 +11,13 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
+import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.AttributeBB;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -89,7 +89,7 @@ public class ToggableHandler {
 	        }
 			return false;
 		}
-		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBBs() && (pr.valuetype().isTristate() || pr.valuetype().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seats().contains(seat.seatdata.name)))).collect(Collectors.toList());
+		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBoxes() && (pr.valuetype.isTristate() || pr.valuetype.isNumber()) && (seat == null ? pr.external : (seat.seatdata.driver || pr.access.contains(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
 		}
@@ -100,83 +100,87 @@ public class ToggableHandler {
 			/*Print.debug(player, "none hit");*/ return false;
 		}
 		Attribute<?> attr = coll.attr;
-		if(attr.id().equals(last) && Time.getDate() < tilltime){
+		if(attr.id.equals(last) && Time.getDate() < tilltime){
 			/*Print.debug(player, "skipping till cooldown");*/ return true;
 		}
+		return sendToggle(attr, entity, press, null, player);
+	}
+
+	public static boolean sendToggle(Attribute<?> attr, VehicleEntity entity, KeyPress press, Float val, EntityPlayer player){
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
 		packet.setString("task", "attr_toggle");
-		packet.setString("attr", attr.id());
+		packet.setString("attr", attr.id);
 		packet.setInteger("entity", entity.getEntity().getEntityId());
 		Object old = attr.value();
 		switch(press){
 			case MOUSE_MAIN:{
-				if(attr.valuetype().isTristate()){
-					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? false : !attr.boolean_value());
-					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
+				if(attr.valuetype.isTristate()){
+					packet.setBoolean("bool", !attr.valuetype.isBoolean() ? false : !attr.asBoolean());
+					Print.bar(player, "&7Toggling: &6" + attr.id + " &a> " + packet.getBoolean("bool"));
 				}
-				else if(attr.valuetype().isFloat()){
-					float flaot = attr.float_value() + attr.getBB(attr.string_value()).increase;
+				else if(attr.valuetype.isFloat()){
+					float flaot = attr.asFloat() + (val != null ? val : attr.getBox(attr.asString()).increase);
 					packet.setFloat("value", flaot);
-					attr.value(flaot);
-					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
+					attr.set(flaot);
+					Print.bar(player, "&7Increasing: &6" + attr.id + " &a> " + packet.getFloat("value"));
 				}
-				else if(attr.valuetype().isInteger()){
-					int ent = attr.integer_value() + (int)attr.getBB(attr.string_value()).increase;
+				else if(attr.valuetype.isInteger()){
+					int ent = attr.asInteger() + (int)(val != null ? val : attr.getBox(attr.asString()).increase);
 					packet.setFloat("value", ent);
-					attr.value(ent);
-					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
+					attr.set(ent);
+					Print.bar(player, "&7Increasing: &6" + attr.id + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
 			case MOUSE_RIGHT:{
-				if(attr.valuetype().isTristate()){
-					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? true : !attr.boolean_value());
-					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
+				if(attr.valuetype.isTristate()){
+					packet.setBoolean("bool", !attr.valuetype.isBoolean() ? true : !attr.asBoolean());
+					Print.bar(player, "&7Toggling: &6" + attr.id + " &a> " + packet.getBoolean("bool"));
 				}
-				else if(attr.valuetype().isFloat()){
-					float flaot = attr.float_value() - attr.getBB(attr.string_value()).decrease;
+				else if(attr.valuetype.isFloat()){
+					float flaot = attr.asFloat() - (val != null ? -val : attr.getBox(attr.asString()).decrease);
 					packet.setFloat("value", flaot);
-					attr.value(flaot);
-					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
+					attr.set(flaot);
+					Print.bar(player, "&7Decreasing: &6" + attr.id + " &a> " + packet.getFloat("value"));
 				}
-				else if(attr.valuetype().isInteger()){
-					int ent = attr.integer_value() - (int)attr.getBB(attr.string_value()).decrease;
+				else if(attr.valuetype.isInteger()){
+					int ent = attr.asInteger() - (int)(val != null ? -val : attr.getBox(attr.asString()).decrease);
 					packet.setFloat("value", ent);
-					attr.value(ent);
-					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
+					attr.set(ent);
+					Print.bar(player, "&7Decreasing: &6" + attr.id + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
 			case RESET:{
-				if(attr.valuetype().isTristate()){
+				if(attr.valuetype.isTristate()){
 					packet.setBoolean("bool", false);
 					packet.setBoolean("reset", true);
-					Print.bar(player, "&7Resetting: &6" + attr.id());
+					Print.bar(player, "&7Resetting: &6" + attr.id);
 				}
-				else if(attr.valuetype().isFloat()){
-					float flaot = attr.getBB(attr.string_value()).reset;
+				else if(attr.valuetype.isFloat()){
+					float flaot = val != null ? val : attr.getBox(attr.asString()).reset;
 					packet.setFloat("value", flaot);
-					attr.value(flaot);
-					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
+					attr.set(flaot);
+					Print.bar(player, "&7Resetting: &6" + attr.id + " &a> " + packet.getFloat("value"));
 				}
-				else if(attr.valuetype().isInteger()){
-					int ent = (int)attr.getBB(attr.string_value()).reset;
+				else if(attr.valuetype.isInteger()){
+					int ent = (int)(val != null ? val : attr.getBox(attr.asString()).reset);
 					packet.setFloat("value", ent);
-					attr.value(ent);
-					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
+					attr.set(ent);
+					Print.bar(player, "&7Resetting: &6" + attr.id + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
-			default:
-				return false;
+			default: return false;
 		}
 		entity.getVehicleData().getScripts().forEach(script -> {
 			script.onAttributeToggle(entity.getEntity(), attr, old, player);
 		});
 		if(player.world.isRemote){
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
-			last = attr.id(); tilltime = Time.getDate() + 20;
+			last = attr.id;
+			tilltime = Time.getDate() + 20;
 		}
 		else{
 			ServerReceiver.INSTANCE.process(packet, player);
@@ -259,7 +263,7 @@ public class ToggableHandler {
 		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
 			if(entity instanceof VehicleEntity == false) continue;
 			//Print.debug("test");
-			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
+			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").asFloat() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
 				//Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + " " + entity.getName());
 				//Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
 				continue;
@@ -290,22 +294,22 @@ public class ToggableHandler {
 		}
 
 		public String id(){
-			return attr == null ? source + ":" + index : attr.id();
+			return attr == null ? source + ":" + index : attr.id;
 		}
 
 		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, Vec3d temp){
 			if(attr != null){
-				String attrid = (external ? "external-" : "") + attr.string_value();
-				AttributeBB abb = attr.getBB(attrid);
+				String attrid = (external ? "external-" : "") + attr.asString();
+				AttrBox abb = attr.getBox(attrid);
 				if(abb == null) return;
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(abb.swivel_point);
-				temp = point.getRelativeVector(abb.pos.x16, -abb.pos.y16, -abb.pos.z16);
+				temp = point.getRelativeVector(abb.pos.x, -abb.pos.y, -abb.pos.z);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
 				float te = abb.size;
-				aabbs.put(attr.id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
+				aabbs.put(attr.id, new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
 			else{
-				Pos pos = slots.get(index).pos;
+				Pos pos = new Pos(slots.get(index).pos);
 				if(!source.equals(PartSlots.VEHPARTSLOTS)) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
 				temp = point.getRelativeVector(pos.x16, point.isVehicle() ? -pos.y16 : pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());

@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
+import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
@@ -10,12 +9,16 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.render.VehicleRenderer;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.TransformMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
-public class VehicleModel extends GenericModel implements FCLItemModel {
+public class VehicleModel extends DefaultModel implements FCLItemModel {
 	
 	public static final VehicleModel EMPTY = new VehicleModel();
 	@Deprecated public static final String[] defval = new String[]{ "chassis", "body", "body_colored_primary", "body_colored_secondary",
@@ -173,27 +176,36 @@ public class VehicleModel extends GenericModel implements FCLItemModel {
 		//
 		{
 			GL11.glPushMatrix();
-			GL11.glRotated(180d, 1, 0, 0);
-			bindTexture(data.getCurrentTexture());
-			model.render(RENDERDATA.set(data, null, null, true));
-			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
-				bindTexture(entry.getValue().getCurrentTexture());
-            	if(entry.getValue().isInstalledOnSwivelPoint()){
-            		GL11.glPushMatrix();
-    	            PartModel.translateAndRotatePartOnSwivelPointFast(data, entry.getValue());
-                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey(), true));
-    	            GL11.glPopMatrix();
-            	}
-            	else{
-                	entry.getValue().getInstalledPos().translate();
-                    entry.getValue().getType().getModel().render(PartModel.RENDERDATA.set(data, null, null, entry.getValue(), entry.getKey(), true));
-                    entry.getValue().getInstalledPos().translateR();
-            	}
+			Model modVehicle = data.getType().getModel();
+			if(modVehicle != null){
+				GL11.glPushMatrix();
+				GL11.glRotatef(180f, 0f, 0f, 1f);
+				TexUtil.bindTexture(data.getCurrentTexture());
+				modVehicle.render(RENDERDATA.set(data, null, null, false));
+				GL11.glPopMatrix();
+			}
+			else {
+				TexUtil.bindTexture(data.getCurrentTexture());
+				DebugModels.CENTERSPHERE.render(1);
+			}
+			if(data.getParts().size() > 0){
+				VehicleRenderer.renderPoint(data.getRotationPoint("vehicle"), null, data, null, Minecraft.getMinecraft().getRenderPartialTicks());
 			}
 			GL11.glPopMatrix();
 		}
 		//GL11.glScalef(-scale.xCoord, -scale.yCoord, -scale.zCoord);
 		GL11.glPopMatrix();
+	}
+
+	public void sortparts(VehicleData data){
+		data.sorted_parts.clear();
+		for(String str : data.getRotationPoints().keySet()) data.sorted_parts.put(str, new ArrayList<>());
+		for(Entry<String, PartData> part : data.getParts().entrySet()){
+			if(part.getValue().isInstalledOnSwivelPoint()){
+				data.sorted_parts.get(part.getValue().getSwivelPointInstalledOn()).add(part);
+			}
+			else data.sorted_parts.get("vehicle").add(part);
+		}
 	}
 
 }

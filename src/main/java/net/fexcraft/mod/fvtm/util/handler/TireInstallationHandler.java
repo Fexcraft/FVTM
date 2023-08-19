@@ -1,21 +1,22 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
+
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.command.ICommandSender;
 
 public class TireInstallationHandler extends PartInstallationHandler {
@@ -48,12 +49,12 @@ public class TireInstallationHandler extends PartInstallationHandler {
 			return false;
 		}
 		// Print.debug(idata.radius, slot.maxradius(), slot.minradius());
-		if(idata.outer_radius > slot.max_radius()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_large:" + idata.outer_radius + ":" + slot.max_radius());
+		if(idata.outer_radius > slot.max_radius){
+			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_large:" + idata.outer_radius + ":" + slot.max_radius);
 			return false;
 		}
-		if(idata.outer_radius < slot.min_tire_radius()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_small:" + idata.outer_radius + ":" + slot.min_tire_radius());
+		if(idata.outer_radius < slot.min_tire_radius){
+			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_small:" + idata.outer_radius + ":" + slot.min_tire_radius);
 			return false;
 		}
 		WheelData wdata = data.getPart(whcat).getType().getInstallationHandlerData();
@@ -66,12 +67,12 @@ public class TireInstallationHandler extends PartInstallationHandler {
 			return false;
 		}
 		//
-		if(idata.width > slot.max_width()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_wide:" + idata.width + ":" + slot.max_width());
+		if(idata.width > slot.max_width){
+			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_wide:" + idata.width + ":" + slot.max_width);
 			return false;
 		}
-		if(idata.width < slot.min_tire_width()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_thin:" + idata.width + ":" + slot.min_tire_width());
+		if(idata.width < slot.min_tire_width){
+			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_thin:" + idata.width + ":" + slot.min_tire_width);
 			return false;
 		}
 		Print.chatnn(sender, "handler.install.fvtm.tire.check_passed");
@@ -82,7 +83,7 @@ public class TireInstallationHandler extends PartInstallationHandler {
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
 		String whcat = cat.split(":")[0];
-		part.setInstalledPos(data.getWheelSlots().get(whcat).pos());
+		part.setInstalledPos(new Pos(data.getWheelSlots().get(whcat).position));
 		{
 			PartData wheel = data.getPart(whcat);
 			WheelFunction func = wheel.getFunction("fvtm:wheel");
@@ -94,7 +95,7 @@ public class TireInstallationHandler extends PartInstallationHandler {
 		}
 		TireData idata = part.getType().getInstallationHandlerData();
 		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).to16Double());
+		data.getWheelPositions().put(cat, toV3(new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f))));
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "handler.install.fvtm.tire.success");
 		return true;

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.mod.fvtm.model.ModelGroup.Program;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBase;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorder;
 import net.fexcraft.mod.fvtm.model.TrafficSignPrograms.SignBorderEdge;
@@ -14,7 +13,7 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontOffset;
 
-public class TrafficSignModel extends GenericModel {
+public class TrafficSignModel extends DefaultModel {
 
 	public static final TrafficSignModel EMPTY = new TrafficSignModel();
 	private ArrayList<ModelGroup> base, vert, hori, other;
@@ -69,7 +68,7 @@ public class TrafficSignModel extends GenericModel {
 			}
 			for(ModelGroup list : chardata.groups){
 				boolean found = false;
-				for(ModelGroup.Program prog : list.getAllPrograms()){
+				for(Program prog : list.getAllPrograms()){
 					if(prog instanceof TrafficSignPrograms.ColorChannel){
 						found = true;
 						break;
@@ -79,11 +78,11 @@ public class TrafficSignModel extends GenericModel {
 			}
 			if(offx != 0){
 				final float ox = offx;
-				chardata.groups.forEach(list -> list.forEach(mrt -> mrt.rotationPointX -= ox));
+				chardata.groups.forEach(list -> list.forEach(mrt -> mrt.posX -= ox));
 			}
 			if(offy != 0){
 				final float oy = offy;
-				chardata.groups.forEach(list -> list.forEach(mrt -> mrt.rotationPointY -= oy));
+				chardata.groups.forEach(list -> list.forEach(mrt -> mrt.posY -= oy));
 			}
 			fontdata.chars.put(chardata.id, chardata);
 		}

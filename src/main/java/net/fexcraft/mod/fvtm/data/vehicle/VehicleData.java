@@ -172,7 +172,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			NBTTagList points = new NBTTagList();
 			for(SwivelPoint point : rotpoints.values()){
 				if(point.id.equals("vehicle")) continue;
-				points.appendTag(point.write(new NBTTagCompound()));
+				points.appendTag(point.write(new TagCWI()).local());
 			}
 			if(!points.isEmpty()) compound.setTag("SwivelPoints", points);
 		}
@@ -275,10 +275,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(NBTBase base : points){
 				NBTTagCompound com = (NBTTagCompound)base;
 				if(rotpoints.containsKey(com.getString("id"))){
-					rotpoints.get(com.getString("id")).read(null, this, com);
+					rotpoints.get(com.getString("id")).read(null, this, new TagCWI(com));
 				}
 				else{
-					SwivelPoint point = new SwivelPoint(this, com);
+					SwivelPoint point = new SwivelPoint(this, new TagCWI(com));
 					rotpoints.put(point.id, point);
 				}
 			}

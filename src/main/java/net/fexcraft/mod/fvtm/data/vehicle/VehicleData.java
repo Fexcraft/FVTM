@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.google.gson.JsonObject;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.Function;
@@ -26,7 +26,6 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable;
@@ -42,21 +41,21 @@ import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Lockable, Soundable, TextureUser {
+public class VehicleData extends ContentData<Vehicle, VehicleData> implements Colorable, Lockable, Soundable, TextureUser {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
@@ -84,22 +83,22 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(SwivelPoint point : type.getDefaultSwivelPoints().values()){
 			rotpoints.put(point.id, point.clone(null));
 		}
-		for(Attribute<?> attr : type.getBaseAttributes().values()){
+		for(Attribute<?> attr : type.getDefaultAttributes().values()){
 			Attribute<?> copy = attr.createCopy(null);
 			attributes.put(copy.id, copy);
 		}
-		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
+		for(Entry<String, WheelSlot> entry: type.getWheelPositions().entrySet()){
 			this.wheels.put(entry.getKey(), entry.getValue().copy(null));
 		}
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
-		front_conn = type.getDefaultFrontConnector();
-		rear_conn = type.getDefaultRearConnector();
-		if(type.getPreInstalledParts() != null){
-			for(java.util.Map.Entry<String, ResourceLocation> entry : type.getPreInstalledParts().entrySet()){
+		front_conn = type.getDefaultConnectorFront();
+		rear_conn = type.getDefaultConnectorRear();
+		if(type.getInstalled() != null){
+			for(java.util.Map.Entry<String, IDL> entry : type.getInstalled().entrySet()){
 				try{
-					Part part = Resources.PARTS.get(entry.getValue());
+					Part part = Resources.PARTS.get(entry.getValue().colon());
 					if(part == null) continue;
 					this.installPart(null, new PartData(part), entry.getKey(), false);
 				}
@@ -115,109 +114,90 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		compound.setString("Vehicle", type.getRegistryName().toString());
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		compound.set("format", 4f);
+		compound.set("Vehicle", type.getID().toString());
 		//
-		NBTTagList list = new NBTTagList();
+		TagCW cparts = TagCW.create();
 		for(Entry<String, PartData> part : parts.entrySet()){
-			NBTTagCompound com = new NBTTagCompound();
-			com.setString("InstalledAs", part.getKey());
-			list.appendTag(part.getValue().write(com));
+			cparts.set(part.getKey(), new TagCWI(part.getValue().write(new NBTTagCompound())));
 		}
-		compound.setTag("Parts", list);
+		compound.set("Parts", cparts);
 		//
-		NBTTagList alist = new NBTTagList();
+		TagCW cattrs = TagCW.create();
 		for(Attribute<?> attr : attributes.values()){
-			alist.appendTag(attr.save(TagCW.create()).local());
+			cattrs.set(attr.id, attr.save(TagCW.create()));
 		}
-		compound.setTag("Attributes", alist);
+		compound.set("Attributes", cattrs);
 		//
-		texture.save(new TagCWI(compound));
+		texture.save(compound);
 		for(String str : channels.keySet()){
-			compound.setInteger("RGB_" + str, channels.get(str).packed);
+			compound.set("RGB_" + str, channels.get(str).packed);
 		}
-		/*NBTTagList wlist = new NBTTagList();
-		for(Entry<String, WheelSlot> entry : wheels.entrySet()){
-			NBTTagCompound com = new NBTTagCompound();
-			com.setString("id", entry.getKey());
-			entry.getValue().write(com);
-			wlist.appendTag(com);
-		}
-		compound.setTag("WheelSlots", wlist);*/
+		TagCW cwpos = TagCW.create();
 		NBTTagList wlist = new NBTTagList();
 		for(Entry<String, V3D> vec : wheelpos.entrySet()){
-			NBTTagCompound com = new NBTTagCompound();
-			com.setString("id", vec.getKey());
-			com.setDouble("pos_x", vec.getValue().x);
-			com.setDouble("pos_y", vec.getValue().y);
-			com.setDouble("pos_z", vec.getValue().z);
-			wlist.appendTag(com);
+			TagLW list = TagLW.create();
+			list.add(vec.getValue().x);
+			list.add(vec.getValue().y);
+			list.add(vec.getValue().z);
+			cwpos.set(vec.getKey(), list);
 		}
-		compound.setTag("WheelPos", wlist);
+		compound.set("WheelPos", cwpos);
 		if(!scripts.isEmpty()){
-			NBTTagList scrap = new NBTTagList();
+			TagCW cscripts = TagCW.create();
 			for(VehicleScript script : scripts){
-				NBTTagCompound com = script.write(this, new NBTTagCompound());
-				if(com != null && !com.isEmpty()){
-					com.setString("id", script.getId());
-					scrap.appendTag(com);
-				}
+				TagCW com = script.save(this, TagCW.create());
+				if(com == null || com.empty()) continue;
+				cscripts.set(script.getId(), com);
 			}
-			if(!scrap.isEmpty()) compound.setTag("Scripts", scrap);
+			if(!cscripts.empty()) compound.set("Scripts", cscripts);
 		}
 		if(!rotpoints.isEmpty()){
-			NBTTagList points = new NBTTagList();
-			for(SwivelPoint point : rotpoints.values()){
-				if(point.id.equals("vehicle")) continue;
-				points.appendTag(point.write(new TagCWI()).local());
+			TagCW csp = TagCW.create();
+			for(Entry<String, SwivelPoint> point : rotpoints.entrySet()){
+				if(point.getKey().equals("vehicle")) continue;
+				csp.set(point.getKey(), point.getValue().write(TagCW.create()));
 			}
-			if(!points.isEmpty()) compound.setTag("SwivelPoints", points);
+			if(!csp.empty()) compound.set("SwivelPoints", csp);
 		}
-		compound.setBoolean("Locked", locked);
-		//TODO if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
-		//TODO if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
-		//if(customname != null) compound.setString("CustomName", customname);
-		if(preset != null) compound.setString("Preset", preset);
-		if(displayname != null) compound.setString("DisplayName", displayname);
-		if(lockcode != null) compound.setString("LockCode", lockcode);
-		/*Print.debug("write", compound);*/ return compound;
+		compound.set("Locked", locked);
+		if(front_conn != null) compound.set("FrontConnector", front_conn);
+		if(rear_conn != null) compound.set("RearConnector", rear_conn);
+		if(preset != null) compound.set("Preset", preset);
+		if(displayname != null) compound.set("DisplayName", displayname);
+		if(lockcode != null) compound.set("LockCode", lockcode);
+		return compound;
 	}
 
 	@Override
-	public VehicleData read(NBTTagCompound compound){
-		//if(!compound.hasKey("Vehicle")) return null;
-		//type = Resources.getVehicle(compound.getString("Vehicle"));
-		//if(type == null) return null;//TODO add "placeholder" for "missing" items
-		//
-		//this.parts.entrySet().removeIf(pre -> !type.preinstalled.containsKey(pre.getKey()));
-		NBTTagList list = (NBTTagList)compound.getTag("Parts");
-		if(list != null){
+	public VehicleData read(TagCW compound){
+		if(!compound.has("format") || compound.getFloat("format") < 4f) return null;
+		TagCW cparts = compound.getCompound("Parts");
+		if(cparts != null){
 			parts.clear();
-			for(NBTBase base : list){
-				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("InstalledAs")) continue;
-				PartData data = Resources.getPartData(com);
-				if(data != null) this.parts.put(com.getString("InstalledAs"), data);
+			for(String key : cparts.keys()){
+				TagCW com = cparts.getCompound(key);
+				PartData part = Resources.getPartData(com.local());
+				if(part != null) parts.put(key, part);
 			}
 		}
-		//
-		NBTTagList alist = (NBTTagList)compound.getTag("Attributes");
-		if(alist != null){
-			for(NBTBase base : alist){
-				NBTTagCompound com = (NBTTagCompound)base;
-				if(!com.hasKey("id")) continue;
-				if(com.getString("id").startsWith("turn_light_")) continue;
-				Attribute<?> attr = getAttribute(com.getString("id"));
-				if(attr != null){
-					attr.load(new TagCWI(com));
+		TagCW cattrs = compound.getCompound("Attributes");
+		if(cattrs != null){
+			for(String key : cattrs.keys()){
+				TagCW com = cattrs.getCompound(key);
+				Attribute<?> attr = getAttribute(key);
+				if(attr == null){
+					attr = Attribute.parse(key, com);
+					if(attr != null) attributes.put(key, attr);
 				}
 				else{
-					attr = Attribute.parse(new TagCWI(com));
-					if(attr != null) attributes.put(attr.id, attr);
+					attr.load(com);
 				}
 			}
 		}
-		for(Attribute<?> attr : type.getBaseAttributes().values()){
+		for(Attribute<?> attr : type.getDefaultAttributes().values()){
 			if(!attributes.containsKey(attr.id)){
 				Attribute<?> copy = attr.createCopy(null);
 				attributes.put(copy.id, copy);
@@ -230,74 +210,67 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
 		}
 		//
-		texture.load(new TagCWI(compound), type);
+		texture.load(compound, type);
 		//
-		if(compound.hasKey("RGBPrimary")){
+		if(compound.has("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");
 		}
-		if(compound.hasKey("RGBSecondary")){
+		if(compound.has("RGBSecondary")){
 			channels.get("secondary").packed = compound.getInteger("RGBSecondary");
 		}
 		for(String str : channels.keySet()){
-			if(compound.hasKey("RGB_" + str)){
+			if(compound.has("RGB_" + str)){
 				channels.get(str).packed = compound.getInteger("RGB_" + str);
 			}
 		}
 		//
 		this.refreshModificableDataByParts();
 		//
-		/*NBTTagList wlist = (NBTTagList)compound.getTag("WheelSlots");
-		if(wlist != null){
-			for(NBTBase base : wlist){
-				NBTTagCompound com = (NBTTagCompound)base;
-				WheelSlot slot = wheels.get(com.getString("id"));
-				if(slot != null) slot.read(com); else continue;
-			}
-		}*/
-		NBTTagList wlist = (NBTTagList)compound.getTag("WheelPos");
-		if(wlist != null){ wheelpos.clear();
-			for(NBTBase base : wlist){
-				NBTTagCompound com = (NBTTagCompound)base;
-				wheelpos.put(com.getString("id"), new V3D(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z")));
+		TagCW cwp = compound.getCompound("WheelPos");
+		if(cwp != null){
+			wheelpos.clear();
+			for(String key : cwp.keys()){
+				TagCW com = cwp.getCompound(key);
+				wheelpos.put(key, com.getV3D(key));
 			}
 		}
-		NBTTagList scrap = (NBTTagList)compound.getTag("Scripts");
-		if(scrap != null){
-			for(NBTBase base : scrap){
-				NBTTagCompound com = (NBTTagCompound)base;
-				if(getVehicleScript(com.getString("id")) != null) getVehicleScript(com.getString("id")).read(this, com);
+		TagCW cscripts = compound.getCompound("Scripts");
+		if(cscripts != null){
+			for(String key : cscripts.keys()){
+				if(getVehicleScript(key) != null){
+					getVehicleScript(key).load(this, cscripts.getCompound(key));
+				}
 			}
 		}
-		NBTTagList points = (NBTTagList)compound.getTag("SwivelPoints");
-		if(points != null){
-			for(NBTBase base : points){
-				NBTTagCompound com = (NBTTagCompound)base;
-				if(rotpoints.containsKey(com.getString("id"))){
-					rotpoints.get(com.getString("id")).read(null, this, new TagCWI(com));
+		TagCW csp = compound.getCompound("SwivelPoints");
+		if(csp != null){
+			for(String key : csp.keys()){
+				TagCW com = csp.getCompound(key);
+				if(rotpoints.containsKey(key)){
+					rotpoints.get(key).read(null, this, com);
 				}
 				else{
-					SwivelPoint point = new SwivelPoint(this, new TagCWI(com));
-					rotpoints.put(point.id, point);
+					rotpoints.put(key, new SwivelPoint(this, key, com));
 				}
 			}
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		this.locked = compound.getBoolean("Locked");
-		//TODO this.front_conn = DataUtil.readVec3d(compound.getTag("FrontConnector"));
-		if(front_conn == null) front_conn = type.getDefaultFrontConnector();
-		//TODO this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
-		if(rear_conn == null) rear_conn = type.getDefaultRearConnector();
-		//if(compound.hasKey("CustomName")) customname = compound.getString("CustomName");
-		if(compound.hasKey("Preset")) preset = compound.getString("Preset"); else preset = null;
-		if(compound.hasKey("DisplayName")) displayname = compound.getString("DisplayName");
-		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
+		this.front_conn = compound.getV3D("FrontConnector");
+		if(front_conn == null) front_conn = type.getDefaultConnectorFront();
+		this.rear_conn = compound.getV3D("RearConnector");
+		if(rear_conn == null) rear_conn = type.getDefaultConnectorRear();
+		//if(compound.has("CustomName")) customname = compound.getString("CustomName");
+		if(compound.has("Preset")) preset = compound.getString("Preset"); else preset = null;
+		if(compound.has("DisplayName")) displayname = compound.getString("DisplayName");
+		lockcode = compound.has("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}
 
 	private void refreshModificableDataByParts(){
 		this.wheels.clear();
-		type.getDefaultWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(null)));
+		type.getWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(null)));
 		for(PartData part : parts.values()){
 			if(part.hasFunction("fvtm:wheel_positions")){
 				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
@@ -398,17 +371,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	@Override
-	public VehicleData parse(JsonObject obj){
-		//ResourceLocation regname = DataUtil.getRegistryName("Vehicle", obj);
-		//if(regname == null || Resources.getPart(regname) == null) return null;
-		//this.type = Resources.getVehicle(regname);
+	public VehicleData parse(JsonMap obj){
 		//
 		return this;
 	}
 
 	@Override
-	public JsonObject toJson(){
-		return NBTToJson.getJsonFromTag(write(null));
+	public JsonMap toJson(){
+		return new JsonMap();
 	}
 	
 	public Attribute<?> getAttribute(String id){
@@ -522,11 +492,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					pass = !not;
 					break;
 				}
-				if(val.contentEquals(this.getType().getRegistryName().toString())){
+				if(val.contentEquals(this.getType().getID().colon())){
 					pass = !not;
 					break;
 				}
-				if(this.getType().getCategory().contains(val)){
+				if(this.getType().getCategories().contains(val)){
 					pass = !not;
 					break;
 				}
@@ -554,7 +524,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public void clearAttributes(){
 		if(!attributes.isEmpty()) attributes.clear();
-		for(Attribute<?> attr : type.getBaseAttributes().values()){
+		for(Attribute<?> attr : type.getDefaultAttributes().values()){
 			if(!attr.target.startsWith("self")) continue;
 			Attribute<?> copy = attr.createCopy(null);
 			attributes.put(copy.id, copy);
@@ -589,8 +559,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public ItemStack newItemStack(){
-		ItemStack stack = this.type.newItemStack();
-		stack.setTagCompound(this.write(new NBTTagCompound()));
+		ItemStack stack = this.type.getNewStack().local();
+		stack.setTagCompound(this.write(new TagCWI()).local());
 		return stack;
 	}
 	
@@ -701,8 +671,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	public void setConnector(V3D newcon, boolean front){
 		if(newcon == null)
-			if(front) front_conn = type.getDefaultFrontConnector();
-			else rear_conn = type.getDefaultRearConnector();
+			if(front) front_conn = type.getDefaultConnectorFront();
+			else rear_conn = type.getDefaultConnectorRear();
 		else if(front) front_conn = newcon; else rear_conn = newcon;
 	}
 	

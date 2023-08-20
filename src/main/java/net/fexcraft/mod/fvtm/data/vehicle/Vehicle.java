@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,6 +17,7 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -44,7 +43,6 @@ import net.fexcraft.mod.uni.Pos;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 
 /**
@@ -63,7 +61,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected SimplePhysData legacy_data;
 	protected Uni12Data uni12_data;
 	protected boolean trailer;
-	protected Vec3d def_front_conn, def_rear_conn;
+	protected V3D def_front_conn, def_rear_conn;
 	protected LinkedHashMap<String, ResourceLocation> preinstalled;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
@@ -141,10 +139,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		this.trailer = obj.has("Trailer") ? obj.get("Trailer").getAsBoolean() : obj.has("Wagon") ? obj.get("Wagon").getAsBoolean() : false;
 		if(obj.has("FrontConnector")){
-			this.def_front_conn = toV3(Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()));
+			def_front_conn = Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()).toV3D();
 		}
 		if(obj.has("RearConnector")){
-			this.def_rear_conn = toV3(Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()));
+			def_rear_conn = Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()).toV3D();
 		}
 		if(obj.has("CouplerRange")){
 			this.coupler_range = obj.get("CouplerRange").getAsFloat();
@@ -268,11 +266,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return trailer;
 	}
 
-	public Vec3d getDefaultFrontConnector(){
+	public V3D getDefaultFrontConnector(){
 		return def_front_conn;
 	}
 
-	public Vec3d getDefaultRearConnector(){
+	public V3D getDefaultRearConnector(){
 		return def_rear_conn;
 	}
 

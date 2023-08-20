@@ -82,7 +82,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
 
 	private String getTexTitle(BlockData data){
 		if(data.getSelectedTexture() >= 0){
-			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).getName();
+			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).name();
 		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 

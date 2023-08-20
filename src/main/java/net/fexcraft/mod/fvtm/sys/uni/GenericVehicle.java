@@ -162,7 +162,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     }
 
     public boolean isDrivenByPlayer(){//TODO if we'd allow for putting any vehicle as trailer (e.g. towing), remove if-is-trailer check
-    	GenericVehicle con = (getVehicleData().getType().isTrailerOrWagon() && getFrontCoupledEntity() != null ? (GenericVehicle)getFrontCoupledEntity().getEntity() : this);
+    	GenericVehicle con = (getVehicleData().getType().isTrailer() && getFrontCoupledEntity() != null ? (GenericVehicle)getFrontCoupledEntity().getEntity() : this);
         return con != null && SeatCache.isPassengerThePlayer(con);
     }
 	

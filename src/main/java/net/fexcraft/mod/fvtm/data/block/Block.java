@@ -10,7 +10,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -43,7 +42,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	public static final AxisAlignedBB[] FULL_BLOCK_AABB_ARRAY = new AxisAlignedBB[]{ net.minecraft.block.Block.FULL_BLOCK_AABB };
 	public static final AxisAlignedBB[] NULL_AABB_ARRAY = new AxisAlignedBB[]{ null };
 	//
-	protected List<NamedResourceLocation> textures;
+	protected List<IDL> textures;
 	protected BlockItem item;
 	protected net.minecraft.block.Block block;
 	protected String modelid, ctab;
@@ -238,7 +237,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	}
 
 	@Override
-	public List<NamedResourceLocation> getDefaultTextures(){
+	public List<IDL> getDefaultTextures(){
 		return textures;
 	}
 

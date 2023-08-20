@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_PARTICLES;
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -11,13 +10,12 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.entity.ParticleEntity;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
-import net.fexcraft.mod.fvtm.entity.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction.EmitterData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -142,7 +140,7 @@ public class EntitySystem extends DetachedSystem {
 		private PartData data;
 		private String part;
 		//
-		private Vec3d off;
+		private V3D off;
 		private V3D dir;
 		private int freq, cool;
 		private double speed;
@@ -152,7 +150,7 @@ public class EntitySystem extends DetachedSystem {
 			this.part = key;
 			this.data = data;
 			this.edata = edata;
-			off = toV3(data.getInstalledPos().add(edata.pos));
+			off = data.getInstalledPos().add(edata.pos).toV3D();
 			freq = edata.frequency == 0 ? edata.particle.frequency : edata.frequency;
 			dir = edata.dir == null ? edata.particle.dir : edata.dir;
 			speed = edata.speed == null ? edata.particle.speed : edata.speed;
@@ -163,8 +161,8 @@ public class EntitySystem extends DetachedSystem {
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
-					Vec3d pos = point.getRelativeVector(off).add(vehicle.getPositionVector());
-					Vec3d vdr = point.getRelativeVector(dir.x, dir.y, dir.z);
+					V3D pos = point.getRelativeVector(off).add(vehicle.posX, vehicle.posY, vehicle.posZ);
+					V3D vdr = point.getRelativeVector(dir.x, dir.y, dir.z);
 					particles.add(new ParticleEntity(edata.particle, new V3D(pos.x, pos.y, pos.z), new V3D(vdr.x, vdr.y, vdr.z), speed));
 					cool = 0;
 				}

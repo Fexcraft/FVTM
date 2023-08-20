@@ -18,7 +18,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.InternalAddon;
@@ -26,6 +25,8 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -92,18 +93,18 @@ public class DataUtil {
 		return list;
 	}
 
-	public static List<NamedResourceLocation> getTextures(JsonObject obj){
-		ArrayList<NamedResourceLocation> reslocs = new ArrayList<>();
+	public static List<IDL> getTextures(JsonObject obj){
+		ArrayList<IDL> reslocs = new ArrayList<>();
 		if(obj.has("Texture") && obj.get("Texture").isJsonPrimitive()){
-			reslocs.add(new NamedResourceLocation(obj.get("Texture").getAsString()));
+			reslocs.add(IDLManager.getIDLNamed(obj.get("Texture").getAsString()));
 		}
 		else if(obj.has("Textures") && obj.get("Textures").isJsonArray()){
 			obj.get("Textures").getAsJsonArray().forEach(elm -> {
-				reslocs.add(new NamedResourceLocation(elm.getAsString()));
+				reslocs.add(IDLManager.getIDLNamed(elm.getAsString()));
 			});
 		}
 		if(reslocs.isEmpty()){
-			reslocs.add(Resources.NULL_TEXTURE);
+			reslocs.add(FvtmRegistry.NULL_TEXTURE);
 		}
 		return reslocs;
 	}

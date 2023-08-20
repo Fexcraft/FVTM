@@ -1,18 +1,15 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
-
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.function.BogieFunction;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.command.ICommandSender;
 
 public class BogieInstallationHandler extends PartInstallationHandler {
@@ -44,7 +41,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 		if(func != null) func.setBogie(cat);
 		BogieData idata = part.getType().getInstallationHandlerData();
 		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, toV3(new Pos(partpos.x, -partpos.y - idata.height, -partpos.z)));
+		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).toV3D());
 		//Print.debug("New BogiePos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "handler.install.fvtm.bogie.success");
 		return true;

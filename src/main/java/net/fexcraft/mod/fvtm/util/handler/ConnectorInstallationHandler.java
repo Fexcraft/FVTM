@@ -31,7 +31,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			return false;
 		}
 		ConnectorData idata = part.getType().getInstallationHandlerData();
-		String regname = data.getType().getRegistryName().toString();
+		String regname = data.getType().getIDS();
 		if(cat.startsWith("front")){
 			if(data.getFrontConnector() != null){
 				Print.chatnn(sender, "handler.install.fvtm.connector.front_occupied");
@@ -62,7 +62,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		DefaultPartInstallHandler.setPosAndSwivelPoint(null, idata.compatible, cat, part, data);
 		boolean front = cat.startsWith("front");
-		String regname = data.getType().getRegistryName().toString();
+		String regname = data.getType().getIDS();
 		V3D conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
 		if(idata.relative){
 			conn = conn.add(part.getInstalledPos().toV3D());

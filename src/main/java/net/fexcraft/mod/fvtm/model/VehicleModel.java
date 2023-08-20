@@ -153,7 +153,7 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 		//
 		Vec3f translate = model.item_translate.get(type);
 		GL11.glTranslatef(translate.x, translate.y, translate.z);
-		if(data.getType().isTrailerOrWagon() && !data.getType().getVehicleType().isRailVehicle()){
+		if(data.getType().isTrailer() && !data.getType().getVehicleType().isRailVehicle()){
 			if(type == TransformType.GUI){
 				GL11.glTranslatef(-.375f, -.375f, 0);
 			}

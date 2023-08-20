@@ -129,15 +129,15 @@ public class SPM_DI implements SwivelPointMover {
 		else{
 			switch(axe){
 				case 0:{//yaw
-					point.getAxes().set_rotation(last, point.getAxes().deg_pitch(), point.getAxes().deg_roll(), true);
+					point.getPivot().set_rotation(last, point.getPivot().deg_pitch(), point.getPivot().deg_roll(), true);
 					return;
 				}
 				case 1:{//pitch
-					point.getAxes().set_rotation(point.getAxes().deg_yaw(), last, point.getAxes().deg_roll(), true);
+					point.getPivot().set_rotation(point.getPivot().deg_yaw(), last, point.getPivot().deg_roll(), true);
 					return;
 				}
 				case 2:{//roll
-					point.getAxes().set_rotation(point.getAxes().deg_yaw(), point.getAxes().deg_pitch(), last, true);
+					point.getPivot().set_rotation(point.getPivot().deg_yaw(), point.getPivot().deg_pitch(), last, true);
 					return;
 				}
 			}
@@ -154,9 +154,9 @@ public class SPM_DI implements SwivelPointMover {
 		}
 		else{
 			switch(axe){
-				case 0: return point.getAxes().deg_yaw();
-				case 1: return point.getAxes().deg_pitch();
-				case 2: return point.getAxes().deg_roll();
+				case 0: return point.getPivot().deg_yaw();
+				case 1: return point.getPivot().deg_pitch();
+				case 2: return point.getPivot().deg_roll();
 			}
 		}
 		return 0;

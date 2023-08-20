@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -224,8 +225,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		ContainerSlot slot = capability.getContainerSlot(slotid);
 		if(slot == null) return new Vec3d(0, 0, 0);
         SwivelPoint point = getVehicleData().getRotationPoint(slot.rotpoint);
-        Vec3d relpos = point.getRelativeVector(slot.position.x, slot.position.y, slot.position.z);
-		return relpos.add(posX, posY, posZ);
+        V3D relpos = point.getRelativeVector(slot.position.x, slot.position.y, slot.position.z);
+		return new Vec3d(relpos.x + posX, relpos.y + posY, relpos.z + posZ);
 	}
 	
 	@Override
@@ -235,9 +236,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
         SwivelPoint point = getVehicleData().getRotationPoint(slot.rotpoint);
         float off = index + (type.length() / 2f) - (slot.length / 2f);
         calcaxis.set_rotation(slot.rotation, 0, 0, true);
-        Vec3d offv = calcaxis.get_vector(-off, 0, 0);
-        Vec3d relpos = point.getRelativeVector(slot.position.x + offv.x, slot.position.y + offv.y, slot.position.z + offv.z);
-		return relpos.add(posX, posY, posZ);
+        V3D offv = calcaxis.get_vector(-off, 0, 0);
+        V3D relpos = point.getRelativeVector(slot.position.x + offv.x, slot.position.y + offv.y, slot.position.z + offv.z);
+		return new Vec3d(relpos.x + posX, relpos.y + posY, relpos.z + posZ);
 	}
 	
 	private static final Pivot calcaxis = new Pivot();

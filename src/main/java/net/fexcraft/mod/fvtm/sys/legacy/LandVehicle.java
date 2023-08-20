@@ -55,6 +55,7 @@ import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -134,7 +135,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	private void initializeVehicle(boolean remote){
-        lata = vehicle.getType().getLegacyData();
+        lata = vehicle.getType().getSphData();
         wheels = new WheelEntity[WHEELINDEX.length];
         if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
@@ -160,10 +161,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){
-			vehicle = Resources.getVehicleData(compound);
+			//TODO vehicle = Resources.getVehicleData(compound);
 		}
 		else{
-			vehicle.read(compound);
+			vehicle.read(new TagCWI(compound));
 		}
 		rotpoint = vehicle.getRotationPoint("vehicle");
 		prevRotationYaw = compound.getFloat("RotationYaw");
@@ -176,7 +177,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		vehicle.write(compound);
+		vehicle.write(new TagCWI(compound));
 		rotpoint.savePivot(new TagCWI(compound)); //Print.debug(compound.toString());
 		super.writeEntityToNBT(compound);
 	}
@@ -186,14 +187,14 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         NBTTagCompound compound = new NBTTagCompound();
 		rotpoint.savePivot(new TagCWI(compound));
         if(truck != null) compound.setInteger("TruckId", truck.getEntity().getEntityId());
-		ByteBufUtils.writeTag(buffer, vehicle.write(compound));
+		ByteBufUtils.writeTag(buffer, vehicle.write(new TagCWI(compound)).local());
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf buffer){
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-    		vehicle = Resources.getVehicleData(compound);
+    		//TODO vehicle = Resources.getVehicleData(compound);
     		rotpoint = vehicle.getRotationPoint("vehicle");
             rotpoint.loadPivot(new TagCWI(compound));
             prevRotationYaw = rotpoint.getPivot().deg_yaw();
@@ -588,10 +589,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             else if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
-                if(data.getType().isTrailerOrWagon()){
+                if(data.getType().isTrailer()){
                 	if(vehicle.getRearConnector() == null){
                 		Print.chat(player, "&cThis vehicle has no rear connector installed.");
-                		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultRearConnector());
+                		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultConnectorRear());
                 		return true;
                 	}
                 	if(!LegacySpawnSystem.validToSpawn(player, stack, data)) return true;
@@ -743,7 +744,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     }
 
 	public void onUpdateMovement(){
-		if(vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
+		if(vehicle.getType().isTrailer()){ //if(truck != null) return;
 			V3D atmc = new V3D(0, 0, 0); int wheelid = 0;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
@@ -758,7 +759,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	            wheel.motionY -= 0.98F / 20F;//Gravity
 	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 	            V3D s = null;
-	        	if(wheelid >= 2 && this.getVehicleData().getType().isTrailerOrWagon()){
+	        	if(wheelid >= 2 && this.getVehicleData().getType().isTrailer()){
 	        		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
 	        		s = new V3D(0, s.y, s.z);
 	        	}
@@ -929,13 +930,13 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             wheel.rotationYaw = rotpoint.getPivot().deg_yaw();
             //
 			V3D s = null;
-        	if(wheelid >= 2 && getVehicle().isTrailerOrWagon()){
+        	if(wheelid >= 2 && getVehicle().isTrailer()){
         		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
         		s = new V3D(0, s.y, s.z);
         	}
         	else{ s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid]); }
 			V3D targetpos = rotpoint.getPivot().get_vector(s), current = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-			V3D despos = new V3D(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(getVehicle().getLegacyData().wheel_spring_strength);
+			V3D despos = new V3D(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(getVehicle().getSphData().wheel_spring_strength);
             if(despos.length() > 0.001F){
                 wheel.move(MoverType.SELF, despos.x, (despos.y /*- (0.98F / 20F)*/), despos.z);
             }
@@ -1072,7 +1073,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "resync": {
-                    NBTTagCompound nbt = this.vehicle.write(new NBTTagCompound());
+                    NBTTagCompound nbt = this.vehicle.write(TagCW.create()).local();
                     nbt.setString("task", "update_vehicledata");
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
@@ -1116,9 +1117,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         Print.chat(player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(player, "Out of fuel!");
-                            vehicle.playSound(this, "engine_fail");
+                            //TODO vehicle.playSound(this, "engine_fail");
                         }
-                        else vehicle.playSound(this, state ? "engine_start" : "engine_stop");
+                        else{
+							//TODO vehicle.playSound(this, state ? "engine_start" : "engine_stop");
+						}
                     }
                     throttle = 0;
                     if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
@@ -1136,7 +1139,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "resync":
                 case "update_vehicledata": {
-                    this.vehicle.read(pkt.nbt);
+                    this.vehicle.read(new TagCWI(pkt.nbt));
                     break;
                 }
                 case "toggle_lights": {

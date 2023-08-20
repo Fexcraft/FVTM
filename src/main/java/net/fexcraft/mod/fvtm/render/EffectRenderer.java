@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -70,7 +71,7 @@ import org.lwjgl.opengl.GL11;
 public class EffectRenderer {
 
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
-	private static ArrayList<Vec3d> toggpos = new ArrayList<>();
+	private static ArrayList<V3D> toggpos = new ArrayList<>();
 	private static ContainerHolder tempholder;
 	
     @SubscribeEvent
@@ -146,15 +147,15 @@ public class EffectRenderer {
 								}
 								else{
 									GL11.glPushMatrix();
-									Vec3d vec = point.getRelativeVector(toV3(pes), true);
+									V3D vec = point.getRelativeVector(pes.toV3D());
 									GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 									GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 									GL11.glTranslated(vec.x, vec.y, vec.z);
 									GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 									GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-									GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
-									GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
-									GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
+									GL11.glRotatef(point.getPivot().deg_yaw(), 0.0F, 1.0F, 0.0F);
+									GL11.glRotatef(point.getPivot().deg_pitch(), 0.0F, 0.0F, 1.0F);
+									GL11.glRotatef(point.getPivot().deg_roll(), 1.0F, 0.0F, 0.0F);
 								}
 				            	GL11.glPushMatrix();
 				            	float scal = ps.getValue().get(i).radius;
@@ -183,15 +184,15 @@ public class EffectRenderer {
 					}
 					else{
 						GL11.glPushMatrix();
-						Vec3d vec = point.getRelativeVector(toV3(pes), true);
+						V3D vec = point.getRelativeVector(pes.toV3D());
 						GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 						GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 						GL11.glTranslated(vec.x, vec.y, vec.z);
 						GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 						GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-						GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
-						GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
-						GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
+						GL11.glRotatef(point.getPivot().deg_yaw(), 0.0F, 1.0F, 0.0F);
+						GL11.glRotatef(point.getPivot().deg_pitch(), 0.0F, 0.0F, 1.0F);
+						GL11.glRotatef(point.getPivot().deg_roll(), 1.0F, 0.0F, 0.0F);
 					}
 	            	GL11.glPushMatrix();
 	            	float scal = ps.getValue().get(i).radius;
@@ -237,9 +238,9 @@ public class EffectRenderer {
 			if(!attr.hasBoxes()) continue;
 			for(AttrBox box : attr.actboxes.values()){
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(box.swivel_point);
-				Vec3d temp = point.getRelativeVector(box.pos.x, -box.pos.y, -box.pos.z);
+				V3D temp = point.getRelativeVector(box.pos.x, -box.pos.y, -box.pos.z);
 	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
-				boolean depth = temp.add(vehicle.getEntity().getPositionVector()).distanceTo(Minecraft.getMinecraft().player.getPositionVector()) < 4;
+				boolean depth = temp.add(vehicle.getEntity().posX, vehicle.getEntity().posY, vehicle.getEntity().posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
             	scal = box.size;
             	GL11.glPushMatrix();
@@ -267,9 +268,9 @@ public class EffectRenderer {
     	GL11.glPopMatrix();
 	}
 
-	private static float consim(Vec3d temp){
+	private static float consim(V3D temp){
 		int i = 0;
-		for(Vec3d vec : toggpos) if(vec.distanceTo(temp) < 0.01f) i++;
+		for(V3D vec : toggpos) if(vec.dis(temp) < 0.01f) i++;
 		return i;
 	}
 
@@ -312,7 +313,7 @@ public class EffectRenderer {
 		preMeshCalls();
     	GL11.glPushMatrix();
 		for(SeatCache seat : vehicle.seats){
-			Vec3d pos = seat.getFreshPosition().subtract(vehicle.posX, vehicle.posY, vehicle.posZ);
+			V3D pos = seat.getFreshPosition().sub(vehicle.posX, vehicle.posY, vehicle.posZ);
 			GL11.glTranslated(pos.x, pos.y, pos.z);
 			(seat.passenger() != null ? DebugModels.SEAT_CUBE_OCCUPIED : seat.seatdata.sitting ? DebugModels.SEAT_CUBE_SITTING : DebugModels.SEAT_CUBE_STANDING).render(0.5f * seat.seatdata.scale());
 			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
@@ -344,29 +345,29 @@ public class EffectRenderer {
     }
 
 	public static Vec3f getRotations(GenericVehicle vehicle, float ticks){
-        float yaw = (vehicle.getRotPoint().getAxes().deg_yaw() - vehicle.prevRotationYaw);
+        float yaw = (vehicle.getRotPoint().getPivot().deg_yaw() - vehicle.prevRotationYaw);
         while(yaw > 180f) yaw -= 360f;
         while(yaw <= -180f) yaw += 360f;
-        float pitch = (vehicle.getRotPoint().getAxes().deg_pitch() - vehicle.prevRotationPitch);
+        float pitch = (vehicle.getRotPoint().getPivot().deg_pitch() - vehicle.prevRotationPitch);
         while(pitch > 180f) pitch -= 360f;
         while(pitch <= -180f) pitch += 360f;
-        float roll = (vehicle.getRotPoint().getAxes().deg_roll() - vehicle.prevRotationRoll);
+        float roll = (vehicle.getRotPoint().getPivot().deg_roll() - vehicle.prevRotationRoll);
         while(roll > 180f) roll -= 360f;
         while(roll <= -180f) roll += 360f;
         return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
 	}
 	
 	public static Vec3f getRotations(SwivelPoint point, float ticks){
-        float yaw = (point.getAxes().deg_yaw() - point.getPrevAxes().deg_yaw());
+        float yaw = (point.getPivot().deg_yaw() - point.getPrevPivot().deg_yaw());
         while(yaw > 180f) yaw -= 360f;
         while(yaw <= -180f) yaw += 360f;
-        float pitch = (point.getAxes().deg_pitch() - point.getPrevAxes().deg_pitch());
+        float pitch = (point.getPivot().deg_pitch() - point.getPrevPivot().deg_pitch());
         while(pitch > 180f) pitch -= 360f;
         while(pitch <= -180f) pitch += 360f;
-        float roll = (point.getAxes().deg_roll() - point.getPrevAxes().deg_roll());
+        float roll = (point.getPivot().deg_roll() - point.getPrevPivot().deg_roll());
         while(roll > 180f) roll -= 360f;
         while(roll <= -180f) roll += 360f;
-        return new Vec3f(point.getPrevAxes().deg_yaw() - yaw * ticks, point.getPrevAxes().deg_pitch() + pitch * ticks, point.getPrevAxes().deg_roll() + roll * ticks);
+        return new Vec3f(point.getPrevPivot().deg_yaw() - yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
 	}
 	
 	//

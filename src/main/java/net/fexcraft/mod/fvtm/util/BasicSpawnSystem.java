@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
@@ -36,7 +37,7 @@ public class BasicSpawnSystem extends EntitySystem {
 	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
 		World world = placer.getEntityWorld();
 		EntityPlayer player = (EntityPlayer)placer.getCommandSenderEntity();
-		world.spawnEntity(new ULandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
+		world.spawnEntity(new ULandVehicle(world, data, new V3D(pos.x, pos.y + 2, pos.z), player, -1));
     	if(!player.capabilities.isCreativeMode) stack.shrink(1);
 	}
 

@@ -1,5 +1,8 @@
 package net.fexcraft.mod.uni.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.NBTTagCompound;
@@ -108,6 +111,16 @@ public class TagCWI implements TagCW {
 	@Override
 	public Object direct(){
 		return compound;
+	}
+
+	@Override
+	public boolean empty(){
+		return compound.isEmpty();
+	}
+
+	@Override
+	public Collection<String> keys(){
+		return new ArrayList<>(compound.getKeySet());
 	}
 
 }

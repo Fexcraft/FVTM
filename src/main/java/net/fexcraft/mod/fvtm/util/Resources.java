@@ -44,12 +44,11 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
-import net.fexcraft.mod.fvtm.data.attribute.*;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
@@ -61,12 +60,8 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.event.OverlayEvent;
 import net.fexcraft.mod.fvtm.event.ResourceEvents;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
@@ -87,7 +82,6 @@ import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.function.*;
-import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -127,7 +121,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Resources {
 
 	public static RegistryOld<Part> PARTS = new RegistryOld<>();
-	public static RegistryOld<Vehicle> VEHICLES = new RegistryOld<>();
 	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
 	public static RegistryOld<Block> BLOCKS = new RegistryOld<>();
 	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
@@ -185,14 +178,6 @@ public class Resources {
 		return PARTS.get(resloc);
 	}
 
-	public static Vehicle getVehicle(String string){
-		return VEHICLES.get(string);
-	}
-
-	public static Vehicle getVehicle(ResourceLocation resloc){
-		return VEHICLES.get(resloc);
-	}
-
 	public static Container getContainer(String string){
 		return CONTAINERS.get(string);
 	}
@@ -224,7 +209,7 @@ public class Resources {
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
-	public static VehicleData getVehicleData(NBTTagCompound compound){
+	/*public static VehicleData getVehicleData(NBTTagCompound compound){
 		if(!compound.hasKey("Vehicle")) return null;
 		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
 		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
@@ -237,7 +222,7 @@ public class Resources {
 		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
 		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
-	}
+	}*/
 
 	public static ContainerData getContainerData(NBTTagCompound compound){
 		if(!compound.hasKey("Container")) return null;
@@ -464,7 +449,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regSounds(RegistryEvent.Register<SoundEvent> event){
-		VEHICLES.forEach(vehicle -> {
+		/*VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid.local())){
 					sound.event = event.getRegistry().getValue(sound.soundid.local());
@@ -474,7 +459,7 @@ public class Resources {
 					event.getRegistry().register((SoundEvent)(sound.event = soundevent));
 				}
 			});
-		});
+		});*/
 		PARTS.forEach(part -> {
 			part.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid.local())){
@@ -651,15 +636,8 @@ public class Resources {
 		);
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static Class<? extends AddonSteeringOverlay> getOverlayOf(GenericVehicle vehicle){
-		OverlayEvent event = new OverlayEvent(vehicle, vehicle.getVehicleData());
-		MinecraftForge.EVENT_BUS.post(event);
-		return OVERLAYS.containsKey(event.getOverlay()) ? OVERLAYS.get(event.getOverlay()) : OVERLAYS.get("default");
-	}
-
 	public static void linkTextureSuppliers(){
-		for(Addon addon : ADDONS){
+		/*for(Addon addon : ADDONS){
 			if(addon.getTextureSuppliers().isEmpty()) continue;
 			for(TextureSupply texsupp : addon.getTextureSuppliers().values()){
 				for(String tar : texsupp.targets()){
@@ -667,7 +645,7 @@ public class Resources {
 					Textureable.TextureHolder holder = null;
 					switch(split[0]){
 						case "vehicle":{
-							holder =  VEHICLES.get(split[1]);
+							holder = VEHICLES.get(split[1]);
 							break;
 						}
 						case "part":{
@@ -685,7 +663,7 @@ public class Resources {
 					}
 				}
 			}
-		}
+		}*///TODO
 	}
 
 	public static void loadWireDecorations(boolean client){

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -197,8 +198,10 @@ public class ToggableHandler {
 		}
 		Entity renent = Minecraft.getMinecraft().getRenderViewEntity();
 		Vec3d vec = renent.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
-		Vec3d temp = renent.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
-		Vec3d vecto = vec.add(temp.x * 3, temp.y * 3, temp.z * 3);
+		Vec3d temp0 = renent.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
+		temp0 = vec.add(temp0.x * 3, temp0.y * 3, temp0.z * 3);
+		V3D vecto = new V3D(temp0.x, temp0.y, temp0.z);
+		V3D temp1;
 		Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
 		for(int i = 0; i < entity.getVehicleData().getSeats().size(); i++){
 			if(seatfrom != null && seatfrom.seatindex == i) continue;
@@ -206,9 +209,9 @@ public class ToggableHandler {
 			SeatCache ent = ((GenericVehicle)entity).seats[i];
 			if(ent == null || ent.passenger() == null){
 				SwivelPoint point = entity.getVehicleData().getRotationPoint(seat.swivel_point);
-				temp = point.getRelativeVector(seat.x, seat.y, seat.z);
-				temp = temp.add(entity.getEntity().getPositionVector());
-				AxisAlignedBB aabb = NULBB.offset(temp).grow(SBBS * seat.scale());
+				temp1 = point.getRelativeVector(seat.x, seat.y, seat.z);
+				temp1 = temp1.add(entity.getEntity().posX, entity.getEntity().posY, entity.getEntity().posZ);
+				AxisAlignedBB aabb = NULBB.offset(temp1.x, temp1.y, temp1.z).grow(SBBS * seat.scale());
 				for(float f = 0; f < 4; f += Static.sixteenth / 2){
 					Vec3f dis = vec0.distance(vec1, f);
 					vec = new Vec3d(dis.x, dis.y, dis.z);
@@ -241,12 +244,13 @@ public class ToggableHandler {
 		Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
 		if(entity == null || entity.world == null) return null;
 		Vec3d vec = entity.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
-		Vec3d temp = entity.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
-		Vec3d vecto = vec.add(temp.x * 2, temp.y * 2, temp.z * 2);
+		Vec3d temp0 = entity.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
+		temp0 = vec.add(temp0.x * 2, temp0.y * 2, temp0.z * 2);
+		V3D vecto = new V3D(temp0.x, temp0.y, temp0.z);
 		Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
 		TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
 		for(Collidable coll : collidables){
-			coll.collectAABBs(external, vehicle, player, aabbs, temp);
+			coll.collectAABBs(external, vehicle, player, aabbs, new V3D(temp0.x, temp0.y, temp0.z));
 		}
 		for(float f = 0; f < (external ? 3 : 2); f += Static.sixteenth / 2){
 			Vec3f dis = vec0.distance(vec1, f);
@@ -297,14 +301,14 @@ public class ToggableHandler {
 			return attr == null ? source + ":" + index : attr.id;
 		}
 
-		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, Vec3d temp){
+		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, V3D temp){
 			if(attr != null){
 				String attrid = (external ? "external-" : "") + attr.asString();
 				AttrBox abb = attr.getBox(attrid);
 				if(abb == null) return;
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(abb.swivel_point);
 				temp = point.getRelativeVector(abb.pos.x, -abb.pos.y, -abb.pos.z);
-				temp = temp.add(vehicle.getEntity().getPositionVector());
+				temp = temp.add(vehicle.getEntity().posX, vehicle.getEntity().posY, vehicle.getEntity().posZ);
 				float te = abb.size;
 				aabbs.put(attr.id, new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
@@ -312,7 +316,7 @@ public class ToggableHandler {
 				Pos pos = new Pos(slots.get(index).pos);
 				if(!source.equals(PartSlots.VEHPARTSLOTS)) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
 				temp = point.getRelativeVector(pos.x16, point.isVehicle() ? -pos.y16 : pos.y16, -pos.z16);
-				temp = temp.add(vehicle.getEntity().getPositionVector());
+				temp = temp.add(vehicle.getEntity().posX, vehicle.getEntity().posY, vehicle.getEntity().posZ);
 				float te = slots.get(index).radius / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}

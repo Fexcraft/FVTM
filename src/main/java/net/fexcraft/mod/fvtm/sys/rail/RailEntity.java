@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -125,7 +126,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		for(JEC command : commands) command.processEntity(this);
 		commands.removeIf(cmd -> cmd.isDone());
 		//
-		if(!vehdata.getType().isTrailerOrWagon() && !isPaused() && throttle > 0.001f){
+		if(!vehdata.getType().isTrailer() && !isPaused() && throttle > 0.001f){
 			if(vehdata.hasPart("engine")){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
 				if(CMODE() || processConsumption(engine)){
@@ -525,7 +526,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		compound.setLong("Compound", com.getUID());
 		compound.setBoolean("Singular", com.isSingular());
 		compound.setDouble("throttle", throttle);
-		return vehdata.write(compound);
+		return vehdata.write(new TagCWI(compound)).local();
 	}
 	
 	public RailEntity read(NBTTagCompound compound){
@@ -555,8 +556,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
-		if(vehdata == null) vehdata = Resources.getVehicleData(compound);
-		else vehdata.read(compound);
+		if(vehdata == null) vehdata = null;//TODO Resources.getVehicleData(compound);
+		else vehdata.read(new TagCWI(compound));
 		if(vehdata == null){ this.dispose(); return null; }
 		//if(compound.hasKey("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
 		//if(compound.hasKey("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));

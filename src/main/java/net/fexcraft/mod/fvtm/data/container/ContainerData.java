@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -79,7 +80,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
-		texture.save(compound);
+		texture.save(new TagCWI(compound));
 		inventory.save(compound, "Inventory");
 		compound.setBoolean("Locked", locked);
 		if(lockcode != null) compound.setString("LockCode", lockcode);
@@ -100,7 +101,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			}
 		}
 		//
-		texture.load(compound, type);
+		texture.load(new TagCWI(compound), type);
 		inventory.load(compound, "Inventory");
 		this.locked = compound.getBoolean("Locked");
 		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();

@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -84,12 +85,12 @@ public class FSVehicleScript extends VehicleScript {
 	}
 
 	@Override
-	public VehicleScript read(VehicleData data, NBTTagCompound compound){
+	public VehicleScript load(VehicleData data, TagCW compound){
 		return this;
 	}
 
 	@Override
-	public NBTTagCompound write(VehicleData data, NBTTagCompound compound){
+	public TagCW save(VehicleData data, TagCW compound){
 		return null;
 	}
 

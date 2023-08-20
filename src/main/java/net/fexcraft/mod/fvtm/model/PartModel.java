@@ -1,11 +1,9 @@
 package net.fexcraft.mod.fvtm.model;
 
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -18,7 +16,7 @@ import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 public class PartModel extends DefaultModel implements FCLItemModel {
 
@@ -114,9 +112,9 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 
 	public static void translateAndRotatePartOnSwivelPoint(VehicleData vehicle, PartData data, float ticks){
 		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
-		Vec3d pos = toV3(data.getInstalledPos());
-		Vec3d temp0 = point.getRelativeVector(pos, true);
-		Vec3d temp1 = point.getPrevRelativeVector(pos, true);
+		V3D pos = data.getInstalledPos().toV3D();
+		V3D temp0 = point.getRelativeVector(pos);
+		V3D temp1 = point.getPrevRelativeVector(pos);
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 		GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
@@ -131,15 +129,15 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 
 	public static void translateAndRotatePartOnSwivelPointFast(VehicleData vehicle, PartData data){
 		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
-		Vec3d pos = point.getRelativeVector(toV3(data.getInstalledPos()), true);
+		V3D pos = point.getRelativeVector(data.getInstalledPos().toV3D());
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(point.getPivot().deg_roll(), 1.0F, 0.0F, 0.0F);
+		GL11.glRotatef(point.getPivot().deg_pitch(), 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(point.getPivot().deg_yaw(), 0.0F, 1.0F, 0.0F);
 		data.getInstalledRot().rotate();
 	}
 	

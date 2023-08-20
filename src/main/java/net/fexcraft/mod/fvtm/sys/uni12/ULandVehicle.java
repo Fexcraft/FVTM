@@ -22,7 +22,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -874,11 +874,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(!world.isRemote && ticksExisted % SYNC_RATE == 0 && truck == null){
         	vehicle.getAttribute("throttle").set((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
-            for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
+            //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
             ULandVehicle trailer = this.trailer;
             while(trailer != null){
                 Packets.sendToAllAround(new PKT_VehControl(trailer), Resources.getTargetPoint(trailer));
-                for(SwivelPoint point : trailer.vehicle.getRotationPoints().values()) point.sendClientUpdate(trailer);
+                //TODO for(SwivelPoint point : trailer.vehicle.getRotationPoints().values()) point.sendClientUpdate(trailer);
                 trailer = trailer.trailer;
             }
         }
@@ -888,7 +888,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     private void updateSounds(){
     	if(!world.isRemote || engine == null) return;
     	if(engine.isOn() && engineloop == null){
-            SoundEvent event = vehicle.getSound("engine_running").event;
+            SoundEvent event = (SoundEvent)vehicle.getSound("engine_running").event;
             if(event != null){
                 this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
                 net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);

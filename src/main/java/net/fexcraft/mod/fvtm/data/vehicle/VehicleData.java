@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -34,7 +35,6 @@ import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.ColorFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
@@ -53,7 +53,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -67,11 +66,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected String preset, lockcode;
 	protected boolean locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
-	protected TreeMap<String, Vec3d> wheelpos = new TreeMap<>();
+	protected TreeMap<String, V3D> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
 	protected ArrayList<String> inventories = new ArrayList<>();
 	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
-	protected Vec3d front_conn, rear_conn;
+	protected V3D front_conn, rear_conn;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected TreeMap<String, PartSlots> psproviders = new TreeMap<>();
@@ -96,8 +95,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
-		this.front_conn = type.getDefaultFrontConnector();
-		this.rear_conn = type.getDefaultRearConnector();
+		front_conn = type.getDefaultFrontConnector();
+		rear_conn = type.getDefaultRearConnector();
 		if(type.getPreInstalledParts() != null){
 			for(java.util.Map.Entry<String, ResourceLocation> entry : type.getPreInstalledParts().entrySet()){
 				try{
@@ -148,7 +147,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		compound.setTag("WheelSlots", wlist);*/
 		NBTTagList wlist = new NBTTagList();
-		for(Entry<String, Vec3d> vec : wheelpos.entrySet()){
+		for(Entry<String, V3D> vec : wheelpos.entrySet()){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("id", vec.getKey());
 			com.setDouble("pos_x", vec.getValue().x);
@@ -177,8 +176,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			if(!points.isEmpty()) compound.setTag("SwivelPoints", points);
 		}
 		compound.setBoolean("Locked", locked);
-		if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
-		if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
+		//TODO if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
+		//TODO if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
 		//if(customname != null) compound.setString("CustomName", customname);
 		if(preset != null) compound.setString("Preset", preset);
 		if(displayname != null) compound.setString("DisplayName", displayname);
@@ -260,7 +259,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(wlist != null){ wheelpos.clear();
 			for(NBTBase base : wlist){
 				NBTTagCompound com = (NBTTagCompound)base;
-				wheelpos.put(com.getString("id"), new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z")));
+				wheelpos.put(com.getString("id"), new V3D(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z")));
 			}
 		}
 		NBTTagList scrap = (NBTTagList)compound.getTag("Scripts");
@@ -285,9 +284,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		this.locked = compound.getBoolean("Locked");
-		this.front_conn = DataUtil.readVec3d(compound.getTag("FrontConnector"));
+		//TODO this.front_conn = DataUtil.readVec3d(compound.getTag("FrontConnector"));
 		if(front_conn == null) front_conn = type.getDefaultFrontConnector();
-		this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
+		//TODO this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
 		if(rear_conn == null) rear_conn = type.getDefaultRearConnector();
 		//if(compound.hasKey("CustomName")) customname = compound.getString("CustomName");
 		if(compound.hasKey("Preset")) preset = compound.getString("Preset"); else preset = null;
@@ -600,7 +599,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return wheels;
 	}
 	
-	public TreeMap<String, Vec3d> getWheelPositions(){
+	public TreeMap<String, V3D> getWheelPositions(){
 		return wheelpos;
 	}
 
@@ -693,15 +692,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return scripts;
 	}
 
-	public Vec3d getFrontConnector(){
+	public V3D getFrontConnector(){
 		return front_conn;
 	}
 
-	public Vec3d getRearConnector(){
+	public V3D getRearConnector(){
 		return rear_conn;
 	}
 	
-	public void setConnector(Vec3d newcon, boolean front){
+	public void setConnector(V3D newcon, boolean front){
 		if(newcon == null)
 			if(front) front_conn = type.getDefaultFrontConnector();
 			else rear_conn = type.getDefaultRearConnector();

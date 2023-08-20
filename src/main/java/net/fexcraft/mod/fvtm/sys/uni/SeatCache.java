@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -88,7 +89,7 @@ public class SeatCache {
                 return true;
             }
             double checkRange = 10;
-            Vec3d pos = getFreshPosition();
+            V3D pos = getFreshPosition();
             AxisAlignedBB aabb = new AxisAlignedBB(pos.x - checkRange, pos.y - checkRange, pos.z - checkRange, pos.x + checkRange, pos.y + checkRange, pos.z + checkRange);
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
@@ -139,8 +140,8 @@ public class SeatCache {
         //
         //this.updatePassenger();
         //
-        pass_yaw = -90F + passlooking.deg_yaw() + point.getAxes().deg_yaw();
-        pass_pitch = passlooking.deg_pitch() + point.getAxes().deg_pitch();
+        pass_yaw = -90F + passlooking.deg_yaw() + point.getPivot().deg_yaw();
+        pass_pitch = passlooking.deg_pitch() + point.getPivot().deg_pitch();
         //
         double yaw = pass_yaw - prev_pass_yaw;
         if(yaw > 180){ prev_pass_yaw += 360F; }
@@ -156,15 +157,15 @@ public class SeatCache {
 	}
 
 
-	public Vec3d getFreshPosition(){
-        Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+	public V3D getFreshPosition(){
+        V3D relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
 		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);
 	}
 
 	public void updatePassenger(Entity pass){
 		if(passenger != pass) passenger = pass;
         //if(passenger == null) return;
-        Vec3d pos = getFreshPosition();
+        V3D pos = getFreshPosition();
         passenger.rotationYaw = pass_yaw;
         passenger.rotationPitch = pass_pitch;
         passenger.prevRotationYaw = prev_pass_yaw;
@@ -211,8 +212,8 @@ public class SeatCache {
 
 
 	public void onMouseMoved(int dx, int dy){
-        prevlooking = looking.clone();
-        prevpasslooking = passlooking.clone();
+        prevlooking = looking.copy();
+        prevpasslooking = passlooking.copy();
         //
         double lookSpeed = 4F;
         double npasspitch = passlooking.deg_pitch() - dy / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;

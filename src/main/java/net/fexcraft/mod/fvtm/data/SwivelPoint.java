@@ -121,7 +121,7 @@ public class SwivelPoint {
 
 	public void loadPivot(TagCW com){
 		updatePrevAxe();
-		cpivot = Pivot.read(com);
+		cpivot = Pivot.load(com);
 	}
 
 	public void savePivot(TagCW com){
@@ -144,7 +144,7 @@ public class SwivelPoint {
 		point.origin = com.has("origin") ? com.getString("origin") : null;
 		point.position = new V3D(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
 		point.prevpos = new V3D(point.position.x, point.position.y, point.position.z);
-		point.cpivot = Pivot.read(com);
+		point.cpivot = Pivot.load(com);
 		point.ppivot.copy(cpivot);
 		if(origin != null){
 			PartData part = data.getPart(origin.split("\\|")[0]);

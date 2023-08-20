@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -41,7 +40,7 @@ import net.minecraftforge.fluids.Fluid;
 public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder, ItemTextureable {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected List<NamedResourceLocation> textures;
+	protected List<IDL> textures;
 	protected Model model;
 	protected ModelData modeldata;
 	protected ResourceLocation keytype;
@@ -58,7 +57,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	}
 
 	@Override
-	public List<NamedResourceLocation> getDefaultTextures(){
+	public List<IDL> getDefaultTextures(){
 		return textures;
 	}
 

@@ -78,7 +78,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
     
     @Override
     protected ResourceLocation getEntityTexture(LandVehicle entity){
-        return entity.getVehicleData().getCurrentTexture();
+        return entity.getVehicleData().getCurrentTexture().local();
     }
     
     @Override

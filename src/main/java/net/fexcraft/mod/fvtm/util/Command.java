@@ -145,7 +145,7 @@ public class Command extends CommandBase {
                     		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
             			}
             			else{
-            				giveKeyItem(player, data.getType().getKeyType(), data.getLockCode());
+            				giveKeyItem(player, data.getType().getKeyType().local(), data.getLockCode());
             				Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
             				attr.set(attr.asInteger() + 1);
             			}
@@ -160,7 +160,7 @@ public class Command extends CommandBase {
                     		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
             			}
             			else{
-            				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLockCode());
+            				giveKeyItem(player, item.getType().getKeyType().local(), item.getData(stack).getLockCode());
             				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
             				attr.set(attr.asInteger() + 1);
             			}
@@ -344,11 +344,11 @@ public class Command extends CommandBase {
                 		return;
                 	}
                 	if(args[1].equals("reset")){
-                		if(!data.getType().getBaseAttributes().containsKey(args[2])){
+                		if(!data.getType().getDefaultAttributes().containsKey(args[2])){
                     		Print.chat(sender, "Only default/base attributes can be reset.");
                 		}
                 		else{
-                			Attribute<?> base = data.getType().getBaseAttributes().get(args[2]);
+                			Attribute<?> base = data.getType().getDefaultAttributes().get(args[2]);
                 			attr.setI(base.initial);
                 			attr.set(base.value);
                 			data.write(stack.getTagCompound());

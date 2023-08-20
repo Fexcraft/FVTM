@@ -39,7 +39,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "handler.install.fvtm.default.part_invalid_category");
 			return false;
 		}
-		if(!compatible(idata, data.getType().getRegistryName().toString())){
+		if(!compatible(idata, data.getType().getID().colon())){
 			Print.chatnn(sender, "handler.install.fvtm.default.part_incompatible_vehicle");
 			return false;
 		}
@@ -64,15 +64,15 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 	
 	private boolean containsIncompatible(DPIHData idata, VehicleData data){
-		if(idata == null || !idata.incompatible.containsKey(data.getType().getRegistryName().toString())) return false;
-		ArrayList<String> list = idata.incompatible.get(data.getType().getRegistryName().toString());
+		if(idata == null || !idata.incompatible.containsKey(data.getType().getIDS())) return false;
+		ArrayList<String> list = idata.incompatible.get(data.getType().getIDS());
 		for(String str : list) if(data.getParts().containsKey(str)) return true;
 		return false;
 	}
 	
 	private boolean containsRequired(DPIHData idata, VehicleData data){
-		if(idata == null || !idata.required.containsKey(data.getType().getRegistryName().toString())) return true;
-		ArrayList<String> list = idata.required.get(data.getType().getRegistryName().toString());
+		if(idata == null || !idata.required.containsKey(data.getType().getIDS())) return true;
+		ArrayList<String> list = idata.required.get(data.getType().getIDS());
 		for(String str : list) if(!data.getParts().containsKey(str)) return false;
 		return true;
 	}
@@ -99,7 +99,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	public static void setPosAndSwivelPoint(DPIHData idata, TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){
-		String vehid = data.getType().getRegistryName().toString();
+		String vehid = data.getType().getIDS();
 		Pos result = Pos.NULL;
 		Rot rosult = Rot.NULL;
 		if(cat.startsWith("s:")){

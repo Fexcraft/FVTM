@@ -88,8 +88,9 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
 
 	private String getTexTitle(PartData data){
 		if(data.getSelectedTexture() >= 0){
-			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).getName();
-		} else return data.isTextureExternal() ? "external" : "internal";
+			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).name();
+		}
+		else return data.isTextureExternal() ? "external" : "internal";
 	}
 
 	@Override

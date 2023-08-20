@@ -18,7 +18,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -53,7 +52,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
 	protected Model model;
 	protected ModelData modeldata;
-	protected List<NamedResourceLocation> textures;
+	protected List<IDL> textures;
 	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid, ctab, overlayid;
@@ -89,7 +88,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Vehicle");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.type = VehicleType.valueOf(JsonUtil.getIfExists(obj, "VehicleType", "LAND").toUpperCase());
-		this.textures = DataUtil.getTextures(obj);
+		//this.textures = DataUtil.getTextures(obj);
 		channels.put("primary", DataUtil.getColor(obj, "Primary", false));
 		channels.put("secondary", DataUtil.getColor(obj, "Secondary", false));
 		if(obj.has("Colors")){
@@ -244,7 +243,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 
 	@Override
-	public List<NamedResourceLocation> getDefaultTextures(){
+	public List<IDL> getDefaultTextures(){
 		return textures;
 	}
 

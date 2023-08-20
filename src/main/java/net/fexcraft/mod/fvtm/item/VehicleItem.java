@@ -8,21 +8,22 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.TransmissionFunction;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
@@ -35,10 +36,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<VehicleData>, JunctionGridItem {//}, ItemTex<Vehicle>  {
+public class VehicleItem extends Item implements ContentDataItem<Vehicle, VehicleData>, JunctionGridItem {//}, ItemTex<Vehicle>  {
 
-    public VehicleItem(Vehicle core){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
+	private Vehicle vehicle;
+
+    public VehicleItem(Vehicle content){
+		super();
+		vehicle = content;
+		this.setHasSubtypes(true);
+		this.setMaxStackSize(1);
         //TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         //TODO this.setCreativeTab(Resources.getCreativeTab(type));
@@ -48,8 +54,8 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
-    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + vehicle.getName()));
+        for(String s : vehicle.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         VehicleData data = cache.getVehicleData();
         if(data == null) return;
         if(data.isPreset()) tooltip.add(Formatter.format("&6Preset: &7" + data.getPreset()));
@@ -72,9 +78,9 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
         }*/
-        if(type.getModel().getCreators().size() > 0){
+        if(vehicle.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
-            for(String str : type.getModel().getCreators()){
+            for(String str : vehicle.getModel().getCreators()){
             	tooltip.add(Formatter.format("&7- " + str));
             }
         }
@@ -99,24 +105,24 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 
 	private String getTexTitle(VehicleData data){
 		if(data.getSelectedTexture() >= 0){
-			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).getName();
+			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).name();
 		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 
-	@Override
+	//@Override
 	public VehicleData getData(ItemStack stack){
 		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
 	}
 
-	@Override
+	//@Override
 	public VehicleData getData(NBTTagCompound compound){
-		return new VehicleData(type).read(compound);
+		return new VehicleData(vehicle).read(new TagCWI(compound));
 	}
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
-    		items.add(type.newItemStack());
+    		items.add(vehicle.getNewStack().local());
     	}
     }
     
@@ -131,12 +137,16 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 
 	@Override
     public boolean showJunctionGrid(){
-    	return type.getVehicleType().isRailVehicle();
+    	return vehicle.getVehicleType().isRailVehicle();
     }
 
-	//@Override
-	public TypeCore<Vehicle> getDataType(){
-		return type;
+	@Override
+	public Vehicle getContent(){
+		return vehicle;
 	}
 
+	@Override
+	public ContentType getType(){
+		return ContentType.VEHICLE;
+	}
 }

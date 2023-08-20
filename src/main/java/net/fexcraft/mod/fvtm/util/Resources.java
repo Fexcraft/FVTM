@@ -466,23 +466,23 @@ public class Resources {
 	public void regSounds(RegistryEvent.Register<SoundEvent> event){
 		VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
-				if(event.getRegistry().containsKey(sound.soundid)){
-					sound.event = event.getRegistry().getValue(sound.soundid);
+				if(event.getRegistry().containsKey(sound.soundid.local())){
+					sound.event = event.getRegistry().getValue(sound.soundid.local());
 				}
 				else{
-					SoundEvent soundevent = new SoundEvent(sound.soundid).setRegistryName(sound.soundid);
-					event.getRegistry().register(sound.event = soundevent);
+					SoundEvent soundevent = new SoundEvent(sound.soundid.local()).setRegistryName(sound.soundid.colon());
+					event.getRegistry().register((SoundEvent)(sound.event = soundevent));
 				}
 			});
 		});
 		PARTS.forEach(part -> {
 			part.getSounds().values().forEach(sound -> {
-				if(event.getRegistry().containsKey(sound.soundid)){
-					sound.event = event.getRegistry().getValue(sound.soundid);
+				if(event.getRegistry().containsKey(sound.soundid.local())){
+					sound.event = event.getRegistry().getValue(sound.soundid.local());
 				}
 				else{
-					SoundEvent soundevent = new SoundEvent(sound.soundid).setRegistryName(sound.soundid);
-					event.getRegistry().register(sound.event = soundevent);
+					SoundEvent soundevent = new SoundEvent(sound.soundid.local()).setRegistryName(sound.soundid.colon());
+					event.getRegistry().register((SoundEvent)(sound.event = soundevent));
 				}
 			});
 		});

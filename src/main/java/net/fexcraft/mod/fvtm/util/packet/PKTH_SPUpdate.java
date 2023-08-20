@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

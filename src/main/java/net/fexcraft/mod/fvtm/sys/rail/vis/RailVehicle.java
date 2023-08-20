@@ -19,7 +19,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -584,7 +584,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	throttle = rek.ent().throttle;
         	rek.data().getAttribute("throttle").set((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
-            for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
+            //TODO for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }
 
@@ -710,7 +710,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     }
                     throttle = 0;
                     if(rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
-                        SoundEvent event = rek.data().getSound("engine_running").event;
+                        SoundEvent event = (SoundEvent)rek.data().getSound("engine_running").event;
                         if(event != null){
                             this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
                             net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);

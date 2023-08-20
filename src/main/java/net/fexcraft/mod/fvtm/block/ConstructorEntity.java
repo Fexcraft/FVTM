@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -277,7 +278,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         //
         if(packet.nbt.hasKey("VehicleData")){
-        	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
+        	//TODO this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
         	this.resetCenterModels();
         }
         else if(packet.nbt.hasKey("VehicleDataReset") && packet.nbt.getBoolean("VehicleDataReset")){
@@ -355,7 +356,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				else compound.setBoolean("ContainerDataReset", true); break;
 			}
     		case "vehicledata": case "vehicle": case "veh": {
-    			if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
+    			if(vdata != null) compound.setTag("VehicleData", vdata.write(TagCW.create()).local());
     			else compound.setBoolean("VehicleDataReset", true); break;
     		}
     		case "blockdata": case "block": {
@@ -400,7 +401,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         super.writeToNBT(compound);
         if(cdata != null) compound.setTag("ContainerData", cdata.write(new NBTTagCompound()));
 			else compound.setBoolean("ContainerDataReset", true);
-        if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
+        if(vdata != null) compound.setTag("VehicleData", vdata.write(TagCW.create()).local());
 			else compound.setBoolean("VehicleDataReset", true);
 		if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
 			else compound.setBoolean("PartDataReset", true);
@@ -421,7 +422,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         	this.pdata = null;
         }
         if(compound.hasKey("VehicleData")){
-        	this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
+        	//TODO this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
         }
         else if(compound.hasKey("VehicleDataReset") && compound.getBoolean("VehicleDataReset")){
         	this.vdata = null;

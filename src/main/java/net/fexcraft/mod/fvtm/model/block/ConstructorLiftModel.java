@@ -3,17 +3,16 @@ package net.fexcraft.mod.fvtm.model.block;
 
 import java.util.ArrayList;
 
-import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.ModelRenderData;
-import org.lwjgl.opengl.GL11;
-
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
+import org.lwjgl.opengl.GL11;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.1.7 &copy; 2019 - Fexcraft.net<br>
@@ -28,29 +27,29 @@ public class ConstructorLiftModel extends DefaultModel {
 	public ModelGroup holder1;
 	public ModelGroup arm0;
 	public ModelGroup arm1;
-	private float rotation, yoff;
-	private Pos offset;
-	private float zoff = 10;
+	private double rotation, yoff;
+	private V3D offset;
+	private double zoff = 10;
 
 	public ConstructorLiftModel(LiftingPoint point, LiftingPoint counter){
 		super();
 		tex_width = 64;
 		tex_height = 64;
 		this.addToCreators("Ferdinand (FEX___96)");
-		float dis = 0;
+		double dis = 0;
 		boolean singular = point.isSingular() || counter == null;
 		zoff += point.off;
 		if(singular){
-			offset = new Pos(point.pos.x, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
+			offset = new V3D(point.pos.x, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
 		}
 		else{
-			offset = new Pos((point.pos.x + counter.pos.x) / 2, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
-			float less = point.pos.x > counter.pos.x ? counter.pos.x : point.pos.x;
-			float more = point.pos.x > counter.pos.x ? point.pos.x : counter.pos.x;
+			offset = new V3D((point.pos.x + counter.pos.x) / 2, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
+			double less = point.pos.x > counter.pos.x ? counter.pos.x : point.pos.x;
+			double more = point.pos.x > counter.pos.x ? point.pos.x : counter.pos.x;
 			dis = Math.abs(more - less) / 2;
 			if(dis < 3) singular = true;
 		}
-		yoff = point.pos.y16;
+		yoff = point.pos.y;
 		//
 		if(point.pos.z >= 0){
 			engine = new ModelGroup("engine");
@@ -495,20 +494,20 @@ public class ConstructorLiftModel extends DefaultModel {
 	@Override
 	public void render(ModelRenderData data){
 		ConstCenterEntity tile = (ConstCenterEntity)data.tile;
-		offset.translate();
+		GL11.glTranslated(offset.x, offset.y, offset.z);
 		if(engine != null) engine.render();
-		GL11.glRotatef(rotation, 0, 1, 0);
+		GL11.glRotated(rotation, 0, 1, 0);
 		pillar.render();
-		float off = (yoff - tile.getLowestLiftPoint());
-		GL11.glTranslatef(0, tile.getRawLiftState() + off + .25f, 0);
+		double off = (yoff - tile.getLowestLiftPoint());
+		GL11.glTranslated(0, tile.getRawLiftState() + off + .25f, 0);
 		glider.render();
 		arm0.render();
 		arm1.render();
 		holder0.render();
 		holder1.render();
-		GL11.glTranslatef(0, -tile.getRawLiftState() - off - .25f, 0);
-		GL11.glRotatef(-rotation, 0, 1, 0);
-		offset.translateR();
+		GL11.glTranslated(0, -tile.getRawLiftState() - off - .25f, 0);
+		GL11.glRotated(-rotation, 0, 1, 0);
+		GL11.glTranslated(-offset.x, -offset.y, -offset.z);
 	}
 	
 	public static ArrayList<ConstructorLiftModel> setup(VehicleData data){

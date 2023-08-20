@@ -1,14 +1,13 @@
 package net.fexcraft.mod.fvtm.sys.rail.vis;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity.TRO;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Reltrs {
@@ -33,15 +32,17 @@ public class Reltrs {
 		current = new Track(null).read(compound.getCompoundTag("Track"));
 		if(entity == null){
 			if(data == null){
-				data = Resources.getVehicleData(compound);
-			} else data.read(compound);
-		} else entity.read(compound);
+				//TODO data = Resources.getVehicleData(compound);
+			}
+			else data.read(new TagCWI(compound));
+		}
+		else entity.read(compound);
 		frbogiedis = compound.getDouble("fr_bogie");
 		rrbogiedis = compound.getDouble("rr_bogie");
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
-		compound = entity.vehdata.write(compound);
+		compound = entity.vehdata.write(new TagCWI(compound)).local();
 		compound.setLong("UID", entity.uid);
 		compound.setDouble("fr_bogie", frbogiedis);
 		compound.setDouble("rr_bogie", frbogiedis);

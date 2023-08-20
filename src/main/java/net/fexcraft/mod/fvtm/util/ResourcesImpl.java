@@ -303,6 +303,11 @@ public class ResourcesImpl extends FvtmResources {
 		return bool;
 	}
 
+	@Override
+	public IDL getExternalTexture(String custom) {
+		return ExternalTextureLoader.get(custom);
+	}
+
 	@SideOnly(Side.CLIENT)
 	public static InputStream getModelInputStream(ResourceLocation resloc, boolean log){
 		try{

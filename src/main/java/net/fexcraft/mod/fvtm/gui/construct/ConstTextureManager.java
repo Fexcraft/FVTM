@@ -122,7 +122,7 @@ public class ConstTextureManager extends ConstGui {
 		if(sup){
 			current.string += " : " + texus.getSelectedTexture();
 		}
-		texts.get("supplied").string = sup ? getName(texus.getCurrentTexture()) : "...";
+		texts.get("supplied").string = sup ? getName(texus.getCurrentTexture().local()) : "...";
 		buttons.get("supplied_0").enabled = texus.getSelectedTexture() > 0;
 		buttons.get("supplied_1").enabled = texus.getSelectedTexture() < texus.getTexHolder().getDefaultTextures().size() - 1;
 		fields.get("internal").setText(!sup && !texus.isTextureExternal() ? texus.getCurrentTexture().toString() : "...");

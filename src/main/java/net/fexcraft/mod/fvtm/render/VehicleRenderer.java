@@ -6,14 +6,15 @@ import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DebugModels;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -22,7 +23,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +51,7 @@ public class VehicleRenderer {
             GL11.glTranslated(x - cx, y - cy, z - cz);
 			if(Command.OTHER){
 				for(SwivelPoint point : vehicle.getVehicleData().getRotationPoints().values()){
-					Vec3d vec = point.getRelativeVector(0, 0.1f, 0);
+					V3D vec = point.getRelativeVector(0, 0.1f, 0);
 					GL11.glTranslated(vec.x, vec.y, vec.z);
 					DebugModels.CENTERSPHERE.render(1f);
 					GL11.glTranslated(-vec.x, -vec.y, -vec.z);
@@ -120,9 +120,9 @@ public class VehicleRenderer {
 		boolean veh = false;
 		GL11.glPushMatrix();
 		if(!(veh = point.isVehicle())){
-			Vec3d temp0 = point.getPos();
-			Vec3d temp1 = point.getPrevPos();
-			Vec3d temp2 = new Vec3d(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
+			V3D temp0 = point.getPos();
+			V3D temp1 = point.getPrevPos();
+			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 			Vec3f rot = EffectRenderer.getRotations(point, ticks);
 			GL11.glTranslated(-temp2.x, -temp2.y, temp2.z);
 			GL11.glRotatef(-rot.x, 0.0F, 1.0F, 0.0F);

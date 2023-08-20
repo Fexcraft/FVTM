@@ -21,7 +21,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -59,7 +58,6 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid, ctab, overlayid;
 	protected SimplePhysData legacy_data;
-	protected Uni12Data uni12_data;
 	protected boolean trailer;
 	protected V3D def_front_conn, def_rear_conn;
 	protected LinkedHashMap<String, ResourceLocation> preinstalled;
@@ -157,7 +155,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
 			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
 				try{
-					SwivelPoint point = new SwivelPoint(JsonHandler.parse(elm.toString(), true).asMap());
+					SwivelPoint point = new SwivelPoint(null, JsonHandler.parse(elm.toString(), true).asMap());
 					rotpoints.put(point.id, point);
 				}
 				catch(Exception e){
@@ -169,18 +167,18 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		if(obj.has("Sounds")){
 			for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
 				JsonObject json = elm.getAsJsonObject();
-				this.sounds.put(json.get("event").getAsString(), new Sound(new ResourceLocation(json.get("sound").getAsString()), JsonUtil.getIfExists(obj, "volume", 1f).floatValue(), JsonUtil.getIfExists(obj, "pitch", 1f).floatValue()));
+				this.sounds.put(json.get("event").getAsString(), new Sound(IDLManager.getIDLCached(json.get("sound").getAsString()), JsonUtil.getIfExists(obj, "volume", 1f).floatValue(), JsonUtil.getIfExists(obj, "pitch", 1f).floatValue()));
 			}
 		}
 		if(obj.has("LiftingPoints")){
 			JsonObject lifts = obj.get("LiftingPoints").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : lifts.entrySet()){
-				liftingpoints.put(entry.getKey(), new LiftingPoint(entry.getKey(), entry.getValue().getAsJsonArray()));
+				liftingpoints.put(entry.getKey(), new LiftingPoint(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), false).asArray()));
 			}
 		}
 		else{
-			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20), null, 0));
-			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20), null, 0));
+			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20).toV3D(), null, 0));
+			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20).toV3D(), null, 0));
 		}
 		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? JsonHandler.parse(obj.get("PartSlots").toString(), false).asArray() : new net.fexcraft.app.json.JsonArray());
 		//
@@ -256,10 +254,6 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	public SimplePhysData getLegacyData(){
 		return legacy_data;
-	}
-
-	public Uni12Data getUni12Data(){
-		return uni12_data;
 	}
 
 	public boolean isTrailerOrWagon(){

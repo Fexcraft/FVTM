@@ -17,12 +17,12 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -292,7 +292,7 @@ public class RailSystem extends DetachedSystem {
 				if(single){
 					region = getRegions().get(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
-					if(Resources.getVehicle(com.getString("Vehicle")) == null){
+					if(FvtmRegistry.VEHICLES.get(com.getString("Vehicle")) == null){
 						Print.log("SINGULAR Rail Vehicle with id '" + com.getString("Vehicle") + "' not found, removing.");
 						Print.log("NBT:" + com);
 						torem.add(uid);

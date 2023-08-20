@@ -17,7 +17,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -57,7 +56,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	protected LinkedHashMap<String, String> attr_mods = new LinkedHashMap<>();
-	protected List<NamedResourceLocation> textures;
+	protected List<IDL> textures;
 	protected List<String> categories;
 	protected PartItem item;
 	protected String modelid, ctab;
@@ -283,7 +282,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	}
 
 	@Override
-	public List<NamedResourceLocation> getDefaultTextures(){
+	public List<IDL> getDefaultTextures(){
 		return textures;
 	}
 	

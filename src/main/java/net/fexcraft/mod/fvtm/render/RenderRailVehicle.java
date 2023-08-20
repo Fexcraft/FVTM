@@ -78,7 +78,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
     
     @Override
     protected ResourceLocation getEntityTexture(RailVehicle entity){
-        return entity.getVehicleData().getCurrentTexture();
+        return entity.getVehicleData().getCurrentTexture().local();
     }
     
     @Override

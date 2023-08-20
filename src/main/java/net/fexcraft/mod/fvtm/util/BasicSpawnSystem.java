@@ -50,10 +50,10 @@ public class BasicSpawnSystem extends EntitySystem {
 	}
     
     public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data){
-		String[] index = data.getType().isTrailerOrWagon() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
+		String[] index = data.getType().isTrailer() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
 		boolean tireinfo = false;
 		for(String str : index){
-			String trailer = data.getType().isTrailerOrWagon() ? "&9Trailer" : "&9Vehicle";
+			String trailer = data.getType().isTrailer() ? "&9Trailer" : "&9Vehicle";
 			if(!data.getWheelPositions().containsKey(str)){
 				Print.chat(player, trailer + " is missing a wheel! &7&o" + str); failed = true;
 			}
@@ -69,7 +69,7 @@ public class BasicSpawnSystem extends EntitySystem {
 		if(tireinfo){
 			Print.chat(player, "&bU12/Basic vehicles need tire/wheel parts with a TireFunction attached!");
 		}
-		if(!data.getType().isTrailerOrWagon()){
+		if(!data.getType().isTrailer()){
 			if(!data.hasPart("engine")){
 				Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;
 			}
@@ -94,17 +94,17 @@ public class BasicSpawnSystem extends EntitySystem {
 				}
 			}
 		}
-		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
+		if(!data.getType().isTrailer() && !data.hasPart("engine")){
 			Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;
 		}
-		if(!data.getType().isTrailerOrWagon() && data.getSeats().size() < 1){
+		if(!data.getType().isTrailer() && data.getSeats().size() < 1){
 			Print.chat(player, "&9Vehicle does not have any Seats!"); failed = true;
 		}
-		for(String part : data.getType().getRequiredParts()){
+		/*for(String part : data.getType().getRequiredParts()){
 			if(data.getPart(part) == null){
 				Print.chat(player, "&9Vehicle is missing &6required part&9: &a" + part + "&9!"); failed = true;
 			}
-		}
+		}*///TODO replace with new required parts check
 		return !failed;
 	}
 

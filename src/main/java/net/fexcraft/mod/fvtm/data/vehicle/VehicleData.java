@@ -19,7 +19,6 @@ import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -81,7 +80,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public VehicleData(Vehicle type){
 		super(type);
 		texture = new Textureable(type);
-		rotpoints.put("vehicle", rootpoint = new SwivelPoint("vehicle", null));
+		rotpoints.put("vehicle", rootpoint = new SwivelPoint("vehicle", (String)null));
 		for(SwivelPoint point : type.getDefaultSwivelPoints().values()){
 			rotpoints.put(point.id, point.clone(null));
 		}
@@ -725,7 +724,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	@Override
 	public SoundEvent getSoundEvent(String event){
-		Sound sound = getSound(event); return sound == null ? null : sound.event;
+		Sound sound = getSound(event); return sound == null ? null : (SoundEvent)sound.event;
 	}
 
 	@Override
@@ -747,7 +746,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public void playSound(Entity at, String event){
 		Sound sound = getSound(event);
 		if(sound == null) return;
-		at.playSound(sound.event, sound.volume, sound.pitch);
+		at.playSound((SoundEvent)sound.event, sound.volume, sound.pitch);
 	}
 	
 	public TreeMap<String, SwivelPoint> getRotationPoints(){

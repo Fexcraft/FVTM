@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
@@ -12,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
@@ -74,17 +74,17 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         		world.spawnEntity(itemstack); vehicle.setDead();
     		} return;
     	}
-    	Vec3d vec = null;
+    	V3D vec = null;
     	if(!vehicle.getVehicleData().getWheelPositions().containsKey(index) && !isTrailerWheel()){
     		Print.debug("Vehicle was missing an essential Wheel Position, skipping wheel[" + wheelid + "] init.");
     		return;
     	}
     	if(isTrailerWheel()){
-            vec = vehicle.getRotPoint().getAxes().get_vector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
-            vec = new Vec3d(0, vec.y, vec.z);
+            vec = vehicle.getRotPoint().getPivot().get_vector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
+            vec = new V3D(0, vec.y, vec.z);
     	}
     	else{
-            vec = vehicle.getRotPoint().getAxes().get_vector(vehicle.getVehicleData().getWheelPositions().get(index));
+            vec = vehicle.getRotPoint().getPivot().get_vector(vehicle.getVehicleData().getWheelPositions().get(index));
     	}
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         if(vehicle instanceof ULandVehicle){

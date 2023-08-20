@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util.script;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
@@ -56,7 +57,7 @@ public class ContainerScript extends VehicleScript {
     		Print.chat(player, "&6Please stop the vehicle first!");
     		return;
     	}
-    	if((int)(ent.getRotPoint().getAxes().deg_yaw()) % 90 != 0){
+    	if((int)(ent.getRotPoint().getPivot().deg_yaw()) % 90 != 0){
     		Print.chat(player, "&6Please make sure the crane is in a valid 90\u00B0 rotation!");
     		return;
     	}
@@ -89,8 +90,11 @@ public class ContainerScript extends VehicleScript {
 				return;
 			}
 		}
-		BlockPos vec0 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(-0.4, 0.1, 0))));
-		BlockPos vec1 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add( 0.4, 0.1, 0))));
+		V3D os = new V3D(offset.x, offset.y, offset.z);
+		os = ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(os.add(-0.4, 0.1, 0));
+		BlockPos vec0 = new BlockPos(ent.getEntity().getPositionVector().add(os.x, os.y, os.z));
+		os = ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(os.add( 0.4, 0.1, 0));
+		BlockPos vec1 = new BlockPos(ent.getEntity().getPositionVector().add(os.x, os.y, os.z));
 		Block block0 = player.world.getBlockState(vec0).getBlock();
 		Block block1 = player.world.getBlockState(vec1).getBlock();
 		boolean first = false;
@@ -104,7 +108,8 @@ public class ContainerScript extends VehicleScript {
 			if(!tile.isCore()) tile = null;
 		}
 		if(tile == null){
-			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(0, .1, 0)));
+			V3D ofs = ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.x, offset.y + 0.1, offset.z);
+			Vec3d vec2 = ent.getEntity().getPositionVector().add(ofs.x, ofs.y, ofs.z);
 			ContainerHolder cap = null;
 			String slotid = null;
 			Entity capent = null;
@@ -262,11 +267,13 @@ public class ContainerScript extends VehicleScript {
 			for(ContainerData data : holder.getContainers()){
 				if(data != null) hlength += data.getContainerType().length();
 			}
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(0, .1, 0)));
+			V3D ofs = ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.x, offset.y + 0.1, offset.z);
+			vec1 = ent.getEntity().getPositionVector().add(ofs.x, ofs.y, ofs.z);
 		}
 		else{
 			float off = firstid - (holder.getContainers().length / 2) + (firstcon.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(off, .1, 0)));
+			V3D ofs = ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.x, offset.y + 0.1, offset.z);
+			vec1 = ent.getEntity().getPositionVector().add(ofs.x, ofs.y, ofs.z);
 		}
 		ContainerHolder cap = null;
 		String slotid = null;
@@ -365,7 +372,8 @@ public class ContainerScript extends VehicleScript {
 			passed = true;
 			ContainerData condata = holder.getContainers()[i];
 			float off = i - (holder.getContainers().length / 2) + (condata.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(off, 0.1, 0)));
+			V3D ofs = ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.x, offset.y + 0.1, offset.z);
+			vec1 = ent.getEntity().getPositionVector().add(ofs.x, ofs.y, ofs.z);
 			BlockPos vec0 = new BlockPos(vec1);//ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-0.4, 0, 0)));
 			Block block0 = player.world.getBlockState(vec0).getBlock();
 			if(block0 == Blocks.AIR || block0.isReplaceable(player.world, vec0)){
@@ -378,7 +386,7 @@ public class ContainerScript extends VehicleScript {
 					}
 					return;
 				}
-				EnumFacing facing = EnumFacing.fromAngle(ent.getRotPoint().getAxes().deg_yaw());
+				EnumFacing facing = EnumFacing.fromAngle(ent.getRotPoint().getPivot().deg_yaw());
 				if(ContainerItem.isValidPostitionForContainer(ent.getEntity().world, player, vec0, facing, condata)){
 		            ItemStack stack = condata.newItemStack();
 		            stack.getTagCompound().setLong("PlacedPos", vec0.toLong());

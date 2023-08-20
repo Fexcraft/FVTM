@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,10 +35,10 @@ public abstract class VehicleScript {
 	public void onUpdate(Entity entity, VehicleData data){}
 	
 	/** Called when the VehicleData is loaded/read. */
-	public VehicleScript read(VehicleData data, NBTTagCompound compound){ return this; }
+	public VehicleScript load(VehicleData data, TagCW compound){ return this; }
 	
 	/** Called when the VehicleData is saved/written. */
-	public NBTTagCompound write(VehicleData data, NBTTagCompound compound){ return null; }
+	public TagCW save(VehicleData data, TagCW compound){ return null; }
 	
 	/** Called soon after the Entity is spawned. */
 	public void onSpawn(Entity entity, VehicleData data){}

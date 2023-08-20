@@ -22,13 +22,13 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -178,23 +178,17 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 			JsonArray array = obj.get("Scripts").getAsJsonArray();
 			for(JsonElement elm : array) addScript(elm);
 		}
-		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
-			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
-				try{
-					SwivelPoint point = new SwivelPoint(JsonHandler.parse(elm.toString(), true).asMap());
-					rotpoints.put(point.id, point);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-					Static.stop();
-				}
-			});
-		}
+		/*if(map.has("SwivelPoints")){
+			for(Entry<String, JsonValue<?>> entry : map.getMap("SwivelPoints").entries()){
+				SwivelPoint point = new SwivelPoint(entry.getKey(), entry.getValue().asMap());
+				swivelpoints.put(entry.getKey(), point);
+			}
+		}*/
 		if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
                 JsonObject json = elm.getAsJsonObject();
                 this.sounds.put(json.get("event").getAsString(),
-                	new Sound(new ResourceLocation(json.get("sound").getAsString()),
+                	new Sound(IDLManager.getIDLCached(json.get("sound").getAsString()),
                 		JsonUtil.getIfExists(obj, "volume", 1f).floatValue(),
                 		JsonUtil.getIfExists(obj, "pitch", 1f).floatValue()));
             }

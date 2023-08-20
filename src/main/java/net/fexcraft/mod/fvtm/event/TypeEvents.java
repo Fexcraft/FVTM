@@ -5,7 +5,6 @@ import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class TypeEvents<T extends TypeCore<T>> extends Event {
@@ -37,14 +36,6 @@ public class TypeEvents<T extends TypeCore<T>> extends Event {
 		
 		public PartCreated(Part part, JsonObject obj){
 			super(part, obj);
-		}
-		
-	}
-	
-	public static class VehicleCreated extends TypeEvents<Vehicle> {
-
-		public VehicleCreated(TypeCore<Vehicle> type, JsonObject obj){
-			super(type, obj);
 		}
 		
 	}

@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni12;
 
 import java.util.ArrayList;
 
-import net.minecraft.util.math.Vec3d;
+import net.fexcraft.lib.common.math.V3D;
 
 public class Axle {
 
@@ -11,16 +11,16 @@ public class Axle {
 	public double weight_ratio;
 	public double weight_on;
 	public double yaw_speed;
-	public Vec3d pos;
+	public V3D pos;
 	
-	public Axle(int id, Vec3d pos){
+	public Axle(int id, V3D pos){
 		this.id = id;
 		this.pos = pos;
 	}
 
 	public void initCenter(){
 		wheels.forEach(wtd -> pos = pos.add(0, 0, wtd.pos.z));
-		pos = new Vec3d(pos.x, pos.y, pos.z / wheels.size());
+		pos = new V3D(pos.x, pos.y, pos.z / wheels.size());
 	}
 
 	public void calc(double mass, double acc, double height, double base, double yaw){

@@ -60,6 +60,7 @@ import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPressState;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -237,10 +238,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){
-			vehicle = Resources.getVehicleData(compound);
+			//TODO vehicle = Resources.getVehicleData(compound);
 		}
 		else{
-			vehicle.read(compound);
+			vehicle.read(new TagCWI(compound));
 		}
 		rotpoint = vehicle.getRotationPoint("vehicle");
 		prevRotationYaw = compound.getFloat("RotationYaw");
@@ -254,7 +255,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		vehicle.write(compound);
+		vehicle.write(new TagCWI(compound));
 		compound.setBoolean("Parking", pbrake);
 		rotpoint.savePivot(new TagCWI(compound)); //Print.debug(compound.toString());
 		super.writeEntityToNBT(compound);
@@ -265,14 +266,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         NBTTagCompound compound = new NBTTagCompound();
 		rotpoint.savePivot(new TagCWI(compound));
         if(truck != null) compound.setInteger("TruckId", truck.getEntity().getEntityId());
-		ByteBufUtils.writeTag(buffer, vehicle.write(compound));
+		ByteBufUtils.writeTag(buffer, vehicle.write(new TagCWI(compound)).local());
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf buffer){
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-    		vehicle = Resources.getVehicleData(compound);
+    		//TODO vehicle = Resources.getVehicleData(compound);
     		rotpoint = vehicle.getRotationPoint("vehicle");
             rotpoint.loadPivot(new TagCWI());
             prevRotationYaw = rotpoint.getPivot().deg_yaw();
@@ -729,10 +730,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
             else if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
-                if(data.getType().isTrailerOrWagon()){
+                if(data.getType().isTrailer()){
                 	if(vehicle.getRearConnector() == null){
                 		Print.chat(player, "&cThis vehicle has no rear connector installed.");
-                		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultRearConnector());
+                		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultConnectorRear());
                 		return true;
                 	}
                 	if(!BasicSpawnSystem.validToSpawn(player, stack, data)) return true;
@@ -848,12 +849,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             	wheel.prevPosZ = wheel.posZ;
             }
         }
-        if(!world.isRemote){// && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
+        if(!world.isRemote){// && vehicle.getType().isTrailer() ? this.wheels.length > 2 : true){
             if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").asInteger() > 0)){
                 throttle *= 0.98F;
             }
             if(truck == null){
-                if(vehicle.getType().isTrailerOrWagon()) relign();
+                if(vehicle.getType().isTrailer()) relign();
                 else onUpdateMovement();
             }
         }
@@ -1104,7 +1105,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             wheel.motionY -= 0.98F / 20F;//Gravity
             wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 			V3D s = null;
-        	if(wheelid >= 2 && this.getVehicleData().getType().isTrailerOrWagon()){
+        	if(wheelid >= 2 && this.getVehicleData().getType().isTrailer()){
         		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
         		s = new V3D(0, s.y, s.z);
         	}
@@ -1314,7 +1315,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "resync": {
-                    NBTTagCompound nbt = this.vehicle.write(new NBTTagCompound());
+                    NBTTagCompound nbt = this.vehicle.write(TagCW.create()).local();
                     nbt.setString("task", "update_vehicledata");
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
@@ -1358,16 +1359,18 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                         Print.chat(player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(player, "Out of fuel!");
-                            vehicle.playSound(this, "engine_fail");
+                            //TODO vehicle.playSound(this, "engine_fail");
                         }
-                        else vehicle.playSound(this, state ? "engine_start" : "engine_stop");
+                        else{
+							//TODO vehicle.playSound(this, state ? "engine_start" : "engine_stop");
+						}
                     }
                     throttle = 0;
                     break;
                 }
                 case "resync":
                 case "update_vehicledata": {
-                    this.vehicle.read(pkt.nbt);
+                    this.vehicle.read(new TagCWI(pkt.nbt));
                     break;
                 }
                 case "toggle_lights": {

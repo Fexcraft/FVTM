@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
-
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
@@ -79,7 +77,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		}
 		WheelData idata = part.getType().getInstallationHandlerData();
 		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, toV3(new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f))));
+		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).toV3D());
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "handler.install.fvtm.wheel.success");
 		return true;

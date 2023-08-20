@@ -44,8 +44,8 @@ import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -133,7 +133,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		compound.setTag("Attributes", alist);
 		//
-		texture.save(compound);
+		texture.save(new TagCWI(compound));
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
@@ -230,7 +230,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
 		}
 		//
-		texture.load(compound, type);
+		texture.load(new TagCWI(compound), type);
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");
@@ -743,10 +743,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	@Override
-	public void playSound(Entity at, String event){
+	public void playSound(EntityW at, String event){
 		Sound sound = getSound(event);
 		if(sound == null) return;
-		at.playSound((SoundEvent)sound.event, sound.volume, sound.pitch);
+		//TODO at.playSound((SoundEvent)sound.event, sound.volume, sound.pitch);
 	}
 	
 	public TreeMap<String, SwivelPoint> getRotationPoints(){

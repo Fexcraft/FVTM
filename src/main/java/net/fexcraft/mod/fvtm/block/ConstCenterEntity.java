@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.block;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -18,7 +19,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -189,7 +189,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 		wheeloff = -16;
 		if(data.getWheelPositions().size() > 0){
 			if(!data.getWheelPositions().isEmpty()){
-				for(Vec3d vec : data.getWheelPositions().values()){
+				for(V3D vec : data.getWheelPositions().values()){
 					if(wheeloff < -vec.y) wheeloff = (float)-vec.y;
 				}
 			}

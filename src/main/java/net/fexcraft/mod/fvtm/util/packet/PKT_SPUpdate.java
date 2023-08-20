@@ -4,8 +4,8 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.minecraft.entity.Entity;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PKT_SPUpdate implements IPacket, IMessage {
@@ -17,8 +17,8 @@ public class PKT_SPUpdate implements IPacket, IMessage {
 
 	public PKT_SPUpdate(){}
 
-	public PKT_SPUpdate(Entity entity, SwivelPoint point){
-		entid = entity.getEntityId();
+	public PKT_SPUpdate(EntityW entity, SwivelPoint point){
+		entid = entity.getId();
 		posX = point.getPos().x;
 		posY = point.getPos().y;
 		posZ = point.getPos().z;

@@ -2,6 +2,7 @@ package net.fexcraft.mod.uni.impl;
 
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
+import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
@@ -33,6 +34,11 @@ public class TagLWI implements TagLW {
 	}
 
 	@Override
+	public double getDouble(int idx){
+		return list.getDoubleAt(idx);
+	}
+
+	@Override
 	public int getInteger(int idx){
 		return list.getIntAt(idx);
 	}
@@ -50,6 +56,11 @@ public class TagLWI implements TagLW {
 	@Override
 	public void add(float value){
 		list.appendTag(new NBTTagFloat(value));
+	}
+
+	@Override
+	public void add(double value){
+		list.appendTag(new NBTTagDouble(value));
 	}
 
 	@Override

@@ -3,10 +3,6 @@ package net.fexcraft.mod.fvtm.gui;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
@@ -14,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
@@ -26,6 +21,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 public class VehicleSteeringOverlay extends GuiScreen {
 
@@ -42,7 +40,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		instance = this;
 		Class<? extends AddonSteeringOverlay> clazz = null;
 		try{
-			clazz = Resources.getOverlayOf(seat.vehicle);
+			clazz = DefaultSteeringOverlay.class;
 			overlay = clazz.getConstructor(VehicleSteeringOverlay.class, EntityPlayer.class).newInstance(this, player);
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){

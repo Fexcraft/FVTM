@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.SwivelPointMover;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPointMover;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 
@@ -186,7 +186,7 @@ public class SPM_DI implements SwivelPointMover {
 	}
 
 	@Override
-	public boolean shouldSendPacket(){
+	public boolean shouldUpdate(){
 		if(moved){
 			moved = false;
 			return true;

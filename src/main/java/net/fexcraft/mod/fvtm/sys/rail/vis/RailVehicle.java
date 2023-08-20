@@ -53,6 +53,7 @@ import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -642,8 +643,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        ItemStack stack = rek.data().getType().newItemStack();
-        stack.setItemDamage(0); return stack;
+        ItemStack stack = rek.data().getType().getNewStack().local();
+        stack.setItemDamage(0);
+		return stack;
     }
 
     //--- PACKETS ---//
@@ -661,7 +663,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "resync": {
-                    NBTTagCompound nbt = this.rek.data().write(new NBTTagCompound());
+                    NBTTagCompound nbt = this.rek.data().write(TagCW.create()).local();
                     nbt.setString("task", "update_vehicledata");
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
@@ -704,9 +706,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         Print.chat(player, "Engine toggled " + (rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(player, "Out of fuel!");
-                            rek.data().playSound(this, "engine_fail");
+                            //TODO rek.data().playSound(this, "engine_fail");
                         }
-                        else rek.data().playSound(this, state ? "engine_start" : "engine_stop");
+                        else{
+							//TODO rek.data().playSound(this, state ? "engine_start" : "engine_stop");
+						}
                     }
                     throttle = 0;
                     if(rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
@@ -724,7 +728,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "resync":
                 case "update_vehicledata": {
-                    this.rek.data().read(pkt.nbt);
+                    this.rek.data().read(new TagCWI(pkt.nbt));
                     break;
                 }
                 case "toggle_lights": {

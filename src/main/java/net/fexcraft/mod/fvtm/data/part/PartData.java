@@ -48,7 +48,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		currentrot.toNBT("CurrentRot", compound);
 		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.setString("SwivelPoint", rotpoint);
 		//
-		texture.save(compound);
+		texture.save(new TagCWI(compound));
 		//
 		NBTTagList flist = new NBTTagList();
 		for(Function func : functions.values()){
@@ -68,7 +68,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		currentrot = Rot.fromNBT("CurrentRot", new TagCWI(compound));
 		rotpoint = compound.hasKey("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
-		texture.load(compound, type);
+		texture.load(new TagCWI(compound), type);
 		//
 		NBTTagList flist = (NBTTagList)compound.getTag("Functions");
 		if(flist != null){

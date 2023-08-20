@@ -275,7 +275,7 @@ public class ResourcesImpl extends FvtmResources {
 		super.initModels();
 		getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
 		Resources.PARTS.forEach(part -> part.loadModel());
-		Resources.VEHICLES.forEach(veh -> veh.loadModel());
+		//Resources.VEHICLES.forEach(veh -> veh.loadModel());
 		Resources.CONTAINERS.forEach(con -> con.loadModel());
 		Resources.BLOCKS.forEach(block -> block.loadModel());
 		Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());

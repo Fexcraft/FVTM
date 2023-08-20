@@ -58,12 +58,12 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
             stepHeight = wtd == null ? 0 : wtd.function.step_height;
         }
         else{
-        	stepHeight = vehicle.getVehicleData().getType().getLegacyData() == null ? 1f : vehicle.getVehicleData().getType().getLegacyData().wheel_step_height;
+        	stepHeight = vehicle.getVehicleData().getType().getSphData() == null ? 1f : vehicle.getVehicleData().getType().getSphData().wheel_step_height;
         }
     }
 
     public void initPosition(){
-    	//lata = vehicle.getVehicleData().getType().getLegacyData();
+    	//lata = vehicle.getVehicleData().getType().getSphData();
     	//Print.debug(wheelid, this, vehicle, vehicle.getVehicleData().getWheelPositions());
     	String index = getIndex();
     	if(vehicle.getVehicleData().getWheelPositions().isEmpty()){
@@ -92,14 +92,14 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
             stepHeight = wtd == null ? 0 : wtd.function.step_height;
         }
         else{
-        	stepHeight = vehicle.getVehicleData().getType().getLegacyData() == null ? 1f : vehicle.getVehicleData().getType().getLegacyData().wheel_step_height;
+        	stepHeight = vehicle.getVehicleData().getType().getSphData() == null ? 1f : vehicle.getVehicleData().getType().getSphData().wheel_step_height;
         }
         //
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
     }
 
     private boolean isTrailerWheel(){
-		return vehicle.getVehicle().isTrailerOrWagon() && wheelid > 1;
+		return vehicle.getVehicle().isTrailer() && wheelid > 1;
 	}
 
 	@Override

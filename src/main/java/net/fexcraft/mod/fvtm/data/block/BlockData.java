@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.function.BoolBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -51,7 +52,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setString("Block", type.getRegistryName().toString());
 		//
-		texture.save(compound);
+		texture.save(new TagCWI(compound));
 		//
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
@@ -64,7 +65,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 
 	@Override
 	public BlockData read(NBTTagCompound compound){
-		texture.load(compound, type);
+		texture.load(new TagCWI(compound), type);
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");

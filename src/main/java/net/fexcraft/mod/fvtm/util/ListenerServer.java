@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -55,7 +56,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				data = entity.getVehicleData().installPart(Command.OTHER ? player : null, data, "s:" + packet.nbt.getString("source") + ":" + slot + ":" + index, true);
 				if(data == null){
 					player.getHeldItem(EnumHand.MAIN_HAND).shrink(1);
-					NBTTagCompound compound = entity.getVehicleData().write(new NBTTagCompound());
+					NBTTagCompound compound = entity.getVehicleData().write(TagCW.create()).local();
 					compound.setString("task", "update_vehicledata");
 					PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity.getEntity(), compound), Resources.getTargetPoint(entity.getEntity()));
 				}

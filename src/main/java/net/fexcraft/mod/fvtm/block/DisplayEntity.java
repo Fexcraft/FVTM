@@ -5,7 +5,7 @@ import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -53,14 +53,14 @@ public class DisplayEntity extends TileEntity implements IPacketReceiver<PacketT
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
-        if(data != null){ data.write(compound); }
+        if(data != null){ data.write(new TagCWI(compound)); }
         return compound;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
-        data = Resources.getVehicleData(compound);
+        //TODO data = Resources.getVehicleData(compound);
         Print.debug(compound.toString(), data == null);
     }
 

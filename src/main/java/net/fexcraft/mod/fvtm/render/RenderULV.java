@@ -79,7 +79,7 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
     
     @Override
     protected ResourceLocation getEntityTexture(ULandVehicle entity){
-        return entity.getVehicleData().getCurrentTexture();
+        return entity.getVehicleData().getCurrentTexture().local();
     }
     
     @Override

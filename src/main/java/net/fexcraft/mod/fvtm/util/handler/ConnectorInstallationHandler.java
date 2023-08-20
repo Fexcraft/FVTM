@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -12,16 +10,15 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.uni.Pos;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.math.Vec3d;
 
 public class ConnectorInstallationHandler extends PartInstallationHandler {
 	
@@ -66,9 +63,9 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		DefaultPartInstallHandler.setPosAndSwivelPoint(null, idata.compatible, cat, part, data);
 		boolean front = cat.startsWith("front");
 		String regname = data.getType().getRegistryName().toString();
-		Vec3d conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
+		V3D conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
 		if(idata.relative){
-			conn = conn.add(toV3(part.getInstalledPos()));
+			conn = conn.add(part.getInstalledPos().toV3D());
 		}
 		data.setConnector(conn, front);
 		Print.chatnn(sender, "handler.install.fvtm.connector.success");
@@ -100,27 +97,27 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		
 		private boolean removable, onslot, relative;
 		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
-		private HashMap<String, Vec3d> front = new HashMap<String, Vec3d>();
-		private HashMap<String, Vec3d> rear = new HashMap<String, Vec3d>();
+		private HashMap<String, V3D> front = new HashMap<String, V3D>();
+		private HashMap<String, V3D> rear = new HashMap<String, V3D>();
 		
 		public ConnectorData(JsonObject obj){
 			if(obj.has("Front") && obj.get("Front").isJsonArray()){
-				front.put("*", toV3(Pos.fromJson(obj.get("Front"), true)));
+				front.put("*", Pos.fromJson(obj.get("Front"), true).toV3D());
 			}
 			if(obj.has("Rear") && obj.get("Rear").isJsonArray()){
-				rear.put("*", toV3(Pos.fromJson(obj.get("Rear"), true)));
+				rear.put("*", Pos.fromJson(obj.get("Rear"), true).toV3D());
 			}
 			//
 			if(obj.has("Front") && obj.get("Front").isJsonObject()){
 				JsonObject jsn = obj.get("Front").getAsJsonObject();
 				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
-					front.put(entry.getKey(), toV3(Pos.fromJson(entry.getValue(), true)));
+					front.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).toV3D());
 				}
 			}
 			if(obj.has("Rear") && obj.get("Rear").isJsonObject()){
 				JsonObject jsn = obj.get("Rear").getAsJsonObject();
 				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
-					rear.put(entry.getKey(), toV3(Pos.fromJson(entry.getValue(), true)));
+					rear.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).toV3D());
 				}
 			}
 			//
@@ -144,12 +141,12 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			relative = JsonUtil.getIfExists(obj, "Relative", false);
 		}
 
-		public Vec3d getFrontPosition(String id){
+		public V3D getFrontPosition(String id){
 			if(front.containsKey(id)) return front.get(id);
 			return front.get("*");
 		}
 		
-		public Vec3d getRearPosition(String id){
+		public V3D getRearPosition(String id){
 			if(rear.containsKey(id)) return rear.get(id);
 			return rear.get("*");
 		}

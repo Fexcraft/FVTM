@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
@@ -156,11 +157,11 @@ public class Command extends CommandBase {
             			if(item.getData(stack).isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Container first.");
             			}
-            			else if(item.getData(stack).getAttributeInteger("generated_keys", 0) >= item.getType().getMaxKeys()){
+            			else if(item.getData(stack).getAttributeInteger("generated_keys", 0) >= item.getContent().getMaxKeys()){
                     		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
             			}
             			else{
-            				giveKeyItem(player, item.getType().getKeyType().local(), item.getData(stack).getLockCode());
+            				giveKeyItem(player, item.getContent().getKeyType().local(), item.getData(stack).getLockCode());
             				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
             				attr.set(attr.asInteger() + 1);
             			}
@@ -351,7 +352,7 @@ public class Command extends CommandBase {
                 			Attribute<?> base = data.getType().getDefaultAttributes().get(args[2]);
                 			attr.setI(base.initial);
                 			attr.set(base.value);
-                			data.write(stack.getTagCompound());
+                			data.write(new TagCWI(stack.getTagCompound()));
                     		Print.chat(sender, "Attribute reset.");
                 		}
                 		return;

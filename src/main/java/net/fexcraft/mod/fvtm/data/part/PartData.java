@@ -25,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class PartData extends DataCore<Part, PartData> implements TextureUser {
 	
-	protected TreeMap<String, Function> functions = new TreeMap<>();
+	protected TreeMap<String, PartFunction> functions = new TreeMap<>();
 	protected Textureable texture;
 	protected Pos currentpos = new Pos(0, 0, 0);
 	protected Rot currentrot = new Rot();
@@ -35,7 +35,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 	public PartData(Part type){
 		super(type);
 		texture = new Textureable(type);
-		for(Function func : type.functions){
+		for(PartFunction func : type.functions){
 			this.functions.put(func.getId(), func.copy(type));
 		}
 	}
@@ -51,7 +51,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		texture.save(new TagCWI(compound));
 		//
 		NBTTagList flist = new NBTTagList();
-		for(Function func : functions.values()){
+		for(PartFunction func : functions.values()){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("id", func.getId()); com = func.write(com);
 			if(com != null) flist.appendTag(com);
@@ -74,7 +74,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		if(flist != null){
 			for(NBTBase base : flist){
 				NBTTagCompound com = (NBTTagCompound)base;
-				Function func = this.getFunction(com.getString("id"));
+				PartFunction func = this.getFunction(com.getString("id"));
 				if(func != null) func.read(com);
 			}
 		}
@@ -136,11 +136,11 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		return rotpoint != null;
 	}
 	
-	public Map<String, Function> getFunctions(){
+	public Map<String, PartFunction> getFunctions(){
 		return functions;
 	}
 	
-	public <F extends Function> F getFunction(String id){
+	public <F extends PartFunction> F getFunction(String id){
 		return (F)functions.get(id);
 	}
 	
@@ -148,7 +148,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		return (F)functions.get(id);
 	}
 	
-	public <F extends Function> F getFunction(ResourceLocation resloc){
+	public <F extends PartFunction> F getFunction(ResourceLocation resloc){
 		return this.getFunction(resloc.toString());
 	}
 

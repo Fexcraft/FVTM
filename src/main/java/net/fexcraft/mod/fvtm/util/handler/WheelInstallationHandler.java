@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelFunction;
+import net.fexcraft.mod.fvtm.function.WheelFunction;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.command.ICommandSender;
 

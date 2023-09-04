@@ -19,7 +19,7 @@ import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.Rot;
-import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
 
 public class DefaultPartInstallHandler extends PartInstallationHandler {

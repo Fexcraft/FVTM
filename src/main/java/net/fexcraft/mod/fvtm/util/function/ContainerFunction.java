@@ -8,7 +8,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
+import net.fexcraft.mod.fvtm.data.part.PartFunction.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 
 public class ContainerFunction extends StaticFunction {

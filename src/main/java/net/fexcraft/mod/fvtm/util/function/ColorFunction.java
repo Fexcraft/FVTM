@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
+import net.fexcraft.mod.fvtm.data.part.PartFunction.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 
 public class ColorFunction extends StaticFunction {

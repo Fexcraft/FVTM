@@ -8,7 +8,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
@@ -52,7 +52,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         	tooltip.add(Formatter.format("&a&oThis part supports hot-install."));
         }
         if(!data.getFunctions().isEmpty()){
-            for(Function func : data.getFunctions().values()){
+            for(PartFunction func : data.getFunctions().values()){
             	func.addInformation(stack, world, data, tooltip, flag);
             }
             tooltip.add(Formatter.format("&9- - - - - - &7-"));

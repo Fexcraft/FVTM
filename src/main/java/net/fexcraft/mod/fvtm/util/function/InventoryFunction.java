@@ -9,7 +9,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -22,7 +22,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class InventoryFunction extends Function {
+public class InventoryFunction extends PartFunction {
 	
 	private InvHandler inventory;
     private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
@@ -69,7 +69,7 @@ public class InventoryFunction extends Function {
 	}
 
 	@Override
-	public Function read(NBTTagCompound compound){
+	public PartFunction read(NBTTagCompound compound){
 		inventory.load(compound, "inventory");
 		return this;
 	}
@@ -86,7 +86,7 @@ public class InventoryFunction extends Function {
 	}
 
 	@Override
-	public Function copy(Part part){
+	public PartFunction copy(Part part){
 		return new InventoryFunction(this);
 	}
 

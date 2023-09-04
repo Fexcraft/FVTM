@@ -20,7 +20,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
@@ -38,7 +38,7 @@ import net.fexcraft.mod.fvtm.util.function.ColorFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
@@ -749,7 +749,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return displayname;
 	}
 
-	public <F extends Function> F getFunctionInPart(String part, String function){
+	public <F extends PartFunction> F getFunctionInPart(String part, String function){
 		return parts.containsKey(part) ? parts.get(part).getFunction(function) : null;
 	}
 

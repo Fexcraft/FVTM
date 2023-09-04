@@ -3,24 +3,23 @@ package net.fexcraft.mod.fvtm.util.function;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
+import net.fexcraft.app.json.FJson;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
-import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.part.Part2;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
+import net.fexcraft.mod.fvtm.data.part.PartFunction.StaticFunction;
 
 public class SeatsFunction extends StaticFunction {
 	
 	private ArrayList<Seat> seats = new ArrayList<>();
 
-	public SeatsFunction(Part part, JsonObject obj){
-		super(part, obj);
-		JsonArray array = obj.get("seats").getAsJsonArray();
-		for(JsonElement elm : array){
-			seats.add(new Seat(elm.getAsJsonObject()));
+	@Override
+	public PartFunction init(Part2 part, FJson json){
+		for(JsonValue<?> entry : json.asArray().value){
+			seats.add(new Seat(entry.asMap()));
 		}
+		return this;
 	}
 
 	@Override

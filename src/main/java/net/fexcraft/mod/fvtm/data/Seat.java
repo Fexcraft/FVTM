@@ -3,11 +3,9 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.entity.Entity;
@@ -31,36 +29,35 @@ public class Seat {
 	public TreeMap<String, Boolean> filter = null;
 	public Float scale;
 
-	public Seat(JsonObject obj){
-		Pos pos = Pos.fromJson(obj, false);
-		x = pos.to16FloatX();
-		y = pos.to16FloatY();
-		z = pos.to16FloatZ();
-		driver = JsonUtil.getIfExists(obj, "driver", false);
-		name = obj.has("name") ? obj.get("name").getAsString() : UUID.randomUUID().toString().substring(0, 8);
-		minyaw = JsonUtil.getIfExists(obj, "min_yaw", -90f).floatValue();
-		maxyaw = JsonUtil.getIfExists(obj, "max_yaw", 90f).floatValue();
-		minpitch = JsonUtil.getIfExists(obj, "min_pitch", -80f).floatValue();
-		maxpitch = JsonUtil.getIfExists(obj, "max_pitch", 80f).floatValue();
-		sitting = JsonUtil.getIfExists(obj, "sitting", true);
-		swivel_point = JsonUtil.getIfExists(obj, "rot_point", "vehicle");
-		nofirst = JsonUtil.getIfExists(obj, "no_first_person", false);
-		nothird = JsonUtil.getIfExists(obj, "no_third_person", false);
+	public Seat(JsonMap map){
+		x = map.getFloat("x", 0f);
+		y = map.getFloat("y", 0f);
+		z = map.getFloat("z", 0f);
+		driver = map.getBoolean("driver", false);
+		name = map.has("name") ? map.get("name").string_value() : UUID.randomUUID().toString().substring(0, 8);
+		minyaw = map.getFloat("min_yaw", -90f);
+		maxyaw = map.getFloat("max_yaw", 90f);
+		minpitch = map.getFloat("min_pitch", -80f);
+		maxpitch = map.getFloat("max_pitch", 80f);
+		sitting = map.getBoolean("sitting", true);
+		swivel_point = map.getString("swivel_point", "vehicle");
+		nofirst = map.getBoolean("no_first_person", false);
+		nothird = map.getBoolean("no_third_person", false);
 		if(nofirst && nothird) nothird = false;
-		relative = JsonUtil.getIfExists(obj, "relative", false);
-		defyaw = JsonUtil.getIfExists(obj, "def_yaw", 0).floatValue();
-		defpitch = JsonUtil.getIfExists(obj, "def_pitch", 0).floatValue();
-		if(obj.has("filter")){
+		relative = map.getBoolean("relative", false);
+		defyaw = map.getFloat("def_yaw", 0f);
+		defpitch = map.getFloat("def_pitch", 0f);
+		if(map.has("filter")){
 			filter = new TreeMap<>();
-			JsonArray array = obj.get("filter").getAsJsonArray();
-			for(JsonElement elm : array){
-				String str = elm.getAsString();
+			JsonArray array = map.get("filter").asArray();
+			for(JsonValue<?> elm : array.value){
+				String str = elm.string_value();
 				boolean bool = !str.startsWith("!");
 				if(!bool) str = str.substring(1);
 				filter.put(str, bool);
 			}
 		}
-		if(obj.has("scale")) scale = obj.get("scale").getAsFloat();
+		if(map.has("scale")) scale = map.get("scale").float_value();
 	}
 
 	public Seat(String name, float x, float y, float z, boolean driver, String point, boolean nof, boolean not){

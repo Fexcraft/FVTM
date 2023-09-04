@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.minecraft.client.util.ITooltipFlag;
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class BogieFunction extends Function {
+public class BogieFunction extends PartFunction {
 	
 	private String inst_pos;
 
@@ -21,7 +21,7 @@ public class BogieFunction extends Function {
 	}
 
 	@Override
-	public Function read(NBTTagCompound compound){
+	public PartFunction read(NBTTagCompound compound){
 		inst_pos = compound.hasKey("bogie_pos") ? compound.getString("bogie_pos") : null;
 		return this;
 	}
@@ -42,7 +42,7 @@ public class BogieFunction extends Function {
 	}
 
 	@Override
-	public Function copy(Part part){
+	public PartFunction copy(Part part){
 		return new BogieFunction(part, null);
 	}
 

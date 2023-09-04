@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.event.ConditionEvent;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
@@ -129,7 +130,7 @@ public class CondBuilder {
 				case "partfunc":{
 					return mrdata -> {
 						PartData data = mrdata.part_category.equals(cond.target) ? mrdata.part : mrdata.vehicle.getPart(cond.target);
-						net.fexcraft.mod.fvtm.data.part.Function func = data == null ? null : data.getFunction(cond.targets[1]);
+						PartFunction func = data == null ? null : data.getFunction(cond.targets[1]);
 						return func == null ? false : func.onCondition(cond.targets, cond.mode, cond.condi);
 					};
 				}

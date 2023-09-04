@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
-import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TireFunction extends Function {
+public class TireFunction extends PartFunction {
 	
 	private static HashMap<Part, TireAttr> TIRES = new HashMap<>();
 	private String inst_on;
@@ -56,7 +56,7 @@ public class TireFunction extends Function {
 	}
 
 	@Override
-	public Function read(NBTTagCompound compound){
+	public PartFunction read(NBTTagCompound compound){
 		inst_on = compound.hasKey("wheel_on") ? compound.getString("wheel_on") : null;
 		return this;
 	}
@@ -87,7 +87,7 @@ public class TireFunction extends Function {
 	}
 
 	@Override
-	public Function copy(Part part){
+	public PartFunction copy(Part part){
 		return new TireFunction(part, null);
 	}
 

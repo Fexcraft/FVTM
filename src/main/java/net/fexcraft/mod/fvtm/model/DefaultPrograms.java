@@ -36,7 +36,7 @@ import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelFunction;
+import net.fexcraft.mod.fvtm.function.WheelFunction;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.Pos;

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -15,7 +14,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -35,7 +33,6 @@ import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.BogieInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.ConnectorInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
@@ -64,7 +61,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected ModelData modeldata;
 	protected PartInstallationHandler installhandler;
 	protected Object installhandler_data;
-	protected ArrayList<Function> functions = new ArrayList<>();
+	protected ArrayList<PartFunction> functions = new ArrayList<>();
 	protected ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<>();
 	protected ArrayList<JsonElement> scripts_data = new ArrayList<>();
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
@@ -81,50 +78,6 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 
 	@Override
 	public Part parse(JsonObject obj){
-		this.pack = DataUtil.getAddon(obj);
-		if(pack == null) return null;
-		this.registryname = DataUtil.getRegistryName(pack, obj);
-		if(registryname == null) return null;
-		//
-		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
-		this.categories = DataUtil.getStringArray(obj, "Category", true, true);
-		this.description = DataUtil.getStringArray(obj, "Description", true, true);
-		this.textures = DataUtil.getTextures(obj);
-		//
-		if(obj.has("Attributes")){
-			JsonObject attrs = obj.get("Attributes").getAsJsonObject();
-			for(Entry<String, JsonElement> entry : attrs.entrySet()){
-				Attribute<?> attr = Attribute.parse(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
-				if(attr != null) this.attributes.add(attr);
-			}
-		}
-		if(obj.has("AttributeModifiers")){
-			JsonObject mods = obj.get("AttributeModifiers").getAsJsonObject();
-			for(Entry<String, JsonElement> entry : obj.entrySet()){
-				attr_mods.put(entry.getKey(), entry.getValue().getAsString());
-			}
-		} 
-		if(obj.has("Function") || obj.has("Functions")){
-			JsonArray array = obj.has("Functions") ? obj.get("Functions").getAsJsonArray() : new JsonArray();
-			if(obj.has("Function")) array.add(obj.get("Function"));
-			//
-			for(JsonElement elm : array){
-				JsonObject elmobj = elm.isJsonPrimitive() ? null : elm.getAsJsonObject();
-				String id = elmobj == null ? elm.getAsString() : elmobj.get("id").getAsString();
-				Class<? extends Function> func = Resources.getFunction(id);
-				if(func != null){
-					try {
-						this.functions.add(func.getConstructor(Part.class, JsonObject.class).newInstance(this, elmobj));
-					}
-					catch(Exception e){
-						e.printStackTrace(); Static.stop();
-					}
-				}
-				else{
-					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!"); //Static.stop();
-				}
-			}
-		}
 		//
 		if(obj.has("Installation")){
 			JsonObject inst = obj.get("Installation").isJsonPrimitive() ? null : obj.get("Installation").getAsJsonObject();
@@ -295,7 +248,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		return (U)installhandler_data;
 	}
 	
-	public List<Function> getDefaultFunctions(){
+	public List<PartFunction> getDefaultFunctions(){
 		return functions;
 	}
 	

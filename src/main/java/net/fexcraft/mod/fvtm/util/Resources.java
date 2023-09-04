@@ -57,7 +57,6 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
-import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -81,7 +80,11 @@ import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.util.function.*;
+import net.fexcraft.mod.fvtm.util.function.BarrelBlockFunction;
+import net.fexcraft.mod.fvtm.util.function.BoolBlockFunction;
+import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
+import net.fexcraft.mod.fvtm.util.function.SeatBlockFunction;
+import net.fexcraft.mod.fvtm.util.function.SetBlockFunction;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -127,7 +130,6 @@ public class Resources {
 	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
 	public static RegistryOld<Cloth> CLOTHES = new RegistryOld<>();
 	public static RegistryOld<WireType> WIRES = new RegistryOld<>();
-	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
@@ -150,18 +152,6 @@ public class Resources {
 	}
 
 	private void registerFunctions(){
-		registerFunction("fvtm:wheel", WheelFunction.class, true);
-		registerFunction("fvtm:wheel_positions", WheelPositionsFunction.class, true);
-		registerFunction("fvtm:seats", SeatsFunction.class, true);
-		registerFunction("fvtm:engine", EngineFunction.class, true);
-		registerFunction("fvtm:inventory", InventoryFunction.class, true);
-		registerFunction("fvtm:container", ContainerFunction.class, true);
-		registerFunction("fvtm:bogie", BogieFunction.class, true);
-		registerFunction("fvtm:part_slots", PartSlotsFunction.class, true);
-		registerFunction("fvtm:color", ColorFunction.class, true);
-		registerFunction("fvtm:tire", TireFunction.class, true);
-		registerFunction("fvtm:transmission", TransmissionFunction.class, true);
-		registerFunction("fvtm:particle_emitter", ParticleEmitterFunction.class, true);
 		registerBlockFunction("fvtm:seat", SeatBlockFunction.class, true);
 		registerBlockFunction("fvtm:set_block", SetBlockFunction.class, true);
 		registerBlockFunction("fvtm:bool_value", BoolBlockFunction.class, true);
@@ -267,29 +257,6 @@ public class Resources {
 
 	public static TreeMap<String, Class<? extends Attribute<?>>> getAttributeTypes(){
 		return ATTRIBUTE_TYPES;
-	}
-	
-	/** Registers a Functon class into FVTM Resources.*/
-	public static void registerFunction(ResourceLocation regname, Class<? extends Function> clazz, boolean override){
-		registerFunction(regname.toString(), clazz, override);
-	}
-	
-	/** Registers a Functon class into FVTM Resources.*/
-	public static void registerFunction(String regname, Class<? extends Function> clazz, boolean override){
-		if(FUNCTIONS.containsKey(regname) && !override) return;
-		FUNCTIONS.put(regname, clazz);
-	}
-	
-	public static Class<? extends Function> getFunction(ResourceLocation regname){
-		return getFunction(regname.toString());
-	}
-	
-	public static Class<? extends Function> getFunction(String id){
-		return FUNCTIONS.get(id);
-	}
-
-	public static TreeMap<String, Class<? extends Function>> getFunctions(){
-		return FUNCTIONS;
 	}
 
 	/** Registers a Block Functon class into FVTM Resources.*/

@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class EngineFunction extends Function {
+public class EngineFunction extends PartFunction {
 	
 	private float engine_speed;
 	private int idle_con, con;
@@ -68,7 +68,7 @@ public class EngineFunction extends Function {
 	}
 
 	@Override
-	public Function read(NBTTagCompound compound){
+	public PartFunction read(NBTTagCompound compound){
 		ison = compound.getBoolean("IsOn");
 		return this;
 	}
@@ -88,7 +88,7 @@ public class EngineFunction extends Function {
 	}
 	
 	@Override
-	public Function copy(Part part){
+	public PartFunction copy(Part part){
 		EngineFunction func = new EngineFunction(engine_speed, ison, idle_con, con, cons, fuelgroup);
 		func.min_rpm = min_rpm;
 		func.max_rpm = max_rpm;

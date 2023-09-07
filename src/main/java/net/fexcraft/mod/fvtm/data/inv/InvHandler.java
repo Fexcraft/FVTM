@@ -6,8 +6,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -63,11 +63,11 @@ public class InvHandler {
 		load(compound, null);
 	}*/
 
-	public NBTTagCompound save(NBTTagCompound compound, String ctag){
+	public TagCW save(TagCW compound, String ctag){
 		return compound;
 	}
 
-	public void load(NBTTagCompound compound, String ctag){}
+	public void load(TagCW compound, String ctag){}
 	
 	//
 

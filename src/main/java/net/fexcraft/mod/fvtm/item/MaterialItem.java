@@ -40,9 +40,9 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 
 	private Material material;
 
-    public MaterialItem(Material material){
+    public MaterialItem(Material content){
 		super();
-		this.material = material;
+		material = content;
 		setHasSubtypes(true);
 		setMaxStackSize(material.isFuelContainer() ? 1 : material.getMaxStack());
 		setMaxDamage(material.getMaxHealth());

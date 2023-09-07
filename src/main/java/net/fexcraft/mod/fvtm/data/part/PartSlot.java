@@ -38,8 +38,8 @@ public class PartSlot {
 		public HashMap<String, Integer> count;
 		public boolean copy_rot;
 
-		public PartSlots(Part part, JsonMap obj){
-			this(part.getCategory(), obj.get("slots").asArray());
+		public PartSlots(String cat, JsonMap obj){
+			this(cat, obj.get("slots").asArray());
 			copy_rot = obj.has("copy_rot") ? obj.get("copy_rot").bool() : false;
 		}
 		

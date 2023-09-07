@@ -131,7 +131,7 @@ public class EffectRenderer {
 			if(vehicle.getVehicleData().getAttribute("collision_range").asFloat() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
-			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
+			if(part.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallHandlerData()).hotswap){
 				preMeshCalls();
 				for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
 					Pos pos = ps.getKey().equals(VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();

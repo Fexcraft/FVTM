@@ -81,7 +81,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
 		texture.save(new TagCWI(compound));
-		inventory.save(compound, "Inventory");
+		inventory.save(new TagCWI(compound), "Inventory");
 		compound.setBoolean("Locked", locked);
 		if(lockcode != null) compound.setString("LockCode", lockcode);
 		return compound;
@@ -102,7 +102,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		}
 		//
 		texture.load(new TagCWI(compound), type);
-		inventory.load(compound, "Inventory");
+		inventory.load(new TagCWI(compound), "Inventory");
 		this.locked = compound.getBoolean("Locked");
 		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
 		return this;

@@ -240,6 +240,7 @@ public class FVTM {
 		FvtmResources.INSTANCE.init();
 		FvtmResources.INSTANCE.registerAttributes();
 		FvtmResources.INSTANCE.registerFunctions();
+		FvtmResources.INSTANCE.registerHandlers();
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentItems();
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));

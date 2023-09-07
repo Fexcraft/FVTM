@@ -20,6 +20,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
@@ -222,12 +223,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	WTD wheel = new WTD(entry.getKey());
         	wheel.pos = entry.getValue();
         	PartData part = vehicle.getPart(entry.getKey());
-        	if(!((WheelData)part.getType().getInstallationHandlerData()).hasTire()){
+        	if(!((WheelData)part.getType().getInstallHandlerData()).hasTire()){
         		part = vehicle.getPart(entry.getKey() + ":tire");
-        		wheel_radius += ((TireData)part.getType().getInstallationHandlerData()).getOuterRadius() * Static.sixteenth;
+        		wheel_radius += ((TireData)part.getType().getInstallHandlerData()).getOuterRadius() * Static.sixteenth;
         	}
         	else{
-        		wheel_radius += ((WheelData)part.getType().getInstallationHandlerData()).getRadius() * Static.sixteenth;
+        		wheel_radius += ((WheelData)part.getType().getInstallHandlerData()).getRadius() * Static.sixteenth;
         	}
         	wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
         	wheeldata.add(wheel);
@@ -238,7 +239,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){
-			//TODO vehicle = Resources.getVehicleData(compound);
+			vehicle = FvtmResources.INSTANCE.getVehicleData(new TagCWI(compound));
 		}
 		else{
 			vehicle.read(new TagCWI(compound));

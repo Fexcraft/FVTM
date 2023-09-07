@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
+import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
@@ -14,9 +14,7 @@ import net.fexcraft.mod.fvtm.function.WheelFunction;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.command.ICommandSender;
 
-public class WheelInstallationHandler extends PartInstallationHandler {
-
-	public static final WheelInstallationHandler INSTANCE = new WheelInstallationHandler();
+public class WheelInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){

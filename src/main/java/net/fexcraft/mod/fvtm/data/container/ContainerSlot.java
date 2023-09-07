@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.container;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -10,7 +11,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -20,7 +20,7 @@ public class ContainerSlot {
 	private ContainerData[] containers;
 	public ContainerType onlytype;
 	public String rotpoint;
-	public Vec3d position;
+	public V3D position;
 	public float rotation;
 	public byte length;
 	public String id;
@@ -29,7 +29,7 @@ public class ContainerSlot {
 	public ContainerSlot(){}
 
 	/** Constructor to create new ContainerSlots. */
-	public ContainerSlot(String id, byte length, Vec3d pos, float rotation, @Nullable ContainerType lock, String rotpoint){
+	public ContainerSlot(String id, byte length, V3D pos, float rotation, @Nullable ContainerType lock, String rotpoint){
 		this.containers = new ContainerData[this.length = length];
 		onlytype = lock;
 		this.id = id;
@@ -67,7 +67,7 @@ public class ContainerSlot {
 		id = compound.getString("Name");
 		onlytype = null;
 		if(compound.hasKey("Type")) onlytype = ContainerType.valueOf(compound.getString("Type"));
-		position = new Vec3d(compound.getDouble("PositionX"), compound.getDouble("PositionY"), compound.getDouble("PositionZ"));
+		position = new V3D(compound.getDouble("PositionX"), compound.getDouble("PositionY"), compound.getDouble("PositionZ"));
 		rotation = compound.getFloat("RotationY");
 		rotpoint = compound.hasKey("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		containers = new ContainerData[length = compound.getByte("Length")];

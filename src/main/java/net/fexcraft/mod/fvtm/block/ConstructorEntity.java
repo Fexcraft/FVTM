@@ -109,7 +109,8 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 						this.pdata = null; this.updateClient(null);
 					}
 				} return;*/
-				data = getVehicleData().installPart(container.getCommandSender(), data, cat, false);
+				//TODO data = getVehicleData().installPart(container.getCommandSender(), data, cat, false);
+				data = getVehicleData().installPart(null, data, cat, false);
 				if(data == null) pdata = null; this.updateClient(null); return;
 			}
 			case "part_remove":{
@@ -121,9 +122,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 						this.dropItem(data.newItemStack()); this.updateClient(null);
 					}
 				} return;*/
-				if(getVehicleData().deinstallPart(container.getCommandSender(), cat, false)){
+				//TODO if(getVehicleData().deinstallPart(container.getCommandSender(), cat, false)){
+				if(getVehicleData().deinstallPart(null, cat, false)){
 					this.dropItem(data.newItemStack()); this.updateClient(null);
-				} return;
+				}
+				return;
 			}
 			case "part_cache_drop":{
 				this.dropPart(true);

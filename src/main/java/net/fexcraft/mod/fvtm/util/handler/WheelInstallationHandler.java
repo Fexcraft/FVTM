@@ -28,7 +28,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 			sender.send("handler.install.fvtm.wheel.wheelslot_missing");
 			return false;
 		}
-		WheelData idata = part.getType().getInstallationHandlerData();
+		WheelData idata = part.getType().getInstallHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(cat);
 		if(slot == null){
 			sender.send("handler.install.fvtm.wheel.wheelslot_null");
@@ -71,7 +71,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 			TireFunction func = part.getFunction("fvtm:tire");
 			if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
 		}
-		WheelData idata = part.getType().getInstallationHandlerData();
+		WheelData idata = part.getType().getInstallHandlerData();
 		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).toV3D());
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
@@ -81,7 +81,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
-		WheelData idata = part.getType().getInstallationHandlerData();
+		WheelData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.wheel.part_not_removable");
 			return false;

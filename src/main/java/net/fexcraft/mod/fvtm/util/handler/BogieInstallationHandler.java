@@ -8,7 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.function.BogieFunction;
+import net.fexcraft.mod.fvtm.function.BogieFunction;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.command.ICommandSender;
 

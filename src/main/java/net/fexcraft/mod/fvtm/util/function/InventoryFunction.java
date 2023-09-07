@@ -3,21 +3,19 @@ package net.fexcraft.mod.fvtm.util.function;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonObject;
-
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.FJson;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
-import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.part.Part2;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.minecraft.client.util.ITooltipFlag;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -25,57 +23,62 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class InventoryFunction extends PartFunction {
 	
 	private InvHandler inventory;
-    private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
-    private ArrayList<ItemStack> blacklist = new ArrayList<ItemStack>();
+    private ArrayList<ItemStack> allowed = new ArrayList<ItemStack>();
+    private ArrayList<ItemStack> disallowed = new ArrayList<ItemStack>();
     private ArrayList<String> seats = new ArrayList<String>();
 
 	/** Static Copy in Part. */
-	public InventoryFunction(Part part, JsonObject obj){
-		super(part, obj); if(obj == null) return;
-		inventory = new InvHandler(InvType.parse(JsonUtil.getIfExists(obj, "type", "item"), false));
-		inventory.setCapacity(JsonUtil.getIfExists(obj, "capacity", 0).intValue());
-		inventory.setArg(JsonUtil.getIfExists(obj, "fluid", "minecraft:water"));
-		//
-        if(obj.has("whitelist")){
-            obj.get("whitelist").getAsJsonArray().forEach((elm) -> {
-                JsonObject jsn = elm.getAsJsonObject();
-                try{
-                    whitelist.add(new ItemStack(Item.getByNameOrId(JsonUtil.getIfExists(jsn, "id", "minecraft:stone")), 1, JsonUtil.getIfExists(jsn, "meta", 0).intValue()));
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-            });
-        }
-        if(obj.has("blacklist")){
-            obj.get("blacklist").getAsJsonArray().forEach((elm) -> {
-                JsonObject jsn = elm.getAsJsonObject();
-                try{
-                    blacklist.add(new ItemStack(Item.getByNameOrId(JsonUtil.getIfExists(jsn, "id", "minecraft:stone")), 1, JsonUtil.getIfExists(jsn, "meta", 0).intValue()));
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-            });
-        }
-        seats = (ArrayList<String>)DataUtil.getStringArray(obj, "seats", false, false);
-	}
+	public InventoryFunction(){}
 
 	/** Functional Copy in PartData. */
 	public InventoryFunction(InventoryFunction root){
-		super(null, null);
-		this.whitelist = root.whitelist; this.blacklist = root.blacklist; this.seats = root.seats;
+		allowed = root.allowed;
+		disallowed = root.disallowed;
+		seats = root.seats;
 		inventory = root.inventory.gen(1);
 	}
 
 	@Override
-	public PartFunction read(NBTTagCompound compound){
+	public PartFunction init(Part2 part, FJson json){
+		JsonMap map = json.asMap();
+		inventory = new InvHandler(InvType.parse(map.getString("type", "item"), false));
+		inventory.setCapacity(map.getInteger("capacity", 0));
+		inventory.setArg(map.getString("fluid", "minecraft:water"));
+		//
+		if(map.has("allowed")){
+			map.get("allowed").asArray().value.forEach(val -> {
+				try{
+					JsonMap jsn = val.asMap();
+					allowed.add(new ItemStack(Item.getByNameOrId(jsn.getString("id", "minecraft:stone")), 1, map.getInteger("meta", 0)));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
+		}
+		if(map.has("disallowed")){
+			map.get("disallowed").asArray().value.forEach(val -> {
+				try{
+					JsonMap jsn = val.asMap();
+					disallowed.add(new ItemStack(Item.getByNameOrId(jsn.getString("id", "minecraft:stone")), 1, map.getInteger("meta", 0)));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
+		}
+		if(map.has("seats")) seats = map.getArray("seats").toStringList();
+		return this;
+	}
+
+	@Override
+	public PartFunction load(TagCW compound){
 		inventory.load(compound, "inventory");
 		return this;
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound compound){
+	public TagCW save(TagCW compound){
         inventory.save(compound, "inventory");
 		return compound;
 	}
@@ -86,7 +89,7 @@ public class InventoryFunction extends PartFunction {
 	}
 
 	@Override
-	public PartFunction copy(Part part){
+	public PartFunction copy(Part2 part){
 		return new InventoryFunction(this);
 	}
 
@@ -111,7 +114,7 @@ public class InventoryFunction extends PartFunction {
     }
     
     public boolean isItemValid(ItemStack stack){
-        for(ItemStack itemstack : blacklist){
+        for(ItemStack itemstack : disallowed){
             if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
                 if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){
                     return false;
@@ -119,9 +122,9 @@ public class InventoryFunction extends PartFunction {
             }
         }
         //
-        if(!whitelist.isEmpty()){
+        if(!allowed.isEmpty()){
             boolean found = false;
-            for(ItemStack itemstack : whitelist){
+            for(ItemStack itemstack : allowed){
                 if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
                     if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){
                         found = true;
@@ -133,7 +136,7 @@ public class InventoryFunction extends PartFunction {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
+    public void addInformation(StackWrapper stack, WorldW world, PartData data, List<String> tooltip, boolean ext){
         tooltip.add(Formatter.format("&9Inventory Size: &7" + inventory.capacity() + " " + inventory.type.unit_suffix));
         tooltip.add(Formatter.format("&9Inventory Type: &7" + inventory.type.name()));
         if(inventory.type.isFluid()){

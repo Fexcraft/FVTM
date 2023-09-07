@@ -10,19 +10,16 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -32,13 +29,13 @@ import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
-import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.function.ColorFunction;
 import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.fvtm.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
@@ -46,7 +43,7 @@ import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -423,8 +420,8 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	}
 	
 	/** @return null if installed successfully. */
-	public PartData installPart(@Nullable ICommandSender engineer, PartData data, String category, boolean hotinst){
-		if(!data.getType().getInstallationHandler().allowInstall(engineer, data, category, this)) return data;
+	public PartData installPart(MessageSender engineer, PartData data, String category, boolean hotinst){
+		if(!data.getType().getInstallationHandler().validInstall(engineer, data, category, this)) return data;
 		//if(parts.containsKey(category)) return data;//<- actually, let's let the handler check that
 		if(data.getType().getInstallationHandler().processInstall(engineer, data, category, this)){
 			this.insertSwivelPointsFromPart(data, category);
@@ -441,10 +438,10 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		} else return data;
 	}
 
-	public boolean deinstallPart(@Nullable ICommandSender sender, String category, boolean hotinst){
+	public boolean deinstallPart(MessageSender sender, String category, boolean hotinst){
 		PartData part = this.getPart(category);
-		if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
-		if(!part.getType().getInstallationHandler().allowUninstall(sender, part, category, this)) return false;
+		//TODO if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
+		if(!part.getType().getInstallationHandler().validUninstall(sender, part, category, this)) return false;
 		if(part.getType().getInstallationHandler().processUninstall(sender, part, category, this)){
 			this.removeSwivelPointsFromPart(part, category);
 			this.removeAttributesFromPart(part, category);

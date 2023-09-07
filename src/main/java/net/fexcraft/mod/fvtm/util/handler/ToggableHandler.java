@@ -55,8 +55,8 @@ public class ToggableHandler {
 			//Print.debug("item");
 			if(stack.getItem() instanceof PartItem){
 				PartData part = stack.getCapability(Capabilities.VAPDATA, null).getPartData();
-				if(part.getType().getInstallationHandlerData() instanceof DPIHData == false) return false;
-        		DPIHData idata = part.getType().getInstallationHandlerData();
+				if(part.getType().getInstallHandlerData() instanceof DPIHData == false) return false;
+        		DPIHData idata = part.getType().getInstallHandlerData();
         		if(idata.hotswap){
         			ArrayList<Collidable> colls = new ArrayList<>();
         			for(Entry<String, PartSlots> data : entity.getVehicleData().getPartSlotProviders().entrySet()){

@@ -5,15 +5,15 @@ import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.world.MessageSender;
@@ -93,9 +93,9 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 		return split[2];
 	}
 
-	public static void setPosAndSwivelPoint(DPIHData idata, TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){
+	public static void setPosAndSwivelPoint(DPIHData idata, TreeMap<String, V3D> compatible, String cat, PartData part, VehicleData data){
 		String vehid = data.getType().getIDS();
-		Pos result = Pos.NULL;
+		V3D result = new V3D();
 		Rot rosult = Rot.NULL;
 		if(cat.startsWith("s:")){
 			String[] split = cat.split(":");
@@ -104,13 +104,13 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 			rosult = slots.get(idx).rotation;
 			if(!split[1].equals(PartSlots.VEHPARTSLOTS)){
 				PartData mount = data.getPart(split[1]);
-				result = mount.getInstalledPos();
+				result = mount.getInstalledPos().toV3D();
 				if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
 					part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
 				}
 				if(slots.copy_rot) rosult = rosult.add(mount.getInstalledRot());
 			}
-			result = result.add(new Pos(slots.get(idx).pos));
+			result = result.add(new Pos(slots.get(idx).pos).toV3D());
 		}
 		if(idata != null) compatible = idata.compatible;
 		if(compatible != null && !compatible.isEmpty()){
@@ -135,7 +135,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 				}
 			}
 		}
-		part.setInstalledPos(result);
+		part.setInstalledPos(new Pos(result));
 		part.setInstalledRot(rosult);
 		if(!cat.startsWith("s:") && part.getType().getInstallationHandlerData() instanceof DPIHData){
 			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
@@ -182,90 +182,86 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 	/** Default Part Install Handler Data */
 	public static class DPIHData {
 		
-		public TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
+		public TreeMap<String, V3D> compatible = new TreeMap<>();
 		public TreeMap<String, V3D> com_rot = new TreeMap<>();
 		public TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
 		public TreeMap<String, ArrayList<String>> required = new TreeMap<>();
 		public boolean removable = true, custom_cat, sp_req = false, onslot, hotswap;
 		public String swivel_point = "vehicle";
 		
-		public DPIHData(JsonObject obj){
-			if(obj == null) return;
-			removable = JsonUtil.getIfExists(obj, "Removable", true);
-			custom_cat = JsonUtil.getIfExists(obj, "CustomCategory", false);
-			swivel_point = JsonUtil.getIfExists(obj, "SwivelPoint", "vehicle");
-			sp_req = JsonUtil.getIfExists(obj, "SwivelPointRequired", false);
-			if(obj.has("Compatible")){
-				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
-					if(elm.isJsonObject()){
-						JsonObject jsn = elm.getAsJsonObject();
-						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+		public DPIHData(JsonMap map){
+			removable = map.getBoolean("Removable", true);
+			custom_cat = map.getBoolean("CustomCategory", false);
+			swivel_point = map.getString("SwivelPoint", "vehicle");
+			sp_req = map.getBoolean("SwivelPointRequired", false);
+			if(map.has("Compatible")){
+				map.getArray("Compatible").value.forEach(elm -> {
+					if(elm.isMap()){
+						JsonMap jsn = elm.asMap();
+						this.compatible.put(jsn.get("vehicle").string_value(), ContentConfigUtil.getVector(jsn));
 						if(jsn.has("rx") || jsn.has("ry") || jsn.has("rz")){
-							double x = JsonUtil.getIfExists(jsn, "rx", 0f).doubleValue();
-							double y = JsonUtil.getIfExists(jsn, "ry", 0f).doubleValue();
-							double z = JsonUtil.getIfExists(jsn, "rz", 0f).doubleValue();
-							com_rot.put(jsn.get("vehicle").getAsString(), new V3D(x, y, z));
+							com_rot.put(jsn.get("vehicle").string_value(), ContentConfigUtil.getVector(jsn, "r"));
 						}
 					}
-					else if(elm.isJsonArray()){
-						JsonArray array = elm.getAsJsonArray();
-						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
+					else if(elm.isArray()){
+						JsonArray array = elm.asArray();
+						this.compatible.put(array.get(3).string_value(), ContentConfigUtil.getVector(array));
 						if(array.size() > 4){
-							double x = array.get(4).getAsFloat();
-							double y = array.size() > 5 ? array.get(5).getAsDouble() : 0;
-							double z = array.size() > 6 ? array.get(6).getAsDouble() : 0;
-							com_rot.put(array.get(3).getAsString(), new V3D(x, y, z));
+							double x = array.get(4).float_value();
+							double y = array.size() > 5 ? array.get(5).float_value() : 0;
+							double z = array.size() > 6 ? array.get(6).float_value() : 0;
+							com_rot.put(array.get(3).string_value(), new V3D(x, y, z));
 						}
 					}
 					else{
-						this.compatible.put(elm.getAsString(), Pos.NULL);
+						this.compatible.put(elm.string_value(), new V3D());
 					}
 				});
 			}
-			if(obj.has("Incompatible")){
-				if(obj.get("Incompatible").isJsonArray()){
-					obj.get("Incompatible").getAsJsonArray().forEach(elm -> {
-						JsonObject jsn = elm.getAsJsonObject();
-						ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
-						this.incompatible.put(jsn.get("vehicle").getAsString(), parts);
+			if(map.has("Incompatible")){
+				if(map.get("Incompatible").isArray()){
+					map.get("Incompatible").asArray().value.forEach(elm -> {
+						JsonMap jsn = elm.asMap();
+						ArrayList<String> parts = jsn.get("parts").asArray().toStringList();
+						this.incompatible.put(jsn.get("vehicle").string_value(), parts);
 					});
 				}
 				else{
-					obj.get("Incompatible").getAsJsonObject().entrySet().forEach(entry -> {
+					map.get("Incompatible").asMap().entries().forEach(entry -> {
 						ArrayList<String> parts = null;
-						if(entry.getValue().isJsonArray()){
-							parts = JsonUtil.jsonArrayToStringArray(entry.getValue().getAsJsonArray());
+						if(entry.getValue().isArray()){
+							parts = entry.getValue().asArray().toStringList();
 						}
 						else{
-							parts = (ArrayList<String>)Collections.singletonList(entry.getValue().getAsString());
+							parts = (ArrayList<String>)Collections.singletonList(entry.getValue().string_value());
 						}
 						this.incompatible.put(entry.getKey(), parts);
 					});
 				}
 			}
-			if(obj.has("Required")){
-				if(obj.get("Required").isJsonArray()){
-					obj.get("Required").getAsJsonArray().forEach(elm -> {
-						JsonObject jsn = elm.getAsJsonObject();
-						ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
-						this.required.put(jsn.get("vehicle").getAsString(), parts);
+			if(map.has("Required")){
+				if(map.get("Required").isArray()){
+					map.get("Required").asArray().value.forEach(elm -> {
+						JsonMap jsn = elm.asMap();
+						ArrayList<String> parts = jsn.get("parts").asArray().toStringList();
+						this.required.put(jsn.get("vehicle").string_value(), parts);
 					});
 				}
 				else{
-					obj.get("Required").getAsJsonObject().entrySet().forEach(entry -> {
+					map.get("Required").asMap().entries().forEach(entry -> {
 						ArrayList<String> parts = null;
-						if(entry.getValue().isJsonArray()){
-							parts = JsonUtil.jsonArrayToStringArray(entry.getValue().getAsJsonArray());
+						if(entry.getValue().isArray()){
+							parts = entry.getValue().asArray().toStringList();
 						}
 						else{
-							parts = (ArrayList<String>)Collections.singletonList(entry.getValue().getAsString());
+							parts = (ArrayList<String>)Collections.singletonList(entry.getValue().string_value());
 						}
 						this.required.put(entry.getKey(), parts);
 					});
 				}
 			}
-			onslot = JsonUtil.getIfExists(obj, "SlotBased", false);
-			hotswap = JsonUtil.getIfExists(obj, "HotSwap", false);
+			onslot = map.getBoolean("SlotBased", false);
+			hotswap = map.getBoolean("HotSwap", false);
 		}
 
 		public boolean allowsAny(){
@@ -306,6 +302,11 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 			return arr;
 		}
 		return part.getType().getCategories().toArray(new String[0]);
+	}
+
+	@Override
+	public Object parseData(JsonMap map){
+		return new DPIHData(map);
 	}
 
 }

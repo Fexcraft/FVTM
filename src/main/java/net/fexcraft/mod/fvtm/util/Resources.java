@@ -61,7 +61,6 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.event.ResourceEvents;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -103,7 +102,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -157,7 +155,6 @@ public class Resources {
 		registerBlockFunction("fvtm:bool_value", BoolBlockFunction.class, true);
 		registerBlockFunction("fvtm:inventory", InventoryBlockFunction.class, true);
 		registerBlockFunction("fvtm:barrel", BarrelBlockFunction.class, true);
-		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterFunctions(this));
 	}
 
 	public static Part getPart(String string){

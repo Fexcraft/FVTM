@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.fvtm.function.TransmissionFunction;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -43,11 +44,12 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     public VehicleItem(Vehicle content){
 		super();
 		vehicle = content;
-		this.setHasSubtypes(true);
-		this.setMaxStackSize(1);
-        //TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-        if(Static.side().isServer()) return;
-        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
+		setHasSubtypes(true);
+		setMaxStackSize(1);
+		setRegistryName(vehicle.getID().colon());
+		setTranslationKey(vehicle.getID().colon());
+		if(!EnvInfo.CLIENT) return;
+		setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(vehicle));
 	}
 
     @SideOnly(Side.CLIENT)

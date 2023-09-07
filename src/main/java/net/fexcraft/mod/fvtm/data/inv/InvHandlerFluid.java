@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -23,14 +25,14 @@ public class InvHandlerFluid extends InvHandler {
 	}
 
 	@Override
-	public NBTTagCompound save(NBTTagCompound compound, String ctag){
-        compound.setTag(ctag, tank.writeToNBT(new NBTTagCompound()));
+	public TagCW save(TagCW compound, String ctag){
+        compound.set(ctag, new TagCWI(tank.writeToNBT(new NBTTagCompound())));
         return compound;
 	}
 
 	@Override
-	public void load(NBTTagCompound compound, String ctag){
-		tank.readFromNBT(compound.getCompoundTag(ctag));
+	public void load(TagCW compound, String ctag){
+		tank.readFromNBT(compound.getCompound(ctag).local());
 	}
 
 	public FluidTank getTank(){

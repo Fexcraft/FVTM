@@ -16,10 +16,8 @@ import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.I19U;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -155,7 +153,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 								refmode();
 								break;
 							case PRE_INSTALLED:
-								Part pert = Resources.getPart(itexts.get(j + scroll));
+								Part pert = FvtmRegistry.PARTS.get(itexts.get(j + scroll));
 								switchmode(false);
 								pack_idx = partpacks.indexOf(pert.getAddon());
 								refcontentlist();
@@ -170,7 +168,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 									refmode();
 								}
 								else{
-									Part part = Resources.getPart(itexts.get(j + scroll));
+									Part part = FvtmRegistry.PARTS.get(itexts.get(j + scroll));
 									switchmode(false);
 									pack_idx = partpacks.indexOf(part.getAddon());
 									refcontentlist();
@@ -179,7 +177,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 								}
 								break;
 							case COMPATIBLE_SPECIFIC:
-								Part part = Resources.getPart(itexts.get(j + scroll));
+								Part part = FvtmRegistry.PARTS.get(itexts.get(j + scroll));
 								switchmode(false);
 								pack_idx = partpacks.indexOf(part.getAddon());
 								refcontentlist();
@@ -239,7 +237,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			if(!vehpacks.contains(veh.getAddon())) vehpacks.add(veh.getAddon());
 		}
 		partpacks = new ArrayList<>();
-		for(Part part : Resources.PARTS){
+		for(Part part : FvtmRegistry.PARTS){
 			if(!partpacks.contains(part.getAddon())) partpacks.add(part.getAddon());
 		}
 	}
@@ -260,7 +258,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 			veh = vehicles.get(sel_idx = 0);
 		}
 		else{
-			parts = Resources.PARTS.stream().filter(part -> part.getAddon() == addon).collect(Collectors.toList());
+			parts = FvtmRegistry.PARTS.stream().filter(part -> part.getAddon() == addon).collect(Collectors.toList());
 			part = parts.get(sel_idx = 0);
 		}
 		refmode();
@@ -268,7 +266,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 
 	protected void refmode(){
 		if(vehmode) stack = (veh = vehicles.get(sel_idx)).getNewStack().local();
-		else stack = (part = parts.get(sel_idx)).newItemStack();
+		else stack = (part = parts.get(sel_idx)).getNewStack().local();
 		texts.get("mode").string = "gui.fvtm.vpinfo.mode." + (vehmode ? vmode : pmode).name().toLowerCase();
 		if(selcat == null || !vehmode || vmode != VehMode.COMPATIBLE_SPECIFIC) texts.get("mode").translate();
 		else texts.get("mode").translate(selcat);
@@ -297,20 +295,20 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 					HashMap<String, ArrayList<String>> imap = new HashMap<>();
 					PartInstallHandler handler = null;
 					boolean slot = false;
-					for(Part part : Resources.PARTS){
-						slot = part.getInstallationHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallationHandlerData()).onslot : false;
+					for(Part part : FvtmRegistry.PARTS){
+						slot = part.getInstallHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallHandlerData()).onslot : false;
 						PartData data = new PartData(part);
 						cats.clear();
 						//TODO fillcats(cats, veh.getRequiredParts(), part.getCategories());
 						if(slot){
 							for(String str : cats){
-								if(vdata.hasPartSlot(str)) fillmap(emap, imap, str, part.getName(), IDLManager.getIDL(part.getRegistryName().toString()));
+								if(vdata.hasPartSlot(str)) fillmap(emap, imap, str, part.getName(), part.getID());
 							}
 						}
 						else{
-							handler = part.getInstallationHandler();
+							handler = part.getInstallHandler();
 							for(String str : cats){
-								if(handler.validInstall(null, data, str, vdata)) fillmap(emap, imap, str, part.getName(), IDLManager.getIDL(part.getRegistryName().toString()));
+								if(handler.validInstall(null, data, str, vdata)) fillmap(emap, imap, str, part.getName(), part.getID());
 							}
 						}
 					}
@@ -335,20 +333,20 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 					ArrayList<String> ilist = new ArrayList<>();
 					PartInstallHandler handler = null;
 					boolean slot = false;
-					for(Part part : Resources.PARTS){
-						slot = part.getInstallationHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallationHandlerData()).onslot : false;
+					for(Part part : FvtmRegistry.PARTS){
+						slot = part.getInstallHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallHandlerData()).onslot : false;
 						PartData data = new PartData(part);
 						if(slot){
 							if(vdata.hasPartSlot(selcat)){
 								elist.add(part.getName());
-								ilist.add(part.getRegistryName().toString());
+								ilist.add(part.getIDS());
 							}
 						}
 						else{
-							handler = part.getInstallationHandler();
+							handler = part.getInstallHandler();
 							if(handler.validInstall(null, data, selcat, vdata)){
 								elist.add(part.getName());
-								ilist.add(part.getRegistryName().toString());
+								ilist.add(part.getIDS());
 							}
 						}
 					}
@@ -373,7 +371,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 				etexts.add(I19U.trsc("gui.fvtm.vpinfo.line.wait"));
 				mc.addScheduledTask(() -> {
 					PartData data = new PartData(part);
-					boolean slot = part.getInstallationHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallationHandlerData()).onslot : false;
+					boolean slot = part.getInstallHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallHandlerData()).onslot : false;
 					HashMap<String, ArrayList<String>> emap = new HashMap<>();
 					HashMap<String, ArrayList<String>> imap = new HashMap<>();
 					PartInstallHandler handler = null;
@@ -385,7 +383,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 							}
 						}
 						else{
-							handler = part.getInstallationHandler();
+							handler = part.getInstallHandler();
 							for(String cat : part.getCategories()){
 								if(handler.validInstall(null, data, selcat, vdata)) fillmap(emap, imap, cat, veh.getName(), veh.getID());
 							}
@@ -446,7 +444,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 	public void predraw(float ticks, int x, int y){
 		texts.get("pack").string = addon.getName();
 		texts.get("selected").string = vehmode ? veh.getName() : part.getName();
-		texts.get("selid").string = (vehmode ? veh.getIDS() : part.getRegistryName()).toString();
+		texts.get("selid").string = vehmode ? veh.getIDS() : part.getIDS();
 	}
 	
 	@Override

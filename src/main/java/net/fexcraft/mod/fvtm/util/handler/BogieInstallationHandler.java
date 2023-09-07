@@ -35,7 +35,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 		part.setInstalledPos(new Pos(data.getWheelSlots().get(cat).position));
 		BogieFunction func = part.getFunction("fvtm:bogie");
 		if(func != null) func.setBogie(cat);
-		BogieData idata = part.getType().getInstallationHandlerData();
+		BogieData idata = part.getType().getInstallHandlerData();
 		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).toV3D());
 		//Print.debug("New BogiePos: " + data.getWheelPositions().get(cat));
@@ -45,7 +45,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
-		BogieData idata = part.getType().getInstallationHandlerData();
+		BogieData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.bogie.part_not_removable");
 			return false;

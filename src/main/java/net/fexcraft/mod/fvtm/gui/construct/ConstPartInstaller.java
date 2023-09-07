@@ -37,7 +37,7 @@ public class ConstPartInstaller extends ConstGui {
 		}
 		title = "gui.fvtm.constructor.part_install.menu_title";
 		PartData part = container.getTileEntity().getPartData();
-		categories.addAll(Lists.newArrayList(part.getType().getInstallationHandler().getValidCategories(part, container.getTileEntity().getVehicleData())));
+		categories.addAll(Lists.newArrayList(part.getType().getInstallHandler().getValidCategories(part, container.getTileEntity().getVehicleData())));
 		haspages = categories.size() > onpage;
 	}
 	

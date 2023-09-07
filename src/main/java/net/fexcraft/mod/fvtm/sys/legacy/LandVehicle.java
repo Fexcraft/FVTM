@@ -20,6 +20,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
@@ -161,7 +162,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){
-			//TODO vehicle = Resources.getVehicleData(compound);
+			vehicle = FvtmResources.INSTANCE.getVehicleData(new TagCWI(compound));
 		}
 		else{
 			vehicle.read(new TagCWI(compound));
@@ -680,7 +681,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 rotpoint.getPivot().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
             vehicle.getAttribute("steering_angle").set(wheelsYaw);
-            double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
+            double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").set(wheelsAngle);
         	vehicle.getAttribute("throttle").set((float)throttle);

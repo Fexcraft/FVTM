@@ -48,12 +48,14 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				if(entity.getVehicleData().getPart(slot) != null){
 					PartData oldpart = entity.getVehicleData().getPart(slot);
 					boolean valid = oldpart.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallationHandlerData()).hotswap;
-					if(valid && entity.getVehicleData().deinstallPart(Command.OTHER ? player : null, slot, true)){
+					//TODO if(valid && entity.getVehicleData().deinstallPart(Command.OTHER ? player : null, slot, true)){
+					if(valid && entity.getVehicleData().deinstallPart(null, slot, true)){
 						player.addItemStackToInventory(oldpart.newItemStack());
 					}
 					else return;
 				}
-				data = entity.getVehicleData().installPart(Command.OTHER ? player : null, data, "s:" + packet.nbt.getString("source") + ":" + slot + ":" + index, true);
+				//TODO data = entity.getVehicleData().installPart(Command.OTHER ? player : null, data, "s:" + packet.nbt.getString("source") + ":" + slot + ":" + index, true);
+				data = entity.getVehicleData().installPart(null, data, "s:" + packet.nbt.getString("source") + ":" + slot + ":" + index, true);
 				if(data == null){
 					player.getHeldItem(EnumHand.MAIN_HAND).shrink(1);
 					NBTTagCompound compound = entity.getVehicleData().write(TagCW.create()).local();

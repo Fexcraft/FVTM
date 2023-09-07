@@ -5,57 +5,56 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.annotation.Nullable;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.Pos;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.uni.world.MessageSender;
 
 public class ConnectorInstallationHandler extends PartInstallHandler {
 
+	public static final ConnectorInstallationHandler INSTANCE = new ConnectorInstallationHandler();
+
 	@Override
-	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "handler.install.fvtm.connector.category_occupied");
+			sender.send("handler.install.fvtm.connector.category_occupied");
 			return false;
 		}
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		String regname = data.getType().getIDS();
 		if(cat.startsWith("front")){
 			if(data.getFrontConnector() != null){
-				Print.chatnn(sender, "handler.install.fvtm.connector.front_occupied");
+				sender.send("handler.install.fvtm.connector.front_occupied");
 				return false;
 			}
 			if(idata.getFrontPosition(regname) == null){
-				Print.chatnn(sender, "handler.install.fvtm.connector.not_front_part");
+				sender.send("handler.install.fvtm.connector.not_front_part");
 				return false;
 			}
 		}
 		else{
 			if(data.getRearConnector() != null){
-				Print.chatnn(sender, "handler.install.fvtm.connector.rear_occupied");
+				sender.send("handler.install.fvtm.connector.rear_occupied");
 				return false;
 			}
 			if(idata.getRearPosition(regname) == null){
-				Print.chatnn(sender, "handler.install.fvtm.connector.not_rear_part");
+				sender.send("handler.install.fvtm.connector.not_rear_part");
 				return false;
 			}
 		}
 		//TODO connector kind
-		Print.chatnn(sender, "handler.install.fvtm.connector.check_passed");
+		sender.send("handler.install.fvtm.connector.check_passed");
 		return true;
 	}
 	@Override
-	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		DefaultPartInstallHandler.setPosAndSwivelPoint(null, idata.compatible, cat, part, data);
@@ -66,27 +65,27 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 			conn = conn.add(part.getInstalledPos().toV3D());
 		}
 		data.setConnector(conn, front);
-		Print.chatnn(sender, "handler.install.fvtm.connector.success");
+		sender.send("handler.install.fvtm.connector.success");
 		return true;
 	}
 
 	@Override
-	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
+	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "handler.deinstall.fvtm.connector.part_not_removable");
+			sender.send("handler.deinstall.fvtm.connector.part_not_removable");
 			return false;
 		}
-		Print.chatnn(sender, "handler.deinstall.fvtm.connector.check_passed");
+		sender.send("handler.deinstall.fvtm.connector.check_passed");
 		return true;
 	}
 
 	@Override
-	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
 		data.setConnector(null, cat.startsWith("front"));
-		Print.chatnn(sender, "handler.deinstall.fvtm.connector.success");
+		sender.send("handler.deinstall.fvtm.connector.success");
 		return true;
 	}
 	
@@ -94,49 +93,49 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 	public static class ConnectorData {
 		
 		private boolean removable, onslot, relative;
-		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
+		private TreeMap<String, V3D> compatible = new TreeMap<>();
 		private HashMap<String, V3D> front = new HashMap<String, V3D>();
 		private HashMap<String, V3D> rear = new HashMap<String, V3D>();
 		
-		public ConnectorData(JsonObject obj){
-			if(obj.has("Front") && obj.get("Front").isJsonArray()){
-				front.put("*", Pos.fromJson(obj.get("Front"), true).toV3D());
+		public ConnectorData(JsonMap map){
+			if(map.has("Front") && map.get("Front").isArray()){
+				front.put("*", ContentConfigUtil.getVector(map.get("Front").asArray()));
 			}
-			if(obj.has("Rear") && obj.get("Rear").isJsonArray()){
-				rear.put("*", Pos.fromJson(obj.get("Rear"), true).toV3D());
-			}
-			//
-			if(obj.has("Front") && obj.get("Front").isJsonObject()){
-				JsonObject jsn = obj.get("Front").getAsJsonObject();
-				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
-					front.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).toV3D());
-				}
-			}
-			if(obj.has("Rear") && obj.get("Rear").isJsonObject()){
-				JsonObject jsn = obj.get("Rear").getAsJsonObject();
-				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
-					rear.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).toV3D());
-				}
+			if(map.has("Rear") && map.get("Rear").isArray()){
+				rear.put("*", ContentConfigUtil.getVector(map.get("Rear").asArray()));
 			}
 			//
-			removable = JsonUtil.getIfExists(obj, "Removable", true);
-			if(obj.has("Compatible")){
-				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
-					if(elm.isJsonObject()){
-						JsonObject jsn = elm.getAsJsonObject();
-						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+			if(map.has("Front") && map.get("Front").isMap()){
+				JsonMap jsn = map.get("Front").asMap();
+				for(Entry<String, JsonValue<?>> entry : jsn.entries()){
+					front.put(entry.getKey(), ContentConfigUtil.getVector(entry.getValue().asArray()));
+				}
+			}
+			if(map.has("Rear") && map.get("Rear").isMap()){
+				JsonMap jsn = map.get("Rear").asMap();
+				for(Entry<String, JsonValue<?>> entry : jsn.entries()){
+					rear.put(entry.getKey(), ContentConfigUtil.getVector(entry.getValue().asArray()));
+				}
+			}
+			//
+			removable = map.getBoolean("Removable", true);
+			if(map.has("Compatible")){
+				map.get("Compatible").asArray().value.forEach(elm -> {
+					if(elm.isMap()){
+						JsonMap jsn = elm.asMap();
+						this.compatible.put(jsn.get("vehicle").string_value(), ContentConfigUtil.getVector(jsn));
 					}
-					else if(elm.isJsonArray()){
-						JsonArray array = elm.getAsJsonArray();
-						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
+					else if(elm.isArray()){
+						JsonArray array = elm.asArray();
+						this.compatible.put(array.get(3).string_value(), ContentConfigUtil.getVector(array));
 					}
 					else{
-						this.compatible.put(elm.getAsString(), Pos.NULL);
+						this.compatible.put(elm.string_value(), new V3D());
 					}
 				});
 			}
-			onslot = JsonUtil.getIfExists(obj, "SlotBased", false);
-			relative = JsonUtil.getIfExists(obj, "Relative", false);
+			onslot = map.getBoolean("SlotBased", false);
+			relative = map.getBoolean("Relative", false);
 		}
 
 		public V3D getFrontPosition(String id){
@@ -180,6 +179,11 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 			return arr;
 		}
 		return new String[]{ "front_connector", "rear_connector" };
+	}
+
+	@Override
+	public Object parseData(JsonMap map){
+		return new ConnectorData(map);
 	}
 
 }

@@ -53,7 +53,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         }
         if(!data.getFunctions().isEmpty()){
             for(PartFunction func : data.getFunctions().values()){
-            	func.addInformation(stack, world, data, tooltip, flag);
+            	//TODO func.addInformation(stack, world, data, tooltip, flag);
             }
             tooltip.add(Formatter.format("&9- - - - - - &7-"));
         }

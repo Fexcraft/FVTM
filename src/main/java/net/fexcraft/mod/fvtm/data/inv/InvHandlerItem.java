@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.data.inv;
 import java.util.ArrayList;
 
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
+import net.fexcraft.mod.uni.impl.TagLWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -32,7 +34,7 @@ public class InvHandlerItem extends InvHandler {
 	}
 
 	@Override
-	public NBTTagCompound save(NBTTagCompound compound, String ctag){
+	public TagCW save(TagCW compound, String ctag){
 		NBTTagList list = new NBTTagList();
 		for(StackEntry entry : stacks){
 			NBTTagCompound com = new NBTTagCompound();
@@ -40,14 +42,14 @@ public class InvHandlerItem extends InvHandler {
 			com.setInteger("fvtm:stack_amount", entry.amount);
 			list.appendTag(com);
 		}
-        if(list.tagCount() > 0) compound.setTag(ctag == null ? "Items" : ctag, list);
+        if(list.tagCount() > 0) compound.set(ctag == null ? "Items" : ctag, new TagLWI(list));
         return compound;
 	}
 
 	@Override
-	public void load(NBTTagCompound compound, String ctag){
+	public void load(TagCW compound, String ctag){
 		stacks.clear();
-		NBTTagList list = (NBTTagList)compound.getTag(ctag == null ? "Items" : ctag);
+		NBTTagList list = (NBTTagList)compound.getList(ctag == null ? "Items" : ctag).direct();
 		if(list == null || list.isEmpty()) return;
 		for(NBTBase base : list){
 			NBTTagCompound com = (NBTTagCompound)base;

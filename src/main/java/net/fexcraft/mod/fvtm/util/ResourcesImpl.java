@@ -2,9 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.CONSUMABLES;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.MATERIALS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +27,8 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
@@ -207,6 +207,8 @@ public class ResourcesImpl extends FvtmResources {
 	public void createContentItems(){
 		MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), new MaterialItem(mat))));
 		CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ConsumableItem((con)))));
+		PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), new PartItem((part)))));
+		VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), new VehicleItem((veh)))));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -274,7 +276,7 @@ public class ResourcesImpl extends FvtmResources {
 	public void initModels(){
 		super.initModels();
 		getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
-		Resources.PARTS.forEach(part -> part.loadModel());
+		//Resources.PARTS.forEach(part -> part.loadModel());
 		//Resources.VEHICLES.forEach(veh -> veh.loadModel());
 		Resources.CONTAINERS.forEach(con -> con.loadModel());
 		Resources.BLOCKS.forEach(block -> block.loadModel());

@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,13 +37,13 @@ public class InventoryBlockFunction extends BlockFunction {
 
 	@Override
 	public BlockFunction load(NBTTagCompound com){
-		if(com.hasKey(id())) handler.load(com, id());
+		if(com.hasKey(id())) handler.load(new TagCWI(com), id());
 		return this;
 	}
 
 	@Override
 	public NBTTagCompound save(NBTTagCompound com){
-		handler.save(com, id());
+		handler.save(new TagCWI(com), id());
 		return com;
 	}
 

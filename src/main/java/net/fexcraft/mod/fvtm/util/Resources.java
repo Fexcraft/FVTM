@@ -57,8 +57,6 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
-import net.fexcraft.mod.fvtm.data.part.Part;
-import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -121,7 +119,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Resources {
 
-	public static RegistryOld<Part> PARTS = new RegistryOld<>();
 	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
 	public static RegistryOld<Block> BLOCKS = new RegistryOld<>();
 	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
@@ -157,14 +154,6 @@ public class Resources {
 		registerBlockFunction("fvtm:barrel", BarrelBlockFunction.class, true);
 	}
 
-	public static Part getPart(String string){
-		return PARTS.get(string);
-	}
-
-	public static Part getPart(ResourceLocation resloc){
-		return PARTS.get(resloc);
-	}
-
 	public static Container getContainer(String string){
 		return CONTAINERS.get(string);
 	}
@@ -189,7 +178,7 @@ public class Resources {
 		return MULTIBLOCKS.get(resloc);
 	}
 
-	public static PartData getPartData(NBTTagCompound compound){
+	/*public static PartData getPartData(NBTTagCompound compound){
 		if(!compound.hasKey("Part")) return null;
 		Part part = getPart(compound.getString("Part")); if(part == null) return null;
 		try{ return ((PartData)part.getDataClass().getConstructor(Part.class).newInstance(part)).read(compound); }
@@ -424,7 +413,7 @@ public class Resources {
 				}
 			});
 		});*/
-		PARTS.forEach(part -> {
+		/*PARTS.forEach(part -> {
 			part.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid.local())){
 					sound.event = event.getRegistry().getValue(sound.soundid.local());
@@ -434,7 +423,8 @@ public class Resources {
 					event.getRegistry().register((SoundEvent)(sound.event = soundevent));
 				}
 			});
-		});
+		});*/
+		//TODO sound registry
 	}
 	
 	@SubscribeEvent

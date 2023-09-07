@@ -23,7 +23,7 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.function.EngineFunction;
+import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -12,7 +12,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
-import net.fexcraft.mod.fvtm.data.part.Part2;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -25,12 +25,12 @@ import net.minecraft.block.material.Material;
 
 public class TireFunction extends PartFunction {
 	
-	private static HashMap<Part2, TireAttr> TIRES = new HashMap<>();
+	private static HashMap<Part, TireAttr> TIRES = new HashMap<>();
 	private String inst_on;
 	private WheelSlot wheel;
 
 	@Override
-	public PartFunction init(Part2 part, FJson json){
+	public PartFunction init(Part part, FJson json){
 		JsonMap map = json.isMap() ? json.asMap() : new JsonMap();
 		TireAttr attr = new TireAttr();
 		attr.general_grip = map.getFloat("general_grip", 1f);
@@ -86,14 +86,14 @@ public class TireFunction extends PartFunction {
 	}
 
 	@Override
-	public PartFunction copy(Part2 part){
+	public PartFunction copy(Part part){
 		return new TireFunction();
 	}
 
     @Override
     public void addInformation(StackWrapper stack, WorldW world, PartData data, List<String> tooltip, boolean ext){
-    	if(data.getType().getInstallationHandlerData() instanceof TireData){
-        	TireData tiredata = data.getType().getInstallationHandlerData();
+    	if(data.getType().getInstallHandlerData() instanceof TireData){
+        	TireData tiredata = data.getType().getInstallHandlerData();
             tooltip.add(Formatter.format("&9Tire Outer Radius: &7" + tiredata.getOuterRadius()));
             tooltip.add(Formatter.format("&9Tire Inner Radius: &7" + tiredata.getInnerRadius()));
             tooltip.add(Formatter.format("&9Tire Width: &7" + tiredata.getWidth()));

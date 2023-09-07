@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.PARTS;
 import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -35,8 +37,6 @@ import net.fexcraft.mod.fvtm.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.script.FSVehicleScript;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -45,8 +45,6 @@ import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.SoundEvent;
 
 /**
@@ -95,7 +93,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		if(type.getInstalled() != null){
 			for(java.util.Map.Entry<String, IDL> entry : type.getInstalled().entrySet()){
 				try{
-					Part part = Resources.PARTS.get(entry.getValue().colon());
+					Part part = PARTS.get(entry.getValue());
 					if(part == null) continue;
 					this.installPart(null, new PartData(part), entry.getKey(), false);
 				}
@@ -118,7 +116,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		//
 		TagCW cparts = TagCW.create();
 		for(Entry<String, PartData> part : parts.entrySet()){
-			cparts.set(part.getKey(), new TagCWI(part.getValue().write(new NBTTagCompound())));
+			cparts.set(part.getKey(), part.getValue().write(null));
 		}
 		compound.set("Parts", cparts);
 		//
@@ -133,7 +131,6 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			compound.set("RGB_" + str, channels.get(str).packed);
 		}
 		TagCW cwpos = TagCW.create();
-		NBTTagList wlist = new NBTTagList();
 		for(Entry<String, V3D> vec : wheelpos.entrySet()){
 			TagLW list = TagLW.create();
 			list.add(vec.getValue().x);
@@ -171,17 +168,17 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	@Override
 	public VehicleData read(TagCW compound){
 		if(!compound.has("format") || compound.getFloat("format") < 4f) return null;
-		TagCW cparts = compound.getCompound("Parts");
-		if(cparts != null){
+		if(compound.has("Parts")){
+			TagCW cparts = compound.getCompound("Parts");
 			parts.clear();
 			for(String key : cparts.keys()){
 				TagCW com = cparts.getCompound(key);
-				PartData part = Resources.getPartData(com.local());
+				PartData part = FvtmResources.INSTANCE.getPartData(com);
 				if(part != null) parts.put(key, part);
 			}
 		}
-		TagCW cattrs = compound.getCompound("Attributes");
-		if(cattrs != null){
+		if(compound.has("Attributes")){
+			TagCW cattrs = compound.getCompound("Attributes");
 			for(String key : cattrs.keys()){
 				TagCW com = cattrs.getCompound(key);
 				Attribute<?> attr = getAttribute(key);
@@ -223,24 +220,24 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		//
 		this.refreshModificableDataByParts();
 		//
-		TagCW cwp = compound.getCompound("WheelPos");
-		if(cwp != null){
+		if(compound.has("WheelPos")){
+			TagCW cwp = compound.getCompound("WheelPos");
 			wheelpos.clear();
 			for(String key : cwp.keys()){
 				TagCW com = cwp.getCompound(key);
 				wheelpos.put(key, com.getV3D(key));
 			}
 		}
-		TagCW cscripts = compound.getCompound("Scripts");
-		if(cscripts != null){
+		if(compound.has("Scripts")){
+			TagCW cscripts = compound.getCompound("Scripts");
 			for(String key : cscripts.keys()){
 				if(getVehicleScript(key) != null){
 					getVehicleScript(key).load(this, cscripts.getCompound(key));
 				}
 			}
 		}
-		TagCW csp = compound.getCompound("SwivelPoints");
-		if(csp != null){
+		if(compound.has("SwivelPoints")){
+			TagCW csp = compound.getCompound("SwivelPoints");
 			for(String key : csp.keys()){
 				TagCW com = csp.getCompound(key);
 				if(rotpoints.containsKey(key)){
@@ -315,38 +312,12 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			}
 		}
 		//
-		for(PartData part : parts.values()){
-			if(part.getType().getVehicleScripts().size() > 0){
-				for(int i = 0; i < part.getType().getVehicleScripts().size(); i++){
-					try{
-						Class<? extends VehicleScript> clazz = part.getType().getVehicleScripts().get(i);
-						VehicleScript scrapt = clazz.newInstance();
-						if(scrapt instanceof FSVehicleScript){
-							((FSVehicleScript)scrapt).set(part.getType().getVehicleScriptsData().get(i));
-						}
-						String id = scrapt.getId();
-						boolean found = false;
-						for(VehicleScript script : scripts){
-							if(script.getId().equals(id)){
-								found = true;
-								break;
-							}
-						}
-						if(!found) scripts.add(clazz.newInstance().init(this, part.getType().getVehicleScriptsData().get(i)));
-					}
-					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e){
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		//
 		for(Attribute<?> attr : attributes.values()){
 			if(attr.origin == null) continue;
 			String origin = attr.origin.split("\\|")[0];
 			PartData part = parts.get(origin);
 			if(part == null) continue;
-			for(Attribute<?> ettr : part.getType().getBaseAttributes()){
+			for(Attribute<?> ettr : part.getType().getDefaultAttributes().values()){
 				if(ettr.id.equals(attr.id)){
 					attr.copyBoxesFrom(ettr);
 					break;
@@ -421,9 +392,9 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	
 	/** @return null if installed successfully. */
 	public PartData installPart(MessageSender engineer, PartData data, String category, boolean hotinst){
-		if(!data.getType().getInstallationHandler().validInstall(engineer, data, category, this)) return data;
+		if(!data.getType().getInstallHandler().validInstall(engineer, data, category, this)) return data;
 		//if(parts.containsKey(category)) return data;//<- actually, let's let the handler check that
-		if(data.getType().getInstallationHandler().processInstall(engineer, data, category, this)){
+		if(data.getType().getInstallHandler().processInstall(engineer, data, category, this)){
 			this.insertSwivelPointsFromPart(data, category);
 			this.insertAttributesFromPart(data, category);
 			//
@@ -441,8 +412,8 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	public boolean deinstallPart(MessageSender sender, String category, boolean hotinst){
 		PartData part = this.getPart(category);
 		//TODO if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
-		if(!part.getType().getInstallationHandler().validUninstall(sender, part, category, this)) return false;
-		if(part.getType().getInstallationHandler().processUninstall(sender, part, category, this)){
+		if(!part.getType().getInstallHandler().validUninstall(sender, part, category, this)) return false;
+		if(part.getType().getInstallHandler().processUninstall(sender, part, category, this)){
 			this.removeSwivelPointsFromPart(part, category);
 			this.removeAttributesFromPart(part, category);
 			//
@@ -461,21 +432,21 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		if(data.getType().getDefaultSwivelPoints().isEmpty()) return;
 		for(SwivelPoint point : data.getType().getDefaultSwivelPoints().values()){
 			if(!rotpoints.containsKey(point.id)){
-				rotpoints.put(point.id, point.clone(category + "|" + data.getType().getRegistryName().toString()));
+				rotpoints.put(point.id, point.clone(category + "|" + data.getType().getIDS()));
 			}
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 	}
 
 	private void removeSwivelPointsFromPart(PartData data, String category){
-		String dataid = category + "|" + data.getType().getRegistryName().toString();
+		String dataid = category + "|" + data.getType().getIDS();
 		rotpoints.values().removeIf(filter -> filter.origin != null && filter.origin.equals(dataid));
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 	}
 
 	private void insertAttributesFromPart(PartData data, String catin){
-		String dataid = catin + "|" + data.getType().getRegistryName().toString();
-		for(Attribute<?> attr : data.getType().getBaseAttributes()){
+		String dataid = catin + "|" + data.getType().getIDS();
+		for(Attribute<?> attr : data.getType().getDefaultAttributes().values()){
 			String[] valid = attr.target.split(",");
 			boolean pass = false;
 			boolean not = false;
@@ -511,7 +482,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	}
 
 	private void removeAttributesFromPart(PartData data, String category){
-		String datain = category + "|" + data.getType().getRegistryName().toString();
+		String datain = category + "|" + data.getType().getIDS();
 		this.attributes.entrySet().removeIf(pre -> pre.getValue().origin != null && pre.getValue().origin.equals(datain));
 	}
 

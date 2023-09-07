@@ -5,19 +5,21 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -25,30 +27,34 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartData>{;//}, ItemTex<Part> {
+public class PartItem extends Item implements ContentDataItem<Part, PartData>  {;//}, ItemTex<Part> {
 
-    public PartItem(Part core){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-        //this.setRegistryName(core.getRegistryName());
-        //this.setUnlocalizedName(this.getRegistryName().toString());
-		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-        if(Static.side().isServer()) return;
-        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
+	private Part part;
+	
+    public PartItem(Part content){
+		super();
+		part = content;
+		setHasSubtypes(true);
+		setMaxStackSize(1);
+		setRegistryName(part.getID().colon());
+		setTranslationKey(part.getID().colon());
+		if(!EnvInfo.CLIENT) return;
+		setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(part));
 	}
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
-    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        tooltip.add(Formatter.format("&9Type: &7" + type.getCategory()));
-        for(String s : type.getDescription()){
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + part.getName()));
+        tooltip.add(Formatter.format("&9Type: &7" + part.getCategory()));
+        for(String s : part.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
         PartData data = cache.getPartData();
         if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
-        if(type.getInstallationHandlerData() != null && type.getInstallationHandlerData() instanceof DPIHData && ((DPIHData)type.getInstallationHandlerData()).hotswap){
+        if(part.getInstallHandlerData() != null && part.getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getInstallHandlerData()).hotswap){
         	tooltip.add(Formatter.format("&a&oThis part supports hot-install."));
         }
         if(!data.getFunctions().isEmpty()){
@@ -57,18 +63,18 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
             }
             tooltip.add(Formatter.format("&9- - - - - - &7-"));
         }
-        if(type.getBaseAttributes().size() > 0){
-        	tooltip.add(Formatter.format("&0&9This part has &7%s &9Attribute/s.", type.getBaseAttributes().size()));
+        if(part.getDefaultAttributes().size() > 0){
+        	tooltip.add(Formatter.format("&0&9This part has &7%s &9Attribute/s.", part.getDefaultAttributes().size()));
         }
-        if(type.getStaticModifiers().size() > 0){
-        	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getStaticModifiers().size()));
+        if(part.getStaticModifiers().size() > 0){
+        	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", part.getStaticModifiers().size()));
         }
-        if(type.getDefaultFunctions().size() > 0){
-        	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getDefaultFunctions().size()));
+        if(part.getDefaultFunctions().size() > 0){
+        	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", part.getDefaultFunctions().size()));
         }
-        if(type.getModel().getCreators().size() > 0){
+        if(part.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
-            for(String str : type.getModel().getCreators()){
+            for(String str : part.getModel().getCreators()){
             	tooltip.add(Formatter.format("&7- " + str));
             }
         }
@@ -83,7 +89,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         	if(langname.length() > 0) return langname;
         	stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
     	}
-        return Formatter.format(type.getName());
+        return Formatter.format(part.getName());
     }
 
 	private String getTexTitle(PartData data){
@@ -93,26 +99,31 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
 		else return data.isTextureExternal() ? "external" : "internal";
 	}
 
-	@Override
+	//@Override
 	public PartData getData(ItemStack stack){
 		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
 	}
 
-	@Override
+	//@Override
 	public PartData getData(NBTTagCompound compound){
-		return new PartData(type).read(compound);
+		return new PartData(part).read(new TagCWI(compound));
 	}
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
-    		items.add(type.newItemStack());
+    		items.add(part.getNewStack().local());
     	}
     }
 
-	//@Override
-	public TypeCore<Part> getDataType(){
-		return type;
+	@Override
+	public Part getContent(){
+		return part;
+	}
+
+	@Override
+	public ContentType getType(){
+		return ContentType.PART;
 	}
 
 }

@@ -58,7 +58,7 @@ public class BasicSpawnSystem extends EntitySystem {
 				Print.chat(player, trailer + " is missing a wheel! &7&o" + str); failed = true;
 			}
         	PartData part = data.getPart(str);
-        	if(!((WheelData)part.getType().getInstallationHandlerData()).hasTire()){
+        	if(!((WheelData)part.getType().getInstallHandlerData()).hasTire()){
         		part = data.getPart(str + ":tire");
         	}
         	if(!part.hasFunction("fvtm:tire")){

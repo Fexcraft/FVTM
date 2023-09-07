@@ -27,7 +27,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 			sender.send("handler.install.fvtm.connector.category_occupied");
 			return false;
 		}
-		ConnectorData idata = part.getType().getInstallationHandlerData();
+		ConnectorData idata = part.getType().getInstallHandlerData();
 		String regname = data.getType().getIDS();
 		if(cat.startsWith("front")){
 			if(data.getFrontConnector() != null){
@@ -56,7 +56,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 	@Override
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
-		ConnectorData idata = part.getType().getInstallationHandlerData();
+		ConnectorData idata = part.getType().getInstallHandlerData();
 		DefaultPartInstallHandler.setPosAndSwivelPoint(null, idata.compatible, cat, part, data);
 		boolean front = cat.startsWith("front");
 		String regname = data.getType().getIDS();
@@ -71,7 +71,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
-		ConnectorData idata = part.getType().getInstallationHandlerData();
+		ConnectorData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.connector.part_not_removable");
 			return false;
@@ -161,7 +161,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public String[] getValidCategories(PartData part, VehicleData vehicle){
-		ConnectorData idata = part.getType().getInstallationHandlerData();
+		ConnectorData idata = part.getType().getInstallHandlerData();
 		if(idata != null && idata.onslot){
 			ArrayList<String> found = new ArrayList<>();
 			for(Entry<String, PartSlots> entry : vehicle.getPartSlotProviders().entrySet()){

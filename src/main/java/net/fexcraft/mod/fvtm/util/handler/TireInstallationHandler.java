@@ -36,7 +36,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 			sender.send("handler.install.fvtm.tire.no_wheel_at_slot");
 			return false;
 		}
-		TireData idata = part.getType().getInstallationHandlerData();
+		TireData idata = part.getType().getInstallHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(whcat);
 		if(slot == null){
 			sender.send("handler.install.fvtm.tire.wheelslot_null");
@@ -51,7 +51,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 			sender.send("handler.install.fvtm.tire.radius_too_small:" + idata.outer_radius + ":" + slot.min_tire_radius);
 			return false;
 		}
-		WheelData wdata = data.getPart(whcat).getType().getInstallationHandlerData();
+		WheelData wdata = data.getPart(whcat).getType().getInstallHandlerData();
 		if(idata.inner_radius < wdata.getRadius()){
 			sender.send("handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius:" + wdata.getRadius() + ":" + idata.inner_radius);
 			return false;
@@ -87,7 +87,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 			TireFunction func = part.getFunction("fvtm:tire");
 			if(func != null) func.setWheel(whcat, data.getWheelSlots().get(whcat));
 		}
-		TireData idata = part.getType().getInstallationHandlerData();
+		TireData idata = part.getType().getInstallHandlerData();
 		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).toV3D());
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
@@ -97,7 +97,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
-		TireData idata = part.getType().getInstallationHandlerData();
+		TireData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.tire.part_not_removable");
 			return false;
@@ -152,7 +152,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 		ArrayList<String> strs = new ArrayList<>();
 		for(String str : vehicle.getWheelSlots().keySet()){
 			if(vehicle.hasPart(str)){
-				WheelData data = vehicle.getPart(str).getType().getInstallationHandlerData();
+				WheelData data = vehicle.getPart(str).getType().getInstallHandlerData();
 				if(data != null && data.hasTire()) continue;
 				strs.add(str + ":tire");
 			}

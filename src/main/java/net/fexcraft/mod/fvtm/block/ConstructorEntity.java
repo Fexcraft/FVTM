@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -15,6 +16,7 @@ import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -101,7 +103,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				if(nopar(container)) return; if(noveh(container)) return;
 				boolean bool = packet.getBoolean("custom_category");
 				PartData data = this.getPartData(); String cat = packet.getString("category");
-				if(bool && !data.getType().getInstallationHandler().allowsCustomCategory(data)){
+				if(bool && !data.getType().getInstallHandler().allowsCustomCategory(data)){
 					container.setTitleText("tile.fvtm.constructor.part_install.custom_cat_not_allowed", null); return;
 				}
 				/*if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
@@ -274,19 +276,19 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     public void processClientPacket(PacketTileEntityUpdate packet){
     	//Print.debug(packet.nbt);
         if(packet.nbt.hasKey("PartData")){
-        	this.pdata = Resources.getPartData(packet.nbt.getCompoundTag("PartData"));
+        	pdata = FvtmResources.INSTANCE.getPartData(new TagCWI(packet.nbt.getCompoundTag("PartData")));
         }
         else if(packet.nbt.hasKey("PartDataReset") && packet.nbt.getBoolean("PartDataReset")){
-        	this.pdata = null;
+        	pdata = null;
         }
         //
         if(packet.nbt.hasKey("VehicleData")){
-        	//TODO this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
-        	this.resetCenterModels();
+        	vdata = FvtmResources.INSTANCE.getVehicleData(new TagCWI(packet.nbt.getCompoundTag("VehicleData")));
+        	resetCenterModels();
         }
         else if(packet.nbt.hasKey("VehicleDataReset") && packet.nbt.getBoolean("VehicleDataReset")){
-        	this.vdata = null;
-        	this.resetCenterModels();
+        	vdata = null;
+        	resetCenterModels();
         }
         //
         if(packet.nbt.hasKey("ContainerData")){
@@ -367,7 +369,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     			else compound.setBoolean("BlockDataReset", true); break;
     		}
     		case "partdata": case "part": {
-    			if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
+    			if(pdata != null) compound.setTag("PartData", pdata.write(null).local());
     			else compound.setBoolean("PartDataReset", true); break;
     		}
     		case "color": case "rgb":{
@@ -406,7 +408,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			else compound.setBoolean("ContainerDataReset", true);
         if(vdata != null) compound.setTag("VehicleData", vdata.write(TagCW.create()).local());
 			else compound.setBoolean("VehicleDataReset", true);
-		if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
+		if(pdata != null) compound.setTag("PartData", pdata.write(null).local());
 			else compound.setBoolean("PartDataReset", true);
 		if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
 		else compound.setBoolean("BlockDataReset", true);
@@ -419,16 +421,16 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
         if(compound.hasKey("PartData")){
-        	this.pdata = Resources.getPartData(compound.getCompoundTag("PartData"));
+        	pdata = FvtmResources.INSTANCE.getPartData(new TagCWI(compound.getCompoundTag("PartData")));
         }
         else if(compound.hasKey("PartDataReset") && compound.getBoolean("PartDataReset")){
-        	this.pdata = null;
+        	pdata = null;
         }
         if(compound.hasKey("VehicleData")){
-        	//TODO this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
+        	vdata = FvtmResources.INSTANCE.getVehicleData(new TagCWI(compound.getCompoundTag("VehicleData")));
         }
         else if(compound.hasKey("VehicleDataReset") && compound.getBoolean("VehicleDataReset")){
-        	this.vdata = null;
+        	vdata = null;
         }
         if(compound.hasKey("ContainerData")){
         	this.cdata = Resources.getContainerData(compound.getCompoundTag("ContainerData"));

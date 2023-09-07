@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.util.function.EngineFunction;
+import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.util.SoundCategory;

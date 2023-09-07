@@ -8,7 +8,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.part.Part2;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -39,7 +39,7 @@ public class InventoryFunction extends PartFunction {
 	}
 
 	@Override
-	public PartFunction init(Part2 part, FJson json){
+	public PartFunction init(Part part, FJson json){
 		JsonMap map = json.asMap();
 		inventory = new InvHandler(InvType.parse(map.getString("type", "item"), false));
 		inventory.setCapacity(map.getInteger("capacity", 0));
@@ -89,7 +89,7 @@ public class InventoryFunction extends PartFunction {
 	}
 
 	@Override
-	public PartFunction copy(Part2 part){
+	public PartFunction copy(Part part){
 		return new InventoryFunction(this);
 	}
 

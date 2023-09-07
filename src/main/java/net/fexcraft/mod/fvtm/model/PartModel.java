@@ -55,7 +55,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 				break;
 			}
 			case FIXED: {
-				WheelData ihdata = data.getType().getInstallationHandlerData();
+				WheelData ihdata = data.getType().getInstallHandlerData();
 				GL11.glRotatef(180, 0, 1, 0);
 				GL11.glTranslatef(0, 0, ihdata.getWidth() * -.015625f);
 				break;
@@ -83,7 +83,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 				break;
 			}
 			case GUI: {
-				WheelData ihdata = data.getType().getInstallationHandlerData();
+				WheelData ihdata = data.getType().getInstallHandlerData();
 				if(ihdata.getRadius() > 8){
 					for(int i = (int)ihdata.getRadius(); i > 8; i--)
 					GL11.glScalef(1 - Static.sixteenth, 1 - Static.sixteenth, 1 - Static.sixteenth);

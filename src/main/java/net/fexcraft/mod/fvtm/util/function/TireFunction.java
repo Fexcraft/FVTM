@@ -2,68 +2,67 @@ package net.fexcraft.mod.fvtm.util.function;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.app.json.FJson;
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
-import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.part.Part2;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler.TireData;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
 public class TireFunction extends PartFunction {
 	
-	private static HashMap<Part, TireAttr> TIRES = new HashMap<>();
+	private static HashMap<Part2, TireAttr> TIRES = new HashMap<>();
 	private String inst_on;
 	private WheelSlot wheel;
 
-	public TireFunction(Part part, JsonObject obj){
-		super(part, obj);
-		if(obj == null) obj = new JsonObject();
+	@Override
+	public PartFunction init(Part2 part, FJson json){
+		JsonMap map = json.isMap() ? json.asMap() : new JsonMap();
 		TireAttr attr = new TireAttr();
-		attr.general_grip = JsonUtil.getIfExists(obj, "general_grip", 1f).floatValue();
-		attr.brake_grip = JsonUtil.getIfExists(obj, "break_grip", 0.7f).floatValue();
-		attr.corner_stiffness = JsonUtil.getIfExists(obj, "stiffness", 5.2f).floatValue();
-		attr.corner_stiffness_steering = JsonUtil.getIfExists(obj, "steering_stiffness", 5f).floatValue();
-		attr.step_height = JsonUtil.getIfExists(obj, "step_height", 1f).floatValue();
-		if(obj.has("material_table")){
-			JsonObject table = obj.get("material_table").getAsJsonObject();
-			for(Map.Entry<String, JsonElement> entry : table.entrySet()){
+		attr.general_grip = map.getFloat("general_grip", 1f);
+		attr.brake_grip = map.getFloat("break_grip", 0.7f);
+		attr.corner_stiffness = map.getFloat("stiffness", 5.2f);
+		attr.corner_stiffness_steering = map.getFloat("steering_stiffness", 5f);
+		attr.step_height = map.getFloat("step_height", 1f);
+		if(map.has("material_table")){
+			for(Entry<String, JsonValue<?>> entry : map.getMap("material_table").entries()){
 				Material mat = BlockUtil.getMaterial(entry.getKey(), true);
 				if(mat == null) continue;
-				JsonArray array = entry.getValue().getAsJsonArray();
-				float g = array.size() > 0 ? array.get(0).getAsFloat() : 1f;
-				float r = array.size() > 1 ? array.get(1).getAsFloat() : 0.9f;
-				float cs = array.size() > 2 ? array.get(2).getAsFloat() : attr.corner_stiffness;
-				float css = array.size() > 3 ? array.get(3).getAsFloat() : attr.corner_stiffness_steering;
+				JsonArray array = entry.getValue().asArray();
+				float g = array.size() > 0 ? array.get(0).float_value() : 1f;
+				float r = array.size() > 1 ? array.get(1).float_value() : 0.9f;
+				float cs = array.size() > 2 ? array.get(2).float_value() : attr.corner_stiffness;
+				float css = array.size() > 3 ? array.get(3).float_value() : attr.corner_stiffness_steering;
 				attr.table.put(mat, new MatTireAttr(g, r, cs, css));
 			}
 		}
 		TIRES.put(part, attr);
-	}
-
-	@Override
-	public PartFunction read(NBTTagCompound compound){
-		inst_on = compound.hasKey("wheel_on") ? compound.getString("wheel_on") : null;
 		return this;
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(inst_on != null) compound.setString("wheel_on", inst_on);
+	public PartFunction load(TagCW compound){
+		inst_on = compound.has("wheel_on") ? compound.getString("wheel_on") : null;
+		return this;
+	}
+
+	@Override
+	public TagCW save(TagCW compound){
+		if(inst_on != null) compound.set("wheel_on", inst_on);
 		return compound;
 	}
 	
@@ -87,12 +86,12 @@ public class TireFunction extends PartFunction {
 	}
 
 	@Override
-	public PartFunction copy(Part part){
-		return new TireFunction(part, null);
+	public PartFunction copy(Part2 part){
+		return new TireFunction();
 	}
 
     @Override
-    public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
+    public void addInformation(StackWrapper stack, WorldW world, PartData data, List<String> tooltip, boolean ext){
     	if(data.getType().getInstallationHandlerData() instanceof TireData){
         	TireData tiredata = data.getType().getInstallationHandlerData();
             tooltip.add(Formatter.format("&9Tire Outer Radius: &7" + tiredata.getOuterRadius()));

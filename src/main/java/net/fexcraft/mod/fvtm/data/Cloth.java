@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.model.ClothModel;
 import net.fexcraft.mod.fvtm.model.ModelData;
@@ -21,7 +20,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -66,7 +64,6 @@ public class Cloth extends TypeCore<Cloth> implements ItemTextureable {
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
 		this.item = new ClothItem(this);
-		MinecraftForge.EVENT_BUS.post(new TypeEvents.ClothCreated(this, obj));
 		return this;
 	}
 

@@ -36,7 +36,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		super(type);
 		texture = new Textureable(type);
 		for(PartFunction func : type.functions){
-			this.functions.put(func.getId(), func.copy(type));
+			//TODO this.functions.put(func.getId(), func.copy(type));
 		}
 	}
 
@@ -53,7 +53,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 		NBTTagList flist = new NBTTagList();
 		for(PartFunction func : functions.values()){
 			NBTTagCompound com = new NBTTagCompound();
-			com.setString("id", func.getId()); com = func.write(com);
+			com.setString("id", func.getId()); com = func.save(new TagCWI(com)).local();
 			if(com != null) flist.appendTag(com);
 		} compound.setTag("Functions", flist);
 		return compound;
@@ -75,7 +75,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 			for(NBTBase base : flist){
 				NBTTagCompound com = (NBTTagCompound)base;
 				PartFunction func = this.getFunction(com.getString("id"));
-				if(func != null) func.read(com);
+				if(func != null) func.load(new TagCWI(com));
 			}
 		}
 		return this;

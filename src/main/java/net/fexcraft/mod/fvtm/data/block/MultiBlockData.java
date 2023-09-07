@@ -5,12 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.util.script.FSBlockScript;
-import net.minecraft.item.Item;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -51,7 +49,7 @@ public class MultiBlockData {
 		for(Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getBlkSavePrefix();
 			if(!compound.hasKey(pre + entry.getKey())) continue;
-			entry.getValue().load(compound, pre + entry.getKey());
+			entry.getValue().load(new TagCWI(compound), pre + entry.getKey());
 		}
 		if(script != null){
 			script.read(this, compound);
@@ -67,7 +65,7 @@ public class MultiBlockData {
 		if(compound == null) compound = new NBTTagCompound();
 		for(Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getBlkSavePrefix();
-			entry.getValue().save(compound, pre + entry.getKey());
+			entry.getValue().save(new TagCWI(compound), pre + entry.getKey());
 		}
 		if(script != null){
 			script.write(this, compound);

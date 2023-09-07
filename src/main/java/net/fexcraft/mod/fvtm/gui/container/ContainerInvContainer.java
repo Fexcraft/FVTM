@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -64,7 +65,7 @@ public class ContainerInvContainer extends GenericContainer {
 		}
 		else{
 			if(packet.getString("cargo").equals("update_fluid_tank")){
-				tile.getContainerData().getInventory().load(packet, "state");
+				tile.getContainerData().getInventory().load(new TagCWI(packet), "state");
 				if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
 				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 			}
@@ -139,7 +140,7 @@ public class ContainerInvContainer extends GenericContainer {
 				if(!player.world.isRemote && anychange){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fluid_tank");
-					tile.getContainerData().getInventory().save(compound, "state");
+					tile.getContainerData().getInventory().save(new TagCWI(compound), "state");
 					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
 					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);

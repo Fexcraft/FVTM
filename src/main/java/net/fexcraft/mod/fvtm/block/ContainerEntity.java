@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -201,7 +202,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
             switch(packet.nbt.getString("task")){
                 case "update_container_inventory": {
                     if(getContainerData() == null) break;
-                    getContainerData().getInventory().load(packet.nbt, "state");
+                    getContainerData().getInventory().load(new TagCWI(packet.nbt), "state");
                     break;
                 }
             }
@@ -215,7 +216,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
         if(player == null) return;
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("task", "update_container_inventory");
-        getContainerData().getInventory().save(nbt, "state");
+        getContainerData().getInventory().save(new TagCWI(nbt), "state");
         PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
     }
 

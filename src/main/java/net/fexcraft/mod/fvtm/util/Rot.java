@@ -5,8 +5,9 @@ import com.google.gson.JsonObject;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.uni.impl.TagLWI;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -43,9 +44,9 @@ public class Rot {
 		nell = vec.x == 0f && vec.y == 0f && vec.z == 0f;
 	}
 
-	public void toNBT(String key, NBTTagCompound compound){
+	public void toNBT(String key, TagCW compound){
 		if(isNull()) return;
-		compound.setTag(key, DataUtil.writeVec(vec));
+		compound.set(key, new TagLWI((NBTTagList)DataUtil.writeVec(vec)));
 	}
 
 	public boolean isNull(){

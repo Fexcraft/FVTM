@@ -2,81 +2,79 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import java.util.ArrayList;
 
-import javax.annotation.Nullable;
-
-import com.google.gson.JsonObject;
-import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
-import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.fvtm.function.WheelFunction;
+import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.uni.Pos;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.uni.world.MessageSender;
 
 public class TireInstallationHandler extends PartInstallHandler {
 
+	public static final TireInstallationHandler INSTANCE = new TireInstallationHandler();
+
 	@Override
-	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		if(data.getType().getVehicleType().isRailVehicle()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.rail_vehicle");
+			sender.send("handler.install.fvtm.tire.rail_vehicle");
 			return false;
 		}
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "handler.install.fvtm.tire.category_occupied");
+			sender.send("handler.install.fvtm.tire.category_occupied");
 			return false;
 		}
 		String whcat = cat.split(":")[0];
 		if(!data.getWheelSlots().containsKey(whcat)){
-			Print.chatnn(sender, "handler.install.fvtm.tire.wheelslot_missing");
+			sender.send("handler.install.fvtm.tire.wheelslot_missing");
 			return false;
 		}
 		if(!data.hasPart(whcat)){
-			Print.chatnn(sender, "handler.install.fvtm.tire.no_wheel_at_slot");
+			sender.send("handler.install.fvtm.tire.no_wheel_at_slot");
 			return false;
 		}
 		TireData idata = part.getType().getInstallationHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(whcat);
 		if(slot == null){
-			Print.chatnn(sender, "handler.install.fvtm.tire.wheelslot_null");
+			sender.send("handler.install.fvtm.tire.wheelslot_null");
 			return false;
 		}
 		// Print.debug(idata.radius, slot.maxradius(), slot.minradius());
 		if(idata.outer_radius > slot.max_radius){
-			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_large:" + idata.outer_radius + ":" + slot.max_radius);
+			sender.send("handler.install.fvtm.tire.radius_too_large:" + idata.outer_radius + ":" + slot.max_radius);
 			return false;
 		}
 		if(idata.outer_radius < slot.min_tire_radius){
-			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_small:" + idata.outer_radius + ":" + slot.min_tire_radius);
+			sender.send("handler.install.fvtm.tire.radius_too_small:" + idata.outer_radius + ":" + slot.min_tire_radius);
 			return false;
 		}
 		WheelData wdata = data.getPart(whcat).getType().getInstallationHandlerData();
 		if(idata.inner_radius < wdata.getRadius()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius:" + wdata.getRadius() + ":" + idata.inner_radius);
+			sender.send("handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius:" + wdata.getRadius() + ":" + idata.inner_radius);
 			return false;
 		}
 		if(idata.inner_radius > wdata.getRadius()){
-			Print.chatnn(sender, "handler.install.fvtm.tire.tire_inner_radius_larger_than_wheel:" + idata.inner_radius + ":" +  wdata.getRadius());
+			sender.send("handler.install.fvtm.tire.tire_inner_radius_larger_than_wheel:" + idata.inner_radius + ":" +  wdata.getRadius());
 			return false;
 		}
 		//
 		if(idata.width > slot.max_width){
-			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_wide:" + idata.width + ":" + slot.max_width);
+			sender.send("handler.install.fvtm.tire.width_too_wide:" + idata.width + ":" + slot.max_width);
 			return false;
 		}
 		if(idata.width < slot.min_tire_width){
-			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_thin:" + idata.width + ":" + slot.min_tire_width);
+			sender.send("handler.install.fvtm.tire.width_too_thin:" + idata.width + ":" + slot.min_tire_width);
 			return false;
 		}
-		Print.chatnn(sender, "handler.install.fvtm.tire.check_passed");
+		sender.send("handler.install.fvtm.tire.check_passed");
 		return true;
 	}
 
 	@Override
-	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
 		String whcat = cat.split(":")[0];
 		part.setInstalledPos(new Pos(data.getWheelSlots().get(whcat).position));
@@ -93,27 +91,27 @@ public class TireInstallationHandler extends PartInstallHandler {
 		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).toV3D());
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
-		Print.chatnn(sender, "handler.install.fvtm.tire.success");
+		sender.send("handler.install.fvtm.tire.success");
 		return true;
 	}
 
 	@Override
-	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
+	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
 		TireData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "handler.deinstall.fvtm.tire.part_not_removable");
+			sender.send("handler.deinstall.fvtm.tire.part_not_removable");
 			return false;
 		}
-		Print.chatnn(sender, "handler.deinstall.fvtm.tire.check_passed");
+		sender.send("handler.deinstall.fvtm.tire.check_passed");
 		return true;
 	}
 
 	@Override
-	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
-		Print.chatnn(sender, "handler.deinstall.fvtm.tire.success");
+		sender.send("handler.deinstall.fvtm.tire.success");
 		return true;
 	}
 
@@ -123,11 +121,11 @@ public class TireInstallationHandler extends PartInstallHandler {
 		private float outer_radius, inner_radius, width;
 		private boolean removable;
 
-		public TireData(JsonObject obj){
-			this.outer_radius = JsonUtil.getIfExists(obj, "OuterRadius", 16f).floatValue();
-			this.inner_radius = JsonUtil.getIfExists(obj, "InnerRadius", 16f).floatValue();
-			this.width = JsonUtil.getIfExists(obj, "Width", 4f).floatValue();
-			this.removable = JsonUtil.getIfExists(obj, "Removable", true);
+		public TireData(JsonMap map){
+			this.outer_radius = map.getFloat("OuterRadius", 16f);
+			this.inner_radius = map.getFloat("InnerRadius", 16f);
+			this.width = map.getFloat("Width", 4f);
+			this.removable = map.getBoolean("Removable", true);
 		}
 
 		public float getOuterRadius(){
@@ -160,6 +158,11 @@ public class TireInstallationHandler extends PartInstallHandler {
 			}
 		}
 		return strs.toArray(new String[0]);
+	}
+
+	@Override
+	public Object parseData(JsonMap map){
+		return new TireData(map);
 	}
 
 }

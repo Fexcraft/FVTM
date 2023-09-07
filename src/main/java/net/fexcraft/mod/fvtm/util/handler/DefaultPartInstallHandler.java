@@ -29,7 +29,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 			sender.send("handler.install.fvtm.default.category_occupied");
 			return false;
 		}
-		DPIHData idata = part.getType().getInstallationHandlerData();
+		DPIHData idata = part.getType().getInstallHandlerData();
 		if(!part.getType().getCategories().contains(cat) && !idata.custom_cat && !idata.onslot){
 			sender.send("handler.install.fvtm.default.part_invalid_category");
 			return false;
@@ -75,7 +75,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 	@Override
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? gscn(cat.split(":")) : cat, part);
-		DPIHData idata = part.getType().getInstallationHandlerData();
+		DPIHData idata = part.getType().getInstallHandlerData();
 		setPosAndSwivelPoint(idata, null, cat, part, data);
 		/*data.getAttributes().values().forEach(attr ->{
 			attr.getModifiers().forEach(mod -> {
@@ -137,8 +137,8 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 		}
 		part.setInstalledPos(new Pos(result));
 		part.setInstalledRot(rosult);
-		if(!cat.startsWith("s:") && part.getType().getInstallationHandlerData() instanceof DPIHData){
-			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
+		if(!cat.startsWith("s:") && part.getType().getInstallHandlerData() instanceof DPIHData){
+			String point = ((DPIHData)part.getType().getInstallHandlerData()).swivel_point;
 			if(point != null && !point.equals("vehicle") && data.getRotationPoints().containsKey(point)){
 				part.setInstalledOnSwivelPoint(point);
 			}
@@ -147,7 +147,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 
 	@Override
 	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
-		DPIHData idata = part.getType().getInstallationHandlerData();
+		DPIHData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.default.part_not_removable");
 			return false;
@@ -276,13 +276,13 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 
 	@Override
 	public boolean allowsCustomCategory(PartData part){
-		DPIHData idata = part.getType().getInstallationHandlerData();
+		DPIHData idata = part.getType().getInstallHandlerData();
 		return idata == null ? false : idata.custom_cat;
 	}
 
 	@Override
 	public String[] getValidCategories(PartData part, VehicleData vehicle){
-		DPIHData idata = part.getType().getInstallationHandlerData();
+		DPIHData idata = part.getType().getInstallHandlerData();
 		if(idata != null && idata.onslot){
 			ArrayList<String> found = new ArrayList<>();
 			for(Entry<String, PartSlots> data : vehicle.getPartSlotProviders().entrySet()){

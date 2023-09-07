@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
+import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.I19U;
@@ -295,7 +295,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 					ArrayList<String> cats = new ArrayList<>();
 					HashMap<String, ArrayList<String>> emap = new HashMap<>();
 					HashMap<String, ArrayList<String>> imap = new HashMap<>();
-					PartInstallationHandler handler = null;
+					PartInstallHandler handler = null;
 					boolean slot = false;
 					for(Part part : Resources.PARTS){
 						slot = part.getInstallationHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallationHandlerData()).onslot : false;
@@ -333,7 +333,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 					VehicleData vdata = new VehicleData(veh);
 					ArrayList<String> elist = new ArrayList<>();
 					ArrayList<String> ilist = new ArrayList<>();
-					PartInstallationHandler handler = null;
+					PartInstallHandler handler = null;
 					boolean slot = false;
 					for(Part part : Resources.PARTS){
 						slot = part.getInstallationHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallationHandlerData()).onslot : false;
@@ -376,7 +376,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 					boolean slot = part.getInstallationHandler() instanceof DefaultPartInstallHandler ? ((DefaultPartInstallHandler.DPIHData)part.getInstallationHandlerData()).onslot : false;
 					HashMap<String, ArrayList<String>> emap = new HashMap<>();
 					HashMap<String, ArrayList<String>> imap = new HashMap<>();
-					PartInstallationHandler handler = null;
+					PartInstallHandler handler = null;
 					for(Vehicle veh : FvtmRegistry.VEHICLES){
 						VehicleData vdata = new VehicleData(veh);
 						if(slot){

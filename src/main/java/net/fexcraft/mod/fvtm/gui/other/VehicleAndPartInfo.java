@@ -310,7 +310,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 						else{
 							handler = part.getInstallationHandler();
 							for(String str : cats){
-								if(handler.allowInstall(null, data, str, vdata)) fillmap(emap, imap, str, part.getName(), IDLManager.getIDL(part.getRegistryName().toString()));
+								if(handler.validInstall(null, data, str, vdata)) fillmap(emap, imap, str, part.getName(), IDLManager.getIDL(part.getRegistryName().toString()));
 							}
 						}
 					}
@@ -346,7 +346,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 						}
 						else{
 							handler = part.getInstallationHandler();
-							if(handler.allowInstall(null, data, selcat, vdata)){
+							if(handler.validInstall(null, data, selcat, vdata)){
 								elist.add(part.getName());
 								ilist.add(part.getRegistryName().toString());
 							}
@@ -387,7 +387,7 @@ public class VehicleAndPartInfo extends GenericGui<VehicleAndPartInfoContainer>{
 						else{
 							handler = part.getInstallationHandler();
 							for(String cat : part.getCategories()){
-								if(handler.allowInstall(null, data, selcat, vdata)) fillmap(emap, imap, cat, veh.getName(), veh.getID());
+								if(handler.validInstall(null, data, selcat, vdata)) fillmap(emap, imap, cat, veh.getName(), veh.getID());
 							}
 						}
 					}

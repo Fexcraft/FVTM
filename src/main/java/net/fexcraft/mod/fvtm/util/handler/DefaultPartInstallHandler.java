@@ -5,57 +5,52 @@ import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.uni.Pos;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
+import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.fvtm.util.Rot;
+import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.mod.uni.world.MessageSender;
 
-public class DefaultPartInstallHandler extends PartInstallationHandler {
-	
-	public static final DefaultPartInstallHandler INSTANCE = new DefaultPartInstallHandler();
+public class DefaultPartInstallHandler extends PartInstallHandler {
+
 	public static final String[] wildcards = { "*", "any", "all" };
 
 	@Override
-	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		String[] split = cat.startsWith(":") ? cat.split(":") : null;
 		if(data.getParts().containsKey(split == null ? cat : gscn(split))){
-			Print.chatnn(sender, "handler.install.fvtm.default.category_occupied");
+			sender.send("handler.install.fvtm.default.category_occupied");
 			return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(!part.getType().getCategories().contains(cat) && !idata.custom_cat && !idata.onslot){
-			Print.chatnn(sender, "handler.install.fvtm.default.part_invalid_category");
+			sender.send("handler.install.fvtm.default.part_invalid_category");
 			return false;
 		}
 		if(!compatible(idata, data.getType().getID().colon())){
-			Print.chatnn(sender, "handler.install.fvtm.default.part_incompatible_vehicle");
+			sender.send("handler.install.fvtm.default.part_incompatible_vehicle");
 			return false;
 		}
 		if(containsIncompatible(idata, data)){
-			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_contains_incompatible");
+			sender.send("handler.install.fvtm.default.vehicle_contains_incompatible");
 			return false;
 		}
 		if(!containsRequired(idata, data)){
-			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_missing_required_parts");
+			sender.send("handler.install.fvtm.default.vehicle_missing_required_parts");
 			return false;
 		}
 		if(idata.sp_req && !idata.onslot && !data.getRotationPoints().containsKey(idata.swivel_point)){
-			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_missing_required_swivelpoint:" + idata.swivel_point);
+			sender.send("handler.install.fvtm.default.vehicle_missing_required_swivelpoint:" + idata.swivel_point);
 			return false;
 		}
-		Print.chatnn(sender, "handler.install.fvtm.default.check_passed"); return true;
+		sender.send("handler.install.fvtm.default.check_passed"); return true;
 	}
 
 	private boolean compatible(DPIHData idata, String string){
@@ -78,7 +73,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	@Override
-	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? gscn(cat.split(":")) : cat, part);
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		setPosAndSwivelPoint(idata, null, cat, part, data);
@@ -87,7 +82,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				Print.debug(mod.id(), mod.origin(), mod.target());
 			});
 		});*/
-		Print.chatnn(sender, "handler.install.fvtm.default.success");
+		sender.send("handler.install.fvtm.default.success");
 		return true;
 	}
 
@@ -151,24 +146,24 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	@Override
-	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
+	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "handler.deinstall.fvtm.default.part_not_removable");
+			sender.send("handler.deinstall.fvtm.default.part_not_removable");
 			return false;
 		}
 		//Function Check
 		if(!checkWheelSlotsInUse(sender, part, from)) return false;
-		Print.chatnn(sender, "handler.deinstall.fvtm.default.check_passed");
+		sender.send("handler.deinstall.fvtm.default.check_passed");
 		return true;
 	}
 	
-	public static boolean checkWheelSlotsInUse(@Nullable ICommandSender sender, PartData part, VehicleData from){
+	public static boolean checkWheelSlotsInUse(MessageSender sender, PartData part, VehicleData from){
 		if(part.hasFunction("fvtm:wheel_positions")){
 			WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
 			for(String key : from.getParts().keySet()){
 				if(func.getPositions().containsKey(key)){
-					Print.chatnn(sender, "handler.deinstall.fvtm.default.remove_linked_wheels");
+					sender.send("handler.deinstall.fvtm.default.remove_linked_wheels");
 					return false;
 				}
 			}
@@ -177,10 +172,10 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	@Override
-	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
+	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(Pos.NULL);
 		data.getParts().remove(cat);
-		Print.chatnn(sender, "handler.deinstall.fvtm.default.success");
+		sender.send("handler.deinstall.fvtm.default.success");
 		return true;
 	}
 	

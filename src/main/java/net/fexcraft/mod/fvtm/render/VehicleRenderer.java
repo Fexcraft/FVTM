@@ -133,9 +133,9 @@ public class VehicleRenderer {
 		for(Entry<String, PartData> entry : parts){
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 			entry.getValue().getInstalledPos().translate();
-			entry.getValue().getInstalledRot().rotate();
+			entry.getValue().getInstalledRot().rotate112();
 			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle, cache, entry.getValue(), entry.getKey(), false));
-			entry.getValue().getInstalledRot().rotateR();
+			entry.getValue().getInstalledRot().rotate112R();
 			entry.getValue().getInstalledPos().translateR();
 		}
 		GL11.glRotatef(-180f, 0f, 0f, 1f);

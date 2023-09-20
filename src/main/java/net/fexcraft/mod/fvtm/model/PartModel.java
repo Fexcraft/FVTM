@@ -112,7 +112,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 
 	public static void translateAndRotatePartOnSwivelPoint(VehicleData vehicle, PartData data, float ticks){
 		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
-		V3D pos = data.getInstalledPos().toV3D();
+		V3D pos = data.getInstalledPos();
 		V3D temp0 = point.getRelativeVector(pos);
 		V3D temp1 = point.getPrevRelativeVector(pos);
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
@@ -129,7 +129,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 
 	public static void translateAndRotatePartOnSwivelPointFast(VehicleData vehicle, PartData data){
 		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
-		V3D pos = point.getRelativeVector(data.getInstalledPos().toV3D());
+		V3D pos = point.getRelativeVector(data.getInstalledPos());
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 		GL11.glTranslated(pos.x, pos.y, pos.z);

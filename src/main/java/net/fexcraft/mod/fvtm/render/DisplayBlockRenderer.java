@@ -3,20 +3,18 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.common.math.V3D;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 @fTESR
 public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntity> {
@@ -58,9 +56,9 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 	}
                 	else{
                 		partdata.getInstalledPos().translate();
-                    	partdata.getInstalledRot().rotate();
+                    	partdata.getInstalledRot().rotate112();
                 		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key, false));
-                    	partdata.getInstalledRot().rotateR();
+                    	partdata.getInstalledRot().rotate112R();
                 		partdata.getInstalledPos().translateR();
                 	}
                 });

@@ -111,9 +111,9 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     	}
                     	else{
                     		partdata.getInstalledPos().translate();
-                    		partdata.getInstalledRot().rotate();
+                    		partdata.getInstalledRot().rotate112();
                     		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key, false));
-                    		partdata.getInstalledRot().rotateR();
+                    		partdata.getInstalledRot().rotate112R();
                     		partdata.getInstalledPos().translateR();
                     	}
                     });

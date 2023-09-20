@@ -104,7 +104,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 			rosult = slots.get(idx).rotation;
 			if(!split[1].equals(PartSlots.VEHPARTSLOTS)){
 				PartData mount = data.getPart(split[1]);
-				result = mount.getInstalledPos().toV3D();
+				result = mount.getInstalledPos();
 				if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
 					part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
 				}
@@ -135,7 +135,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 				}
 			}
 		}
-		part.setInstalledPos(new Pos(result));
+		part.setInstalledPos(result);
 		part.setInstalledRot(rosult);
 		if(!cat.startsWith("s:") && part.getType().getInstallHandlerData() instanceof DPIHData){
 			String point = ((DPIHData)part.getType().getInstallHandlerData()).swivel_point;
@@ -173,7 +173,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(Pos.NULL);
+		part.setInstalledPos(new V3D());
 		data.getParts().remove(cat);
 		sender.send("handler.deinstall.fvtm.default.success");
 		return true;

@@ -6,8 +6,8 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.uni.Pos;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -132,11 +132,11 @@ public class Seat {
 		else return (current + 1) % 3;
 	}
 
-	public Seat copy(Pos partpos){
+	public Seat copy(V3D partpos){
 		if(partpos == null || !relative) return this;
-		float x = this.x + partpos.to16FloatX();
-		float y = this.y - partpos.to16FloatY();
-		float z = this.z - partpos.to16FloatZ();
+		float x = this.x + (float)partpos.x;
+		float y = this.y + (float)partpos.y;
+		float z = this.z + (float)partpos.z;
 		return new Seat(name, x, y, z, driver, sitting, swivel_point, nofirst, nothird, relative, defyaw, defpitch);
 	}
 	

@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.world.MessageSender;
 
 public class ConnectorInstallationHandler extends PartInstallHandler {
@@ -62,7 +61,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 		String regname = data.getType().getIDS();
 		V3D conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
 		if(idata.relative){
-			conn = conn.add(part.getInstalledPos().toV3D());
+			conn = conn.add(part.getInstalledPos());
 		}
 		data.setConnector(conn, front);
 		sender.send("handler.install.fvtm.connector.success");
@@ -82,7 +81,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0));
+		part.setInstalledPos(new V3D(0, 0, 0));
 		data.getParts().remove(cat);
 		data.setConnector(null, cat.startsWith("front"));
 		sender.send("handler.deinstall.fvtm.connector.success");

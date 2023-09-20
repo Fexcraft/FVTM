@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.BogieFunction;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.world.MessageSender;
 
 public class BogieInstallationHandler extends PartInstallHandler {
@@ -32,12 +32,11 @@ public class BogieInstallationHandler extends PartInstallHandler {
 	@Override
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(new Pos(data.getWheelSlots().get(cat).position));
+		part.setInstalledPos(data.getWheelSlots().get(cat).position);
 		BogieFunction func = part.getFunction("fvtm:bogie");
 		if(func != null) func.setBogie(cat);
 		BogieData idata = part.getType().getInstallHandlerData();
-		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).toV3D());
+		data.getWheelPositions().put(cat, part.getInstalledPos().add(0, -idata.height, 0));
 		//Print.debug("New BogiePos: " + data.getWheelPositions().get(cat));
 		sender.send("handler.install.fvtm.bogie.success");
 		return true;
@@ -56,7 +55,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0));
+		part.setInstalledPos(new V3D(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
 		sender.send("handler.deinstall.fvtm.bogie.success");

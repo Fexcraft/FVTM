@@ -1,13 +1,13 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.world.MessageSender;
 
 public class WheelInstallationHandler extends PartInstallHandler {
@@ -62,7 +62,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 	@Override
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(new Pos(data.getWheelSlots().get(cat).position));
+		part.setInstalledPos(data.getWheelSlots().get(cat).position);
 		{
 			WheelFunction func = part.getFunction("fvtm:wheel");
 			if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
@@ -72,8 +72,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 			if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
 		}
 		WheelData idata = part.getType().getInstallHandlerData();
-		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).toV3D());
+		data.getWheelPositions().put(cat, part.getInstalledPos().add(0, -idata.radius, ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)));
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		sender.send("handler.install.fvtm.wheel.success");
 		return true;
@@ -96,7 +95,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0));
+		part.setInstalledPos(new V3D(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
 		sender.send("handler.deinstall.fvtm.wheel.success");

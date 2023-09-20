@@ -268,7 +268,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		for(PartData part : parts.values()){
 			if(part.hasFunction("fvtm:wheel_positions")){
 				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
-				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos().toV3D())));
+				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos())));
 			}
 		}
 		//

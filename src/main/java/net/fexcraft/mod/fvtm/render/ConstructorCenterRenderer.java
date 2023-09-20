@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -110,11 +111,11 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	            GL11.glPopMatrix();
                     	}
                     	else{
-                    		partdata.getInstalledPos().translate();
+							GLUtils112.translate(partdata.getInstalledPos());
                     		partdata.getInstalledRot().rotate112();
                     		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key, false));
                     		partdata.getInstalledRot().rotate112R();
-                    		partdata.getInstalledPos().translateR();
+							GLUtils112.translateR(partdata.getInstalledPos());
                     	}
                     });
                     GL11.glTranslated(0, heightoffset[0] - tile.getLiftState(), 0);

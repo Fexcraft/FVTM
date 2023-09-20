@@ -2,6 +2,7 @@ package net.fexcraft.mod.uni.impl;
 
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -25,6 +26,22 @@ public class SWI extends StackWrapper {
 	@Override
 	public Object direct(){
 		return stack;
+	}
+
+	@Override
+	public StackWrapper setTag(TagCW tag){
+		stack.setTagCompound(tag.local());
+		return this;
+	}
+
+	@Override
+	public TagCW getTag(){
+		return new TagCWI(stack.getTagCompound());
+	}
+
+	@Override
+	public boolean hasTag(){
+		return stack.hasTagCompound();
 	}
 
 }

@@ -43,7 +43,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		if(compound == null) compound = TagCW.create();
 		compound.set("Part", type.getIDS());
 		toTag(currentpos, "CurrentPos", compound);
-		currentrot.toNBT("CurrentRot", compound);
+		currentrot.toTag("CurrentRot", compound);
 		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.set("SwivelPoint", rotpoint);
 		//
 		texture.save(compound);
@@ -65,7 +65,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		currentpos = frNBT("CurrentPos", compound);
-		currentrot = Rot.fromNBT("CurrentRot", compound);
+		currentrot = Rot.fromTag("CurrentRot", compound);
 		rotpoint = compound.has("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
 		texture.load(compound, type);

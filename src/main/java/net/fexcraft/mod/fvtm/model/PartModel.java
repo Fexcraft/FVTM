@@ -124,7 +124,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 		GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
 		GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
-		data.getInstalledRot().rotate();
+		data.getInstalledRot().rotate112();
 	}
 
 	public static void translateAndRotatePartOnSwivelPointFast(VehicleData vehicle, PartData data){
@@ -138,7 +138,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 		GL11.glRotatef(point.getPivot().deg_roll(), 1.0F, 0.0F, 0.0F);
 		GL11.glRotatef(point.getPivot().deg_pitch(), 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(point.getPivot().deg_yaw(), 0.0F, 1.0F, 0.0F);
-		data.getInstalledRot().rotate();
+		data.getInstalledRot().rotate112();
 	}
 	
 }

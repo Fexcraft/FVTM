@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.PARTS;
-import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
+import static net.fexcraft.mod.fvtm.data.part.PartSlots.VEHPARTSLOTS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
-import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
+import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Sound;

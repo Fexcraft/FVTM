@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -16,7 +15,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -26,6 +24,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
@@ -41,7 +40,6 @@ import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
-import net.fexcraft.mod.uni.Pos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
@@ -124,7 +122,7 @@ public class EffectRenderer {
     }
 
 	public static void renderHotInstallInfo(GenericVehicle vehicle){
-		Vec3d temp = null;
+		//Vec3d temp = null;
 		SwivelPoint point;
 		if(!Command.HOTSWAP){
 			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
@@ -134,20 +132,19 @@ public class EffectRenderer {
 			if(part.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallHandlerData()).hotswap){
 				preMeshCalls();
 				for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-					Pos pos = ps.getKey().equals(VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+					V3D pos = ps.getKey().equals(VEHPARTSLOTS) ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
 					point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 					for(int i = 0; i < ps.getValue().size(); i++){
 						String type = ps.getValue().get(i).type;
 						for(String str : part.getType().getCategories()){
 							if(str.equals(type)){
-								Pos pes = pos.add(new Pos(ps.getValue().get(i).pos));
+								V3D pes = pos.add(ps.getValue().get(i).pos);
 								if(point.isVehicle()){
-									temp = toV3(pes);
-					            	GL11.glTranslated(temp.x, temp.y, temp.z);
+					            	GL11.glTranslated(pes.x, pes.y, pes.z);
 								}
 								else{
 									GL11.glPushMatrix();
-									V3D vec = point.getRelativeVector(pes.toV3D());
+									V3D vec = point.getRelativeVector(pes);
 									GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 									GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 									GL11.glTranslated(vec.x, vec.y, vec.z);
@@ -163,7 +160,7 @@ public class EffectRenderer {
 								DebugModels.HOTINSTALLCUBE.render(1f);
 				            	GL11.glPopMatrix();
 				            	if(!point.isVehicle()) GL11.glPopMatrix();
-				            	else GL11.glTranslated(-temp.x, -temp.y, -temp.z);
+				            	else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 							}
 						}
 					}
@@ -174,17 +171,16 @@ public class EffectRenderer {
 		else{
 			preMeshCalls();
 			for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-				Pos pos = ps.getKey().equals(VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+				V3D pos = ps.getKey().equals(VEHPARTSLOTS) ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
 				point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 				for(int i = 0; i < ps.getValue().size(); i++){
-					Pos pes = pos.add(new Pos(ps.getValue().get(i).pos));
+					V3D pes = pos.add(ps.getValue().get(i).pos);
 					if(point.isVehicle()){
-						temp = toV3(pes);
-		            	GL11.glTranslated(temp.x, temp.y, temp.z);
+		            	GL11.glTranslated(pes.x, pes.y, pes.z);
 					}
 					else{
 						GL11.glPushMatrix();
-						V3D vec = point.getRelativeVector(pes.toV3D());
+						V3D vec = point.getRelativeVector(pes);
 						GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 						GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 						GL11.glTranslated(vec.x, vec.y, vec.z);
@@ -200,7 +196,7 @@ public class EffectRenderer {
 					DebugModels.HOTINSTALLCUBE.render(1f);
 	            	GL11.glPopMatrix();
 	            	if(!point.isVehicle()) GL11.glPopMatrix();
-	            	else GL11.glTranslated(-temp.x, -temp.y, -temp.z);
+	            	else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 				}
 			}
 			postMeshCalls();

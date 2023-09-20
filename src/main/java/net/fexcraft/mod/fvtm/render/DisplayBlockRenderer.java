@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
@@ -55,11 +56,11 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
         	            GL11.glPopMatrix();
                 	}
                 	else{
-                		partdata.getInstalledPos().translate();
+						GLUtils112.translate(partdata.getInstalledPos());
                     	partdata.getInstalledRot().rotate112();
                 		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key, false));
                     	partdata.getInstalledRot().rotate112R();
-                		partdata.getInstalledPos().translateR();
+						GLUtils112.translateR(partdata.getInstalledPos());
                 	}
                 });
                 GL11.glTranslated(0, heightoffset, 0);

@@ -126,7 +126,8 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				} return;*/
 				//TODO if(getVehicleData().deinstallPart(container.getCommandSender(), cat, false)){
 				if(getVehicleData().deinstallPart(null, cat, false)){
-					this.dropItem(data.newItemStack()); this.updateClient(null);
+					dropItem(data.getNewStack().local());
+					updateClient(null);
 				}
 				return;
 			}
@@ -475,8 +476,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	}
 
 	public void dropPart(boolean update){
-		if(pdata == null) return; this.dropItem(pdata.newItemStack());
-		this.pdata = null; if(update) this.updateClient("partdata");
+		if(pdata == null) return;
+		dropItem(pdata.getNewStack().local());
+		pdata = null;
+		if(update) updateClient("partdata");
 	}
 
 	public void setContainerData(ContainerData data, boolean send){

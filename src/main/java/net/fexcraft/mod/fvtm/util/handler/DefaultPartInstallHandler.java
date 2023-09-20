@@ -10,7 +10,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
-import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
+import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;

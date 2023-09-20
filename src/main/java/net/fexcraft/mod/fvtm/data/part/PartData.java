@@ -1,23 +1,19 @@
 package net.fexcraft.mod.fvtm.data.part;
 
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.frNBT;
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toTag;
-
 import java.util.Map;
 import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.Rot;
-import net.fexcraft.mod.uni.Pos;
-import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.fvtm.util.SaveUtils;
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -26,7 +22,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	
 	protected TreeMap<String, PartFunction> functions = new TreeMap<>();
 	protected Textureable texture;
-	protected Pos currentpos = new Pos(0, 0, 0);
+	protected V3D currentpos = new V3D();
 	protected Rot currentrot = new Rot();
 	protected String rotpoint;
 
@@ -42,7 +38,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	public TagCW write(TagCW compound){
 		if(compound == null) compound = TagCW.create();
 		compound.set("Part", type.getIDS());
-		toTag(currentpos, "CurrentPos", compound);
+		compound.set("CurrentPos", SaveUtils.saveV3D(currentpos));
 		currentrot.toTag("CurrentRot", compound);
 		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.set("SwivelPoint", rotpoint);
 		//
@@ -64,7 +60,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		//if(!compound.hasKey("Part")) return null;
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
-		currentpos = frNBT("CurrentPos", compound);
+		currentpos = SaveUtils.loadV3D(compound.getList("CurrentPos"));
 		currentrot = Rot.fromTag("CurrentRot", compound);
 		rotpoint = compound.has("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
@@ -86,8 +82,8 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		//ResourceLocation regname = DataUtil.getRegistryName("Part", obj);
 		//if(regname == null || Resources.getPart(regname) == null) return null;
 		//this.type = Resources.getPart(regname);
-		currentpos = Pos.frJson(map.getMap("CurrentPos"), true);
-		//TODO currentrot = Rot.fromJson(map, "CurrentPos");
+		currentpos = SaveUtils.loadV3D(map.getArray("CurrentPos", 0));
+		currentrot = Rot.fromJson(map, "CurrentPos");
 		//
 		return this;
 	}
@@ -96,23 +92,17 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	public JsonMap toJson(){
 		JsonMap obj = new JsonMap();
 		obj.add("Part", type.getIDS());
-		//TODO obj.add("CurrentPos", currentpos);
-		//TODO if(!currentrot.isNull()) obj.add("CurrentRot", currentrot.toJson());
+		obj.add("CurrentPos", SaveUtils.saveV3DJson(currentpos));
+		if(!currentrot.isNull()) obj.add("CurrentRot", currentrot.toJson());
 		//
 		return obj;
 	}
 
-	public ItemStack newItemStack(){
-		ItemStack stack = this.type.getNewStack().local();
-		stack.setTagCompound(this.write(new TagCWI()).local());
-		return stack;
-	}
-
-	public Pos getInstalledPos(){
+	public V3D getInstalledPos(){
 		return currentpos;
 	}
 	
-	public void setInstalledPos(Pos pos){
+	public void setInstalledPos(V3D pos){
 		this.currentpos = pos;
 	}
 
@@ -124,8 +114,8 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		currentrot = rot;
 	}
 
-	public void setInstalledOnSwivelPoint(String rotpoint){
-		this.rotpoint = rotpoint;
+	public void setInstalledOnSwivelPoint(String newpoint){
+		rotpoint = newpoint;
 	}
 	
 	public String getSwivelPointInstalledOn(){
@@ -148,8 +138,8 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		return (F)functions.get(id);
 	}
 	
-	public <F extends PartFunction> F getFunction(ResourceLocation resloc){
-		return this.getFunction(resloc.toString());
+	public <F extends PartFunction> F getFunction(IDL idl){
+		return this.getFunction(idl.toString());
 	}
 
 	public boolean hasFunction(String string){

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.handler;
 import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -10,7 +11,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.world.MessageSender;
 
 public class TireInstallationHandler extends PartInstallHandler {
@@ -77,7 +77,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
 		String whcat = cat.split(":")[0];
-		part.setInstalledPos(new Pos(data.getWheelSlots().get(whcat).position));
+		part.setInstalledPos(data.getWheelSlots().get(whcat).position);
 		{
 			PartData wheel = data.getPart(whcat);
 			WheelFunction func = wheel.getFunction("fvtm:wheel");
@@ -88,8 +88,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 			if(func != null) func.setWheel(whcat, data.getWheelSlots().get(whcat));
 		}
 		TireData idata = part.getType().getInstallHandlerData();
-		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).toV3D());
+		data.getWheelPositions().put(cat, part.getInstalledPos().add(0, -idata.outer_radius, ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)));
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		sender.send("handler.install.fvtm.tire.success");
 		return true;
@@ -108,7 +107,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0));
+		part.setInstalledPos(new V3D(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
 		sender.send("handler.deinstall.fvtm.tire.success");

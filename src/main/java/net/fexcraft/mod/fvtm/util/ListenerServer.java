@@ -50,7 +50,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 					boolean valid = oldpart.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallHandlerData()).hotswap;
 					//TODO if(valid && entity.getVehicleData().deinstallPart(Command.OTHER ? player : null, slot, true)){
 					if(valid && entity.getVehicleData().deinstallPart(null, slot, true)){
-						player.addItemStackToInventory(oldpart.newItemStack());
+						player.addItemStackToInventory(oldpart.getNewStack().local());
 					}
 					else return;
 				}

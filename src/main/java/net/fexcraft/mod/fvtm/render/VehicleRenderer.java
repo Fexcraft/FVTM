@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.util.GLUtils112.translate;
+import static net.fexcraft.mod.fvtm.util.GLUtils112.translateR;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -9,9 +11,9 @@ import java.util.Map.Entry;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -132,11 +134,11 @@ public class VehicleRenderer {
 		GL11.glRotatef(180f, 0f, 0f, 1f);
 		for(Entry<String, PartData> entry : parts){
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
-			entry.getValue().getInstalledPos().translate();
+			translate(entry.getValue().getInstalledPos());
 			entry.getValue().getInstalledRot().rotate112();
 			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle, cache, entry.getValue(), entry.getKey(), false));
 			entry.getValue().getInstalledRot().rotate112R();
-			entry.getValue().getInstalledPos().translateR();
+			translateR(entry.getValue().getInstalledPos());
 		}
 		GL11.glRotatef(-180f, 0f, 0f, 1f);
 		for(SwivelPoint sub : point.subs) renderPoint(sub, vehicle, data, cache, ticks);

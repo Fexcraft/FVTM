@@ -87,7 +87,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			}
 		}
 		//
-		texture.load(new TagCWI(compound), type);
+		texture.load(new TagCWI(compound));
 		inventory.load(new TagCWI(compound), "Inventory");
 		lock.load(new TagCWI(compound));
 		return this;

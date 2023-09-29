@@ -1,5 +1,6 @@
 package net.fexcraft.mod.uni.impl;
 
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -16,6 +17,11 @@ public class SWI extends StackWrapper {
 	public SWI(ItemWrapper item){
 		super(item);
 		stack = new ItemStack((Item)item.direct());
+	}
+
+	public SWI(ItemStack is){
+		super(FvtmResources.INSTANCE.getItemWrapper(is.getItem().getRegistryName().toString()));
+		stack = is;
 	}
 
 	@Override

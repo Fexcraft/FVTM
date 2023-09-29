@@ -6,16 +6,19 @@ import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,12 +72,12 @@ public class SeatCache {
 	public boolean processInteract(EntityPlayer player, EnumHand hand){
         if(vehicle.world.isRemote){ return false; }
         ItemStack stack = player.getHeldItem(hand);
-        if(Lockable.isKey(stack.getItem())){
-        	Lockable.toggle(vehicle.getVehicleData(), player, stack);
+        if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
+			vehicle.getVehicleData().getLock().toggle(new MessageSenderI(player), new SWI(stack));
         	vehicle.sendLockStateUpdate();
         	return true;
         }
-        if(vehicle.getVehicleData().isLocked()){
+        if(vehicle.getVehicleData().getLock().isLocked()){
             Print.chat(player, "Vehicle is Locked.");
             return true;
         }

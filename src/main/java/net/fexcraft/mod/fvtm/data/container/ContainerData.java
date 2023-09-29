@@ -4,7 +4,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -20,13 +19,12 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ContainerData extends DataCore<Container, ContainerData> implements Colorable, Lockable, TextureUser {
+public class ContainerData extends DataCore<Container, ContainerData> implements Colorable, TextureUser {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected Textureable texture;
-	protected String lockcode;
-	protected boolean locked;
 	private InvHandler inventory;
+	protected Lockable lock;
 	
 	public ContainerData(Container type){
 		super(type);
@@ -52,19 +50,8 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		return channels;
 	}
 
-	@Override
-	public boolean isLocked(){
-		return locked;
-	}
-
-	@Override
-	public String getLockCode(){
-		return lockcode;
-	}
-
-	@Override
-	public void setLocked(Boolean bool){
-		locked = bool == null ? !locked : bool;
+	public Lockable getLock(){
+		return lock;
 	}
 
 	public ItemStack newItemStack(){
@@ -82,8 +69,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		}
 		texture.save(new TagCWI(compound));
 		inventory.save(new TagCWI(compound), "Inventory");
-		compound.setBoolean("Locked", locked);
-		if(lockcode != null) compound.setString("LockCode", lockcode);
+		lock.save(new TagCWI(compound));
 		return compound;
 	}
 
@@ -103,8 +89,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		//
 		texture.load(new TagCWI(compound), type);
 		inventory.load(new TagCWI(compound), "Inventory");
-		this.locked = compound.getBoolean("Locked");
-		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
+		lock.load(new TagCWI(compound));
 		return this;
 	}
 

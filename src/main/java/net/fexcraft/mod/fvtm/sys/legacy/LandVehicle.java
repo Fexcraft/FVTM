@@ -20,6 +20,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -55,6 +56,8 @@ import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
@@ -570,16 +573,16 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(isDead || hand == EnumHand.OFF_HAND){ return false; }
         ItemStack stack = player.getHeldItem(hand);
         if(world.isRemote){
-        	if((!stack.isEmpty() && stack.getItem() instanceof PartItem == false) || Lockable.isKey(stack.getItem())) return true;
-            if(vehicle.isLocked()){
+        	if((!stack.isEmpty() && stack.getItem() instanceof PartItem == false) || Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))) return true;
+            if(vehicle.getLock().isLocked()){
             	Print.chat(player, "Vehicle is locked.");
             	return true;
             }
         	ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
         	return true;
         }
-        if(Lockable.isKey(stack.getItem())){
-        	Lockable.toggle(vehicle, player, stack);
+		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
+			vehicle.getLock().toggle(new MessageSenderI(player), new SWI(stack));
         	this.sendLockStateUpdate();
         	return true;
         }
@@ -620,7 +623,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
         }
-        if(vehicle.isLocked()){
+        if(vehicle.getLock().isLocked()){
         	Print.chat(player, "Vehicle is locked.");
         	return true;
         }
@@ -1013,7 +1016,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         if(source.damageType.equals("player") && getDriver() == null){
         	//if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
-            if(vehicle.isLocked()){
+            if(vehicle.getLock().isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock if you want to remove it.");
                 return false;
             }

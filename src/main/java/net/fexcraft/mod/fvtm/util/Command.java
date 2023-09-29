@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -136,7 +137,7 @@ public class Command extends CommandBase {
             		if(player.isRiding() && player.getRidingEntity() instanceof GenericVehicle){
             			GenericVehicle ent = (GenericVehicle)player.getRidingEntity();
             			VehicleData data = ent.getVehicleData();
-            			if(data.isLocked()){
+            			if(data.getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Vehicle first.");
             			}
             			else if(!ent.getSeatOf(player).seatdata.driver){
@@ -146,7 +147,7 @@ public class Command extends CommandBase {
                     		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
             			}
             			else{
-            				giveKeyItem(player, data.getType().getKeyType().local(), data.getLockCode());
+            				giveKeyItem(player, data.getType().getKeyType().local(), data.getLock().getCode());
             				Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
             				attr.set(attr.asInteger() + 1);
             			}
@@ -154,14 +155,14 @@ public class Command extends CommandBase {
             		else if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
             			ItemStack stack = player.getHeldItemMainhand();
             			VehicleItem item = (VehicleItem)stack.getItem();
-            			if(item.getData(stack).isLocked()){
+            			if(item.getData(stack).getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Container first.");
             			}
             			else if(item.getData(stack).getAttributeInteger("generated_keys", 0) >= item.getContent().getMaxKeys()){
                     		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
             			}
             			else{
-            				giveKeyItem(player, item.getContent().getKeyType().local(), item.getData(stack).getLockCode());
+            				giveKeyItem(player, item.getContent().getKeyType().local(), item.getData(stack).getLock().getCode());
             				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
             				attr.set(attr.asInteger() + 1);
             			}
@@ -174,11 +175,11 @@ public class Command extends CommandBase {
             		if(player.getHeldItemMainhand().getItem() instanceof ContainerItem){
             			ItemStack stack = player.getHeldItemMainhand();
             			ContainerItem item = (ContainerItem)stack.getItem();
-            			if(item.getData(stack).isLocked()){
+            			if(item.getData(stack).getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Container first.");
             			}
             			else{
-            				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLockCode());
+            				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLock().getCode());
             			}
             		}
             		else{
@@ -438,9 +439,9 @@ public class Command extends CommandBase {
 		}
 	}
 
-	private Item giveKeyItem(EntityPlayer player, ResourceLocation keytype, String lockcode){
-		Item ki = Item.REGISTRY.getObject(keytype);
-		if(ki == null) ki = Item.REGISTRY.getObject(Lockable.DEFAULT_KEY);
+	private Item giveKeyItem(EntityPlayer player, IDL keytype, String lockcode){
+		Item ki = Item.REGISTRY.getObject(keytype.local());
+		if(ki == null) ki = Item.REGISTRY.getObject(Lockable.DEFAULT_KEY.local());
 		if(ki == null){
 			Print.chat(player, "&cKey item and replacement not found.");
 			Print.chat(player, "&ePlease make sure you have at least GEP installed.");

@@ -147,7 +147,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					container.setTitleText("tile.fvtm.constructor.texture.invalid_supplied_id", RGB.RED);
 					return;
 				}
-				textur.getTexture().setSelectedTexture(textur.getTexHolder(), i, null, false);
+				textur.getTexture().setSelectedTexture(i, null, false);
 				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
@@ -161,7 +161,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					return;
 				}
 				//TODO check if custom textures are allowed;
-				textur.getTexture().setSelectedTexture(textur.getTexHolder(), -1, value, external);
+				textur.getTexture().setSelectedTexture(-1, value, external);
 				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}

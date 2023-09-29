@@ -65,7 +65,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 
 	@Override
 	public BlockData read(NBTTagCompound compound){
-		texture.load(new TagCWI(compound), type);
+		texture.load(new TagCWI(compound));
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");

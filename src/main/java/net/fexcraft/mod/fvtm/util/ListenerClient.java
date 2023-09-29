@@ -51,7 +51,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 			case "lock_state":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null || ent instanceof VehicleEntity) return;
-				((VehicleEntity)ent).getVehicleData().setLocked(packet.nbt.getBoolean("state"));
+				((VehicleEntity)ent).getVehicleData().getLock().setLocked(packet.nbt.getBoolean("state"));
 				return;
 			}
 			case "ts_ck_sync":{

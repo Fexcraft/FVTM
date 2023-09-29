@@ -58,7 +58,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         if(data.getInventory().getFilter() != null){
             tooltip.add(Formatter.format("&9Content Filter: &7" + data.getInventory().getFilter().id()));
         }
-    	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLockCode()));
+    	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLock().getCode()));
     }
 
 	private String getTexTitle(ContainerData data){

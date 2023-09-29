@@ -51,22 +51,22 @@ import net.minecraft.util.SoundEvent;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class VehicleData extends ContentData<Vehicle, VehicleData> implements Colorable, Soundable, TextureUser {
-	
+
+	public HashMap<String, ArrayList<Entry<String, PartData>>> sorted_parts = new HashMap<>();
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected Textureable texture;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 	protected TreeMap<String, V3D> wheelpos = new TreeMap<>();
-	protected ArrayList<Seat> seats = new ArrayList<>();
-	protected ArrayList<String> inventories = new ArrayList<>();
-	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
-	protected V3D front_conn, rear_conn;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
-	protected TreeMap<String, PartSlots> psproviders = new TreeMap<>();
-	public HashMap<String, ArrayList<Entry<String, PartData>>> sorted_parts = new HashMap<>();
+	protected TreeMap<String, PartSlots> partproviders = new TreeMap<>();
+	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
+	protected ArrayList<String> inventories = new ArrayList<>();
+	protected ArrayList<Seat> seats = new ArrayList<>();
+	protected V3D front_conn, rear_conn;
 	protected SwivelPoint rootpoint;
+	protected Textureable texture;
 	protected Lockable lock;
 	protected String displayname;
 
@@ -82,7 +82,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			attributes.put(copy.id, copy);
 		}
 		for(Entry<String, WheelSlot> entry: type.getWheelPositions().entrySet()){
-			this.wheels.put(entry.getKey(), entry.getValue().copy(null));
+			wheels.put(entry.getKey(), entry.getValue().copy(null));
 		}
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
@@ -94,7 +94,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 				try{
 					Part part = PARTS.get(entry.getValue());
 					if(part == null) continue;
-					this.installPart(null, new PartData(part), entry.getKey(), false);
+					installPart(null, new PartData(part), entry.getKey(), false);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -104,7 +104,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
-		psproviders.put(VEHPARTSLOTS, type.getPartSlots());
+		partproviders.put(VEHPARTSLOTS, type.getPartSlots());
 	}
 
 	@Override
@@ -201,21 +201,14 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
 		}
 		//
-		texture.load(compound, type);
-		//
-		if(compound.has("RGBPrimary")){
-			channels.get("primary").packed = compound.getInteger("RGBPrimary");
-		}
-		if(compound.has("RGBSecondary")){
-			channels.get("secondary").packed = compound.getInteger("RGBSecondary");
-		}
+		texture.load(compound);
 		for(String str : channels.keySet()){
 			if(compound.has("RGB_" + str)){
 				channels.get(str).packed = compound.getInteger("RGB_" + str);
 			}
 		}
 		//
-		this.refreshModificableDataByParts();
+		refreshModificableDataByParts();
 		//
 		if(compound.has("WheelPos")){
 			TagCW cwp = compound.getCompound("WheelPos");
@@ -247,14 +240,13 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		lock.load(compound);
-		this.front_conn = compound.getV3D("FrontConnector");
+		front_conn = compound.getV3D("FrontConnector");
 		if(front_conn == null) front_conn = type.getDefaultConnectorFront();
-		this.rear_conn = compound.getV3D("RearConnector");
+		rear_conn = compound.getV3D("RearConnector");
 		if(rear_conn == null) rear_conn = type.getDefaultConnectorRear();
-		//if(compound.has("CustomName")) customname = compound.getString("CustomName");
 		if(compound.has("DisplayName")) displayname = compound.getString("DisplayName");
 		//
-		/*Print.debug("read", compound);*/ return this;
+		return this;
 	}
 
 	private void refreshModificableDataByParts(){
@@ -320,12 +312,12 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			}
 		}
 		//
-		psproviders.clear();
-		if(!type.getPartSlots().isEmpty()) psproviders.put(VEHPARTSLOTS, type.getPartSlots());
+		partproviders.clear();
+		if(!type.getPartSlots().isEmpty()) partproviders.put(VEHPARTSLOTS, type.getPartSlots());
 		for(Entry<String, PartData> data : this.getParts().entrySet()){
 			if(data.getValue().hasFunction("fvtm:part_slots")){
 				PartSlots ps = data.getValue().getFunction(PartSlotsFunction.class, "fvtm:part_slots").getPartSlotss();
-				if(!ps.isEmpty()) psproviders.put(data.getKey(), ps);
+				if(!ps.isEmpty()) partproviders.put(data.getKey(), ps);
 			}
 		}
 		if(type.getModel() != null){
@@ -634,17 +626,20 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 
 	@Override
 	public SoundEvent getSoundEvent(String event){
-		Sound sound = getSound(event); return sound == null ? null : (SoundEvent)sound.event;
+		Sound sound = getSound(event);
+		return sound == null ? null : (SoundEvent)sound.event;
 	}
 
 	@Override
 	public float getSoundVolume(String event){
-		Sound sound = getSound(event); return sound == null ? 1f : sound.volume;
+		Sound sound = getSound(event);
+		return sound == null ? 1f : sound.volume;
 	}
 
 	@Override
 	public float getSoundPitch(String event){
-		Sound sound = getSound(event); return sound == null ? 1f : sound.pitch;
+		Sound sound = getSound(event);
+		return sound == null ? 1f : sound.pitch;
 	}
 
 	@Override
@@ -702,21 +697,21 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	}
 
 	public TreeMap<String, PartSlots> getPartSlotProviders(){
-		return psproviders;
+		return partproviders;
 	}
 
 	public PartSlots getPartSlotsProvider(String psp_id){
-		return psproviders.get(psp_id);
+		return partproviders.get(psp_id);
 	}
 
 	public ArrayList<PartSlot> getAllPartSlots(){
 		ArrayList<PartSlot> list = new ArrayList<>();
-		psproviders.values().forEach(val -> list.addAll(val));
+		partproviders.values().forEach(val -> list.addAll(val));
 		return list;
 	}
 
 	public boolean hasPartSlot(String str){
-		for(PartSlots slots : psproviders.values()){
+		for(PartSlots slots : partproviders.values()){
 			for(PartSlot slot : slots){
 				if(slot.category.equals(str)) return true;
 			}

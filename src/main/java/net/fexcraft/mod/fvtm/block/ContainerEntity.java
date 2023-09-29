@@ -193,7 +193,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
     }
 
     public boolean isLocked(){
-        return getContainerData().isLocked();
+        return getContainerData().getLock().isLocked();
     }
     
     @Override

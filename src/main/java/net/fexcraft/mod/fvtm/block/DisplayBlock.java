@@ -61,7 +61,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
             DisplayEntity te = (DisplayEntity) world.getTileEntity(pos);
             ItemStack stack = player.getHeldItem(hand);
             if(stack.getItem() instanceof ItemTool){
-                if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+                if(te.getVehicleData() != null && te.getVehicleData().getLock().isLocked()){
                     Print.bar(player, "VehicleData is locked.");
                 }
                 else{
@@ -72,7 +72,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
                 }
             }
             else if(stack.getItem() instanceof VehicleItem){
-                if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+                if(te.getVehicleData() != null && te.getVehicleData().getLock().isLocked()){
                     Print.bar(player, "VehicleData is locked.");
                 }
                 else{

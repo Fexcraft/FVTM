@@ -60,7 +60,6 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         for(String s : vehicle.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         VehicleData data = cache.getVehicleData();
         if(data == null) return;
-        if(data.isPreset()) tooltip.add(Formatter.format("&6Preset: &7" + data.getPreset()));
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(data.hasPart("engine")){
             tooltip.add(Formatter.format("&9Engine: &7" + data.getPart("engine").getType().getName()));

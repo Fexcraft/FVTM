@@ -41,7 +41,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected List<IDL> textures;
 	protected Model model;
 	protected ModelData modeldata;
-	protected ResourceLocation keytype;
+	protected IDL keytype;
 	protected InvHandler invtype;
 	protected ContainerType type;
 	protected ContainerItem item;
@@ -77,7 +77,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 				channels.put(entry.getKey(), new RGB(entry.getValue().getAsString()));
 			}
 		}
-		this.keytype = obj.has("KeyType") ? new ResourceLocation(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
+		keytype = obj.has("KeyType") ? IDLManager.getIDLCached(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
 		invtype = new InvHandler(InvType.parse(JsonUtil.getIfExists(obj, "InventoryType", "item"), false));
 		invtype.setCapacity(JsonUtil.getIfExists(obj, "InventorySize", invtype.type.isItem() ? 8 : 16000).intValue());
         if(invtype.type.isFluid() && obj.has("FluidType")) invtype.setArg(obj.get("FluidType").getAsString());
@@ -157,7 +157,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		return ctab;
 	}
 	
-	public ResourceLocation getKeyType(){
+	public IDL getKeyType(){
 		return keytype;
 	}
 

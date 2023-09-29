@@ -8,10 +8,13 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -152,8 +155,8 @@ public class ContainerBlock extends BlockContainer {
                 return true;
             }
             ItemStack stack = player.getHeldItem(hand);
-            if(Lockable.isKey(stack.getItem())){
-            	Lockable.toggle(te.getContainerData(), player, stack);
+            if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
+                te.getContainerData().getLock().toggle(new MessageSenderI(player), new SWI(stack));
             	return true;
             }
             if(te.isLocked()){

@@ -178,7 +178,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@Override
 	public boolean isLocked(){
-		return this.getVehicleData().isLocked();
+		return getVehicleData().getLock().isLocked();
 	}
 
     // --- CAPABILITIES --- //
@@ -187,8 +187,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
     	if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-    		if((facing == null || facing.getAxis().isVertical()) && !this.isLocked()){
-        		if(!this.getVehicleData().getInventories().isEmpty()){
+    		if((facing == null || facing.getAxis().isVertical()) && !isLocked()){
+        		if(!getVehicleData().getInventories().isEmpty()){
         			for(String inv_id : getVehicleData().getInventories()){
         				if(getVehicleData().getPart(inv_id).getFunction(InventoryFunction.class, "fvtm:inventory").isInventoryType(capability)){
         					return true;
@@ -203,7 +203,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	/** Generally in case of Inventories, it will always give you the first part which returns true to this capability. */
     @Override @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-    	if(this.hasCapability(capability, facing)){
+    	if(hasCapability(capability, facing)){
 			for(String inv_id : getVehicleData().getInventories()){
 				InventoryFunction invfunc = getVehicleData().getPart(inv_id).getFunction(InventoryFunction.class, "fvtm:inventory");
 				if(invfunc.isInventoryType(capability)){ return invfunc.getInventory(capability); }
@@ -213,7 +213,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     }
 
 	public Vehicle getVehicle(){
-		return this.getVehicleData() == null ? null : this.getVehicleData().getType();
+		return getVehicleData() == null ? null : getVehicleData().getType();
 	}
 
 	public abstract boolean isRailType();
@@ -298,7 +298,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", Resources.UTIL_LISTENER);
 		packet.setString("task", "lock_state");
-		packet.setBoolean("state", getVehicleData().isLocked());
+		packet.setBoolean("state", getVehicleData().getLock().isLocked());
 		packet.setInteger("entity", getEntityId());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
 	}

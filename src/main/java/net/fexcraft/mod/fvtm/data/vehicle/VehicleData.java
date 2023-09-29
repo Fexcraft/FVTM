@@ -12,9 +12,9 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -56,7 +56,6 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected Textureable texture;
-	protected String preset;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 	protected TreeMap<String, V3D> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
@@ -159,7 +158,6 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		lock.save(compound);
 		if(front_conn != null) compound.set("FrontConnector", front_conn);
 		if(rear_conn != null) compound.set("RearConnector", rear_conn);
-		if(preset != null) compound.set("Preset", preset);
 		if(displayname != null) compound.set("DisplayName", displayname);
 		return compound;
 	}
@@ -254,7 +252,6 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		this.rear_conn = compound.getV3D("RearConnector");
 		if(rear_conn == null) rear_conn = type.getDefaultConnectorRear();
 		//if(compound.has("CustomName")) customname = compound.getString("CustomName");
-		if(compound.has("Preset")) preset = compound.getString("Preset"); else preset = null;
 		if(compound.has("DisplayName")) displayname = compound.getString("DisplayName");
 		//
 		/*Print.debug("read", compound);*/ return this;
@@ -633,18 +630,6 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	
 	public List<Attribute<?>> getAttributes(String group){
 		return attributes.values().stream().filter(pre -> pre.group != null && pre.group.equals(group)).collect(Collectors.toList());
-	}
-	
-	public boolean isPreset(){
-		return preset != null;
-	}
-	
-	public String getPreset(){
-		return preset;
-	}
-	
-	public void setPreset(String str){
-		this.preset = str;
 	}
 
 	@Override

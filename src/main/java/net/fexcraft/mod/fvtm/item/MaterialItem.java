@@ -15,8 +15,12 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.root.Lockable.LockableItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -36,7 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class MaterialItem extends Item implements ContentItem<Material> {
+public class MaterialItem extends Item implements ContentItem<Material>, LockableItem {
 
 	private Material material;
 
@@ -61,7 +65,7 @@ public class MaterialItem extends Item implements ContentItem<Material> {
         	tooltip.add(Formatter.format("&9OreDict: &7" + material.getOreDictId()));
         }
         if(material.isVehicleKey()){
-        	tooltip.add(Formatter.format("&9LockCode: &7" + this.getLockCode(stack)));
+        	tooltip.add(Formatter.format("&9LockCode: &7" + this.getLockCode(new SWI(stack))));
         }
         if(material.isFuelContainer()){
         	tooltip.add(Formatter.format("&9Container: &7" + (material.isUniversalFuelContainer() ? "universal" : material.getFuelType() == null ? material.getFuelGroup() : material.getFuelType().getName())));
@@ -95,13 +99,6 @@ public class MaterialItem extends Item implements ContentItem<Material> {
     @Override
     public int getItemBurnTime(ItemStack stack){
     	return material.getItemBurnTime() * stack.getCount();
-    }
-    
-    public String getLockCode(ItemStack stack){
-    	if(!material.isVehicleKey()) return null;
-    	if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-    	if(!stack.getTagCompound().hasKey("LockCode")) stack.getTagCompound().setString("LockCode", Lockable.newCode());
-    	return stack.getTagCompound().getString("LockCode");
     }
     
     public Fuel getStoredFuelType(ItemStack stack){
@@ -143,6 +140,14 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 	@Override
 	public ContentType getType(){
 		return ContentType.MATERIAL;
+	}
+
+	@Override
+	public String getLockCode(StackWrapper stack){
+		if(!material.isVehicleKey()) return null;
+		if(stack.getTag().direct() == null) stack.setTag(TagCW.create());
+		if(!stack.getTag().has("LockCode")) stack.getTag().set("LockCode", Lockable.newCode());
+		return stack.getTag().getString("LockCode");
 	}
 
 }

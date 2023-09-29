@@ -50,14 +50,13 @@ import net.minecraft.util.SoundEvent;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleData extends ContentData<Vehicle, VehicleData> implements Colorable, Lockable, Soundable, TextureUser {
+public class VehicleData extends ContentData<Vehicle, VehicleData> implements Colorable, Soundable, TextureUser {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected Textureable texture;
-	protected String preset, lockcode;
-	protected boolean locked;
+	protected String preset;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 	protected TreeMap<String, V3D> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
@@ -69,6 +68,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	protected TreeMap<String, PartSlots> psproviders = new TreeMap<>();
 	public HashMap<String, ArrayList<Entry<String, PartData>>> sorted_parts = new HashMap<>();
 	protected SwivelPoint rootpoint;
+	protected Lockable lock;
 	protected String displayname;
 
 	public VehicleData(Vehicle type){
@@ -156,12 +156,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			}
 			if(!csp.empty()) compound.set("SwivelPoints", csp);
 		}
-		compound.set("Locked", locked);
+		lock.save(compound);
 		if(front_conn != null) compound.set("FrontConnector", front_conn);
 		if(rear_conn != null) compound.set("RearConnector", rear_conn);
 		if(preset != null) compound.set("Preset", preset);
 		if(displayname != null) compound.set("DisplayName", displayname);
-		if(lockcode != null) compound.set("LockCode", lockcode);
 		return compound;
 	}
 
@@ -249,7 +248,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			}
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
-		this.locked = compound.getBoolean("Locked");
+		lock.load(compound);
 		this.front_conn = compound.getV3D("FrontConnector");
 		if(front_conn == null) front_conn = type.getDefaultConnectorFront();
 		this.rear_conn = compound.getV3D("RearConnector");
@@ -257,7 +256,6 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		//if(compound.has("CustomName")) customname = compound.getString("CustomName");
 		if(compound.has("Preset")) preset = compound.getString("Preset"); else preset = null;
 		if(compound.has("DisplayName")) displayname = compound.getString("DisplayName");
-		lockcode = compound.has("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}
@@ -552,19 +550,8 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return index < 0 ? null : index >= seats.size() ? null : seats.get(index);
 	}
 
-	@Override
-	public boolean isLocked(){
-		return locked;
-	}
-
-	@Override
-	public String getLockCode(){
-		return lockcode;
-	}
-
-	@Override
-	public void setLocked(Boolean bool){
-		locked = bool == null ? !locked : bool;
+	public Lockable getLock(){
+		return lock;
 	}
 
 	public double getThrottle(){

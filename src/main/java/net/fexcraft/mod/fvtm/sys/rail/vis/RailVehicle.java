@@ -17,16 +17,19 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.function.ContainerFunction;
+import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -45,14 +48,15 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
-import net.fexcraft.mod.fvtm.function.ContainerFunction;
-import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -447,16 +451,17 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(isDead || hand == EnumHand.OFF_HAND){ return false; }
         ItemStack stack = player.getHeldItem(hand);
         if(world.isRemote){
-        	if((!stack.isEmpty() && stack.getItem() instanceof PartItem == false) || Lockable.isKey(stack.getItem())) return true;
-            if(rek.data().isLocked()){
+        	if((!stack.isEmpty() && stack.getItem() instanceof PartItem == false) || Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))) return true;
+            if(rek.data().getLock().isLocked()){
             	Print.chat(player, "Vehicle is locked.");
             	return true;
             }
         	ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
         	return true;
         }
-        if(Lockable.isKey(stack.getItem())){
-        	Lockable.toggle(rek.data(), player, stack);
+		ItemWrapper item = FvtmRegistry.getItem(stack.getItem().getRegistryName().toString());
+        if(Lockable.isKey(item)){
+			rek.data().getLock().toggle(new MessageSenderI(player), new SWI(stack));
         	this.sendLockStateUpdate();
         	return true;
         }
@@ -482,7 +487,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
         }
-        if(rek.data().isLocked()){
+        if(rek.data().getLock().isLocked()){
         	Print.chat(player, "Vehicle is locked.");
         	return true;
         }
@@ -598,7 +603,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(world.isRemote || isDead){ return true; }
         if(source.damageType.equals("player") && getDriver() == null){
         	//if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
-            if(rek.data().isLocked()){
+            if(rek.data().getLock().isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
                 return false;
             }

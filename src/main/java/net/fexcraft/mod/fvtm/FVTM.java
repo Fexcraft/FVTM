@@ -6,18 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
-import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
-import net.fexcraft.lib.mc.registry.FCLRegistry;
-import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
-import net.fexcraft.mod.fvtm.block.DisplayBlock;
-import net.fexcraft.mod.fvtm.block.RailEntity;
-import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
@@ -41,13 +32,6 @@ import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
-import net.fexcraft.mod.fvtm.item.JunctionToolItem;
-import net.fexcraft.mod.fvtm.item.RoadToolItem;
-import net.fexcraft.mod.fvtm.item.SignalItem0;
-import net.fexcraft.mod.fvtm.item.StreetSignItem;
-import net.fexcraft.mod.fvtm.item.TrafficSignItem;
-import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.*;
@@ -130,7 +114,6 @@ public class FVTM {
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
-	private static AutoRegisterer REGISTERER;
 	private static Resources RESOURCES;
 
 	@Mod.EventHandler
@@ -176,10 +159,7 @@ public class FVTM {
 			ConditionRegistry.BUILDER = CondBuilder.run();
 		}
 		//
-		REGISTERER = new AutoRegisterer(MODID);
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
-		SimpleUpdateHandler.register(MODID, 1, VERSION);
-		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 		//
 		EntitySystem.add(new LegacySpawnSystem());
 		EntitySystem.add(new RailSpawnSystem());
@@ -190,7 +170,7 @@ public class FVTM {
 		GameRegistry.registerTileEntity(SwitchTileEntity.class, new ResourceLocation("fvtm:rail_switch"));
 		GameRegistry.registerTileEntity(MultiblockTileEntity.class, new ResourceLocation("fvtm:multiblock"));
 		GameRegistry.registerTileEntity(MultiblockTickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
-		GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
+		//GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
@@ -262,7 +242,7 @@ public class FVTM {
 		Perms.register();
 		if(event.getSide().isClient()){
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
-			ConstructorBlock.INSTANCE.setCreativeTab(tab);
+			/*ConstructorBlock.INSTANCE.setCreativeTab(tab);
 			ConstCenterBlock.INSTANCE.setCreativeTab(tab);
 			DisplayBlock.INSTANCE.setCreativeTab(tab);
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
@@ -274,7 +254,7 @@ public class FVTM {
 			RoadToolItem.INSTANCE.setCreativeTab(tab);
 			Asphalt.INSTANCE.setCreativeTab(tab);
 			DecorationItem.INSTANCE.setCreativeTab(tab);
-			VPInfo.INSTANCE.setCreativeTab(tab);
+			VPInfo.INSTANCE.setCreativeTab(tab);*/
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
@@ -333,10 +313,6 @@ public class FVTM {
 
 	public static FVTM getInstance(){
 		return INSTANCE;
-	}
-
-	public static AutoRegisterer getRegisterer(){
-		return REGISTERER;
 	}
 	
 	public static Resources getResources(){

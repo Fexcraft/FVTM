@@ -2,11 +2,9 @@ package net.fexcraft.mod.fvtm.block;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -27,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "constructor_lift", tileentity = ConstCenterEntity.class)
+//@fBlock(modid = FVTM.MODID, name = "constructor_lift", tileentity = ConstCenterEntity.class)
 public class ConstCenterBlock extends Block implements ITileEntityProvider {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);

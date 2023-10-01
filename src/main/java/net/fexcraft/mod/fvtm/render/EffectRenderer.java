@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
-import static net.fexcraft.mod.fvtm.data.part.PartSlots.VEHPARTSLOTS;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 
@@ -39,7 +38,7 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
@@ -129,10 +128,10 @@ public class EffectRenderer {
 			if(vehicle.getVehicleData().getAttribute("collision_range").asFloat() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
-			if(part.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallHandlerData()).hotswap){
+			if(part.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallHandlerData()).swappable){
 				preMeshCalls();
 				for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-					V3D pos = ps.getKey().equals(VEHPARTSLOTS) ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+					V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
 					point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 					for(int i = 0; i < ps.getValue().size(); i++){
 						String type = ps.getValue().get(i).type;
@@ -171,7 +170,7 @@ public class EffectRenderer {
 		else{
 			preMeshCalls();
 			for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-				V3D pos = ps.getKey().equals(VEHPARTSLOTS) ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
 				point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 				for(int i = 0; i < ps.getValue().size(); i++){
 					V3D pes = pos.add(ps.getValue().get(i).pos);

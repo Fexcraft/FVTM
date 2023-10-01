@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.mod.fvtm.block.generated.G_POSTLIKE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -31,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = net.fexcraft.mod.fvtm.FVTM.MODID, name = "streetpost")
+//@fBlock(modid = net.fexcraft.mod.fvtm.FVTM.MODID, name = "streetpost")
 public class StreetPost extends BlockFence {
 
 	public StreetPost(){

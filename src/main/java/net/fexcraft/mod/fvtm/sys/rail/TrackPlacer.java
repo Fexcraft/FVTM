@@ -1,8 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAIL_BLOCKS;
-import static net.fexcraft.mod.fvtm.block.RailBlock.HEIGHT;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -11,8 +8,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.RailBlock;
-import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -40,7 +35,7 @@ public class TrackPlacer {
 	private BlockPos pos;
 	private boolean register;
 	private boolean useitems;
-	private boolean blocks;
+	//private boolean blocks;
 	
 	public static TrackPlacer set(ICommandSender sender, EntityPlayer player, World world, BlockPos pos, Track track){
 		TrackPlacer placer = new TrackPlacer();
@@ -67,7 +62,7 @@ public class TrackPlacer {
 		return this;
 	}
 	
-	public TrackPlacer blocks(){
+	/*public TrackPlacer blocks(){
 		blocks = true;
 		return this;
 	}
@@ -75,14 +70,14 @@ public class TrackPlacer {
 	public TrackPlacer blocks(boolean bool){
 		blocks = bool;
 		return this;
-	}
+	}*/
 	
 	public boolean result(){
 		RailGauge type = track.getGauge();
 		float width = type.getBlockWidth();
 		boolean creative = player != null && player.capabilities.isCreativeMode;
-		boolean regblocks = this.blocks && !DISABLE_RAIL_BLOCKS;
-		if(register ? creative ? regblocks : useitems : (!track.blockless && regblocks)){
+		boolean regblocks = false;//this.blocks;// && !DISABLE_RAIL_BLOCKS;
+		if(register ? creative ? regblocks : useitems : (/*!track.blockless &&*/ regblocks)){
 			double angle, half = (width * 0.5f) - 0.25f;
 			ArrayList<GridV3D> path = new ArrayList<>();
 			V3D last, vec = track.getVectorPosition0(0.001f, false);
@@ -108,7 +103,7 @@ public class TrackPlacer {
 				for(GridV3D v : path){
 					height = v.y;
 					state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
-					if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
+					if(!state.getBlock().isReplaceable(world, blk)){
 			            if(player != null) Print.chatbar(sender, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
 			            return false;
 					}
@@ -119,14 +114,14 @@ public class TrackPlacer {
 			for(GridV3D v : path){
 				height = v.y;
 				state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
-				rb = state.getBlock() == RailBlock.INSTANCE;
-				if(register ? true : rb){
+				//rb = state.getBlock() == RailBlock.INSTANCE;
+				if(register){// ? true : rb){
 					if(!blocks.containsKey(blk)) blocks.put(blk, height);
 				}
 				state = world.getBlockState(blk = blk.down());
-				if(state.getBlock() instanceof RailBlock){
+				/*if(state.getBlock() instanceof RailBlock){
 					if(!blocks.containsKey(blk)) blocks.put(blk, -1);
-				}
+				}*/
 			}
 			if(useitems && !creative && getRailsOfTypeInInv(type, player) < blocks.size()){
 				Print.chatbar(sender, String.format("Not enough rails in inventory! Needed: %s", blocks.size()));
@@ -145,8 +140,8 @@ public class TrackPlacer {
 				height = entry.getValue();
 				state = world.getBlockState(blk);
 				HashMap<PathKey, Integer> tracks = null;
-				RailEntity tile = (RailEntity)world.getTileEntity(blk);
-				if(register && (state.getBlock() != RailBlock.INSTANCE || state.getValue(HEIGHT) < (height == 0 ? 16 : height))){
+				//RailEntity tile = (RailEntity)world.getTileEntity(blk);
+				/*if(register && (state.getBlock() != RailBlock.INSTANCE || state.getValue(HEIGHT) < (height == 0 ? 16 : height))){
 					if(state.getBlock() == RailBlock.INSTANCE){
 						tracks = tile.getTracks();
 					}
@@ -155,9 +150,9 @@ public class TrackPlacer {
 						tile = (RailEntity)world.getTileEntity(blk);
 						tile.getTracks().putAll(tracks);
 					}
-				}
-				tile = (RailEntity)world.getTileEntity(blk);
-				if(tile != null){
+				}*/
+				//tile = (RailEntity)world.getTileEntity(blk);
+				/*if(tile != null){
 					if(register && height == -1 && state.getValue(HEIGHT) > 0){
 						height = 0;
 						tracks = tile.getTracks();
@@ -166,7 +161,7 @@ public class TrackPlacer {
 						tile.getTracks().putAll(tracks);
 					}
 					regTile(world, tile, track, height, register);
-				}
+				}*/
 				if(register && useitems && !creative){
 					consumeOneItem(type, player);
 					track.items++;
@@ -225,9 +220,9 @@ public class TrackPlacer {
 		}
 	}
 
-	private static void regTile(World world, RailEntity tile, Track track, int height, boolean reg){
+	/*private static void regTile(World world, RailEntity tile, Track track, int height, boolean reg){
 		if(reg) tile.addTrack(track, height);
 		else tile.remTrack(track, world);
-	}
+	}*/
 
 }

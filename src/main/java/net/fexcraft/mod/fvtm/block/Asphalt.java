@@ -6,10 +6,8 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -33,7 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@fBlock(modid = FVTM.MODID, name = "asphalt", item = Asphalt.AsphaltItem.class, variants = 16)
+//@fBlock(modid = FVTM.MODID, name = "asphalt", item = Asphalt.AsphaltItem.class, variants = 16)
 public class Asphalt extends Block {
 	
 	public static Asphalt INSTANCE;

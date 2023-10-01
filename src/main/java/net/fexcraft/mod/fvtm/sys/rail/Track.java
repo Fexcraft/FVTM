@@ -1,14 +1,13 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,7 +27,6 @@ public class Track extends Path {
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned restmodel;
 	public String preset;
-	public boolean blockless;
 	public int items;
 	
 	public Track(Junction junction, GridV3D[] gridvecs, GridV3D vector, RailGauge gauge){
@@ -73,7 +71,7 @@ public class Track extends Path {
 			railmodel = null; restmodel = null;
 		}
 		if(compound.hasKey("preset")) preset = compound.getString("preset");
-		if(compound.hasKey("blockless")) blockless = compound.getBoolean("blockless");
+		//if(compound.hasKey("blockless")) blockless = compound.getBoolean("blockless");
 		if(compound.hasKey("items")) items = compound.getInteger("items");
 		return this;
 	}
@@ -89,7 +87,7 @@ public class Track extends Path {
 		if(unit != null) compound.setLong("section", unit.getSectionId());
 		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		if(preset != null) compound.setString("preset", preset);
-		if(blockless) compound.setBoolean("blockless", true);
+		//if(blockless) compound.setBoolean("blockless", true);
 		if(items > 0) compound.setInteger("items", items);
 		return compound;
 	}
@@ -98,7 +96,7 @@ public class Track extends Path {
 		Track track = super.createOppositeCopy(new Track(junction));
 		track.unit = unit;
 		track.gauge = gauge;
-		track.blockless = blockless;
+		//track.blockless = blockless;
 		track.preset = preset;
 		track.items = items;
 		return track;

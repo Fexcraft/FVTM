@@ -3,8 +3,6 @@ package net.fexcraft.mod.fvtm.block;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_PARTINSTALLER;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -22,24 +20,28 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-//@fBlock(modid = FVTM.MODID, name = "constructor", tileentity = ConstructorEntity.class)
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class ConstructorBlock extends Block implements ITileEntityProvider {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-    public static ConstructorBlock INSTANCE;
+	public static ConstructorBlock INSTANCE;
+	public static ItemBlock ITEM;
 
     public ConstructorBlock(){
-        super(Material.ANVIL, MapColor.OBSIDIAN); INSTANCE = this;
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        super(Material.ANVIL, MapColor.OBSIDIAN);
+		setRegistryName("fvtm:constructor");
+		setTranslationKey(getRegistryName().toString());
+        setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
@@ -48,23 +50,9 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public boolean isFullBlock(IBlockState state){ return true; }
-
-    @Override
-    public boolean isFullCube(IBlockState state){ return true; }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state){ return false; }
-
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return FULL_BLOCK_AABB;
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
-        return FULL_BLOCK_AABB.offset(pos);
-    }
+    public boolean isOpaqueCube(IBlockState state){
+		return false;
+	}
 
     @Override
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
@@ -85,17 +73,12 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
 
     @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).getIndex();
     }
 
     @Override
     protected BlockStateContainer createBlockState(){
         return new BlockStateContainer(this, new IProperty[]{ FACING });
-    }
-
-    @Override
-    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack){
-        super.harvestBlock(worldIn, player, pos, state, (TileEntity)null, stack);
     }
 
 	@Override
@@ -139,12 +122,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	Print.chat(player, "Block put into Constructor.");
         }
         //
-        /*else*/ return true;
-    }
-
-    @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state){
-        super.breakBlock(world, pos, state);
+        return true;
     }
 
 }

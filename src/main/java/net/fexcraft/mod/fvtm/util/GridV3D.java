@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +41,7 @@ public class GridV3D implements Comparable<GridV3D> {
 	private static Vec3d validatePos(World world, Vec3d pos){
 		if(world != null){
 			IBlockState state = world.getBlockState(new BlockPos(pos));
-			if(state.getBlock() instanceof RailBlock) pos = new Vec3d(pos.x, (int)pos.y, pos.z);
+			//if(state.getBlock() instanceof RailBlock) pos = new Vec3d(pos.x, (int)pos.y, pos.z);
 		}
 		return pos;
 	}

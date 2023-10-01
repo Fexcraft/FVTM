@@ -31,7 +31,6 @@ public class InternalAddon extends AddonOld {
 		update_id = "null";//not checking for updates, since this is the internal Addon, FVTM does that
 		url = "https://fexcraft.net/minecraft/mod?id=fvtm";
 		license = "https://fexcraft.net/license?id=mods";
-		registerer = FVTM.getRegisterer();
 		if(Static.side().isClient()){
 			//(creativetabs = new HashMap<>()).put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 		}

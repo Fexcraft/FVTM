@@ -6,14 +6,10 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.fexcraft.lib.common.math.V3D;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
@@ -40,6 +36,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
 public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	
@@ -121,7 +118,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		for(int i = 255; i > 0; i--){
 			BlockPos pos = new BlockPos(x, i, z);
 			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock() instanceof RailBlock) continue;
+			//if(state.getBlock() instanceof RailBlock) continue;
 			if(isSolid(state, world, pos) || isWater(state.getBlock())){
 				return pos;
 			}

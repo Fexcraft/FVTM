@@ -13,9 +13,12 @@ import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -26,6 +29,7 @@ import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -47,6 +51,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -308,6 +313,21 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public IDL getExternalTexture(String custom) {
 		return ExternalTextureLoader.get(custom);
+	}
+
+	@Override
+	public void registerFvtmBlocks(){
+		ConstructorBlock.INSTANCE = new ConstructorBlock();
+		ConstructorBlock.ITEM = new ItemBlock16(ConstructorBlock.INSTANCE);
+		ConstructorBlock.ITEM.setRegistryName(ConstructorBlock.INSTANCE.getRegistryName());
+		ConstructorBlock.ITEM.setTranslationKey(ConstructorBlock.INSTANCE.getTranslationKey());
+		GameRegistry.registerTileEntity(ConstructorEntity.class, new ResourceLocation("fvtm:constructor"));
+		//
+	}
+
+	@Override
+	public void registerFvtmItems(){
+		DecorationItem.INSTANCE = new DecorationItem();
 	}
 
 	@SideOnly(Side.CLIENT)

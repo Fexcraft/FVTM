@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.block;
 
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
-import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.minecraft.block.Block;
@@ -20,7 +19,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "vpinfo")
+//@fBlock(modid = FVTM.MODID, name = "vpinfo")
 public class VPInfo extends Block {
 	
 	public static VPInfo INSTANCE = null;

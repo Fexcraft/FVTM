@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.PARTS;
-import static net.fexcraft.mod.fvtm.data.part.PartSlots.VEHPARTSLOTS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +103,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
-		partproviders.put(VEHPARTSLOTS, type.getPartSlots());
+		partproviders.put("vehicle", type.getPartSlots());
 	}
 
 	@Override
@@ -250,7 +249,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	}
 
 	private void refreshModificableDataByParts(){
-		this.wheels.clear();
+		wheels.clear();
 		type.getWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(null)));
 		for(PartData part : parts.values()){
 			if(part.hasFunction("fvtm:wheel_positions")){
@@ -259,7 +258,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			}
 		}
 		//
-		this.seats.clear();
+		seats.clear();
 		for(PartData part : parts.values()){
 			if(!part.hasFunction("fvtm:seats")) continue;
 			for(Seat seat : part.getFunction(SeatsFunction.class, "fvtm:seats").getSeats()){
@@ -313,7 +312,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		//
 		partproviders.clear();
-		if(!type.getPartSlots().isEmpty()) partproviders.put(VEHPARTSLOTS, type.getPartSlots());
+		if(!type.getPartSlots().isEmpty()) partproviders.put("vehicle", type.getPartSlots());
 		for(Entry<String, PartData> data : this.getParts().entrySet()){
 			if(data.getValue().hasFunction("fvtm:part_slots")){
 				PartSlots ps = data.getValue().getFunction(PartSlotsFunction.class, "fvtm:part_slots").getPartSlotss();
@@ -378,14 +377,13 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	}
 	
 	/** @return null if installed successfully. */
-	public PartData installPart(MessageSender engineer, PartData data, String category, boolean hotinst){
-		if(!data.getType().getInstallHandler().validInstall(engineer, data, category, this)) return data;
-		//if(parts.containsKey(category)) return data;//<- actually, let's let the handler check that
+	public PartData installPart(MessageSender engineer, PartData data, String category, boolean swap){
+		if(!data.getType().getInstallHandler().validInstall(engineer, data, category, this, swap)) return data;
 		if(data.getType().getInstallHandler().processInstall(engineer, data, category, this)){
 			this.insertSwivelPointsFromPart(data, category);
 			this.insertAttributesFromPart(data, category);
 			//
-			if(!hotinst){
+			if(!swap){
 				this.resetAttributes();
 				//TODO replace with static modifiers
 				//this.updateAttributes(null, AttrUpdate.INITIAL);
@@ -393,18 +391,19 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			//
 			this.refreshModificableDataByParts();
 			return null;
-		} else return data;
+		}
+		return data;
 	}
 
-	public boolean deinstallPart(MessageSender sender, String category, boolean hotinst){
+	public boolean deinstallPart(MessageSender sender, String category, boolean swap){
 		PartData part = this.getPart(category);
 		//TODO if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
-		if(!part.getType().getInstallHandler().validUninstall(sender, part, category, this)) return false;
+		if(!part.getType().getInstallHandler().validUninstall(sender, part, category, this, swap)) return false;
 		if(part.getType().getInstallHandler().processUninstall(sender, part, category, this)){
 			this.removeSwivelPointsFromPart(part, category);
 			this.removeAttributesFromPart(part, category);
 			//
-			if(!hotinst){
+			if(!swap){
 				this.resetAttributes();
 				//TODO replace with static modifiers
 				//this.updateAttributes(null, AttrUpdate.INITIAL);

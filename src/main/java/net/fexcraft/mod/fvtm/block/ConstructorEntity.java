@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.MessageSenderI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.item.EntityItem;
@@ -92,40 +93,25 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				}
 			}
 			case "constructor_disconnect":{
-				if(this.center != null){
+				if(center != null){
 					ConstCenterEntity tile = (ConstCenterEntity)world.getTileEntity(center);
 					if(tile != null) tile.setLinkPos(null, true);
-				} this.setCenterPos(null);
+				}
+				setCenterPos(null);
 				container.setTitleText("tile.fvtm.constructor.constructor_disconnect.disconnected", RGB.BLACK);
 				return;
 			}
 			case "part_install":{
 				if(nopar(container)) return; if(noveh(container)) return;
-				boolean bool = packet.getBoolean("custom_category");
 				PartData data = this.getPartData(); String cat = packet.getString("category");
-				if(bool && !data.getType().getInstallHandler().allowsCustomCategory(data)){
-					container.setTitleText("tile.fvtm.constructor.part_install.custom_cat_not_allowed", null); return;
-				}
-				/*if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
-					if(data.getType().getInstallationHandler().processInstall(container.getCommandSender(), data, cat, getVehicleData())){
-						this.pdata = null; this.updateClient(null);
-					}
-				} return;*/
-				//TODO data = getVehicleData().installPart(container.getCommandSender(), data, cat, false);
-				data = getVehicleData().installPart(null, data, cat, false);
+				data = getVehicleData().installPart(new MessageSenderI(container.getCommandSender()), data, cat, false);
 				if(data == null) pdata = null; this.updateClient(null); return;
 			}
 			case "part_remove":{
 				if(noveh(container)) return;
 				String cat = packet.getString("category"); PartData data = this.getVehicleData().getPart(cat);
 				if(data == null){ container.setTitleText("tile.fvtm.constructor.part_remove.not_found_server", null); return; }
-				/*if(data.getType().getInstallationHandler().allowUninstall(container.getCommandSender(), data, cat, getVehicleData())){
-					if(data.getType().getInstallationHandler().processUninstall(container.getCommandSender(), data, cat, getVehicleData())){
-						this.dropItem(data.newItemStack()); this.updateClient(null);
-					}
-				} return;*/
-				//TODO if(getVehicleData().deinstallPart(container.getCommandSender(), cat, false)){
-				if(getVehicleData().deinstallPart(null, cat, false)){
+				if(getVehicleData().deinstallPart(new MessageSenderI(container.getCommandSender()), cat, false)){
 					dropItem(data.getNewStack().local());
 					updateClient(null);
 				}

@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallHandler;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.world.MessageSender;
 
@@ -21,7 +22,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 	public static final ConnectorInstallationHandler INSTANCE = new ConnectorInstallationHandler();
 
 	@Override
-	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data){
+	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data, boolean swap){
 		if(data.getParts().containsKey(cat)){
 			sender.send("handler.install.fvtm.connector.category_occupied");
 			return false;
@@ -56,7 +57,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
 		ConnectorData idata = part.getType().getInstallHandlerData();
-		DefaultPartInstallHandler.setPosAndSwivelPoint(null, idata.compatible, cat, part, data);
+		DefaultPartInstallHandler.setPosRotAndSwivelPoint(null, cat, part, data);
 		boolean front = cat.startsWith("front");
 		String regname = data.getType().getIDS();
 		V3D conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
@@ -69,7 +70,7 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 	}
 
 	@Override
-	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
+	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from, boolean swap){
 		ConnectorData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.connector.part_not_removable");
@@ -151,11 +152,6 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 			return removable;
 		}
 		
-	}
-
-	@Override
-	public boolean allowsCustomCategory(PartData part){
-		return false;
 	}
 
 	@Override

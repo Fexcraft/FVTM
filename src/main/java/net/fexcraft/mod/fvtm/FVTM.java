@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
@@ -32,6 +33,7 @@ import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.*;
@@ -75,12 +77,14 @@ import net.fexcraft.mod.uni.uimpl.UUITab;
 import net.fexcraft.mod.uni.uimpl.UUIText;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -89,6 +93,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -218,11 +223,14 @@ public class FVTM {
 		}*/
 		//
 		FvtmResources.INSTANCE.init();
+		FvtmResources.INSTANCE.registerFvtmBlocks();
+		FvtmResources.INSTANCE.registerFvtmItems();
 		FvtmResources.INSTANCE.registerAttributes();
 		FvtmResources.INSTANCE.registerFunctions();
 		FvtmResources.INSTANCE.registerHandlers();
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentItems();
+		MinecraftForge.EVENT_BUS.register(new Registerer());
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		MinecraftForge.EVENT_BUS.register(new RVStore());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
@@ -317,6 +325,31 @@ public class FVTM {
 	
 	public static Resources getResources(){
 		return RESOURCES;
+	}
+
+	public static class Registerer {
+
+		@SubscribeEvent
+		public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
+			event.getRegistry().register(ConstructorBlock.INSTANCE);
+		}
+
+		@SubscribeEvent
+		public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
+			event.getRegistry().register(ConstructorBlock.ITEM);
+			//
+			event.getRegistry().register(DecorationItem.INSTANCE);
+			if(EnvInfo.CLIENT){
+				regModel(ConstructorBlock.ITEM);
+				//
+				regModel(DecorationItem.INSTANCE);
+			}
+		}
+
+		private void regModel(Item item){
+			net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+		}
+
 	}
 
 }

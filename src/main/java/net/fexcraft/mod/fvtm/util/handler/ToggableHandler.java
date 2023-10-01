@@ -28,7 +28,7 @@ import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,7 +56,7 @@ public class ToggableHandler {
 				PartData part = stack.getCapability(Capabilities.VAPDATA, null).getPartData();
 				if(part.getType().getInstallHandlerData() instanceof DPIHData == false) return false;
         		DPIHData idata = part.getType().getInstallHandlerData();
-        		if(idata.hotswap){
+        		if(idata.swappable){
         			ArrayList<Collidable> colls = new ArrayList<>();
         			for(Entry<String, PartSlots> data : entity.getVehicleData().getPartSlotProviders().entrySet()){
         				for(int i = 0; i < data.getValue().size(); i++){
@@ -313,7 +313,7 @@ public class ToggableHandler {
 			}
 			else{
 				V3D pos = new V3D(slots.get(index).pos);
-				if(!source.equals(PartSlots.VEHPARTSLOTS)) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
+				if(!source.equals("vehicle")) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
 				temp = point.getRelativeVector(pos.x, point.isVehicle() ? -pos.y : pos.y, -pos.z);
 				temp = temp.add(vehicle.getEntity().posX, vehicle.getEntity().posY, vehicle.getEntity().posZ);
 				float te = slots.get(index).radius / 2;

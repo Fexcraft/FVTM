@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAIL_BLOCKS;
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
 
 import java.util.ArrayList;
@@ -219,7 +218,7 @@ public class RailPlacingUtil {
 					Print.chat(player, "&cTrack length exceeds the configured max length.");
 					return;
 				}
-				track.blockless = DISABLE_RAIL_BLOCKS;
+				//track.blockless = DISABLE_RAIL_BLOCKS;
 				Junction second = sys.getJunction(track.start);
 				if(second == null){
 					sys.addJunction(track.start);
@@ -227,7 +226,7 @@ public class RailPlacingUtil {
 					Print.chat(player, "&o> Start Junction Created.");
 				}
 				if(second != null){
-					if(!TrackPlacer.set(player, player, player.world, null, track).place().blocks(!track.blockless).consume().result()) return;
+					if(!TrackPlacer.set(player, player, player.world, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
 					second.addnew(track);
 					junc.addnew(track.createOppositeCopy());
 					second.checkTrackSectionConsistency();

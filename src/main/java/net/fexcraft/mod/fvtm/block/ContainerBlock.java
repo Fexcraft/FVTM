@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.block;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
@@ -41,7 +40,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerEntity.class)
+//@fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerEntity.class)
 public class ContainerBlock extends BlockContainer {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);

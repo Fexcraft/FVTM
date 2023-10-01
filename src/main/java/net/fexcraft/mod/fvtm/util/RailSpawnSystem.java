@@ -3,15 +3,12 @@ package net.fexcraft.mod.fvtm.util;
 import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.minecraft.command.ICommandSender;
@@ -61,7 +58,7 @@ public class RailSpawnSystem extends EntitySystem {
         GridV3D vector = new GridV3D(placer.getEntityWorld(), pos, RAIL_PLACING_GRID);
 		Junction junk = syscap.getJunction(vector, true);
 		BlockPos bpos = new BlockPos(pos);
-		net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
+		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
 		if(!data.getWheelPositions().containsKey("bogie_front")){
 			Print.chat(player, "Vehicle is missing a front bogie.");
 			return false;
@@ -71,7 +68,7 @@ public class RailSpawnSystem extends EntitySystem {
 			return false;
 		}
 		double length = data.getWheelPositions().get("bogie_front").x + -data.getWheelPositions().get("bogie_rear").x;
-		if((junk == null || junk.tracks.isEmpty()) && tile != null){
+		/*if((junk == null || junk.tracks.isEmpty()) && tile != null){
 			if(tile.getTracks().size() > 1){
     			Print.bar(player, "&c&oPlaceable only on single-track rail blocks.");
     			return false;
@@ -95,7 +92,7 @@ public class RailSpawnSystem extends EntitySystem {
     				return true;
     			}
 			}
-		}
+		}*/
 		if(junk == null){
 			Print.bar(player, "&c&oNo Junction found at this position.");
 			return false;

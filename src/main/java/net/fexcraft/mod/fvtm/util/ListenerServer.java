@@ -9,7 +9,8 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
-import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.uni.impl.MessageSenderI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,15 +48,13 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				String slot = source.get(index).category(packet.nbt.getString("source"));
 				if(entity.getVehicleData().getPart(slot) != null){
 					PartData oldpart = entity.getVehicleData().getPart(slot);
-					boolean valid = oldpart.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallHandlerData()).hotswap;
-					//TODO if(valid && entity.getVehicleData().deinstallPart(Command.OTHER ? player : null, slot, true)){
-					if(valid && entity.getVehicleData().deinstallPart(null, slot, true)){
+					boolean valid = oldpart.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
+					if(valid && entity.getVehicleData().deinstallPart(Command.OTHER ? new MessageSenderI(player) : null, slot, true)){
 						player.addItemStackToInventory(oldpart.getNewStack().local());
 					}
 					else return;
 				}
-				//TODO data = entity.getVehicleData().installPart(Command.OTHER ? player : null, data, "s:" + packet.nbt.getString("source") + ":" + slot + ":" + index, true);
-				data = entity.getVehicleData().installPart(null, data, "s:" + packet.nbt.getString("source") + ":" + slot + ":" + index, true);
+				data = entity.getVehicleData().installPart(Command.OTHER ? new MessageSenderI(player) : null, data, packet.nbt.getString("source") + ":" + slot + ":" + index, true);
 				if(data == null){
 					player.getHeldItem(EnumHand.MAIN_HAND).shrink(1);
 					NBTTagCompound compound = entity.getVehicleData().write(TagCW.create()).local();

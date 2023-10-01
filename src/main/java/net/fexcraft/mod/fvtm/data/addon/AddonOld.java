@@ -29,7 +29,6 @@ import com.google.gson.JsonObject;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -70,7 +69,6 @@ public class AddonOld extends TypeCore<AddonOld> {
 	//
 	@SideOnly(Side.CLIENT)
 	protected HashMap<String, CreativeTabs> creativetabs;
-	protected AutoRegisterer registerer;
 	
 	public AddonOld(ContainerType type, File file){
 		this(type, file, AddonLocation.MODJAR);
@@ -113,7 +111,6 @@ public class AddonOld extends TypeCore<AddonOld> {
 				});
 			}
 		}
-		this.registerer = new AutoRegisterer(this.getRegistryName().getPath());
 		if(obj.has("ClothMaterials")){
 			obj.get("ClothMaterials").getAsJsonObject().entrySet().forEach(entry -> {
 				armats.put(entry.getKey(), ((ClothMaterialWrapper) ClothMaterial.create(IDLManager.getIDLCached(registryname.getPath() + ":" + entry.getKey()), JsonHandler.parse(entry.getValue().toString(), true).asMap())).material);
@@ -341,10 +338,6 @@ public class AddonOld extends TypeCore<AddonOld> {
 		}
 		else if(file.getName().endsWith(suffix)) result.add(file);
 		return result;
-	}
-
-	public AutoRegisterer getFCLRegisterer(){
-		return registerer;
 	}
 
 	@SideOnly(Side.CLIENT)

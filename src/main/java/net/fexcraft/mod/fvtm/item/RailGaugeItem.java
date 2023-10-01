@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAIL_BLOCKS;
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
 import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
 
@@ -132,9 +131,9 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				return EnumActionResult.FAIL;
 			}
 			Junction second = syscap.getJunction(track.start);
-			track.blockless = DISABLE_RAIL_BLOCKS || noblocks;
+			//track.blockless = noblocks;
 			if(second != null){
-				if(!TrackPlacer.set(sender, player, world, null, track).place().blocks(!noblocks).consume().result()) return EnumActionResult.SUCCESS;
+				if(!TrackPlacer.set(sender, player, world, null, track).place()/*.blocks(!noblocks)*/.consume().result()) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();

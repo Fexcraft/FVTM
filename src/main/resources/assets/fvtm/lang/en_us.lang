@@ -198,7 +198,6 @@ tile.fvtm.constructor.constructor_connect.no_tile_found_null=No suitable TileEnt
 tile.fvtm.constructor.constructor_connect.no_tile_found=No suitable TileEntity found.
 tile.fvtm.constructor.constructor_connect.connected=Tile connected.
 tile.fvtm.constructor.constructor_disconnect.disconnected=Tile connection reset.
-tile.fvtm.constructor.part_install.custom_cat_not_allowed=Custom Category not allowed for this part.
 tile.fvtm.constructor.part_remove.not_found_server=Selected Part not found (on server).
 tile.fvtm.constructor.texture.invalid_part=Invalid Part Request.
 tile.fvtm.constructor.texture.invalid_supplied_id=Invalid SUPPLIED ID.
@@ -268,14 +267,12 @@ gui.fvtm.vehicle.connector.not_available_yet=There is no connector/coupler funct
 gui.fvtm.pipe.title=Inventory: %s
 
 # Handlers
-handler.install.fvtm.default.category_occupied=There is already another part with that category installed.
-handler.install.fvtm.default.part_invalid_category=Part does not allow installing into this category.
-handler.install.fvtm.default.part_incompatible_vehicle=Part incompatible with this vehicle.
+handler.install.fvtm.default.category_occupied=There is already another part on that spot with that category.
+handler.install.fvtm.default.part_incompatible_vehicle=Part is incompatible with this vehicle.
 handler.install.fvtm.default.vehicle_contains_incompatible=Vehicle contains parts incompatible with this part.
 handler.install.fvtm.default.vehicle_missing_required_parts=Vehicle does not contain all required parts.
-handler.install.fvtm.default.vehicle_missing_required_swivelpoint=Vehicle does not contain a required swivel/rotation point. Missing: %s
 handler.install.fvtm.default.check_passed=Installation check passed.
-handler.install.fvtm.default.success=Part installed into selected category.
+handler.install.fvtm.default.success=Part installed into selected spot.
 handler.deinstall.fvtm.default.part_not_removable=Part is marked as non removable.
 handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.default.remove_linked_wheels=Please remove all linked wheels first.

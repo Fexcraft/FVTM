@@ -13,7 +13,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 	public static final BogieInstallationHandler INSTANCE = new BogieInstallationHandler();
 
 	@Override
-	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data){
+	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data, boolean swap){
 		if(!data.getType().getVehicleType().isRailVehicle()){
 			sender.send("handler.install.fvtm.bogie.not_rail_vehicle");
 			return false;
@@ -43,7 +43,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 	}
 
 	@Override
-	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
+	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from, boolean swap){
 		BogieData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.bogie.part_not_removable");
@@ -74,11 +74,6 @@ public class BogieInstallationHandler extends PartInstallHandler {
 			height = map.getFloat("Height", 8);
 		}
 		
-	}
-
-	@Override
-	public boolean allowsCustomCategory(PartData part){
-		return false;
 	}
 
 	@Override

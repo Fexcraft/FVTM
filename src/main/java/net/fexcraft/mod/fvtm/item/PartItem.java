@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
-import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.client.resources.I18n;
@@ -54,8 +54,14 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>  {
         PartData data = cache.getPartData();
         if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
-        if(part.getInstallHandlerData() != null && part.getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getInstallHandlerData()).hotswap){
-        	tooltip.add(Formatter.format("&a&oThis part supports hot-install."));
+        if(part.getInstallHandlerData() != null && part.getInstallHandlerData() instanceof DPIHData){
+			DPIHData idata = part.getInstallHandlerData();
+			if(!idata.removable){
+				tooltip.add(Formatter.format("&c&oPermanent, &a&oSwappable"));
+			}
+			else{
+				tooltip.add(Formatter.format("&a&oSwappable"));
+			}
         }
         if(!data.getFunctions().isEmpty()){
             for(PartFunction func : data.getFunctions().values()){

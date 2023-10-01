@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -26,7 +25,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@fItem(modid = "fvtm", name = "decoration")
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class DecorationItem extends Item implements JunctionGridItem {
 
 	public static DecorationItem INSTANCE;
@@ -37,9 +38,10 @@ public class DecorationItem extends Item implements JunctionGridItem {
 	}
 
 	public DecorationItem(){
-		this.setHasSubtypes(true);
-		this.setMaxStackSize(64);
-		INSTANCE = this;
+		setRegistryName("fvtm:decoration");
+		setTranslationKey(getRegistryName().toString());
+		setHasSubtypes(true);
+		setMaxStackSize(64);
 	}
 
 	@SideOnly(Side.CLIENT)

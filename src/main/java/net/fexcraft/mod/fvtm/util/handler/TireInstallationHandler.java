@@ -18,7 +18,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 	public static final TireInstallationHandler INSTANCE = new TireInstallationHandler();
 
 	@Override
-	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data){
+	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data, boolean swap){
 		if(data.getType().getVehicleType().isRailVehicle()){
 			sender.send("handler.install.fvtm.tire.rail_vehicle");
 			return false;
@@ -95,7 +95,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 	}
 
 	@Override
-	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from){
+	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from, boolean swap){
 		TireData idata = part.getType().getInstallHandlerData();
 		if(idata != null && !idata.removable){
 			sender.send("handler.deinstall.fvtm.tire.part_not_removable");
@@ -139,11 +139,6 @@ public class TireInstallationHandler extends PartInstallHandler {
 			return width;
 		}
 
-	}
-
-	@Override
-	public boolean allowsCustomCategory(PartData part){
-		return false;
 	}
 
 	@Override

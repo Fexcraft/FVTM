@@ -4,11 +4,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -36,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@fBlock(modid = FVTM.MODID, name = "display_block", tileentity = DisplayEntity.class, item = DisplayBlock.Item.class)
+//@fBlock(modid = FVTM.MODID, name = "display_block", tileentity = DisplayEntity.class, item = DisplayBlock.Item.class)
 public class DisplayBlock extends Block implements ITileEntityProvider {
 
 	public static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.9D, 0.0D, 1.0D, 0.0D, 1.0D);

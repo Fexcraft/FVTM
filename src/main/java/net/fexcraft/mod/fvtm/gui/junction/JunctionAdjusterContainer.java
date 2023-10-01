@@ -55,7 +55,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			Print.debug("delpack: " + packet);
 			Track track = junction.tracks.get(del);
 			junction.remove(del, true);
-			if(track != null) TrackPlacer.set(player, player, player.world, null, track).remove().blocks().process();
+			if(track != null) TrackPlacer.set(player, player, player.world, null, track).remove()/*.blocks()*/.process();
 			return;
 		}
 		else if(packet.hasKey("dw")){

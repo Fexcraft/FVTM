@@ -1,14 +1,11 @@
 package net.fexcraft.mod.fvtm.block;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_PARTINSTALLER;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -18,6 +15,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -83,43 +81,38 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
 
 	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-        if(world.isRemote || hand == EnumHand.OFF_HAND) return false; if(player.isSneaking()) return true;
-        ConstructorEntity te = (ConstructorEntity) world.getTileEntity(pos); if(te == null) return false;
+        if(world.isRemote || hand == EnumHand.OFF_HAND) return false;
+		if(player.isSneaking()) return true;
+        ConstructorEntity te = (ConstructorEntity)world.getTileEntity(pos);
+		if(te == null) return false;
         ItemStack held = player.getHeldItem(hand);
         if(held.isEmpty()){
         	player.openGui(FVTM.getInstance(), CONSTRUCTOR_MAIN, world, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
-        else if(held.getItem() instanceof MaterialItem){
-        	//TODO
-        }
-        else if(held.getItem() instanceof PartItem){
-        	if(te.getPartData() != null) te.dropPart(true);
-        	te.setPartData(((PartItem)held.getItem()).getData(held), true);
-        	Print.chat(player, "Part put into Constructor."); held.shrink(1);
-        	//
-        	player.openGui(FVTM.getInstance(), CONSTRUCTOR_PARTINSTALLER, world, pos.getX(), pos.getY(), pos.getZ());
-        }
         else if(held.getItem() instanceof VehicleItem){
         	te.dropIfContainsAnyThing();
         	te.setVehicleData(((VehicleItem)held.getItem()).getData(held), false);
         	te.liftstate = 0;
-        	te.updateClient(null); held.shrink(1);
-        	Print.chat(player, "Vehicle put into Constructor.");
+        	te.updateClient(null);
+			held.shrink(1);
+        	Print.chat(player, I18n.format("interact.fvtm.constructor.vehicle"));
         }
         else if(held.getItem() instanceof ContainerItem){
         	te.dropIfContainsAnyThing();
         	te.setContainerData(((ContainerItem)held.getItem()).getData(held), false);
         	te.liftstate = 0;
-        	te.updateClient(null); held.shrink(1);
-        	Print.chat(player, "Container put into Constructor.");
+        	te.updateClient(null);
+			held.shrink(1);
+			Print.chat(player, I18n.format("interact.fvtm.constructor.container"));
         }
         else if(held.getItem() instanceof BlockItem){
         	te.dropIfContainsAnyThing();
         	te.setBlockData(((BlockItem)held.getItem()).getData(held), false);
         	te.liftstate = 0;
-        	te.updateClient(null); held.shrink(1);
-        	Print.chat(player, "Block put into Constructor.");
+        	te.updateClient(null);
+			held.shrink(1);
+			Print.chat(player, I18n.format("interact.fvtm.constructor.block"));
         }
         //
         return true;

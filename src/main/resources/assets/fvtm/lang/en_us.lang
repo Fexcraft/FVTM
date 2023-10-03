@@ -17,6 +17,11 @@ tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt
 tile.fvtm:vpinfo.name=Vehicle & Part Info
 
+# Interact
+interact.fvtm.constructor.vehicle=Vehicle put into Constructor.
+interact.fvtm.constructor.container=Container put into Constructor.
+interact.fvtm.constructor.block=Block put into Constructor.
+
 # GUIs
 gui.fvtm.constructor.main.status=Constructor Status
 gui.fvtm.constructor.main.data=Content Data

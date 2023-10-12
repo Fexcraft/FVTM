@@ -40,6 +40,7 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
+import net.fexcraft.mod.fvtm.ui.ConstructorMain;
 import net.fexcraft.mod.fvtm.ui.DecoEditor;
 import net.fexcraft.mod.uni.uimpl.UniCon;
 import net.fexcraft.mod.uni.uimpl.UniUI;
@@ -128,6 +129,7 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstContainerTex(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstContainer(player, world, x, y, z);
 			case VEHICLE_MAIN:
+				return new UniCon(new ConstructorContainer(FvtmResources.getJson("assets/fvtm/uis/constructor_main.json"), player, x, y, z), player);
 			case VEHICLE_FUEL:
 			case VEHICLE_TOGGABLES:
 			case VEHICLE_INVENTORIES:
@@ -176,7 +178,11 @@ public class GuiHandler implements IGuiHandler {
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
-				case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
+				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
+				case CONSTRUCTOR_MAIN:{
+					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/constructor_main.json");
+					return new UniUI(new ConstructorMain(map, new ConstructorContainer(map, player, x, y, z)), null, player);
+				}
 				case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
 				case CONSTRUCTOR_CONTENTINFO: return new ConstContentData(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINFO: return new ConstPartCache(player, world, x, y, z);

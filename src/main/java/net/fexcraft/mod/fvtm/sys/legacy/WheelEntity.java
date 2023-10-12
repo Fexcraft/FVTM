@@ -70,7 +70,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     		Print.log("Vehicle has no wheels installed, removing."); this.setDead();
     		if(!vehicle.isDead){
         		EntityItem itemstack = new EntityItem(world, vehicle.posX, vehicle.posY, vehicle.posZ);
-        		itemstack.setItem(vehicle.getVehicleData().newItemStack());
+        		itemstack.setItem(vehicle.getVehicleData().newItemStack().local());
         		world.spawnEntity(itemstack); vehicle.setDead();
     		} return;
     	}

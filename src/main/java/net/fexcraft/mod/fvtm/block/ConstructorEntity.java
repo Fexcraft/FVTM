@@ -452,7 +452,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	}
 
 	public void dropVehicle(boolean update){
-		if(vdata == null) return; this.dropItem(vdata.newItemStack());
+		if(vdata == null) return; this.dropItem(vdata.newItemStack().local());
 		this.vdata = null; if(update) this.updateClient("vehicledata");
 	}
 

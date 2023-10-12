@@ -1024,7 +1024,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 if(vehicle.hasPart("engine") && vehicle.getPart("engine").hasFunction("fvtm:engine")){
                     vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
                 }
-                ItemStack stack = vehicle.newItemStack();
+                ItemStack stack = vehicle.newItemStack().local();
                 //
                 /*if(PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
                 	|| PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.permBreak(stack))){
@@ -1057,7 +1057,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        ItemStack stack = vehicle.newItemStack();
+        ItemStack stack = vehicle.newItemStack().local();
         stack.setItemDamage(0);
         return stack;
     }

@@ -1,0 +1,20 @@
+{
+	"_info_": "Constructor Main UI",
+	"background": false,
+	"size": [256, 256],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/constructor.png",
+			"size": [ 256, 166 ],
+			"pos": [ 0, 0 ],
+			"uv": [ 0, 0 ],
+			"absolute": true
+		}
+	},
+	"buttons": {
+
+	},
+	"texts": {
+
+	}
+}

@@ -81,7 +81,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
                     if(oldata != null){
                         EntityItem ent = new EntityItem(world);
                         ent.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
-                        ent.setItem(oldata.newItemStack());
+                        ent.setItem(oldata.newItemStack().local());
                         world.spawnEntity(ent);
                     }
                 }
@@ -181,7 +181,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
     public void breakBlock(World world, BlockPos pos, IBlockState state){
         DisplayEntity conte = (DisplayEntity) world.getTileEntity(pos);
         if(conte.getVehicleData() != null){
-            ItemStack stack = conte.getVehicleData().newItemStack();
+            ItemStack stack = conte.getVehicleData().newItemStack().local();
             EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
             world.spawnEntity(entity);
         }

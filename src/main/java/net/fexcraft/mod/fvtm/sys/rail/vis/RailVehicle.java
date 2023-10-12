@@ -615,7 +615,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 if(rek.data().hasPart("engine") && rek.data().getPart("engine").hasFunction("fvtm:engine")){
                 	rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
                 }
-                ItemStack stack = rek.data().newItemStack();
+                ItemStack stack = rek.data().newItemStack().local();
                 //
                 /*if(PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
                 	|| PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.permBreak(stack))){

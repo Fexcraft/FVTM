@@ -10,7 +10,10 @@
 			"uv": [ 0, 0 ],
 			"absolute": true,
 			"buttons": [
-				"help", "info"
+				"help", "info",
+				"lift", "lift_up", "lift_down",
+				"vehicle", "vehicle_parts", "vehicle_attrs",
+				"appearance", "appearance_texture", "appearance_color"
 			],
 			"texts": [
 				"title"
@@ -19,16 +22,70 @@
 	},
 	"buttons": {
 		"help": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 9, 9 ],
 			"pos": [ 1, 1 ],
 			"tooltip": "gui.fvtm.constructor.help"
 		},
 		"info": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 9, 9 ],
 			"pos": [ 12, 1 ],
 			"tooltip": "gui.fvtm.constructor.info"
+		},
+		"lift": {
+			"absolute": true,
+			"size": [ 32, 32 ],
+			"pos": [ 16, 29 ],
+			"tooltip": "gui.fvtm.constructor.lift",
+			"h_color": "42adf5",
+			"alpha": 0.2
+		},
+		"lift_up": {
+			"absolute": true,
+			"size": [ 13, 13 ],
+			"pos": [ 3, 31 ]
+		},
+		"lift_down": {
+			"absolute": true,
+			"size": [ 13, 13 ],
+			"pos": [ 3, 46 ]
+		},
+		"vehicle": {
+			"absolute": true,
+			"size": [ 32, 32 ],
+			"pos": [ 16, 79 ],
+			"tooltip": "gui.fvtm.constructor.vehicle",
+			"h_color": "42adf5",
+			"alpha": 0.2
+		},
+		"vehicle_parts": {
+			"absolute": true,
+			"size": [ 13, 13 ],
+			"pos": [ 3, 81 ]
+		},
+		"vehicle_attrs": {
+			"absolute": true,
+			"size": [ 13, 13 ],
+			"pos": [ 3, 96 ]
+		},
+		"appearance": {
+			"absolute": true,
+			"size": [ 32, 32 ],
+			"pos": [ 16, 129 ],
+			"tooltip": "gui.fvtm.constructor.appearance",
+			"h_color": "42adf5",
+			"alpha": 0.2
+		},
+		"appearance_texture": {
+			"absolute": true,
+			"size": [ 13, 13 ],
+			"pos": [ 3, 131 ]
+		},
+		"appearance_color": {
+			"absolute": true,
+			"size": [ 13, 13 ],
+			"pos": [ 3, 146 ]
 		}
 	},
 	"texts": {

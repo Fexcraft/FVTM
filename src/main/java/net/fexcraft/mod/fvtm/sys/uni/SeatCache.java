@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
-import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

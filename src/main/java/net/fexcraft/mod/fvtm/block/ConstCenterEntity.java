@@ -38,12 +38,22 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 		return tile;
 	}
 	
-	public BlockPos getLinkPos(){
+	public BlockPos getConstPos(){
 		return conpos;
 	}
-	
-	public int[] getLinkArray(){
-		return conpos == null ? new int[]{ 0, 0, 0 } : new int[]{ conpos.getX(), conpos.getY(), conpos.getZ() };
+
+	public TileEntity getConstTile(){
+		return world.getTileEntity(conpos);
+	}
+
+	public void setConst(ConstructorEntity contile){
+		conpos = contile.getPos();
+		tile = contile;
+		if(world.isRemote){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setLong("conpos", conpos.toLong());
+			ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
+		}
 	}
 	
 	/** This for the renderer, better not use elsewhere. */

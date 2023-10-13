@@ -121,6 +121,7 @@ public class GuiHandler implements IGuiHandler {
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
 			case CONSTRUCTOR_MAIN:
+				return new UniCon(new ConstructorContainer(FvtmResources.getJson("assets/fvtm/uis/constructor_main.json"), player, x, y, z), player);
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_CONTENTINFO:
 			case CONSTRUCTOR_PARTINFO:
@@ -129,7 +130,6 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstContainerTex(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstContainer(player, world, x, y, z);
 			case VEHICLE_MAIN:
-				return new UniCon(new ConstructorContainer(FvtmResources.getJson("assets/fvtm/uis/constructor_main.json"), player, x, y, z), player);
 			case VEHICLE_FUEL:
 			case VEHICLE_TOGGABLES:
 			case VEHICLE_INVENTORIES:

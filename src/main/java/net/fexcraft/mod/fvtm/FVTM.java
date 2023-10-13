@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
@@ -253,9 +254,9 @@ public class FVTM {
 		Perms.register();
 		if(event.getSide().isClient()){
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
-			/*ConstructorBlock.INSTANCE.setCreativeTab(tab);
+			ConstructorBlock.INSTANCE.setCreativeTab(tab);
 			ConstCenterBlock.INSTANCE.setCreativeTab(tab);
-			DisplayBlock.INSTANCE.setCreativeTab(tab);
+			/*DisplayBlock.INSTANCE.setCreativeTab(tab);
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
 			StreetSignItem.INSTANCE.setCreativeTab(tab);
 			TrafficSignItem.INSTANCE.setCreativeTab(tab);
@@ -263,9 +264,9 @@ public class FVTM {
 			SignalItem0.INSTANCE.setCreativeTab(tab);
 			TrainAdjuster.INSTANCE.setCreativeTab(tab);
 			RoadToolItem.INSTANCE.setCreativeTab(tab);
-			Asphalt.INSTANCE.setCreativeTab(tab);
+			Asphalt.INSTANCE.setCreativeTab(tab);*/
 			DecorationItem.INSTANCE.setCreativeTab(tab);
-			VPInfo.INSTANCE.setCreativeTab(tab);*/
+			//VPInfo.INSTANCE.setCreativeTab(tab);
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
@@ -335,15 +336,18 @@ public class FVTM {
 		@SubscribeEvent
 		public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
 			event.getRegistry().register(ConstructorBlock.INSTANCE);
+			event.getRegistry().register(ConstCenterBlock.INSTANCE);
 		}
 
 		@SubscribeEvent
 		public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
 			event.getRegistry().register(ConstructorBlock.ITEM);
+			event.getRegistry().register(ConstCenterBlock.ITEM);
 			//
 			event.getRegistry().register(DecorationItem.INSTANCE);
 			if(EnvInfo.CLIENT){
 				regModel(ConstructorBlock.ITEM);
+				regModel(ConstCenterBlock.ITEM);
 				//
 				regModel(DecorationItem.INSTANCE);
 			}

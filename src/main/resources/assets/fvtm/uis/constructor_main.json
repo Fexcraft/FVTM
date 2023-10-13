@@ -4,7 +4,7 @@
 	"size": [256, 256],
 	"tabs": {
 		"main": {
-			"texture": "fvtm:textures/gui/constructor.png",
+			"texture": "fvtm:textures/gui/constructor_main.png",
 			"size": [ 256, 166 ],
 			"pos": [ 0, 0 ],
 			"uv": [ 0, 0 ],
@@ -21,12 +21,14 @@
 		"help": {
 			"absolute": "true",
 			"size": [ 9, 9 ],
-			"pos": [ 1, 1 ]
+			"pos": [ 1, 1 ],
+			"tooltip": "gui.fvtm.constructor.help"
 		},
 		"info": {
 			"absolute": "true",
 			"size": [ 9, 9 ],
-			"pos": [ 12, 1 ]
+			"pos": [ 12, 1 ],
+			"tooltip": "gui.fvtm.constructor.info"
 		}
 	},
 	"texts": {
@@ -36,6 +38,7 @@
 			"pos": [ 25, 2 ],
 			"autoscale": true,
 			"color": "000000",
+			"hover": "0398fc",
 			"value": "title.fvtm.constructor"
 		}
 	}

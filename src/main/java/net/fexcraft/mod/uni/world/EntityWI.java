@@ -1,6 +1,7 @@
 package net.fexcraft.mod.uni.world;
 
 import net.fexcraft.lib.common.utils.Formatter;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
@@ -35,13 +36,13 @@ public class EntityWI extends EntityW {
 
 	@Override
 	public void send(String s){
-		entity.sendMessage(new TextComponentString(Formatter.format(s)));
+		entity.sendMessage(new TextComponentString(Formatter.format(I18n.format(s))));
 	}
 
 	@Override
 	public void bar(String s){
 		if(entity instanceof EntityPlayer){
-			((EntityPlayer)entity.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(s)), true);
+			((EntityPlayer)entity.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(I18n.format(s))), true);
 		}
 		else entity.sendMessage(new TextComponentString(Formatter.format(s)));
 	}

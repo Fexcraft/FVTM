@@ -33,6 +33,8 @@ gui.fvtm.constructor.main.texture=Texture Manager
 gui.fvtm.constructor.main.color=Spraying Tool
 gui.fvtm.constructor.main.exit=Exit
 //
+gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.
+gui.fvtm.constructor.info=This interface is used to Construct Vehicles. As well as set textures and colors of Vehicles, Parts, Blocks and other!
 gui.fvtm.constructor.welcome=Welcome %s!
 gui.fvtm.constructor.request_sent=Request sent to Server..
 gui.fvtm.constructor.not_available=Not available yet!
@@ -44,7 +46,6 @@ gui.fvtm.constructor.no_vehicle=No Vehicle
 gui.fvtm.constructor.no_const=Const. Offline
 gui.fvtm.constructor.no_cache=Cache Empty
 gui.fvtm.constructor.back=< Back to previous Interface
-gui.fvtm.constructor.help=HELP | Open Wiki Page
 gui.fvtm.constructor.save=Drop Item
 gui.fvtm.constructor.spawn=Spawn Vehicle
 gui.fvtm.constructor.page=Page

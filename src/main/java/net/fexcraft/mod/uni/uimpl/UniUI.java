@@ -1,6 +1,7 @@
 package net.fexcraft.mod.uni.uimpl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -12,6 +13,7 @@ import net.fexcraft.mod.uni.ui.UIText;
 import net.fexcraft.mod.uni.ui.UserInterface;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
@@ -25,6 +27,7 @@ public class UniUI extends GuiContainer {
 	//protected LinkedHashMap<String, UIText> texts = new LinkedHashMap<>();
 	//protected LinkedHashMap<String, UIField> fields = new LinkedHashMap<>();
 	protected LinkedHashMap<String, UITab> tabs = new LinkedHashMap<>();
+	protected ArrayList<String> tooltip = new ArrayList<>();
 	//
 	protected UniCon container;
 	protected UserInterface ui;
@@ -107,6 +110,15 @@ public class UniUI extends GuiContainer {
 	}
 
 	protected void postdraw(float ticks, int mx, int my){
+		tooltip.clear();
+		for(UITab tab : tabs.values()){
+			if(!tab.visible()) continue;
+			for(UIButton button : tab.buttons.values()){
+				if(!button.visible()) continue;
+				if(button.tooltip != null && button.hovered()) tooltip.add(I18n.format(button.tooltip));
+			}
+		}
+		if(tooltip.size() > 0) drawHoveringText(tooltip, mx, my);
 		ui.postdraw(ticks, mx, my);
 	}
 

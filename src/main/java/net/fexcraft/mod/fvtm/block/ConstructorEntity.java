@@ -16,9 +16,10 @@ import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -41,14 +42,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstConInterface container){
 		switch(packet.getString("cargo")){
 			case "part_install":{
-				if(noveh(container)) return;
+				//TODO if(noveh(container)) return;
 				/*PartData data = this.getPartData();
 				String cat = packet.getString("category");
 				data = getVehicleData().installPart(new MessageSenderI(container.getCommandSender()), data, cat, false);
 				if(data == null) pdata = null; this.updateClient(null); return;*/
 			}
 			case "part_remove":{
-				if(noveh(container)) return;
+				//TODO if(noveh(container)) return;
 				String cat = packet.getString("category"); PartData data = this.getVehicleData().getPart(cat);
 				if(data == null){ container.setTitleText("tile.fvtm.constructor.part_remove.not_found_server", null); return; }
 				if(getVehicleData().deinstallPart(new MessageSenderI(container.getCommandSender()), cat, false)){
@@ -58,7 +59,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				return;
 			}
 			case "tm_supplied":{
-				if(nocon(container) && noveh(container) && noblk(container)) return;
+				//TODO if(nocon(container) && noveh(container) && noblk(container)) return;
 				int i = packet.getInteger("value");
 				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){
@@ -74,7 +75,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
 			case "tm_custom":{
-				if(nocon(container) && noveh(container) && noblk(container)) return;
+				//TODO if(nocon(container) && noveh(container) && noblk(container)) return;
 				String value = packet.getString("value");
 				boolean external = packet.getBoolean("external");
 				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
@@ -88,7 +89,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
 			case "color_update":{
-				if(nocon(container) && noveh(container) && noblk(container)) return;
+				//TODO if(nocon(container) && noveh(container) && noblk(container)) return;
 				String channel = packet.getString("channel");
 				int rgb = packet.getInteger("rgb");
 				if(bdata != null){
@@ -132,45 +133,35 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				return;
 			}
 			case "veh_name_change":{
-				if(noveh(container)) return;
+				//TODO if(noveh(container)) return;
 				vdata.setDisplayName(packet.hasKey("reset") && packet.getBoolean("reset") ? null : packet.getString("value"));
 				container.setTitleText("tile.fvtm.constructor.name.changed", null);
 				this.updateClient("vehicle");
 				return;
 			}
-			case "lift":{
-				if(noveh(container)) return;
-				liftstate += packet.getInteger("dir") * 0.5f;
-				if(liftstate < -3) liftstate = -3;
-				if(liftstate > 0) liftstate = 0;
-				this.updateClient("lift");
-				container.setTitleText("tile.fvtm.constructor.lift.adjusted", null);
-				return;
-			}
-			//
 			default: return;
 		}
 	}
-	
-	private boolean nocon(ConstConInterface container){
-		if(this.getContainerData() == null){
-			container.setTitleText("tile.fvtm.constructor.no_container", null);
+
+	public boolean nocon(MessageSender sender){
+		if(getContainerData() == null){
+			sender.bar("interact.fvtm.constructor.no_container");
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean noveh(ConstConInterface container){
-		if(this.getVehicleData() == null){
-			container.setTitleText("tile.fvtm.constructor.no_vehicle", null);
+	public boolean noveh(MessageSender sender){
+		if(getVehicleData() == null){
+			sender.bar("interact.fvtm.constructor.no_vehicle");
 			return true;
 		}
 		return false;
 	}
-	
-	private boolean noblk(ConstConInterface container){
-		if(this.getBlockData() == null){
-			container.setTitleText("tile.fvtm.constructor.no_block", null);
+
+	public boolean noblk(MessageSender sender){
+		if(getBlockData() == null){
+			sender.bar("interact.fvtm.constructor.no_block");
 			return true;
 		}
 		return false;

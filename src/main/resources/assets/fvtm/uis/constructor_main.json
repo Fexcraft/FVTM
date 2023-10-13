@@ -96,7 +96,7 @@
 			"autoscale": true,
 			"color": "000000",
 			"hover": "0398fc",
-			"value": "title.fvtm.constructor"
+			"value": "gui.fvtm.constructor.welcome"
 		}
 	}
 }

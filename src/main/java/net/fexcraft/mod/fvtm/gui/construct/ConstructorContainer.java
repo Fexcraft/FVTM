@@ -14,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
 public class ConstructorContainer extends ContainerInterface {
 
 	private ConstructorEntity tile;
-
 	public ConstructorContainer(JsonMap map, EntityPlayer player, int x, int y, int z){
 		super(map, WrapperHolder.getPlayer(player));
 		tile = (ConstructorEntity)player.world.getTileEntity(new BlockPos(x, y, z));
@@ -30,7 +29,30 @@ public class ConstructorContainer extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		String task = com.getString("task");
 		switch(task){
-			//
+			case "lift":{
+				if(tile.noveh(player)) return;
+				tile.liftstate += com.getInteger("lift") * 0.5f;
+				if(tile.liftstate < -3) tile.liftstate = -3;
+				if(tile.liftstate > 0) tile.liftstate = 0;
+				tile.updateClient("lift");
+				break;
+			}
+			case "veh_parts":{
+
+				break;
+			}
+			case "veh_attrs":{
+
+				break;
+			}
+			case "appear_tex":{
+
+				break;
+			}
+			case "appear_color":{
+
+				break;
+			}
 		}
 	}
 

@@ -26,6 +26,9 @@ interact.fvtm.constructor_lift.linked=Connected to Constructor at %s, %s, %s
 interact.fvtm.constructor.vehicle=Vehicle put into Constructor.
 interact.fvtm.constructor.container=Container put into Constructor.
 interact.fvtm.constructor.block=Block put into Constructor.
+interact.fvtm.constructor.no_container=No Container in Constructor.
+interact.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
+interact.fvtm.constructor.no_block=No Block in Constructor.
 
 # GUIs
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.
@@ -188,21 +191,6 @@ gui.fvtm.block_craft.status.working=Working/Processing
 gui.fvtm.block_craft.recipe=Current Recipe:
 gui.fvtm.block_craft.choose=Choose Recipe
 gui.fvtm.block_craft.reset=Reset Recipe
-//
-tile.fvtm.constructor.part_remove.not_found_server=Selected Part not found (on server).
-tile.fvtm.constructor.texture.invalid_part=Invalid Part Request.
-tile.fvtm.constructor.texture.invalid_supplied_id=Invalid SUPPLIED ID.
-tile.fvtm.constructor.texture.applied=Texture Applied.
-tile.fvtm.constructor.color.applied=Color Applied.
-tile.fvtm.constructor.drop.container=Container Dropped.
-tile.fvtm.constructor.drop.vehicle=Vehicle Dropped.
-tile.fvtm.constructor.drop.block=Block Dropped.
-tile.fvtm.constructor.drop.all=Contents dropped.
-tile.fvtm.constructor.name.changed=Name Changed.
-tile.fvtm.constructor.lift.adjusted=Lift state adjusted.
-tile.fvtm.constructor.no_container=No Container in Constructor.
-tile.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
-tile.fvtm.constructor.no_block=No Block in Constructor.
 //
 gui.fvtm.overlay.default.no_engine=No Engine installed.
 gui.fvtm.overlay.default.speed=Speed:

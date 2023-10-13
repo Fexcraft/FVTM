@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;

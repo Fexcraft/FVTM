@@ -35,6 +35,9 @@ gui.fvtm.constructor.main.exit=Exit
 //
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.
 gui.fvtm.constructor.info=This interface is used to Construct Vehicles. As well as set textures and colors of Vehicles, Parts, Blocks and other!
+gui.fvtm.constructor.lift=Vehicle Lift
+gui.fvtm.constructor.vehicle=Vehicle Parts & Attributes
+gui.fvtm.constructor.appearance=Texture & Color
 gui.fvtm.constructor.welcome=Welcome %s!
 gui.fvtm.constructor.request_sent=Request sent to Server..
 gui.fvtm.constructor.not_available=Not available yet!

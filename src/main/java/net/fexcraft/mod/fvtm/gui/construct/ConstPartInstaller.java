@@ -1,19 +1,10 @@
 package net.fexcraft.mod.fvtm.gui.construct;
 
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.BLANK_SEG;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.CANCEL_ICON;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.CONFIRM_ICON;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.EDIT_ICON;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.EMPTY_SEG;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.GENERIC_1B_SEG;
-import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.SWITCH_SEG;
+import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.*;
 
 import java.util.ArrayList;
 
-import com.google.common.collect.Lists;
-
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,14 +22,14 @@ public class ConstPartInstaller extends ConstGui {
 	public ConstPartInstaller(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		help_url += "#partinstaller";
-		if(container.getTileEntity().getPartData() == null){
+		/*if(container.getTileEntity().getPartData() == null){
 			title = "gui.fvtm.constructor.part_install.empty_title";
 			return;
-		}
+		}*///TODO
 		title = "gui.fvtm.constructor.part_install.menu_title";
-		PartData part = container.getTileEntity().getPartData();
+		/*PartData part = container.getTileEntity().getPartData();
 		categories.addAll(Lists.newArrayList(part.getType().getInstallHandler().getValidCategories(part, container.getTileEntity().getVehicleData())));
-		haspages = categories.size() > onpage;
+		haspages = categories.size() > onpage;*///TODO
 	}
 	
 	@Override
@@ -107,7 +98,7 @@ public class ConstPartInstaller extends ConstGui {
 	
 	private void updateButtons(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		if(container.getTileEntity().getPartData() == null){
+		/*if(container.getTileEntity().getPartData() == null){
 			for(int i = 0; i < onpage; i++){
 				texts.get("category" + i).string = i == 0 ? I18n.format("gui.fvtm.constructor.part_install.empty") : "";
 				infotext.remove(buttons.get("category" + i));
@@ -115,7 +106,7 @@ public class ConstPartInstaller extends ConstGui {
 			}
 			categories.clear();
 			return;
-		}
+		}*///TODO
 		if(haspages) texts.get("page").string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + ((categories.size() / onpage + 1));
 		String sbprefix = I18n.format("gui.fvtm.constructor.part_install.slot_prefix");
 		for(int i = 0; i < onpage; i++){

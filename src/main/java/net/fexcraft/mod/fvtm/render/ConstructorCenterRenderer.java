@@ -142,7 +142,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         	}
         }
         else{
-            if(tile.getLinkPos() != null) tile.tryLink();
+            if(tile.getConstPos() != null) tile.tryLink();
         }
         //
         GL11.glPopMatrix();

@@ -53,7 +53,7 @@ import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
-import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;

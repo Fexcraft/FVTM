@@ -183,9 +183,9 @@ public class GuiHandler implements IGuiHandler {
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/constructor_main.json");
 					return new UniUI(new ConstructorMain(map, new ConstructorContainer(map, player, x, y, z)), null, player);
 				}
-				case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
+				//case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
 				case CONSTRUCTOR_CONTENTINFO: return new ConstContentData(player, world, x, y, z);
-				case CONSTRUCTOR_PARTINFO: return new ConstPartCache(player, world, x, y, z);
+				//case CONSTRUCTOR_PARTINFO: return new ConstPartCache(player, world, x, y, z);
 				case CONSTRUCTOR_PARTMANAGER: return new ConstPartManager(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINSTALLER: return new ConstPartInstaller(player, world, x, y, z);
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstTextureManager(player, world, x, y, z);

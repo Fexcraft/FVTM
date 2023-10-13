@@ -32,7 +32,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	private ContainerData cdata;
 	private VehicleData vdata;
-	private PartData pdata;
 	private BlockData bdata;
 	private BlockPos center;
 	public float liftstate;
@@ -102,10 +101,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				return;
 			}
 			case "part_install":{
-				if(nopar(container)) return; if(noveh(container)) return;
-				PartData data = this.getPartData(); String cat = packet.getString("category");
+				if(noveh(container)) return;
+				/*PartData data = this.getPartData();
+				String cat = packet.getString("category");
 				data = getVehicleData().installPart(new MessageSenderI(container.getCommandSender()), data, cat, false);
-				if(data == null) pdata = null; this.updateClient(null); return;
+				if(data == null) pdata = null; this.updateClient(null); return;*/
 			}
 			case "part_remove":{
 				if(noveh(container)) return;
@@ -115,10 +115,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					dropItem(data.getNewStack().local());
 					updateClient(null);
 				}
-				return;
-			}
-			case "part_cache_drop":{
-				this.dropPart(true);
 				return;
 			}
 			case "tm_supplied":{
@@ -170,15 +166,30 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			case "drop":{
 				String kind = packet.getString("what");
 				switch(kind){
-					case "container": this.dropContainer(true); container.setTitleText("tile.fvtm.constructor.drop.container", null); break;
-					case "vehicle": this.dropVehicle(true); container.setTitleText("tile.fvtm.constructor.drop.vehicle", null); break;
-					case "block": this.dropBlock(true); container.setTitleText("tile.fvtm.constructor.drop.block", null); break;
-					case "part": this.dropPart(true); container.setTitleText("tile.fvtm.constructor.drop.part", null); break;
-					case "any": {
-						this.dropContainer(true); this.dropVehicle(true); this.dropBlock(true); this.dropPart(true);
-						container.setTitleText("tile.fvtm.constructor.drop.all", null); break;
+					case "container":{
+						dropContainer(true);
+						container.setTitleText("tile.fvtm.constructor.drop.container", null);
+						break;
 					}
-				} return;
+					case "vehicle":{
+						dropVehicle(true);
+						container.setTitleText("tile.fvtm.constructor.drop.vehicle", null);
+						break;
+					}
+					case "block":{
+						dropBlock(true);
+						container.setTitleText("tile.fvtm.constructor.drop.block", null);
+						break;
+					}
+					case "any": {
+						dropContainer(true);
+						dropVehicle(true);
+						dropBlock(true);
+						container.setTitleText("tile.fvtm.constructor.drop.all", null);
+						break;
+					}
+				}
+				return;
 			}
 			case "veh_name_change":{
 				if(noveh(container)) return;
@@ -217,14 +228,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 	
-	private boolean nopar(ConstConInterface container){
-		if(this.getPartData() == null){
-			container.setTitleText("tile.fvtm.constructor.no_part", null);
-			return true;
-		}
-		return false;
-	}
-	
 	private boolean noblk(ConstConInterface container){
 		if(this.getBlockData() == null){
 			container.setTitleText("tile.fvtm.constructor.no_block", null);
@@ -253,22 +256,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return bdata;
 	}
 	
-	public PartData getPartData(){
-		return pdata;
-	}
-	
 	//
 
     @Override
     public void processClientPacket(PacketTileEntityUpdate packet){
-    	//Print.debug(packet.nbt);
-        if(packet.nbt.hasKey("PartData")){
-        	pdata = FvtmResources.INSTANCE.getPartData(new TagCWI(packet.nbt.getCompoundTag("PartData")));
-        }
-        else if(packet.nbt.hasKey("PartDataReset") && packet.nbt.getBoolean("PartDataReset")){
-        	pdata = null;
-        }
-        //
         if(packet.nbt.hasKey("VehicleData")){
         	vdata = FvtmResources.INSTANCE.getVehicleData(new TagCWI(packet.nbt.getCompoundTag("VehicleData")));
         	resetCenterModels();
@@ -352,12 +343,8 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     			else compound.setBoolean("VehicleDataReset", true); break;
     		}
     		case "blockdata": case "block": {
-    			if(pdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
+    			if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
     			else compound.setBoolean("BlockDataReset", true); break;
-    		}
-    		case "partdata": case "part": {
-    			if(pdata != null) compound.setTag("PartData", pdata.write(null).local());
-    			else compound.setBoolean("PartDataReset", true); break;
     		}
     		case "color": case "rgb":{
     			if(vdata == null && cdata == null && bdata == null){ Print.debug("no veh in const # color"); return; }
@@ -395,8 +382,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			else compound.setBoolean("ContainerDataReset", true);
         if(vdata != null) compound.setTag("VehicleData", vdata.write(TagCW.create()).local());
 			else compound.setBoolean("VehicleDataReset", true);
-		if(pdata != null) compound.setTag("PartData", pdata.write(null).local());
-			else compound.setBoolean("PartDataReset", true);
 		if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
 		else compound.setBoolean("BlockDataReset", true);
         if(center != null){ compound.setLong("Center", center.toLong()); }
@@ -407,12 +392,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
-        if(compound.hasKey("PartData")){
-        	pdata = FvtmResources.INSTANCE.getPartData(new TagCWI(compound.getCompoundTag("PartData")));
-        }
-        else if(compound.hasKey("PartDataReset") && compound.getBoolean("PartDataReset")){
-        	pdata = null;
-        }
         if(compound.hasKey("VehicleData")){
         	vdata = FvtmResources.INSTANCE.getVehicleData(new TagCWI(compound.getCompoundTag("VehicleData")));
         }
@@ -461,13 +440,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		this.bdata = null; if(update) this.updateClient("blockdata");
 	}
 
-	public void dropPart(boolean update){
-		if(pdata == null) return;
-		dropItem(pdata.getNewStack().local());
-		pdata = null;
-		if(update) updateClient("partdata");
-	}
-
 	public void setContainerData(ContainerData data, boolean send){
 		this.cdata = data; if(send) this.updateClient("container");
 	}
@@ -480,10 +452,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		this.bdata = data; if(send) this.updateClient("block");
 	}
 
-	public void setPartData(PartData data, boolean send){
-		this.pdata = data; if(send) this.updateClient("part");
-	}
-
 	public BlockPos getCenterPos(){
 		return center;
 	}
@@ -492,7 +460,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		if(getContainerData() != null) dropContainer(true);
     	if(getVehicleData() != null) dropVehicle(true);
     	if(getBlockData() != null) dropBlock(true);
-    	if(getPartData() != null) dropPart(true);
 	}
 
 }

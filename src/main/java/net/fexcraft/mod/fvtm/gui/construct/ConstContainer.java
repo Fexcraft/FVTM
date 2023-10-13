@@ -58,10 +58,6 @@ public class ConstContainer extends GenericContainer implements ConstConInterfac
 		return sender;
 	}
 
-	public boolean noPart(){
-		return entity.getPartData() == null;
-	}
-
 	public boolean noBlock(){
 		return entity.getBlockData() == null;
 	}
@@ -72,10 +68,6 @@ public class ConstContainer extends GenericContainer implements ConstConInterfac
 
 	public boolean noContainer(){
 		return entity.getContainerData() == null;
-	}
-
-	public boolean hasPart(){
-		return entity.getPartData() != null;
 	}
 
 	public boolean hasBlock(){

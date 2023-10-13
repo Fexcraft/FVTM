@@ -23,16 +23,6 @@ interact.fvtm.constructor.container=Container put into Constructor.
 interact.fvtm.constructor.block=Block put into Constructor.
 
 # GUIs
-gui.fvtm.constructor.main.status=Constructor Status
-gui.fvtm.constructor.main.data=Content Data
-gui.fvtm.constructor.main.lift=Lift Status
-gui.fvtm.constructor.main.part_cache=Part Cache
-gui.fvtm.constructor.main.part_manager=Part Manager
-gui.fvtm.constructor.main.part_installer=Part Installer
-gui.fvtm.constructor.main.texture=Texture Manager
-gui.fvtm.constructor.main.color=Spraying Tool
-gui.fvtm.constructor.main.exit=Exit
-//
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.
 gui.fvtm.constructor.info=This interface is used to Construct Vehicles. As well as set textures and colors of Vehicles, Parts, Blocks and other!
 gui.fvtm.constructor.lift=Vehicle Lift
@@ -95,13 +85,6 @@ gui.fvtm.constructor.content_data.name=Name:
 gui.fvtm.constructor.content_data.attributes=Attributes
 gui.fvtm.constructor.content_data.functions=Functions
 gui.fvtm.constructor.content_data.scripts=Scripts
-//
-gui.fvtm.constructor.part_cache.menu_title=Part Data Overview (CACHE)
-gui.fvtm.constructor.part_cache.name=Name:
-gui.fvtm.constructor.part_cache.attributes=Attributes
-gui.fvtm.constructor.part_cache.functions=Functions
-gui.fvtm.constructor.part_cache.textures=Def. Textures
-gui.fvtm.constructor.part_cache.install_info=Install Info
 //
 gui.fvtm.constructor.painter.menu_title_block=Block Color Painter
 gui.fvtm.constructor.painter.menu_title_container=Container Color Painter
@@ -215,14 +198,12 @@ tile.fvtm.constructor.color.applied=Color Applied.
 tile.fvtm.constructor.drop.container=Container Dropped.
 tile.fvtm.constructor.drop.vehicle=Vehicle Dropped.
 tile.fvtm.constructor.drop.block=Block Dropped.
-tile.fvtm.constructor.drop.part=Part Cache Emptied.
 tile.fvtm.constructor.drop.all=Contents dropped.
 tile.fvtm.constructor.name.changed=Name Changed.
 tile.fvtm.constructor.lift.adjusted=Lift state adjusted.
 tile.fvtm.constructor.no_container=No Container in Constructor.
 tile.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
 tile.fvtm.constructor.no_block=No Block in Constructor.
-tile.fvtm.constructor.no_part=No Part in Constructor.
 //
 gui.fvtm.overlay.default.no_engine=No Engine installed.
 gui.fvtm.overlay.default.speed=Speed:

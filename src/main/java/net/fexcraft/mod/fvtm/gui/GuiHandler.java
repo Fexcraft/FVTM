@@ -42,8 +42,8 @@ import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
 import net.fexcraft.mod.fvtm.ui.ConstructorMain;
 import net.fexcraft.mod.fvtm.ui.DecoEditor;
-import net.fexcraft.mod.uni.uimpl.UniCon;
-import net.fexcraft.mod.uni.uimpl.UniUI;
+import net.fexcraft.mod.uni.ui.UniCon;
+import net.fexcraft.mod.uni.ui.UniUI;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -145,7 +145,7 @@ public class GuiHandler implements IGuiHandler {
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
 			case DECORATION_EDITOR:{
 				if(DECORATION_CATEGORIES.isEmpty()) return null;
-				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), world, x), player);
+				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), player, x), player);
 			}
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
@@ -207,7 +207,7 @@ public class GuiHandler implements IGuiHandler {
 				case DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json");
-					return new UniUI(new DecoEditor(map, new DecoContainer(map, world, x)), null, player);
+					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), null, player);
 				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//

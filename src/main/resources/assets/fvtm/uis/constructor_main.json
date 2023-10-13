@@ -8,13 +8,35 @@
 			"size": [ 256, 166 ],
 			"pos": [ 0, 0 ],
 			"uv": [ 0, 0 ],
-			"absolute": true
+			"absolute": true,
+			"buttons": [
+				"help", "info"
+			],
+			"texts": [
+				"title"
+			]
 		}
 	},
 	"buttons": {
-
+		"help": {
+			"absolute": "true",
+			"size": [ 9, 9 ],
+			"pos": [ 1, 1 ]
+		},
+		"info": {
+			"absolute": "true",
+			"size": [ 9, 9 ],
+			"pos": [ 12, 1 ]
+		}
 	},
 	"texts": {
-
+		"title": {
+			"absolute": true,
+			"size": [ 224, 8 ],
+			"pos": [ 25, 2 ],
+			"autoscale": true,
+			"color": "000000",
+			"value": "title.fvtm.constructor"
+		}
 	}
 }

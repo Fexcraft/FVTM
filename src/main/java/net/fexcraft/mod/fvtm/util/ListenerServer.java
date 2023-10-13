@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
-import net.fexcraft.mod.uni.impl.MessageSenderI;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

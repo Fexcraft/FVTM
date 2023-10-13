@@ -40,66 +40,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
 	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstConInterface container){
 		switch(packet.getString("cargo")){
-			case "constructor_connect":{
-				boolean auto = packet.getBoolean("Auto");
-				if(!auto){
-					BlockPos pos = BlockPos.fromLong(packet.getLong("BlockPos"));
-					TileEntity tile = world.getTileEntity(pos);
-					if(tile == null){
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile", RGB.RED); return;
-					}
-					if(tile instanceof ConstCenterEntity == false){
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.wrong_type", RGB.RED); return;
-					}
-					ConstCenterEntity centerlift = (ConstCenterEntity)tile;
-					if(centerlift.getLinkPos() != null){
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.already_connected", RGB.BLUE); return;
-					}
-					else{
-						centerlift.setLinkPos(this.getPos(), true); this.setCenterPos(pos);
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK); return;
-					}
-				}
-				else{
-					boolean found = false;
-					BlockPos searchpos;
-					TileEntity searchtile;
-					ConstCenterEntity centertile = null;
-					for(int x = -8; x < 9; x++){ if(found) break;
-						for(int z = -8; z < 9; z++){ if(found) break;
-							for(int y = -1; y < 2; y++){ if(found) break;
-								if(x == 0 && y == 0 && z == 0) continue; searchpos = pos.add(x, y, z);
-								if((searchtile = world.getTileEntity(searchpos)) != null && searchtile instanceof ConstCenterEntity){
-									if((centertile = (ConstCenterEntity)searchtile).getLinkPos() != null) continue;
-									else{
-										found = true;
-										break;
-									}
-								}
-							}
-						}
-					}
-					if(found && centertile != null){
-						centertile.setLinkPos(pos, true);
-						this.setCenterPos(centertile.getPos());
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK);
-						return;
-					}
-					else{
-						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile_found" + (centertile == null ? "_null" : ""), RGB.RED);
-						return;
-					}
-				}
-			}
-			case "constructor_disconnect":{
-				if(center != null){
-					ConstCenterEntity tile = (ConstCenterEntity)world.getTileEntity(center);
-					if(tile != null) tile.setLinkPos(null, true);
-				}
-				setCenterPos(null);
-				container.setTitleText("tile.fvtm.constructor.constructor_disconnect.disconnected", RGB.BLACK);
-				return;
-			}
 			case "part_install":{
 				if(noveh(container)) return;
 				/*PartData data = this.getPartData();
@@ -236,12 +176,17 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return false;
 	}
 
-	private void setCenterPos(BlockPos pos){
-		this.center = pos; if(world.isRemote) return;
+	public void setLiftPos(BlockPos pos){
+		center = pos;
+		if(world.isRemote) return;
 		NBTTagCompound compound = new NBTTagCompound();
 		if(center != null) compound.setLong("CenterPos", center.toLong());
 		if(center == null) compound.setBoolean("CenterReset", true);
 		ApiUtil.sendTileEntityUpdatePacket(world, this.pos, compound);
+	}
+
+	public BlockPos getLiftPos(){
+		return center;
 	}
 
 	public ContainerData getContainerData(){
@@ -450,10 +395,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
 	public void setBlockData(BlockData data, boolean send){
 		this.bdata = data; if(send) this.updateClient("block");
-	}
-
-	public BlockPos getCenterPos(){
-		return center;
 	}
 
 	public void dropIfContainsAnyThing(){

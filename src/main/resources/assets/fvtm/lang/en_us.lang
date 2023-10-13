@@ -18,6 +18,11 @@ tile.fvtm:asphalt.name=FVTM Asphalt
 tile.fvtm:vpinfo.name=Vehicle & Part Info
 
 # Interact
+interact.fvtm.constructor.nolift=No Lift connected. Starting scan...
+interact.fvtm.constructor.liftfound=Connected to Lift at %s, %s, %s
+interact.fvtm.constructor.noliftfound=No free Lift found in range.
+interact.fvtm.constructor_lift.nolink=Lift not connected to a Constructor.
+interact.fvtm.constructor_lift.linked=Connected to Constructor at %s, %s, %s
 interact.fvtm.constructor.vehicle=Vehicle put into Constructor.
 interact.fvtm.constructor.container=Container put into Constructor.
 interact.fvtm.constructor.block=Block put into Constructor.
@@ -29,6 +34,7 @@ gui.fvtm.constructor.lift=Vehicle Lift
 gui.fvtm.constructor.vehicle=Vehicle Parts & Attributes
 gui.fvtm.constructor.appearance=Texture & Color
 gui.fvtm.constructor.welcome=Welcome %s!
+//
 gui.fvtm.constructor.request_sent=Request sent to Server..
 gui.fvtm.constructor.not_available=Not available yet!
 gui.fvtm.constructor.invalid_input=Invalid input / too short.
@@ -183,13 +189,6 @@ gui.fvtm.block_craft.recipe=Current Recipe:
 gui.fvtm.block_craft.choose=Choose Recipe
 gui.fvtm.block_craft.reset=Reset Recipe
 //
-tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
-tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.
-tile.fvtm.constructor.constructor_connect.already_connected=Tile at position has already connection data.
-tile.fvtm.constructor.constructor_connect.no_tile_found_null=No suitable TileEntity found. [tilenull]
-tile.fvtm.constructor.constructor_connect.no_tile_found=No suitable TileEntity found.
-tile.fvtm.constructor.constructor_connect.connected=Tile connected.
-tile.fvtm.constructor.constructor_disconnect.disconnected=Tile connection reset.
 tile.fvtm.constructor.part_remove.not_found_server=Selected Part not found (on server).
 tile.fvtm.constructor.texture.invalid_part=Invalid Part Request.
 tile.fvtm.constructor.texture.invalid_supplied_id=Invalid SUPPLIED ID.

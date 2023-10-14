@@ -17,6 +17,8 @@ import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.Asphalt.AsphaltItem;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -330,6 +332,9 @@ public class ResourcesImpl extends FvtmResources {
 		ConstCenterBlock.ITEM.setRegistryName(ConstCenterBlock.INSTANCE.getRegistryName());
 		ConstCenterBlock.ITEM.setTranslationKey(ConstCenterBlock.INSTANCE.getTranslationKey());
 		GameRegistry.registerTileEntity(ConstCenterEntity.class, new ResourceLocation("fvtm:constructor_lift"));
+		//
+		Asphalt.INSTANCE = new Asphalt();
+		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
 		//
 	}
 

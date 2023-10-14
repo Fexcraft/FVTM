@@ -89,7 +89,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     }
 	
     @SuppressWarnings("deprecation")
-	@Override
+	/*@Override
     public String getItemStackDisplayName(ItemStack stack){
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
     	if(cache.getVehicleData().getDisplayName() != null){
@@ -102,7 +102,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         	if(cache != null) stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
     	}
         return Formatter.format(cache.getVehicleData().getType().getName());
-    }
+    }*///TODO
 
 	private String getTexTitle(VehicleData data){
 		if(data.getSelectedTexture() >= 0){

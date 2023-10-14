@@ -215,9 +215,9 @@ public class ResourcesImpl extends FvtmResources {
 
 	public void createContentItems(){
 		MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), new MaterialItem(mat))));
-		CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ConsumableItem((con)))));
-		PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), new PartItem((part)))));
-		VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), new VehicleItem((veh)))));
+		CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ConsumableItem(con))));
+		PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), new PartItem(part))));
+		VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), new VehicleItem(veh))));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){

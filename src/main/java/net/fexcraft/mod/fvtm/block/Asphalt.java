@@ -31,18 +31,23 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//@fBlock(modid = FVTM.MODID, name = "asphalt", item = Asphalt.AsphaltItem.class, variants = 16)
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Asphalt extends Block {
 	
 	public static Asphalt INSTANCE;
+	public static AsphaltItem ITEM;
 
 	public Asphalt(){
-		super(Material.ROCK, MapColor.BLACK); INSTANCE = this;
-		this.setHarvestLevel("pickaxe", 0);
-		this.setHardness(8.0F);
-		this.setResistance(2000.0F);
-		this.setSoundType(SoundType.STONE);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(HEIGHT, 0));
+		super(Material.ROCK, MapColor.BLACK);
+		setRegistryName("fvtm:asphalt");
+		setTranslationKey(getRegistryName().toString());
+		setHarvestLevel("pickaxe", 0);
+		setHardness(8.0F);
+		setResistance(2000.0F);
+		setSoundType(SoundType.STONE);
+        setDefaultState(blockState.getBaseState().withProperty(HEIGHT, 0));
 	}
 	
     public static final PropertyInteger HEIGHT = PropertyInteger.create("height", 0, 15);
@@ -86,7 +91,7 @@ public class Asphalt extends Block {
 
     @Override
     public IBlockState getStateFromMeta(int meta){
-        return this.getDefaultState().withProperty(HEIGHT, meta);
+        return getDefaultState().withProperty(HEIGHT, meta);
     }
 
     @Override
@@ -104,17 +109,23 @@ public class Asphalt extends Block {
     	if(world.isRemote) return player.getHeldItem(hand).getItem() instanceof AsphaltItem;
     	ItemStack stack = player.getHeldItem(hand);
     	if(stack.getItem() instanceof AsphaltItem && state.getValue(HEIGHT) > 0){
-    		int height = state.getValue(HEIGHT) + stack.getMetadata(); if(height >= 16) height = 0; if(height < 0) height = 0;
+    		int height = state.getValue(HEIGHT) + stack.getMetadata();
+			if(height >= 16) height = 0;
+			if(height < 0) height = 0;
     		world.setBlockState(pos, state.withProperty(HEIGHT, height), 2);
     		if(!player.capabilities.isCreativeMode) stack.shrink(1);
     		return true;
-    	} else return false;
+    	}
+		return false;
     }
     
     public static class AsphaltItem extends ItemBlock16 {
 
 		public AsphaltItem(Block block){
-			super(block); this.setHasSubtypes(true);
+			super(block);
+			setRegistryName("fvtm:asphalt");
+			setTranslationKey(getRegistryName().toString());
+			setHasSubtypes(true);
 		}
 		
 	    @SideOnly(Side.CLIENT) @Override

@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
@@ -65,7 +66,6 @@ import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
 import net.fexcraft.mod.uni.impl.IDLM;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.impl.TagLWI;
-import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -78,6 +78,7 @@ import net.fexcraft.mod.uni.ui.UUIField;
 import net.fexcraft.mod.uni.ui.UUITab;
 import net.fexcraft.mod.uni.ui.UUIText;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -263,8 +264,8 @@ public class FVTM {
 			JunctionToolItem.INSTANCE.setCreativeTab(tab);
 			SignalItem0.INSTANCE.setCreativeTab(tab);
 			TrainAdjuster.INSTANCE.setCreativeTab(tab);
-			RoadToolItem.INSTANCE.setCreativeTab(tab);
-			Asphalt.INSTANCE.setCreativeTab(tab);*/
+			RoadToolItem.INSTANCE.setCreativeTab(tab);*/
+			Asphalt.INSTANCE.setCreativeTab(tab);
 			DecorationItem.INSTANCE.setCreativeTab(tab);
 			//VPInfo.INSTANCE.setCreativeTab(tab);
 			//
@@ -337,17 +338,20 @@ public class FVTM {
 		public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
 			event.getRegistry().register(ConstructorBlock.INSTANCE);
 			event.getRegistry().register(ConstCenterBlock.INSTANCE);
+			event.getRegistry().register(Asphalt.INSTANCE);
 		}
 
 		@SubscribeEvent
 		public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
 			event.getRegistry().register(ConstructorBlock.ITEM);
 			event.getRegistry().register(ConstCenterBlock.ITEM);
+			event.getRegistry().register(Asphalt.ITEM);
 			//
 			event.getRegistry().register(DecorationItem.INSTANCE);
 			if(EnvInfo.CLIENT){
 				regModel(ConstructorBlock.ITEM);
 				regModel(ConstCenterBlock.ITEM);
+				regModel(Asphalt.ITEM, 16);
 				//
 				regModel(DecorationItem.INSTANCE);
 			}
@@ -355,6 +359,12 @@ public class FVTM {
 
 		private void regModel(Item item){
 			net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+		}
+
+		private void regModel(Item item, int vars){
+			for(int v = 0; v < vars; v++){
+				net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName().toString() + "_" + v), "inventory"));
+			}
 		}
 
 	}

@@ -56,18 +56,18 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 		}
 	}
 	
-	/** This for the renderer, better not use elsewhere. */
+	/** This is for the renderer. */
 	@SideOnly(Side.CLIENT)
 	public VehicleData getVehicleData(){
 		return conpos == null ? null : tile == null ? tryLinkV() : tile.getVehicleData();
 	}
 
-	/** This for the renderer, */
+	/** This is for the renderer, */
 	public ContainerData getContainerData(){
 		return conpos == null ? null : tile == null ? tryLinkC() : tile.getContainerData();
 	}
 
-	/** This for the renderer, */
+	/** This is for the renderer, */
 	public BlockData getBlockData(){
 		return conpos == null ? null : tile == null ? tryLinkB() : tile.getBlockData();
 	}
@@ -77,50 +77,32 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 
 	@SideOnly(Side.CLIENT)
 	public void tryLink(){
-		if(conpos == null || world == null){ return; }
-		if(lasttry + 1000 < Time.getSecond()) return;
+		if(conpos == null || world == null) return;
+		if(lasttry + 1000 > Time.getDate()) return;
+		lasttry = Time.getDate();
 		TileEntity ent = world.getTileEntity(conpos);
-		if(ent == null || !(ent instanceof ConstructorEntity)) return;
-		this.tile = (ConstructorEntity)ent; lasttry = Time.getDate();
+		if(ent == null || !(ent instanceof ConstructorEntity)){
+			return;
+		}
+		tile = (ConstructorEntity)ent;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public VehicleData tryLinkV(){
-		tryLink(); return tile == null ? null : tile.getVehicleData();
+		tryLink();
+		return tile == null ? null : tile.getVehicleData();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public ContainerData tryLinkC(){
-		tryLink(); return tile == null ? null : tile.getContainerData();
+		tryLink();
+		return tile == null ? null : tile.getContainerData();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public BlockData tryLinkB(){
-		tryLink(); return tile == null ? null : tile.getBlockData();
-	}
-
-	public void setLinkPos(BlockPos pos, boolean update){
-		this.conpos = pos; if(update) link();
-	}
-
-	private void link(){
-		if(world == null) return;
-		if(conpos == null){
-			this.tile = null; if(world.isRemote) return;
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setBoolean("conpos_reset", true);
-			ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
-		}
-		else{
-			TileEntity ent = world.getTileEntity(conpos);
-			if(ent == null || !(ent instanceof ConstructorEntity)) return;
-			this.tile = (ConstructorEntity)ent;
-			if(!world.isRemote && tile != null){
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setLong("conpos", conpos.toLong());
-				ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
-			} else return;
-		}
+		tryLink();
+		return tile == null ? null : tile.getBlockData();
 	}
 	
 	//
@@ -128,22 +110,23 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
     @Override
     public void processClientPacket(PacketTileEntityUpdate packet){
         if(packet.nbt.hasKey("conpos")){
-        	this.conpos = BlockPos.fromLong(packet.nbt.getLong("conpos"));
-        	this.tryLink();
+        	conpos = BlockPos.fromLong(packet.nbt.getLong("conpos"));
+        	tryLink();
         }
         if(packet.nbt.hasKey("conpos_reset") && packet.nbt.getBoolean("conpos_reset")){
-        	this.conpos = null; this.tile = null;
+        	conpos = null;
+			tile = null;
         }
     }
 
     @Override
     public SPacketUpdateTileEntity getUpdatePacket(){
-        return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
+        return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
     }
 
     @Override
     public NBTTagCompound getUpdateTag(){
-        return this.writeToNBT(new NBTTagCompound());
+        return writeToNBT(new NBTTagCompound());
     }
 
     @Override

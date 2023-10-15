@@ -264,8 +264,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	}
 
 	public void updateClient(String type){
+		markDirty();
     	if(type == null){
-        	ApiUtil.sendTileEntityUpdatePacket(world, pos, this.writeToNBT(new NBTTagCompound()));
+        	ApiUtil.sendTileEntityUpdatePacket(world, pos, writeToNBT(new NBTTagCompound()));
         	return;
     	}
     	NBTTagCompound compound = new NBTTagCompound();
@@ -297,7 +298,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     		}
     		//
     		default: return;
-    	} this.markDirty();//checking stuff
+    	}
     	ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
     }
 
@@ -320,7 +321,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			else compound.setBoolean("VehicleDataReset", true);
 		if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
 		else compound.setBoolean("BlockDataReset", true);
-        if(center != null){ compound.setLong("Center", center.toLong()); }
+        if(center != null){
+			compound.setLong("Center", center.toLong());
+		}
         compound.setFloat("LiftState", liftstate);
         return compound;
     }
@@ -362,30 +365,39 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     }
 
 	public void dropContainer(boolean update){
-		if(cdata == null) return; this.dropItem(cdata.newItemStack());
-		this.cdata = null; if(update) this.updateClient("containerdata");
+		if(cdata == null) return;
+		dropItem(cdata.newItemStack());
+		cdata = null;
+		if(update) updateClient("containerdata");
 	}
 
 	public void dropVehicle(boolean update){
-		if(vdata == null) return; this.dropItem(vdata.newItemStack().local());
-		this.vdata = null; if(update) this.updateClient("vehicledata");
+		if(vdata == null) return;
+		dropItem(vdata.newItemStack().local());
+		vdata = null;
+		if(update)updateClient("vehicledata");
 	}
 
 	public void dropBlock(boolean update){
-		if(bdata == null) return; this.dropItem(bdata.newItemStack());
-		this.bdata = null; if(update) this.updateClient("blockdata");
+		if(bdata == null) return;
+		dropItem(bdata.newItemStack());
+		bdata = null;
+		if(update) updateClient("blockdata");
 	}
 
 	public void setContainerData(ContainerData data, boolean send){
-		this.cdata = data; if(send) this.updateClient("container");
+		cdata = data;
+		if(send) updateClient("container");
 	}
 
 	public void setVehicleData(VehicleData data, boolean send){
-		this.vdata = data; if(send) this.updateClient("vehicle");
+		vdata = data;
+		if(send) updateClient("vehicle");
 	}
 
 	public void setBlockData(BlockData data, boolean send){
-		this.bdata = data; if(send) this.updateClient("block");
+		bdata = data;
+		if(send) updateClient("block");
 	}
 
 	public void dropIfContainsAnyThing(){

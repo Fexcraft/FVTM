@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
-import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -21,7 +20,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
-@fTESR
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCenterEntity> {
 	
 	public static final ResourceLocation lifttexture = new ResourceLocation("fvtm:textures/blocks/constructor_lift.png");
@@ -32,7 +33,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         TexUtil.bindTexture(lifttexture);
         GL11.glPushMatrix();
-        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        //GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         Float offrot = 60f;
         switch(tile.getBlockMetadata()){
             case 2: offrot = 0f; break;
@@ -40,10 +41,13 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             case 4: offrot = - 90f; break;
             case 5: offrot = -270f; break;
         }
-        GL11.glRotated(offrot, 0, 1, 0); offrot = null; GL11.glRotated(90, 0, 1D, 0);
-        boolean vehicle = tile.getVehicleData() != null;
+        GL11.glRotated(offrot, 0, 1, 0);
+		offrot = null;
+		GL11.glRotated(90, 0, 1D, 0);
+		VehicleData vdata = tile.getVehicleData();
+        boolean vehicle = vdata != null;
         //
-        if(vehicle && tile.getVehicleData().getAttribute("constructor_show").asBoolean()){
+        if(vehicle && vdata.getAttribute("constructor_show").asBoolean()){
             if(tile.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	GL11.glPushMatrix();
             	tile.updateLiftState();
@@ -86,39 +90,38 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         }
         //
         if(vehicle){
-            VehicleData vehicledata = tile.getVehicleData();
-            if(offrot != null){ GL11.glTranslated(0, -offrot, 0); }
-            Model modvec = vehicledata.getType().getModel();
+            if(offrot != null) GL11.glTranslated(0, -offrot, 0);
+            Model modvec = vdata.getType().getModel();
             try{
                 if(modvec != null){
-                    TexUtil.bindTexture(vehicledata.getCurrentTexture());
+                    TexUtil.bindTexture(vdata.getCurrentTexture());
                     float[] heightoffset = { 0 };
-                    if(vehicledata.getType().getVehicleType().isRailVehicle() && !vehicledata.getWheelPositions().isEmpty()){
-                    	vehicledata.getWheelPositions().values().forEach(cons -> {
+                    if(vdata.getType().getVehicleType().isRailVehicle() && !vdata.getWheelPositions().isEmpty()){
+                    	vdata.getWheelPositions().values().forEach(cons -> {
                     		heightoffset[0] += -cons.y;
                     	});
-                    	heightoffset[0] /= vehicledata.getWheelPositions().size();
+                    	heightoffset[0] /= vdata.getWheelPositions().size();
                     }
-                    if(!vehicledata.getType().getVehicleType().isRailVehicle()) heightoffset[0] += tile.getLiftState();
-                    GL11.glTranslated(0, heightoffset[0], 0);
-                    modvec.render(RENDERDATA.set(vehicledata, null, null, false));
-                    vehicledata.getParts().forEach((key, partdata) -> {
+                    if(!vdata.getType().getVehicleType().isRailVehicle()) heightoffset[0] += tile.getLiftState();
+                    GL11.glTranslated(0, -heightoffset[0], 0);
+                    modvec.render(RENDERDATA.set(vdata, null, null, false));
+                    vdata.getParts().forEach((key, partdata) -> {
                         TexUtil.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
-                    		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-	                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key, false));
+                    		PartModel.translateAndRotatePartOnSwivelPointFast(vdata, partdata);
+	                        partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false));
             	            GL11.glPopMatrix();
                     	}
                     	else{
 							GLUtils112.translate(partdata.getInstalledPos());
                     		partdata.getInstalledRot().rotate112();
-                    		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, null, partdata, key, false));
+                    		partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false));
                     		partdata.getInstalledRot().rotate112R();
 							GLUtils112.translateR(partdata.getInstalledPos());
                     	}
                     });
-                    GL11.glTranslated(0, heightoffset[0] - tile.getLiftState(), 0);
+                    GL11.glTranslated(0, heightoffset[0] + tile.getLiftState(), 0);
                 }
             }
             catch(Exception e){

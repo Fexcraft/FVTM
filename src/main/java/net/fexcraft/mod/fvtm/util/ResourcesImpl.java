@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
+import net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
@@ -336,6 +337,9 @@ public class ResourcesImpl extends FvtmResources {
 		Asphalt.INSTANCE = new Asphalt();
 		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
 		//
+		if(EnvInfo.CLIENT){
+			net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstCenterEntity.class, new ConstructorCenterRenderer());
+		}
 	}
 
 	@Override

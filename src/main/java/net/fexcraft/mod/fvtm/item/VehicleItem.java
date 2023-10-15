@@ -112,7 +112,8 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 
 	//@Override
 	public VehicleData getData(ItemStack stack){
-		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+		return getData(stack.getTagCompound());
 	}
 
 	//@Override

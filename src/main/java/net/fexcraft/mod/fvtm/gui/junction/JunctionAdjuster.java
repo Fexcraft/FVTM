@@ -1,16 +1,13 @@
 package net.fexcraft.mod.fvtm.gui.junction;
 
-import static net.fexcraft.lib.mc.utils.Formatter.format;
+import static net.fexcraft.lib.common.utils.Formatter.format;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 
-import net.fexcraft.lib.common.math.V3D;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
@@ -28,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
 public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	

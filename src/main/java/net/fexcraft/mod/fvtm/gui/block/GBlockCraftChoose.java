@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.gui.block;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.OutputWrapper;

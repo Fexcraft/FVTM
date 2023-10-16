@@ -4,7 +4,7 @@ import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.*;
 
 import java.util.ArrayList;
 
-import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;

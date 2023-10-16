@@ -6,8 +6,8 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;

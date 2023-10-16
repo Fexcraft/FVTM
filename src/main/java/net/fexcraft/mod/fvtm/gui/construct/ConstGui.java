@@ -12,11 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-import org.lwjgl.input.Keyboard;
-
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.resources.I18n;
@@ -25,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.input.Keyboard;
 
 public class ConstGui extends GenericGui<ConstContainer> {
 	

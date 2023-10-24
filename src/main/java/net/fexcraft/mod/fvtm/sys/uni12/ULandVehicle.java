@@ -38,12 +38,14 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.sys.uni.Axle;
 import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -112,7 +114,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     //
     //
     public ArrayList<Axle> axles = new ArrayList<>();
-    public ArrayList<WTD> wheeldata = new ArrayList<>();
+    public ArrayList<WheelTireData> wheeldata = new ArrayList<>();
     public Axle front, rear;
     public double wheelbase, cg_height;
     public float wheel_radius;
@@ -186,7 +188,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
 	private void setupAxles(){
 		axles.clear();
-        for(WTD wheel : wheeldata){
+        for(WheelTireData wheel : wheeldata){
         	Axle axle = null;
         	if(axles.stream().anyMatch(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y)){
         		axle = axles.stream().filter(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y).findFirst().get();
@@ -223,7 +225,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		wheeldata.clear();
 		wheel_radius = 0;
         for(Entry<String, V3D> entry : vehicle.getWheelPositions().entrySet()){
-        	WTD wheel = new WTD(entry.getKey());
+        	WheelTireData wheel = new WheelTireData(entry.getKey());
         	wheel.pos = entry.getValue();
         	PartData part = vehicle.getPart(entry.getKey());
         	if(!((WheelData)part.getType().getInstallHandlerData()).hasTire()){
@@ -980,7 +982,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         //
         for(WheelEntity wheel : wheels){
             if(wheel == null){ continue; }
-            WTD wheeldata = getWheelData(wheel.getIndex());
+            WheelTireData wheeldata = getWheelData(wheel.getIndex());
             wheel.onGround = true;
             wheel.rotationYaw = rotpoint.getPivot().deg_yaw();
             /*if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
@@ -1187,8 +1189,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		return (int)speed;
 	}
 
-	public WTD getWheelData(String index){
-		for(WTD wheel : wheeldata){
+	public WheelTireData getWheelData(String index){
+		for(WheelTireData wheel : wheeldata){
 			if(wheel.id.equals(index)) return wheel;
 		}
 		return null;

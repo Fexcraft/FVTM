@@ -6,8 +6,8 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
-import net.fexcraft.mod.fvtm.sys.uni12.WTD;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -54,7 +54,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         setPosition(vehicle.posX, vehicle.posY, vehicle.posZ);
         slot = vehicle.getVehicleData().getWheelSlots().get(getIndex());
         if(vehicle instanceof ULandVehicle){
-            WTD wtd = ((ULandVehicle)vehicle).getWheelData(getIndex());
+            WheelTireData wtd = ((ULandVehicle)vehicle).getWheelData(getIndex());
             stepHeight = wtd == null ? 0 : wtd.function.step_height;
         }
         else{
@@ -88,7 +88,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     	}
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         if(vehicle instanceof ULandVehicle){
-            WTD wtd = ((ULandVehicle)vehicle).getWheelData(index);
+            WheelTireData wtd = ((ULandVehicle)vehicle).getWheelData(index);
             stepHeight = wtd == null ? 0 : wtd.function.step_height;
         }
         else{

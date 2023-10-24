@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.uni.world.EntityWI;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.minecraft.entity.Entity;
@@ -97,7 +98,7 @@ public class SeatCache {
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
-                	if(!seatdata.allow(entity)){
+                	if(!seatdata.allow(new EntityWI(entity))){
                 		Print.bar(player, "&eSeat does not accept this entity kind. (" + entity.getName() + ")");
                 		continue;
                 	}
@@ -112,7 +113,7 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
-        	if(!seatdata.allow(player)){
+        	if(!seatdata.allow(new EntityWI(player))){
         		Print.bar(player, "&eSeat does not accept players as passengers.");
         		return false;
         	}
@@ -161,7 +162,7 @@ public class SeatCache {
 
 
 	public V3D getFreshPosition(){
-        V3D relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+        V3D relpos = point.getRelativeVector(seatdata.pos);
 		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);
 	}
 

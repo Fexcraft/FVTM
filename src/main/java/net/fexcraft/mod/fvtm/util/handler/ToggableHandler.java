@@ -208,7 +208,7 @@ public class ToggableHandler {
 			SeatCache ent = ((GenericVehicle)entity).seats[i];
 			if(ent == null || ent.passenger() == null){
 				SwivelPoint point = entity.getVehicleData().getRotationPoint(seat.swivel_point);
-				temp1 = point.getRelativeVector(seat.x, seat.y, seat.z);
+				temp1 = point.getRelativeVector(seat.pos);
 				temp1 = temp1.add(entity.getEntity().posX, entity.getEntity().posY, entity.getEntity().posZ);
 				AxisAlignedBB aabb = NULBB.offset(temp1.x, temp1.y, temp1.z).grow(SBBS * seat.scale());
 				for(float f = 0; f < 4; f += Static.sixteenth / 2){

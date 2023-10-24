@@ -244,14 +244,14 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 			root.seat().onKeyPress(KeyPress.DISMOUNT, player);
 		}
 		if(isKeyDown(KeyHandler.openInventory.getKeyCode())){
-			root.resetview = false;
+			//root.resetview = false;
 			root.seat().onKeyPress(KeyPress.INVENTORY, player);
 		}
 		if(isKeyDown(KeyHandler.doorToggle.getKeyCode())){
 			root.seat().onKeyPress(KeyPress.TOGGABLES, player);
 		}
 		if(isKeyDown(KeyHandler.scriptsGUI.getKeyCode())){
-			root.resetview = false;
+			//root.resetview = false;
 			root.seat().onKeyPress(KeyPress.SCRIPTS, player);
 		}
 		if(isKeyDown(KeyHandler.lightsToggle.getKeyCode())){

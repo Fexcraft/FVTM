@@ -3,8 +3,12 @@ package net.fexcraft.mod.uni.world;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,6 +36,27 @@ public class EntityWI extends EntityW {
 	@Override
 	public WorldW getWorld(){
 		return world;
+	}
+
+	@Override
+	public boolean isPlayer(){
+		return entity instanceof EntityPlayer;
+	}
+
+	@Override
+	public boolean isAnimal(){
+		return entity instanceof EntityAnimal;
+	}
+
+	@Override
+	public boolean isHostile(){
+		return entity instanceof EntityMob;
+	}
+
+	@Override
+	public String getRegName(){
+		EntityEntry entry = EntityRegistry.getEntry(entity.getClass());
+		return entry == null ? "minecraft:null" : entry.getRegistryName().toString();
 	}
 
 	@Override

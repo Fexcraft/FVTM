@@ -34,7 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SeatCache {
 	
-    public int vehicleid, seatindex;
+    //public int vehicleid;
+	public int seatindex;
     public GenericVehicle vehicle;
     private Entity passenger;
     protected SwivelPoint point;
@@ -53,7 +54,7 @@ public class SeatCache {
 	public SeatCache(GenericVehicle veh, int index){
 		vehicle = veh;
 		seatindex = index;
-        vehicleid = veh.getEntityId();
+        //vehicleid = veh.getEntityId();
     	seatdata = veh.getVehicleData().getSeats().get(index);
         point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
         resetAxes();

@@ -30,7 +30,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	private static AddonSteeringOverlay overlay;
 	private static VehicleSteeringOverlay instance;
 	private SeatCache seat;
-	public boolean toggables, resetview, uni12;
+	public boolean toggables, /*resetview,*/ uni12;
 	public static int oldview;// TODO replace to something fps independent
 
 	public VehicleSteeringOverlay(EntityPlayerSP player){
@@ -55,9 +55,9 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public void initGui(){
 		// TODO see about alternative camera
 		toggables = false;
-		if(resetview) oldview = mc.gameSettings.thirdPersonView;
-		resetview = true;
-		mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(oldview, false);
+		//if(resetview) oldview = mc.gameSettings.thirdPersonView;
+		//resetview = true;
+		//mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(oldview, false);
 		overlay.init();
 	}
 	
@@ -77,13 +77,13 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public void onGuiClosed(){
 		mc.mouseHelper.ungrabMouseCursor();
 		mc.setRenderViewEntity(mc.player);
-		if(resetview) resetView();
+		//if(resetview) resetView();
 		overlay.guiClosed();
 	}
 
 	public void resetView(){
-		net.minecraft.client.Minecraft.getMinecraft().gameSettings.thirdPersonView = oldview;
-		resetview = true;
+		//net.minecraft.client.Minecraft.getMinecraft().gameSettings.thirdPersonView = oldview;
+		//resetview = true;
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				return;
 			}
 			case 63:{
-				mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(mc.gameSettings.thirdPersonView, true);
+				////mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(mc.gameSettings.thirdPersonView, true);
 				/*if(mc.gameSettings.thirdPersonView == 1){
 					mc.setRenderViewEntity(mc.player);
 				}
@@ -139,18 +139,18 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				break;
 		}
 		if(i == mc.gameSettings.keyBindInventory.getKeyCode()){
-			resetview = false;
+			//resetview = false;
 			mc.displayGuiScreen(new GuiInventory(mc.player));
 		}
 		if(i == mc.gameSettings.keyBindDrop.getKeyCode()){
 			mc.player.getHeldItem(EnumHand.MAIN_HAND);
 		}
 		if(i == mc.gameSettings.keyBindChat.getKeyCode()){
-			resetview = false;
+			//resetview = false;
 			mc.displayGuiScreen(new GuiChat());
 		}
 		if(i == mc.gameSettings.keyBindCommand.getKeyCode()){
-			resetview = false;
+			//resetview = false;
 			mc.displayGuiScreen(new GuiChat("/"));
 		}
 	}

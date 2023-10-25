@@ -29,4 +29,11 @@ public class MessageSenderI implements MessageSender {
 		else send(s);
 	}
 
+	@Override
+	public void dismount(){
+		if(sender.getCommandSenderEntity() != null){
+			sender.getCommandSenderEntity().dismountRidingEntity();
+		}
+	}
+
 }

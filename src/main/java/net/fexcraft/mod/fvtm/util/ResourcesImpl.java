@@ -51,6 +51,7 @@ import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -237,6 +238,11 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public StackWrapper newStack(ItemWrapper item){
 		return new SWI(item);
+	}
+
+	@Override
+	public StackWrapper newStack(Object local){
+		return new SWI((ItemStack)local);
 	}
 
 	@Override

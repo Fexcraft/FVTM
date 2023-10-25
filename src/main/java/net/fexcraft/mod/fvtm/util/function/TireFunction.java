@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
-import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler.TireData;
+import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;

@@ -35,10 +35,19 @@ public class NLandVehicle extends RootVehicle {
 		init();
 	}
 
-	private void init(){
-		boolean remote = world.isRemote;
+	public NLandVehicle(NLandVehicle truck, VehicleData data, EntityPlayer placer){
+		this(truck.world, data, truck.getPositionVector(), placer, 0);
+		vehicle.front = truck.vehicle;
+		truck.vehicle.rear = vehicle;
+		vehicle.point.updatePrevAxe();
+		vehicle.point.getPivot().copy(truck.vehicle.point.getPivot());
+	}
+
+	@Override
+	protected void init(){
 		spdata = vehicle.data.getType().getSphData();
-		//
+		stepHeight = spdata.wheel_step_height;
+		super.init();
 	}
 
 }

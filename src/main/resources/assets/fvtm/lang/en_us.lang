@@ -29,6 +29,9 @@ interact.fvtm.constructor.block=Block put into Constructor.
 interact.fvtm.constructor.no_container=No Container in Constructor.
 interact.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
 interact.fvtm.constructor.no_block=No Block in Constructor.
+//
+interact.fvtm.vehicle.locked=Vehicle is locked.
+interact.fvtm.vehicle.engine_on=Please turn the engine off first!
 
 # GUIs
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.

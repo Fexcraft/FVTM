@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
-import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
+import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

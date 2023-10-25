@@ -1,27 +1,47 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
+import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
+
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityWI;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -37,6 +57,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public AxisAlignedBB renderbox;
 	public float prevRotationRoll = 0;
 	public float wheel_radius = 0;
+	//
+	public double serverX;
+	public double serverY;
+	public double serverZ;
+	public double serverYaw;
+	public double serverPitch;
+	public double serverRoll;
+	public byte server_sync;
 
 	public RootVehicle(World world){
 		super(world);
@@ -148,6 +176,162 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			e.printStackTrace();
 			FvtmLogger.LOGGER.log("Failed to receive additional spawn data for vehicle entity with ID " + getEntityId() + "!");
 		}
+	}
+
+	@Override
+	public void setDead(){
+		if(Config.VEHICLES_DROP_CONTENTS && !world.isRemote){
+			//TODO drop inventory contents
+		}
+		super.setDead();
+		if(!wheels.isEmpty()){
+			for(NWheelEntity wheel : wheels) wheel.setDead();
+		}
+		//TODO vehicle removal script/event
+		if(vehicle.front != null) vehicle.front.rear = null;
+		if(vehicle.rear != null) vehicle.rear.front = null;
+	}
+
+	public void setPosRotMot(double px, double py, double pz, double yaw, double pit, double rol, double thr, double steer, int fuel){
+		serverX = px;
+		serverY = py;
+		serverZ = pz;
+		serverYaw = yaw;
+		serverPitch = pit;
+		serverRoll = rol;
+		server_sync = Config.VEHICLE_SYNC_RATE;
+		vehicle.throttle = thr;
+		vehicle.data.getAttribute("fuel_stored").set(fuel);
+	}
+
+	//-- General Vanilla --//
+
+	@Override
+	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
+		//
+	}
+
+	@Override
+	protected boolean canTriggerWalking(){
+		return false;
+	}
+
+	@Override
+	public AxisAlignedBB getCollisionBox(Entity entity){
+		return null;
+	}
+
+	@Override
+	public AxisAlignedBB getEntityBoundingBox(){
+		return super.getEntityBoundingBox();
+	}
+
+	@Override
+	public boolean isNonBoss(){
+		return true;
+	}
+
+	@Override
+	public boolean canBePushed(){
+		return false;
+	}
+
+	@Override
+	public double getMountedYOffset(){
+		return 0;
+	}
+
+	@Override
+	public SoundCategory getSoundCategory(){
+		return SoundCategory.NEUTRAL;
+	}
+
+	@Override
+	public double getYOffset(){
+		return 0;
+	}
+
+	@Override
+	public void onCollideWithPlayer(EntityPlayer player){
+		//
+	}
+
+	@Override
+	public boolean canBeCollidedWith(){
+		return true;
+	}
+
+	@Override
+	public void fall(float distance, float multiplier){
+		//
+	}
+
+	@Override
+	public String getName(){
+		return vehicle.data.getName();
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean isInRangeToRenderDist(double dist){
+		return RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
+	}
+
+	@Nullable
+	public AxisAlignedBB getCollisionBoundingBox(){
+		return this.getCollisionBox(this);
+	}
+
+	//-- General Vanilla END --//
+
+	@Override
+	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
+		if(isDead || hand == EnumHand.OFF_HAND) return false;
+		ItemStack stack = player.getHeldItemMainhand();
+		StackWrapper wrapper = FvtmResources.INSTANCE.newStack(stack);
+		if(world.isRemote){
+			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return true;
+			if(Lockable.isKey(wrapper.getItem())) return true;
+			if(vehicle.data.getLock().isLocked()){
+				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
+				return true;
+			}
+			return true;
+		}
+		if(Lockable.isKey(wrapper.getItem())){
+			vehicle.data.getLock().toggle(player.getCapability(PASSENGER, null).asSender(), wrapper);
+			//TODO send lock state update
+			return true;
+		}
+		if(!stack.isEmpty()){
+			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
+				//TODO open fuel ui
+				return true;
+			}
+			else if(stack.getItem() instanceof VehicleItem){
+				//TODO check if trailer and connect
+				return true;
+			}
+			else if(stack.getItem() instanceof ContainerItem){
+				//TODO open container ui
+				return true;
+			}
+			else{
+				if(vehicle.data.hasPart("engine") && vehicle.data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+					player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.engine_on"), true);
+				}
+				else{
+					//TODO open vehicle main ui
+				}
+				return true;
+			}
+		}
+		if(vehicle.data.getLock().isLocked()){
+			player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
+			return true;
+		}
+		//TODO script interact event
+		return false;
 	}
 
 }

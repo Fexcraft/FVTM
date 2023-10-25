@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
+import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
@@ -71,9 +71,9 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
-import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
@@ -343,7 +343,7 @@ public class Resources {
 			}
 		}
 		if(event.getObject() instanceof EntityLivingBase){
-			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerCapHandler(event.getObject()));
+			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerSerializer(event.getObject()));
 		}
 		if(event.getObject().world.isRemote && event.getObject() instanceof Decoration){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
@@ -435,7 +435,7 @@ public class Resources {
 		}
 		if(event.player.world != null && !event.player.world.isRemote){
 			NBTTagCompound cfgsync = new NBTTagCompound();
-			cfgsync.setInteger("u12_sync_rate", U12_SYNC_RATE);
+			cfgsync.setInteger("u12_sync_rate", VEHICLE_SYNC_RATE);
 			cfgsync.setString("task", "config_sync");
 			cfgsync.setString("target_listener", Resources.UTIL_LISTENER);
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);

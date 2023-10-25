@@ -52,7 +52,7 @@ import net.fexcraft.mod.fvtm.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
-import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
+import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;

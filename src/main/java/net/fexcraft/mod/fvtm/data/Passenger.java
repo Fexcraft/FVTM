@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.entity.Entity;
 
 public interface Passenger {
@@ -15,5 +16,7 @@ public interface Passenger {
 	public void update_packet();
 
 	public void reconn(boolean skipcheck);
+
+	public MessageSender asSender();
 
 }

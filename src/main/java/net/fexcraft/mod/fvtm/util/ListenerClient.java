@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.U12_SYNC_RATE;
+import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 
 import java.util.UUID;
 
@@ -45,7 +45,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			case "config_sync":{
-				ULandVehicle.SYNC_RATE = packet.nbt.hasKey("u12_sync_rate") ? packet.nbt.getInteger("u12_sync_rate") : U12_SYNC_RATE;
+				//
 				return;
 			}
 			case "lock_state":{

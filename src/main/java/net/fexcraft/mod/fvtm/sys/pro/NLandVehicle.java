@@ -12,7 +12,7 @@ import net.minecraft.world.World;
  */
 public class NLandVehicle extends RootVehicle {
 
-	protected SimplePhysData spdata;
+	public SimplePhysData spdata;
 
 	public NLandVehicle(World world){
 		super(world);

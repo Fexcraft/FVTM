@@ -60,6 +60,17 @@ public class EntityWI extends EntityW {
 	}
 
 	@Override
+	public <E> E local(){
+		return (E)entity;
+	}
+
+	@Override
+	public void decreaseXZMotion(double x){
+		entity.motionX *= x;
+		entity.motionZ *= x;
+	}
+
+	@Override
 	public void send(String s){
 		entity.sendMessage(new TextComponentString(Formatter.format(I18n.format(s))));
 	}
@@ -70,6 +81,11 @@ public class EntityWI extends EntityW {
 			((EntityPlayer)entity.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(I18n.format(s))), true);
 		}
 		else entity.sendMessage(new TextComponentString(Formatter.format(s)));
+	}
+
+	@Override
+	public void dismount(){
+		entity.dismountRidingEntity();
 	}
 
 }

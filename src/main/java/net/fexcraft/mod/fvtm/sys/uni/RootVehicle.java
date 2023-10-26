@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
@@ -53,7 +53,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public WheelTireData w_front_r;
 	public WheelTireData w_rear_l;
 	public WheelTireData w_rear_r;
-	public ArrayList<NWheelEntity> wheels = new ArrayList<>();
+	public HashMap<String, NWheelEntity> wheels = new HashMap<>();
 	public AxisAlignedBB renderbox;
 	public float prevRotationRoll = 0;
 	public float wheel_radius = 0;
@@ -185,7 +185,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		}
 		super.setDead();
 		if(!wheels.isEmpty()){
-			for(NWheelEntity wheel : wheels) wheel.setDead();
+			for(NWheelEntity wheel : wheels.values()) wheel.setDead();
 		}
 		//TODO vehicle removal script/event
 		if(vehicle.front != null) vehicle.front.rear = null;
@@ -332,6 +332,40 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		}
 		//TODO script interact event
 		return false;
+	}
+
+	@Override
+	public void onUpdate(){
+		super.onUpdate();
+		if(isDead) return;
+		if(vehicle.data == null){
+			FvtmLogger.LOGGER.log("Vehicle '" + getEntityId() + "' has no data, skipping update.");
+			return;
+		}
+		if(!world.isRemote){
+			for(Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
+				if(!wheels.containsKey(entry.getKey()) || !wheels.get(entry.getKey()).addedToChunk){
+					wheels.put(entry.getKey(), new NWheelEntity(this, entry.getKey()));
+					world.spawnEntity(wheels.get(entry.getKey()));
+				}
+			}
+		}
+		prevRotationYaw = vehicle.point.getPivot().deg_yaw();
+		prevRotationPitch = vehicle.point.getPivot().deg_pitch();
+		prevRotationRoll = vehicle.point.getPivot().deg_roll();
+		vehicle.point.updatePrevAxe();
+		ticksExisted++;
+		if(ticksExisted >= Integer.MAX_VALUE) ticksExisted = 0;
+		if(vehicle.toggable_timer > 0) vehicle.toggable_timer--;
+		//
+		vehicle.checkSteerAngle(world.isRemote);
+		if(world.isRemote){
+			if(server_sync > 0){
+				double x = posX + (serverX - posX) / server_sync;
+				double y = posY + (serverY - posY) / server_sync;
+				double z = posZ + (serverZ - posZ) / server_sync;
+			}
+		}
 	}
 
 }

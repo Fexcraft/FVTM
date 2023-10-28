@@ -754,7 +754,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	            if(wheel == null){ continue; }
 	            onGround = true; wheel.onGround = true;
 	            wheel.rotationYaw = rotpoint.getPivot().deg_yaw();
-	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+	            if(!vehicle.getType().isTracked() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 	                wheel.rotationYaw += wheelsYaw;
 	            }
 	            wheel.motionX *= 0.9F;

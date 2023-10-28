@@ -1,7 +1,11 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
+import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
+import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -24,12 +28,14 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityWI;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -55,8 +61,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public WheelTireData w_rear_r;
 	public HashMap<String, NWheelEntity> wheels = new HashMap<>();
 	public AxisAlignedBB renderbox;
+	public float rotationRoll = 0;
 	public float prevRotationRoll = 0;
 	public float wheel_radius = 0;
+	public float wheel_rotation = 0;
 	//
 	public double serverX;
 	public double serverY;
@@ -64,6 +72,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public double serverYaw;
 	public double serverPitch;
 	public double serverRoll;
+	public double serverSteer;
 	public byte server_sync;
 
 	public RootVehicle(World world){
@@ -199,6 +208,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		serverYaw = yaw;
 		serverPitch = pit;
 		serverRoll = rol;
+		serverSteer = steer;
 		server_sync = Config.VEHICLE_SYNC_RATE;
 		vehicle.throttle = thr;
 		vehicle.data.getAttribute("fuel_stored").set(fuel);
@@ -364,8 +374,94 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				double x = posX + (serverX - posX) / server_sync;
 				double y = posY + (serverY - posY) / server_sync;
 				double z = posZ + (serverZ - posZ) / server_sync;
+				double yw = valDeg(serverYaw - vehicle.pivot().deg_yaw());
+				double pt = valDeg(serverPitch - vehicle.pivot().deg_pitch());
+				double rl = valDeg(serverRoll - vehicle.pivot().deg_roll());
+				rotationYaw = (float)(vehicle.pivot().deg_yaw() + yw / server_sync);
+				rotationPitch = (float)(vehicle.pivot().deg_pitch() + pt / server_sync);
+				rotationRoll = (float)(vehicle.pivot().deg_roll() + rl / server_sync);
+				vehicle.steer_yaw = (serverSteer - vehicle.steer_yaw) / server_sync;
+				server_sync--;
+				setPosition(x, y, z);
+				vehicle.pivot().set_rotation(rotationYaw, rotationPitch, rotationRoll, true);
+			}
+			vehicle.data.setAttribute("steering_angle", vehicle.steer_yaw);
+			wheel_rotation = valDegF(wheel_rotation + (vehicle.throttle * wheel_radius));
+			vehicle.data.setAttribute("wheel_angle", wheel_rotation);
+			vehicle.data.setAttribute("throttle", vehicle.throttle);
+			vehicle.data.setAttribute("speed", vehicle.speed);
+		}
+		for(NWheelEntity wheel : wheels.values()){
+			if(wheel == null) continue;
+			wheel.prevPosX = wheel.posX;
+			wheel.prevPosY = wheel.posY;
+			wheel.prevPosZ = wheel.posZ;
+		}
+		EntityPlayer driver = getDriver();
+		if(!world.isRemote){
+			boolean creative = driver != null && driver.capabilities.isCreativeMode;
+			if(driver == null || (!creative && vehicle.data.outoffuel())){
+				vehicle.throttle *= 0.98;
+			}
+			move(!VEHICLES_NEED_FUEL || creative);
+			if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
+		}
+		else{
+			vehicle.speed = MathUtils.calcSpeed(posX, posY, posZ, prevPosX, prevPosY, prevPosZ);
+		}
+	}
+
+	private void move(boolean needsfuel){
+		onGround = true;
+		V3D move = new V3D();
+		if(vehicle.data.getType().isTrailer()){
+			for(NWheelEntity wheel : wheels.values()){
+				wheel.onGround = true;
+				wheel.rotationYaw = vehicle.pivot().deg_yaw();
+				if(!vehicle.data.getType().isTracked() && wheel.wheel.steering){
+					wheel.rotationYaw += vehicle.steer_yaw;
+				}
+				wheel.motionX *= 0.9;
+				wheel.motionY *= 0.9;
+				wheel.motionZ *= 0.9;
+				wheel.motionY -= GRAVITY_20th;
+				wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+				V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+				V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
+				if(dest.length() > 0.001){
+					wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
+					dest.scale(0.5);
+					move.sub(dest);
+				}
+			}
+			move(MoverType.SELF, move.x, move.y, move.z);
+		}
+		else{
+			if(vehicle.type.isWaterVehicle()){
+				//TODO
+			}
+			else{
+				EngineFunction engine = vehicle.data.getFunctionInPart("engine", "fvtm:engine");
+				boolean consumed = engine != null && vehicle.consumeFuel(engine);
 			}
 		}
+	}
+
+	/** for trailers */
+	private void align(){
+		//
+	}
+
+	/**
+	 * @return first found Player passenger in a driver's seat
+	 */
+	public EntityPlayer getDriver(){
+		for(SeatInstance seat : vehicle.seats){
+			if(seat.seat.driver && seat.passenger().direct() instanceof EntityPlayer){
+				return seat.passenger().local();
+			}
+		}
+		return null;
 	}
 
 }

@@ -60,14 +60,19 @@ public class EntityWI extends EntityW {
 	}
 
 	@Override
+	public void decreaseXZMotion(double x){
+		entity.motionX *= x;
+		entity.motionZ *= x;
+	}
+
+	@Override
 	public <E> E local(){
 		return (E)entity;
 	}
 
 	@Override
-	public void decreaseXZMotion(double x){
-		entity.motionX *= x;
-		entity.motionZ *= x;
+	public Object direct(){
+		return entity;
 	}
 
 	@Override

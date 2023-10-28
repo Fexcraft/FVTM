@@ -130,7 +130,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(vehdata.hasPart("engine")){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
 				if(CMODE() || processConsumption(engine)){
-					double eng = throttle * engine.getLegacyEngineSpeed();
+					double eng = throttle * engine.getSphEngineSpeed();
 					if(com.isMultiple()) com.accumulator += eng;
 					else moverq = com.forward ? eng : -eng;
 				}

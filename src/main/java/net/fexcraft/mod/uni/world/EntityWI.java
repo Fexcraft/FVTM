@@ -1,5 +1,6 @@
 package net.fexcraft.mod.uni.world;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -73,6 +74,11 @@ public class EntityWI extends EntityW {
 	@Override
 	public Object direct(){
 		return entity;
+	}
+
+	@Override
+	public V3D getPos(){
+		return new V3D(entity.posX, entity.posY, entity.posZ);
 	}
 
 	@Override

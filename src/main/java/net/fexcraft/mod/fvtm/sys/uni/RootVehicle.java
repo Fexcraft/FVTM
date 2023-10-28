@@ -405,13 +405,34 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			}
 			move(!VEHICLES_NEED_FUEL || creative);
 			if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
+			//
+			NWheelEntity fl = wheels.get(w_front_l.id);
+			NWheelEntity fr = wheels.get(w_front_r.id);
+			NWheelEntity rl = wheels.get(w_rear_l.id);
+			NWheelEntity rr = wheels.get(w_rear_r.id);
+			V3D fron = new V3D((fl.posX + fr.posX) * 0.5, (fl.posY + fr.posY) * 0.5, (fl.posZ + fr.posZ) * 0.5);
+			V3D rear = new V3D((rl.posX + rr.posX) * 0.5, (rl.posY + rr.posY) * 0.5, (rl.posZ + rr.posZ) * 0.5);
+			V3D left = new V3D((fl.posX + rl.posX) * 0.5, (fl.posY + rl.posY) * 0.5, (fl.posZ + rl.posZ) * 0.5);
+			V3D righ = new V3D((fr.posX + rr.posX) * 0.5, (fr.posY + rr.posY) * 0.5, (fr.posZ + rr.posZ) * 0.5);
+			double dx = fron.x - rear.x, dy = fron.y - rear.y, dz = fron.z - rear.z;
+			double drx = left.x - righ.x, dry = left.y - righ.y, drz = left.z - righ.z;
+			double dxz = Math.sqrt(dx * dx + dz * dz);
+			double drxz = Math.sqrt((drx * drx + drz * drz));
+			double y = Math.atan2(dz, dx);
+			double p = Math.atan2(dy, dxz);
+			double r = Math.atan2(dry, drxz);
+			if(vehicle.data.getType().isTracked()){
+				y = Math.atan2(fl.posZ - fr.posZ, fl.posX - fr.posX);
+			}
+			vehicle.pivot().set_rotation(y, p, r, false);
 		}
 		else{
 			vehicle.speed = MathUtils.calcSpeed(posX, posY, posZ, prevPosX, prevPosY, prevPosZ);
 		}
+
 	}
 
-	private void move(boolean needsfuel){
+	protected void move(boolean needsnofuel){
 		onGround = true;
 		V3D move = new V3D();
 		if(vehicle.data.getType().isTrailer()){
@@ -443,13 +464,92 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			else{
 				EngineFunction engine = vehicle.data.getFunctionInPart("engine", "fvtm:engine");
 				boolean consumed = engine != null && vehicle.consumeFuel(engine);
+				for(NWheelEntity wheel : wheels.values()){
+					wheel.onGround = true;
+					wheel.rotationYaw = vehicle.pivot().deg_yaw();
+					if(!vehicle.data.getType().isTracked() && wheel.wheel.steering){
+						wheel.rotationYaw += vehicle.steer_yaw;
+					}
+					wheel.motionX *= 0.9;
+					wheel.motionY *= 0.9;
+					wheel.motionZ *= 0.9;
+					wheel.motionY -= GRAVITY_20th;
+					if(engine != null && (needsnofuel || consumed)){
+						double scal = 0;
+						double wheelrot = Math.toRadians(wheel.rotationYaw);
+						if(vehicle.data.getType().isTracked()){
+							wheel.motionX *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
+							wheel.motionZ *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
+							scal = 0.04 * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							double steerscal = 0.1f * (vehicle.steer_yaw > 0 ? vehicle.data.getType().getSphData().turn_left_mod : vehicle.data.getType().getSphData().turn_right_mod);
+							double wheelspeed = (vehicle.throttle + (vehicle.steer_yaw * (wheel.wheel.mirror ? -1 : 1) * steerscal)) * scal;
+							wheel.motionX += wheelspeed * Math.cos(wheelrot);
+							wheel.motionZ += wheelspeed * Math.sin(wheelrot);
+						}
+						else{
+							scal = 0.01 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							wheel.motionX += Math.cos(wheelrot) * scal;
+							wheel.motionX += Math.sin(wheelrot) * scal;
+							if(wheel.wheel.steering){
+								scal = 0.01 * (vehicle.steer_yaw > 0 ? vehicle.data.getType().getSphData().turn_left_mod : vehicle.data.getType().getSphData().turn_right_mod);
+								scal *= vehicle.throttle > 0 ? 1 : -1;
+								wheel.motionX -= wheel.getHorSpeed() * Math.sin(wheelrot) * scal * vehicle.steer_yaw;
+								wheel.motionZ += wheel.getHorSpeed() * Math.cos(wheelrot) * scal * vehicle.steer_yaw;
+							}
+							else{
+								wheel.motionX *= 0.9;
+								wheel.motionZ *= 0.9;
+							}
+						}
+					}
+					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+					V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+					V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
+					if(dest.length() > 0.001){
+						wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
+						dest.scale(0.5);
+						move.sub(dest);
+					}
+				}
+				move(MoverType.SELF, move.x, move.y, move.z);
 			}
 		}
 	}
 
 	/** for trailers */
-	private void align(){
-		//
+	protected void align(){
+		prevPosX = posX;
+		prevPosY = posY;
+		prevPosZ = posZ;
+		if(wheels.isEmpty() || vehicle.front == null) return;
+		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getRearConnector());
+		conn.add(vehicle.front.getV3D());
+		setPosition(conn.x, conn.y, conn.z);
+		vehicle.throttle = vehicle.front.throttle;
+		double thr = Math.abs(vehicle.throttle);
+		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
+		double diff = rawy * thr * 0.2;
+		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
+		vehicle.pivot().set_rotation(vehicle.pivot().yaw() + Math.toRadians(diff), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
+		alignWheels();
+	}
+
+	protected void alignWheels(){
+		onGround = true;
+		for(NWheelEntity wheel : wheels.values()){
+			wheel.onGround = true;
+			wheel.rotationYaw = vehicle.pivot().deg_yaw();
+			V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+			V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
+			if(dest.length() > 0.001){
+				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
+			}
+			if(wheel.getPositionVector().distanceTo(getPositionVector()) > 256){
+				wheel.posX = dest.x;
+				wheel.posY = dest.y;
+				wheel.posZ = dest.z;
+			}
+		}
 	}
 
 	/**

@@ -723,7 +723,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 double roll = 0F;
                 roll = -(float) Math.atan2(dry, drxz);
                 //
-                if(lata.is_tracked){
+                if(vehicle.getType().isTracked()){
                     yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
                 }
                 rotpoint.getPivot().set_rotation(yaw, pitch, roll, false);
@@ -791,7 +791,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		            if(wheel == null){ continue; }
 		            onGround = false; wheel.onGround = false;
 		            wheel.rotationYaw = rotpoint.getPivot().deg_yaw();
-		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+		            if(!vehicle.getType().isTracked() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 		                wheel.rotationYaw += wheelsYaw;
 		            }
 		            wheel.motionX *= 0.9F;
@@ -801,7 +801,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		            if(engine != null){
 		                if(canThrustCreatively || consumed){
 		                    double velocityScale;
-		                    if(lata.is_tracked){
+		                    if(vehicle.getType().isTracked()){
 		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
 		                        //
 		                        float turningDrag = 0.02F;
@@ -855,7 +855,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		            if(wheel == null){ continue; }
 		            onGround = true; wheel.onGround = true;
 		            wheel.rotationYaw = rotpoint.getPivot().deg_yaw();
-		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+		            if(!vehicle.getType().isTracked() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 		                wheel.rotationYaw += wheelsYaw;
 		            }
 		            wheel.motionX *= 0.9F;
@@ -865,7 +865,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		            if(engine != null){
 		                if(canThrustCreatively || consumed){
 		                    double velocityScale;
-		                    if(lata.is_tracked){
+		                    if(vehicle.getType().isTracked()){
 		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
 		                        //
 		                        float turningDrag = 0.02F;

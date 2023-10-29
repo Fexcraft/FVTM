@@ -31,6 +31,7 @@ interact.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
 interact.fvtm.constructor.no_block=No Block in Constructor.
 //
 interact.fvtm.vehicle.locked=Vehicle is locked.
+interact.fvtm.vehicle.remove_locked=Vehicle is locked. Unlock if you want to remove it.
 interact.fvtm.vehicle.engine_on=Please turn the engine off first!
 
 # GUIs

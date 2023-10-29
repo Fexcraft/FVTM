@@ -43,6 +43,8 @@ import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
+import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
@@ -187,6 +189,10 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(PlayerData.class, new PlayerDataHandler.Storage(), new PlayerDataHandler.Callable());
 		CapabilityManager.INSTANCE.register(Passenger.class, new PassengerStorage(), new PassengerCallable());
 		CapabilityManager.INSTANCE.register(TrafficSigns.class, new TrafficSignCapHandler.Storage(), new TrafficSignCapHandler.Callable());
+		//
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:vehicle"), NLandVehicle.class, "fvtm.vehicle", 0, this, 256, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), NWheelEntity.class, "fvtm.wheel", 100, this, 256, 1, true);
+		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, true);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_airvehicle"), AirVehicle.class, "fvtm.airvehicle", 8997, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
@@ -202,6 +208,9 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:render_view"), RenderViewEntity.class, "fvtm.render_view", 6000, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:block_seat"), BlockSeat.class, "fvtm.block_seat", 6001, this, 256, 60, false);
 		if(event.getSide().isClient()){
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(NLandVehicle.class, RenderRV::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(NWheelEntity.class, RenderWheel::new);
+			//
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
 			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(AirVehicle.class, RenderAirVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderWheel::new);

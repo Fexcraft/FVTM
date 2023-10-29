@@ -44,7 +44,7 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
 		if(item.getItem() instanceof PartItem == false) return;
 		PartData data = item.getCapability(Capabilities.VAPDATA, null).getPartData();
-		if(data == null) return;
+		if(data == null || data.getType().getModel() instanceof PartModel == false) return;
 		PartModel model = (PartModel)data.getType().getModel();
 		if(model == null) return;
 		//

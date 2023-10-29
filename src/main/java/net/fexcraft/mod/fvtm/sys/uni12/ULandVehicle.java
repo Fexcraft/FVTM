@@ -873,7 +873,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(double d : avsp) speed += d;
 		speed /= avsp.size();
 		//
-        for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
+        //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         for(SeatCache seat : seats) seat.updatePosition();
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();

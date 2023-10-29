@@ -181,7 +181,7 @@ public class ResourcesImpl extends FvtmResources {
 				break;
 			}
 			case PART:{
-				Part part = null;//TODO
+				Part part = (Part)content;
 				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), PartModel.EMPTY);
 					return;
@@ -189,7 +189,7 @@ public class ResourcesImpl extends FvtmResources {
 				break;
 			}
 			case VEHICLE:{
-				Vehicle veh = null;//TODO
+				Vehicle veh = (Vehicle)content;
 				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), VehicleModel.EMPTY);
 					return;

@@ -2,21 +2,13 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartSlots;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
-import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
-import net.fexcraft.mod.uni.world.MessageSenderI;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
 
 public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 	
@@ -41,7 +33,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			case "hot_install":{
-				PartData data = player.getHeldItem(EnumHand.MAIN_HAND).getCapability(Capabilities.VAPDATA, null).getPartData();
+				/*PartData data = player.getHeldItem(EnumHand.MAIN_HAND).getCapability(Capabilities.VAPDATA, null).getPartData();
 				VehicleEntity entity = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				PartSlots source = entity.getVehicleData().getPartSlotsProvider(packet.nbt.getString("source"));
 				int index = packet.nbt.getInteger("index");
@@ -60,7 +52,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 					NBTTagCompound compound = entity.getVehicleData().write(TagCW.create()).local();
 					compound.setString("task", "update_vehicledata");
 					PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity.getEntity(), compound), Resources.getTargetPoint(entity.getEntity()));
-				}
+				}*///TODO
 				return;
 			}
 			case "ts_ck_sync":{

@@ -65,11 +65,11 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 					VehicleRenderer.renderPoint(vehicle.getRotPoint(), vehicle, vehicle.getVehicleData(), cache, ticks);
 				}
 			}
-            EffectRenderer.renderHotInstallInfo(vehicle);
+            //TODO EffectRenderer.renderHotInstallInfo(vehicle);
             GL11.glPopMatrix();
             //
             GL11.glPopMatrix();
-            EffectRenderer.renderToggableInfo(vehicle);
+            //TODO EffectRenderer.renderToggableInfo(vehicle);
             EffectRenderer.renderContainerInfo(vehicle, rot);
             EffectRenderer.renderSeats(vehicle);
         }

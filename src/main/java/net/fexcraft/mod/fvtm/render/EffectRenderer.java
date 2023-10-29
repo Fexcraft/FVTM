@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
+import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -24,7 +25,9 @@ import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -33,12 +36,15 @@ import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
@@ -120,19 +126,19 @@ public class EffectRenderer {
         LightBeam.last = null;
     }
 
-	public static void renderHotInstallInfo(GenericVehicle vehicle){
+	public static void renderHotInstallInfo(Entity vehicle, VehicleData data){
 		//Vec3d temp = null;
 		SwivelPoint point;
 		if(!Command.HOTSWAP){
 			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
-			if(vehicle.getVehicleData().getAttribute("collision_range").asFloat() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
+			if(data.getAttribute("collision_range").asFloat() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallHandlerData()).swappable){
 				preMeshCalls();
-				for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-					V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
-					point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
+				for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
+					V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+					point = data.getRotationPointOfPart(ps.getKey());
 					for(int i = 0; i < ps.getValue().size(); i++){
 						String type = ps.getValue().get(i).type;
 						for(String str : part.getType().getCategories()){
@@ -169,9 +175,9 @@ public class EffectRenderer {
 		}
 		else{
 			preMeshCalls();
-			for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
-				point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
+			for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
+				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+				point = data.getRotationPointOfPart(ps.getKey());
 				for(int i = 0; i < ps.getValue().size(); i++){
 					V3D pes = pos.add(ps.getValue().get(i).pos);
 					if(point.isVehicle()){
@@ -214,10 +220,10 @@ public class EffectRenderer {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
-	public static void renderToggableInfo(GenericVehicle vehicle){
+	public static void renderToggableInfo(Entity vehicle, VehicleData data){
 		if(!Command.TOGGABLE) return;
     	GL11.glPushMatrix();
-    	float scal = vehicle.getVehicleData().getAttribute("collision_range").asFloat() * 16;
+    	float scal = data.getAttribute("collision_range").asFloat() * 16;
     	GL11.glScalef(scal, scal, scal);
     	GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glLineWidth(2f);
@@ -229,13 +235,13 @@ public class EffectRenderer {
     	GL11.glPushMatrix();
         preMeshCalls();
         GlStateManager.disableLighting();
-		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
+		for(Attribute<?> attr : data.getAttributes().values()){
 			if(!attr.hasBoxes()) continue;
 			for(AttrBox box : attr.actboxes.values()){
-				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(box.swivel_point);
+				SwivelPoint point = data.getRotationPoint(box.swivel_point);
 				V3D temp = point.getRelativeVector(box.pos.x, -box.pos.y, -box.pos.z);
 	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
-				boolean depth = temp.add(vehicle.getEntity().posX, vehicle.getEntity().posY, vehicle.getEntity().posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
+				boolean depth = temp.add(vehicle.posX, vehicle.posY, vehicle.posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
             	scal = box.size;
             	GL11.glPushMatrix();
@@ -317,6 +323,21 @@ public class EffectRenderer {
 		postMeshCalls();
 		RGB.glColorReset();
 	}
+
+	public static void renderSeats(Entity entity, VehicleInstance vehicle){
+		if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
+		preMeshCalls();
+		GL11.glPushMatrix();
+		for(SeatInstance seat : vehicle.seats){
+			V3D pos = seat.getCurrentLocalPosition();
+			GLUtils112.translate(pos);
+			(seat.passenger() != null ? DebugModels.SEAT_CUBE_OCCUPIED : seat.seat.sitting ? DebugModels.SEAT_CUBE_SITTING : DebugModels.SEAT_CUBE_STANDING).render(0.5f * seat.seat.scale());
+			GLUtils112.translateR(pos);
+		}
+		GL11.glPopMatrix();
+		postMeshCalls();
+		RGB.glColorReset();
+	}
 	
 	public static final void drawString(String str, float scale, int color, boolean light, boolean rot, boolean depth){
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
@@ -350,6 +371,13 @@ public class EffectRenderer {
         while(roll > 180f) roll -= 360f;
         while(roll <= -180f) roll += 360f;
         return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
+	}
+
+	public static V3D getRotations(RootVehicle veh, float ticks){
+		double yaw = valDeg(veh.vehicle.pivot().deg_yaw() - veh.prevRotationYaw);
+		double pitch = valDeg(veh.vehicle.pivot().deg_pitch() - veh.prevRotationPitch);
+		double roll = valDeg(veh.vehicle.pivot().deg_roll() - veh.prevRotationRoll);
+		return new V3D(veh.prevRotationYaw + yaw * ticks, veh.prevRotationPitch + pitch * ticks, veh.prevRotationRoll + roll * ticks);
 	}
 	
 	public static Vec3f getRotations(SwivelPoint point, float ticks){

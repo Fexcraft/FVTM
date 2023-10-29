@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
@@ -39,9 +40,11 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -429,7 +432,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		else{
 			vehicle.speed = MathUtils.calcSpeed(posX, posY, posZ, prevPosX, prevPosY, prevPosZ);
 		}
-
+		vehicle.updatePointsSeats();
+		//collchecks
+		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
+			vehicle.sendUpdatePacket();
+		}
 	}
 
 	protected void move(boolean needsnofuel){
@@ -563,5 +570,36 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount){
+		if(world.isRemote || isDead) return true;
+		if(source.damageType.equals("player") && getDriver() == null){
+			EntityPlayer player = (EntityPlayer)source.getImmediateSource();
+			if(vehicle.data.getLock().isLocked()){
+				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.remove_locked"), true);
+				return false;
+			}
+			EngineFunction engine = vehicle.data.hasPart("engine") ? vehicle.data.getFunctionInPart("engine", "fvtm:engine") : null;
+			if(engine != null) engine.setState(false);
+			//TODO perm check
+			VehicleInstance trailer = vehicle;
+			while((trailer = trailer.rear) != null){
+				Entity rear = trailer.entity.local();
+				rear.entityDropItem(trailer.data.newItemStack().local(), 0.5f);
+				rear.setDead();
+			}
+			entityDropItem(vehicle.data.newItemStack().local(), 0.5f);
+			return true;
+		}
+		return true;
+	}
+
+	@Override
+	public ItemStack getPickedResult(RayTraceResult rtr){
+		return vehicle.data.newItemStack().local();
+	}
+
+	//TODO packets
 
 }

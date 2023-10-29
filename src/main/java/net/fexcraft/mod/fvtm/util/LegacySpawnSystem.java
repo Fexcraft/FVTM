@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public class LegacySpawnSystem extends EntitySystem {
 		switch(data.getType().getVehicleType()){
 			case WATER:
 			case LAND:
-				world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
+				world.spawnEntity(new NLandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
 				break;
 			default: return;
 		}

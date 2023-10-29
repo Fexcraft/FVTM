@@ -59,6 +59,10 @@ public class Packets {
 		instance.sendToAllAround(packet, Resources.getTargetPoint(ent));
 	}
 
+	public static final void sendToAllAround(IMessage packet, Object ent){
+		instance.sendToAllAround(packet, Resources.getTargetPoint((Entity)ent));
+	}
+
 	public static final void sendTo(IMessage packet, EntityPlayerMP player){
 		instance.sendTo(packet, player);
 	}

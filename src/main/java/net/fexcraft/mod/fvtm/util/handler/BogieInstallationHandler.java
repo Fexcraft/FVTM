@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -11,6 +14,11 @@ import net.fexcraft.mod.uni.world.MessageSender;
 public class BogieInstallationHandler extends PartInstallHandler {
 
 	public static final BogieInstallationHandler INSTANCE = new BogieInstallationHandler();
+	private static List<String> bogies = new ArrayList<>();
+	static{
+		bogies.add("bogie_front");
+		bogies.add("bogie_rear");
+	}
 
 	@Override
 	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data, boolean swap){
@@ -77,8 +85,8 @@ public class BogieInstallationHandler extends PartInstallHandler {
 	}
 
 	@Override
-	public String[] getValidCategories(PartData part, VehicleData vehicle){
-		return new String[]{ "bogie_front", "bogie_rear" };
+	public List<String> getValidCategories(PartData part, VehicleData vehicle){
+		return bogies;
 	}
 
 	@Override

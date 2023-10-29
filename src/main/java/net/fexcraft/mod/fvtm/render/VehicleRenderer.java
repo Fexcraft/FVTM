@@ -104,11 +104,11 @@ public class VehicleRenderer {
 					}*/
 				}
             }
-            EffectRenderer.renderHotInstallInfo(vehicle);
+            //EffectRenderer.renderHotInstallInfo(vehicle);
             GL11.glPopMatrix();
             //
             GL11.glPopMatrix();
-            EffectRenderer.renderToggableInfo(vehicle);
+            //EffectRenderer.renderToggableInfo(vehicle);
             EffectRenderer.renderContainerInfo(vehicle, rot);
             EffectRenderer.renderSeats(vehicle);
             GL11.glTranslated(-x + cx, -y + cy, -z + cz);
@@ -116,7 +116,7 @@ public class VehicleRenderer {
 		GL11.glPopMatrix();
     }
 
-	public static void renderPoint(SwivelPoint point, GenericVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderPoint(SwivelPoint point, Entity vehicle, VehicleData data, RenderCache cache, float ticks){
 		ArrayList<Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
 		boolean veh = false;

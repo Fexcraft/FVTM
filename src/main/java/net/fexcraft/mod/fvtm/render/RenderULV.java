@@ -66,11 +66,11 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
 					VehicleRenderer.renderPoint(vehicle.getRotPoint(), vehicle, vehicle.getVehicleData(), cache, ticks);
 				}
 			}
-            EffectRenderer.renderHotInstallInfo(vehicle);
+            //EffectRenderer.renderHotInstallInfo(vehicle);
             GL11.glPopMatrix();
             //
             GL11.glPopMatrix();
-            EffectRenderer.renderToggableInfo(vehicle);
+            //EffectRenderer.renderToggableInfo(vehicle);
             EffectRenderer.renderContainerInfo(vehicle, rot);
             EffectRenderer.renderSeats(vehicle);
         }

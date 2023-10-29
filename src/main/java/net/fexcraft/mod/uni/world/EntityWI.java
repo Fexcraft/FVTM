@@ -67,6 +67,14 @@ public class EntityWI extends EntityW {
 	}
 
 	@Override
+	public void setYawPitch(float oyaw, float opitch, float yaw, float pitch){
+		entity.prevRotationYaw = oyaw;
+		entity.prevRotationPitch = opitch;
+		entity.rotationYaw = yaw;
+		entity.rotationPitch = pitch;
+	}
+
+	@Override
 	public <E> E local(){
 		return (E)entity;
 	}

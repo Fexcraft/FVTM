@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPointMover;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
 public class SPM_DI implements SwivelPointMover {
 	
@@ -67,9 +67,9 @@ public class SPM_DI implements SwivelPointMover {
 	}
 
 	@Override
-	public void update(VehicleEntity entity, SwivelPoint point){
+	public void update(VehicleInstance vehicle, SwivelPoint point){
 		if(attr == null){
-			attr = entity.getVehicleData().getAttribute(attribute);
+			attr = vehicle.data.getAttribute(attribute);
 			last = bool ? attr.asFloat() : def;
 			move(point, axe, pos, last);
 			//Print.bar(Minecraft.getMinecraft().player, get(point) + "=" + last);

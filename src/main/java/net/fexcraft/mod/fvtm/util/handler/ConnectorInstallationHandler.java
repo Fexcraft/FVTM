@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -155,10 +156,10 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 	}
 
 	@Override
-	public String[] getValidCategories(PartData part, VehicleData vehicle){
+	public List<String> getValidCategories(PartData part, VehicleData vehicle){
 		ConnectorData idata = part.getType().getInstallHandlerData();
+		ArrayList<String> found = new ArrayList<>();
 		if(idata != null && idata.onslot){
-			ArrayList<String> found = new ArrayList<>();
 			for(Entry<String, PartSlots> entry : vehicle.getPartSlotProviders().entrySet()){
 				for(int i = 0; i < entry.getValue().size(); i++){
 					String type = entry.getValue().get(i).type;
@@ -167,13 +168,12 @@ public class ConnectorInstallationHandler extends PartInstallHandler {
 					}
 				}
 			}
-			String[] arr = new String[found.size()];
-			for(int i = 0; i < arr.length; i++){
-				arr[i] = "s:" + found.get(i) + ":" + i;
-			}
-			return arr;
 		}
-		return new String[]{ "front_connector", "rear_connector" };
+		else{
+			found.add("front_connector");
+			found.add("rear_connector");
+		}
+		return found;
 	}
 
 	@Override

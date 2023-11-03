@@ -26,10 +26,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
     public void render(DisplayEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-        GL11.glPushMatrix();
-        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         GL11.glRotatef(te.getBlockMetadata() * 22.5f, 0, 1, 0);
-        GL11.glRotatef(90, 0, 1f, 0);
         Minecraft.getMinecraft().renderEngine.bindTexture(Resources.NULL_TEXTURE);
         RenderCache cache = te.getCapability(Capabilities.RENDERCACHE, null);
         heightoffset = 0;
@@ -66,7 +63,6 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 GL11.glTranslated(0, heightoffset, 0);
             }
         }
-        GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
 

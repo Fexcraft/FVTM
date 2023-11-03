@@ -179,7 +179,7 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 			Model modVehicle = data.getType().getModel();
 			if(modVehicle != null){
 				GL11.glPushMatrix();
-				GL11.glRotatef(180f, 0f, 0f, 1f);
+				GL11.glRotatef(-90f, 0f, 1f, 0f);
 				TexUtil.bindTexture(data.getCurrentTexture());
 				modVehicle.render(RENDERDATA.set(data, null, null, false));
 				GL11.glPopMatrix();

@@ -564,7 +564,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	 */
 	public EntityPlayer getDriver(){
 		for(SeatInstance seat : vehicle.seats){
-			if(seat.seat.driver && seat.passenger().direct() instanceof EntityPlayer){
+			if(seat.seat.driver && seat.passengerIsPlayer()){
 				return seat.passenger().local();
 			}
 		}
@@ -590,6 +590,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				rear.setDead();
 			}
 			entityDropItem(vehicle.data.newItemStack().local(), 0.5f);
+			setDead();
 			return true;
 		}
 		return true;

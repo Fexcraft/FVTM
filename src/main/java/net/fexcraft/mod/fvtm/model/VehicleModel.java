@@ -21,13 +21,6 @@ import org.lwjgl.opengl.GL11;
 public class VehicleModel extends DefaultModel implements FCLItemModel {
 	
 	public static final VehicleModel EMPTY = new VehicleModel();
-	@Deprecated public static final String[] defval = new String[]{ "chassis", "body", "body_colored_primary", "body_colored_secondary",
-		"body_door_open", "body_door_close", "body_door_open_colored_primary", "body_door_close_colored_primary",
-		"turret", "steering", "wheels_import"
-	};
-	
-	////-///---/---///-////
-	
 	public final TransformMap item_scale = new TransformMap(0);
 	public final TransformMap item_translate = new TransformMap(1);
 	public final TransformMap item_rotate = new TransformMap(2);
@@ -195,17 +188,6 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 		}
 		//GL11.glScalef(-scale.xCoord, -scale.yCoord, -scale.zCoord);
 		GL11.glPopMatrix();
-	}
-
-	public void sortparts(VehicleData data){
-		data.sorted_parts.clear();
-		for(String str : data.getRotationPoints().keySet()) data.sorted_parts.put(str, new ArrayList<>());
-		for(Entry<String, PartData> part : data.getParts().entrySet()){
-			if(part.getValue().isInstalledOnSwivelPoint()){
-				data.sorted_parts.get(part.getValue().getSwivelPointInstalledOn()).add(part);
-			}
-			else data.sorted_parts.get("vehicle").add(part);
-		}
 	}
 
 }

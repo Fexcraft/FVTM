@@ -31,6 +31,7 @@ public class NLandVehicle extends RootVehicle {
 		vehicle.init(data);
 		if(placer != null){
 			vehicle.setPlacer(placer.getGameProfile().getId());
+			vehicle.point.getPivot().set_yaw(placer.rotationYaw, true);
 		}
 		init();
 	}

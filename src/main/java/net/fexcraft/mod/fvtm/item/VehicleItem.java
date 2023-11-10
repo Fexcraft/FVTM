@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -12,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -73,13 +75,12 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").asFloat() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));
     	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLock().getCode()));
-        //temporary
-        /*if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
-        	for(Attribute attr : data.getAttributes().values()){
-        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
+        if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
+        	for(Attribute<?> attr : data.getAttributes().values()){
+        		tooltip.add(Formatter.format("&9" + attr.id + ": &7" + attr.asString()));
         	}
-        }*/
-        if(vehicle.getModel().getCreators().size() > 0){
+        }
+        if(vehicle.getModel() != null && vehicle.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
             for(String str : vehicle.getModel().getCreators()){
             	tooltip.add(Formatter.format("&7- " + str));
@@ -89,7 +90,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     }
 	
     @SuppressWarnings("deprecation")
-	/*@Override
+	@Override
     public String getItemStackDisplayName(ItemStack stack){
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
     	if(cache.getVehicleData().getDisplayName() != null){
@@ -102,7 +103,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         	if(cache != null) stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
     	}
         return Formatter.format(cache.getVehicleData().getType().getName());
-    }*///TODO
+    }
 
 	private String getTexTitle(VehicleData data){
 		if(data.getSelectedTexture() >= 0){

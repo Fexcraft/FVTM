@@ -51,4 +51,10 @@ public class NLandVehicle extends RootVehicle {
 		super.init();
 	}
 
+
+	@Override
+	public void onUpdate(){
+		super.onUpdate();
+	}
+
 }

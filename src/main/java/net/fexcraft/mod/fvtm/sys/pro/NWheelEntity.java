@@ -25,6 +25,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	private boolean found;
 	private int vehid;
 	public WheelSlot wheel;
+	public V3D position;
 	public String wheelid;
 
 	public NWheelEntity(World world){
@@ -55,7 +56,8 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 			setDead();
 			return;
 		}
-		V3D vec = root.vehicle.point.getPivot().get_vector(root.vehicle.data.getWheelPositions().get(wheelid));
+		position = root.vehicle.data.getWheelPositions().get(wheelid);
+		V3D vec = root.vehicle.point.getPivot().get_vector(position);
 		setPosition(root.posX + vec.x, root.posY + vec.y, root.posZ + vec.z);
 		setStepHeight();
 		prevPosX = posX;

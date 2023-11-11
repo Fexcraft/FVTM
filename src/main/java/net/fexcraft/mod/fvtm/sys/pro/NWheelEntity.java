@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
@@ -55,7 +56,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 			return;
 		}
 		V3D vec = root.vehicle.point.getPivot().get_vector(root.vehicle.data.getWheelPositions().get(wheelid));
-		setPosition(vec.x, vec.y, vec.z);
+		setPosition(root.posX + vec.x, root.posY + vec.y, root.posZ + vec.z);
 		setStepHeight();
 		prevPosX = posX;
 		prevPosY = posY;
@@ -155,6 +156,11 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 		}
 		if(root == null) return;
 		if(!addedToChunk) world.spawnEntity(this);
+	}
+
+	@Override
+	public void setDead(){
+		super.setDead();
 	}
 
 }

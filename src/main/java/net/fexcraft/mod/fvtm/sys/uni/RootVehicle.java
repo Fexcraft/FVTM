@@ -459,8 +459,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
 				if(dest.length() > 0.001){
 					wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
-					dest.scale(0.5);
-					move.sub(dest);
+					move = move.sub(dest.scale(0.5));
 				}
 			}
 			move(MoverType.SELF, move.x, move.y, move.z);
@@ -515,8 +514,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 					V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
 					if(dest.length() > 0.001){
 						wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
-						dest.scale(0.5);
-						move.sub(dest);
+						move = move.sub(dest.scale(0.5));
 					}
 				}
 				move(MoverType.SELF, move.x, move.y, move.z);

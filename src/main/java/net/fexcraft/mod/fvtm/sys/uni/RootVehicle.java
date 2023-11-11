@@ -456,7 +456,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				wheel.motionY -= GRAVITY_20th;
 				wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 				V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-				V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
+				V3D dest = vehicle.pivot().get_vector(wheel.position).sub(curr).scale(0.5);
 				if(dest.length() > 0.001){
 					wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 					move = move.sub(dest.scale(0.5));
@@ -511,7 +511,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 					}
 					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 					V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-					V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
+					V3D dest = vehicle.pivot().get_vector(wheel.position).sub(curr).scale(0.5);
 					if(dest.length() > 0.001){
 						wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 						move = move.sub(dest.scale(0.5));
@@ -546,7 +546,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			wheel.onGround = true;
 			wheel.rotationYaw = vehicle.pivot().deg_yaw();
 			V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-			V3D dest = vehicle.pivot().get_vector(wheel.wheel.position).sub(curr).scale(0.5);
+			V3D dest = vehicle.pivot().get_vector(wheel.position).sub(curr).scale(0.5);
 			if(dest.length() > 0.001){
 				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 			}

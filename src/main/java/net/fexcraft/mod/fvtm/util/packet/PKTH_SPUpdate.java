@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.packet;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -51,9 +52,14 @@ public class PKTH_SPUpdate {
 	}
 
 	private static void updatesp(Entity entity, PKT_SPUpdate pkt, boolean client){
-		if(entity instanceof VehicleEntity == false){ return; }
-		SwivelPoint point = ((VehicleEntity)entity).getVehicleData().getRotationPoints().get(pkt.pointid);
-		if(point != null) point.processPacket(pkt, client);
+		if(entity instanceof VehicleEntity){
+			SwivelPoint point = ((VehicleEntity)entity).getVehicleData().getRotationPoints().get(pkt.pointid);
+			if(point != null) point.processPacket(pkt, client);
+		}
+		else if(entity instanceof RootVehicle){
+			SwivelPoint point = ((RootVehicle)entity).vehicle.data.getRotationPoints().get(pkt.pointid);
+			if(point != null) point.processPacket(pkt, client);
+		}
 	}
 
 }

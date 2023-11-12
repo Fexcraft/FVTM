@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -20,9 +19,8 @@ public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity
     	if(Command.OTHER) shadowSize = 0.125f;
     	else shadowSize = 0f;
         if(entity instanceof NWheelEntity /*&& Minecraft.getMinecraft().gameSettings.showDebugInfo*/){
-            RenderStreetSign.drawString(((NWheelEntity)entity).wheelid, x, y, z, true, true, 0.8f, 0xb8bc38, entity.rotationYaw + 0d);
+            RenderStreetSign.drawString(((NWheelEntity)entity).wheelid, x, y, z, true, true, 0.8f, 0xb8bc38, null);
         }
-        return;
     }
 
     @Override

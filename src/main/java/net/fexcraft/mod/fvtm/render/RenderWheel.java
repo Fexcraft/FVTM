@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import org.lwjgl.opengl.GL11;
 
 public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity> {
 
@@ -19,7 +20,9 @@ public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity
     	if(Command.OTHER) shadowSize = 0.125f;
     	else shadowSize = 0f;
         if(entity instanceof NWheelEntity /*&& Minecraft.getMinecraft().gameSettings.showDebugInfo*/){
+            GL11.glTranslatef(0, 0.25f, 0);
             RenderStreetSign.drawString(((NWheelEntity)entity).wheelid, x, y, z, true, true, 0.8f, 0xb8bc38, null);
+            GL11.glTranslatef(0, -0.25f, 0);
         }
     }
 

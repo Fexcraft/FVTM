@@ -289,10 +289,14 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		//TODO items MATERIALS.forEach(material -> material.getItemWrapper().linkContainer());
-		//TODO oredict registry MATERIALS.forEach(Material::registerIntoOreDictionary);
-		//TODO items Resources.CONSUMABLES.forEach(Consumable::linkContainerItem);
-		//TODO oredict Resources.CONSUMABLES.forEach(Consumable::registerIntoOreDictionary);
+		FvtmRegistry.MATERIALS.forEach(mat -> {
+			mat.getItemWrapper().linkContainer();
+			mat.getItemWrapper().regToDict();
+		});
+		FvtmRegistry.CONSUMABLES.forEach(con -> {
+			con.getItemWrapper().linkContainer();
+			con.getItemWrapper().regToDict();
+		});
 		Resources.BLOCKS.forEach(Block::linkItem);
 		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
 		//

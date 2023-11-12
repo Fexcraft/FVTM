@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
@@ -18,8 +19,11 @@ public class PKTH_VehControl {
         public IMessage onMessage(final PKT_VehControl packet, final MessageContext ctx){
             Static.getServer().addScheduledTask(() -> {
                 for(Entity ent : ctx.getServerHandler().player.world.loadedEntityList){
-                    if(ent.getEntityId() == packet.entid){ updatevehicle(ent, packet); return; }
-                } return;
+                    if(ent.getEntityId() == packet.entid){
+                        updatevehicle(ent, packet);
+                        return;
+                    }
+                }
             }); return null;
         }
     }
@@ -32,8 +36,11 @@ public class PKTH_VehControl {
                 @Override
                 public void run(){
                     for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
-                        if(ent.getEntityId() == packet.entid){ updatevehicle(ent, packet); return; }
-                    } return;
+                        if(ent.getEntityId() == packet.entid){
+                            updatevehicle(ent, packet);
+                            return;
+                        }
+                    }
                 }
             }); return null;
         }

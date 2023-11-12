@@ -100,20 +100,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			}
 			wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
 			vehicle.wheeldata.put(entry.getKey(), wheel);
-			//
-			if(w_front_l == null || (wheel.pos.x <= w_front_l.pos.x && wheel.pos.z <= w_front_l.pos.z)){
-				w_front_l = wheel;
-			}
-			if(w_front_r == null || (wheel.pos.x >= w_front_r.pos.x && wheel.pos.z <= w_front_r.pos.z)){
-				w_front_r = wheel;
-			}
-			if(w_rear_l == null || (wheel.pos.x <= w_rear_l.pos.x && wheel.pos.z >= w_rear_l.pos.z)){
-				w_rear_l = wheel;
-			}
-			if(w_rear_r == null || (wheel.pos.x >= w_rear_r.pos.x && wheel.pos.z >= w_rear_r.pos.z)){
-				w_rear_r = wheel;
-			}
 		}
+		assignWheels();
+		assignWheels();
 		wheel_radius /= vehicle.wheeldata.size();
 		vehicle.seats.clear();
 		for(int i = 0; i < vehicle.data.getSeats().size(); i++){
@@ -128,6 +117,26 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			float cr = vehicle.data.getAttributeFloat("collission_range", 2f);
 			renderbox = new AxisAlignedBB(-cr, -cr, -cr, cr, cr, cr);
 			//TODO register for particles
+		}
+	}
+
+	private void assignWheels(){
+		for(WheelTireData wheel : vehicle.wheeldata.values()){
+			if(w_front_l == null || (wheel.pos.x <= w_front_l.pos.x && wheel.pos.z < w_front_l.pos.z)){
+				w_front_l = wheel;
+				continue;
+			}
+			if(w_front_r == null || (wheel.pos.x >= w_front_r.pos.x && wheel.pos.z < w_front_r.pos.z)){
+				w_front_r = wheel;
+				continue;
+			}
+			if(w_rear_l == null || (wheel.pos.x <= w_rear_l.pos.x && wheel.pos.z > w_rear_l.pos.z)){
+				w_rear_l = wheel;
+				continue;
+			}
+			if(w_rear_r == null || (wheel.pos.x >= w_rear_r.pos.x && wheel.pos.z > w_rear_r.pos.z)){
+				w_rear_r = wheel;
+			}
 		}
 	}
 
@@ -422,11 +431,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			double drx = left.x - righ.x, dry = left.y - righ.y, drz = left.z - righ.z;
 			double dxz = Math.sqrt(dx * dx + dz * dz);
 			double drxz = Math.sqrt((drx * drx + drz * drz));
-			double y = Math.atan2(dz, dx);
+			double y = Math.atan2(dx, dz);
 			double p = Math.atan2(dy, dxz);
 			double r = Math.atan2(dry, drxz);
 			if(vehicle.data.getType().isTracked()){
-				y = Math.atan2(fl.posZ - fr.posZ, fl.posX - fr.posX);
+				y = Math.atan2(fl.posX - fr.posX, fl.posZ - fr.posZ);
 			}
 			vehicle.pivot().set_rotation(y, p, r, false);
 		}

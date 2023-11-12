@@ -121,20 +121,21 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	private void assignWheels(){
+		w_front_l = w_front_r = w_rear_l = w_rear_r = new WheelTireData();
 		for(WheelTireData wheel : vehicle.wheeldata.values()){
-			if(w_front_l == null || (wheel.pos.x <= w_front_l.pos.x && wheel.pos.z < w_front_l.pos.z)){
+			if(wheel.pos.x <= w_front_l.pos.x && wheel.pos.z <= w_front_l.pos.z){
 				w_front_l = wheel;
 				continue;
 			}
-			if(w_front_r == null || (wheel.pos.x >= w_front_r.pos.x && wheel.pos.z < w_front_r.pos.z)){
+			if(wheel.pos.x >= w_front_r.pos.x && wheel.pos.z <= w_front_r.pos.z){
 				w_front_r = wheel;
 				continue;
 			}
-			if(w_rear_l == null || (wheel.pos.x <= w_rear_l.pos.x && wheel.pos.z > w_rear_l.pos.z)){
+			if(wheel.pos.x <= w_rear_l.pos.x && wheel.pos.z >= w_rear_l.pos.z){
 				w_rear_l = wheel;
 				continue;
 			}
-			if(w_rear_r == null || (wheel.pos.x >= w_rear_r.pos.x && wheel.pos.z > w_rear_r.pos.z)){
+			if(wheel.pos.x >= w_rear_r.pos.x && wheel.pos.z >= w_rear_r.pos.z){
 				w_rear_r = wheel;
 			}
 		}

@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.data;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.sys.uni.Pos;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class WheelSlot {

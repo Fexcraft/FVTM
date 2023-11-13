@@ -5,11 +5,11 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.fvtm.sys.uni.Pos;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;

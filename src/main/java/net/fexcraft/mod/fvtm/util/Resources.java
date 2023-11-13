@@ -577,11 +577,7 @@ public class Resources {
 				model = (Model)((Class<?>)FCLRegistry.getModel(name)).newInstance();
 				model.parse(data).lock();
 			}
-			catch(Exception e){
-				e.printStackTrace();
-				return getEmptyModelFromClass(clazz);
-			}
-			catch(NoClassDefFoundError e){
+			catch(Throwable e){
 				e.printStackTrace();
 				return getEmptyModelFromClass(clazz);
 			}

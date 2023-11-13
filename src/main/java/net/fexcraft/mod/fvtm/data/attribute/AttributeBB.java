@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.sys.uni.Pos;
 
 /**
  * Attribute Boundingbox

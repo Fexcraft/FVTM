@@ -237,7 +237,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
         }
         catch(Exception e){
         	e.printStackTrace();
-        	Static.stop();
+			//Static.stop();
         }
 	}
 

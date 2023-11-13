@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
-import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.client.resources.I18n;

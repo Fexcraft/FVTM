@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import com.google.gson.JsonObject;
-import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
+import net.fexcraft.mod.fvtm.sys.uni.Pos;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

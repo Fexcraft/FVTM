@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
-import static net.fexcraft.lib.mc.utils.Formatter.PARAGRAPH_SIGN;
+import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLCUSTOMFILL;
 

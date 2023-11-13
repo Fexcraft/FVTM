@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import com.google.gson.JsonArray;
-
-import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.sys.uni.Pos;
 
 public class LiftingPoint {
 	

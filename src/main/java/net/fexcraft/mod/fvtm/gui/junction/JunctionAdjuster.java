@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.junction;
 
-import static net.fexcraft.lib.mc.utils.Formatter.format;
+import static net.fexcraft.lib.common.utils.Formatter.format;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;

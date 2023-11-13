@@ -305,15 +305,20 @@ public class Addon extends TypeCore<Addon> {
 					}
 					lastentryname = entry.getName();
 					if(entry.getName().startsWith(path) && entry.getName().endsWith(data.suffix)){
-						JsonObject obj = JsonUtil.getObjectFromInputStream(zip.getInputStream(entry));
-						TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
-						if(core == null){
-							if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
-							continue;
+						try{
+							JsonObject obj = JsonUtil.getObjectFromInputStream(zip.getInputStream(entry));
+							TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
+							if(core == null){
+								if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
+								continue;
+							}
+							data.register(core); //Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
+							if(Static.side().isClient()){
+								checkIfHasCustomModel(data, core);
+							}
 						}
-						data.register(core); //Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-						if(Static.side().isClient()){
-							checkIfHasCustomModel(data, core);
+						catch (Throwable thr){
+							Print.log("Failed to load config from zip entry '" + entry.getName() + "'!");
 						}
 					}
 				}

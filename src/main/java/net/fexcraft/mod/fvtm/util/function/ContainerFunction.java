@@ -3,11 +3,11 @@ package net.fexcraft.mod.fvtm.util.function;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.sys.uni.Pos;
 
 public class ContainerFunction extends StaticFunction {
 	

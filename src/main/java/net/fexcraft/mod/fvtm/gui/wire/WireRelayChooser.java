@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.gui.wire;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.minecraft.block.material.MapColor;

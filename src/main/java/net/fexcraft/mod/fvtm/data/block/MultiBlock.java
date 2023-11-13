@@ -181,7 +181,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements Tabbed, ItemText
 			}
 			catch(ClassNotFoundException e){
 				e.printStackTrace();
-				Static.stop();
+				//Static.stop();
 			}
 		}
 		if(obj.has("ScriptData")){

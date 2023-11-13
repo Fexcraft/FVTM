@@ -16,7 +16,7 @@ import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.resources.I18n;

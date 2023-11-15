@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.Config;
@@ -30,6 +31,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -432,7 +434,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			double drx = left.x - righ.x, dry = left.y - righ.y, drz = left.z - righ.z;
 			double dxz = Math.sqrt(dx * dx + dz * dz);
 			double drxz = Math.sqrt((drx * drx + drz * drz));
-			double y = Math.atan2(dx, dz);
+			double y = Math.atan2(dz, dx);
 			double p = Math.atan2(dy, dxz);
 			double r = Math.atan2(dry, drxz);
 			if(vehicle.data.getType().isTracked()){
@@ -465,8 +467,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				wheel.motionZ *= 0.9;
 				wheel.motionY -= GRAVITY_20th;
 				wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-				V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-				V3D dest = vehicle.pivot().get_vector(wheel.position).sub(curr).scale(0.5);
+				V3D dest = vehicle.pivot().get_vector(wheel.position);
+				dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
+				dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
+				dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
 				if(dest.length() > 0.001){
 					wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 					move = move.sub(dest.scale(0.5));
@@ -520,8 +524,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 						}
 					}
 					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-					V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-					V3D dest = vehicle.pivot().get_vector(wheel.position).sub(curr).scale(0.5);
+					V3D dest = vehicle.pivot().get_vector(wheel.position);
+					dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
+					dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
+					dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
 					if(dest.length() > 0.001){
 						wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 						move = move.sub(dest.scale(0.5));
@@ -555,8 +561,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		for(NWheelEntity wheel : wheels.values()){
 			wheel.onGround = true;
 			wheel.rotationYaw = vehicle.pivot().deg_yaw();
-			V3D curr = new V3D(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-			V3D dest = vehicle.pivot().get_vector(wheel.position).sub(curr).scale(0.5);
+			V3D dest = vehicle.pivot().get_vector(wheel.position);
+			dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
+			dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
+			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
 			if(dest.length() > 0.001){
 				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 			}

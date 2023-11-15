@@ -57,7 +57,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 			return;
 		}
 		position = root.vehicle.data.getWheelPositions().get(wheelid);
-		V3D vec = root.vehicle.point.getPivot().get_vector(position);
+		V3D vec = root.vehicle.pivot().get_vector(position);
 		setPosition(root.posX + vec.x, root.posY + vec.y, root.posZ + vec.z);
 		setStepHeight();
 		prevPosX = posX;

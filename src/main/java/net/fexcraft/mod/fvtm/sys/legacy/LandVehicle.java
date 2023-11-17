@@ -578,7 +578,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	Print.chat(player, "Vehicle is locked.");
             	return true;
             }
-        	ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
+        	//TODO ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
         	return true;
         }
 		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){

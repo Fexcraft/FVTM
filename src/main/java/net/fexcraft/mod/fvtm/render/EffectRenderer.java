@@ -96,10 +96,10 @@ public class EffectRenderer {
                 GL11.glPushMatrix();
                 GL11.glTranslated(vehpos[0], vehpos[1], vehpos[2]);
                 //
-                Vec3f vehrot = SORTED_VEH_ROT.get(veh.getEntity().getEntityId());
-                GL11.glRotatef(vehrot.x, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(vehrot.y, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(vehrot.z, 1.0F, 0.0F, 0.0F);
+                V3D vehrot = SORTED_VEH_ROT.get(veh.getEntity().getEntityId());
+                GL11.glRotated(vehrot.x, 0, 1, 0);
+                GL11.glRotated(vehrot.y, 0, 0, 1);
+                GL11.glRotated(vehrot.z, 1, 0, 0);
                 GL11.glRotatef(180f, 0f, 0f, 1f);
 				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.getEntity(), veh.getEntity().getCapability(RENDERCACHE, null), null, null, false).sep());
             	GL11.glPopMatrix();
@@ -275,7 +275,7 @@ public class EffectRenderer {
 		return i;
 	}
 
-	public static void renderContainerInfo(Entity entity, Vec3f rot){
+	public static void renderContainerInfo(Entity entity, V3D rot){
         if((tempholder = entity.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.x, rot.y, rot.z);
         if(!Command.CONTAINER) return;
     	//if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.x, rot.y, rot.z);
@@ -360,19 +360,6 @@ public class EffectRenderer {
         GlStateManager.popMatrix();
     }
 
-	public static Vec3f getRotations(GenericVehicle vehicle, float ticks){
-        float yaw = (vehicle.getRotPoint().getPivot().deg_yaw() - vehicle.prevRotationYaw);
-        while(yaw > 180f) yaw -= 360f;
-        while(yaw <= -180f) yaw += 360f;
-        float pitch = (vehicle.getRotPoint().getPivot().deg_pitch() - vehicle.prevRotationPitch);
-        while(pitch > 180f) pitch -= 360f;
-        while(pitch <= -180f) pitch += 360f;
-        float roll = (vehicle.getRotPoint().getPivot().deg_roll() - vehicle.prevRotationRoll);
-        while(roll > 180f) roll -= 360f;
-        while(roll <= -180f) roll += 360f;
-        return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
-	}
-
 	public static V3D getRotations(RootVehicle veh, float ticks){
 		double yaw = valDeg(veh.vehicle.pivot().deg_yaw() - veh.prevRotationYaw);
 		double pitch = valDeg(veh.vehicle.pivot().deg_pitch() - veh.prevRotationPitch);
@@ -380,17 +367,11 @@ public class EffectRenderer {
 		return new V3D(veh.prevRotationYaw + yaw * ticks, veh.prevRotationPitch + pitch * ticks, veh.prevRotationRoll + roll * ticks);
 	}
 	
-	public static Vec3f getRotations(SwivelPoint point, float ticks){
-        float yaw = (point.getPivot().deg_yaw() - point.getPrevPivot().deg_yaw());
-        while(yaw > 180f) yaw -= 360f;
-        while(yaw <= -180f) yaw += 360f;
-        float pitch = (point.getPivot().deg_pitch() - point.getPrevPivot().deg_pitch());
-        while(pitch > 180f) pitch -= 360f;
-        while(pitch <= -180f) pitch += 360f;
-        float roll = (point.getPivot().deg_roll() - point.getPrevPivot().deg_roll());
-        while(roll > 180f) roll -= 360f;
-        while(roll <= -180f) roll += 360f;
-        return new Vec3f(point.getPrevPivot().deg_yaw() - yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
+	public static V3D getRotations(SwivelPoint point, float ticks){
+		double yaw = valDeg(point.getPivot().deg_yaw() - point.getPrevPivot().deg_yaw());
+		double pitch = valDeg(point.getPivot().deg_pitch() - point.getPrevPivot().deg_pitch());
+		double roll = valDeg(point.getPivot().deg_roll() - point.getPrevPivot().deg_roll());
+		return new V3D(point.getPrevPivot().deg_yaw() + yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
 	}
 	
 	//

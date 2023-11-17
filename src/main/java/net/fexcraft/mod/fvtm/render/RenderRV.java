@@ -32,6 +32,10 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
         GL11.glPushMatrix();
 		SeparateRenderCache.SORTED_VEH_POS.put(rv.getEntityId(), new double[]{ x, y, z });
 		GL11.glTranslated(x, y, z);
+		V3D rot = EffectRenderer.getRotations(rv, ticks);
+		GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
+		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
 		if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
 			GL11.glPushMatrix();
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
@@ -43,10 +47,6 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 			RenderStreetSign.drawString(rv.vehicle.pivot().deg_roll() + "", x, y, z, true, true, 0.8f, 0x000000, null);
 			GL11.glPopMatrix();
 		}
-		V3D rot = EffectRenderer.getRotations(rv, ticks);
-		GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
-		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
-		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
 		SeparateRenderCache.SORTED_VEH_ROT.put(rv.getEntityId(), rot);
 		GL11.glPushMatrix();
 		RenderCache cache = rv.getCapability(Capabilities.RENDERCACHE, null);
@@ -69,7 +69,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		//
 		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
 		//EffectRenderer.renderContainerInfo(rv, rot);
-		EffectRenderer.renderSeats(rv, rv.vehicle);
+		EffectRenderer.renderSeats(rv.vehicle);
         GL11.glPopMatrix();
     }
     

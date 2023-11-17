@@ -41,6 +41,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class ToggableHandler {
 	
 	private static String last;

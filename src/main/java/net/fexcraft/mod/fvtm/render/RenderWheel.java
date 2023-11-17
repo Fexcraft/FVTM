@@ -20,7 +20,7 @@ public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialticks){
     	if(Command.OTHER) shadowSize = 0.125f;
     	else shadowSize = 0f;
-        if(entity instanceof NWheelEntity && Minecraft.getMinecraft().gameSettings.showDebugInfo){
+        if(entity instanceof NWheelEntity && Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
             GL11.glTranslatef(0, 0.25f, 0);
             RenderStreetSign.drawString(((NWheelEntity)entity).wheelid, x, y, z, true, true, 0.8f, 0xb8bc38, null);
             GL11.glTranslatef(0, -0.25f, 0);

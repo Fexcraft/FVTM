@@ -190,7 +190,7 @@ public class SeatCache {
 		if(key == null) return false;
 		else if(key.toggable_input() && vehicle.world.isRemote){
     		if(clicktimer > 0) return false;
-    		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, ItemStack.EMPTY);
+    		boolean bool = false;//TODO ToggableHandler.handleClick(key, vehicle, this, player, ItemStack.EMPTY);
         	clicktimer += 10;
         	return bool;
 		}

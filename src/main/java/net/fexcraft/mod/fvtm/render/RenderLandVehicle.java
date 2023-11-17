@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -40,10 +41,10 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
         	SeparateRenderCache.SORTED_VEH_POS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
-            Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
-            GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+            V3D rot = EffectRenderer.getRotations(vehicle.rotpoint, ticks);
+            GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
+            GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
+            GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
             SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
             //
             GL11.glPushMatrix();

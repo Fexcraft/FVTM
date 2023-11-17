@@ -9,17 +9,22 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.function.EngineFunction;
@@ -31,16 +36,21 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
-import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.MathUtils;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
+import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityWI;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemLead;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -71,6 +81,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public float prevRotationRoll = 0;
 	public float wheel_radius = 0;
 	public float wheel_rotation = 0;
+	public boolean should_sit = true;
 	//
 	public double serverX;
 	public double serverY;
@@ -322,6 +333,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
 				return true;
 			}
+			ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
 			return true;
 		}
 		if(Lockable.isKey(wrapper.getItem())){
@@ -585,6 +597,78 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	@Override
+	public Entity getControllingPassenger(){
+		return null;
+	}
+
+	@Override
+	public void updatePassenger(Entity pass){
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) updatePassenger(pass, seat);
+		else{
+			if(world.isRemote) pass.getCapability(Capabilities.PASSENGER, null).reconn(true);
+			pass.setPosition(posX, posY, posZ);
+		}
+	}
+
+	public void updatePassenger(Entity pass, SeatInstance seat){
+		if(seat.passenger_direct() != pass){
+			seat.passenger(pass.getCapability(PASSENGER, null).asWrapper());
+		}
+		V3D pos = seat.getCurrentGlobalPosition();
+		pass.rotationYaw = seat.eyaw;
+		pass.rotationPitch = seat.epitch;
+		pass.prevRotationYaw = seat.peyaw;
+		pass.prevRotationPitch = seat.pepitch;
+		double yoff = pass instanceof EntityPlayer ? pass.getYOffset() : 0;
+		pass.setPosition(pos.x, pos.y + yoff, pos.z);
+		if(!world.isRemote && pass instanceof EntityPlayerMP){
+			Resources.resetFlight((EntityPlayerMP)pass);
+		}
+	}
+
+	@Override
+	public void addPassenger(Entity pass){
+		super.addPassenger(pass);
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) seat.passenger(pass.getCapability(PASSENGER, null).asWrapper());
+	}
+
+	@Override
+	public void removePassenger(Entity pass){
+		for(SeatInstance seat : vehicle.seats){
+			if(pass.equals(seat.passenger_direct())){
+				seat.passenger(null);
+			}
+		}
+		if(!world.isRemote){
+			pass.getCapability(Capabilities.PASSENGER, null).set(-1, -1);
+		}
+		super.removePassenger(pass);
+	}
+
+	@Override
+	public void removePassengers(){
+		super.removePassengers();
+	}
+
+	@Override
+	protected boolean canFitPassenger(Entity passenger){
+		return true;
+	}
+
+	@Override
+	public boolean shouldRiderSit(){
+		return should_sit;
+	}
+
+	public SeatInstance getSeatOf(Entity entity){
+		Passenger pass = entity.getCapability(Capabilities.PASSENGER, null);
+		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;
+		return vehicle.seats.get(pass.seat());
+	}
+
+	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount){
 		if(world.isRemote || isDead) return true;
 		if(source.damageType.equals("player") && getDriver() == null){
@@ -612,6 +696,81 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	public ItemStack getPickedResult(RayTraceResult rtr){
 		return vehicle.data.newItemStack().local();
+	}
+
+	public boolean processSeatInteract(int seatidx, EntityPlayerMP player, EnumHand hand){
+		if(world.isRemote || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
+		ItemStack stack = player.getHeldItem(hand);
+		SeatInstance seat = vehicle.seats.get(seatidx);
+		Passenger pass = player.getCapability(PASSENGER, null);
+		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
+			vehicle.data.getLock().toggle(pass.asSender(), new SWI(stack));
+			sendLockStateUpdate();
+			return true;
+		}
+		if(vehicle.data.getLock().isLocked()){
+			player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
+			return true;
+		}
+		if(seat.interacttimer > 0) return false;
+		if(stack.getItem() instanceof ItemLead){
+			if(seat.passenger().isPlayer()) return false;
+			if(seat.passenger().isLiving()){
+				EntityLiving ent = seat.passenger().local();
+				ent.dismountRidingEntity();
+				ent.setLeashHolder(player, true);
+				seat.interacttimer += 10;
+				return true;
+			}
+			double range = 10;
+			V3D pos = new V3D(posX, posY, posZ);
+			AxisAlignedBB aabb = new AxisAlignedBB(pos.x - range, pos.y - range, pos.z - range, pos.x + range, pos.y + range, pos.z + range);
+			List<EntityLiving> nearbyMobs = world.getEntitiesWithinAABB(EntityLiving.class, aabb);
+			for(EntityLiving entity : nearbyMobs){
+				if(entity.getLeashed() && entity.getLeashHolder() == player){
+					if(!seat.seat.allow(entity.getCapability(PASSENGER, null).asWrapper())){
+						Print.bar(player, "&eSeat does not accept this entity kind. (" + entity.getName() + ")");
+						continue;
+					}
+					entity.getCapability(Capabilities.PASSENGER, null).set(getEntityId(), seatidx);
+					seat.elook.set_rotation(-entity.rotationYaw, entity.rotationPitch, 0F, true);
+					entity.clearLeashed(true, !player.capabilities.isCreativeMode);
+					entity.startRiding(this);
+					break;
+				}
+			}
+			seat.interacttimer += 10;
+			return true;
+		}
+		if(seat.passenger() == null){
+			if(!seat.seat.allow(pass.asWrapper())){
+				Print.bar(player, "&eSeat does not accept players as passengers.");
+				return false;
+			}
+			if(player.isRiding() && player.getRidingEntity().equals(vehicle)){
+				SeatInstance oseat = vehicle.getSeatOf(player);
+				oseat.passenger(null);
+				pass.set(getEntityId(), seatidx);
+				seat.passenger(pass.asWrapper());
+			}
+			else{
+				player.dismountRidingEntity();
+				player.getCapability(Capabilities.PASSENGER, null).set(getEntityId(), seatidx);
+				player.startRiding(this);
+			}
+			seat.interacttimer += 10;
+			return true;
+		}
+		return false;
+	}
+
+	public void sendLockStateUpdate(){
+		NBTTagCompound packet = new NBTTagCompound();
+		packet.setString("target_listener", Resources.UTIL_LISTENER);
+		packet.setString("task", "lock_state");
+		packet.setBoolean("state", vehicle.data.getLock().isLocked());
+		packet.setInteger("entity", getEntityId());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
 	}
 
 	//TODO packets

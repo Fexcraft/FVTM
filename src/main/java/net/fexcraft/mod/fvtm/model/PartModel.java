@@ -120,10 +120,10 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 		GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-		Vec3f rot = EffectRenderer.getRotations(point, ticks);
-		GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
+		V3D rot = EffectRenderer.getRotations(point, ticks);
+		GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
+		GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
+		GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
 		data.getInstalledRot().rotate112();
 	}
 

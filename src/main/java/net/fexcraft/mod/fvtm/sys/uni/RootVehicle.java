@@ -430,16 +430,12 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			V3D rear = new V3D((rl.posX + rr.posX) * 0.5, (rl.posY + rr.posY) * 0.5, (rl.posZ + rr.posZ) * 0.5);
 			V3D left = new V3D((fl.posX + rl.posX) * 0.5, (fl.posY + rl.posY) * 0.5, (fl.posZ + rl.posZ) * 0.5);
 			V3D righ = new V3D((fr.posX + rr.posX) * 0.5, (fr.posY + rr.posY) * 0.5, (fr.posZ + rr.posZ) * 0.5);
-			double dx = fron.x - rear.x, dy = fron.y - rear.y, dz = fron.z - rear.z;
-			double drx = left.x - righ.x, dry = left.y - righ.y, drz = left.z - righ.z;
+			double dx = rear.x - fron.x, dy = rear.y - fron.y, dz = rear.z - fron.z;
+			double drx = righ.x - left.x, dry = righ.y - left.y, drz = righ.z - left.z;
 			double dxz = Math.sqrt(dx * dx + dz * dz);
-			double drxz = Math.sqrt((drx * drx + drz * drz));
-			double y = Math.atan2(dz, dx);
-			double p = Math.atan2(dy, dxz);
-			double r = Math.atan2(dry, drxz);
-			if(vehicle.data.getType().isTracked()){
-				y = Math.atan2(fl.posX - fr.posX, fl.posZ - fr.posZ);
-			}
+			double y = Math.atan2(dx, dz);
+			double p = -Math.atan2(dy, dxz);
+			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
 			vehicle.pivot().set_rotation(y, p, r, false);
 		}
 		else{

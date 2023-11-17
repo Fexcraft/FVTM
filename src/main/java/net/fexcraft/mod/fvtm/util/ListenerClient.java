@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,8 +51,8 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 			}
 			case "lock_state":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				if(ent == null || ent instanceof VehicleEntity) return;
-				((VehicleEntity)ent).getVehicleData().getLock().setLocked(packet.nbt.getBoolean("state"));
+				if(ent == null || ent instanceof RootVehicle == false) return;
+				((RootVehicle)ent).vehicle.data.getLock().setLocked(packet.nbt.getBoolean("state"));
 				return;
 			}
 			case "ts_ck_sync":{

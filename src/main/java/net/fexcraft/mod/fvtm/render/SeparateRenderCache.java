@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -15,7 +16,7 @@ public class SeparateRenderCache {
 	public static final ArrayList<SeparateSortedModelGroup> SORTED_VEH_QUEUE = new ArrayList<>();
 	public static final ArrayList<VehicleData> SORTED_VEH_DATA = new ArrayList<>();
 	public static final ArrayList<VehicleEntity> SORTED_VEH_ENTITY = new ArrayList<>();
-	public static final HashMap<Integer, Vec3f> SORTED_VEH_ROT = new HashMap<>();
+	public static final HashMap<Integer, V3D> SORTED_VEH_ROT = new HashMap<>();
 	public static final HashMap<Integer, double[]> SORTED_VEH_POS = new HashMap<>();
 	//
 	public static final ArrayList<SeparateSortedModelGroup> SORTED_BLK_QUEUE = new ArrayList<>();

@@ -40,11 +40,11 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 			GL11.glPushMatrix();
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
 			GL11.glTranslatef(0, 2, 0);
-			RenderStreetSign.drawString(rv.vehicle.pivot().deg_yaw() + "", x, y, z, true, true, 0.8f, 0x000000, null);
+			RenderStreetSign.drawString(rv.vehicle.pivot().deg_yaw() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
 			GL11.glTranslatef(0, 0.2f, 0);
-			RenderStreetSign.drawString(rv.vehicle.pivot().deg_pitch() + "", x, y, z, true, true, 0.8f, 0x000000, null);
+			RenderStreetSign.drawString(rv.vehicle.pivot().deg_pitch() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
 			GL11.glTranslatef(0, 0.2f, 0);
-			RenderStreetSign.drawString(rv.vehicle.pivot().deg_roll() + "", x, y, z, true, true, 0.8f, 0x000000, null);
+			RenderStreetSign.drawString(rv.vehicle.pivot().deg_roll() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
 			GL11.glPopMatrix();
 		}
 		SeparateRenderCache.SORTED_VEH_ROT.put(rv.getEntityId(), rot);

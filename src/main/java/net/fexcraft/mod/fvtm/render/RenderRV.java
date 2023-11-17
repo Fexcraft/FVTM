@@ -32,7 +32,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
         GL11.glPushMatrix();
 		SeparateRenderCache.SORTED_VEH_POS.put(rv.getEntityId(), new double[]{ x, y, z });
 		GL11.glTranslated(x, y, z);
-		if(Minecraft.getMinecraft().gameSettings.showDebugInfo){
+		if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
 			GL11.glPushMatrix();
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
 			GL11.glTranslatef(0, 2, 0);
@@ -47,7 +47,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
 		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
-		//TODO SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
+		SeparateRenderCache.SORTED_VEH_ROT.put(rv.getEntityId(), rot);
 		GL11.glPushMatrix();
 		RenderCache cache = rv.getCapability(Capabilities.RENDERCACHE, null);
 		Model vehmod = rv.vehicle.data.getType().getModel();

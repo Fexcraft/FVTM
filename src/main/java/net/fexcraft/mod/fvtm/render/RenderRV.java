@@ -7,8 +7,10 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -30,10 +32,21 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
         GL11.glPushMatrix();
 		SeparateRenderCache.SORTED_VEH_POS.put(rv.getEntityId(), new double[]{ x, y, z });
 		GL11.glTranslated(x, y, z);
+		if(Minecraft.getMinecraft().gameSettings.showDebugInfo){
+			GL11.glPushMatrix();
+			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
+			GL11.glTranslatef(0, 2, 0);
+			RenderStreetSign.drawString(rv.vehicle.pivot().deg_yaw() + "", x, y, z, true, true, 0.8f, 0x000000, null);
+			GL11.glTranslatef(0, 0.2f, 0);
+			RenderStreetSign.drawString(rv.vehicle.pivot().deg_pitch() + "", x, y, z, true, true, 0.8f, 0x000000, null);
+			GL11.glTranslatef(0, 0.2f, 0);
+			RenderStreetSign.drawString(rv.vehicle.pivot().deg_roll() + "", x, y, z, true, true, 0.8f, 0x000000, null);
+			GL11.glPopMatrix();
+		}
 		V3D rot = EffectRenderer.getRotations(rv, ticks);
 		GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
-		GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
-		GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
+		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
+		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
 		//TODO SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
 		GL11.glPushMatrix();
 		RenderCache cache = rv.getCapability(Capabilities.RENDERCACHE, null);

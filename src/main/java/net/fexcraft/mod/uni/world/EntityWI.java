@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,6 +53,11 @@ public class EntityWI extends EntityW {
 	@Override
 	public boolean isHostile(){
 		return entity instanceof EntityMob;
+	}
+
+	@Override
+	public boolean isLiving(){
+		return entity instanceof EntityLiving;
 	}
 
 	@Override

@@ -198,7 +198,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public void readSpawnData(ByteBuf buffer){
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-    		//TODO vehicle = Resources.getVehicleData(compound);
+    		vehicle = FvtmResources.INSTANCE.getVehicleData(new TagCWI(compound));
     		rotpoint = vehicle.getRotationPoint("vehicle");
             rotpoint.loadPivot(new TagCWI(compound));
             prevRotationYaw = rotpoint.getPivot().deg_yaw();

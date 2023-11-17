@@ -2,13 +2,22 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlots;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
+
+import static net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.*;
 
 public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 	
@@ -32,27 +41,26 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				}
 				return;
 			}
-			case "hot_install":{
-				/*PartData data = player.getHeldItem(EnumHand.MAIN_HAND).getCapability(Capabilities.VAPDATA, null).getPartData();
-				VehicleEntity entity = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				PartSlots source = entity.getVehicleData().getPartSlotsProvider(packet.nbt.getString("source"));
-				int index = packet.nbt.getInteger("index");
-				String slot = source.get(index).category(packet.nbt.getString("source"));
-				if(entity.getVehicleData().getPart(slot) != null){
-					PartData oldpart = entity.getVehicleData().getPart(slot);
+			case "install":{
+				PartData data = player.getHeldItem(EnumHand.MAIN_HAND).getCapability(Capabilities.VAPDATA, null).getPartData();
+				RootVehicle entity = (RootVehicle)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				PartSlots source = entity.vehicle.data.getPartSlotsProvider(packet.nbt.getString("source"));
+				String category = packet.nbt.getString("category");
+				if(entity.vehicle.data.getPart(category) != null){
+					PartData oldpart = entity.vehicle.data.getPart(category);
 					boolean valid = oldpart.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
-					if(valid && entity.getVehicleData().deinstallPart(Command.OTHER ? new MessageSenderI(player) : null, slot, true)){
+					if(valid && entity.vehicle.data.deinstallPart(Command.OTHER ? player.getCapability(Capabilities.PASSENGER, null).asSender() : null, category, true)){
 						player.addItemStackToInventory(oldpart.getNewStack().local());
 					}
 					else return;
 				}
-				data = entity.getVehicleData().installPart(Command.OTHER ? new MessageSenderI(player) : null, data, packet.nbt.getString("source") + ":" + slot + ":" + index, true);
+				data = entity.vehicle.data.installPart(Command.OTHER ? player.getCapability(Capabilities.PASSENGER, null).asSender() : null, data, packet.nbt.getString("source") + ":" + category, true);
 				if(data == null){
 					player.getHeldItem(EnumHand.MAIN_HAND).shrink(1);
-					NBTTagCompound compound = entity.getVehicleData().write(TagCW.create()).local();
+					NBTTagCompound compound = entity.vehicle.data.write(TagCW.create()).local();
 					compound.setString("task", "update_vehicledata");
-					PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity.getEntity(), compound), Resources.getTargetPoint(entity.getEntity()));
-				}*///TODO
+					PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, compound), Resources.getTargetPoint(entity));
+				}
 				return;
 			}
 			case "ts_ck_sync":{

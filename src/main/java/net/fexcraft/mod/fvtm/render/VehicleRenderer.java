@@ -60,10 +60,10 @@ public class VehicleRenderer {
 				}
 			}
             GL11.glPushMatrix();
-			Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
-			GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+			V3D rot = EffectRenderer.getRotations(vehicle.getRotPoint(), ticks);
+			GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
+			GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
+			GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
             SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
             //
 	        int i = getBrightness(x, y, z), j = i % 65536, k = i / 65536;
@@ -125,11 +125,11 @@ public class VehicleRenderer {
 			V3D temp0 = point.getPos();
 			V3D temp1 = point.getPrevPos();
 			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
-			Vec3f rot = EffectRenderer.getRotations(point, ticks);
+			V3D rot = EffectRenderer.getRotations(point, ticks);
 			GL11.glTranslated(-temp2.x, -temp2.y, temp2.z);
-			GL11.glRotatef(-rot.x, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+			GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
+			GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
+			GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
 		}
 		GL11.glRotatef(180f, 0f, 0f, 1f);
 		for(Entry<String, PartData> entry : parts){

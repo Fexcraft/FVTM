@@ -196,25 +196,27 @@ public class EffectRenderer {
 				}
 			}
 			postMeshCalls();
-			for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
-				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
-				point = data.getRotationPointOfPart(ps.getKey());
-				for(Entry<String, PartSlot> entry : ps.getValue().entrySet()){
-					V3D pes = pos.add(entry.getValue().pos);
-					if(point.isVehicle()){
-						GL11.glTranslated(pes.x, pes.y, pes.z);
+			if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
+				for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
+					V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+					point = data.getRotationPointOfPart(ps.getKey());
+					for(Entry<String, PartSlot> entry : ps.getValue().entrySet()){
+						V3D pes = pos.add(entry.getValue().pos);
+						if(point.isVehicle()){
+							GL11.glTranslated(pes.x, pes.y, pes.z);
+						}
+						else{
+							GL11.glPushMatrix();
+							V3D vec = point.getRelativeVector(pes);
+							GL11.glTranslated(vec.x, vec.y, vec.z);
+							GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+							GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+							GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
+						}
+						RenderStreetSign.drawString(entry.getKey(), 0, entry.getValue().radius + 0.1f, 0, true, true, 0.5f, 0xffffff, null);
+						if(!point.isVehicle()) GL11.glPopMatrix();
+						else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 					}
-					else{
-						GL11.glPushMatrix();
-						V3D vec = point.getRelativeVector(pes);
-						GL11.glTranslated(vec.x, vec.y, vec.z);
-						GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
-						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
-						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
-					}
-					RenderStreetSign.drawString(entry.getKey(), 0, entry.getValue().radius + 0.1f, 0, true, true, 0.5f, 0xffffff, null);
-					if(!point.isVehicle()) GL11.glPopMatrix();
-					else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 				}
 			}
 		}
@@ -336,18 +338,44 @@ public class EffectRenderer {
 		RGB.glColorReset();
 	}
 
-	public static void renderSeats(Entity entity, VehicleInstance vehicle){
+	public static void renderSeats(VehicleInstance vehicle){
 		if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
 		preMeshCalls();
 		GL11.glPushMatrix();
 		for(SeatInstance seat : vehicle.seats){
-			V3D pos = seat.getCurrentLocalPosition();
-			GLUtils112.translate(pos);
+			if(seat.point.isVehicle()){
+				GLUtils112.translate(seat.seat.pos);
+			}
+			else{
+				GL11.glPushMatrix();
+				GLUtils112.translate(seat.point.getRelativeVector(seat.seat.pos));
+				GL11.glRotatef(seat.point.getPivot().deg_yaw(), 0, 1, 0);
+				GL11.glRotatef(seat.point.getPivot().deg_pitch(), 1, 0, 0);
+				GL11.glRotatef(seat.point.getPivot().deg_roll(), 0, 0, 1);
+			}
 			(seat.passenger() != null ? DebugModels.SEAT_CUBE_OCCUPIED : seat.seat.sitting ? DebugModels.SEAT_CUBE_SITTING : DebugModels.SEAT_CUBE_STANDING).render(0.5f * seat.seat.scale());
-			GLUtils112.translateR(pos);
+			if(!seat.point.isVehicle()) GL11.glPopMatrix();
+			else GLUtils112.translateR(seat.seat.pos);
 		}
 		GL11.glPopMatrix();
 		postMeshCalls();
+		if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
+			for(SeatInstance seat : vehicle.seats){
+				if(seat.point.isVehicle()){
+					GLUtils112.translate(seat.seat.pos);
+				}
+				else{
+					GL11.glPushMatrix();
+					GLUtils112.translate(seat.point.getRelativeVector(seat.seat.pos));
+					GL11.glRotatef(seat.point.getPivot().deg_yaw(), 0, 1, 0);
+					GL11.glRotatef(seat.point.getPivot().deg_pitch(), 1, 0, 0);
+					GL11.glRotatef(seat.point.getPivot().deg_roll(), 0, 0, 1);
+				}
+				RenderStreetSign.drawString(seat.seat.name, 0, 0.5f, 0, true, true, 0.5f, 0xffffff, null);
+				if(!seat.point.isVehicle()) GL11.glPopMatrix();
+				else GLUtils112.translateR(seat.seat.pos);
+			}
+		}
 		RGB.glColorReset();
 	}
 	

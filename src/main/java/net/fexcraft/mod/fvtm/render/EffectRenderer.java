@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -150,14 +151,10 @@ public class EffectRenderer {
 								else{
 									GL11.glPushMatrix();
 									V3D vec = point.getRelativeVector(pes);
-									GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
-									GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 									GL11.glTranslated(vec.x, vec.y, vec.z);
-									GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
-									GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-									GL11.glRotatef(point.getPivot().deg_yaw(), 0.0F, 1.0F, 0.0F);
-									GL11.glRotatef(point.getPivot().deg_pitch(), 0.0F, 0.0F, 1.0F);
-									GL11.glRotatef(point.getPivot().deg_roll(), 1.0F, 0.0F, 0.0F);
+									GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+									GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+									GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
 								}
 				            	GL11.glPushMatrix();
 				            	float scal = ps.getValue().get(i).radius;
@@ -178,33 +175,50 @@ public class EffectRenderer {
 			for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 				point = data.getRotationPointOfPart(ps.getKey());
-				for(int i = 0; i < ps.getValue().size(); i++){
-					V3D pes = pos.add(ps.getValue().get(i).pos);
+				for(Entry<String, PartSlot> entry : ps.getValue().entrySet()){
+					V3D pes = pos.add(entry.getValue().pos);
 					if(point.isVehicle()){
-		            	GL11.glTranslated(pes.x, pes.y, pes.z);
+						GL11.glTranslated(pes.x, pes.y, pes.z);
 					}
 					else{
 						GL11.glPushMatrix();
 						V3D vec = point.getRelativeVector(pes);
-						GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
-						GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
 						GL11.glTranslated(vec.x, vec.y, vec.z);
-						GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
-						GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-						GL11.glRotatef(point.getPivot().deg_yaw(), 0.0F, 1.0F, 0.0F);
-						GL11.glRotatef(point.getPivot().deg_pitch(), 0.0F, 0.0F, 1.0F);
-						GL11.glRotatef(point.getPivot().deg_roll(), 1.0F, 0.0F, 0.0F);
+						GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
 					}
-	            	GL11.glPushMatrix();
-	            	float scal = ps.getValue().get(i).radius;
-	            	GL11.glScalef(scal, scal, scal);
+					GL11.glPushMatrix();
+					float scal = entry.getValue().radius;
+					GL11.glScalef(scal, scal, scal);
 					DebugModels.HOTINSTALLCUBE.render(1f);
-	            	GL11.glPopMatrix();
-	            	if(!point.isVehicle()) GL11.glPopMatrix();
-	            	else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
+					GL11.glPopMatrix();
+					if(!point.isVehicle()) GL11.glPopMatrix();
+					else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 				}
 			}
 			postMeshCalls();
+			for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
+				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+				point = data.getRotationPointOfPart(ps.getKey());
+				for(Entry<String, PartSlot> entry : ps.getValue().entrySet()){
+					V3D pes = pos.add(entry.getValue().pos);
+					if(point.isVehicle()){
+						GL11.glTranslated(pes.x, pes.y, pes.z);
+					}
+					else{
+						GL11.glPushMatrix();
+						V3D vec = point.getRelativeVector(pes);
+						GL11.glTranslated(vec.x, vec.y, vec.z);
+						GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
+					}
+					RenderStreetSign.drawString(entry.getKey(), 0, 0.5, 0, true, true, 0.8f, 0xffffff, null);
+					if(!point.isVehicle()) GL11.glPopMatrix();
+					else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
+				}
+			}
 		}
 	}
 

@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.I19U;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.EntityWI;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraft.entity.Entity;
@@ -20,11 +22,11 @@ public class PassengerImplementation implements Passenger {
 	private int vehicle = -1, seatindex = -1;
 	private byte check;
 	private boolean notified;
-	private MessageSender sender;
+	private EntityW wrapper;
 
 	@Override
 	public void set(int veh, int seat){
-		if (entity.world.isRemote && entity.isRiding() && seat > -1) {
+		if(entity.world.isRemote && entity.isRiding() && seat > -1) {
 			GenericVehicle geve = (GenericVehicle) entity.getRidingEntity();
 			for (SeatCache cache : geve.seats) {
 				if (cache.passenger() == entity) cache.passenger(null);
@@ -55,7 +57,7 @@ public class PassengerImplementation implements Passenger {
 			packet.setInteger("entity", entity.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));*/
 		}
-		sender = new MessageSenderI(entity);
+		wrapper = new EntityWI(entity);
 	}
 
 	@Override
@@ -100,7 +102,12 @@ public class PassengerImplementation implements Passenger {
 
 	@Override
 	public MessageSender asSender(){
-		return sender;
+		return wrapper;
+	}
+
+	@Override
+	public EntityW asWrapper(){
+		return wrapper;
 	}
 
 }

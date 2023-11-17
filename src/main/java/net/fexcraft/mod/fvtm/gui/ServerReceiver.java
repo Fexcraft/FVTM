@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
@@ -71,10 +72,10 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			// TODO validation
 			case "toggle_seat":{
-				GenericVehicle veh = (GenericVehicle)world.getEntityByID(packet.nbt.getInteger("entity"));
+				RootVehicle entity = (RootVehicle)world.getEntityByID(packet.nbt.getInteger("entity"));
 				int seatindex = packet.nbt.getInteger("seat");
-				if(seatindex < 0 || seatindex >= veh.seats.length) return;
-				veh.seats[packet.nbt.getInteger("seat")].processInteract(player, packet.nbt.getBoolean("main") ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+				if(seatindex < 0 || seatindex >= entity.vehicle.seats.size()) return;
+				entity.processSeatInteract(packet.nbt.getInteger("seat"), player, packet.nbt.getBoolean("main") ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
 				return;
 			}
 			default:

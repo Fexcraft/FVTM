@@ -1,8 +1,11 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -14,11 +17,12 @@ import net.minecraft.entity.player.EntityPlayer;
 public abstract class AddonSteeringOverlay {
 	
 	protected VehicleSteeringOverlay root;
-	protected EntityPlayer player;
+	protected EntityPlayer playerentity;
+	protected EntityW player;
 
 	public AddonSteeringOverlay(VehicleSteeringOverlay root, EntityPlayer player){
 		this.root = root;
-		this.player = player;
+		this.player = (playerentity = player).getCapability(Capabilities.PASSENGER, null).asWrapper();
 	}
 
 	/** Called on GuiScreen.initGui(); */
@@ -45,7 +49,7 @@ public abstract class AddonSteeringOverlay {
 	public abstract void guiClosed();
 
 	/** Called on GuiSccreen.drawScreen(); */
-	public abstract void drawScreen(int mouseX, int mouseY, float partialTicks, GenericVehicle ent, VehicleData data);
+	public abstract void drawScreen(int mouseX, int mouseY, float partialTicks, RootVehicle ent, VehicleData data);
 
 	/** Called after the TOGGABLES Keybind, which toggles if the GUI should show the toggables overlay or not. */
 	public abstract void onToggablesToggle();

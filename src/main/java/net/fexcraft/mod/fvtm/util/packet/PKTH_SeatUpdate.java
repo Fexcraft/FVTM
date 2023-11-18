@@ -5,7 +5,9 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLE_UPDATE_RANGE;
 import java.util.List;
 
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,10 +54,10 @@ public class PKTH_SeatUpdate {
 	private static final void findAndApply(PKT_SeatUpdate packet, List<Entity> list, boolean send){
         for(Entity ent : list){
             if(ent.getEntityId() == packet.entid){
-            	GenericVehicle veh = (GenericVehicle)ent;
-            	SeatCache seat = veh.seats[packet.seatid];
-            	seat.prevlooking = seat.looking.copy();
-            	seat.looking.set_rotation(packet.yaw, packet.pitch, 0F, true);
+            	RootVehicle veh = (RootVehicle)ent;
+            	SeatInstance seat = veh.vehicle.seats.get(packet.seatid);
+            	seat.pelook = seat.elook.copy();
+            	seat.elook.set_rotation(packet.yaw, packet.pitch, 0F, true);
             	if(send){
                     Packets.sendToAllAround(packet, new TargetPoint(veh.dimension, veh.posX, veh.posY, veh.posZ, VEHICLE_UPDATE_RANGE));
             	}

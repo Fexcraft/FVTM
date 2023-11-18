@@ -32,6 +32,7 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
@@ -41,10 +42,7 @@ import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.Fuel;
-import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.WireType;
+import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
@@ -57,6 +55,7 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -82,6 +81,7 @@ import net.fexcraft.mod.fvtm.util.function.BoolBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.SetBlockFunction;
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -402,7 +402,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regSounds(RegistryEvent.Register<SoundEvent> event){
-		/*VEHICLES.forEach(vehicle -> {
+		FvtmRegistry.VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid.local())){
 					sound.event = event.getRegistry().getValue(sound.soundid.local());
@@ -412,8 +412,8 @@ public class Resources {
 					event.getRegistry().register((SoundEvent)(sound.event = soundevent));
 				}
 			});
-		});*/
-		/*PARTS.forEach(part -> {
+		});
+		FvtmRegistry.PARTS.forEach(part -> {
 			part.getSounds().values().forEach(sound -> {
 				if(event.getRegistry().containsKey(sound.soundid.local())){
 					sound.event = event.getRegistry().getValue(sound.soundid.local());
@@ -423,8 +423,7 @@ public class Resources {
 					event.getRegistry().register((SoundEvent)(sound.event = soundevent));
 				}
 			});
-		});*/
-		//TODO sound registry
+		});
 	}
 	
 	@SubscribeEvent
@@ -483,30 +482,6 @@ public class Resources {
 		LOADED_MODS.put(modid, bool);
 		return bool;
 	}
-	
-	/*private static final BiConsumer<ArrayList<TileEntity>, Junction> LINK_TO_JUNC = (tiles, junction) -> {
-		for(TileEntity tile_entity : tiles){
-			if(tile_entity instanceof JunctionTrackingTileEntity == false) continue;
-			JunctionTrackingTileEntity tile = (JunctionTrackingTileEntity)tile_entity;
-			if(tile.getJuncPos().equals(junction.getVec316f())){
-				tile.setJunction(junction.getVec316f());
-			}
-		}
-	};
-	
-	@SubscribeEvent
-	public void onJuncAdded(RailEvents.JunctionEvent.JunctionAdded event){
-		ArrayList<TileEntity> tiles = new ArrayList<>();
-		tiles.addAll(event.getWorld().loadedTileEntityList);
-		Static.getServer().addScheduledTask(() -> LINK_TO_JUNC.accept(tiles, event.getJunction()));
-	}
-	
-	@SubscribeEvent
-	public void onJuncAdded(RailEvents.JunctionEvent.JunctionLoaded event){
-		ArrayList<TileEntity> tiles = new ArrayList<>();
-		tiles.addAll(event.getWorld().loadedTileEntityList);
-		Static.getServer().addScheduledTask(() -> LINK_TO_JUNC.accept(tiles, event.getJunction()));
-	}*/
 
 	public static void registerDefaultRecipes(){
 		String blockcat = "fvtm.recipes.blocks";
@@ -591,7 +566,7 @@ public class Resources {
 	}
 
 	public static void linkTextureSuppliers(){
-		/*for(Addon addon : ADDONS){
+		for(Addon addon : ADDONS){
 			if(addon.getTextureSuppliers().isEmpty()) continue;
 			for(TextureSupply texsupp : addon.getTextureSuppliers().values()){
 				for(String tar : texsupp.targets()){
@@ -599,25 +574,25 @@ public class Resources {
 					Textureable.TextureHolder holder = null;
 					switch(split[0]){
 						case "vehicle":{
-							holder = VEHICLES.get(split[1]);
+							holder = FvtmRegistry.VEHICLES.get(split[1]);
 							break;
 						}
 						case "part":{
-							holder = PARTS.get(split[1]);
+							holder = FvtmRegistry.PARTS.get(split[1]);
 							break;
 						}
 						case "container":{
-							holder = CONTAINERS.get(split[1]);
+							//TODO containers holder = CONTAINERS.get(split[1]);
 							break;
 						}
 					}
 					if(holder == null) continue;
 					for(IDL tex : texsupp.textures()){
-						holder.getDefaultTextures().add((NamedResourceLocation)tex);
+						holder.getDefaultTextures().add(tex.local());
 					}
 				}
 			}
-		}*///TODO
+		}
 	}
 
 	public static void loadWireDecorations(boolean client){

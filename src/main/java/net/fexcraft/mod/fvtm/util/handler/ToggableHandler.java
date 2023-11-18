@@ -88,12 +88,12 @@ public class ToggableHandler {
 		return false;
 	}
 
-	public static boolean sendToggle(Attribute<?> attr, VehicleEntity entity, KeyPress press, Float val, EntityPlayer player){
+	public static boolean sendToggle(Attribute<?> attr, RootVehicle entity, KeyPress press, Float val, EntityPlayer player){
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
 		packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id);
-		packet.setInteger("entity", entity.getEntity().getEntityId());
+		packet.setInteger("entity", entity.getEntityId());
 		Object old = attr.value();
 		switch(press){
 			case MOUSE_MAIN:{
@@ -156,8 +156,8 @@ public class ToggableHandler {
 			}
 			default: return false;
 		}
-		entity.getVehicleData().getScripts().forEach(script -> {
-			script.onAttributeToggle(entity.getEntity(), attr, old, player);
+		entity.vehicle.data.getScripts().forEach(script -> {
+			script.onAttributeToggle(entity, attr, old, player);
 		});
 		if(player.world.isRemote){
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));

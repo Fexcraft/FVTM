@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -13,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -21,30 +23,12 @@ import org.lwjgl.opengl.GL11;
 public class PartModel extends DefaultModel implements FCLItemModel {
 
 	public static final PartModel EMPTY = new PartModel();
-    //public static final RGB windowcolor = new RGB(0x007208).setAlpha(0.3f);
-	@Deprecated public static final String[] defval = new String[]{
-		"body", "body_colored_primary", "body_colored_secondary", "body_door_open", "body_door_close",
-		"body_door_open_colored_primary", "body_door_close_colored_primary", "turret", "steering",
-		//
-		"wheels", "wheel_front", "wheel_back",
-		"wheel_front_left", "wheel_back_left", "wheel_front_right", "wheel_back_right", 
-		//
-		"track_wheels", "track_wheels_right", "track_wheels_left",
-		//
-		"lights", "front_lights", "back_lights", "reverse_lights",
-		"fog_lights", "turn_signal_left", "turn_signal_right",
-		//
-		"windows", "windows_door_open", "windows_door_close"
-	};
-	@Deprecated public static final String[] defval_bogie = new String[]{ "chassis", "axle0", "axle1", "axle2", "axle3" };
-	
-	////-///---/---///-////
 	
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
 		if(item.getItem() instanceof PartItem == false) return;
 		PartData data = item.getCapability(Capabilities.VAPDATA, null).getPartData();
-		if(data == null || data.getType().getModel() instanceof PartModel == false) return;
+		if(data == null) return;
 		PartModel model = (PartModel)data.getType().getModel();
 		if(model == null) return;
 		//
@@ -55,37 +39,31 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 				break;
 			}
 			case FIXED: {
+				GL11.glRotatef(-90f, 0F, 1F, 0F);
 				WheelData ihdata = data.getType().getInstallHandlerData();
-				GL11.glRotatef(180, 0, 1, 0);
 				GL11.glTranslatef(0, 0, ihdata.getWidth() * -.015625f);
 				break;
 			}
 			case THIRD_PERSON_RIGHT_HAND:{
-				GL11.glRotatef(90f, 0F, 1F, 0F);
-				//GL11.glTranslatef(-(func.getWidth() * Static.sixteenth), -0.2f, 0);
+				GL11.glRotatef(180f, 0F, 1F, 0F);
 				GL11.glScalef(.75f, .75f, .75f);
 				break;
 			}
 			case THIRD_PERSON_LEFT_HAND: {
-				GL11.glRotatef(-90f, 0F, 1F, 0F);
-				//GL11.glTranslatef(-(func.getWidth() * Static.sixteenth), -0.2f, 0);
 				GL11.glScalef(.75f, .75f, .75f);
 				break;
 			}
-			case FIRST_PERSON_LEFT_HAND: {
-				GL11.glRotatef(60f, 0F, 1F, 0F);
-				GL11.glScalef(.5f, .5f, .5f);
-				break;
-			}
+			case FIRST_PERSON_LEFT_HAND:
 			case FIRST_PERSON_RIGHT_HAND: {
-				GL11.glRotatef(-60f, 0F, 1F, 0F);
+				GL11.glRotatef(90f, 0F, 1F, 0F);
 				GL11.glScalef(.5f, .5f, .5f);
 				break;
 			}
 			case GUI: {
+				GL11.glRotatef(90f, 0F, 1F, 0F);
 				WheelData ihdata = data.getType().getInstallHandlerData();
-				if(ihdata.getRadius() > 8){
-					for(int i = (int)ihdata.getRadius(); i > 8; i--)
+				if(ihdata.getRadius() > 0.5){
+					for(float v = ihdata.getRadius(); v > 0.5; v -= 0.0625)
 					GL11.glScalef(1 - Static.sixteenth, 1 - Static.sixteenth, 1 - Static.sixteenth);
 				}
 				break;
@@ -96,12 +74,9 @@ public class PartModel extends DefaultModel implements FCLItemModel {
 			}
 			default: break;
 		}
-		GL11.glPushMatrix();
-		GL11.glRotatef(1, 0, 180, 0);
 		model.transforms.apply();
 		model.renderItem(item, data);
 		model.transforms.deapply();
-		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}
 

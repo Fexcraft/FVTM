@@ -202,7 +202,7 @@ public class SeatCache {
 				Float val = attr.getKeyValue(key);
 				if(val != null){
 					KeyPress mouse = val == 0 ? KeyPress.RESET : val > 0 ? KeyPress.MOUSE_MAIN : KeyPress.MOUSE_RIGHT;
-					if(bool = ToggableHandler.sendToggle(attr, vehicle, mouse, val, player)) break;
+					//TODO if(bool = ToggableHandler.sendToggle(attr, vehicle, mouse, val, player)) break;
 				}
 			}
 			clicktimer += 10;
@@ -296,7 +296,7 @@ public class SeatCache {
         if(newPitch > -seatdata.minpitch){ newPitch = -seatdata.minpitch; }
         if(newPitch < -seatdata.maxpitch){ newPitch = -seatdata.maxpitch; }
         looking.set_rotation(newYaw, newPitch, 0F, true);
-        Packets.sendToServer(new PKT_SeatUpdate(this));
+        //TODO Packets.sendToServer(new PKT_SeatUpdate(this));
         return;
 	}
 	

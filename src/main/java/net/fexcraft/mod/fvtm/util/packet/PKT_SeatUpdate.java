@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.packet;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PKT_SeatUpdate implements IPacket, IMessage {
@@ -12,11 +13,11 @@ public class PKT_SeatUpdate implements IPacket, IMessage {
 
     public PKT_SeatUpdate(){}
 
-    public PKT_SeatUpdate(SeatCache seat){
-    	entid = seat.vehicle.getEntityId();
-    	seatid = seat.seatindex;
-        yaw = seat.looking.deg_yaw();
-        pitch = seat.looking.deg_pitch();
+    public PKT_SeatUpdate(SeatInstance seat){
+    	entid = seat.root.entity.getId();
+    	seatid = seat.index;
+        yaw = seat.elook.deg_yaw();
+        pitch = seat.elook.deg_pitch();
     }
 
     @Override

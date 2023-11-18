@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -29,14 +29,13 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	private static AddonSteeringOverlay overlay;
 	private static VehicleSteeringOverlay instance;
-	private SeatCache seat;
-	public boolean toggables, /*resetview,*/ uni12;
-	public static int oldview;// TODO replace to something fps independent
+	private SeatInstance seat;
+	public boolean toggables, uni12;
 
 	public VehicleSteeringOverlay(EntityPlayerSP player){
 		super();
-		seat = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
-		uni12 = seat.vehicle instanceof ULandVehicle;
+		seat = ((RootVehicle)player.getRidingEntity()).getSeatOf(player);
+		//uni12 = seat.root instanceof ULandVehicle;
 		instance = this;
 		Class<? extends AddonSteeringOverlay> clazz = null;
 		try{
@@ -69,7 +68,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		return instance;
 	}
 	
-	public SeatCache seat(){
+	public SeatInstance seat(){
 		return seat;
 	}
 
@@ -88,7 +87,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void handleMouseInput(){
-		EntityPlayer player = (EntityPlayer)seat.passenger();
+		EntityPlayer player = seat.passenger().local();
 		if(player != mc.player){
 			mc.displayGuiScreen(null);
 			return;
@@ -165,7 +164,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void handleInput(){
-		EntityPlayer player = (EntityPlayer)seat.passenger();
+		EntityPlayer player = (EntityPlayer)seat.passenger_direct();
 		if(player != mc.player){
 			mc.displayGuiScreen(null);
 			return;
@@ -181,13 +180,13 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				e.printStackTrace();
 			}
 		}
-		if(seat != null && seat.passenger() instanceof EntityPlayer){
+		if(seat != null && seat.passenger().isPlayer()){
 			overlay.handleKeyboardInput();
 			if(s > 0){
 				s--;
 			}
 			if(s == 0){
-				seat.onKeyPress(null, player);
+				seat.onKeyPress(null, player.getCapability(Capabilities.PASSENGER, null).asWrapper());
 				s = 4;/* //5//20//10//4 */
 			}
 		}
@@ -199,12 +198,12 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks){
 		if(mc.gameSettings.hideGUI) return;
-		GenericVehicle ent = seat.vehicle;
+		VehicleInstance ent = seat.root;
 		if(ent == null) return;
-		VehicleData data = ent.getVehicleData();
+		VehicleData data = ent.data;
 		if(data == null) return;
 		GL11.glPushMatrix();
-		overlay.drawScreen(mouseX, mouseY, partialTicks, ent, data);
+		overlay.drawScreen(mouseX, mouseY, partialTicks, ent.entity.local(), data);
 	}
 
 	public void drawRectIcon(int x, int y, int width, int height){

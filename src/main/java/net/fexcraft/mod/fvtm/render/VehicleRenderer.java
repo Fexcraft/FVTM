@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
@@ -126,12 +127,11 @@ public class VehicleRenderer {
 			V3D temp1 = point.getPrevPos();
 			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 			V3D rot = EffectRenderer.getRotations(point, ticks);
-			GL11.glTranslated(-temp2.x, -temp2.y, temp2.z);
-			GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
-			GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
-			GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslated(temp2.x, temp2.y, temp2.z);
+			GL11.glRotated(rot.x, 0, 1, 0);
+			GL11.glRotated(rot.y, 1, 0, 0);
+			GL11.glRotated(rot.z, 0, 0, 1);
 		}
-		GL11.glRotatef(180f, 0f, 0f, 1f);
 		for(Entry<String, PartData> entry : parts){
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 			translate(entry.getValue().getInstalledPos());
@@ -140,7 +140,6 @@ public class VehicleRenderer {
 			entry.getValue().getInstalledRot().rotate112R();
 			translateR(entry.getValue().getInstalledPos());
 		}
-		GL11.glRotatef(-180f, 0f, 0f, 1f);
 		for(SwivelPoint sub : point.subs) renderPoint(sub, vehicle, data, cache, ticks);
 		GL11.glPopMatrix();
 	}

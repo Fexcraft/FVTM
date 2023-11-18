@@ -107,7 +107,8 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>  {
 
 	//@Override
 	public PartData getData(ItemStack stack){
-		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+		return getData(stack.getTagCompound());
 	}
 
 	//@Override

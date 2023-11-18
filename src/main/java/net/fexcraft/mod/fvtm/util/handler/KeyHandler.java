@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
@@ -78,9 +79,9 @@ public class KeyHandler {
         switch(event.phase){
             case START: { break; }
             case END: {
-                if(minecraft.player == null || minecraft.world == null){ return; }
-                if(minecraft.player.getRidingEntity() instanceof GenericVehicle && minecraft.currentScreen == null){
-                	GenericVehicle veh = (GenericVehicle)minecraft.player.getRidingEntity();
+                if(minecraft.player == null || minecraft.world == null) return;
+                if(minecraft.player.getRidingEntity() instanceof RootVehicle && minecraft.currentScreen == null){
+                    RootVehicle veh = (RootVehicle)minecraft.player.getRidingEntity();
                 	if(veh.getSeatOf(minecraft.player) == null) return;//temp
                     minecraft.displayGuiScreen(new VehicleSteeringOverlay(minecraft.player));
                 } break;

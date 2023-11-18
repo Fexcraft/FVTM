@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -16,11 +17,11 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Packets {
+public class Packets extends net.fexcraft.mod.fvtm.packet.Packets{
 	
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
-	
-	public static final void init(){
+
+	public void init(){
 		FvtmLogger.LOGGER.log("Starting Packet Handler initialization.");
 		//
 		instance.registerMessage(PKTH_SeatUpdate.Client.class, PKT_SeatUpdate.class, 0, Side.CLIENT);
@@ -51,7 +52,12 @@ public class Packets {
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
 	}
-	
+
+	@Override
+	public void send(SeatInstance seat){
+		sendToServer(new PKT_SeatUpdate(seat));
+	}
+
 	public static final void sendToServer(IMessage packet){
 		instance.sendToServer(packet);
 	}

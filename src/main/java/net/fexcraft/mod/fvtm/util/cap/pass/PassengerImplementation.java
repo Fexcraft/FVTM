@@ -4,8 +4,8 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.I19U;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -25,15 +25,15 @@ public class PassengerImplementation implements Passenger {
 	private EntityW wrapper;
 
 	@Override
-	public void set(int veh, int seat){
-		if(entity.world.isRemote && entity.isRiding() && seat > -1) {
-			GenericVehicle geve = (GenericVehicle) entity.getRidingEntity();
-			for (SeatCache cache : geve.seats) {
-				if (cache.passenger() == entity) cache.passenger(null);
+	public void set(int veh, int seatid){
+		if(entity.world.isRemote && entity.isRiding() && seatid > -1) {
+			RootVehicle geve = (RootVehicle)entity.getRidingEntity();
+			for(SeatInstance seat : geve.vehicle.seats){
+				if(seat.passenger().direct() == entity) seat.passenger(null);
 			}
 		}
 		vehicle = veh;
-		seatindex = seat;
+		seatindex = seatid;
 		if (!entity.world.isRemote) {
 			update_packet();
 			if (entity instanceof EntityPlayer && !notified) {

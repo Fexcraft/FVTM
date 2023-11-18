@@ -38,6 +38,7 @@ import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
@@ -60,7 +61,6 @@ import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
-import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.client.CTab;
@@ -305,7 +305,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		Packets.init();
+		(Packets.INSTANCE = new net.fexcraft.mod.fvtm.util.packet.Packets()).init();
 		Resources.registerDefaultRecipes();
 		FvtmResources.loadRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());

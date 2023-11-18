@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -44,12 +45,16 @@ import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
 import net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
+import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -352,6 +357,22 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public void registerFvtmItems(){
 		DecorationItem.INSTANCE = new DecorationItem();
+	}
+
+	@Override
+	public boolean handleClick(KeyPress key, EntityW vehicle, SeatInstance seat, EntityW player, StackWrapper stack){
+		return ToggableHandler.handleClick(key, vehicle.local(), seat, player.local(), stack == null ? ItemStack.EMPTY : stack.local());
+	}
+
+	@Override
+	public boolean sendToggle(Attribute<?> attr, EntityW vehicle, KeyPress key, Float val, EntityW player) {
+		return ToggableHandler.sendToggle(attr, vehicle.local(), key, val, player.local());
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public double getMouseSensitivity(){
+		return net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
 	}
 
 	@SideOnly(Side.CLIENT)

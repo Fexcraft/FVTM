@@ -80,11 +80,12 @@ public class KeyHandler {
             case START: { break; }
             case END: {
                 if(minecraft.player == null || minecraft.world == null) return;
-                if(minecraft.player.getRidingEntity() instanceof RootVehicle && minecraft.currentScreen == null){
+                /*if(minecraft.player.getRidingEntity() instanceof RootVehicle && minecraft.currentScreen == null){
                     RootVehicle veh = (RootVehicle)minecraft.player.getRidingEntity();
                 	if(veh.getSeatOf(minecraft.player) == null) return;//temp
                     minecraft.displayGuiScreen(new VehicleSteeringOverlay(minecraft.player));
-                } break;
+                }*/
+                break;
             }
         }
     }

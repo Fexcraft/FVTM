@@ -29,7 +29,7 @@ public class PassengerImplementation implements Passenger {
 		if(entity.world.isRemote && entity.isRiding() && seatid > -1) {
 			RootVehicle geve = (RootVehicle)entity.getRidingEntity();
 			for(SeatInstance seat : geve.vehicle.seats){
-				if(seat.passenger().direct() == entity) seat.passenger(null);
+				if(seat.passenger_direct() == entity) seat.passenger(null);
 			}
 		}
 		vehicle = veh;

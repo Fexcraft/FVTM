@@ -171,7 +171,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		}
 		if(!Mouse.isGrabbed()) mc.mouseHelper.grabMouseCursor();
 		handleMouseInput();
-		seat.onMouseMoved(Mouse.getDX(), Mouse.getDY());
+		//TODO seat.onMouseMoved(Mouse.getDX(), Mouse.getDY());
 		for(;Keyboard.next();){
 			try{
 				handleKeyboardInput();

@@ -616,12 +616,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			seat.passenger(pass.getCapability(PASSENGER, null).asWrapper());
 		}
 		V3D pos = seat.getCurrentGlobalPosition();
-		pass.rotationYaw = seat.eyaw;
+		/*pass.rotationYaw = seat.eyaw;
 		pass.rotationPitch = seat.epitch;
 		pass.prevRotationYaw = seat.peyaw;
-		pass.prevRotationPitch = seat.pepitch;
-		double yoff = pass instanceof EntityPlayer ? pass.getYOffset() : 0;
-		pass.setPosition(pos.x, pos.y + yoff, pos.z);
+		pass.prevRotationPitch = seat.pepitch;*/
+		pass.setPosition(pos.x, pos.y - (pass instanceof EntityPlayer ? 0.7 : 0), pos.z);
 		if(!world.isRemote && pass instanceof EntityPlayerMP){
 			Resources.resetFlight((EntityPlayerMP)pass);
 		}

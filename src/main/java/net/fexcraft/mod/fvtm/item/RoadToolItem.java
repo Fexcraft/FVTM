@@ -47,7 +47,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@fItem(modid = "fvtm", name = "road_tool")
 public class RoadToolItem extends Item implements JunctionGridItem {
 	
 	public static RoadToolItem INSTANCE;
@@ -56,6 +55,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		super();
 		INSTANCE = this;
 		setMaxStackSize(1);
+		setRegistryName("fvtm:road_tool");
+		setTranslationKey("fvtm:road_tool");
     }
 
     @SideOnly(Side.CLIENT)

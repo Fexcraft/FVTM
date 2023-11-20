@@ -36,6 +36,7 @@ import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -272,8 +273,8 @@ public class FVTM {
 			TrafficSignItem.INSTANCE.setCreativeTab(tab);
 			JunctionToolItem.INSTANCE.setCreativeTab(tab);
 			SignalItem0.INSTANCE.setCreativeTab(tab);
-			TrainAdjuster.INSTANCE.setCreativeTab(tab);
-			RoadToolItem.INSTANCE.setCreativeTab(tab);*/
+			TrainAdjuster.INSTANCE.setCreativeTab(tab);*/
+			RoadToolItem.INSTANCE.setCreativeTab(tab);
 			Asphalt.INSTANCE.setCreativeTab(tab);
 			DecorationItem.INSTANCE.setCreativeTab(tab);
 			//VPInfo.INSTANCE.setCreativeTab(tab);
@@ -360,6 +361,7 @@ public class FVTM {
 			event.getRegistry().register(ConstCenterBlock.ITEM);
 			event.getRegistry().register(Asphalt.ITEM);
 			//
+			event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
 			event.getRegistry().register(DecorationItem.INSTANCE);
 			if(EnvInfo.CLIENT){
 				regModel(ConstructorBlock.ITEM);
@@ -367,6 +369,7 @@ public class FVTM {
 				regModel(Asphalt.ITEM, 16);
 				//
 				regModel(DecorationItem.INSTANCE);
+				regModel(RoadToolItem.INSTANCE);
 			}
 		}
 

@@ -116,7 +116,7 @@ public class EffectRenderer {
             	TileEntity tile = SORTED_BLK_ENTITY.get(i);
                 GL11.glPushMatrix();
                 GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);
-                GL11.glRotated(data.getType().getBlockType().getRotationForMeta(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);
+                GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);
                 //GL11.glRotatef(180f, 0f, 0f, 1f);
                 sgroup.render(RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false).sep());
             	GL11.glPopMatrix();

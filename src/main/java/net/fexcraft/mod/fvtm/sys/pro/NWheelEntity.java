@@ -153,6 +153,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	public void onUpdate(){
 		if(world.isRemote && !found){
 			root = (RootVehicle)world.getEntityByID(vehid);
+			if(root == null) return;
 			found = true;
 			root.wheels.put(wheelid, this);
 		}

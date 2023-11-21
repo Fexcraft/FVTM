@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
@@ -65,11 +66,7 @@ import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.client.CTab;
-import net.fexcraft.mod.uni.impl.ClothMaterialManager;
-import net.fexcraft.mod.uni.impl.ClothMaterialWrapper;
-import net.fexcraft.mod.uni.impl.IDLM;
-import net.fexcraft.mod.uni.impl.TagCWI;
-import net.fexcraft.mod.uni.impl.TagLWI;
+import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -148,6 +145,7 @@ public class FVTM {
 		TagCW.SUPPLIER[0] = () -> new TagCWI();
 		TagLW.SUPPLIER[0] = () -> new TagLWI();
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
+		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
 			UITab.IMPLEMENTATION = UUITab.class;
 			UIButton.IMPLEMENTATION = UUIButton.class;

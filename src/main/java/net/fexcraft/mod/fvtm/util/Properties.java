@@ -35,7 +35,7 @@ public class Properties {
     public static final PropertyBool DOWN = PropertyBool.create("down");
     public static final PropertyBool BASE = PropertyBool.create("base");
 
-    public PropertyInteger getIntProperty(BlockType type){
+    public static PropertyInteger getIntProperty(BlockType type){
         switch(type){
             case GENERIC_2VAR: return Properties.VARIANTS2;
             case GENERIC_3VAR: return Properties.VARIANTS3;
@@ -58,7 +58,7 @@ public class Properties {
         return Properties.VARIANTS16;
     }
 
-    public IProperty<?> getProperty(BlockType type){
+    public static IProperty<?> getProperty(BlockType type){
         switch(type){
             case GENERIC_4ROT:
             case GENERIC_4X4ROT:

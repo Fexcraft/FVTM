@@ -1,10 +1,16 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.util.EnumFacing;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Properties {
 	
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -28,5 +34,79 @@ public class Properties {
     public static final PropertyBool UP = PropertyBool.create("up");
     public static final PropertyBool DOWN = PropertyBool.create("down");
     public static final PropertyBool BASE = PropertyBool.create("base");
+
+    public PropertyInteger getIntProperty(BlockType type){
+        switch(type){
+            case GENERIC_2VAR: return Properties.VARIANTS2;
+            case GENERIC_3VAR: return Properties.VARIANTS3;
+            case GENERIC_4VAR:
+            case GENERIC_4X4ROT: return Properties.VARIANTS4;
+            case GENERIC_5VAR: return Properties.VARIANTS5;
+            case GENERIC_6VAR: return Properties.VARIANTS6;
+            case GENERIC_7VAR: return Properties.VARIANTS7;
+            case GENERIC_8VAR: return Properties.VARIANTS8;
+            case GENERIC_9VAR: return Properties.VARIANTS9;
+            case GENERIC_10VAR: return Properties.VARIANTS10;
+            case GENERIC_11VAR: return Properties.VARIANTS11;
+            case GENERIC_12VAR: return Properties.VARIANTS12;
+            case GENERIC_13VAR: return Properties.VARIANTS13;
+            case GENERIC_14VAR: return Properties.VARIANTS14;
+            case GENERIC_15VAR: return Properties.VARIANTS15;
+            case GENERIC_16VAR: return Properties.VARIANTS16;
+            default: break;
+        }
+        return Properties.VARIANTS16;
+    }
+
+    public IProperty<?> getProperty(BlockType type){
+        switch(type){
+            case GENERIC_4ROT:
+            case GENERIC_4X4ROT:
+            case MULTIBLOCK_4ROT:
+            case SIGNAL_4ROT:
+            case FORK2_SWITCH_4ROT:
+            case FORK3_SWITCH_4ROT:
+            case DOUBLE_SWITCH_4ROT:
+                return Properties.FACING;
+            case GENERIC_16ROT:
+            case SIGNAL_16ROT:
+                return Properties.ROTATION;
+            case GENERIC_SIMPLE:
+                return null;
+            case GENERIC_2VAR:
+                return Properties.VARIANTS2;
+            case GENERIC_3VAR:
+                return Properties.VARIANTS3;
+            case GENERIC_4VAR:
+                return Properties.VARIANTS4;
+            case GENERIC_5VAR:
+                return Properties.VARIANTS5;
+            case GENERIC_6VAR:
+                return Properties.VARIANTS6;
+            case GENERIC_7VAR:
+                return Properties.VARIANTS7;
+            case GENERIC_8VAR:
+                return Properties.VARIANTS8;
+            case GENERIC_9VAR:
+                return Properties.VARIANTS9;
+            case GENERIC_10VAR:
+                return Properties.VARIANTS10;
+            case GENERIC_11VAR:
+                return Properties.VARIANTS11;
+            case GENERIC_12VAR:
+                return Properties.VARIANTS12;
+            case GENERIC_13VAR:
+                return Properties.VARIANTS13;
+            case GENERIC_14VAR:
+                return Properties.VARIANTS14;
+            case GENERIC_15VAR:
+                return Properties.VARIANTS15;
+            case GENERIC_16VAR:
+                return Properties.VARIANTS16;
+            case GENERIC_ROAD:
+                return Asphalt.HEIGHT;
+        }
+        return null;
+    }
 
 }

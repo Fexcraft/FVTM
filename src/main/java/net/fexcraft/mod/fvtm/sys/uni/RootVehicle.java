@@ -5,8 +5,7 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
-import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
-import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
+import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +126,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			//TODO send connection state update
 		}
 		if(world.isRemote){
-			float cr = vehicle.data.getAttributeFloat("collission_range", 2f);
+			float cr = vehicle.data.getAttributeFloat("collision_range", 2f);
 			renderbox = new AxisAlignedBB(-cr, -cr, -cr, cr, cr, cr);
 			//TODO register for particles
 		}
@@ -449,6 +448,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			double p = -Math.atan2(dy, dxz);
 			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
 			vehicle.pivot().set_rotation(y, p, r, false);
+			//align_wheels();
 		}
 		else{
 			vehicle.speed = MathUtils.calcSpeed(posX, posY, posZ, prevPosX, prevPosY, prevPosZ);
@@ -495,17 +495,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				boolean consumed = engine != null && vehicle.consumeFuel(engine);
 				for(NWheelEntity wheel : wheels.values()){
 					wheel.onGround = true;
-					wheel.rotationYaw = vehicle.pivot().deg_yaw();
-					if(!vehicle.data.getType().isTracked() && wheel.wheel.steering){
-						wheel.rotationYaw += vehicle.steer_yaw;
-					}
 					wheel.motionX *= 0.9;
-					wheel.motionY *= 0.9;
+					//wheel.motionY *= 0.9;
 					wheel.motionZ *= 0.9;
-					wheel.motionY -= GRAVITY_20th;
+					wheel.motionY /*-*/= -GRAVITY_20th;
+					double steer = Math.toRadians(vehicle.steer_yaw);
 					if(engine != null && (needsnofuel || consumed)){
 						double scal = 0;
-						double wheelrot = Math.toRadians(wheel.rotationYaw);
+						double wheelrot = valRad(vehicle.pivot().yaw());
 						if(vehicle.data.getType().isTracked()){
 							wheel.motionX *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
 							wheel.motionZ *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
@@ -517,18 +514,15 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 						}
 						else{
 							scal = 0.01 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
-							wheel.motionX += Math.cos(wheelrot) * scal;
-							wheel.motionX += Math.sin(wheelrot) * scal;
 							if(wheel.wheel.steering){
-								scal = 0.01 * (vehicle.steer_yaw > 0 ? vehicle.data.getType().getSphData().turn_left_mod : vehicle.data.getType().getSphData().turn_right_mod);
-								scal *= vehicle.throttle > 0 ? 1 : -1;
-								wheel.motionX -= wheel.getHorSpeed() * Math.sin(wheelrot) * scal * vehicle.steer_yaw;
-								wheel.motionZ += wheel.getHorSpeed() * Math.cos(wheelrot) * scal * vehicle.steer_yaw;
+								wheelrot = valRad(wheelrot - steer);
+								wheel.rotationYaw = vehicle.pivot().deg_yaw() + (float)vehicle.steer_yaw;
 							}
 							else{
-								wheel.motionX *= 0.9;
-								wheel.motionZ *= 0.9;
+								wheel.rotationYaw = vehicle.pivot().deg_yaw();
 							}
+							wheel.motionX -= Math.sin(wheelrot) * scal;
+							wheel.motionZ -= Math.cos(wheelrot) * scal;
 						}
 					}
 					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
@@ -542,6 +536,18 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 					}
 				}
 				move(MoverType.SELF, move.x, move.y, move.z);
+			}
+		}
+	}
+
+	protected void align_wheels(){
+		for(NWheelEntity wheel : wheels.values()){
+			V3D dest = vehicle.prev_pivot().get_vector(wheel.position);
+			dest.x = (dest.x - (wheel.posX - posX)) * 0.01;
+			dest.y = (dest.y - (wheel.posY - posY)) * 0.01;
+			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.01;
+			if(dest.length() > 0.001){
+				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 			}
 		}
 	}
@@ -576,10 +582,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			if(dest.length() > 0.001){
 				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 			}
-			if(wheel.getPositionVector().distanceTo(getPositionVector()) > 256){
-				wheel.posX = dest.x;
-				wheel.posY = dest.y;
-				wheel.posZ = dest.z;
+			if(wheel.getPositionVector().distanceTo(getPositionVector()) > wheel.getHorSpeed() * 2){
+				dest = vehicle.pivot().get_vector(wheel.position);
+				wheel.posX = dest.x + posX;
+				wheel.posY = dest.y + posY;
+				wheel.posZ = dest.z + posZ;
 			}
 		}
 	}

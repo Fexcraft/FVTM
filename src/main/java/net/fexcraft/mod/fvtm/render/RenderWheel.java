@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -21,9 +23,15 @@ public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity
     	if(Command.OTHER) shadowSize = 0.125f;
     	else shadowSize = 0f;
         if(entity instanceof NWheelEntity && Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
-            GL11.glTranslatef(0, 0.25f, 0);
-            RenderStreetSign.drawString(((NWheelEntity)entity).wheelid, x, y, z, true, true, 0.8f, 0xb8bc38, null);
-            GL11.glTranslatef(0, -0.25f, 0);
+            RenderStreetSign.drawString(((NWheelEntity)entity).wheelid, x, y + 2, z, true, true, 0.8f, 0xb8bc38, null);
+            if(EnvInfo.DEV && Static.getServer().isSinglePlayer()){
+                Entity serv = Static.getServer().getWorld(entity.dimension).getEntityByID(entity.getEntityId());
+                if(serv == null) return;
+                RenderStreetSign.drawString(serv.motionX + "", x, y + 2.2, z, true, true, 0.8f, 0xb8bc38, null);
+                RenderStreetSign.drawString(serv.motionY + "", x, y + 2.4, z, true, true, 0.8f, 0xb8bc38, null);
+                RenderStreetSign.drawString(serv.motionZ + "", x, y + 2.6, z, true, true, 0.8f, 0xb8bc38, null);
+                RenderStreetSign.drawString(serv.rotationYaw + "", x, y + 2.8, z, true, true, 0.8f, 0xb8bc38, null);
+            }
         }
     }
 

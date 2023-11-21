@@ -179,7 +179,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			relaydata = new RelayData(obj.get("WireRelay").getAsJsonObject());
 		}
 		try{
-			this.block = blocktype.getApplicableClass(hastile || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
+			this.block = (net.minecraft.block.Block)BlockType.BLOCK_IMPL.get(blocktype, hastile || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
 		}
 		catch(Exception e){
 			e.printStackTrace(); Static.stop();

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.pro;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
@@ -31,7 +32,7 @@ public class NLandVehicle extends RootVehicle {
 		vehicle.init(data);
 		if(placer != null){
 			vehicle.setPlacer(placer.getGameProfile().getId());
-			vehicle.point.getPivot().set_yaw(placer.rotationYaw, true);
+			vehicle.pivot().set_yaw(placer.rotationYaw, true);
 		}
 		init();
 	}

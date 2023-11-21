@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.util.Properties;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 public class G_SIMPLE_TE extends BlockBase {
 
     public G_SIMPLE_TE(Block type){
-        super(type); this.setDefaultState(this.blockState.getBaseState().withProperty(type.getBlockType().getIntProperty(), 0));
+        super(type); this.setDefaultState(this.blockState.getBaseState().withProperty(Properties.getIntProperty(type.getBlockType()), 0));
     }
 
     @Override

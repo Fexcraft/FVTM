@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.DebugModels;
@@ -37,14 +38,16 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
 		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
 		if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
+			RootVehicle veh = Static.getServer().isSinglePlayer() ? (RootVehicle)Static.getServer().getWorld(rv.dimension).getEntityByID(rv.getEntityId()) : rv;
+			if(veh == null) veh = rv;
 			GL11.glPushMatrix();
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
 			GL11.glTranslatef(0, 2, 0);
-			RenderStreetSign.drawString(rv.vehicle.pivot().deg_yaw() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
+			RenderStreetSign.drawString(veh.vehicle.pivot().deg_yaw() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
 			GL11.glTranslatef(0, 0.2f, 0);
-			RenderStreetSign.drawString(rv.vehicle.pivot().deg_pitch() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
+			RenderStreetSign.drawString(veh.vehicle.pivot().deg_pitch() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
 			GL11.glTranslatef(0, 0.2f, 0);
-			RenderStreetSign.drawString(rv.vehicle.pivot().deg_roll() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
+			RenderStreetSign.drawString(veh.vehicle.pivot().deg_roll() + "", 0, 0, 0, true, true, 0.8f, 0x000000, null);
 			GL11.glPopMatrix();
 		}
 		SeparateRenderCache.SORTED_VEH_ROT.put(rv.getEntityId(), rot);

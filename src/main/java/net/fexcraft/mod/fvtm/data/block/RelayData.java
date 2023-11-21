@@ -53,12 +53,12 @@ public class RelayData {
 	}
 
 	public static V3D rotate(V3D vector, BlockPos pos, int meta, BlockType type){
-		double rot = type.getRotationForMeta(meta);
+		double rot = type.getRotationFor(meta);
 		return VecUtil.rotByDeg(rot, vector).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f);
 	}
 
 	public V3D getVec(String string, BlockPos pos, int meta, BlockType type){
-		return VecUtil.rotByDeg(type.getRotationForMeta(meta), conns.get(string)).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f);
+		return VecUtil.rotByDeg(type.getRotationFor(meta), conns.get(string)).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f);
 	}
 
 }

@@ -51,19 +51,19 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 			PlainBase base = (PlainBase)state.getBlock();
 			IBlockState stato = block.getDefaultState();
 			if(block instanceof PlainBase){
-				if(base.type.getBlockType().getProperty() == ((PlainBase)block).type.getBlockType().getProperty()){
-					if(base.type.getBlockType().getProperty() == Properties.FACING){
+				if(Properties.getProperty(base.type.getBlockType()) == Properties.getProperty(((PlainBase)block).type.getBlockType())){
+					if(Properties.getProperty(base.type.getBlockType()) == Properties.FACING){
 						stato = stato.withProperty(Properties.FACING, state.getValue(Properties.FACING));
 					}
-					if(base.type.getBlockType().getProperty() == Properties.ROTATION){
+					if(Properties.getProperty(base.type.getBlockType()) == Properties.ROTATION){
 						stato = stato.withProperty(Properties.ROTATION, state.getValue(Properties.ROTATION));
 					}
-					if(base.type.getBlockType().getProperty() == Asphalt.HEIGHT){
+					if(Properties.getProperty(base.type.getBlockType()) == Asphalt.HEIGHT){
 						stato = stato.withProperty(Asphalt.HEIGHT, state.getValue(Asphalt.HEIGHT));
 					}
 				}
 				if(variant >= 0 && base.type.getBlockType().isVariant()){
-					stato = stato.withProperty(base.type.getBlockType().getIntProperty(), variant);
+					stato = stato.withProperty(Properties.getIntProperty(base.type.getBlockType()), variant);
 				}
 			}
 			else if(meta >= 0){

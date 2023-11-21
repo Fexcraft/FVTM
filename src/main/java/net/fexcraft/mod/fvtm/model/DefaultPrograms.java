@@ -472,16 +472,16 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
+			if(slot != null && slot.steering) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
 			if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
-			if(slot != null && slot.steering) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
+			if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 		}
 		
 	};

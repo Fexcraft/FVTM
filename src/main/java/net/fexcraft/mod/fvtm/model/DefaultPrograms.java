@@ -2350,7 +2350,7 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.tile == null) return;
 			GL11.glPushMatrix();
-			GL11.glRotated(-data.block.getType().getBlockType().getRotationForMeta(((TileEntity)data.tile).getBlockMetadata()), 0, 1, 0);
+			GL11.glRotated(-data.block.getType().getBlockType().getRotationFor(((TileEntity)data.tile).getBlockMetadata()), 0, 1, 0);
 			pos.translate();
 			double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.tile).getPos().getX() + 0.5F);
 			double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.tile).getPos().getZ() + 0.5F);

@@ -1,13 +1,20 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -56,6 +63,18 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets{
 	@Override
 	public void send(SeatInstance seat){
 		sendToServer(new PKT_SeatUpdate(seat));
+	}
+
+	@Override
+	public void send(BlockData blockdata, Object pos, int dim) {
+		TagCW com = TagCW.create();
+		com.set("target_listener", Resources.UTIL_LISTENER);
+		com.set("task", "block_func_sync");
+		com.set("pos", ((BlockPos)pos).toLong());
+		TagCW data = TagCW.create();
+		for(BlockFunction func : blockdata.getFunctions()) func.save(com);
+		com.set("data", data);
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(dim, (BlockPos)pos));
 	}
 
 	public static final void sendToServer(IMessage packet){

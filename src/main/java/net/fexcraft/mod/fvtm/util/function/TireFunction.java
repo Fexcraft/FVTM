@@ -11,7 +11,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.mod.fvtm.data.block.BlockUtil;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
@@ -21,7 +21,8 @@ import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.minecraft.block.material.Material;
+
+import static net.fexcraft.mod.fvtm.data.block.BlockUtil.DEF_MAT_TIRE_ARR;
 
 public class TireFunction extends PartFunction {
 	
@@ -40,7 +41,7 @@ public class TireFunction extends PartFunction {
 		attr.step_height = map.getFloat("step_height", 1f);
 		if(map.has("material_table")){
 			for(Entry<String, JsonValue<?>> entry : map.getMap("material_table").entries()){
-				Material mat = BlockUtil.getMaterial(entry.getKey(), true);
+				Object mat = FvtmResources.INSTANCE.getBlockMaterial(entry.getKey(), true);
 				if(mat == null) continue;
 				JsonArray array = entry.getValue().asArray();
 				float g = array.size() > 0 ? array.get(0).float_value() : 1f;
@@ -104,26 +105,26 @@ public class TireFunction extends PartFunction {
     
     public static class TireAttr {
     	
-    	private HashMap<Material, MatTireAttr> table = new HashMap<>();
+    	private HashMap<Object, MatTireAttr> table = new HashMap<>();
     	private float general_grip, corner_stiffness, corner_stiffness_steering;
     	public float brake_grip, step_height;
 
-        public float getGripFor(Material mat, boolean rainfall){
+        public float getGripFor(Object mat, boolean rainfall){
         	if(table.containsKey(mat)){
         		return rainfall ? table.get(mat).rainfall : table.get(mat).general;
         	}
-        	if(DEFAULT_TABLE.containsKey(mat)){
-        		return general_grip * (rainfall ? DEFAULT_TABLE.get(mat).rainfall : DEFAULT_TABLE.get(mat).general);
+        	if(DEF_MAT_TIRE_ARR.containsKey(mat)){
+        		return general_grip * (rainfall ? DEF_MAT_TIRE_ARR.get(mat).rainfall : DEF_MAT_TIRE_ARR.get(mat).general);
         	}
     		return general_grip * (rainfall ? MatTireAttr.DEF_RAIN_GRIP : MatTireAttr.DEF_GRIP);
         }
         
-        public float getCornerStiffnessFor(Material mat, boolean steering){
+        public float getCornerStiffnessFor(Object mat, boolean steering){
         	if(table.containsKey(mat)){
         		return steering ? table.get(mat).corner_stiffness_steering : table.get(mat).corner_stiffness;
         	}
-        	if(DEFAULT_TABLE.containsKey(mat)){
-        		return steering ? DEFAULT_TABLE.get(mat).corner_stiffness_steering : DEFAULT_TABLE.get(mat).corner_stiffness;
+        	if(DEF_MAT_TIRE_ARR.containsKey(mat)){
+        		return steering ? DEF_MAT_TIRE_ARR.get(mat).corner_stiffness_steering : DEF_MAT_TIRE_ARR.get(mat).corner_stiffness;
         	}
     		return steering ? MatTireAttr.DEF_COR_STEER : MatTireAttr.DEF_COR;
         }
@@ -144,46 +145,7 @@ public class TireFunction extends PartFunction {
 		}
     	
     }
-    
-    private static HashMap<Material, MatTireAttr> DEFAULT_TABLE = new HashMap<>();
-    static {
-    	float dc = MatTireAttr.DEF_COR, ds = MatTireAttr.DEF_COR_STEER;
-    	DEFAULT_TABLE.put(null, new MatTireAttr(MatTireAttr.DEF_GRIP, MatTireAttr.DEF_RAIN_GRIP, dc, ds));
-    	DEFAULT_TABLE.put(Material.AIR, new MatTireAttr(0.1f, 0.1f, dc, ds));
-    	DEFAULT_TABLE.put(Material.GRASS, new MatTireAttr(0.7f, 0.4f, dc, ds));
-    	DEFAULT_TABLE.put(Material.GROUND, new MatTireAttr(0.9f, 0.75f, dc, ds));
-    	DEFAULT_TABLE.put(Material.WOOD, new MatTireAttr(1.2f, 0.9f, dc, ds));
-    	DEFAULT_TABLE.put(Material.ROCK, new MatTireAttr(1f, 0.9f, dc, ds));
-    	DEFAULT_TABLE.put(Material.IRON, new MatTireAttr(1.2f, 0.9f, dc, ds));
-    	DEFAULT_TABLE.put(Material.ANVIL, new MatTireAttr(1.5f, 1f, dc, ds));
-    	DEFAULT_TABLE.put(Material.WATER, new MatTireAttr(0.1f, 0.1f, dc, ds));
-    	DEFAULT_TABLE.put(Material.LAVA, new MatTireAttr(0.1f, 0.2f, dc, ds));
-    	DEFAULT_TABLE.put(Material.LEAVES, new MatTireAttr(0.8f, 0.4f, dc, ds));
-    	DEFAULT_TABLE.put(Material.PLANTS, new MatTireAttr(0.8f, 0.4f, dc, ds));
-    	DEFAULT_TABLE.put(Material.VINE, new MatTireAttr(0.8f, 0.4f, dc, ds));
-    	DEFAULT_TABLE.put(Material.SPONGE, new MatTireAttr(0.75f, 0.6f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CLOTH, new MatTireAttr(0.8f, 0.8f, dc, ds));
-    	DEFAULT_TABLE.put(Material.FIRE, new MatTireAttr(1f, 1.2f, dc, ds));
-    	DEFAULT_TABLE.put(Material.SAND, new MatTireAttr(0.5f, 0.2f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CIRCUITS, new MatTireAttr(1.25f, 1f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CARPET, new MatTireAttr(1.1f, 0.9f, dc, ds));
-    	DEFAULT_TABLE.put(Material.GLASS, new MatTireAttr(1.1f, 0.8f, dc, ds));
-    	DEFAULT_TABLE.put(Material.REDSTONE_LIGHT, new MatTireAttr(1f, 1f, dc, ds));
-    	DEFAULT_TABLE.put(Material.TNT, new MatTireAttr(1.5f, 1.2f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CORAL, new MatTireAttr(0.5f, 0.5f, dc, ds));
-    	DEFAULT_TABLE.put(Material.ICE, new MatTireAttr(0.3f, 0.2f, dc, ds));
-    	DEFAULT_TABLE.put(Material.PACKED_ICE, new MatTireAttr(0.5f, 0.3f, dc, ds));
-    	DEFAULT_TABLE.put(Material.SNOW, new MatTireAttr(0.75f, 0.5f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CRAFTED_SNOW, new MatTireAttr(1f, 0.8f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CACTUS, new MatTireAttr(0.7f, 0.9f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CLAY, new MatTireAttr(0.8f, 0.5f, dc, ds));
-    	DEFAULT_TABLE.put(Material.GOURD, new MatTireAttr(0.7f, 0.4f, dc, ds));
-    	DEFAULT_TABLE.put(Material.PORTAL, new MatTireAttr(2f, 2f, dc, ds));
-    	DEFAULT_TABLE.put(Material.CAKE, new MatTireAttr(0.45f, 0.1f, dc, ds));
-    	DEFAULT_TABLE.put(Material.WEB, new MatTireAttr(1f, 0.8f, dc, ds));
-    	DEFAULT_TABLE.put(Material.PISTON, new MatTireAttr(1f, 0.9f, dc, ds));
-    	DEFAULT_TABLE.put(Material.BARRIER, new MatTireAttr(1.2f, 1.1f, dc, ds));
-    }
+
 	public TireAttr getTireAttr(PartData part){
 		return TIRES.get(part.getType());
 	}

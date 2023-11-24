@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.HashMap;
 
-import net.fexcraft.mod.fvtm.util.function.TireFunction;
+import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 

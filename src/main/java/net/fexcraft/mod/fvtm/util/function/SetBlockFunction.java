@@ -1,40 +1,38 @@
 package net.fexcraft.mod.fvtm.util.function;
 
-import com.google.gson.JsonObject;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.util.Properties;
+import net.fexcraft.mod.uni.world.BlockSide;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.StateWrapper;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.server.CommandSetBlock;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 
-	private String nblock = Blocks.STONE.getRegistryName().toString();
+	private String nblock = "minecraft:stone";
 	private float chance;
 	private int meta, variant;
 	private String state;
 
-	public BlockFunction parse(JsonObject obj){
-		if(obj == null) return this;
-		nblock = obj.get("block").getAsString();
-		chance = obj.has("chance") ? obj.get("chance").getAsFloat() : 1f;
+	@Override
+	public BlockFunction parse(JsonMap map){
+		if(map == null) return this;
+		nblock = map.get("block").string_value();
+		chance = map.getFloat("chance", 1f);
 		if(chance > 1) chance = 1;
 		if(chance < 0) chance = 0;
-		meta = obj.has("meta") ? obj.get("meta").getAsInt() : -1;
-		variant = obj.has("variant") ? obj.get("variant").getAsInt() : -1;
-		state = obj.has("state") ? obj.get("state").getAsString() : null;
+		meta = map.getInteger("meta", -1);
+		variant = map.getInteger("variant", -1);
+		state = map.getString("state", null);
 		return this;
 	}
 
@@ -44,8 +42,8 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 	}
 
 	@Override
-	public boolean onClick(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-		if(hand == EnumHand.OFF_HAND || Static.random.nextFloat() < (1f - chance)) return false;
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, BlockSide side, EntityW player, boolean main){
+		if(!main || Static.random.nextFloat() < (1f - chance)) return false;
 		Block block = Block.getBlockFromName(nblock);
 		if(block != null){
 			PlainBase base = (PlainBase)state.getBlock();
@@ -77,7 +75,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 					e.printStackTrace();
 				}
 			}
-			world.setBlockState(pos, stato, 2);
+			world.setBlockState(pos, StateWrapper.GETTER.apply(stato), 2);
 			return true;
 		}
 		return false;

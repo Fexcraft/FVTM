@@ -194,7 +194,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			}
 			else{
 				JsonObject obj = elm.getAsJsonObject();
-				functions.add(Resources.getBlockFunction(obj.get("type").getAsString()).newInstance().parse(obj));
+				//TODO functions.add(Resources.getBlockFunction(obj.get("type").getAsString()).newInstance().parse(obj));
 			}
 		}
 		catch (Exception e){

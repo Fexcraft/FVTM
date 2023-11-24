@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.function.BiPredicate;
 
-import net.fexcraft.mod.fvtm.function.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 
 /** Some Predefined Conditions, to be used with custom FunctionalProgram extensions. */
 public class ProgramConditions {

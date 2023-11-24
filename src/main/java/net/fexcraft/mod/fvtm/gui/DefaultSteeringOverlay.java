@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.Config.OVERLAY_ON_BOTTOM;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -12,16 +11,14 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
-import net.fexcraft.mod.fvtm.function.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.gui.construct.ConstGui;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.resources.I18n;

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -18,8 +17,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.function.EngineFunction;
-import net.fexcraft.mod.fvtm.function.TransmissionFunction;
+import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.client.resources.I18n;

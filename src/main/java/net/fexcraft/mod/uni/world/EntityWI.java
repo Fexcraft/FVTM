@@ -1,7 +1,9 @@
 package net.fexcraft.mod.uni.world;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -61,6 +63,11 @@ public class EntityWI extends EntityW {
 	}
 
 	@Override
+	public boolean isRiding(){
+		return entity.isRiding();
+	}
+
+	@Override
 	public String getRegName(){
 		EntityEntry entry = EntityRegistry.getEntry(entity.getClass());
 		return entry == null ? "minecraft:null" : entry.getRegistryName().toString();
@@ -78,6 +85,12 @@ public class EntityWI extends EntityW {
 		entity.prevRotationPitch = opitch;
 		entity.rotationYaw = yaw;
 		entity.rotationPitch = pitch;
+	}
+
+	@Override
+	public void openUI(int ui, WorldW world, V3I pos){
+		if(entity instanceof EntityPlayer == false) return;
+		((EntityPlayer)entity).openGui(FVTM.getInstance(), ui, world.local(), pos.x, pos.y, pos.z);
 	}
 
 	@Override

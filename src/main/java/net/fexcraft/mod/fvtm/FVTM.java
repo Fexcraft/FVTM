@@ -78,8 +78,10 @@ import net.fexcraft.mod.uni.ui.UUIButton;
 import net.fexcraft.mod.uni.ui.UUIField;
 import net.fexcraft.mod.uni.ui.UUITab;
 import net.fexcraft.mod.uni.ui.UUIText;
+import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.fexcraft.mod.uni.world.WrapperHolderImpl;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -146,6 +148,7 @@ public class FVTM {
 		TagLW.SUPPLIER[0] = () -> new TagLWI();
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
+		StateWrapper.GETTER = state -> new StateWrapperI((IBlockState)state);
 		if(EnvInfo.CLIENT){
 			UITab.IMPLEMENTATION = UUITab.class;
 			UIButton.IMPLEMENTATION = UUIButton.class;

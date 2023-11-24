@@ -3,12 +3,16 @@ package net.fexcraft.mod.fvtm.block.generated;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.uni.world.StateWrapper;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -24,6 +28,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import static net.fexcraft.mod.uni.world.StateWrapper.GETTER;
+import static net.fexcraft.mod.uni.world.WrapperHolder.*;
 
 public abstract class BlockBase extends PlainBase implements ITileEntityProvider {
 	
@@ -49,7 +56,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
         if(!player.isSneaking() && type.getFunctions().size() > 0){
             BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
             for(BlockFunction func : tile.data.getFunctions()){
-                if(func.onClick(world, pos, state, player, hand, side, hitX, hitY, hitZ)) return true;
+                if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), GETTER.apply(state), getSide(side), player.getCapability(Capabilities.PASSENGER, null).asWrapper(), hand == EnumHand.MAIN_HAND)) return true;
             }
         }
         ItemStack held = player.getHeldItem(hand);

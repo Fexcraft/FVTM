@@ -1,21 +1,20 @@
 package net.fexcraft.mod.fvtm.util.function;
 
-import com.google.gson.JsonObject;
-import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.fvtm.function.block.BoolBlockFunction;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.uni.impl.TagCWI;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.BlockSide;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.StateWrapper;
+import net.fexcraft.mod.uni.world.WorldW;
 
 public class InventoryBlockFunction extends BlockFunction {
 
@@ -23,27 +22,27 @@ public class InventoryBlockFunction extends BlockFunction {
 	private String key;
 	private boolean bool = true;
 
-	public BlockFunction parse(JsonObject obj){
-		if(obj == null) return this;
-		handler = new InvHandler(InvType.parse(obj.get("inv_type").getAsString(), true));
-		if(obj.has("capacity")) handler.setCapacity(obj.get("capacity").getAsInt());
-		if(obj.has("stacks")) handler.setCapacity(obj.get("stacks").getAsInt());
-		if(obj.has("var")) handler.setArg(obj.get("var").getAsString());
-		if(obj.has("fluid")) handler.setArg(obj.get("fluid").getAsString());
-		if(obj.has("bool_key")) key = obj.get("bool_key").getAsString();
-		if(obj.has("bool_val")) bool = obj.get("bool_val").getAsBoolean();
+	public BlockFunction parse(JsonMap map){
+		if(map == null) return this;
+		handler = new InvHandler(InvType.parse(map.get("inv_type").string_value(), true));
+		if(map.has("capacity")) handler.setCapacity(map.get("capacity").integer_value());
+		if(map.has("stacks")) handler.setCapacity(map.get("stacks").integer_value());
+		if(map.has("var")) handler.setArg(map.get("var").string_value());
+		if(map.has("fluid")) handler.setArg(map.get("fluid").string_value());
+		if(map.has("bool_key")) key = map.get("bool_key").string_value();
+		if(map.has("bool_val")) bool = map.get("bool_val").bool();
 		return this;
 	}
 
 	@Override
-	public BlockFunction load(NBTTagCompound com){
-		if(com.hasKey(id())) handler.load(new TagCWI(com), id());
+	public BlockFunction load(TagCW com){
+		if(com.has(id())) handler.load(com, id());
 		return this;
 	}
 
 	@Override
-	public NBTTagCompound save(NBTTagCompound com){
-		handler.save(new TagCWI(com), id());
+	public TagCW save(TagCW com){
+		handler.save(com, id());
 		return com;
 	}
 
@@ -65,14 +64,14 @@ public class InventoryBlockFunction extends BlockFunction {
 	}
 
 	@Override
-	public boolean onClick(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-		if(hand == EnumHand.OFF_HAND) return false;
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, BlockSide side, EntityW player, boolean main){
+		if(!main) return false;
 		int ui = handler.type.isFluid() ? GuiHandler.BLOCK_INVENTORY_FLUID : GuiHandler.BLOCK_INVENTORY_ITEM;
 		if(key != null){
-			BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
+			BlockEntity tile = world.getBlockEntity(pos);
 			if(tile.getBlockData().getFunctionBool(key) != bool) return false;
 		}
-		player.openGui(FVTM.getInstance(), ui, world, pos.getX(), pos.getY(), pos.getZ());
+		player.openUI(ui, world, pos);
 		return true;
 	}
 
@@ -80,7 +79,7 @@ public class InventoryBlockFunction extends BlockFunction {
 		return handler;
 	}
 
-	public void onClose(BlockTileEntity tile){
+	public void onClose(BlockEntity tile){
 		BoolBlockFunction func = tile.getBlockData().getFunctionBoolInst(key);
 		if(func != null) func.toggle(tile, !bool);
 	}
@@ -88,4 +87,5 @@ public class InventoryBlockFunction extends BlockFunction {
 	public boolean hasBool(){
 		return key != null;
 	}
+
 }

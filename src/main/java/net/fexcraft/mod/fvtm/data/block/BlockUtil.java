@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.HashMap;
 
+import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
@@ -112,6 +113,46 @@ public class BlockUtil {
 			case "black_stained_hardenen_clay": return MapColor.BLACK_STAINED_HARDENED_CLAY;
 		}
 		return MapColor.STONE;
+	}
+
+	public static HashMap<Material, TireFunction.MatTireAttr> DEF_MAT_TIRE_ARR = new HashMap<>();
+	static {
+		float dc = TireFunction.MatTireAttr.DEF_COR, ds = TireFunction.MatTireAttr.DEF_COR_STEER;
+		DEF_MAT_TIRE_ARR.put(null, new TireFunction.MatTireAttr(TireFunction.MatTireAttr.DEF_GRIP, TireFunction.MatTireAttr.DEF_RAIN_GRIP, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.AIR, new TireFunction.MatTireAttr(0.1f, 0.1f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.GRASS, new TireFunction.MatTireAttr(0.7f, 0.4f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.GROUND, new TireFunction.MatTireAttr(0.9f, 0.75f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.WOOD, new TireFunction.MatTireAttr(1.2f, 0.9f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.ROCK, new TireFunction.MatTireAttr(1f, 0.9f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.IRON, new TireFunction.MatTireAttr(1.2f, 0.9f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.ANVIL, new TireFunction.MatTireAttr(1.5f, 1f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.WATER, new TireFunction.MatTireAttr(0.1f, 0.1f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.LAVA, new TireFunction.MatTireAttr(0.1f, 0.2f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.LEAVES, new TireFunction.MatTireAttr(0.8f, 0.4f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.PLANTS, new TireFunction.MatTireAttr(0.8f, 0.4f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.VINE, new TireFunction.MatTireAttr(0.8f, 0.4f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.SPONGE, new TireFunction.MatTireAttr(0.75f, 0.6f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CLOTH, new TireFunction.MatTireAttr(0.8f, 0.8f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.FIRE, new TireFunction.MatTireAttr(1f, 1.2f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.SAND, new TireFunction.MatTireAttr(0.5f, 0.2f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CIRCUITS, new TireFunction.MatTireAttr(1.25f, 1f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CARPET, new TireFunction.MatTireAttr(1.1f, 0.9f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.GLASS, new TireFunction.MatTireAttr(1.1f, 0.8f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.REDSTONE_LIGHT, new TireFunction.MatTireAttr(1f, 1f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.TNT, new TireFunction.MatTireAttr(1.5f, 1.2f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CORAL, new TireFunction.MatTireAttr(0.5f, 0.5f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.ICE, new TireFunction.MatTireAttr(0.3f, 0.2f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.PACKED_ICE, new TireFunction.MatTireAttr(0.5f, 0.3f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.SNOW, new TireFunction.MatTireAttr(0.75f, 0.5f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CRAFTED_SNOW, new TireFunction.MatTireAttr(1f, 0.8f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CACTUS, new TireFunction.MatTireAttr(0.7f, 0.9f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CLAY, new TireFunction.MatTireAttr(0.8f, 0.5f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.GOURD, new TireFunction.MatTireAttr(0.7f, 0.4f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.PORTAL, new TireFunction.MatTireAttr(2f, 2f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.CAKE, new TireFunction.MatTireAttr(0.45f, 0.1f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.WEB, new TireFunction.MatTireAttr(1f, 0.8f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.PISTON, new TireFunction.MatTireAttr(1f, 0.9f, dc, ds));
+		DEF_MAT_TIRE_ARR.put(Material.BARRIER, new TireFunction.MatTireAttr(1.2f, 1.1f, dc, ds));
 	}
 	
 }

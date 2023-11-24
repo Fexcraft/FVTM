@@ -37,7 +37,7 @@ import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.function.TireFunction;
+import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;

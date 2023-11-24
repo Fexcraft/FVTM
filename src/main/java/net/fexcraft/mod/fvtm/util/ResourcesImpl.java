@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockUtil;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -373,6 +374,11 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public double getMouseSensitivity(){
 		return net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+	}
+
+	@Override
+	public Object getBlockMaterial(String key, boolean allownull){
+		return BlockUtil.getMaterial(key, allownull);
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
-import net.fexcraft.mod.fvtm.util.function.BoolBlockFunction;
+import net.fexcraft.mod.fvtm.function.block.BoolBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.item.ItemStack;

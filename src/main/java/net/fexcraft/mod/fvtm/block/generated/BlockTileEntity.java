@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -18,7 +20,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTileEntity extends net.minecraft.tileentity.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
+
+public class BlockTileEntity extends net.minecraft.tileentity.TileEntity implements BlockEntity, IPacketReceiver<PacketTileEntityUpdate> {
 	
 	public byte meta = -1;
 	public BlockData data;
@@ -29,9 +32,20 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 	
 	public BlockTileEntity(){}
 
+    @Override
 	public BlockData getBlockData(){
 		return data;
 	}
+
+    @Override
+    public V3I getV3I(){
+        return new V3I(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    @Override
+    public int getDim(){
+        return world.provider.getDimension();
+    }
 
     public final void sendUpdate(){
         ApiUtil.sendTileEntityUpdatePacket(world, pos, this.getUpdateTag());

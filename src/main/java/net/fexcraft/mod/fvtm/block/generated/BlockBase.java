@@ -45,7 +45,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
         if(this.canSilkHarvest(world, pos, state, player) && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0)
         harvesters.set(player);
         EntityItem item = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        item.setItem(((BlockTileEntity)te).getBlockData().newItemStack());
+        item.setItem(((BlockTileEntity)te).getBlockData().getNewStack().local());
         world.spawnEntity(item);
         harvesters.set(null);
 	}
@@ -91,7 +91,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
-    	if(type.canBeWired() && SystemManager.active(Systems.WIRE)){
+    	if(type.hasRelay() && SystemManager.active(Systems.WIRE)){
     		SystemManager.get(Systems.WIRE, world, WireSystem.class).deregister(world.getTileEntity(pos));
         }
         super.breakBlock(world, pos, state);

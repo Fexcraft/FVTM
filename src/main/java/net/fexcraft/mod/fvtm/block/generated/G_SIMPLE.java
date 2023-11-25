@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -25,18 +26,18 @@ public class G_SIMPLE extends PlainBase {
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-		return type.getAABB("default", "")[0];
+		return type.getAABB("default", "").get(0);
 	}
 
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-		return type.getAABB("selection", "")[0].offset(pos);
+		return type.getAABB("selection", "").offset(0, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-		return type.getAABB("collision", "")[0];
+		return type.getAABB("collision", "").get(0);
 	}
 
     @Override
@@ -71,9 +72,9 @@ public class G_SIMPLE extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "")){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		for(AABB aabb : type.getAABB("collision", "").get()){
+			if(entitybox == null) boxes.add(aabb.local());
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}
 	}
 

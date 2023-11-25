@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
@@ -145,7 +146,9 @@ public class FVTM {
 		};
 		IDLManager.INSTANCE[0] = new IDLM();
 		TagCW.SUPPLIER[0] = () -> new TagCWI();
+		TagCW.WRAPPER[0] = obj -> new TagCWI(obj);
 		TagLW.SUPPLIER[0] = () -> new TagLWI();
+		AABB.SUPPLIER = () -> new AABBI();
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		StateWrapper.GETTER = state -> new StateWrapperI((IBlockState)state);
@@ -245,6 +248,7 @@ public class FVTM {
 		FvtmResources.INSTANCE.registerFunctions();
 		FvtmResources.INSTANCE.registerHandlers();
 		FvtmResources.INSTANCE.searchContent();
+		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();
 		MinecraftForge.EVENT_BUS.register(new Registerer());
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
@@ -299,8 +303,10 @@ public class FVTM {
 			con.getItemWrapper().linkContainer();
 			con.getItemWrapper().regToDict();
 		});
-		Resources.BLOCKS.forEach(Block::linkItem);
-		Resources.BLOCKS.forEach(Block::registerIntoOreDictionary);
+		FvtmRegistry.BLOCKS.forEach(blk -> {
+			blk.getItemWrapper().linkContainer();
+			blk.getItemWrapper().regToDict();
+		});
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}

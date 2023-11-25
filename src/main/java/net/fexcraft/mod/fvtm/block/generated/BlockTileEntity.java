@@ -4,12 +4,14 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -81,7 +83,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
     public void onLoad(){
         IBlockState state = world.getBlockState(pos);
         meta = (byte)state.getBlock().getMetaFromState(state);
-        if(data.getType().canBeWired() && SystemManager.active(Systems.WIRE)){
+        if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
         	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
         }
     }
@@ -89,7 +91,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
-        if(data != null) data.write(compound);
+        if(data != null) data.write(new TagCWI(compound));
         if(meta > -1){
             compound.setByte("block_meta", meta);
         }
@@ -104,9 +106,9 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
         if(data != null) data.read(compound);
-        else data = Resources.getBlockData(compound);
+        else data = FvtmResources.getBlockData(compound);
         if(compound.hasKey("block_meta")) meta = compound.getByte("block_meta");
-        if(data.getType().canBeWired() && SystemManager.active(Systems.WIRE)){
+        if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
         	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
         }
     }
@@ -136,7 +138,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 	@Override
 	public void invalidate(){
 		super.invalidate();
-        if(data.getType().canBeWired() && SystemManager.active(Systems.WIRE)){
+        if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
         	SystemManager.get(Systems.WIRE, world, WireSystem.class).unregister(this);
         }
 	}

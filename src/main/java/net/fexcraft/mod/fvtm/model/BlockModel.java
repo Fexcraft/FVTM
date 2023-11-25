@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -21,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
 
-public class BlockModel extends DefaultModel implements FCLItemModel, FCLBlockModel {
+public class BlockModel extends DefaultModel implements FCLItemModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
 	
@@ -32,6 +31,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel, FCLBlockMo
     public float gui_scale_y = 0.75f;
     public float gui_scale_z = 0.75f;
     public boolean bindtex = true;
+    public boolean bake;
 	
 	public BlockModel(){
 		super();
@@ -40,6 +40,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel, FCLBlockMo
 	@Override
 	public BlockModel parse(ModelData data){
 		super.parse(data);
+        bake = data.get("Baked");
 		if(data.containsKey("ItemScale")){
 			try{
 				float scale = Float.parseFloat(data.get("ItemScale").toString());
@@ -131,7 +132,6 @@ public class BlockModel extends DefaultModel implements FCLItemModel, FCLBlockMo
         GL11.glPopMatrix();
     }
 
-	@Override
 	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
 		ArrayList<ModelRendererTurbo> polis = new ArrayList<>();
 		for(ModelGroup group : groups){
@@ -144,7 +144,6 @@ public class BlockModel extends DefaultModel implements FCLItemModel, FCLBlockMo
 		return polis;
 	}
 
-    @Override
     public void reset(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
         for(ModelGroup group : groups){
             if(group.has_pst_prog){

@@ -47,6 +47,11 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         return world.provider.getDimension();
     }
 
+    @Override
+    public int getMeta(){
+        return getBlockMetadata();
+    }
+
     public final void sendUpdate(){
         ApiUtil.sendTileEntityUpdatePacket(world, pos, this.getUpdateTag());
     }

@@ -30,6 +30,7 @@ public class WrapperHolderImpl extends WrapperHolder {
 
 	@Override
 	public WorldW getWorld0(Object o){
+		if(o == null) return null;
 		if(!WORLDS.containsKey(o)){
 			WORLDS.put(o, new WorldWI((World)o));
 		}

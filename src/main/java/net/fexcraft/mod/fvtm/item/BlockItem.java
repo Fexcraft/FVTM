@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
@@ -14,6 +15,9 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,26 +33,32 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
+
 public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {//}, ItemTex<Block> {
 	
 	@SideOnly(Side.CLIENT)
-	private CreativeTabs ctab;
 	private Block type;
 
-    public BlockItem(net.minecraft.block.Block block) throws Exception {
-		super(block); type = ((PlainBase)block).type;
+    public BlockItem(net.minecraft.block.Block block){
+		super(block);
+		type = ((PlainBase)block).type;
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
-		if(Static.side().isServer()) return;
-		//TODO ctab = Resources.getCreativeTab(type);
+		if(!EnvInfo.CLIENT) return;
+		setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(type));
+	}
+
+	public BlockItem(Block block){
+		this((net.minecraft.block.Block)block.getBlock());
 	}
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-    	if(type.isRailBlock()) tooltip.add(Formatter.format("&6&oRailway Block"));
+    	//if(type.isRailBlock()) tooltip.add(Formatter.format("&6&oRailway Block"));
     	//else if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
     	//else if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
@@ -67,7 +77,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
         if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(!data.getFunctions().isEmpty()){
             for(BlockFunction func : data.getFunctions()){
-                func.addInformation(stack, world, data, tooltip, flag.isAdvanced());
+                func.addInformation(new SWI(stack), getWorld(world), data, tooltip, flag.isAdvanced());
             }
             tooltip.add(Formatter.format("&9- - - - - - &7-"));
         }
@@ -99,7 +109,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(type.shouldHideItem()) return;
-    	if(tab == CreativeTabs.SEARCH || tab == ctab){
+    	if(tab == CreativeTabs.SEARCH || tab == getCreativeTab()){
     		if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));
@@ -111,14 +121,9 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
     			}
     		}
     		else{
-        		items.add(type.newItemStack());
+        		items.add(type.getNewStack().local());
     		}
     	}
-    }
-    
-    @Override
-    public CreativeTabs getCreativeTab(){
-        return ctab;
     }
     
     @Override
@@ -132,8 +137,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
         return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 
-	//@Override
-	public Block getDataType(){
+	public Block getContent(){
 		return type;
 	}
 

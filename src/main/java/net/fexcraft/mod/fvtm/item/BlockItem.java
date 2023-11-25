@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.lib.mc.registry.CreativeTab;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -38,6 +39,7 @@ import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
 public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {//}, ItemTex<Block> {
 	
 	@SideOnly(Side.CLIENT)
+	private CreativeTabs ctab;
 	private Block type;
 
     public BlockItem(net.minecraft.block.Block block){
@@ -48,7 +50,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
 		if(!EnvInfo.CLIENT) return;
-		setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(type));
+		setCreativeTab(ctab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab(type));
 	}
 
 	public BlockItem(Block block){
@@ -109,7 +111,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(type.shouldHideItem()) return;
-    	if(tab == CreativeTabs.SEARCH || tab == getCreativeTab()){
+    	if(tab == CreativeTabs.SEARCH || tab == ctab){
     		if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));

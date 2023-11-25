@@ -94,6 +94,11 @@ public class EntityWI extends EntityW {
 	}
 
 	@Override
+	public String getName() {
+		return entity.getName();
+	}
+
+	@Override
 	public <E> E local(){
 		return (E)entity;
 	}

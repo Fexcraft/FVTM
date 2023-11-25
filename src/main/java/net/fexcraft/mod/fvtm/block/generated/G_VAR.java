@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.data.block.AABBs;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.minecraft.block.properties.IProperty;
@@ -27,28 +29,28 @@ public abstract class G_VAR extends PlainBase {
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-		return type.getAABB("default", "variant=" + state.getValue(var_property()))[0];
+		return type.getAABB("default", "variant=" + state.getValue(var_property())).get(0);
 	}
 
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-		return type.getAABB("selection", "variant=" + state.getValue(var_property()))[0].offset(pos);
+		return type.getAABB("selection", "variant=" + state.getValue(var_property())).offset(0, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-		return type.getAABB("collision", "variant=" + state.getValue(var_property()))[0];
+		return type.getAABB("collision", "variant=" + state.getValue(var_property())).get(0);
 	}
 
     @Override
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-        return this.getDefaultState().withProperty(var_property(), type.getRandomRot() ? Static.random.nextInt(16) : meta);
+        return this.getDefaultState().withProperty(var_property(), type.isRandomRot() ? Static.random.nextInt(16) : meta);
     }
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-        worldIn.setBlockState(pos, state.withProperty(var_property(), type.getRandomRot() ? Static.random.nextInt(16) : stack.getMetadata()), 2);
+        worldIn.setBlockState(pos, state.withProperty(var_property(), type.isRandomRot() ? Static.random.nextInt(16) : stack.getMetadata()), 2);
     }
 
 	@Override
@@ -63,7 +65,7 @@ public abstract class G_VAR extends PlainBase {
 
 	@Override
 	protected BlockStateContainer createBlockState(){
-		return new BlockStateContainer(this, new IProperty[]{ var_property() });
+		return new BlockStateContainer(this, var_property());
 	}
 
 	@Override
@@ -73,9 +75,9 @@ public abstract class G_VAR extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "variant=" + state.getValue(var_property()))){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		for(AABB aabb : type.getAABB("collision", "variant=" + state.getValue(var_property())).get()){
+			if(entitybox == null) boxes.add(aabb.local());
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}
 	}
 

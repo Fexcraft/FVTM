@@ -250,7 +250,7 @@ public class AddonOld extends TypeCore<AddonOld> {
 
 	private void checkLangFile(TypeCore<?> core){
 		if(lang == null) lang = new File((loc.isNotAMod() ? file : file.getParentFile()), (loc.isNotAMod() ? "" : "/src/main/resources") + "/assets/" + registryname.getPath() + "/lang/en_us.lang");
-		String regname = (core instanceof Block ? "tile." : "item.") + core.getRegistryName().toString() + ".name=";
+		String regname = /*(core instanceof Block ? "tile." :*/"item."/*)*/ + core.getRegistryName().toString() + ".name=";
 		if(!containsLangEntry(regname)){
 			try{
 				Files.write(lang.toPath(), ("\n" + regname).getBytes(), StandardOpenOption.APPEND);

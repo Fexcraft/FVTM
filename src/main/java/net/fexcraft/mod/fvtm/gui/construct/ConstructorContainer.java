@@ -15,7 +15,7 @@ public class ConstructorContainer extends ContainerInterface {
 
 	private ConstructorEntity tile;
 	public ConstructorContainer(JsonMap map, EntityPlayer player, int x, int y, int z){
-		super(map, WrapperHolder.getPlayer(player));
+		super(map, WrapperHolder.getEntity(player));
 		tile = (ConstructorEntity)player.world.getTileEntity(new BlockPos(x, y, z));
 	}
 

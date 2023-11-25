@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.properties.IProperty;
@@ -42,17 +43,17 @@ public class G_POSTLIKE extends PlainBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", stateToStr(getActualState(state, source, pos)))[0];
+        return type.getAABB("default", stateToStr(getActualState(state, source, pos))).get(0);
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos){
-        return type.getAABB("selection", stateToStr(getActualState(state, world, pos)))[0].offset(pos);
+        return type.getAABB("selection", stateToStr(getActualState(state, world, pos))).offset(0, pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", stateToStr(getActualState(state, world, pos)))[0];
+        return type.getAABB("collision", stateToStr(getActualState(state, world, pos))).get(0);
     }
 
     private String[] stateToStr(IBlockState state){
@@ -127,7 +128,7 @@ public class G_POSTLIKE extends PlainBase {
 
     @Override
     public BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[] { NORTH, EAST, WEST, SOUTH, UP, DOWN, BASE });
+        return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH, UP, DOWN, BASE);
     }
 
     @Override
@@ -165,9 +166,9 @@ public class G_POSTLIKE extends PlainBase {
     }
 
     private void addColl(String string, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-        for(AxisAlignedBB aabb : type.getAABB("collision", string)){
-            if(entitybox == null) boxes.add(aabb);
-            else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+        for(AABB aabb : type.getAABB("collision", string).get()){
+            if(entitybox == null) boxes.add(aabb.local());
+            else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
         }
     }
 

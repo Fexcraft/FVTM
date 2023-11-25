@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -11,10 +13,12 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -24,7 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Packets extends net.fexcraft.mod.fvtm.packet.Packets{
+public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 	
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
 
@@ -66,15 +70,31 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets{
 	}
 
 	@Override
-	public void send(BlockData blockdata, Object pos, int dim) {
+	public void send(BlockData blockdata, V3I vec, int dim) {
+		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
 		TagCW com = TagCW.create();
 		com.set("target_listener", Resources.UTIL_LISTENER);
 		com.set("task", "block_func_sync");
-		com.set("pos", ((BlockPos)pos).toLong());
+		com.set("pos", pos.toLong());
 		TagCW data = TagCW.create();
 		for(BlockFunction func : blockdata.getFunctions()) func.save(com);
 		com.set("data", data);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(dim, (BlockPos)pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(dim, pos));
+	}
+
+	@Override
+	public void send(WorldW world, V3I vec){
+		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+		BlockTileEntity tile = (BlockTileEntity)((World)world.direct()).getTileEntity(pos);
+		if(tile == null) return;
+		TagCW com = TagCW.create();
+		com.set("target_listener", Resources.UTIL_LISTENER);
+		com.set("task", "block_func_sync");
+		com.set("pos", pos.toLong());
+		TagCW data = TagCW.create();
+		for(BlockFunction func : tile.getBlockData().getFunctions()) func.save(com);
+		com.set("data", data);
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(tile.getDim(), pos));
 	}
 
 	public static final void sendToServer(IMessage packet){

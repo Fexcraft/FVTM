@@ -124,7 +124,6 @@ public class Resources {
 	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
 	public static RegistryOld<Cloth> CLOTHES = new RegistryOld<>();
 	public static RegistryOld<WireType> WIRES = new RegistryOld<>();
-	private static TreeMap<String, Class<? extends BlockFunction>> BLOCK_FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
@@ -138,19 +137,11 @@ public class Resources {
 	public Resources(FMLPreInitializationEvent event){
 		//registerAttributeTypes();
 		//registerModifierImpls();
-		registerFunctions();
+		//registerFunctions();
 		//
 		// search in packs for //
 		//
 		// init model loaders //
-	}
-
-	private void registerFunctions(){
-		registerBlockFunction("fvtm:seat", SeatBlockFunction.class, true);
-		registerBlockFunction("fvtm:set_block", SetBlockFunction.class, true);
-		registerBlockFunction("fvtm:bool_value", BoolBlockFunction.class, true);
-		registerBlockFunction("fvtm:inventory", InventoryBlockFunction.class, true);
-		registerBlockFunction("fvtm:barrel", BarrelBlockFunction.class, true);
 	}
 
 	public static Container getContainer(String string){
@@ -227,25 +218,6 @@ public class Resources {
 
 	public static TreeMap<String, Class<? extends Attribute<?>>> getAttributeTypes(){
 		return ATTRIBUTE_TYPES;
-	}
-
-	/** Registers a Block Functon class into FVTM Resources.*/
-	public static void registerBlockFunction(ResourceLocation regname, Class<? extends BlockFunction> clazz, boolean override){
-		registerBlockFunction(regname.toString(), clazz, override);
-	}
-
-	/** Registers a Block Functon class into FVTM Resources.*/
-	public static void registerBlockFunction(String regname, Class<? extends BlockFunction> clazz, boolean override){
-		if(BLOCK_FUNCTIONS.containsKey(regname) && !override) return;
-		BLOCK_FUNCTIONS.put(regname, clazz);
-	}
-
-	public static Class<? extends BlockFunction> getBlockFunction(String id){
-		return BLOCK_FUNCTIONS.get(id);
-	}
-
-	public static TreeMap<String, Class<? extends BlockFunction>> getBlockFunctions(){
-		return BLOCK_FUNCTIONS;
 	}
 
 	private static Field flightdata;

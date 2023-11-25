@@ -57,6 +57,14 @@ public class BlockUtil {
 		return material == null ? allownull ? null : Material.ROCK : material;
 	}
 
+	public static Material getMaterial(Block type){
+		return getMaterial(type.getMaterial(), false);
+	}
+
+	public static MapColor getMapColor(Block type){
+		return getMapColor(type.getMapColor());
+	}
+
 	public static MapColor getMapColor(String mapcol){
 		switch(mapcol){
 			case "air": return MapColor.AIR;

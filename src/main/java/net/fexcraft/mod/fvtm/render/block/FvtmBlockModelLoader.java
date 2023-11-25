@@ -19,7 +19,7 @@ import java.util.*;
 public class FvtmBlockModelLoader implements ICustomModelLoader {
 
 	protected static final FvtmBlockModelLoader INSTANCE = new FvtmBlockModelLoader();
-	protected static final TreeMap<ResourceLocation, ModelImpl> MODELS = new TreeMap<>();
+	protected static final Map<ResourceLocation, ModelImpl> MODELS = new HashMap<>();
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourcemanager){
@@ -37,7 +37,7 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 		return ((BlockModel)block.getModel()).bake;
 	}
 
-	protected String getBlockIdFromResLoc(ResourceLocation rl){
+	public static String getBlockIdFromResLoc(ResourceLocation rl){
 		return rl.getNamespace() + ":" + rl.getPath().substring(rl.getPath().lastIndexOf("/") + 1);
 	}
 

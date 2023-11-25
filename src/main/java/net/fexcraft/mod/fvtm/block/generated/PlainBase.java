@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.data.block.BlockUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,8 +34,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	public final Block type;
 	
 	public PlainBase(Block type){
-		super(type.getMaterial(), type.getMapColor()); this.type = type;
-		//TODO block registry type.getAddon().getFCLRegisterer().addBlock(type.getRegistryName().getPath(), this, BlockItem.class, type.getBlockType().getMetaVariants(), null);
+		super(BlockUtil.getMaterial(type), BlockUtil.getMapColor(type)); this.type = type;
 		this.setHardness(type.getHardness());
 		this.setLightLevel(type.getLightLevel());
 		this.setResistance(type.getResistance());
@@ -43,13 +43,19 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	}
 	
 	@Override
-	public boolean isFullBlock(IBlockState state){ return type.isFullBlock(); }
+	public boolean isFullBlock(IBlockState state){
+		return type.isFullBlock();
+	}
 
 	@Override
-	public boolean isFullCube(IBlockState state){ return type.isFullCube(); }
+	public boolean isFullCube(IBlockState state){
+		return type.isFullCube();
+	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState state){ return type == null ? false : type.isOpaque(); }
+	public boolean isOpaqueCube(IBlockState state){
+		return type == null ? false : type.isOpaque();
+	}
 	
 	@Override
 	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity){

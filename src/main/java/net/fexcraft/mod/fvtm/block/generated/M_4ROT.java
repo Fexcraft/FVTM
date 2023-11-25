@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.minecraft.block.state.BlockStateContainer;
@@ -35,17 +36,17 @@ public class M_4ROT extends PlainBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", "facing=" + state.getValue(FACING).getName())[0];
+        return type.getAABB("default", "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName())[0].offset(pos);
+        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName()).offset(0, pos.getX(), pos.getY(), pos.getZ());
     }
     
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName())[0];
+        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class M_4ROT extends PlainBase {
 
     @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).getIndex();
     }
 
     @Override
@@ -110,7 +111,7 @@ public class M_4ROT extends PlainBase {
     	BlockPos core = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos);
     	if(core == null) return ItemStack.EMPTY;
     	MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(core);
-        return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
+        return tile == null ? ItemStack.EMPTY : tile.getBlockData().getNewStack().local();
     }
     
     @Override
@@ -126,7 +127,7 @@ public class M_4ROT extends PlainBase {
     @Override
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
     	MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos));
-        return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
+        return tile == null ? ItemStack.EMPTY : tile.getBlockData().getNewStack().local();
     }
     
     @Override
@@ -136,9 +137,9 @@ public class M_4ROT extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName())){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		for(AABB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName()).get()){
+			if(entitybox == null) boxes.add(aabb.local());
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}
 	}
 

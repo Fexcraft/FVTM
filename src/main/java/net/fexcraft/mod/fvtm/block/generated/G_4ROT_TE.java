@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -27,28 +28,28 @@ public class G_4ROT_TE extends BlockBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", "facing=" + state.getValue(FACING).getName())[0];
+        return type.getAABB("default", "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName())[0].offset(pos);
+        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName()).offset(0, pos.getX(), pos.getY(), pos.getZ());
     }
     
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName())[0];
+        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-        return this.getDefaultState().withProperty(FACING, type.getRandomRot() ? EnumFacing.HORIZONTALS[Static.random.nextInt(4)] : placer.getHorizontalFacing().getOpposite());
+        return this.getDefaultState().withProperty(FACING, type.isRandomRot() ? EnumFacing.HORIZONTALS[Static.random.nextInt(4)] : placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         super.onBlockPlacedBy(world, pos, state, placer, stack);
-        world.setBlockState(pos, state.withProperty(FACING, type.getRandomRot() ? EnumFacing.HORIZONTALS[Static.random.nextInt(4)] : placer.getHorizontalFacing().getOpposite()), 2);
+        world.setBlockState(pos, state.withProperty(FACING, type.isRandomRot() ? EnumFacing.HORIZONTALS[Static.random.nextInt(4)] : placer.getHorizontalFacing().getOpposite()), 2);
     }
 
     @Override
@@ -60,12 +61,12 @@ public class G_4ROT_TE extends BlockBase {
 
     @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).getIndex();
     }
 
     @Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[]{ FACING });
+        return new BlockStateContainer(this, FACING);
     }
 
     @Override
@@ -75,9 +76,9 @@ public class G_4ROT_TE extends BlockBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName())){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		for(AABB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName()).get()){
+			if(entitybox == null) boxes.add(aabb.local());
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}
 	}
 

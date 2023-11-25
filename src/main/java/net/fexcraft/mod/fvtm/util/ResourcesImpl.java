@@ -168,7 +168,7 @@ public class ResourcesImpl extends FvtmResources {
 	public void checkForCustomModel(AddonLocation loc, ContentType contype, Content<?> content){
 		switch(contype){
 			case BLOCK:{
-				Block block = null;//TODO
+				Block block = (Block)content;
 				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockModel.EMPTY);
 					return;
@@ -219,7 +219,7 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public void createContentBlocks() {
+	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
 			net.minecraft.block.Block blk = block.getBlock();
 			blk.setRegistryName(block.getIDS());

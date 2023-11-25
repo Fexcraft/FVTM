@@ -213,7 +213,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         //
         if(packet.nbt.hasKey("BlockData")){
-        	this.bdata = Resources.getBlockData(packet.nbt.getCompoundTag("BlockData"));
+        	this.bdata = FvtmResources.getBlockData(packet.nbt.getCompoundTag("BlockData"));
         }
         else if(packet.nbt.hasKey("BlockDataReset") && packet.nbt.getBoolean("BlockDataReset")){
         	this.bdata = null;
@@ -280,7 +280,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     			else compound.setBoolean("VehicleDataReset", true); break;
     		}
     		case "blockdata": case "block": {
-    			if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
+    			if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()).local());
     			else compound.setBoolean("BlockDataReset", true); break;
     		}
     		case "color": case "rgb":{
@@ -319,7 +319,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			else compound.setBoolean("ContainerDataReset", true);
         if(vdata != null) compound.setTag("VehicleData", vdata.write(TagCW.create()).local());
 			else compound.setBoolean("VehicleDataReset", true);
-		if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
+		if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()).local());
 		else compound.setBoolean("BlockDataReset", true);
         if(center != null){
 			compound.setLong("Center", center.toLong());
@@ -344,7 +344,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         	this.cdata = null;
         }
         if(compound.hasKey("BlockData")){
-        	this.bdata = Resources.getBlockData(compound.getCompoundTag("BlockData"));
+        	this.bdata = FvtmResources.getBlockData(compound.getCompoundTag("BlockData"));
         }
         else if(compound.hasKey("BlockDataReset") && compound.getBoolean("BlockDataReset")){
         	this.bdata = null;
@@ -380,7 +380,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
 	public void dropBlock(boolean update){
 		if(bdata == null) return;
-		dropItem(bdata.newItemStack());
+		dropItem(bdata.getNewStack().local());
 		bdata = null;
 		if(update) updateClient("blockdata");
 	}

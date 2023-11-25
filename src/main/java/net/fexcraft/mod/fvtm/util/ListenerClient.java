@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -155,7 +156,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				BlockTileEntity tile = (BlockTileEntity)player.world.getTileEntity(pos);
 				if(tile != null){
-					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(packet.nbt);
+					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(TagCW.wrap(packet.nbt));
 				}
 				return;
 			}

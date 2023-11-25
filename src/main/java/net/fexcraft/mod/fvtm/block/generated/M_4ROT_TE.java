@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
@@ -48,17 +49,17 @@ public class M_4ROT_TE extends BlockBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", "facing=" + state.getValue(FACING).getName())[0];
+        return type.getAABB("default", "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName())[0].offset(pos);
+        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName()).offset(0, pos.getX(), pos.getY(), pos.getZ());
     }
     
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName())[0];
+        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
@@ -151,7 +152,7 @@ public class M_4ROT_TE extends BlockBase {
 
     @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).getIndex();
     }
 
     @Override
@@ -213,7 +214,7 @@ public class M_4ROT_TE extends BlockBase {
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
     	MultiblockTileEntity our = (MultiblockTileEntity)world.getTileEntity(pos);
     	MultiblockTileEntity tile = our.iscore ? our : our.reference;
-        return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
+        return tile == null ? ItemStack.EMPTY : tile.getBlockData().getNewStack().local();
     }
     
     @Override
@@ -230,7 +231,7 @@ public class M_4ROT_TE extends BlockBase {
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
     	MultiblockTileEntity our = (MultiblockTileEntity)world.getTileEntity(pos);
     	MultiblockTileEntity tile = our.iscore ? our : our.reference;
-        return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
+        return tile == null ? ItemStack.EMPTY : tile.getBlockData().getNewStack().local();
     }
     
     @Override
@@ -240,9 +241,9 @@ public class M_4ROT_TE extends BlockBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName())){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		for(AABB aabb : type.getAABB("collision", "facing=" + state.getValue(FACING).getName()).get()){
+			if(entitybox == null) boxes.add(aabb.local());
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}
 	}
 

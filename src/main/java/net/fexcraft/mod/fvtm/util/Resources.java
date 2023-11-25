@@ -120,7 +120,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Resources {
 
 	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
-	public static RegistryOld<Block> BLOCKS = new RegistryOld<>();
 	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
 	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
 	public static RegistryOld<Cloth> CLOTHES = new RegistryOld<>();
@@ -162,14 +161,6 @@ public class Resources {
 		return CONTAINERS.get(resloc);
 	}
 
-	public static Block getBlock(String string){
-		return BLOCKS.get(string);
-	}
-
-	public static Block getBlock(ResourceLocation resloc){
-		return BLOCKS.get(resloc);
-	}
-
 	public static MultiBlock getMultiBlock(String string){
 		return MULTIBLOCKS.get(string);
 	}
@@ -204,13 +195,6 @@ public class Resources {
 		if(!compound.hasKey("Container")) return null;
 		Container con = getContainer(compound.getString("Container")); if(con == null) return null;
 		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
-		catch(Throwable e){ e.printStackTrace(); return null; }
-	}
-
-	public static BlockData getBlockData(NBTTagCompound compound){
-		if(!compound.hasKey("Block")) return null;
-		Block block = getBlock(compound.getString("Block")); if(block == null) return null;
-		try{ return ((BlockData)block.getDataClass().getConstructor(Block.class).newInstance(block)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 

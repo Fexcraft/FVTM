@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -29,28 +30,28 @@ public class G_16ROT extends PlainBase {
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-		return type.getAABB("default", "rotation=" + state.getValue(ROTATION))[0];
+		return type.getAABB("default", "rotation=" + state.getValue(ROTATION)).get(0);
 	}
 
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-		return type.getAABB("selection", "rotation=" + state.getValue(ROTATION))[0].offset(pos);
+		return type.getAABB("selection", "rotation=" + state.getValue(ROTATION)).offset(0, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-		return type.getAABB("collision", "rotation=" + state.getValue(ROTATION))[0];
+		return type.getAABB("collision", "rotation=" + state.getValue(ROTATION)).get(0);
 	}
 
 	@Override
 	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-		return this.getDefaultState().withProperty(ROTATION, type.getRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15);
+		return this.getDefaultState().withProperty(ROTATION, type.isRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15);
 	}
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-		worldIn.setBlockState(pos, state.withProperty(ROTATION, type.getRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15));
+		worldIn.setBlockState(pos, state.withProperty(ROTATION, type.isRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15));
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class G_16ROT extends PlainBase {
 
 	@Override
 	protected BlockStateContainer createBlockState(){
-		return new BlockStateContainer(this, new IProperty[]{ ROTATION });
+		return new BlockStateContainer(this, ROTATION);
 	}
 
 	@Override
@@ -75,9 +76,9 @@ public class G_16ROT extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AxisAlignedBB aabb : type.getAABB("collision", "rotation=" + state.getValue(ROTATION))){
-			if(entitybox == null) boxes.add(aabb);
-			else addCollisionBoxToList(pos, entitybox, boxes, aabb);
+		for(AABB aabb : type.getAABB("collision", "rotation=" + state.getValue(ROTATION)).get()){
+			if(entitybox == null) boxes.add(aabb.local());
+			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}
 	}
 

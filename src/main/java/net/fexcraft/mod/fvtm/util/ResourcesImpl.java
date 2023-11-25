@@ -35,11 +35,7 @@ import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
-import net.fexcraft.mod.fvtm.item.ConsumableItem;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
@@ -222,11 +218,23 @@ public class ResourcesImpl extends FvtmResources {
 		}
 	}
 
+	@Override
+	public void createContentBlocks() {
+		BLOCKS.forEach(block -> {
+			net.minecraft.block.Block blk = block.getBlock();
+			blk.setRegistryName(block.getIDS());
+			blk.setTranslationKey(block.getIDS());
+			FvtmRegistry.CONTENT_BLOCKS.put(block.getID(), blk);
+		});
+	}
+
+	@Override
 	public void createContentItems(){
 		MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), new MaterialItem(mat))));
 		CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ConsumableItem(con))));
 		PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), new PartItem(part))));
 		VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), new VehicleItem(veh))));
+		BLOCKS.forEach(blk -> blk.setItemWrapper(wrapwrapper(blk.getID(), new BlockItem(blk))));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -302,7 +310,7 @@ public class ResourcesImpl extends FvtmResources {
 		//Resources.PARTS.forEach(part -> part.loadModel());
 		//Resources.VEHICLES.forEach(veh -> veh.loadModel());
 		Resources.CONTAINERS.forEach(con -> con.loadModel());
-		Resources.BLOCKS.forEach(block -> block.loadModel());
+		//Resources.BLOCKS.forEach(block -> block.loadModel());
 		Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());
 		Resources.CLOTHES.forEach(cloth -> cloth.loadModel());
 		Resources.WIRES.forEach(cloth -> cloth.loadModel());
@@ -389,6 +397,14 @@ public class ResourcesImpl extends FvtmResources {
 		catch(IOException e){
 			if(log) e.printStackTrace();
 			return null;
+		}
+	}
+
+	@SubscribeEvent
+	public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
+		IForgeRegistry<net.minecraft.block.Block> reg = event.getRegistry();
+		for(Object block : CONTENT_BLOCKS.values()){
+			reg.register((net.minecraft.block.Block)block);
 		}
 	}
 

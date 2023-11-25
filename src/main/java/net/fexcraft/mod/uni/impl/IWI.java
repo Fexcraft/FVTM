@@ -3,6 +3,8 @@ package net.fexcraft.mod.uni.impl;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -33,6 +35,11 @@ public class IWI extends ItemWrapper {
 			if(con.getItemContainer() == null) return;
 			item.setContainerItem(Item.getByNameOrId(con.getItemContainer()));
 		}
+		if(item instanceof BlockItem){
+			Block blk = ((BlockItem)item).getContent();
+			if(blk.getItemContainer() == null) return;
+			item.setContainerItem(Item.getByNameOrId(blk.getItemContainer()));
+		}
 	}
 
 	@Override
@@ -46,6 +53,11 @@ public class IWI extends ItemWrapper {
 			Consumable con = ((ConsumableItem)item).getContent();
 			if(con.getOreDictId() == null) return;
 			OreDictionary.registerOre(con.getOreDictId(), (Item)con.getItemWrapper().direct());
+		}
+		if(item instanceof BlockItem){
+			Block blk = ((BlockItem)item).getContent();
+			if(blk.getOreDictId() == null) return;
+			OreDictionary.registerOre(blk.getOreDictId(), (Item)blk.getItemWrapper().direct());
 		}
 	}
 

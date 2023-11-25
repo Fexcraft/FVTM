@@ -16,7 +16,7 @@ public class VarStackHandler extends ItemStackHandler {
 
     private boolean isValid(ItemStack stack){
 		if(stack.getItem() instanceof BlockItem == false) return false;
-		Block block = ((BlockItem)stack.getItem()).getDataType();
+		Block block = ((BlockItem)stack.getItem()).getContent();
         return block.hasFunction("fvtm:barrel");
     }
 

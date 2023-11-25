@@ -132,7 +132,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
         GL11.glPopMatrix();
     }
 
-	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
+	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, ModelData data, long rand){
 		ArrayList<ModelRendererTurbo> polis = new ArrayList<>();
 		for(ModelGroup group : groups){
             if(group.has_pre_prog){
@@ -144,7 +144,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
 		return polis;
 	}
 
-    public void reset(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
+    public void reset(IBlockState state, EnumFacing side, ModelData data, long rand){
         for(ModelGroup group : groups){
             if(group.has_pst_prog){
                 for(Program program : group.pst_programs) program.post(group, RENDERDATA.set((BlockData)null, null, null, state, false));

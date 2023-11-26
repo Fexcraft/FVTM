@@ -29,16 +29,19 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 
 	@Override
 	public boolean accepts(ResourceLocation rl){
+		if(rl.getPath().contains("/item")) return false;
 		Block block = FvtmRegistry.BLOCKS.get(getBlockIdFromResLoc(rl));
+		if(block == null) return false;
 		if(block.getModel() instanceof BlockModel == false){
 			Print.log("ERROR --- BLOCK MODEL IS NOT A BLOCK MODEL --- " + block.getIDS());
 			return false;
 		}
-		return ((BlockModel)block.getModel()).bake;
+		return block.getModelData().bool("Baked");
 	}
 
 	public static String getBlockIdFromResLoc(ResourceLocation rl){
-		return rl.getNamespace() + ":" + rl.getPath().substring(rl.getPath().lastIndexOf("/") + 1);
+		String str = rl.getNamespace() + ":" + rl.getPath().substring(rl.getPath().lastIndexOf("/") + 1);
+		return str.endsWith(".fmf") || str.endsWith(".fmf") ? str.substring(0, str.length() - 4) : str;
 	}
 
 	@Override

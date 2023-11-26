@@ -3,12 +3,10 @@ package net.fexcraft.mod.fvtm.model;
 import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
+import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -31,7 +29,6 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
     public float gui_scale_y = 0.75f;
     public float gui_scale_z = 0.75f;
     public boolean bindtex = true;
-    public boolean bake;
 	
 	public BlockModel(){
 		super();
@@ -40,7 +37,6 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
 	@Override
 	public BlockModel parse(ModelData data){
 		super.parse(data);
-        bake = data.get("Baked");
 		if(data.containsKey("ItemScale")){
 			try{
 				float scale = Float.parseFloat(data.get("ItemScale").toString());
@@ -132,16 +128,16 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
         GL11.glPopMatrix();
     }
 
-	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, ModelData data, long rand){
-		ArrayList<ModelRendererTurbo> polis = new ArrayList<>();
+	public ModelGroupList getPolygons(IBlockState state, EnumFacing side, ModelData data, long rand){
+		ArrayList<Polyhedron> polis = new ArrayList<>();
 		for(ModelGroup group : groups){
             if(group.has_pre_prog){
                 for(Program program : group.pre_programs) program.pre(group, RENDERDATA.set((BlockData)null, null, null, state, false));
             }
             if(!group.visible) continue;
-            //TODO polis.addAll(group);
+            polis.addAll(group);
         }
-		return polis;
+		return groups;
 	}
 
     public void reset(IBlockState state, EnumFacing side, ModelData data, long rand){

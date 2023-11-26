@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
+import net.fexcraft.mod.fvtm.render.block.BakedPrograms;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
@@ -134,9 +135,10 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new Block4x4RotVisible(0));
 		ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
-		ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
 		ModelGroup.PROGRAMS.add(new BlockFacePlayer(0, 0, 0));
 		ModelGroup.PROGRAMS.add(new RenderOrderSetter(null));
+		//
+		BakedPrograms.init();
 		//
 		DIDLOAD = true;
 	}
@@ -2290,47 +2292,6 @@ public class DefaultPrograms {
 	
 	public static void enableAlphaTest(){
 		if(!was_alpha_tested) GL11.glEnable(GL11.GL_ALPHA_TEST);
-	}
-
-	public static class TextureSetter implements Program {
-
-		private IDL texloc, otex;
-
-		public TextureSetter(String str){
-			texloc = IDLManager.getIDLCached(str);
-		}
-
-		public TextureSetter(IDL idl){
-			texloc = idl;
-		}
-
-		@Override
-		public String id(){
-			return "fvtm:set_texture";
-		}
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if(list.size() == 0) return;
-			otex = list.get(0).glObj.texture;
-			for(Polyhedron<GLObject> poly : list){
-				poly.glObj.texture = texloc;
-			}
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(list.size() == 0) return;
-			for(Polyhedron<GLObject> poly : list){
-				poly.glObj.texture = otex;
-			}
-		}
-
-		@Override
-		public Program parse(String[] args){
-			return new TextureSetter(IDLManager.getIDLCached(args[0]));
-		}
-
 	}
 
 	public static class BlockFacePlayer implements Program {

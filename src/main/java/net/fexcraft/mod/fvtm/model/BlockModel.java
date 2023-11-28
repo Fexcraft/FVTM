@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 import java.util.ArrayList;
 
-import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -128,16 +127,16 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
         GL11.glPopMatrix();
     }
 
-	public ModelGroupList getPolygons(IBlockState state, EnumFacing side, ModelData data, long rand){
-		ArrayList<Polyhedron> polis = new ArrayList<>();
+	public ArrayList<ModelGroup> getPolygons(IBlockState state, EnumFacing side, ModelData data, long rand){
+        ArrayList<ModelGroup> list = new ArrayList<>();
 		for(ModelGroup group : groups){
             if(group.has_pre_prog){
                 for(Program program : group.pre_programs) program.pre(group, RENDERDATA.set((BlockData)null, null, null, state, false));
             }
             if(!group.visible) continue;
-            polis.addAll(group);
+            list.add(group);
         }
-		return groups;
+		return list;
 	}
 
     public void reset(IBlockState state, EnumFacing side, ModelData data, long rand){

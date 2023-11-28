@@ -79,7 +79,6 @@ public class BakedModelImpl implements IBakedModel {
         //
         if(model.transforms.hasRotate()){
             Vec3f rot = model.transforms.getBakedRotate();
-            axis1 = new Axis3DL();
             axis1.setAngles(rot.y, rot.z, rot.x);
         }
         if(model.transforms.hasTranslate()){
@@ -139,7 +138,7 @@ public class BakedModelImpl implements IBakedModel {
         }
         if(state instanceof IExtendedBlockState){
             IExtendedBlockState ext = (IExtendedBlockState) state;
-            if (key.length() > 0 && ext.getUnlistedNames().size() > 0) key += ",";
+            if(key.length() > 0 && ext.getUnlistedNames().size() > 0) key += ",";
             Iterator<IUnlistedProperty<?>> ite = ext.getUnlistedNames().iterator();
             while(ite.hasNext()){
                 IUnlistedProperty<?> prop = ite.next();
@@ -174,8 +173,9 @@ public class BakedModelImpl implements IBakedModel {
                         builder.put(e, cvert.color().x, cvert.color().y, cvert.color().z, 1f);
                     }
                     else{
-                        float[] arr = RGB.random().toFloatArray();
-                        builder.put(e, arr[0], arr[1], arr[2], arr[3]);
+                        //float[] arr = RGB.random().toFloatArray();
+                        //builder.put(e, arr[0], arr[1], arr[2], arr[3]);
+                        builder.put(e, 1, 1, 1, 1);
                     }
                     break;
                 case UV:

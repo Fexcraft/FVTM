@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
@@ -11,9 +9,8 @@ import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -24,7 +21,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -34,8 +30,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.*;
-
-import static net.fexcraft.lib.common.Static.sixteenth;
 
 public class BakedModelImpl implements IBakedModel {
 
@@ -50,7 +44,7 @@ public class BakedModelImpl implements IBakedModel {
     //
     protected Vec3f translate;
     protected Vec3f scale;
-    protected Axis3DL axis0, axis1;
+    protected Axis3DL rot_poly, rot_tf, rot_meta;
     protected Float normal;
 
     public BakedModelImpl(ResourceLocation modellocation, ModelImpl state, VertexFormat vformat, BlockModel blockmodel) {
@@ -58,7 +52,7 @@ public class BakedModelImpl implements IBakedModel {
         format = vformat;
         root = state;
         model = blockmodel;
-        deftex = root.tex_sprites.values().toArray(new TextureAtlasSprite[0])[0];
+        deftex = root.tex_sprites.get(root.textures.get(0));
         normal = root.block.getModelData().contains("StaticNormal") ? root.block.getModelData().get("StaticNormal") : null;
     }
 
@@ -69,17 +63,19 @@ public class BakedModelImpl implements IBakedModel {
 
     @Override
     @Nonnull
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand){
         String statekey = getStateKey(state);
         if(quads.containsKey(statekey)) return quads.get(statekey);
         List<BakedQuad> newquads = new ArrayList<>();
-        axis0 = new Axis3DL();
-        axis1 = new Axis3DL();
+        rot_poly = new Axis3DL();
+        rot_tf = new Axis3DL();
+        rot_meta = new Axis3DL();
         translate = new Vec3f();
         //
+        rot_meta.setAngles((float)root.block.getBlockType().getRotationFor(((Block)root.block.getBlock()).getMetaFromState(state)), 0, 0);
         if(model.transforms.hasRotate()){
             Vec3f rot = model.transforms.getBakedRotate();
-            axis1.setAngles(rot.y, rot.z, rot.x);
+            rot_tf.setAngles(rot.y, rot.z, rot.x);
         }
         if(model.transforms.hasTranslate()){
             translate = model.transforms.getBakedTranslate();
@@ -88,8 +84,8 @@ public class BakedModelImpl implements IBakedModel {
         if(model.transforms.hasScale()){
             scale = model.transforms.getBakedScale();
         }
-        else scale = new Vec3f(sixteenth, sixteenth, sixteenth);
-        ModelGroupList groups = model.getPolygons(state, side, root.block.getModelData(), rand);
+        else scale = new Vec3f(1, 1, 1);
+        ArrayList<ModelGroup> groups = model.getPolygons(state, side, root.block.getModelData(), rand);
         //
         BakedPrograms.TextureSetter texprog = null;
         try{
@@ -97,23 +93,22 @@ public class BakedModelImpl implements IBakedModel {
                 texprog = group.getProgram("fvtm:set_texture");
                 TextureAtlasSprite sprite = texprog == null ? deftex : getTex(root, texprog.texture);
                 for(Polyhedron<GLObject> poly : group){
-                    axis0.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
+                    rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
                     for(Polygon poli : poly.polygons){
-                        if(poli.vertices.length != 0){
-                            continue;//TODO
-                        }
+                        boolean tri = poli.vertices.length == 3;
                         Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
                         Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
                         Vec3f vec2 = vec1.cross(vec0).normalize();
-                        vec2 = axis1.getRelativeVector(axis0.getRelativeVector(vec2));
+                        vec2 = rot_tf.getRelativeVector(rot_meta.getRelativeVector(rot_poly.getRelativeVector(vec2)));
                         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                         builder.setContractUVs(true);
                         builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
                         builder.setTexture(sprite);
-                        putVertexData(builder, poly, poli.vertices[0], vec2, OBJModel.TextureCoordinate.getDefaultUVs()[0], sprite);
-                        putVertexData(builder, poly, poli.vertices[1], vec2, OBJModel.TextureCoordinate.getDefaultUVs()[1], sprite);
-                        putVertexData(builder, poly, poli.vertices[2], vec2, OBJModel.TextureCoordinate.getDefaultUVs()[2], sprite);
-                        putVertexData(builder, poly, poli.vertices[3], vec2, OBJModel.TextureCoordinate.getDefaultUVs()[3], sprite);
+                        putVertexData(builder, poly, poli.vertices[0], vec2, sprite);
+                        putVertexData(builder, poly, poli.vertices[1], vec2, sprite);
+                        putVertexData(builder, poly, poli.vertices[2], vec2, sprite);
+                        if(tri) putVertexData(builder, poly, poli.vertices[2], vec2, sprite);
+                        else putVertexData(builder, poly, poli.vertices[3], vec2, sprite);
                         newquads.add(builder.build());
                     }
                 }
@@ -159,13 +154,13 @@ public class BakedModelImpl implements IBakedModel {
         return root.tex_sprites.get(tempres.get(name));
     }
 
-    private void putVertexData(UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, OBJModel.TextureCoordinate texcoord, TextureAtlasSprite texture){
+    private void putVertexData(UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture){
         for(int e = 0; e < format.getElementCount(); e++){
             switch(format.getElement(e).getUsage()){
                 case POSITION:
-                    Vec3f vec = axis0.getRelativeVector(vert.vector);
-                    vec = axis1.getRelativeVector(vec.add(poly.posX, poly.posY, poly.posZ));
-                    builder.put(e, vec.x * scale.x + translate.x, vec.y * scale.y + translate.y, vec.z * scale.z + translate.z, 1);
+                    Vec3f vec = rot_poly.getRelativeVector(vert.vector);
+                    vec = rot_tf.getRelativeVector(rot_meta.getRelativeVector(vec.add(poly.posX, poly.posY, poly.posZ)));
+                    builder.put(e, vec.x * scale.x + translate.x + 0.5f, vec.y * scale.y + translate.y, vec.z * scale.z + translate.z + 0.5f, 1);
                     break;
                 case COLOR:
                     if(vert instanceof ColoredVertex){
@@ -194,6 +189,7 @@ public class BakedModelImpl implements IBakedModel {
                     break;
                 default:
                     builder.put(e);
+                    break;
             }
         }
     }

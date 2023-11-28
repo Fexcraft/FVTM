@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.minecraft.client.resources.IResourceManager;
@@ -25,6 +26,7 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 	public void onResourceManagerReload(IResourceManager resourcemanager){
 		MODELS.clear();
 		BakedModelImpl.clear();
+		FvtmResources.reloadModels();
 	}
 
 	@Override

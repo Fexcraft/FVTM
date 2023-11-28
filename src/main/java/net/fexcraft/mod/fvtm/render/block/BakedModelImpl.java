@@ -44,7 +44,8 @@ public class BakedModelImpl implements IBakedModel {
     //
     protected Vec3f translate;
     protected Vec3f scale;
-    protected Axis3DL rot_poly, rot_tf, rot_meta;
+    protected Axis3DL rot_poly, rot_meta;
+    protected Axis3DL[] rot_tf;
     protected Float normal;
 
     public BakedModelImpl(ResourceLocation modellocation, ModelImpl state, VertexFormat vformat, BlockModel blockmodel) {
@@ -68,14 +69,18 @@ public class BakedModelImpl implements IBakedModel {
         if(quads.containsKey(statekey)) return quads.get(statekey);
         List<BakedQuad> newquads = new ArrayList<>();
         rot_poly = new Axis3DL();
-        rot_tf = new Axis3DL();
         rot_meta = new Axis3DL();
         translate = new Vec3f();
         //
         rot_meta.setAngles((float)root.block.getBlockType().getRotationFor(((Block)root.block.getBlock()).getMetaFromState(state)), 0, 0);
         if(model.transforms.hasRotate()){
-            Vec3f rot = model.transforms.getBakedRotate();
-            rot_tf.setAngles(rot.y, rot.z, rot.x);
+            ArrayList<Transforms.TF_Rotate> list = model.transforms.getBakedRotate();
+            rot_tf = new Axis3DL[list.size()];
+            for(int i = 0; i < list.size(); i++){
+                Transforms.TF_Rotate rot = list.get(i);
+                rot_tf[i] = new Axis3DL();
+                rot_tf[i].setAngles(rot.y * rot.angle, rot.z * rot.angle, rot.x * rot.angle);
+            }
         }
         if(model.transforms.hasTranslate()){
             translate = model.transforms.getBakedTranslate();
@@ -99,7 +104,8 @@ public class BakedModelImpl implements IBakedModel {
                         Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
                         Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
                         Vec3f vec2 = vec1.cross(vec0).normalize();
-                        vec2 = rot_tf.getRelativeVector(rot_meta.getRelativeVector(rot_poly.getRelativeVector(vec2)));
+                        vec2 = rot_meta.getRelativeVector(rot_poly.getRelativeVector(vec2));
+                        if(rot_tf != null) for(Axis3DL rot : rot_tf) vec2 = rot.getRelativeVector(vec2);
                         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                         builder.setContractUVs(true);
                         builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
@@ -159,7 +165,8 @@ public class BakedModelImpl implements IBakedModel {
             switch(format.getElement(e).getUsage()){
                 case POSITION:
                     Vec3f vec = rot_poly.getRelativeVector(vert.vector);
-                    vec = rot_tf.getRelativeVector(rot_meta.getRelativeVector(vec.add(poly.posX, poly.posY, poly.posZ)));
+                    vec = rot_meta.getRelativeVector(vec.add(poly.posX, poly.posY, poly.posZ));
+                    if(rot_tf != null) for(Axis3DL rot : rot_tf) vec = rot.getRelativeVector(vec);
                     builder.put(e, vec.x * scale.x + translate.x + 0.5f, vec.y * scale.y + translate.y, vec.z * scale.z + translate.z + 0.5f, 1);
                     break;
                 case COLOR:
@@ -169,7 +176,7 @@ public class BakedModelImpl implements IBakedModel {
                     }
                     else{
                         //float[] arr = RGB.random().toFloatArray();
-                        //builder.put(e, arr[0], arr[1], arr[2], arr[3]);
+                        //builder.put(e, arr[0], arr[1], arr[2], 1f);
                         builder.put(e, 1, 1, 1, 1);
                     }
                     break;

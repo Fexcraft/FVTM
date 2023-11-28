@@ -10,9 +10,11 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -21,6 +23,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -47,6 +50,9 @@ public class BakedModelImpl implements IBakedModel {
     protected Axis3DL rot_poly, rot_meta;
     protected Axis3DL[] rot_tf;
     protected Float normal;
+    //
+    private static BakedPrograms.TextureSetter texprog = null;
+    private static BakedPrograms.ColorSetter colorprog = null;
 
     public BakedModelImpl(ResourceLocation modellocation, ModelImpl state, VertexFormat vformat, BlockModel blockmodel) {
         modelloc = modellocation;
@@ -92,10 +98,10 @@ public class BakedModelImpl implements IBakedModel {
         else scale = new Vec3f(1, 1, 1);
         ArrayList<ModelGroup> groups = model.getPolygons(state, side, root.block.getModelData(), rand);
         //
-        BakedPrograms.TextureSetter texprog = null;
         try{
             for(ModelGroup group : groups){
                 texprog = group.getProgram("fvtm:set_texture");
+                colorprog = group.getProgram("fvtm:set_color");
                 TextureAtlasSprite sprite = texprog == null ? deftex : getTex(root, texprog.texture);
                 for(Polyhedron<GLObject> poly : group){
                     rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
@@ -110,11 +116,11 @@ public class BakedModelImpl implements IBakedModel {
                         builder.setContractUVs(true);
                         builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
                         builder.setTexture(sprite);
-                        putVertexData(builder, poly, poli.vertices[0], vec2, sprite);
-                        putVertexData(builder, poly, poli.vertices[1], vec2, sprite);
-                        putVertexData(builder, poly, poli.vertices[2], vec2, sprite);
-                        if(tri) putVertexData(builder, poly, poli.vertices[2], vec2, sprite);
-                        else putVertexData(builder, poly, poli.vertices[3], vec2, sprite);
+                        putVertexData(builder, poly, poli.vertices[0], vec2, sprite, colorprog);
+                        putVertexData(builder, poly, poli.vertices[1], vec2, sprite, colorprog);
+                        putVertexData(builder, poly, poli.vertices[2], vec2, sprite, colorprog);
+                        if(tri) putVertexData(builder, poly, poli.vertices[2], vec2, sprite, colorprog);
+                        else putVertexData(builder, poly, poli.vertices[3], vec2, sprite, colorprog);
                         newquads.add(builder.build());
                     }
                 }
@@ -160,7 +166,7 @@ public class BakedModelImpl implements IBakedModel {
         return root.tex_sprites.get(tempres.get(name));
     }
 
-    private void putVertexData(UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture){
+    private void putVertexData(UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture, BakedPrograms.ColorSetter colorprog){
         for(int e = 0; e < format.getElementCount(); e++){
             switch(format.getElement(e).getUsage()){
                 case POSITION:
@@ -170,15 +176,25 @@ public class BakedModelImpl implements IBakedModel {
                     builder.put(e, vec.x * scale.x + translate.x + 0.5f, vec.y * scale.y + translate.y, vec.z * scale.z + translate.z + 0.5f, 1);
                     break;
                 case COLOR:
+                    boolean set = false;
                     if(vert instanceof ColoredVertex){
-                        ColoredVertex cvert = (ColoredVertex) vert;
-                        builder.put(e, cvert.color().x, cvert.color().y, cvert.color().z, 1f);
+                        Vec3f color = vert.color();
+                        if(color.x != 1f || color.y != 1f || color.z != 1f){
+                            builder.put(e, color.x, color.y, color.z, 1f);
+                            set = true;
+                        }
                     }
-                    else{
-                        //float[] arr = RGB.random().toFloatArray();
-                        //builder.put(e, arr[0], arr[1], arr[2], 1f);
-                        builder.put(e, 1, 1, 1, 1);
+                    if(!set && colorprog != null){
+                        float[] arr = colorprog.color;
+                        builder.put(e, arr[0], arr[1], arr[2], 1f);
+                        set = true;
                     }
+                    if(!set && EnvInfo.DEV){
+                        float[] arr = RGB.random().toFloatArray();
+                        builder.put(e, arr[0], arr[1], arr[2], 1f);
+                        set = true;
+                    }
+                    if(!set) builder.put(e, 1, 1, 1, 1);
                     break;
                 case UV:
                     if(!poly.glObj.textured){

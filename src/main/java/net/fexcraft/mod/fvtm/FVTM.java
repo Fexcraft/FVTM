@@ -256,10 +256,7 @@ public class FVTM {
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		MinecraftForge.EVENT_BUS.register(new RVStore());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
-			FvtmResources.INSTANCE.initModelLoaders();
-			FvtmResources.INSTANCE.initModelPrograms();
-			FvtmResources.INSTANCE.initModels();
-			FvtmResources.INSTANCE.initModelsClear();
+			FvtmResources.initModelSystem();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
 		Resources.loadWireDecorations(event.getSide().isClient());

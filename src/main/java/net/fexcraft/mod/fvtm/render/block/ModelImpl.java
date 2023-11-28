@@ -1,10 +1,6 @@
 package net.fexcraft.mod.fvtm.render.block;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.fexcraft.app.json.JsonArray;
-import net.fexcraft.app.json.JsonHandler;
-import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -48,13 +44,6 @@ class ModelImpl implements IModel {
         MODELS.put(rs, this);
         block = FvtmRegistry.BLOCKS.get(FvtmBlockModelLoader.getInstance().getBlockIdFromResLoc(rs));
         model = (BlockModel)block.getModel();
-        getTexturesFromModel();
-    }
-
-    public ModelImpl(ModelImpl impl, ImmutableMap<String, String> data) {
-        modelloc = impl.modelloc;
-        block = impl.block;
-        model = impl.model;
         ambocl = block.getModelData().get("AmbientOcclusion");
         getTexturesFromModel();
     }

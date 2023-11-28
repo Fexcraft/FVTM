@@ -31,7 +31,7 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 
 	@Override
 	public boolean accepts(ResourceLocation rl){
-		if(rl.getPath().contains("/item")) return false;
+		if(rl.toString().contains("#inventory")) return false;
 		Block block = FvtmRegistry.BLOCKS.get(getBlockIdFromResLoc(rl));
 		if(block == null) return false;
 		if(block.getModel() instanceof BlockModel == false){

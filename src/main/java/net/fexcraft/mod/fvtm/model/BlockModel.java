@@ -113,16 +113,11 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
                     break;
             }
             //if(PREVIEW){ scal[0] *= 0.5f; scal[1] *= 0.5f; scal[2] *= 0.5f; PREVIEW = false; }
+            GL11.glPushMatrix();
             GL11.glScalef(scal[0], scal[1], scal[2]);
-            //
-            {
-                GL11.glPushMatrix();
-                GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
-                bindTexture(model.bindtex ? data.getCurrentTexture().local() : Resources.WHITE_TEXTURE);
-                model.render(RENDERDATA.set(data, null, null, null, true));
-                GL11.glPopMatrix();
-            }
-            GL11.glScalef(-scal[0], -scal[1], -scal[2]);
+            bindTexture(model.bindtex ? data.getCurrentTexture().local() : Resources.WHITE_TEXTURE);
+            model.render(RENDERDATA.set(data, null, null, null, true));
+            GL11.glPopMatrix();
         }
         GL11.glPopMatrix();
     }

@@ -44,15 +44,24 @@ class ModelImpl implements IModel {
         MODELS.put(rs, this);
         block = FvtmRegistry.BLOCKS.get(FvtmBlockModelLoader.getInstance().getBlockIdFromResLoc(rs));
         model = (BlockModel)block.getModel();
-        ambocl = block.getModelData().get("AmbientOcclusion");
-        getTexturesFromModel();
+        ambocl = block.getModelData().bool("AmbientOcclusion");
+        getTexturesFromBlock();
     }
 
-    private void getTexturesFromModel() {
+    private void getTexturesFromBlock(){
         ArrayList<NamedResourceLocation> list = new ArrayList<>();
-        for(IDL idl : block.getDefaultTextures()) list.add(idl.local());
+        for(IDL idl : block.getDefaultTextures()){
+            String path = idl.path();
+            if(idl.path().startsWith("textures/")){
+                path = path.substring("textures/".length());
+            }
+            if(idl.path().endsWith(".png")){
+                path = path.substring(0, path.lastIndexOf("."));
+            }
+            list.add(new NamedResourceLocation(idl.name(), idl.space(), path));
+        }
         if(list.size() == 0){
-            String str = modelloc.toString().replace("models/block", "blocks");
+            String str = modelloc.toString().replace("models/block", "block");
             if(str.contains(".")) str = str.substring(0, str.indexOf("."));
             list.add(new NamedResourceLocation("main;" + str));
         }

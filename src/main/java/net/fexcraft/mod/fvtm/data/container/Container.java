@@ -85,7 +85,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		//
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-			modeldata = DataUtil.getModelData(obj);
+			modeldata = new ModelData();//TODO
 		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());

@@ -44,7 +44,7 @@ class ModelImpl implements IModel {
         MODELS.put(rs, this);
         block = FvtmRegistry.BLOCKS.get(FvtmBlockModelLoader.getInstance().getBlockIdFromResLoc(rs));
         model = (BlockModel)block.getModel();
-        ambocl = block.getModelData().bool("AmbientOcclusion");
+        ambocl = block.getModelData().getBoolean("AmbientOcclusion", false);
         getTexturesFromBlock();
     }
 

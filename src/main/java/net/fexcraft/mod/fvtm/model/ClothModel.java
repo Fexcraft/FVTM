@@ -14,8 +14,8 @@ public class ClothModel extends DefaultModel {
 	@Override
 	public ClothModel parse(ModelData data){
 		super.parse(data);
-		if(data.contains("SetGroupAs")){
-			List<String> list = data.getList("SetGroupAs");
+		if(data.has("SetGroupAs")){
+			List<String> list = data.getArray("SetGroupAs").toStringList();
 			for(String string : list){
 				String[] args = string.trim().split(" ");
 				if(!groups.contains(args[0])) continue;

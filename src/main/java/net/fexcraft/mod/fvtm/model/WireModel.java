@@ -22,8 +22,8 @@ public class WireModel extends DefaultModel {
 	
 	@Override
 	public WireModel parse(ModelData data){
-		wire_nocull = data.get("NoWireCulling", false);
-		List<String> wires = data.getList("Wire");
+		wire_nocull = data.getBoolean("NoWireCulling", false);
+		List<String> wires = data.getArray("Wire").toStringList();
 		if(wires.isEmpty()) return this;
 		for(int i = 0; i < wires.size(); i++){
 			String[] args = wires.get(i).trim().split(" ");

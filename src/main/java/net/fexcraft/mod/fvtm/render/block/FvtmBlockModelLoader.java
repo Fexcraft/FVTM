@@ -38,7 +38,7 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 			Print.log("ERROR --- BLOCK MODEL IS NOT A BLOCK MODEL --- " + block.getIDS());
 			return false;
 		}
-		return block.getModelData().bool("Baked");
+		return block.getModelData().getBoolean("Baked", false);
 	}
 
 	public static String getBlockIdFromResLoc(ResourceLocation rl){

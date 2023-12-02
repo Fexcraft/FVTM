@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -28,13 +29,12 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 	@Override
 	public VehicleModel parse(ModelData data){
 		super.parse(data);
-		if(data.contains("ItemScale")){
-			Object obj = data.get("ItemScale");
-			if(obj instanceof ArrayList){
-				ArrayList<String> list = (ArrayList<String>)obj;
-				for(String str : list){
+		if(data.has("ItemScale")){
+			JsonValue<?> val = data.get("ItemScale");
+			if(val.isArray()){
+				for(JsonValue<?> v : val.asArray().value){
 					try{
-						parseItemTransform(0, str);
+						parseItemTransform(0, v.string_value());
 					}
 					catch(Exception e){
 						e.printStackTrace();
@@ -43,15 +43,15 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 			}
 			else{
 				try{
-					item_scale.setAll(Float.parseFloat(obj.toString()));
+					item_scale.setAll(val.float_value());
 				}
 				catch(Exception e){
 					e.printStackTrace();
 				}
 			}
 		}
-		if(data.contains("ItemTranslate")){
-			ArrayList<String> list = data.get("ItemTranslate");
+		if(data.has("ItemTranslate")){
+			ArrayList<String> list = data.getArray("ItemTranslate").toStringList();
 			for(String str : list){
 				try{
 					parseItemTransform(1, str);
@@ -61,8 +61,8 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 				}
 			}
 		}
-		if(data.contains("ItemRotate")){
-			ArrayList<String> list = data.get("ItemRotate");
+		if(data.has("ItemRotate")){
+			ArrayList<String> list = data.getArray("ItemRotate").toStringList();
 			for(String str : list){
 				try{
 					parseItemTransform(2, str);

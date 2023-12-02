@@ -59,7 +59,7 @@ public class Cloth extends TypeCore<Cloth> implements ItemTextureable {
 		this.texture = new NamedResourceLocation(JsonUtil.getIfExists(obj, "Texture", Resources.NULL_TEXTURE.toString()));
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-			modeldata = DataUtil.getModelData(obj);
+			modeldata = new ModelData();//TODO
 		}
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
         this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());

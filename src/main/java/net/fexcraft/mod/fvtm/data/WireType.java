@@ -61,7 +61,7 @@ public class WireType extends TypeCore<WireType> implements ItemTextureable {
 		else texture = Resources.WHITE_TEXTURE;
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-			modeldata = DataUtil.getModelData(obj);
+			modeldata = new ModelData();//TODO
 		}
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");

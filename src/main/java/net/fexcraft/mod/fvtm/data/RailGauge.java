@@ -90,7 +90,7 @@ public class RailGauge extends TypeCore<RailGauge> implements ItemTextureable {
 		this.compatible = DataUtil.getStringArray(obj, "Compatible", false, true);
 		if(Static.isClient()){
 			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-			modeldata = DataUtil.getModelData(obj);
+			modeldata = new ModelData();//TODO
 		}
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");

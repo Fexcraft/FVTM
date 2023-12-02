@@ -60,7 +60,9 @@ public class BakedModelImpl implements IBakedModel {
         root = state;
         model = blockmodel;
         deftex = root.tex_sprites.get(root.textures.get(0));
-        normal = root.block.getModelData().contains("StaticNormal") ? root.block.getModelData().get("StaticNormal") : null;
+        if(root.block.getModelData().has("StaticNormal")){
+            normal = root.block.getModelData().get("StaticNormal").float_value();
+        }
     }
 
     public static void clear(){
@@ -189,11 +191,11 @@ public class BakedModelImpl implements IBakedModel {
                         builder.put(e, arr[0], arr[1], arr[2], 1f);
                         set = true;
                     }
-                    if(!set && EnvInfo.DEV){
+                    /*if(!set && EnvInfo.DEV){
                         float[] arr = RGB.random().toFloatArray();
                         builder.put(e, arr[0], arr[1], arr[2], 1f);
                         set = true;
-                    }
+                    }*/
                     if(!set) builder.put(e, 1, 1, 1, 1);
                     break;
                 case UV:

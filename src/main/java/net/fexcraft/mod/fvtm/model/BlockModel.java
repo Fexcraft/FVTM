@@ -3,7 +3,10 @@ package net.fexcraft.mod.fvtm.model;
 import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -20,6 +23,7 @@ import org.lwjgl.opengl.GL11;
 public class BlockModel extends DefaultModel implements FCLItemModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
+    public HashMap<String, DefaultModel> SUBMODELS = new HashMap<>();
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = -.25f;
@@ -36,31 +40,28 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
 	@Override
 	public BlockModel parse(ModelData data){
 		super.parse(data);
-		if(data.containsKey("ItemScale")){
-			try{
-				float scale = Float.parseFloat(data.get("ItemScale").toString());
-				gui_scale_x = scale;
-				gui_scale_y = scale;
-				gui_scale_z = scale;
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
+		if(data.has("ItemScale")){
+            float scale = data.getFloat("ItemScale", gui_scale_x);
+            gui_scale_x = scale;
+            gui_scale_y = scale;
+            gui_scale_z = scale;
 		}
-		if(data.containsKey("ItemTranslate")){
-			try{
-				float translate = Float.parseFloat(data.get("ItemTranslate").toString());
-				gui_translate_x = translate;
-				gui_translate_y = translate;
-				gui_translate_z = translate;
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
+		if(data.has("ItemTranslate")){
+            JsonValue<?> trs = data.get("ItemTranslate");
+            if(trs.isValue()){
+                float translate = data.getFloat("ItemTranslate", 0);
+                gui_translate_x = translate;
+                gui_translate_y = translate;
+                gui_translate_z = translate;
+            }
+            else if(trs.isArray()){
+                gui_translate_x = trs.asArray().get(0).float_value();
+                gui_translate_y = trs.asArray().get(1).float_value();
+                gui_translate_z = trs.asArray().get(2).float_value();
+            }
 		}
-		if(data.containsKey("DefaultTextureBinding")){
-			bindtex = data.get("DefaultTextureBinding", true);
-		}
+        bindtex = data.getBoolean("DefaultTextureBinding", true);
+        //TODO
 		return this;
 	}
 	

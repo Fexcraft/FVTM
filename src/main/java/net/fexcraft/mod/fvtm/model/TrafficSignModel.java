@@ -31,10 +31,10 @@ public class TrafficSignModel extends DefaultModel {
 		}
 		fontdata = new FontModelData();
 		//
-		if(data.contains("SpaceWidth")) fontdata.space_width = data.get("SpaceWidth");
-		if(data.contains("LetterSpacing")) fontdata.letter_spacing = data.get("LetterSpacing");
+		fontdata.space_width = data.getFloat("SpaceWidth", 0);
+		fontdata.letter_spacing = data.getFloat("LetterSpacing", 0);
 		//
-		List<String> chars = data.getList("Char");
+		List<String> chars = data.getArray("Char").toStringList();
 		for(int i = 0; i < chars.size(); i++){
 			String[] arr = chars.get(i).trim().split(" ");
 			CharModelData chardata = new CharModelData();

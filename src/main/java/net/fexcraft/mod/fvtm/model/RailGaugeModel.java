@@ -31,11 +31,11 @@ public class RailGaugeModel extends DefaultModel {
 	
 	@Override
 	public RailGaugeModel parse(ModelData data){
-		rail_tempcull = data.get("RailCulling", false);
-		if(data.contains("TiesDistance")) ties_distance = data.get("TiesDistance");
-		if(data.contains("SignalOffset")) signal_offset = data.get("SignalOffset");
-		if(data.contains("BufferLength")) buffer_length = data.get("BufferLength");
-		List<String> rails = data.getList("Rail");
+		rail_tempcull = data.getBoolean("RailCulling", false);
+		ties_distance = data.getFloat("TiesDistance", ties_distance);
+		signal_offset = data.getFloat("SignalOffset", signal_offset);
+		buffer_length = data.getFloat("BufferLength", buffer_length);
+		List<String> rails = data.getArray("Rail").toStringList();
 		if(rails.isEmpty()) return this;
 		for(String rail : rails){
 			String[] args = rail.trim().split(" ");

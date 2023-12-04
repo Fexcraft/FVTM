@@ -5,10 +5,13 @@ import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -23,7 +26,7 @@ import org.lwjgl.opengl.GL11;
 public class BlockModel extends DefaultModel implements FCLItemModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
-    public HashMap<String, DefaultModel> SUBMODELS = new HashMap<>();
+    public HashMap<String, ArrayList<DefaultModel>> STATEMODELS = new HashMap<>();
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = -.25f;
@@ -61,7 +64,26 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
             }
 		}
         bindtex = data.getBoolean("DefaultTextureBinding", true);
-        //TODO
+        if(data.has("States")){
+            JsonMap states = data.getMap("States");
+            for(Map.Entry<String, JsonValue<?>> entry : states.entries()){
+                if(entry.getValue().isMap()){
+                    ArrayList<DefaultModel> list = new ArrayList();
+                    for(Map.Entry<String, JsonValue<?>> e : states.entries()){
+                        Model model = FvtmResources.getModel(e.getKey(), new ModelData(entry.getValue().asMap()), BlockModel.class);
+                        if(model != null) list.add((DefaultModel)model);
+                    }
+                    if(list.size() > 0) STATEMODELS.put(entry.getKey(), list);
+                }
+                else{
+                    Model model = FvtmResources.getModel(entry.getValue().string_value(), new ModelData(), BlockModel.class);
+                    if(model != null){
+                        if(!STATEMODELS.containsKey(entry.getKey())) STATEMODELS.put(entry.getKey(), new ArrayList<>());
+                        STATEMODELS.get(entry.getKey()).add((DefaultModel)model);
+                    }
+                }
+            }
+        }
 		return this;
 	}
 	

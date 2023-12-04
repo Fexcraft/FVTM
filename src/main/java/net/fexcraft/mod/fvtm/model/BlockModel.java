@@ -16,9 +16,12 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
@@ -26,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 public class BlockModel extends DefaultModel implements FCLItemModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
-    public HashMap<String, ArrayList<DefaultModel>> STATEMODELS = new HashMap<>();
+    public HashMap<String, ArrayList<BlockModel>> STATEMODELS = new HashMap<>();
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = -.25f;
@@ -68,10 +71,10 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
             JsonMap states = data.getMap("States");
             for(Map.Entry<String, JsonValue<?>> entry : states.entries()){
                 if(entry.getValue().isMap()){
-                    ArrayList<DefaultModel> list = new ArrayList();
-                    for(Map.Entry<String, JsonValue<?>> e : states.entries()){
-                        Model model = FvtmResources.getModel(e.getKey(), new ModelData(entry.getValue().asMap()), BlockModel.class);
-                        if(model != null) list.add((DefaultModel)model);
+                    ArrayList<BlockModel> list = new ArrayList();
+                    for(Map.Entry<String, JsonValue<?>> e : entry.getValue().asMap().entries()){
+                        Model model = FvtmResources.getModel(e.getKey(), new ModelData(e.getValue().asMap()), BlockModel.class);
+                        if(model != null) list.add((BlockModel)model);
                     }
                     if(list.size() > 0) STATEMODELS.put(entry.getKey(), list);
                 }
@@ -79,7 +82,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
                     Model model = FvtmResources.getModel(entry.getValue().string_value(), new ModelData(), BlockModel.class);
                     if(model != null){
                         if(!STATEMODELS.containsKey(entry.getKey())) STATEMODELS.put(entry.getKey(), new ArrayList<>());
-                        STATEMODELS.get(entry.getKey()).add((DefaultModel)model);
+                        STATEMODELS.get(entry.getKey()).add((BlockModel)model);
                     }
                 }
             }
@@ -140,6 +143,11 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
             GL11.glScalef(scal[0], scal[1], scal[2]);
             bindTexture(model.bindtex ? data.getCurrentTexture().local() : Resources.WHITE_TEXTURE);
             model.render(RENDERDATA.set(data, null, null, null, true));
+            Block block = ((ItemBlock)item.getItem()).getBlock();
+            for(IProperty<?> property : block.getBlockState().getProperties()){
+                ArrayList<BlockModel> models = STATEMODELS.get(property.getName() + "=" + block.getStateFromMeta(item.getMetadata()).getValue(property));
+                for(BlockModel mod : models) mod.render(RENDERDATA);
+            }
             GL11.glPopMatrix();
         }
         GL11.glPopMatrix();

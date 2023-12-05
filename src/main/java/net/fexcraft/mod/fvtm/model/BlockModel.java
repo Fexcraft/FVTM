@@ -4,17 +4,19 @@ import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
+import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.render.block.BakedTransformData;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -29,7 +31,7 @@ import org.lwjgl.opengl.GL11;
 public class BlockModel extends DefaultModel implements FCLItemModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
-    public HashMap<String, ArrayList<BlockModel>> STATEMODELS = new HashMap<>();
+    public HashMap<String, ArrayList<BlockModel>> state_models = new HashMap<>();
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = -.25f;
@@ -38,6 +40,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
     public float gui_scale_y = 0.75f;
     public float gui_scale_z = 0.75f;
     public boolean bindtex = true;
+    public BakedTransformData bk;
 	
 	public BlockModel(){
 		super();
@@ -76,13 +79,13 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
                         Model model = FvtmResources.getModel(e.getKey(), new ModelData(e.getValue().asMap()), BlockModel.class);
                         if(model != null) list.add((BlockModel)model);
                     }
-                    if(list.size() > 0) STATEMODELS.put(entry.getKey(), list);
+                    if(list.size() > 0) state_models.put(entry.getKey(), list);
                 }
                 else{
                     Model model = FvtmResources.getModel(entry.getValue().string_value(), new ModelData(), BlockModel.class);
                     if(model != null){
-                        if(!STATEMODELS.containsKey(entry.getKey())) STATEMODELS.put(entry.getKey(), new ArrayList<>());
-                        STATEMODELS.get(entry.getKey()).add((BlockModel)model);
+                        if(!state_models.containsKey(entry.getKey())) state_models.put(entry.getKey(), new ArrayList<>());
+                        state_models.get(entry.getKey()).add((BlockModel)model);
                     }
                 }
             }
@@ -145,7 +148,7 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
             model.render(RENDERDATA.set(data, null, null, null, true));
             Block block = ((ItemBlock)item.getItem()).getBlock();
             for(IProperty<?> property : block.getBlockState().getProperties()){
-                ArrayList<BlockModel> models = STATEMODELS.get(property.getName() + "=" + block.getStateFromMeta(item.getMetadata()).getValue(property));
+                ArrayList<BlockModel> models = state_models.get(property.getName() + "=" + block.getStateFromMeta(item.getMetadata()).getValue(property));
                 for(BlockModel mod : models) mod.render(RENDERDATA);
             }
             GL11.glPopMatrix();
@@ -171,6 +174,37 @@ public class BlockModel extends DefaultModel implements FCLItemModel {
                 for(Program program : group.pst_programs) program.post(group, RENDERDATA.set((BlockData)null, null, null, state, false));
             }
         }
+        bk = null;
     }
-	
+
+    public void convertTransforms(net.fexcraft.mod.fvtm.data.block.Block block, IBlockState state){
+        bk = new BakedTransformData();
+        bk.rot_poly = new Axis3DL();
+        bk.rot_meta = new Axis3DL();
+        if(state != null){
+            bk.rot_meta.setAngles((float)block.getBlockType().getRotationFor(state.getBlock().getMetaFromState(state)), 0, 0);
+        }
+        if(transforms.hasRotate()){
+            ArrayList<Transforms.TF_Rotate> list = transforms.getBakedRotate();
+            bk.rot_tf = new Axis3DL[list.size()];
+            for(int i = 0; i < list.size(); i++){
+                Transforms.TF_Rotate rot = list.get(i);
+                bk.rot_tf[i] = new Axis3DL();
+                bk.rot_tf[i].setAngles(rot.y * rot.angle, rot.z * rot.angle, rot.x * rot.angle);
+            }
+        }
+        if(transforms.hasTranslate()){
+            bk.translate = transforms.getBakedTranslate();
+        }
+        else bk.translate = new Vec3f();
+        if(transforms.hasScale()){
+            bk.scale = transforms.getBakedScale();
+        }
+        else bk.scale = new Vec3f(1, 1, 1);
+        //
+        for(ArrayList<BlockModel> val : state_models.values()){
+            for(BlockModel v : val) v.convertTransforms(block, state);
+        }
+    }
+
 }

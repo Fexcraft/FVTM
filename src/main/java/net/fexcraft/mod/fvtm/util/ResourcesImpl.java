@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
 import net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer;
+import net.fexcraft.mod.fvtm.render.block.BlockItemModel;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -170,7 +171,7 @@ public class ResourcesImpl extends FvtmResources {
 			case BLOCK:{
 				Block block = (Block)content;
 				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockModel.EMPTY);
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockItemModel.INSTANCE);
 					return;
 				}
 				break;

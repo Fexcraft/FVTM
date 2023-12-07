@@ -7,12 +7,10 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
-import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
-import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -38,7 +36,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class VehicleItem extends Item implements ContentDataItem<Vehicle, VehicleData>, JunctionGridItem {//}, ItemTex<Vehicle>  {
+public class VehicleItem extends Item implements ContentDataItem<Vehicle, VehicleData>, JunctionGridItem, TextureableItem<Vehicle> {
 
 	private Vehicle vehicle;
 
@@ -151,4 +149,5 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 	public ContentType getType(){
 		return ContentType.VEHICLE;
 	}
+
 }

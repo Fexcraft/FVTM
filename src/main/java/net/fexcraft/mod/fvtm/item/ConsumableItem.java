@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ConsumableItem extends ItemFood implements ContentItem<Consumable> {
+public class ConsumableItem extends ItemFood implements ContentItem<Consumable>, TextureableItem<Consumable> {
 	
 	private Consumable consumable;
 

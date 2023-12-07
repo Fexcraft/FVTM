@@ -210,7 +210,7 @@ public class ResourcesImpl extends FvtmResources {
 	@SideOnly(Side.CLIENT)
 	private boolean isItemModelMissing(Content<?> type){
 		try{
-			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getID().space(), "models/item/" + type.getID().id() + ".png"));
+			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getID().space(), "models/item/" + type.getID().id() + ".json"));
 			return res == null;
 		}
 		catch(IOException e){

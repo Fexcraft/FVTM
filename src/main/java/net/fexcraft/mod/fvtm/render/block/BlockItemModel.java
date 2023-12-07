@@ -82,6 +82,7 @@ public class BlockItemModel implements FCLItemModel {
         Block block = ((ItemBlock)item.getItem()).getBlock();
         for(IProperty<?> property : block.getBlockState().getProperties()){
             ArrayList<BlockModel> models = model.state_models.get(property.getName() + "=" + block.getStateFromMeta(item.getMetadata()).getValue(property));
+            if(models == null) continue;
             for(BlockModel mod : models) mod.render(RENDERDATA);
         }
         GL11.glPopMatrix();

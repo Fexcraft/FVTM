@@ -10,12 +10,14 @@ import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -36,7 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
 
-public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {//}, ItemTex<Block> {
+public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, BlockData>, TextureableItem<Block> {//}, ItemTex<Block> {
 	
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs ctab;
@@ -98,12 +100,12 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
 		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 
-	@Override
+	//@Override
 	public BlockData getData(ItemStack stack){
 		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
 	}
 
-	@Override
+	//@Override
 	public BlockData getData(NBTTagCompound compound){
 		return new BlockData(type).read(compound);
 	}
@@ -139,8 +141,14 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {/
         return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 
+	@Override
 	public Block getContent(){
 		return type;
+	}
+
+	@Override
+	public ContentType getType(){
+		return ContentType.BLOCK;
 	}
 
 }

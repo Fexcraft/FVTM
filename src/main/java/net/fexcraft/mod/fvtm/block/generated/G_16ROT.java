@@ -46,12 +46,12 @@ public class G_16ROT extends PlainBase {
 
 	@Override
 	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-		return this.getDefaultState().withProperty(ROTATION, type.isRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15);
+		return this.getDefaultState().withProperty(ROTATION, type.isRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)(placer.rotationYaw * 16.0F / 360.0F) + 0.5D) & 15);
 	}
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-		worldIn.setBlockState(pos, state.withProperty(ROTATION, type.isRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15));
+		worldIn.setBlockState(pos, state.withProperty(ROTATION, type.isRandomRot() ? Static.random.nextInt(16) : MathHelper.floor((double)(placer.rotationYaw * 16.0F / 360.0F) + 0.5D) & 15));
 	}
 
 	@Override

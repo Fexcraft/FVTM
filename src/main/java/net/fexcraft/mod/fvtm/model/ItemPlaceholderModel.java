@@ -22,7 +22,7 @@ public class ItemPlaceholderModel implements FCLItemModel {
 	@Override
 	public void renderItem(TransformType type, ItemStack stack, EntityLivingBase entity){
 		if(stack.getItem() instanceof TextureableItem == false) return;
-		Content<?> tyco = ((TextureableItem<?>)stack.getItem()).getContentType();
+		Content<?> tyco = ((TextureableItem<?>)stack.getItem()).getContent();
 		if(tyco == null || tyco instanceof ItemTextureable == false) return;
 		IDL itex = ((ItemTextureable)tyco).getItemTexture();
 		//

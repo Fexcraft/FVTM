@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Lockable.LockableItem;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class MaterialItem extends Item implements ContentItem<Material>, LockableItem {
+public class MaterialItem extends Item implements ContentItem<Material>, LockableItem, TextureableItem<Material> {
 
 	private Material material;
 

@@ -119,7 +119,7 @@ public class BlockModel extends DefaultModel {
         bk.rot_poly = new Axis3DL();
         bk.rot_meta = new Axis3DL();
         if(state != null){
-            bk.rot_meta.setAngles((float)block.getBlockType().getRotationFor(state.getBlock().getMetaFromState(state)), 0, 0);
+            bk.rot_meta.setAngles(-(float)block.getBlockType().getRotationFor(state.getBlock().getMetaFromState(state)), 0, 0);
         }
         if(transforms.hasRotate()){
             ArrayList<Transforms.TF_Rotate> list = transforms.getBakedRotate();

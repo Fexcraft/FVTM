@@ -1,10 +1,12 @@
-package net.fexcraft.mod.fvtm.render.block;
+package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 
 /**
+ * Dedicated Programs for Baked Block Models
+ *
  * @author Ferdinand Calo' (FEX___96)
  */
 public class BakedPrograms {

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.model.program;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 
@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.Program;
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonElement;

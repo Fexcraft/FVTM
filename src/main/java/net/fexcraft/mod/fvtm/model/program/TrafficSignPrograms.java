@@ -1,6 +1,9 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
+import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
 import org.lwjgl.opengl.GL11;
 

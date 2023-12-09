@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.model.WirePrograms.DownwardAngled;
+import net.fexcraft.mod.fvtm.model.program.WirePrograms.DownwardAngled;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.mod.fvtm.model.Program.FunctionalProgram;
 

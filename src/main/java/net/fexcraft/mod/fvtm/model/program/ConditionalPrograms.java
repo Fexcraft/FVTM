@@ -1,12 +1,15 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.model.program;
 
-import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
+import static net.fexcraft.mod.fvtm.model.program.DefaultPrograms.BLINKER_TOGGLE;
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
+import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;

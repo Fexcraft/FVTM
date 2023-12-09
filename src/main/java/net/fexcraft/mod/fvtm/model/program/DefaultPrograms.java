@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.model.program;
 
 import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.render.block.BakedPrograms;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;

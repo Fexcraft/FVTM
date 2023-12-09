@@ -33,7 +33,7 @@ import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
-import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;

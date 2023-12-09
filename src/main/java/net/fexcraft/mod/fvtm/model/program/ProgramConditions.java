@@ -1,8 +1,10 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.model.program;
 
 import java.util.function.BiPredicate;
 
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
 
 /** Some Predefined Conditions, to be used with custom FunctionalProgram extensions. */
 public class ProgramConditions {

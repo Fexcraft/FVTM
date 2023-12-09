@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.AABB;
-import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -39,7 +38,7 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
-import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.render.*;
@@ -283,8 +282,8 @@ public class FVTM {
 			DecorationItem.INSTANCE.setCreativeTab(tab);
 			//VPInfo.INSTANCE.setCreativeTab(tab);
 			//
-			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
-				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
+			if(DefaultPrograms.BLINKER_TIMER == null){
+				DefaultPrograms.setupBlinkerTimer();
 			}
 			try{
 				Resources.loadLitePackLang();

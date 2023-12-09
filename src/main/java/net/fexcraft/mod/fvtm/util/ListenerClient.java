@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
-
 import java.util.UUID;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
@@ -9,7 +7,6 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
@@ -18,7 +15,6 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -156,7 +152,8 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				BlockTileEntity tile = (BlockTileEntity)player.world.getTileEntity(pos);
 				if(tile != null){
-					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(TagCW.wrap(packet.nbt));
+					TagCW tag = TagCW.wrap(packet.nbt.getCompoundTag("data"));
+					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(tag);
 				}
 				return;
 			}

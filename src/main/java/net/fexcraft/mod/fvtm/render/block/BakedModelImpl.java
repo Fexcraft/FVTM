@@ -8,6 +8,7 @@ import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.program.BakedPrograms;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;

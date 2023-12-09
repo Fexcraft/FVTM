@@ -103,7 +103,8 @@ public class BakedModelImpl implements IBakedModel {
                     Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
                     Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
                     Vec3f vec2 = vec1.cross(vec0).normalize();
-                    vec2 = model.bk.rot_meta.getRelativeVector(model.bk.rot_poly.getRelativeVector(vec2));
+                    vec2 = model.bk.rot_poly.getRelativeVector(vec2);
+                    if(!model.nodefrot) vec2 = model.bk.rot_meta.getRelativeVector(vec2);
                     if(model.bk.rot_tf != null) for(Axis3DL rot : model.bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
                     UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                     builder.setContractUVs(true);

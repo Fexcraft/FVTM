@@ -88,4 +88,9 @@ public class TagLWI implements TagLW {
 		return list;
 	}
 
+	@Override
+	public String toString(){
+		return list == null ? "null" : list.toString();
+	}
+
 }

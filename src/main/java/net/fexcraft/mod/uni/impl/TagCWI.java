@@ -52,6 +52,11 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public long getLong(String key) {
+		return compound.getLong(key);
+	}
+
+	@Override
 	public boolean getBoolean(String key){
 		return compound.getBoolean(key);
 	}
@@ -92,6 +97,11 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public void set(String key, long val){
+		compound.setLong(key, val);
+	}
+
+	@Override
 	public void set(String key, boolean val){
 		compound.setBoolean(key, val);
 	}
@@ -129,6 +139,11 @@ public class TagCWI implements TagCW {
 	@Override
 	public Collection<String> keys(){
 		return new ArrayList<>(compound.getKeySet());
+	}
+
+	@Override
+	public String toString(){
+		return compound == null ? "null" : compound.toString();
 	}
 
 }

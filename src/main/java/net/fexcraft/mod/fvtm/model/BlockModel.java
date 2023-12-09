@@ -6,27 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Axis3DL;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.render.block.BakedTransformData;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import org.lwjgl.opengl.GL11;
 
 public class BlockModel extends DefaultModel {
 
@@ -40,6 +29,7 @@ public class BlockModel extends DefaultModel {
     public float gui_scale_y = 0.75f;
     public float gui_scale_z = 0.75f;
     public boolean bindtex = true;
+    public boolean nodefrot;
     public BakedTransformData bk;
 	
 	public BlockModel(){
@@ -90,6 +80,20 @@ public class BlockModel extends DefaultModel {
                 }
             }
         }
+        if(data.has("RotateY")){
+            transforms.add(new Transforms.TF_Rotate(0, 1, 0, data.getFloat("RotateY", 0)));
+        }
+        if(data.has("RotateZ")){
+            transforms.add(new Transforms.TF_Rotate(0, 0, 1, data.getFloat("RotateZ", 0)));
+        }
+        if(data.has("RotateX")){
+            transforms.add(new Transforms.TF_Rotate(1, 0, 0, data.getFloat("RotateX", 0)));
+        }
+        if(data.has("Translate")){
+            JsonArray array = data.getArray("Translate");
+            transforms.add(new Transforms.TF_Translate(array.get(0).float_value(), array.get(1).float_value(), array.get(2).float_value()));
+        }
+        nodefrot = data.getBoolean("NoDefaultRotation", false);
 		return this;
 	}
 

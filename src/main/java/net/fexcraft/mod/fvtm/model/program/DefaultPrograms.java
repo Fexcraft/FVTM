@@ -127,7 +127,6 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new Rotator(0, 0, 0, 0, null, false, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new Translator(0, 0, 0, 0, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
-		ModelGroup.PROGRAMS.add(new BlockFacePlayer(0, 0, 0));
 		ModelGroup.PROGRAMS.add(new RenderOrderSetter(null));
 		//
 		BlockPrograms.init();
@@ -2040,53 +2039,6 @@ public class DefaultPrograms {
 	
 	public static void enableAlphaTest(){
 		if(!was_alpha_tested) GL11.glEnable(GL11.GL_ALPHA_TEST);
-	}
-
-	public static class BlockFacePlayer implements Program {
-
-		private Pos pos;
-
-		public BlockFacePlayer(float x, float y, float z){
-			pos = new Pos(x, y, z);
-		}
-
-		@Override
-		public String id(){
-			return "fvtm:block_face_player";
-		}
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.tile == null) return;
-			GL11.glPushMatrix();
-			GL11.glRotated(-data.block.getType().getBlockType().getRotationFor(((TileEntity)data.tile).getBlockMetadata()), 0, 1, 0);
-			pos.translate();
-			double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.tile).getPos().getX() + 0.5F);
-			double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.tile).getPos().getZ() + 0.5F);
-			double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (((TileEntity)data.tile).getPos().getY() + 0.5F);
-			d2 = -Math.atan2(d2, Math.sqrt(d0 * d0 + d1 * d1));
-			d0 = MathHelper.atan2(d1, d0);
-			//if(d0 >= (float)Math.PI) d0 -= ((float)Math.PI * 2F);
-			//if(d0 < -(float)Math.PI) d0 += ((float)Math.PI * 2F);
-			GL11.glRotated(Static.toDegrees(d0) + 90, 0, 1, 0);
-			GL11.glRotated(Static.toDegrees(d2), 1, 0, 0);
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(data.tile == null) return;
-			GL11.glPopMatrix();
-			//GL11.glRotated(data.block.getType().getBlockType().getRotationForMeta(data.tile.getBlockMetadata()), 0, 1, 0);
-		}
-
-		@Override
-		public Program parse(String[] args){
-			float x = args.length > 0 ? Float.parseFloat(args[0]) : 0;
-			float y = args.length > 1 ? Float.parseFloat(args[1]) : 0;
-			float z = args.length > 2 ? Float.parseFloat(args[2]) : 0;
-			return new BlockFacePlayer(x, y, z);
-		}
-
 	}
 
 	public static class RenderOrderSetter implements Program {

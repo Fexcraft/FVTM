@@ -109,7 +109,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         else data = FvtmResources.getBlockData(compound);
         if(compound.hasKey("block_meta")) meta = compound.getByte("block_meta");
         if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
-        	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
+        	//TODO SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
         }
     }
     

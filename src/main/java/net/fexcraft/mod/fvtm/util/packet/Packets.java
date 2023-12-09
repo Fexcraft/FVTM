@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.packet;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -72,14 +73,19 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 	@Override
 	public void send(BlockData blockdata, V3I vec, int dim) {
 		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+		TagCW com = getBlockFuncData(blockdata, pos);
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(dim, pos));
+	}
+
+	private TagCW getBlockFuncData(BlockData blockdata, BlockPos pos){
 		TagCW com = TagCW.create();
 		com.set("target_listener", Resources.UTIL_LISTENER);
 		com.set("task", "block_func_sync");
 		com.set("pos", pos.toLong());
 		TagCW data = TagCW.create();
-		for(BlockFunction func : blockdata.getFunctions()) func.save(com);
+		for(BlockFunction func : blockdata.getFunctions()) func.save(data);
 		com.set("data", data);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(dim, pos));
+		return com;
 	}
 
 	@Override
@@ -87,13 +93,7 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
 		BlockTileEntity tile = (BlockTileEntity)((World)world.direct()).getTileEntity(pos);
 		if(tile == null) return;
-		TagCW com = TagCW.create();
-		com.set("target_listener", Resources.UTIL_LISTENER);
-		com.set("task", "block_func_sync");
-		com.set("pos", pos.toLong());
-		TagCW data = TagCW.create();
-		for(BlockFunction func : tile.getBlockData().getFunctions()) func.save(com);
-		com.set("data", data);
+		TagCW com = getBlockFuncData(tile.getBlockData(), pos);
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(tile.getDim(), pos));
 	}
 

@@ -319,11 +319,11 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public InputStream getModelInputStream(IDL loc, boolean log){
+	public InputStream getAssetInputStream(IDL loc, boolean log){
 		try{
 			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource((ResourceLocation)loc).getInputStream();
 		}
-		catch(IOException e){
+		catch(Throwable e){
 			if(log) e.printStackTrace();
 			return null;
 		}

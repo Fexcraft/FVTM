@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
@@ -10,6 +13,8 @@ import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+
+import java.util.ArrayList;
 
 @fTESR
 public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity> {
@@ -27,6 +32,18 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
         GL11.glPushMatrix();
         GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0, 1, 0);
         model.render(BlockModel.RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false));
+        if(model.state_models.size() > 0){
+            IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+            for(IProperty<?> prop : tile.getBlockType().getBlockState().getProperties()){
+                String str = prop.getName() + "=" + state.getValue(prop);
+                if(model.state_models.containsKey(str)){
+                    ArrayList<BlockModel> list = model.state_models.get(str);
+                    for(BlockModel statemodel : list){
+                        statemodel.render(BlockModel.RENDERDATA);
+                    }
+                }
+            }
+        }
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }

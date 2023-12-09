@@ -174,7 +174,7 @@ public class ResourcesImpl extends FvtmResources {
 		switch(contype){
 			case BLOCK:{
 				Block block = (Block)content;
-				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
+				if(/*!block.hasPlainModel() &&*/ RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockItemModel.INSTANCE);
 					return;
 				}

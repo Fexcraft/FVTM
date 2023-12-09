@@ -649,7 +649,7 @@ public class Resources {
 
 	public static Object[] getInputStream(ResourceLocation resloc){
 		Closeable[] close = null;
-		InputStream stream = FvtmResources.INSTANCE.getModelInputStream(IDLManager.getIDL(resloc.toString()), false);
+		InputStream stream = FvtmResources.INSTANCE.getAssetInputStream(IDLManager.getIDL(resloc.toString()), false);
 		if(stream != null) return new Object[]{ stream };
 		try{
 			Addon addon = getAddon(resloc.getNamespace());

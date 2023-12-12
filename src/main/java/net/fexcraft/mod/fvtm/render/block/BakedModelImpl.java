@@ -7,6 +7,7 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Axis3DL;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.program.BakedPrograms;
 import net.minecraft.block.properties.IProperty;
@@ -82,6 +83,10 @@ public class BakedModelImpl implements IBakedModel {
             }
         }
         catch(Throwable thr){
+            FvtmLogger.LOGGER.log("BAKING ERROR: " + model.toString() + " (" + model.name + ") / " + statekey);
+            for(Object o: root.tex_sprites.keySet()){
+                FvtmLogger.LOGGER.log("tex: " + o);
+            }
             thr.printStackTrace();
         }
         quads.put(statekey, newquads);
@@ -96,6 +101,7 @@ public class BakedModelImpl implements IBakedModel {
             texprog = group.getProgram("fvtm:set_texture");
             colorprog = group.getProgram("fvtm:set_color");
             TextureAtlasSprite sprite = texprog == null ? deftex : getTex(root, texprog.texture);
+            if(sprite == null) sprite = deftex;
             for(Polyhedron<GLObject> poly : group){
                 model.bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
                 for(Polygon poli : poly.polygons){

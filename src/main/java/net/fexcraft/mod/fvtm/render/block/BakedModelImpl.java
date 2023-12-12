@@ -42,8 +42,6 @@ public class BakedModelImpl implements IBakedModel {
     protected ModelImpl root;
     //
     protected Float normal;
-    //
-    private static BakedPrograms.TextureSetter texprog = null;
     private static BakedPrograms.ColorSetter colorprog = null;
 
     public BakedModelImpl(ResourceLocation modellocation, ModelImpl state, VertexFormat vformat, BlockModel blockmodel) {
@@ -97,10 +95,15 @@ public class BakedModelImpl implements IBakedModel {
     private void getQuads(BlockModel model, List<BakedQuad> newquads, IBlockState state, EnumFacing side, long rand){
         ArrayList<ModelGroup> groups = model.getPolygons(state, side, root.block.getModelData(), rand);
         model.convertTransforms(root.block, state);
+        TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){
-            texprog = group.getProgram("fvtm:set_texture");
             colorprog = group.getProgram("fvtm:set_color");
-            TextureAtlasSprite sprite = texprog == null ? deftex : getTex(root, texprog.texture);
+            if(model.grouptexname){
+                sprite = getTex(root, group.name);
+            }
+            else if(model.tg != null && model.tg.containsKey(group.name)){
+                sprite = getTex(root, model.tg.get(group.name));
+            }
             if(sprite == null) sprite = deftex;
             for(Polyhedron<GLObject> poly : group){
                 model.bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);

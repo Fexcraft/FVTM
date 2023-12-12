@@ -98,11 +98,11 @@ public class BakedModelImpl implements IBakedModel {
         TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){
             colorprog = group.getProgram("fvtm:set_color");
-            if(model.grouptexname){
-                sprite = getTex(root, group.name);
-            }
-            else if(model.tg != null && model.tg.containsKey(group.name)){
+            if(model.tg != null && model.tg.containsKey(group.name)){
                 sprite = getTex(root, model.tg.get(group.name));
+            }
+            else if(model.grouptexname){
+                sprite = getTex(root, group.name);
             }
             if(sprite == null) sprite = deftex;
             for(Polyhedron<GLObject> poly : group){

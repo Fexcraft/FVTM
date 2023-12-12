@@ -31,6 +31,8 @@ public class BlockModel extends DefaultModel {
     public boolean bindtex = true;
     public boolean nodefrot;
     public BakedTransformData bk;
+    public HashMap<String, String> tg;
+    public boolean grouptexname;
 	
 	public BlockModel(){
 		super();
@@ -94,6 +96,18 @@ public class BlockModel extends DefaultModel {
             transforms.add(new Transforms.TF_Translate(array.get(0).float_value(), array.get(1).float_value(), array.get(2).float_value()));
         }
         nodefrot = data.getBoolean("NoDefaultRotation", false);
+        if(data.has("GroupTextures")){
+            tg = new HashMap<>();
+            for(Map.Entry<String, JsonValue<?>> entry : data.getMap("GroupTextures").entries()){
+                if(entry.getValue().isArray()){
+                    for(JsonValue<?> val : entry.getValue().asArray().value){
+                        tg.put(val.string_value(), entry.getKey());
+                    }
+                }
+                else tg.put(entry.getValue().string_value(), entry.getKey());
+            }
+        }
+        grouptexname = data.getBoolean("GroupEqualsTexture", false);
 		return this;
 	}
 

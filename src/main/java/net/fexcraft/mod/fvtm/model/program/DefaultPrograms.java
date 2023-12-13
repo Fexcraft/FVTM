@@ -674,12 +674,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotate(rotated = data.vehicle.getAttribute("steering_angle").asFloat() * ratio, axis, apply);
+			list.rotate(rotated = -data.vehicle.getAttribute("steering_angle").asFloat() * ratio, axis, apply);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			list.rotate(-rotated, axis, apply);
+			list.rotate(rotated, axis, apply);
 		}
 		
 

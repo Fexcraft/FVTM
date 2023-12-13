@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 
@@ -14,6 +15,7 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -35,6 +37,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
@@ -444,9 +447,12 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			double dx = rear.x - fron.x, dy = rear.y - fron.y, dz = rear.z - fron.z;
 			double drx = righ.x - left.x, dry = righ.y - left.y, drz = righ.z - left.z;
 			double dxz = Math.sqrt(dx * dx + dz * dz);
-			double y = Math.atan2(dx, dz);
+			double y = -Math.atan2(dx, dz);
 			double p = -Math.atan2(dy, dxz);
 			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
+			double t = valRad(Math.toRadians(ticksExisted / 10 % 360));
+			//Print.debug(y + " " + Math.toDegrees(y) + " / " + t + " " + Math.toDegrees(t) + " / " + (y - t) + " " + Math.toDegrees(y - t));
+			//y = Command.getValB("rot", false) ? t : y;
 			vehicle.pivot().set_rotation(y, p, r, false);
 			//align_wheels();
 		}
@@ -498,7 +504,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 					wheel.motionX *= 0.9;
 					//wheel.motionY *= 0.9;
 					wheel.motionZ *= 0.9;
-					wheel.motionY /*-*/= -GRAVITY_20th;
+					wheel.motionY /*-*/= -GRAVITY;
 					double steer = Math.toRadians(vehicle.steer_yaw);
 					if(engine != null && (needsnofuel || consumed)){
 						double scal = 0;
@@ -515,14 +521,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 						else{
 							scal = 0.01 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
 							if(wheel.wheel.steering){
-								wheelrot = valRad(wheelrot - steer);
+								wheelrot = valRad(wheelrot + steer);
 								wheel.rotationYaw = vehicle.pivot().deg_yaw() + (float)vehicle.steer_yaw;
 							}
 							else{
 								wheel.rotationYaw = vehicle.pivot().deg_yaw();
 							}
-							wheel.motionX -= Math.sin(wheelrot) * scal;
-							wheel.motionZ -= Math.cos(wheelrot) * scal;
+							wheel.motionX -= Math.sin(-wheelrot) * scal;
+							wheel.motionZ -= Math.cos(-wheelrot) * scal;
 						}
 					}
 					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
@@ -531,8 +537,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 					dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
 					dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
 					if(dest.length() > 0.001){
-						wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
-						move = move.sub(dest.scale(0.5));
+						if(dest.length() > 16) wheel.setPosition(dest.x, dest.y, dest.z);
+						else wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
+						move.x -= dest.x * 0.5;
+						move.y -= dest.y * 0.5;
+						move.z -= dest.z * 0.5;
 					}
 				}
 				move(MoverType.SELF, move.x, move.y, move.z);
@@ -543,9 +552,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	protected void align_wheels(){
 		for(NWheelEntity wheel : wheels.values()){
 			V3D dest = vehicle.prev_pivot().get_vector(wheel.position);
-			dest.x = (dest.x - (wheel.posX - posX)) * 0.01;
-			dest.y = (dest.y - (wheel.posY - posY)) * 0.01;
-			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.01;
+			dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
+			dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
+			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
 			if(dest.length() > 0.001){
 				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 			}

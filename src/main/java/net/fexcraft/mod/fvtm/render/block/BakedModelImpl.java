@@ -7,6 +7,7 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Axis3DL;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.program.BakedPrograms;
@@ -95,23 +96,22 @@ public class BakedModelImpl implements IBakedModel {
     private void getQuads(BlockModel model, List<BakedQuad> newquads, IBlockState state, EnumFacing side, long rand){
         ArrayList<ModelGroup> groups = model.getPolygons(state, side, root.block.getModelData(), rand);
         model.convertTransforms(root.block, state);
-        TextureAtlasSprite sprite = null;
+        TextureAtlasSprite sprite = deftex, ovr = null;
         for(ModelGroup group : groups){
             colorprog = group.getProgram("fvtm:set_color");
             if(model.tg != null){
-                for(IProperty<?> prop : state.getBlock().getBlockState().getProperties()){
-                    String str = prop.getName() + "=" + state.getValue(prop) + "," + group.name;
-                    if(model.tg.containsKey(str)){
-                        sprite = getTex(root, model.tg.get(str));
-                        if(sprite != null) break;
+                if(state != null){
+                    for(IProperty<?> prop : state.getBlock().getBlockState().getProperties()){
+                        String str = prop.getName() + "=" + state.getValue(prop) + "," + group.name;
+                        if(model.tg.containsKey(str) && (ovr = getTex(root, model.tg.get(str))) != null) break;
                     }
                 }
-                if(sprite == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
+                if(ovr == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
             }
-            if(sprite == null && model.grouptexname){
-                sprite = getTex(root, group.name);
+            if(ovr == null && model.grouptexname){
+                ovr = getTex(root, group.name);
             }
-            if(sprite == null) sprite = deftex;
+            if(ovr != null) sprite = ovr;
             for(Polyhedron<GLObject> poly : group){
                 model.bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
                 for(Polygon poli : poly.polygons){

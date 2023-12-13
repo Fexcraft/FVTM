@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
@@ -164,6 +163,11 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	public void setDead(){
 		super.setDead();
+	}
+
+	@Override
+	public String getName(){
+		return "entity.fvtm.wheel." + wheelid;
 	}
 
 }

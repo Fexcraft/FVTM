@@ -103,7 +103,7 @@ public class BakedModelImpl implements IBakedModel {
                     String str = prop.getName() + "=" + state.getValue(prop) + "," + group.name;
                     if(model.tg.containsKey(str)){
                         sprite = getTex(root, model.tg.get(str));
-                        break;
+                        if(sprite != null) break;
                     }
                 }
                 if(sprite == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));

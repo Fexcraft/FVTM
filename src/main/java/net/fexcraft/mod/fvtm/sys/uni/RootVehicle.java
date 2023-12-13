@@ -26,6 +26,8 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
+import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
@@ -410,13 +412,15 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				rotationYaw = (float)(vehicle.pivot().deg_yaw() + yw / server_sync);
 				rotationPitch = (float)(vehicle.pivot().deg_pitch() + pt / server_sync);
 				rotationRoll = (float)(vehicle.pivot().deg_roll() + rl / server_sync);
-				vehicle.steer_yaw = (serverSteer - vehicle.steer_yaw) / server_sync;
+				vehicle.steer_yaw += (serverSteer - vehicle.steer_yaw) / server_sync;
 				server_sync--;
 				setPosition(x, y, z);
 				vehicle.pivot().set_rotation(rotationYaw, rotationPitch, rotationRoll, true);
 			}
-			vehicle.data.setAttribute("steering_angle", vehicle.steer_yaw);
-			wheel_rotation = valDegF(wheel_rotation + (vehicle.throttle * wheel_radius));
+			AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
+			attr.initial = attr.value;
+			attr.value = (float)vehicle.steer_yaw;
+			wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * wheel_radius * 100));
 			vehicle.data.setAttribute("wheel_angle", wheel_rotation);
 			vehicle.data.setAttribute("throttle", vehicle.throttle);
 			vehicle.data.setAttribute("speed", vehicle.speed);
@@ -519,7 +523,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 							wheel.motionZ += wheelspeed * Math.sin(wheelrot);
 						}
 						else{
-							scal = 0.01 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							scal = 0.05 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
 							if(wheel.wheel.steering){
 								wheelrot = valRad(wheelrot + steer);
 								wheel.rotationYaw = vehicle.pivot().deg_yaw() + (float)vehicle.steer_yaw;

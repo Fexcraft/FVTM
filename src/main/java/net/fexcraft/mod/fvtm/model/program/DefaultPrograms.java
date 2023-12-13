@@ -24,6 +24,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -459,6 +460,8 @@ public class DefaultPrograms {
 	public static final Program WHEEL_AUTO_ALL = new Program(){
 		
 		private WheelSlot slot;
+		private AttrFloat attr = null;
+		private float am;
 		
 		@Override
 		public String id(){ return "fvtm:wheel_auto_all"; }
@@ -466,7 +469,11 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.steering) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			if(slot != null && slot.steering){
+				attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
+				am = attr.initial + Minecraft.getMinecraft().getRenderPartialTicks() * (attr.value - attr.initial);
+				GL11.glRotatef(-am, 0, 1, 0);
+			}
 			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
 			if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 		}
@@ -475,7 +482,7 @@ public class DefaultPrograms {
 		public void post(ModelGroup list, ModelRenderData data){
 			if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
 			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
-			if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			if(slot != null && slot.steering) GL11.glRotatef(am, 0, 1, 0);
 		}
 		
 	};

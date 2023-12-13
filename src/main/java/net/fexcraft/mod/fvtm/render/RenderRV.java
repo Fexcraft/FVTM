@@ -34,7 +34,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		SeparateRenderCache.SORTED_VEH_POS.put(rv.getEntityId(), new double[]{ x, y, z });
 		GL11.glTranslated(x, y, z);
 		V3D rot = EffectRenderer.getRotations(rv, ticks);
-		GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
 		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
 		if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){

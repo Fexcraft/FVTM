@@ -96,22 +96,22 @@ public class BakedModelImpl implements IBakedModel {
     private void getQuads(BlockModel model, List<BakedQuad> newquads, IBlockState state, EnumFacing side, long rand){
         ArrayList<ModelGroup> groups = model.getPolygons(state, side, root.block.getModelData(), rand);
         model.convertTransforms(root.block, state);
-        TextureAtlasSprite sprite = deftex, ovr = null;
+        TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){
             colorprog = group.getProgram("fvtm:set_color");
             if(model.tg != null){
                 if(state != null){
                     for(IProperty<?> prop : state.getBlock().getBlockState().getProperties()){
                         String str = prop.getName() + "=" + state.getValue(prop) + "," + group.name;
-                        if(model.tg.containsKey(str) && (ovr = getTex(root, model.tg.get(str))) != null) break;
+                        if(model.tg.containsKey(str) && (sprite = getTex(root, model.tg.get(str))) != null) break;
                     }
                 }
-                if(ovr == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
+                if(sprite == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
             }
-            if(ovr == null && model.grouptexname){
-                ovr = getTex(root, group.name);
+            if(sprite == null && model.grouptexname){
+                sprite = getTex(root, group.name);
             }
-            if(ovr != null) sprite = ovr;
+            if(sprite == null) sprite = deftex;
             for(Polyhedron<GLObject> poly : group){
                 model.bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
                 for(Polygon poli : poly.polygons){

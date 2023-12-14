@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import static net.fexcraft.lib.common.Static.rad180;
+import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
@@ -420,7 +422,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
 			attr.initial = attr.value;
 			attr.value = (float)vehicle.steer_yaw;
-			wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * wheel_radius * 100));
+			double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(prevPosX - posX, prevPosZ - posZ) + rad180);
+			dir = dir > rad90 || dir < -rad90? -1 : 1;
+			wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * dir * wheel_radius * 100));
 			vehicle.data.setAttribute("wheel_angle", wheel_rotation);
 			vehicle.data.setAttribute("throttle", vehicle.throttle);
 			vehicle.data.setAttribute("speed", vehicle.speed);

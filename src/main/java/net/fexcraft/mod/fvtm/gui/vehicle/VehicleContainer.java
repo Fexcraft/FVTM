@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +30,7 @@ public class VehicleContainer extends GenericContainer {
 	//
 	private boolean invmode;
 	protected InventoryFunction function;
-	protected GenericVehicle veh;
+	protected RootVehicle vehent;
 	protected PartData invpart;
 	protected String inv_id;
 	protected GenericIInventory fuel;
@@ -48,7 +48,7 @@ public class VehicleContainer extends GenericContainer {
 		super(player);
 		if(x == VEHICLE_FUEL){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+			vehent = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			this.inventoryItemStacks.clear();
 			this.inventorySlots.clear();
 			invmode = true;
@@ -100,13 +100,13 @@ public class VehicleContainer extends GenericContainer {
 			}
 			else{
 				if(packet.getString("cargo").equals("update_fuel_tank")){
-					veh.getVehicleData().getAttribute("fuel_stored").set(packet.getInteger("state"));
+					vehent.vehicle.data.getAttribute("fuel_stored").set(packet.getInteger("state"));
 					if(packet.hasKey("stack")) fuel.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack")));
 				}
 				if(packet.getString("cargo").equals("update_fuel_data")){
-					veh.getVehicleData().getAttribute("fuel_primary").set(packet.getString("primary"));
-					veh.getVehicleData().getAttribute("fuel_secondary").set(packet.getString("secondary"));
-					veh.getVehicleData().getAttribute("fuel_quality").set(packet.getFloat("quality"));
+					vehent.vehicle.data.getAttribute("fuel_primary").set(packet.getString("primary"));
+					vehent.vehicle.data.getAttribute("fuel_secondary").set(packet.getString("secondary"));
+					vehent.vehicle.data.getAttribute("fuel_quality").set(packet.getFloat("quality"));
 				}
 				if(packet.getString("cargo").equals("update_stack")){
 					inventorySlots.get(packet.getInteger("index")).putStack(new ItemStack(packet.getCompoundTag("stack")));
@@ -165,7 +165,7 @@ public class VehicleContainer extends GenericContainer {
 					boolean pass = false;
 					Fuel fuel = item.getStoredFuelType(stack);
 					if(fuel != null){
-						for(String str : veh.getVehicleData().getFuelGroup()){
+						for(String str : vehent.vehicle.data.getFuelGroup()){
 							if(fuel.primary.equals(str)){
 								pass = true;
 								break;
@@ -175,29 +175,29 @@ public class VehicleContainer extends GenericContainer {
 					if(pass){
 						int stored = item.getStoredFuelAmount(stack);
 						if(stored > 0){
-							boolean considerempty = veh.getVehicleData().getAttribute("fuel_stored").asInteger() <= 1000;
-							int in = veh.getVehicleData().getAttribute("fuel_stored").asInteger();
-							int cantake = veh.getVehicleData().getAttribute("fuel_capacity").asInteger() - in;
+							boolean considerempty = vehent.vehicle.data.getAttribute("fuel_stored").asInteger() <= 1000;
+							int in = vehent.vehicle.data.getAttribute("fuel_stored").asInteger();
+							int cantake = vehent.vehicle.data.getAttribute("fuel_capacity").asInteger() - in;
 							if(cantake < stored) stored = cantake;
 							if(stored > 100) stored = 100;
 							if(stored > 0){
 								item.extractFuel(stack, stored);
-								veh.getVehicleData().getAttribute("fuel_stored").increase(stored);
+								vehent.vehicle.data.getAttribute("fuel_stored").increase(stored);
 								anychange = true;
 								//
 								boolean morechanges = false;
-								if(veh.getVehicleData().getAttribute("fuel_primary").asString().length() == 0){
-									veh.getVehicleData().getAttribute("fuel_primary").set(fuel.getPrimaryGroup());
+								if(vehent.vehicle.data.getAttribute("fuel_primary").asString().length() == 0){
+									vehent.vehicle.data.getAttribute("fuel_primary").set(fuel.getPrimaryGroup());
 									morechanges = true;
 								}
-								Attribute<?> seco = veh.getVehicleData().getAttribute("fuel_secondary");
-								Attribute<?> qual = veh.getVehicleData().getAttribute("fuel_quality");
+								Attribute<?> seco = vehent.vehicle.data.getAttribute("fuel_secondary");
+								Attribute<?> qual = vehent.vehicle.data.getAttribute("fuel_quality");
 								if(!seco.asString().equals(fuel.secondary)){
 									seco.set(considerempty ? fuel.secondary : "mixed");
 									morechanges = true;
 								}
 								float oldqual = qual.asFloat();
-								int stor = veh.getVehicleData().getAttribute("fuel_stored").asInteger();
+								int stor = vehent.vehicle.data.getAttribute("fuel_stored").asInteger();
 								if(!considerempty){
 									if(fuel.quality != oldqual){
 										float per0 = in / stor, per1 = stored / stor;
@@ -213,7 +213,7 @@ public class VehicleContainer extends GenericContainer {
 								if(morechanges){
 									NBTTagCompound compound = new NBTTagCompound();
 									compound.setString("cargo", "update_fuel_data");
-									compound.setString("primary", veh.getVehicleData().getAttribute("fuel_primary").asString());
+									compound.setString("primary", vehent.vehicle.data.getAttribute("fuel_primary").asString());
 									compound.setString("secondary", seco.asString());
 									compound.setFloat("quality", qual.asFloat());
 									this.send(Side.CLIENT, compound);
@@ -226,7 +226,7 @@ public class VehicleContainer extends GenericContainer {
 				if(!player.world.isRemote && anychange){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fuel_tank");
-					compound.setInteger("state", veh.getVehicleData().getAttribute("fuel_stored").asInteger());
+					compound.setInteger("state", vehent.vehicle.data.getAttribute("fuel_stored").asInteger());
 					compound.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);
 				}

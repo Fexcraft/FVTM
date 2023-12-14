@@ -38,14 +38,6 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
 		World world = objs[0] == null ? (World)objs[1] : player.world;
 		switch(task){
-			case "attr_toggle":{
-				AttrReqHandler.processToggleRequest(world, player, packet.nbt);
-				break;
-			}
-			case "attr_update":{
-				AttrReqHandler.processUpdateRequest(world, player, packet.nbt);
-				break;
-			}
 			case "update_container_holder":{
 				Entity ent = world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null){

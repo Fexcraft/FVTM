@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -155,6 +156,14 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 					TagCW tag = TagCW.wrap(packet.nbt.getCompoundTag("data"));
 					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(tag);
 				}
+				return;
+			}
+			case "attr_toggle":{
+				AttrReqHandler.processToggleResponse(player.world, player, packet.nbt);
+				return;
+			}
+			case "attr_update":{
+				AttrReqHandler.processUpdateResponse(player.world, player, packet.nbt);
 				return;
 			}
 			default: return;

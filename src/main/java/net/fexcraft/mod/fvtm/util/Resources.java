@@ -69,6 +69,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -290,6 +291,9 @@ public class Resources {
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
 		}
 		if(event.getObject().world.isRemote && event.getObject() instanceof VehicleEntity){
+			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
+		}
+		if(event.getObject().world.isRemote && event.getObject() instanceof RootVehicle){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 		if(event.getObject() instanceof EntityPlayer){

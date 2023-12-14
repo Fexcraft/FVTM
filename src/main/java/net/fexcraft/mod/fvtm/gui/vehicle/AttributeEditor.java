@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
@@ -29,7 +30,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	private String INFO[] = new String[info.length], BUTINFO[] = new String[4];
 	private String none;
 	private Attribute<?> attr;
-	private GenericVehicle veh;
+	private RootVehicle vehent;
 	private TextField field;
 
 	public AttributeEditor(EntityPlayer player, World world, int x, int y, int z){
@@ -39,8 +40,8 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 		container.gui = this;
 		this.xSize = 208;
 		this.ySize = 192;
-		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-		attr = veh.getVehicleData().getAttributeByIndex(x);
+		vehent = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+		attr = vehent.vehicle.data.getAttributeByIndex(x);
 		BUTINFO[0] = I18n.format("gui.fvtm.vehicle.attribute_editor.help");
 		BUTINFO[1] = I18n.format("gui.fvtm.vehicle.attribute_editor.return");
 		BUTINFO[2] = I18n.format("gui.fvtm.vehicle.attribute_editor.apply");
@@ -69,7 +70,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 		this.buttons.put("apply", apply = new BasicButton("apply", guiLeft + 186, guiTop + 169, 186, 169, 7, 12, true));
 		this.buttons.put("reset", reset = new BasicButton("reset", guiLeft + 194, guiTop + 169, 194, 169, 7, 12, true));
 		this.fields.put("field", field = new TextField(0, fontRenderer, guiLeft + 8, guiTop + 170, 176, 10, true));
-		texts.get("status").string = veh.getEntityId() + " | " + veh.getName();
+		texts.get("status").string = vehent.getEntityId() + " | " + vehent.getName();
 		field.setText(attr.asString());
 	}
 
@@ -108,7 +109,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
 			case "retn":{
-				openGui(VEHICLE_TOGGABLES, new int[] { 0, veh.getEntityId(), 0 }, LISTENERID);
+				openGui(VEHICLE_TOGGABLES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
 				return true;
 			}
 			case "help":{
@@ -128,7 +129,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 				packet.setString("task", "attr_update");
 				packet.setString("value", field.getText());
 				packet.setString("attr", attr.id);
-				packet.setInteger("entity", veh.getEntity().getEntityId());
+				packet.setInteger("entity", vehent.getEntityId());
 				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 				return true;
 			}
@@ -138,7 +139,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 				packet.setString("task", "attr_update");
 				packet.setBoolean("reset", true);
 				packet.setString("attr", attr.id);
-				packet.setInteger("entity", veh.getEntity().getEntityId());
+				packet.setInteger("entity", vehent.getEntityId());
 				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 				return true;
 			}

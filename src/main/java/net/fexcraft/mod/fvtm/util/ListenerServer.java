@@ -35,7 +35,6 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
-		Print.debug(packet.nbt);
 		switch(task){
 			case "upg":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));

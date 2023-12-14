@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +33,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 	private BasicText[] rows = new BasicText[14];
 	private String SORT_TEXT[] = new String[4];
 	private static int scroll, lv = -1;
-	private GenericVehicle veh;
+	private RootVehicle veh;
 
 	public VehicleToggables(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
@@ -38,13 +42,13 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		container.gui = this;
 		this.xSize = 256;
 		this.ySize = 218;
-		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-		SeatCache seat = veh.getSeatOf(player);
-		veh.getVehicleData().getAttributes().values().forEach(attr -> {
+		veh = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+		SeatInstance seat = veh.getSeatOf(player);
+		veh.vehicle.data.getAttributes().values().forEach(attr -> {
 			if(seat == null){
 				if(attr.external) attributes.add(attr);
 			}
-			else if(seat.seatdata.driver || (attr.access.contains(seat.seatdata.name))){
+			else if(seat.seat.driver || (attr.access.contains(seat.seat.name))){
 				attributes.add(attr);
 			}
 		});
@@ -99,7 +103,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		}
 		if(button.name.equals("sall")){
 			attributes.clear();
-			veh.getVehicleData().getAttributes().values().forEach(attr -> attributes.add(attr));
+			veh.vehicle.data.getAttributes().values().forEach(attr -> attributes.add(attr));
 			return true;
 		}
 		if(button.name.equals("sedt")){
@@ -108,7 +112,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		}
 		if(button.name.equals("sext")){
 			attributes.clear();
-			veh.getVehicleData().getAttributes().values().forEach(attr -> {
+			veh.vehicle.data.getAttributes().values().forEach(attr -> {
 				if(attr.external){
 					attributes.add(attr);
 				}
@@ -117,10 +121,10 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		}
 		if(button.name.equals("seat")){
 			attributes.clear();
-			SeatCache seat = veh.getSeatOf(player);
+			SeatInstance seat = veh.getSeatOf(player);
 			if(seat == null) return true;
-			veh.getVehicleData().getAttributes().values().forEach(attr -> {
-				if(seat.seatdata.driver || (attr.access.contains(seat.seatdata.name))){
+			veh.vehicle.data.getAttributes().values().forEach(attr -> {
+				if(seat.seat.driver || (attr.access.contains(seat.seat.name))){
 					attributes.add(attr);
 				}
 			});
@@ -130,21 +134,21 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			int row = Integer.parseInt(button.name.replace("togg", ""));
 			NBTTagCompound packet = new NBTTagCompound();
 			Attribute<?> attr = attributes.get(scroll + row);
-			packet.setString("target_listener", "fvtm:gui");
+			packet.setString("target_listener", Resources.UTIL_LISTENER);
 			packet.setString("task", "attr_toggle");
 			packet.setString("attr", attr.id);
 			if(!attr.valuetype.isBoolean() && mouseButton != 0){
 				packet.setBoolean("reset", true);
 			}
 			packet.setBoolean("bool", !attr.asBoolean());
-			packet.setInteger("entity", veh.getEntity().getEntityId());
+			packet.setInteger("entity", veh.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 			return true;
 		}
 		if(button.name.startsWith("edit")){
 			int row = Integer.parseInt(button.name.replace("edit", "")) + scroll;
 			if(row >= attributes.size()) return true;
-			openGui(VEHICLE_ATTRIBUTE_EDITOR, new int[] { veh.getVehicleData().getAttributeIndex(attributes.get(row)), veh.getEntityId(), 0 }, LISTENERID);
+			openGui(VEHICLE_ATTRIBUTE_EDITOR, new int[] { veh.vehicle.data.getAttributeIndex(attributes.get(row)), veh.getEntityId(), 0 }, LISTENERID);
 			return true;
 		}
 		return false;

@@ -10,8 +10,8 @@ import java.util.Map;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
@@ -26,7 +26,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 	private ArrayList<InventoryFunction> inventories = new ArrayList<>();
 	private ArrayList<String> inv_names = new ArrayList<>();
 	private RGB[] colors = new RGB[8];
-	private GenericVehicle veh;
+	private RootVehicle vehent;
 	private int page;
 
 	public VehicleInventories(EntityPlayer player, World world, int x, int y, int z){
@@ -37,12 +37,12 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		this.xSize = 194;
 		this.ySize = 134;
 		//if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-		SeatCache seat = veh.getSeatOf(player);
-		for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
+		vehent = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+		SeatInstance seat = vehent.getSeatOf(player);
+		for(Map.Entry<String, PartData> entry : vehent.vehicle.data.getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 			if(inv == null || inv.inventory().type.isContainer()) continue;
-			if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
+			if(seat == null ? inv.getSeats().contains(vehent.vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.getSeats().contains(seat.seat.name)))){
 				inventories.add(inv);
 				inv_names.add(entry.getKey());
 			}
@@ -85,7 +85,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 			int i = Integer.parseInt(button.name.replace("inv", ""));
 			if(i < 0 || (i + (page * 8)) >= inventories.size()) return true;
 			int gui = inventories.get(i).inventory().type.isItem() ? VEHICLE_INVENTORY_ITEM : VEHICLE_INVENTORY_FLUID;
-			openGui(gui, new int[]{ gui, veh.getEntity().getEntityId(), i }, LISTENERID);
+			openGui(gui, new int[]{ gui, vehent.getEntityId(), i }, LISTENERID);
 			return true;
 		}
 		return false;

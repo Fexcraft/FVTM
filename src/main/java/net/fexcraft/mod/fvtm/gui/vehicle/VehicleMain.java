@@ -9,6 +9,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_TOGGABLES;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -17,13 +18,14 @@ import net.minecraft.world.World;
 public class VehicleMain extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_main.png");
-	private final GenericVehicle vehicle;
+	private final RootVehicle vehicle;
 
 	public VehicleMain(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.width = 169; this.height = 125;
-		vehicle = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+		width = 169;
+		height = 125;
+		vehicle = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 	}
 
 	@Override

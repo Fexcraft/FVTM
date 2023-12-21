@@ -17,10 +17,12 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -41,7 +43,6 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
-import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
@@ -74,7 +75,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
+public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
 	public VehicleInstance vehicle;
 	public WheelTireData w_front_l;
@@ -825,6 +826,40 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
 	}
 
-	//TODO packets
+	@Override
+	public void processServerPacket(PacketEntityUpdate packet){
+		if(!packet.nbt.hasKey("task")) return;
+		switch(packet.nbt.getString("task")){
+			case "resync": {
+				NBTTagCompound nbt = vehicle.data.write(TagCW.create()).local();
+				nbt.setString("task", "update_vehicledata");
+				ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+			}
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void processClientPacket(PacketEntityUpdate packet){
+		if(!packet.nbt.hasKey("task")) return;
+		switch(packet.nbt.getString("task")){
+			case "resync":
+			case "update_vehicledata": {
+				vehicle.data.read(new TagCWI(packet.nbt));
+				break;
+			}
+			case "toggle_lights": {
+				vehicle.data.getAttribute("lights").set(packet.nbt.getBoolean("lights"));
+				vehicle.data.getAttribute("lights_long").set(packet.nbt.getBoolean("lights_long"));
+				VehicleInstance rear = vehicle.rear;
+				while(rear != null){
+					rear.data.getAttribute("lights").set(packet.nbt.getBoolean("lights"));
+					rear.data.getAttribute("lights_long").set(packet.nbt.getBoolean("lights_long"));
+					rear = rear.rear;
+				}
+				break;
+			}
+		}
+	}
 
 }

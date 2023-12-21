@@ -58,10 +58,10 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
         if(part.getInstallHandlerData() != null && part.getInstallHandlerData() instanceof DPIHData){
 			DPIHData idata = part.getInstallHandlerData();
 			if(!idata.removable){
-				tooltip.add(Formatter.format("&c&oPermanent, &a&oSwappable"));
+				tooltip.add(Formatter.format(idata.swappable ? "&c&oPermanent, &a&oSwappable" : "&c&oPermanent"));
 			}
 			else{
-				tooltip.add(Formatter.format("&a&oSwappable"));
+				tooltip.add(Formatter.format(idata.swappable ? "&a&oSwappable" : "&e&oNot Swappable"));
 			}
         }
         if(!data.getFunctions().isEmpty()){

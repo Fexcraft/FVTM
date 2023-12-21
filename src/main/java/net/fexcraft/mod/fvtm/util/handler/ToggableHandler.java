@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
@@ -55,14 +56,18 @@ public class ToggableHandler {
 		if(!stack.isEmpty() && stack.getItem() instanceof PartItem){
 			PartData data = stack.getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(data.getType().getInstallHandlerData() instanceof DPIHData == false) return false;
-			DPIHData idata = data.getType().getInstallHandlerData();
-			if(!idata.swappable) return false;
+			//DPIHData idata = data.getType().getInstallHandlerData();
+			//if(!idata.swappable) return false;
 			ArrayList<Collidable> colls = new ArrayList<>();
 			SwivelPoint point = null;
 			for(Entry<String, PartSlots> entry : entity.vehicle.data.getPartSlotProviders().entrySet()){
 				point = entity.vehicle.data.getRotationPointOfPart(entry.getKey());
 				for(Entry<String, PartSlot> sentry : entry.getValue().entrySet()){
 					String type = sentry.getValue().type;
+					if(entity.vehicle.data.hasPart(type)){
+						Part part = entity.vehicle.data.getPart(type).getType();
+						if(!(part.getInstallHandlerData() instanceof DPIHData) || !((DPIHData)part.getInstallHandlerData()).swappable) continue;
+					}
 					for(String str : data.getType().getCategories()){
 						if(str.equals(type)){
 							colls.add(new Collidable(point, entry.getKey(), entry.getValue(), sentry.getKey()));

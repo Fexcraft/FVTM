@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
@@ -51,12 +52,12 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				if(entity.vehicle.data.getPart(category) != null){
 					PartData oldpart = entity.vehicle.data.getPart(category);
 					boolean valid = oldpart.getType().getInstallHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
-					if(valid && entity.vehicle.data.deinstallPart(Command.OTHER ? player.getCapability(Capabilities.PASSENGER, null).asSender() : null, category, true)){
+					if(valid && entity.vehicle.data.deinstallPart(player.getCapability(Capabilities.PASSENGER, null).asSender(), category, true)){
 						player.addItemStackToInventory(oldpart.getNewStack().local());
 					}
 					else return;
 				}
-				data = entity.vehicle.data.installPart(Command.OTHER ? player.getCapability(Capabilities.PASSENGER, null).asSender() : null, data, packet.nbt.getString("source") + ":" + category, true);
+				data = entity.vehicle.data.installPart(player.getCapability(Capabilities.PASSENGER, null).asSender(), data, packet.nbt.getString("source") + ":" + category, true);
 				if(data == null){
 					player.getHeldItem(EnumHand.MAIN_HAND).shrink(1);
 					NBTTagCompound compound = entity.vehicle.data.write(TagCW.create()).local();

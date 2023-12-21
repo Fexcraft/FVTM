@@ -136,12 +136,12 @@ public class EffectRenderer {
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallHandlerData() instanceof DPIHData == false) return;
-			if(!((DPIHData)part.getType().getInstallHandlerData()).swappable) return;
 			preMeshCalls();
 			for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 				point = data.getRotationPointOfPart(ps.getKey());
 				for(PartSlot value : ps.getValue().values()){
+					if(data.hasPart(value.type)) continue;
 					String type = value.type;
 					for(String str : part.getType().getCategories()){
 						if(str.equals(type)){

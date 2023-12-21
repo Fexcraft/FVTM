@@ -16,7 +16,10 @@ import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -65,8 +68,9 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 			}
         }
         if(!data.getFunctions().isEmpty()){
+			StackWrapper wrapper = new SWI(stack);
             for(PartFunction func : data.getFunctions().values()){
-            	//TODO func.addInformation(stack, world, data, tooltip, flag);
+				func.addInformation(wrapper, WrapperHolder.getWorld(world), data, tooltip, flag.isAdvanced());
             }
             tooltip.add(Formatter.format("&9- - - - - - &7-"));
         }

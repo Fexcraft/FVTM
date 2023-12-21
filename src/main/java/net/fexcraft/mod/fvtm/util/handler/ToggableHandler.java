@@ -291,7 +291,7 @@ public class ToggableHandler {
 				AttrBox abb = attr.getBox(attrid);
 				if(abb == null) return;
 				SwivelPoint point = entity.vehicle.data.getRotationPoint(abb.swivel_point);
-				temp = point.getRelativeVector(abb.pos.x, -abb.pos.y, -abb.pos.z);
+				temp = point.getRelativeVector(abb.pos.x, abb.pos.y, abb.pos.z);
 				temp = temp.add(entity.posX, entity.posY, entity.posZ);
 				float te = abb.size;
 				aabbs.put(attr.id, new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
@@ -299,7 +299,7 @@ public class ToggableHandler {
 			else{
 				V3D pos = new V3D(slots.get(category).pos);
 				if(!source.equals("vehicle")) pos = pos.add(entity.vehicle.data.getPart(source).getInstalledPos());
-				temp = point.getRelativeVector(pos.x, point.isVehicle() ? -pos.y : pos.y, -pos.z);
+				temp = point.getRelativeVector(pos.x, pos.y, pos.z);
 				temp = temp.add(entity.posX, entity.posY, entity.posZ);
 				float te = slots.get(category).radius / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));

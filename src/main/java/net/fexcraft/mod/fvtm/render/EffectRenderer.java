@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
@@ -141,7 +142,10 @@ public class EffectRenderer {
 				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 				point = data.getRotationPointOfPart(ps.getKey());
 				for(PartSlot value : ps.getValue().values()){
-					if(data.hasPart(value.type)) continue;
+					if(data.hasPart(value.type)){
+						Part epart = data.getPart(value.type).getType();
+						if(!(epart.getInstallHandlerData() instanceof DPIHData) || !((DPIHData)epart.getInstallHandlerData()).swappable) continue;
+					}
 					String type = value.type;
 					for(String str : part.getType().getCategories()){
 						if(str.equals(type)){

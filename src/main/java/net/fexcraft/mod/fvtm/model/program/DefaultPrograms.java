@@ -72,6 +72,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(FRONT_LIGHTS);
 		ModelGroup.PROGRAMS.add(BACK_LIGHTS);
 		ModelGroup.PROGRAMS.add(FOG_LIGHTS);
+		ModelGroup.PROGRAMS.add(LONG_LIGHTS);
 		ModelGroup.PROGRAMS.add(BRAKE_LIGHTS);
 		ModelGroup.PROGRAMS.add(REVERSE_LIGHTS);
 		ModelGroup.PROGRAMS.add(TURN_SIGNAL_LEFT);
@@ -115,6 +116,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new AttributeLights("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
@@ -903,6 +905,44 @@ public class DefaultPrograms {
 			return new AttributeVisible(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
 		}
 		
+	}
+
+	public static class AttributeLights extends AttributeBased {
+
+		private Attribute<?> attr;
+		private boolean equals, did;
+
+		public AttributeLights(String attr, boolean eq){
+			super(attr);
+			equals = eq;
+		}
+
+		@Override
+		public String id(){ return "fvtm:attribute_lights"; }
+
+		@Override
+		public void pre(ModelGroup group, ModelRenderData data){
+			attr = data.vehicle.getAttribute(attribute);
+			if(attr == null) return;
+			if(attr.asBoolean() != equals){
+				GLOW.pre(group, data);
+				did = true;
+			}
+		}
+
+		@Override
+		public void post(ModelGroup group, ModelRenderData data){
+			if(did){
+				GLOW.post(group, data);
+				did = false;
+			}
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new AttributeLights(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
+		}
+
 	}
 	
 	public static abstract class AlwaysGlow extends Transparent implements Program {

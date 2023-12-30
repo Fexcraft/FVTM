@@ -34,7 +34,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
@@ -254,7 +254,7 @@ public class DefaultPrograms {
 	
 	public static final Program BACK_LIGHTS = new AlwaysGlow(){
 		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.entity != null && ((GenericVehicle)data.entity).isBraking()); }//TODO rear+brake lights instead
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.entity != null && ((RootVehicle)data.entity).isBraking()); }//TODO rear+brake lights instead
 		@Override
 		public String id(){ return "fvtm:back_lights"; }
 	};
@@ -281,7 +281,7 @@ public class DefaultPrograms {
 	};
 	public static final Program BRAKE_LIGHTS = new AlwaysGlow(){
 		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return (data.entity != null && ((GenericVehicle)data.entity).isBraking()); }
+		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return (data.entity != null && ((RootVehicle)data.entity).isBraking()); }
 		@Override
 		public String id(){ return "fvtm:brake_lights"; }
 	};
@@ -1295,7 +1295,7 @@ public class DefaultPrograms {
 	public static final RectLightBeam RECT_LIGHTBEAM_FRONT_LIGHTS = new RectLightBeam("fvtm:rlb_front_lights").setPredicate(data -> data.vehicle.getLightsState() && !data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_BACK_LIGHTS = new RectLightBeam("fvtm:rlb_back_lights").setPredicate(data -> data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_REAR_LIGHTS = RECT_LIGHTBEAM_BACK_LIGHTS;
-	public static final RectLightBeam RECT_LIGHTBEAM_BRAKE_LIGHTS = new RectLightBeam("fvtm:rlb_back_lights").setPredicate(data -> (data.entity != null && ((GenericVehicle)data.entity).isBraking())).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_BRAKE_LIGHTS = new RectLightBeam("fvtm:rlb_back_lights").setPredicate(data -> (data.entity != null && ((RootVehicle)data.entity).isBraking())).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_LONG_LIGHTS = new RectLightBeam("fvtm:rlb_long_lights").setPredicate(data -> data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_FOG_LIGHTS = new RectLightBeam("fvtm:rlb_fog_lights").setPredicate(data -> data.vehicle.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_REVERSE_LIGHTS = new RectLightBeam("fvtm:rlb_reverse_lights").setPredicate(data -> data.vehicle.getThrottle() < -0.01).register();

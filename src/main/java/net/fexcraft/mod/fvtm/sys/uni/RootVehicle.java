@@ -862,4 +862,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 	}
 
+    public boolean isBraking(){
+		return false;
+    }
+
 }

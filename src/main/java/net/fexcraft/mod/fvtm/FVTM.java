@@ -232,7 +232,7 @@ public class FVTM {
 			//
 			CapabilityManager.INSTANCE.register(RenderCache.class, new RenderCacheHandler.Storage(), new RenderCacheHandler.Callable());
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
-			net.minecraftforge.client.model.ModelLoaderRegistry.registerLoader(net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader.getInstance());
+			BakedModelLoader.register();
 		}
 		/*if(Static.dev()){
 			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:test_rail_ent"), RailTestEntity.class, "fvtm.test_rail_ent", 6000, this, 256, 1, true);

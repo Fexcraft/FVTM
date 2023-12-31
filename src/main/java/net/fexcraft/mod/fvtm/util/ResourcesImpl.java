@@ -44,7 +44,6 @@ import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
-import net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer;
 import net.fexcraft.mod.fvtm.render.block.BlockItemModel;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -57,7 +56,6 @@ import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -135,7 +133,7 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void checkResPackEntry(IResourcePack pack){
+	private void checkResPackEntry(net.minecraft.client.resources.IResourcePack pack){
 		for(String str : pack.getResourceDomains()){
 			ResourceLocation resloc = new ResourceLocation(str + ":addonpack.fvtm");
 			if(!pack.resourceExists(resloc)) continue;
@@ -363,9 +361,12 @@ public class ResourcesImpl extends FvtmResources {
 		Asphalt.INSTANCE = new Asphalt();
 		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
 		//
-		if(EnvInfo.CLIENT){
-			net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstCenterEntity.class, new ConstructorCenterRenderer());
-		}
+		if(EnvInfo.CLIENT) registerTESR();
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void registerTESR(){
+		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstCenterEntity.class, new net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer());
 	}
 
 	@Override

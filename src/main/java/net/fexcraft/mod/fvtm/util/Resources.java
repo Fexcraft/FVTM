@@ -123,7 +123,6 @@ public class Resources {
 	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
 	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
 	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
-	public static RegistryOld<Cloth> CLOTHES = new RegistryOld<>();
 	public static RegistryOld<WireType> WIRES = new RegistryOld<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();

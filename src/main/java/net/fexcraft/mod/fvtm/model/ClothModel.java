@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import org.lwjgl.opengl.GL11;
 
 public class ClothModel extends DefaultModel {
@@ -15,7 +19,15 @@ public class ClothModel extends DefaultModel {
 	public ClothModel parse(ModelData data){
 		super.parse(data);
 		if(data.has("SetGroupAs")){
-			List<String> list = data.getArray("SetGroupAs").toStringList();
+			JsonValue sga = data.get("SetGroupAs");
+			List<String> list = null;
+			if(sga.isArray()){
+				list = sga.asArray().toStringList();
+			}
+			else{
+				list = new ArrayList<>();
+				list.add(sga.string_value());
+			}
 			for(String string : list){
 				String[] args = string.trim().split(" ");
 				if(!groups.contains(args[0])) continue;

@@ -55,13 +55,13 @@ public class MRWrapper extends ModelRenderer {
     	int deftex = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
     	RenderCache cache = entity.getCapability(Capabilities.RENDERCACHE, null);
 		for(int i = 0; i < cloth_items.size(); i++){
-			TexUtil.bindTexture(cloth_items.get(i).getType().getTexture());
+			TexUtil.bindTexture(cloth_items.get(i).getContent().getTexture());
 			if(cloth_groups.get(i).startsWith("skirt")){
 				GL11.glPushMatrix();
 				if(id.contains("right")) GL11.glTranslatef(0, 0, 0.25f);
 				GL11.glRotated(parent.rotateAngleX * 5, 0, 0, 1);
 			}
-			cloth_items.get(i).getType().getModel().render(RENDERDATA.set(cloth_items.get(i), cloth_models.get(i), entity, cache));
+			cloth_items.get(i).getContent().getModel().render(RENDERDATA.set(cloth_items.get(i), cloth_models.get(i), entity, cache));
 			if(cloth_groups.get(i).startsWith("skirt")) GL11.glPopMatrix();
 		}
 		cloth_items.clear();

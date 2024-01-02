@@ -16,7 +16,7 @@ public class ClothMaterialWrapper implements ClothMaterial {
 	}
 
 	@Override
-	public Object getLocalMaterial(){
+	public Object local(){
 		return material;
 	}
 }

@@ -444,10 +444,10 @@ public class EffectRenderer {
     	for(int idx = 2; idx < EntityEquipmentSlot.values().length; idx++){
     		if(player.inventory.armorInventory.get(idx - 2).getItem() instanceof ClothItem){
     			ClothItem item = (ClothItem)player.inventory.armorInventory.get(idx - 2).getItem();
-    			for(String key : item.getType().getModel().getClothGroups().keySet()){
+    			for(String key : item.getContent().getClothModel().getClothGroups().keySet()){
     				wrapper = getWrapper(model, event.getRenderer(), key);
     				if(wrapper == null) continue;
-    				wrapper.set(player, item, item.getType().getModel().getClothGroups().get(key), key);
+    				wrapper.set(player, item, item.getContent().getClothModel().getClothGroups().get(key), key);
     			}
     		}
     	}
@@ -508,10 +508,10 @@ public class EffectRenderer {
 		for(ItemStack stack : entity.getArmorInventoryList()){
 			if(stack.getItem() instanceof ClothItem){
     			ClothItem item = (ClothItem)stack.getItem();
-    			for(String key : item.getType().getModel().getClothGroups().keySet()){
+    			for(String key : item.getContent().getClothModel().getClothGroups().keySet()){
     				wrapper = getWrapper(model, event.getRenderer(), key);
     				if(wrapper == null) continue;
-    				wrapper.set(entity, item, item.getType().getModel().getClothGroups().get(key), key);
+    				wrapper.set(entity, item, item.getContent().getClothModel().getClothGroups().get(key), key);
     			}
 			}
 		}

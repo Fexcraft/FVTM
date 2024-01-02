@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
+import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
 import java.io.File;
@@ -11,10 +12,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -110,13 +114,13 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			catch(Exception e){
 				failed = true;
-				Print.log("Failed to get field. [RESPACKLOADER:ERR:00]");
-				Print.log("Addon loading from ResourcePacks will be limited.");
+				LOGGER.info("Failed to get field. [RESPACKLOADER:ERR:00]");
+				LOGGER.info("Addon loading from ResourcePacks will be limited.");
 			}
 			catch(Error e){
 				failed = true;
-				Print.log("Failed to get field. [RESPACKLOADER:ERR:01]");
-				Print.log("Addon loading from ResourcePacks will be limited.");
+				LOGGER.info("Failed to get field. [RESPACKLOADER:ERR:01]");
+				LOGGER.info("Addon loading from ResourcePacks will be limited.");
 			}
 			if(respackfile != null){
 				for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntriesAll()){
@@ -139,9 +143,20 @@ public class ResourcesImpl extends FvtmResources {
 			if(!pack.resourceExists(resloc)) continue;
 			try{
 				Addon addon = new Addon((File)respackfile.get(pack), AddonLocation.RESOURCEPACK);
-				File file = addon.getFile().isDirectory() ? new File(addon.getFile(), "assets/" + str + "/addonpack.fvtm") : addon.getFile();
-				JsonMap map = JsonHandler.parse(file);
-				ADDONS.register(addon.parse(map));
+				if(addon.getFile().isDirectory()){
+					addon.parse(JsonHandler.parse(new File(addon.getFile(), "assets/" + str + "/addonpack.fvtm")));
+				}
+				else{
+					JsonArray array = ZipUtils.getValuesAt(addon.getFile(), "assets", "addonpack.fvtm");
+					for(JsonValue<?> value : array.value){
+						if(!value.isMap()) continue;
+						JsonMap map = value.asMap();
+						if(isDuplicateOrInvalidPack(map)) continue;
+						addon.parse(map);
+						break;
+					}
+				}
+				ADDONS.register(addon);
 			}
 			catch(IllegalArgumentException | IllegalAccessException e){
 				e.printStackTrace();

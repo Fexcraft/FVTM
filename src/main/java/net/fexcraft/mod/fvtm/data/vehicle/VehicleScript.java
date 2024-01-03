@@ -15,6 +15,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.relauncher.Side;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 /** @author Ferdinand Calo' (FEX___96) */
 public abstract class VehicleScript {
 	
@@ -61,7 +63,7 @@ public abstract class VehicleScript {
 	public void sendPacket(Entity entity, NBTTagCompound compound, Side destination){
 		if(!compound.hasKey("ScriptId")) compound.setString("ScriptId", getId());
 		if(destination.isClient()){
-			PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, compound), Resources.getTargetPoint(entity));
+			PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, compound), getTargetPoint(entity));
 		}
 		else{
 			PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(entity, compound));

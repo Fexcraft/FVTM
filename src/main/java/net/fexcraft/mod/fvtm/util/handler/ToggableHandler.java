@@ -41,6 +41,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -77,7 +79,7 @@ public class ToggableHandler {
 					if(coll != null){
 						if(coll.id().equals(last) && Time.getDate() < tilltime) return true;
 						NBTTagCompound packet = new NBTTagCompound();
-						packet.setString("target_listener", Resources.UTIL_LISTENER);
+						packet.setString("target_listener", UTIL_LISTENER);
 						packet.setString("task", "install");
 						packet.setString("source", coll.source);
 						packet.setString("category", coll.category);

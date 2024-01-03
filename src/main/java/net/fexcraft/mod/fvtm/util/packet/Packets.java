@@ -4,11 +4,13 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -32,6 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 	
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
+	public static final String UTIL_LISTENER = "fvtm:utils";
 
 	public void init(){
 		FvtmLogger.LOGGER.log("Starting Packet Handler initialization.");
@@ -74,12 +77,12 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 	public void send(BlockData blockdata, V3I vec, int dim) {
 		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
 		TagCW com = getBlockFuncData(blockdata, pos);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(dim, pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(dim, pos));
 	}
 
 	private TagCW getBlockFuncData(BlockData blockdata, BlockPos pos){
 		TagCW com = TagCW.create();
-		com.set("target_listener", Resources.UTIL_LISTENER);
+		com.set("target_listener", UTIL_LISTENER);
 		com.set("task", "block_func_sync");
 		com.set("pos", pos.toLong());
 		TagCW data = TagCW.create();
@@ -94,7 +97,15 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 		BlockTileEntity tile = (BlockTileEntity)((World)world.direct()).getTileEntity(pos);
 		if(tile == null) return;
 		TagCW com = getBlockFuncData(tile.getBlockData(), pos);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), Resources.getTargetPoint(tile.getDim(), pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(tile.getDim(), pos));
+	}
+
+	@Override
+	public void send(VehicleInstance vehicle, TagCW com){
+		com.set("target_listener", UTIL_LISTENER);
+		com.set("task", "vehicle");
+		com.set("entity", vehicle.entity.getId());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(vehicle.entity.local()));
 	}
 
 	public static final void sendToServer(IMessage packet){
@@ -106,15 +117,22 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 	}
 
 	public static final void sendToAllAround(IMessage packet, Entity ent){
-		instance.sendToAllAround(packet, Resources.getTargetPoint(ent));
+		instance.sendToAllAround(packet, getTargetPoint(ent));
 	}
 
 	public static final void sendToAllAround(IMessage packet, Object ent){
-		instance.sendToAllAround(packet, Resources.getTargetPoint((Entity)ent));
+		instance.sendToAllAround(packet, getTargetPoint((Entity)ent));
 	}
 
 	public static final void sendTo(IMessage packet, EntityPlayerMP player){
 		instance.sendTo(packet, player);
 	}
-	
+
+	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
+		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
+	}
+
+	public static TargetPoint getTargetPoint(int dim, BlockPos pos){
+		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.VEHICLE_UPDATE_RANGE);
+	}
 }

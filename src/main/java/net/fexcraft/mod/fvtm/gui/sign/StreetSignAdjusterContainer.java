@@ -14,6 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 public class StreetSignAdjusterContainer extends GenericContainer {
 	
 	protected GenericGui<StreetSignAdjusterContainer> gui;
@@ -27,7 +29,7 @@ public class StreetSignAdjusterContainer extends GenericContainer {
 	@Override
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 		if(entity == null){ Print.chat(player, "Error, Sign Entity is null."); return; } entity.read(packet);
-		PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, packet), Resources.getTargetPoint(entity));
+		PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, packet), getTargetPoint(entity));
 		player.closeScreen();
 	}
 

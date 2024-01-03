@@ -22,6 +22,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 public class AttrReqHandler {
 
 	public static void processToggleRequest(World world, EntityPlayerMP player, NBTTagCompound packet){
@@ -40,7 +42,7 @@ public class AttrReqHandler {
 		Object old = attr.value();
 		toggleAttr(attr, bool, packet, false, null);
 		Object syncval = attr.value();
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(vehent));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(vehent));
 		vehent.vehicle.data.getScripts().forEach(script -> {
 			script.onAttributeToggle(vehent, attr, old, player);
 		});
@@ -80,7 +82,7 @@ public class AttrReqHandler {
 					NBTTagCompound compound = packet.copy();
 					toggleAttr(attr0, bool, compound, true, syncval);
 					compound.setInteger("entity", trailer.entity.getId());
-					PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.entity.local()));
+					PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(trailer.entity.local()));
 				}
 				trailer = trailer.rear;
 			}
@@ -94,7 +96,7 @@ public class AttrReqHandler {
 		if(ent.entity != null){
 			compound.setLong("railid", ent.uid);
 			compound.setInteger("entity", ent.entity.getEntityId());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(ent.entity));
 		}
 	}
 

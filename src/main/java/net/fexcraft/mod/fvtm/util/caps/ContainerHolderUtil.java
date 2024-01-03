@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINERS;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -182,7 +183,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			compound.setString("task", "update_container_holder");
 			compound.setInteger("entity", entity.getEntityId());
 			if(fromside){ PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound)); }
-			else{ PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(entity)); }
+			else{ PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(entity)); }
 		}
 
 		@Override

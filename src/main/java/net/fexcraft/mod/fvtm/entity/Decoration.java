@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.DECORATION_EDITOR;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
 
 import java.util.ArrayList;
 
@@ -188,7 +189,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
 		writeEntityToNBT(com);
 		com.setString("task", "deco_update");
 		com.setInteger("entid", getEntityId());
-		com.setString("target_listener", Resources.UTIL_LISTENER);
+		com.setString("target_listener", UTIL_LISTENER);
 		PacketHandler.getInstance().sendToAllTracking(new PacketNBTTagCompound(com), this);
 	}
 

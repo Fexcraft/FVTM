@@ -36,6 +36,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 /** 
  * @author Ferdinand Calo' (FEX___96)
  *
@@ -283,7 +286,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 			packet.setString("value", attr.asString());
 		}
 		else packet.setString("value", attr.asString());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
 	}
 
 	public void sendAttributeUpdate(String id){
@@ -296,11 +299,11 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	public void sendLockStateUpdate(){
 		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("target_listener", Resources.UTIL_LISTENER);
+		packet.setString("target_listener", UTIL_LISTENER);
 		packet.setString("task", "lock_state");
 		packet.setBoolean("state", getVehicleData().getLock().isLocked());
 		packet.setInteger("entity", getEntityId());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
 	}
 
 }

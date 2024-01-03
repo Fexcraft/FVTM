@@ -16,6 +16,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 public class PassengerImplementation implements Passenger {
 
 	private Entity entity;
@@ -78,12 +81,12 @@ public class PassengerImplementation implements Passenger {
 	@Override
 	public void update_packet() {
 		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("target_listener", Resources.UTIL_LISTENER);
+		packet.setString("target_listener", UTIL_LISTENER);
 		packet.setString("task", "update_passenger");
 		packet.setInteger("entity", entity.getEntityId());
 		packet.setInteger("vehicle", vehicle);
 		packet.setInteger("seat", seatindex);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(entity));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(entity));
 	}
 
 	@Override
@@ -93,7 +96,7 @@ public class PassengerImplementation implements Passenger {
 			return;
 		}
 		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("target_listener", Resources.UTIL_LISTENER);
+		packet.setString("target_listener", UTIL_LISTENER);
 		packet.setString("task", "upg");
 		packet.setInteger("entity", entity.getEntityId());
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));

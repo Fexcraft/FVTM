@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -37,7 +39,7 @@ public class RailPlacingUtil {
 			CURRENT.put(player.getGameProfile().getId(), newid);
 			//
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "rail_place_util");
 			compound.setString("subtask", "new");
 			compound.setLong("uuid_l", newid.getMostSignificantBits());
@@ -58,13 +60,13 @@ public class RailPlacingUtil {
 		track.add(vector);
 		//
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", Resources.UTIL_LISTENER);
+		compound.setString("target_listener", UTIL_LISTENER);
 		compound.setString("task", "rail_place_util");
 		compound.setString("subtask", "add");
 		compound.setLong("uuid_l", trackid.getMostSignificantBits());
 		compound.setLong("uuid_m", trackid.getLeastSignificantBits());
 		compound.setTag("vector", vector.write());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
 		//
 		RailMarker marker = new RailMarker(world, trackid);
 		marker.position = vector;
@@ -113,13 +115,13 @@ public class RailPlacingUtil {
 			}
 			selected = sel;
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "rail_place_util");
 			compound.setInteger("selected", selected);
 			compound.setString("subtask", "selected");
 			compound.setLong("uuid_l", id.getMostSignificantBits());
 			compound.setLong("uuid_m", id.getLeastSignificantBits());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
 		}
 
 		public void remove(EntityPlayer player, GridV3D vector){
@@ -143,21 +145,21 @@ public class RailPlacingUtil {
 			}
 			//
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "rail_place_util");
 			compound.setInteger("remove", rem);
 			compound.setString("subtask", "remove");
 			compound.setLong("uuid_l", id.getMostSignificantBits());
 			compound.setLong("uuid_m", id.getLeastSignificantBits());
 			compound.setTag("vector", vector.write());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
 		}
 		
 		public void reset(){
 			QUEUE.remove(id);
 			CURRENT.entrySet().removeIf(entry -> entry.getValue().equals(id));
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "rail_place_util");
 			compound.setString("subtask", "reset");
 			compound.setLong("uuid_l", id.getMostSignificantBits());

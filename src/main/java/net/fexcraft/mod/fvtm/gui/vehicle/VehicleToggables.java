@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui.vehicle;
 import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_ATTRIBUTE_EDITOR;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
 
 import java.util.ArrayList;
 
@@ -134,7 +135,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			int row = Integer.parseInt(button.name.replace("togg", ""));
 			NBTTagCompound packet = new NBTTagCompound();
 			Attribute<?> attr = attributes.get(scroll + row);
-			packet.setString("target_listener", Resources.UTIL_LISTENER);
+			packet.setString("target_listener", UTIL_LISTENER);
 			packet.setString("task", "attr_toggle");
 			packet.setString("attr", attr.id);
 			if(!attr.valuetype.isBoolean() && mouseButton != 0){

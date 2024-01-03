@@ -6,6 +6,8 @@ import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
@@ -26,10 +28,7 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
@@ -60,6 +59,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemLead;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -350,14 +350,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
 			return true;
 		}
-		if(Lockable.isKey(wrapper.getItem())){
+		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(player.getCapability(PASSENGER, null).asSender(), wrapper);
 			vehicle.sendLockUpdate();
 			return true;
 		}
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				//TODO open fuel ui
+				player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
 				return true;
 			}
 			else if(stack.getItem() instanceof VehicleItem){
@@ -373,7 +373,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 					player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.engine_on"), true);
 				}
 				else{
-					//TODO open vehicle main ui
+					player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
 				}
 				return true;
 			}
@@ -734,7 +734,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		ItemStack stack = player.getHeldItem(hand);
 		SeatInstance seat = vehicle.seats.get(seatidx);
 		Passenger pass = player.getCapability(PASSENGER, null);
-		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
+		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString())) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass.asSender(), new SWI(stack));
 			sendLockStateUpdate();
 			return true;
@@ -793,6 +793,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			return true;
 		}
 		return false;
+	}
+
+	private boolean isFuelContainer(Item item){
+		if(item instanceof MaterialItem == false) return false;
+		return ((MaterialItem)item).getContent().isFuelContainer();
 	}
 
 	public void sendLockStateUpdate(){

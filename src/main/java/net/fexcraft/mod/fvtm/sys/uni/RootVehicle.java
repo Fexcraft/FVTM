@@ -9,6 +9,8 @@ import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +48,7 @@ import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
+import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -224,7 +227,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	public void setDead(){
 		if(Config.VEHICLES_DROP_CONTENTS && !world.isRemote){
-			//TODO drop inventory contents
+			for(String part : vehicle.data.getInventories()){
+            	InventoryFunction func = vehicle.data.getPart(part).getFunction("fvtm:inventory");
+            	if(func == null) continue;
+        		func.inventory().dropAllAt(this);
+            }
 		}
 		super.setDead();
 		if(!wheels.isEmpty()){
@@ -345,7 +352,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 		if(Lockable.isKey(wrapper.getItem())){
 			vehicle.data.getLock().toggle(player.getCapability(PASSENGER, null).asSender(), wrapper);
-			//TODO send lock state update
+			vehicle.sendLockUpdate();
 			return true;
 		}
 		if(!stack.isEmpty()){
@@ -790,11 +797,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public void sendLockStateUpdate(){
 		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("target_listener", Resources.UTIL_LISTENER);
+		packet.setString("target_listener", UTIL_LISTENER);
 		packet.setString("task", "lock_state");
 		packet.setBoolean("state", vehicle.data.getLock().isLocked());
 		packet.setInteger("entity", getEntityId());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
 	}
 
 	public void sendAttributeUpdate(Attribute<?> attr){
@@ -823,7 +830,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			packet.setString("value", attr.asString());
 		}
 		else packet.setString("value", attr.asString());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
 	}
 
 	@Override

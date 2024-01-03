@@ -6,6 +6,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 import static net.fexcraft.mod.fvtm.FvtmResources.getModel;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
 
 import java.io.Closeable;
 import java.io.File;
@@ -129,7 +130,6 @@ public class Resources {
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
-	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
@@ -246,14 +246,6 @@ public class Resources {
 		/*passenger.lastTickPosX = passenger.prevPosX;
 		passenger.lastTickPosY = passenger.prevPosY;
 		passenger.lastTickPosZ = passenger.prevPosZ;*/
-	}
-
-	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
-		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
-	}
-
-	public static TargetPoint getTargetPoint(int dim, BlockPos pos){
-		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.VEHICLE_UPDATE_RANGE);
 	}
 
 	public static String getFuelName(ResourceLocation id){
@@ -395,7 +387,7 @@ public class Resources {
 			NBTTagCompound cfgsync = new NBTTagCompound();
 			cfgsync.setInteger("u12_sync_rate", VEHICLE_SYNC_RATE);
 			cfgsync.setString("task", "config_sync");
-			cfgsync.setString("target_listener", Resources.UTIL_LISTENER);
+			cfgsync.setString("target_listener", UTIL_LISTENER);
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
 		}
 		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player);

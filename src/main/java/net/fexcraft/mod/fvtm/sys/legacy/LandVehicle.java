@@ -5,6 +5,7 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 import java.util.List;
 import java.util.UUID;
@@ -302,7 +303,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case DISMOUNT: {
-                Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
+                Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -741,7 +742,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
         	vehicle.getAttribute("throttle").set((float)throttle);
-            Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
+            Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }

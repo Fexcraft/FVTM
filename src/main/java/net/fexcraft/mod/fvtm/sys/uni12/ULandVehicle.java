@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.uni12;
 import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -389,7 +390,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case DISMOUNT: {
-                Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
+                Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -878,11 +879,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         checkForCollisions();
         if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0 && truck == null){
         	vehicle.getAttribute("throttle").set((float)throttle);
-            Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
+            Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
             ULandVehicle trailer = this.trailer;
             while(trailer != null){
-                Packets.sendToAllAround(new PKT_VehControl(trailer), Resources.getTargetPoint(trailer));
+                Packets.sendToAllAround(new PKT_VehControl(trailer), getTargetPoint(trailer));
                 //TODO for(SwivelPoint point : trailer.vehicle.getRotationPoints().values()) point.sendClientUpdate(trailer);
                 trailer = trailer.trailer;
             }

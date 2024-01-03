@@ -21,11 +21,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+
 public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 
 	@Override
 	public String getId(){
-		return Resources.UTIL_LISTENER;
+		return UTIL_LISTENER;
 	}
 
 	@Override
@@ -164,6 +166,12 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 			}
 			case "attr_update":{
 				AttrReqHandler.processUpdateResponse(player.world, player, packet.nbt);
+				return;
+			}
+			case "vehicle":{
+				RootVehicle vehicle = (RootVehicle)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(vehicle == null) return;
+				vehicle.vehicle.packet(TagCW.wrap(packet.nbt), true);
 				return;
 			}
 			default: return;

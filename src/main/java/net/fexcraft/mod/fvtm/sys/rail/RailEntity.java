@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -682,7 +683,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		packet.setString("attr", "forward");
 		packet.setString("value", vehdata.getAttribute("forward").asString());
 		packet.setInteger("entity", entity.getEntityId());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(entity));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(entity));
 	}
 
 	private void updateOrientationAttr(){

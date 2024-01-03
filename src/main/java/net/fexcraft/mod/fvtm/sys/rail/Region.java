@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -22,6 +23,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 /**
  * 
@@ -276,7 +279,7 @@ public class Region {
 			}
 		}
 		if(compound == null) return;
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), vector.pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(world.getDimension(), vector.pos));
 	}
 
 	public void updateClient(String kind, RailEntity entity){
@@ -291,7 +294,7 @@ public class Region {
 			}
 		}
 		if(compound == null) return;
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), new BlockPos(entity.pos.x, entity.pos.y, entity.pos.z)));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(world.getDimension(), new BlockPos(entity.pos.x, entity.pos.y, entity.pos.z)));
 	}
 
 	public void updateClient(EntityPlayerMP player){

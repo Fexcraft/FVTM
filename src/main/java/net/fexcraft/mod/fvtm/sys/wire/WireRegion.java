@@ -21,6 +21,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -217,7 +219,7 @@ public class WireRegion {
 		}
 		if(compound == null) return;
 		compound.setString("target_listener", "fvtm:wiresys");
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(system.getDimension(), pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(system.getDimension(), pos));
 	}
 
 	public void updateClient(EntityPlayerMP player){

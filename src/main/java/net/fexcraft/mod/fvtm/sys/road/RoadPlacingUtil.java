@@ -20,6 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 public class RoadPlacingUtil {
 	
 	public static final ConcurrentHashMap<UUID, NewRoad> QUEUE = new ConcurrentHashMap<>();
@@ -35,7 +38,7 @@ public class RoadPlacingUtil {
 			CURRENT.put(player.getGameProfile().getId(), newid);
 			//
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "road_place_util");
 			compound.setString("subtask", "new");
 			compound.setLong("uuid_l", newid.getMostSignificantBits());
@@ -56,14 +59,14 @@ public class RoadPlacingUtil {
 		road.add(vector, width);
 		//
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", Resources.UTIL_LISTENER);
+		compound.setString("target_listener", UTIL_LISTENER);
 		compound.setString("task", "road_place_util");
 		compound.setString("subtask", "add");
 		compound.setLong("uuid_l", roadid.getMostSignificantBits());
 		compound.setLong("uuid_m", roadid.getLeastSignificantBits());
 		compound.setInteger("width", width);
 		compound.setTag("vector", vector.write());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
 		//
 		RoadMarker marker = new RoadMarker(world, roadid);
 		marker.position = vector;
@@ -112,13 +115,13 @@ public class RoadPlacingUtil {
 			}
 			selected = sel;
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "road_place_util");
 			compound.setInteger("selected", selected);
 			compound.setString("subtask", "selected");
 			compound.setLong("uuid_l", id.getMostSignificantBits());
 			compound.setLong("uuid_m", id.getLeastSignificantBits());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
 		}
 
 		public void remove(EntityPlayer player, GridV3D vector){
@@ -142,21 +145,21 @@ public class RoadPlacingUtil {
 			}
 			//
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "road_place_util");
 			compound.setInteger("remove", rem);
 			compound.setString("subtask", "remove");
 			compound.setLong("uuid_l", id.getMostSignificantBits());
 			compound.setLong("uuid_m", id.getLeastSignificantBits());
 			compound.setTag("vector", vector.write());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(player.dimension, vector.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
 		}
 		
 		public void reset(){
 			QUEUE.remove(id);
 			CURRENT.entrySet().removeIf(entry -> entry.getValue().equals(id));
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", Resources.UTIL_LISTENER);
+			compound.setString("target_listener", UTIL_LISTENER);
 			compound.setString("task", "road_place_util");
 			compound.setString("subtask", "reset");
 			compound.setLong("uuid_l", id.getMostSignificantBits());

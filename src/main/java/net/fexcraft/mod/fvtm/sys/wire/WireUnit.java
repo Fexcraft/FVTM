@@ -5,6 +5,8 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -64,9 +66,9 @@ public class WireUnit {
 		}
 		else{
 			Wire wire = orig == null ? copy : orig;
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(wire.relay.holder.getRegion().system.getDimension(), wire.relay.holder.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(wire.relay.holder.getRegion().system.getDimension(), wire.relay.holder.pos));
 			if(wire.length > 16){
-				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(wire.relay.holder.getRegion().system.getDimension(), wire.relay.holder.pos));
+				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(wire.relay.holder.getRegion().system.getDimension(), wire.relay.holder.pos));
 			}
 		}
 	}

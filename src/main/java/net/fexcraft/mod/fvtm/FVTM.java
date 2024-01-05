@@ -378,7 +378,7 @@ public class FVTM {
 				//
 				regModel(DecorationItem.INSTANCE);
 				regModel(RoadToolItem.INSTANCE);
-				regModel(ToolboxItem.INSTANCE);
+				regModel(ToolboxItem.INSTANCE, 3);
 			}
 		}
 

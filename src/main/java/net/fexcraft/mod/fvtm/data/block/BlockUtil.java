@@ -53,6 +53,7 @@ public class BlockUtil {
 	}
 
 	public static Material getMaterial(String mat, boolean allownull){
+		mat = mat.toLowerCase();
 		Material material = VANILLA_MATERIALS.get(mat);
 		return material == null ? allownull ? null : Material.ROCK : material;
 	}
@@ -66,6 +67,7 @@ public class BlockUtil {
 	}
 
 	public static MapColor getMapColor(String mapcol){
+		mapcol = mapcol.toLowerCase();
 		switch(mapcol){
 			case "air": return MapColor.AIR;
 			case "grass": return MapColor.GRASS;

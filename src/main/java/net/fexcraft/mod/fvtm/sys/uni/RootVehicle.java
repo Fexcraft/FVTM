@@ -1,25 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import static net.fexcraft.lib.common.Static.rad180;
-import static net.fexcraft.lib.common.Static.rad90;
-import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
-import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
-import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
-import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
-import static net.fexcraft.mod.fvtm.util.MathUtils.*;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
-import javax.annotation.Nullable;
-
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
@@ -36,17 +16,14 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.fvtm.item.ContainerItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.impl.SWI;
@@ -74,6 +51,22 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
+import static net.fexcraft.lib.common.Static.rad180;
+import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.mod.fvtm.Config.*;
+import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.*;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
+import static net.fexcraft.mod.fvtm.util.MathUtils.*;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -358,6 +351,18 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
 				player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
+				return true;
+			}
+			else if(stack.getItem() instanceof ToolboxItem){
+				if(stack.getMetadata() == 0){
+
+				}
+				else if(stack.getMetadata() == 1){
+
+				}
+				else if(stack.getMetadata() == 2){
+					player.openGui(FVTM.getInstance(), TOOLBOX_COLORS, world, getEntityId(), 0, 0);
+				}
 				return true;
 			}
 			else if(stack.getItem() instanceof VehicleItem){

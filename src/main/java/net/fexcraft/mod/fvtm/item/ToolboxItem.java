@@ -51,13 +51,13 @@ public class ToolboxItem extends Item {
         }
     }
 	
-	@Override
+	/*@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || hand == EnumHand.OFF_HAND) return EnumActionResult.PASS;
         ItemStack stack = player.getHeldItemMainhand();
         //
         return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-    }
+    }*/
 
         @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){

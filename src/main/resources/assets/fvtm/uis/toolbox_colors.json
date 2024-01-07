@@ -1,0 +1,34 @@
+{
+    "_info_": "Color/Paint Toolbox UI",
+    "background": false,
+    "size": [ 256, 256 ],
+    "tabs": {
+        "main": {
+            "texture": "fvtm:textures/gui/toolbox_colors.png",
+            "size": [ 141, 169 ],
+            "pos": [ 0, 0 ],
+            "absolute": true,
+            "buttons": [],
+            "texts": [
+                "title"
+            ],
+            "fields": []
+        }
+    },
+    "buttons": {
+
+    },
+    "texts": {
+        "title": {
+            "absolute": true,
+            "size": [ 109, 7 ],
+            "pos": [ 25, 2 ],
+            "autoscale": true,
+            "color": "242424",
+            "value": "Painting Toolbox"
+        }
+    },
+    "fields": {
+
+    }
+}

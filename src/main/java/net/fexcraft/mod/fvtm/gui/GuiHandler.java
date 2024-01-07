@@ -8,6 +8,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
@@ -40,10 +41,13 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
+import net.fexcraft.mod.fvtm.ui.CIImpl;
 import net.fexcraft.mod.fvtm.ui.ConstructorMain;
 import net.fexcraft.mod.fvtm.ui.DecoEditor;
+import net.fexcraft.mod.fvtm.ui.UIImpl;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -55,6 +59,8 @@ public class GuiHandler implements IGuiHandler {
 	public static final HashMap<String, NBTTagCompound> SERVER_GUIDATA_CACHE = new HashMap<>();
 	public static final String LISTENERID = "fvtm:gui";
 
+	/* 60x - toolbox*/
+	public static final int TOOLBOX_COLORS = 600;
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	public static final int JUNCTION_ADJUSTER = 701;
@@ -111,7 +117,9 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
+		EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
 		switch(ID){
+			case TOOLBOX_COLORS: return new UniCon(new CIImpl(FvtmResources.getJson("assets/fvtm/uis/toolbox_colors.json"), entity), player);
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
 			//case ROADTOOL: return new RoadPlacerContainer(player, x, y, z);
@@ -169,7 +177,12 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		try{
+			EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
 			switch(ID){
+				case TOOLBOX_COLORS: {
+					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/toolbox_colors.json");
+					return new UniUI(new UIImpl(map, entity), null, player);
+				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
 				//case ROADTOOL: return new RoadPlacer(player, x, y, z);

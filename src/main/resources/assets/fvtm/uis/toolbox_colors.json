@@ -86,7 +86,8 @@
 			"pos": [ 3, 94 ],
 			"uv": [ 3, 94 ],
 			"colorbased": true,
-			"color": "ffffff"
+			"color": "ffffff",
+			"palette": [ 1, 26, 5, 10 ]
 		},
 		"pal_shade": {
 			"absolute": true,
@@ -94,7 +95,8 @@
 			"pos": [ 3, 108 ],
 			"uv": [ 3, 108 ],
 			"colorbased": true,
-			"color": "ffffff"
+			"color": "ffffff",
+			"palette": [ 8, 26, 5, 5 ]
 		},
 		"pal_save": {
 			"absolute": true,
@@ -102,7 +104,8 @@
 			"pos": [ 3, 152 ],
 			"uv": [ 3, 152 ],
 			"colorbased": true,
-			"color": "ffffff"
+			"color": "ffffff",
+			"palette": [ 1, 26, 5, 5 ]
 		}
     },
     "texts": {

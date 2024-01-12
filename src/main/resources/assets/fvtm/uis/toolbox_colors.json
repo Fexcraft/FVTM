@@ -8,15 +8,98 @@
             "size": [ 141, 169 ],
             "pos": [ 0, 0 ],
             "absolute": true,
-            "buttons": [],
-            "texts": [
-                "title"
+            "buttons": [
+                "help", "info",
+                "prev", "next",
+                "rgb", "hex", "colorpicker",
+				"selected", "select",
+				"pal_hor", "pal_shade", "pal_save"
             ],
-            "fields": []
+            "texts": [
+                "title", "channel"
+            ],
+            "fields": [
+                "rgb", "hex"
+            ]
         }
     },
     "buttons": {
-
+		"help": {
+			"absolute": true,
+			"size": [ 9, 9 ],
+			"pos": [ 1, 1 ],
+			"uv": [ 1, 1 ]
+		},
+		"info": {
+			"absolute": true,
+			"size": [ 9, 9 ],
+			"pos": [ 12, 1 ],
+			"uv": [ 12, 1 ]
+		},
+		"prev": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 112, 20 ],
+			"uv": [ 112, 20 ]
+		},
+		"next": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 20 ],
+			"uv": [ 123, 20 ]
+		},
+		"rgb": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 40 ],
+			"uv": [ 123, 40 ]
+		},
+		"hex": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 60 ],
+			"uv": [ 123, 60 ]
+		},
+		"colorpicker": {
+			"absolute": true,
+			"size": [ 6, 6 ],
+			"pos": [ 126, 12 ],
+			"uv": [ 126, 12 ]
+		},
+		"selected": {
+			"absolute": true,
+			"size": [ 119, 10 ],
+			"pos": [ 3, 80 ],
+			"uv": [ 3, 80 ],
+			"colorbased": true
+		},
+		"select": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 80 ],
+			"uv": [ 123, 80 ]
+		},
+		"pal_hor": {
+			"absolute": true,
+			"size": [ 130, 10 ],
+			"pos": [ 3, 94 ],
+			"uv": [ 3, 94 ],
+			"colorbased": true
+		},
+		"pal_shade": {
+			"absolute": true,
+			"size": [ 130, 40 ],
+			"pos": [ 3, 108 ],
+			"uv": [ 3, 108 ],
+			"colorbased": true
+		},
+		"pal_save": {
+			"absolute": true,
+			"size": [ 130, 5 ],
+			"pos": [ 3, 152 ],
+			"uv": [ 3, 152 ],
+			"colorbased": true
+		}
     },
     "texts": {
         "title": {
@@ -26,9 +109,29 @@
             "autoscale": true,
             "color": "242424",
             "value": "Painting Toolbox"
-        }
+        },
+		"channel": {
+			"absolute": true,
+			"size": [ 106, 8 ],
+			"pos": [ 4, 21 ],
+			"autoscale": true,
+			"color": "cfcfcf",
+			"value": "-"
+		}
     },
     "fields": {
-
+		"rgb": {
+			"absolute": true,
+			"size": [ 117, 8 ],
+			"pos": [ 4, 21 ],
+			"background": false
+		},
+		"hex": {
+			"absolute": true,
+			"size": [ 117, 8 ],
+			"pos": [ 4, 61 ],
+			"background": false,
+			"numberfield": true
+		}
     }
 }

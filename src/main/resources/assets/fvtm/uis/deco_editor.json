@@ -101,44 +101,44 @@
 	"buttons": {
 		"cat_prev": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 12, 12 ],
 			"pos": [ 2, 2 ]
 		},
 		"cat_next": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 12, 12 ],
 			"pos": [ 125, 2 ]
 		},
 		"search": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 12, 12 ],
 			"pos": [ 16, 2 ]
 		},
 		"mode_add": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 12, 12 ],
 			"pos": [ 140, 9 ]
 		},
 		"mode_list": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 12, 12 ],
 			"pos": [ 140, 23 ]
 		},
 		"list_up": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 131, 21 ]
 		},
 		"list_down": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 131, 175 ]
 		},
 		"entry_0": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 21 ],
 			"text": {
@@ -149,7 +149,7 @@
 			}
 		},
 		"entry_1": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 35 ],
 			"text": {
@@ -160,7 +160,7 @@
 			}
 		},
 		"entry_2": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 49 ],
 			"text": {
@@ -171,7 +171,7 @@
 			}
 		},
 		"entry_3": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 63 ],
 			"text": {
@@ -182,7 +182,7 @@
 			}
 		},
 		"entry_4": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 77 ],
 			"text": {
@@ -193,7 +193,7 @@
 			}
 		},
 		"entry_5": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 91 ],
 			"text": {
@@ -204,7 +204,7 @@
 			}
 		},
 		"entry_6": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 105 ],
 			"text": {
@@ -215,7 +215,7 @@
 			}
 		},
 		"entry_7": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 119 ],
 			"text": {
@@ -226,7 +226,7 @@
 			}
 		},
 		"entry_8": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 133 ],
 			"text": {
@@ -237,7 +237,7 @@
 			}
 		},
 		"entry_9": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 147 ],
 			"text": {
@@ -248,7 +248,7 @@
 			}
 		},
 		"entry_10": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 161 ],
 			"text": {
@@ -259,7 +259,7 @@
 			}
 		},
 		"entry_11": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 120, 12 ],
 			"pos": [ 2, 175 ],
 			"text": {
@@ -270,241 +270,241 @@
 			}
 		},
 		"add_0": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 21 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_1": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 35 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_2": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 49 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_3": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 63 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_4": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 77 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_5": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 91 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_6": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 105 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_7": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 119 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_8": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 133 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_9": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 147 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_10": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 161 ],
 			"uv": [ 146, 58 ]
 		},
 		"add_11": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 175 ],
 			"uv": [ 146, 58 ]
 		},
 		"rem_0": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 21 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_1": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 35 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_2": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 49 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_3": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 63 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_4": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 77 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_5": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 91 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_6": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 105 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_7": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 119 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_8": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 133 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_9": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 147 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_10": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 161 ],
 			"uv": [ 146, 44 ]
 		},
 		"rem_11": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 7, 12 ],
 			"pos": [ 123, 175 ],
 			"uv": [ 146, 44 ]
 		},
 		"pos0": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -105, 17 ],
 			"uv": [ 197, 17 ]
 		},
 		"pos1": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -59, 17 ],
 			"uv": [ 197, 17 ]
 		},
 		"pos2": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 17 ],
 			"uv": [ 197, 17 ]
 		},
 		"rot0": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -105, 45 ],
 			"uv": [ 197, 45 ]
 		},
 		"rot1": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -59, 45 ],
 			"uv": [ 197, 45 ]
 		},
 		"rot2": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 45 ],
 			"uv": [ 197, 45 ]
 		},
 		"scl0": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -105, 73 ],
 			"uv": [ 197, 73 ]
 		},
 		"scl1": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -59, 73 ],
 			"uv": [ 197, 73 ]
 		},
 		"scl2": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 73 ],
 			"uv": [ 197, 73 ]
 		},
 		"tex_prev": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -25, 101 ],
 			"uv": [ 231, 101 ]
 		},
 		"tex_next": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 101 ],
 			"uv": [ 243, 101 ]
 		},
 		"ch_prev": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -25, 126 ],
 			"uv": [ 231, 126 ]
 		},
 		"ch_next": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 126 ],
 			"uv": [ 243, 126 ]
 		},
 		"rgb": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 146 ],
 			"uv": [ 243, 146 ]
 		},
 		"hex": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 166 ],
 			"uv": [ 243, 166 ]
 		},
 		"colorpicker": {
-			"absolute": "true",
+			"absolute": true,
 			"size": [ 6, 6 ],
 			"pos": [ -10, 118 ],
 			"uv": [ 246, 118 ]

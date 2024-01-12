@@ -71,7 +71,8 @@
 			"size": [ 119, 10 ],
 			"pos": [ 3, 80 ],
 			"uv": [ 3, 80 ],
-			"colorbased": true
+			"colorbased": true,
+			"color": "ffffff"
 		},
 		"select": {
 			"absolute": true,
@@ -84,21 +85,24 @@
 			"size": [ 130, 10 ],
 			"pos": [ 3, 94 ],
 			"uv": [ 3, 94 ],
-			"colorbased": true
+			"colorbased": true,
+			"color": "ffffff"
 		},
 		"pal_shade": {
 			"absolute": true,
 			"size": [ 130, 40 ],
 			"pos": [ 3, 108 ],
 			"uv": [ 3, 108 ],
-			"colorbased": true
+			"colorbased": true,
+			"color": "ffffff"
 		},
 		"pal_save": {
 			"absolute": true,
 			"size": [ 130, 5 ],
 			"pos": [ 3, 152 ],
 			"uv": [ 3, 152 ],
-			"colorbased": true
+			"colorbased": true,
+			"color": "ffffff"
 		}
     },
     "texts": {

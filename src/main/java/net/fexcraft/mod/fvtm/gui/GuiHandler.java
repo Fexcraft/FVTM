@@ -119,7 +119,9 @@ public class GuiHandler implements IGuiHandler {
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
 		switch(ID){
-			case TOOLBOX_COLORS: return new UniCon(new CIImpl(FvtmResources.getJson("assets/fvtm/uis/toolbox_colors.json"), entity), player);
+			case TOOLBOX_COLORS:{
+				return new UniCon(new ToolboxPaintContainer(FvtmResources.getJson("assets/fvtm/uis/toolbox_colors.json"), player, x), player);
+			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
 			//case ROADTOOL: return new RoadPlacerContainer(player, x, y, z);

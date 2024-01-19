@@ -97,17 +97,17 @@ public class BlockModel extends DefaultModel {
         nodefrot = data.getBoolean("NoDefaultRotation", false);
         if(data.has("GroupTextures")){
             tg = new HashMap<>();
-            JsonMap tex = data.getMap("GroupTextures");
-            tex.entries().forEach(entry -> {
+            JsonMap grtex = data.getMap("GroupTextures");
+            grtex.entries().forEach(entry -> {
                 String[] k = entry.getKey().contains(",") ? entry.getKey().split(",") : new String[]{ entry.getKey() };
-                String key = k[0];
-                String pre = k.length > 1 ? k[1] + "," : "";
+                String key = k.length > 1 ? k[0] + "," : "";
+                String tex = k.length > 1 ? k[1] : k[0];
                 if(entry.getValue().isArray()){
                     for(JsonValue<?> val : entry.getValue().asArray().value){
-                        tg.put(pre + val.string_value(), key);
+                        tg.put(key + val.string_value(), tex);
                     }
                 }
-                else tg.put(pre + entry.getValue().string_value(), key);
+                else tg.put(key + entry.getValue().string_value(), tex);
             });
         }
         grouptexname = data.getBoolean("GroupEqualsTexture", false);

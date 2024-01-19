@@ -9,6 +9,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Axis3DL;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.render.block.BakedTransformData;
@@ -96,17 +97,18 @@ public class BlockModel extends DefaultModel {
         nodefrot = data.getBoolean("NoDefaultRotation", false);
         if(data.has("GroupTextures")){
             tg = new HashMap<>();
-            for(Map.Entry<String, JsonValue<?>> entry : data.getMap("GroupTextures").entries()){
+            JsonMap tex = data.getMap("GroupTextures");
+            tex.entries().forEach(entry -> {
                 String[] k = entry.getKey().contains(",") ? entry.getKey().split(",") : new String[]{ entry.getKey() };
                 String key = k[0];
-                String pre = k.length > 0 ? k[1] + "," : "";
+                String pre = k.length > 1 ? k[1] + "," : "";
                 if(entry.getValue().isArray()){
                     for(JsonValue<?> val : entry.getValue().asArray().value){
                         tg.put(pre + val.string_value(), key);
                     }
                 }
                 else tg.put(pre + entry.getValue().string_value(), key);
-            }
+            });
         }
         grouptexname = data.getBoolean("GroupEqualsTexture", false);
 		return this;

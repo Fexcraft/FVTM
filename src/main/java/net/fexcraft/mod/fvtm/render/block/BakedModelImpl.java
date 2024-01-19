@@ -86,7 +86,10 @@ public class BakedModelImpl implements IBakedModel {
             for(Object o: root.tex_sprites.keySet()){
                 FvtmLogger.LOGGER.log("tex: " + o);
             }
-            thr.printStackTrace();
+            FvtmLogger.LOGGER.log(thr.getMessage());
+            for(StackTraceElement str : thr.getStackTrace()){
+                FvtmLogger.LOGGER.log("    " + str.toString());
+            }
         }
         quads.put(statekey, newquads);
         model.reset(state, side, root.block.getModelData(), rand);
@@ -103,13 +106,20 @@ public class BakedModelImpl implements IBakedModel {
                 sprite = getTex(root, group.name);
             }
             if(model.tg != null){
+                if(model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
                 if(state != null){
+                    TextureAtlasSprite nsprite;
+                    String str = null;
                     for(IProperty<?> prop : state.getBlock().getBlockState().getProperties()){
-                        String str = prop.getName() + "=" + state.getValue(prop) + "," + group.name;
-                        if(model.tg.containsKey(str) && (sprite = getTex(root, model.tg.get(str))) != null) break;
+                        str = prop.getName() + "=" + state.getValue(prop) + "," + group.name;
+                        if(!model.tg.containsKey(str)) continue;
+                        nsprite = getTex(root, model.tg.get(str));
+                        if(nsprite != null){
+                            sprite = nsprite;
+                            break;
+                        }
                     }
                 }
-                if(sprite == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
             }
             if(sprite == null) sprite = deftex;
             for(Polyhedron<GLObject> poly : group){

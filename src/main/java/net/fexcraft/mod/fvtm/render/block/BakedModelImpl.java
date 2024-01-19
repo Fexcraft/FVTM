@@ -99,6 +99,9 @@ public class BakedModelImpl implements IBakedModel {
         TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){
             colorprog = group.getProgram("fvtm:set_color");
+            if(model.grouptexname){
+                sprite = getTex(root, group.name);
+            }
             if(model.tg != null){
                 if(state != null){
                     for(IProperty<?> prop : state.getBlock().getBlockState().getProperties()){
@@ -107,9 +110,6 @@ public class BakedModelImpl implements IBakedModel {
                     }
                 }
                 if(sprite == null && model.tg.containsKey(group.name)) sprite = getTex(root, model.tg.get(group.name));
-            }
-            if(sprite == null && model.grouptexname){
-                sprite = getTex(root, group.name);
             }
             if(sprite == null) sprite = deftex;
             for(Polyhedron<GLObject> poly : group){

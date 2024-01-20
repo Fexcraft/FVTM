@@ -41,10 +41,7 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
-import net.fexcraft.mod.fvtm.ui.CIImpl;
-import net.fexcraft.mod.fvtm.ui.ConstructorMain;
-import net.fexcraft.mod.fvtm.ui.DecoEditor;
-import net.fexcraft.mod.fvtm.ui.UIImpl;
+import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -183,7 +180,7 @@ public class GuiHandler implements IGuiHandler {
 			switch(ID){
 				case TOOLBOX_COLORS: {
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/toolbox_colors.json");
-					return new UniUI(new UIImpl(map, entity), null, player);
+					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), null, player);
 				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);

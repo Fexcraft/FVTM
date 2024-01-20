@@ -137,8 +137,7 @@
 			"absolute": true,
 			"size": [ 117, 8 ],
 			"pos": [ 4, 61 ],
-			"background": false,
-			"numberfield": true
+			"background": false
 		}
     }
 }

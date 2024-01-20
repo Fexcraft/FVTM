@@ -31,7 +31,12 @@ public class ToolboxPaintContainer extends ContainerInterface {
 	@Override
 	public Object get(String key, Object... objs){
 		switch(key){
-			//
+			case "channel_keys":{
+				return colorable.getColorChannels().keySet();
+			}
+			case "color":{
+				return colorable.getColorChannel(objs[0].toString());
+			}
 		}
 		return null;
 	}

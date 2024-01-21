@@ -55,6 +55,12 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				((RootVehicle)ent).vehicle.data.getLock().setLocked(packet.nbt.getBoolean("state"));
 				return;
 			}
+			case "color_channel":{
+				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(ent == null || ent instanceof RootVehicle == false) return;
+				((RootVehicle)ent).vehicle.data.getColorChannel(packet.nbt.getString("channel")).packed = packet.nbt.getInteger("color");
+				return;
+			}
 			case "ts_ck_sync":{
 				TrafficSigns signs = player.world.getChunk(packet.nbt.getInteger("x"), packet.nbt.getInteger("z")).getCapability(Capabilities.TRAFFIC_SIGNS, null);
 				if(signs != null) signs.read(null, packet.nbt.getCompoundTag("signs"));

@@ -814,6 +814,16 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
 	}
 
+	public void sendColorChannelUpdate(String channel){
+		NBTTagCompound packet = new NBTTagCompound();
+		packet.setString("target_listener", UTIL_LISTENER);
+		packet.setString("task", "color_channel");
+		packet.setString("channel", channel);
+		packet.setInteger("color", vehicle.data.getColorChannel(channel).packed);
+		packet.setInteger("entity", getEntityId());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
+	}
+
 	public void sendAttributeUpdate(Attribute<?> attr){
 		if(attr == null) return;
 		NBTTagCompound packet = new NBTTagCompound();

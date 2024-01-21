@@ -45,7 +45,11 @@ public class ToolboxPaintContainer extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		String task = com.getString("task");
 		switch(task){
-			//
+			case "apply":{
+				colorable.getColorChannel(com.getString("channel")).packed = com.getInteger("color");
+				vehicle.sendColorChannelUpdate(com.getString("channel"));
+				break;
+			}
 		}
 	}
 

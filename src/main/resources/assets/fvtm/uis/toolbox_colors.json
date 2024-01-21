@@ -12,7 +12,7 @@
                 "help", "info",
                 "prev", "next",
                 "rgb", "hex", "colorpicker",
-				"selected", "select",
+				"selected", "select", "save",
 				"pal_hor", "pal_shade", "pal_save"
             ],
             "texts": [
@@ -68,7 +68,7 @@
 		},
 		"selected": {
 			"absolute": true,
-			"size": [ 119, 10 ],
+			"size": [ 108, 10 ],
 			"pos": [ 3, 80 ],
 			"uv": [ 3, 80 ],
 			"colorbased": true,
@@ -79,6 +79,12 @@
 			"size": [ 10, 10 ],
 			"pos": [ 123, 80 ],
 			"uv": [ 123, 80 ]
+		},
+		"save": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 112, 80 ],
+			"uv": [ 112, 80 ]
 		},
 		"pal_hor": {
 			"absolute": true,

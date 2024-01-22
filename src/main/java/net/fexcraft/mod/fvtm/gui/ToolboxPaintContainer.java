@@ -10,6 +10,9 @@ import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
+import net.minecraft.client.gui.GuiYesNoCallback;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
@@ -36,6 +39,13 @@ public class ToolboxPaintContainer extends ContainerInterface {
 			}
 			case "color":{
 				return colorable.getColorChannel(objs[0].toString());
+			}
+			case "open_wiki":{
+				if(player.getWorld().isClient()){
+					net.minecraft.client.Minecraft.getMinecraft().displayGuiScreen(
+						new GuiConfirmOpenLink((GuiContainer)ui.root, "https://fexcraft.net/wiki/mod/fvtm/toolbox#painter", 31102009, true));
+				}
+				return null;
 			}
 		}
 		return null;

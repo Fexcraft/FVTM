@@ -30,6 +30,7 @@ public class UniUI extends GuiContainer {
 	public UniUI(UserInterface ui, UniCon con, EntityPlayer player){
 		super(con == null ? con = new UniCon(ui.container, player) : con);
 		this.ui = ui;
+		ui.root = this;
 		(container = con).setup(this);
 		xSize = ui.width;
 		ySize = ui.height;

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.uni.world;
 
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -12,20 +13,9 @@ import net.minecraft.world.World;
  */
 public class WrapperHolderImpl extends WrapperHolder {
 
-	/*@Override
-	public PlayerW getPlayer0(Object o){
-		if(!PLAYERS.containsKey(o)){
-			PLAYERS.put(o, new PlayerWI((EntityPlayer)o));
-		}
-		return PLAYERS.get(o);
-	}*/
-
 	@Override
 	public EntityW getEntity0(Object o){
-		if(!ENTITIES.containsKey(o)){
-			ENTITIES.put(o, new EntityWI((Entity)o));
-		}
-		return ENTITIES.get(o);
+		return ((Entity)o).getCapability(Capabilities.PASSENGER, null).asWrapper();
 	}
 
 	@Override

@@ -34,7 +34,8 @@
 			"absolute": true,
 			"size": [ 9, 9 ],
 			"pos": [ 12, 1 ],
-			"uv": [ 12, 1 ]
+			"uv": [ 12, 1 ],
+			"tooltip": "ui.fvtm.toolbox.painter.info"
 		},
 		"prev": {
 			"absolute": true,

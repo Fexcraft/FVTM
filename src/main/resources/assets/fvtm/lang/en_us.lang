@@ -34,6 +34,9 @@ interact.fvtm.vehicle.locked=Vehicle is locked.
 interact.fvtm.vehicle.remove_locked=Vehicle is locked. Unlock if you want to remove it.
 interact.fvtm.vehicle.engine_on=Please turn the engine off first!
 
+# UI
+ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.
+
 # GUIs
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.
 gui.fvtm.constructor.info=This interface is used to Construct Vehicles. As well as set textures and colors of Vehicles, Parts, Blocks and other!

@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.model.program;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
@@ -276,10 +278,10 @@ public class BlockPrograms {
 
     public static class BlockFacePlayer implements Program {
 
-        private Pos pos;
+        private V3D pos;
 
         public BlockFacePlayer(float x, float y, float z){
-            pos = new Pos(x, y, z);
+            pos = new V3D(x, y, z);
         }
 
         @Override
@@ -289,22 +291,28 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.tile == null) return;
+            if(data.tile == null){
+                GLUtils112.translate(pos);
+                return;
+            }
             GL11.glPushMatrix();
             GL11.glRotated(-data.block.getType().getBlockType().getRotationFor(((TileEntity)data.tile).getBlockMetadata()), 0, 1, 0);
-            pos.translate();
-            double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.tile).getPos().getX() + 0.5F);
-            double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.tile).getPos().getZ() + 0.5F);
-            double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (((TileEntity)data.tile).getPos().getY() + 0.5F);
-            d2 = -Math.atan2(d2, Math.sqrt(d0 * d0 + d1 * d1));
+            GLUtils112.translate(pos);
+            double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.tile).getPos().getX() + 0.5F + pos.x);
+            double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.tile).getPos().getZ() + 0.5F + pos.y);
+            double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (((TileEntity)data.tile).getPos().getY() + pos.y);
+            d2 = Math.atan2(d2, Math.sqrt(d0 * d0 + d1 * d1));
             d0 = MathHelper.atan2(d1, d0);
-            GL11.glRotated(Static.toDegrees(d0) + 90, 0, 1, 0);
+            GL11.glRotated(-Static.toDegrees(d0) - 90, 0, 1, 0);
             GL11.glRotated(Static.toDegrees(d2), 1, 0, 0);
         }
 
         @Override
         public void post(ModelGroup list, ModelRenderData data){
-            if(data.tile == null) return;
+            if(data.tile == null){
+                GLUtils112.translateR(pos);
+                return;
+            }
             GL11.glPopMatrix();
         }
 

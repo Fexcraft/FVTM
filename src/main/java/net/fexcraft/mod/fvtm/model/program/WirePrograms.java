@@ -47,7 +47,7 @@ public class WirePrograms {
 			deg = angle;
 		}
 
-		public String getId(){
+		public String id(){
 			return "fvtm:wire_rotate_y";
 		}
 		
@@ -67,7 +67,7 @@ public class WirePrograms {
 	
 	public static Program ROTATED = new Program(){
 
-		public String getId(){
+		public String id(){
 			return "fvtm:wire_rotated";
 		}
 		
@@ -95,7 +95,7 @@ public class WirePrograms {
 			this(sixteenth);
 		}
 
-		public String getId(){
+		public String id(){
 			return "fvtm:wire_downward_angled";
 		}
 		
@@ -162,7 +162,7 @@ public class WirePrograms {
 			}
 		}
 
-		public String getId(){
+		public String id(){
 			return "fvtm:wire_spaced_deco";
 		}
 		

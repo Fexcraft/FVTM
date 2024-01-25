@@ -5,7 +5,7 @@ import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.util.Resources;

@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.model.program;
 
 import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT2_SUPP;
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 import java.time.LocalDate;
@@ -45,7 +47,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
@@ -726,49 +727,41 @@ public class DefaultPrograms {
 	}
 	
 	public static abstract class AttributeBased implements Program {
-		
-		private static final TreeMap<String, Integer> linked = new TreeMap<>();
-		protected String attribute, cacheid;
+
+		protected Attribute<?> attr;
+		protected String attribute;
 		
 		public AttributeBased(String attr){
-			this.attribute = attr;
+			attribute = attr;
 		}
 
 		@Override
 		public void init(ModelGroup list){
-			if(cacheid != null) return;
-			if(linked.containsKey(attribute)){
-				cacheid = attribute + "_" + linked.get(attribute);
-				linked.put(attribute, linked.get(attribute) + 1);
-			}
-			else{
-				cacheid = attribute + "_0";
-				linked.put(attribute, 1);
-			}
+			//
 		}
 		
 	}
 	
 	public static class AttributeRotator extends AttributeBased {
-		
-		private Attribute<?> attr;
+
 		private float min, max, step = 1;
 		private Float current;
 		private int axis;
-		private boolean boolstatebased, override;
+		private boolean boolstatebased;
+		private boolean override;
 		private float defrot;
 		
-		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
+		public AttributeRotator(String attribute, boolean boolstatebased, float mn, float mx, float step, int axis, Float defrot){
 			super(attribute);
 			this.boolstatebased = boolstatebased;
 			this.override = true;
-			this.min = min; 
-			this.max = max;
+			this.min = mn;
+			this.max = mx;
 			this.step = step;
 			this.axis = axis;
 			this.defrot = defrot == null ? 0 : defrot;
 			if(min == max || (min == 0f && max == 0f)){
-				min = -360; max = 360;
+				min = -180; max = 180;
 			}
 		}
 		
@@ -786,13 +779,13 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
-			current = data.cache.getValue(cacheid);
+			current = data.cache.get(this, FLOAT_SUPP);
 			if(current == null) current = 0f;
 			current = boolstatebased ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat() * step;
 			if(current > max) current = max;
 			if(current < min) current = min;
 			list.rotate(current + defrot, axis, override);
-			data.cache.setValue(cacheid, current);
+			data.cache.set(this, current);
 		}
 		
 		@Override
@@ -819,7 +812,6 @@ public class DefaultPrograms {
 	
 	public static class AttributeTranslator extends AttributeBased {
 		
-		private Attribute<?> attr;
 		private boolean bool;
 		private float min, max, step;
 		private Float current;
@@ -843,7 +835,7 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
-			current = data.cache.getValue(cacheid);
+			current = data.cache.get(this, FLOAT_SUPP);
 			if(current == null) current = 0f;
 			current = bool ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat();
 			if(current > max) current = max; if(current < min) current = min;
@@ -852,7 +844,7 @@ public class DefaultPrograms {
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
 				axis == 2 ? current * Static.sixteenth : 0);
-			data.cache.setValue(cacheid, current);
+			data.cache.set(this, current);
 		}
 
 		@Override
@@ -879,11 +871,14 @@ public class DefaultPrograms {
 	}
 	
 	public static class AttributeVisible implements Program {
-		
-		private Attribute<?> attr; private String attribute; boolean equals;
+
+		private Attribute<?> attr;
+		private String attribute;
+		private boolean equals;
 		
 		public AttributeVisible(String attribute, boolean equals){
-			this.attribute = attribute; this.equals = equals;
+			this.attribute = attribute;
+			this.equals = equals;
 		}
 
 		@Override
@@ -891,8 +886,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			attr = data.vehicle.getAttribute(attribute); if(attr == null) return;
-			if(attr.asBoolean() != equals) list.visible = false;
+			if(data.vehicle.getAttributeBoolean(attribute, !equals) != equals) list.visible = false;
 		}
 		
 		@Override
@@ -909,7 +903,6 @@ public class DefaultPrograms {
 
 	public static class AttributeLights extends AttributeBased {
 
-		private Attribute<?> attr;
 		private boolean equals, did;
 
 		public AttributeLights(String attr, boolean eq){
@@ -1818,22 +1811,10 @@ public class DefaultPrograms {
 	}
 	
 	public static abstract class Duplicable implements Program {
-		
-		private static final TreeMap<String, Integer> linked = new TreeMap<>();
-		protected String cacheid;
 
 		@Override
 		public void init(ModelGroup list){
-			if(cacheid != null) return;
-			String id = id();
-			if(linked.containsKey(id)){
-				cacheid = id + "_" + linked.get(id);
-				linked.put(id, linked.get(id) + 1);
-			}
-			else{
-				cacheid = id + "_0";
-				linked.put(id, 1);
-			}
+			//
 		}
 		
 	}
@@ -1841,15 +1822,15 @@ public class DefaultPrograms {
 	public static class Rotator extends Duplicable {
 		
 		private float min, max, step = 1;
-		private float current, dir, defrot;
+		private float defrot;
+		private Float[] cd;
 		private int axis;
-		private boolean loop, override;
-		private String cacheids;
+		private boolean loop;
+		private boolean override;
 		
-		public Rotator(float min, float max, float step, int axis, Float defrot, boolean loop, boolean ntadd){
-			this.override = true;
-			this.min = min; 
-			this.max = max;
+		public Rotator(float mn, float mx, float step, int axis, Float defrot, boolean loop, boolean ntadd){
+			this.min = mn;
+			this.max = mx;
 			this.step = step;
 			this.axis = axis;
 			this.defrot = defrot == null ? 0 : defrot;
@@ -1868,43 +1849,41 @@ public class DefaultPrograms {
 		@Override
 		public void init(ModelGroup list){
 			super.init(list);
-			cacheids = cacheid + "s";
 		}
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			current = data.cache.getValue(cacheid, 0f);
-			dir = data.cache.getValue(cacheids, step);
-			current += dir;
-			if(current > max){
+			cd = data.cache.get(this, FLOAT2_SUPP);
+			if(cd[1] == 0f) cd[1] = step;
+			cd[0] += cd[1];
+			if(cd[0] > max){
 				if(loop){
-					current = min + (current - max);
-					data.cache.setValue(cacheids, dir);
+					cd[0] = min + (cd[0] - max);
+					cd[1] = step;
 				}
 				else{
-					current = max - (current - max);
-					data.cache.setValue(cacheids, -dir);
+					cd[0] = max - (cd[0] - max);
+					cd[1] = -step;
 				}
 			}
-			if(current < min){
+			if(cd[0] < min){
 				if(loop){
-					current = max + (current - min);
-					data.cache.setValue(cacheids, dir);
+					cd[0] = max + (cd[0] - min);
+					cd[1] = step;
 				}
 				else{
-					current = min - (current - min);
-					data.cache.setValue(cacheids, -dir);
+					cd[0] = min - (cd[0] - min);
+					cd[1] = -step;
 				}
 			}
-			list.rotate(current + defrot, axis, override);
-			data.cache.setValue(cacheid, current);
+			list.rotate(cd[0] + defrot, axis, override);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			list.rotate(override ? defrot : -(current + defrot), axis, override);
+			list.rotate(override ? defrot : -(cd[0] + defrot), axis, override);
 		}
 		
 
@@ -1926,9 +1905,8 @@ public class DefaultPrograms {
 		
 		private boolean loop;
 		private float min, max, step;
-		private float current, dir;
+		private Float[] cd;
 		private int axis;
-		private String cacheids;
 		
 		public Translator(float min, float max, float step, int axis, boolean loop){
 			this.axis = axis;
@@ -1946,50 +1924,48 @@ public class DefaultPrograms {
 		@Override
 		public void init(ModelGroup list){
 			super.init(list);
-			cacheids = cacheid + "s";
 		}
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			current = data.cache.getValue(cacheid, 0f);
-			dir = data.cache.getValue(cacheids, step);
-			current += dir;
-			if(current > max){
+			cd = data.cache.get(this, FLOAT2_SUPP);
+			if(cd[1] == 0) cd[1] = step;
+			cd[0] += cd[1];
+			if(cd[0] > max){
 				if(loop){
-					current = min + (current - max);
-					data.cache.setValue(cacheids, dir);
+					cd[0] = min + (cd[0] - max);
+					cd[1] = step;
 				}
 				else{
-					current = max - (current - max);
-					data.cache.setValue(cacheids, -dir);
+					cd[0] = max - (cd[0] - max);
+					cd[1] = -step;
 				}
 			}
-			if(current < min){
+			if(cd[0] < min){
 				if(loop){
-					current = max + (current - min);
-					data.cache.setValue(cacheids, dir);
+					cd[0] = max + (cd[0] - min);
+					cd[1] = step;
 				}
 				else{
-					current = min - (current - min);
-					data.cache.setValue(cacheids, -dir);
+					cd[0] = min - (cd[0] - min);
+					cd[1] = -step;
 				}
 			}
 			//GL11.glPushMatrix();
 			GL11.glTranslatef(
-				axis == 0 ? current * Static.sixteenth : 0,
-				axis == 1 ? current * Static.sixteenth : 0,
-				axis == 2 ? current * Static.sixteenth : 0);
-			data.cache.setValue(cacheid, current);
+				axis == 0 ? cd[0] * Static.sixteenth : 0,
+				axis == 1 ? cd[0] * Static.sixteenth : 0,
+				axis == 2 ? cd[0] * Static.sixteenth : 0);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
 			GL11.glTranslatef(
-				axis == 0 ? current * -Static.sixteenth : 0,
-				axis == 1 ? current * -Static.sixteenth : 0,
-				axis == 2 ? current * -Static.sixteenth : 0);
+				axis == 0 ? cd[0] * -Static.sixteenth : 0,
+				axis == 1 ? cd[0] * -Static.sixteenth : 0,
+				axis == 2 ? cd[0] * -Static.sixteenth : 0);
 			//GL11.glPopMatrix();
 		}
 

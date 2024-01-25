@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -31,6 +32,22 @@ public class BlockPrograms {
         ModelGroup.PROGRAMS.add(new Block4x4RotVisible(0));
         ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
         ModelGroup.PROGRAMS.add(new BlockFacePlayer(0, 0, 0));
+        ModelGroup.PROGRAMS.add(new DefaultPrograms.AlwaysGlow(){
+            public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+                return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() == 1;
+            }
+            public String id(){
+                return "fvtm:basic_signal_clear";
+            }
+        });
+        ModelGroup.PROGRAMS.add(new DefaultPrograms.AlwaysGlow(){
+            public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+                return data.tile == null || ((SignalTileEntity)data.tile).getSignalState() == 0;
+            }
+            public String id(){
+                return "fvtm:basic_signal_stop";
+            }
+        });
     }
 
     public static abstract class BlockBoolBased implements Program {

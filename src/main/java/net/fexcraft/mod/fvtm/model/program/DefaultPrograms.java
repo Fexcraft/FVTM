@@ -60,60 +60,321 @@ import org.lwjgl.opengl.GL12;
 public class DefaultPrograms {
 
 	public static boolean DIDLOAD = false, BLINKER_TOGGLE;
+	public static Program GLOW;
 	public static Timer BLINKER_TIMER;
 	
 	public static void init(){
-		ModelGroup.PROGRAMS.add(RGB_PRIMARY);
-		ModelGroup.PROGRAMS.add(RGB_SECONDARY);
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:rgb_primary";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				if(data.color != null) data.color.getPrimaryColor().glColorApply();
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				RGB.glColorReset();
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:rgb_secondary";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				if(data.color != null) data.color.getSecondaryColor().glColorApply();
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				RGB.glColorReset();
+			}
+		});
 		ModelGroup.PROGRAMS.add(new RGBCustom(0xffffff));
 		ModelGroup.PROGRAMS.add(new RGBChannel("custom"));
-		ModelGroup.PROGRAMS.add(INVISIBLE);
-		ModelGroup.PROGRAMS.add(ALWAYS_GLOW);
-		ModelGroup.PROGRAMS.add(LIGHTS);
-		ModelGroup.PROGRAMS.add(FRONT_LIGHTS);
-		ModelGroup.PROGRAMS.add(BACK_LIGHTS);
-		ModelGroup.PROGRAMS.add(FOG_LIGHTS);
-		ModelGroup.PROGRAMS.add(LONG_LIGHTS);
-		ModelGroup.PROGRAMS.add(BRAKE_LIGHTS);
-		ModelGroup.PROGRAMS.add(REVERSE_LIGHTS);
-		ModelGroup.PROGRAMS.add(TURN_SIGNAL_LEFT);
-		ModelGroup.PROGRAMS.add(TURN_SIGNAL_RIGHT);
-		ModelGroup.PROGRAMS.add(WARNING_LIGHTS);
-		ModelGroup.PROGRAMS.add(BACK_LIGHTS_SIGNAL_LEFT);
-		ModelGroup.PROGRAMS.add(BACK_LIGHTS_SIGNAL_RIGHT);
-		ModelGroup.PROGRAMS.add(WINDOW);
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:hide";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				list.visible = false;
+			}
+			@Override
+			public void post(ModelGroup list, ModelRenderData data){
+				list.visible = true;
+			}
+		});
+		ModelGroup.PROGRAMS.add(GLOW = new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return true;
+			}
+			public String id(){
+				return "fvtm:glow";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState();
+			}
+			public String id(){
+				return "fvtm:lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState();
+			}
+			public String id(){
+				return "fvtm:front_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState() || (data.entity != null && ((RootVehicle)data.entity).isBraking());
+			}
+			public String id(){
+				return "fvtm:back_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getFogLightsState();
+			}
+			public String id(){
+				return "fvtm:fog_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLongLightsState();
+			}
+			public String id(){
+				return "fvtm:long_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return (data.entity != null && ((RootVehicle)data.entity).isBraking());
+			}
+			public String id(){
+				return "fvtm:brake_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getThrottle() < -0.01;
+			}
+			public String id(){
+				return "fvtm:reverse_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
+			}
+			public String id(){
+				return "fvtm:turn_signal_left";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
+			}
+			public String id(){
+				return "fvtm:turn_signal_right";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return BLINKER_TOGGLE && data.vehicle.getWarningLights();
+			}
+			public String id(){
+				return "fvtm:warning_lights";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+				else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+			}
+			public String id(){
+				return "fvtm:back_lights_signal_left";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+				else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+			}
+			public String id(){
+				return "fvtm:back_lights_signal_right";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Window());
 		ModelGroup.PROGRAMS.add(new WindowTinted());
-		ModelGroup.PROGRAMS.add(WHEEL_AUTO_ALL);
-		ModelGroup.PROGRAMS.add(WHEEL_AUTO_STEERING);
-		ModelGroup.PROGRAMS.add(WHEEL_AUTO_ALL_OPPOSITE);
-		ModelGroup.PROGRAMS.add(WHEEL_AUTO_STEERING_OPPOSITE);
-		ModelGroup.PROGRAMS.add(NO_CULLFACE);
-		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 0));//jtmt/obj init only
-		ModelGroup.PROGRAMS.add(new SteeringWheelCentered(0, 0));//jtmt/obj init only
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_Z);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_X);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_Y);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_ZN);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_XN);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_YN);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_CZ);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_CX);
-		ModelGroup.PROGRAMS.add(STEERING_WHEEL_CY);
+		ModelGroup.PROGRAMS.add(new Program(){
+			private WheelSlot slot;
+			private AttrFloat attr = null;
+			private float am;
+
+			public String id(){
+				return "fvtm:wheel_auto_all";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.steering){
+					attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
+					am = attr.initial + Minecraft.getMinecraft().getRenderPartialTicks() * (attr.value - attr.initial);
+					GL11.glRotatef(-am, 0, 1, 0);
+				}
+				GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
+				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
+				GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
+				if(slot != null && slot.steering) GL11.glRotatef(am, 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_steering";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
+				if(slot != null && slot.steering)
+					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				if(slot != null && slot.steering)
+					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_all_opposite";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.steering)
+					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+				GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
+				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
+				GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
+				if(slot != null && slot.steering)
+					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_steering_opposite";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
+				if(slot != null && slot.steering)
+					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				if(slot != null && slot.steering)
+					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:no_cullface";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				GL11.glDisable(GL11.GL_CULL_FACE);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				GL11.glEnable(GL11.GL_CULL_FACE);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 0));
+		ModelGroup.PROGRAMS.add(new SteeringWheelCentered(0, 0));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f, false));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f, false));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f, false));
+		ModelGroup.PROGRAMS.add(new SteeringWheelCentered(2, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheelCentered(0, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheelCentered(1, 1f));
 		//
-		ModelGroup.PROGRAMS.add(LIGHTS_RAIL_FORWARD);
-		ModelGroup.PROGRAMS.add(LIGHTS_RAIL_BACKWARD);
-		ModelGroup.PROGRAMS.add(BOGIE_AUTO);
-		ModelGroup.PROGRAMS.add(BOGIE_AUTO_OPPOSITE);
-		ModelGroup.PROGRAMS.add(BOGIE_FRONT);
-		ModelGroup.PROGRAMS.add(BOGIE_REAR);
-		//
-		ModelGroup.PROGRAMS.add(BASIC_SIGNAL_CLEAR);
-		ModelGroup.PROGRAMS.add(BASIC_SIGNAL_STOP);
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean();
+			}
+			public String id(){
+				return "fvtm:lights_rail_forward";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean();
+			}
+			public String id(){
+				return "fvtm:lights_rail_backward";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_auto";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_auto_opposite";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_front";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(-data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_rear";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				GL11.glRotatef(-data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+			}
+		});
 		//
 		ModelGroup.PROGRAMS.add(new Scale(1f));
 		ModelGroup.PROGRAMS.add(new Scale3D(1f, 1f, 1f));
-		ModelGroup.PROGRAMS.add(TRANSPARENT);
-		ModelGroup.PROGRAMS.add(WINDOW);
+		ModelGroup.PROGRAMS.add(new Transparent(63f, 63f));
 		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
@@ -122,10 +383,51 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
-		ModelGroup.PROGRAMS.add(TEXTURE_BINDER_SELECTED);
-		ModelGroup.PROGRAMS.add(TEXTURE_BINDER_BLOCK_4x4ROT);
-		ModelGroup.PROGRAMS.add(TEXTURE_BINDER_BLOCK_VARIANT);
-		ModelGroup.PROGRAMS.add(RESCALE_NORMAL);
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bind_selected_texture";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				TexUtil.bindTexture(data.texture.getCurrentTexture());
+			}
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bind_block_4x4rot_texture";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				if(data.texture == null || data.tile == null) return;
+				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata() / 4));
+			}
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bind_block_variant_texture";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata()));
+			}
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:rescale_normal";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			}
+		});
 		ModelGroup.PROGRAMS.add(new TextRenderer(0, 0, 0, 0, 0, 0, 0, true));
 		ModelGroup.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
 		ModelGroup.PROGRAMS.add(new Rotator(0, 0, 0, 0, null, false, false));//parsed init only
@@ -138,26 +440,6 @@ public class DefaultPrograms {
 		//
 		DIDLOAD = true;
 	}
-
-	@SuppressWarnings("deprecation")
-	public static final Program RGB_PRIMARY = new Program(){
-		@Override
-		public String id(){ return "fvtm:rgb_primary"; }
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){ if(data.color != null) data.color.getPrimaryColor().glColorApply(); }
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
-	};
-
-	@SuppressWarnings("deprecation")
-	public static final Program RGB_SECONDARY = new Program(){
-		@Override
-		public String id(){ return "fvtm:rgb_secondary"; }
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){ if(data.color != null) data.color.getSecondaryColor().glColorApply(); }
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){ RGB.glColorReset(); }
-	};
 	
 	public static class RGBCustom implements Program {
 		
@@ -223,161 +505,6 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static final Program INVISIBLE = new Program(){
-		@Override
-		public String id(){ return "fvtm:hide"; }
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){ list.visible = false; }
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){ list.visible = true; }
-	}, HIDE = INVISIBLE;
-	
-	public static final Program ALWAYS_GLOW = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return true; }
-		@Override
-		public String id(){ return "fvtm:glow"; }
-	}, GLOW = ALWAYS_GLOW;
-	
-	public static final Program LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState(); }
-		@Override
-		public String id(){ return "fvtm:lights"; }
-	};
-	
-	public static final Program FRONT_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState(); }
-		@Override
-		public String id(){ return "fvtm:front_lights"; }
-	};
-	
-	public static final Program BACK_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.entity != null && ((RootVehicle)data.entity).isBraking()); }//TODO rear+brake lights instead
-		@Override
-		public String id(){ return "fvtm:back_lights"; }
-	};
-	public static final Program REAR_LIGHTS = BACK_LIGHTS;
-	
-	public static final Program FOG_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getFogLightsState(); }
-		@Override
-		public String id(){ return "fvtm:fog_lights"; }
-	};
-	public static final Program LONG_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLongLightsState(); }
-		@Override
-		public String id(){ return "fvtm:long_lights"; }
-	};
-	
-	public static final Program REVERSE_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getThrottle() < -0.01; }
-		@Override
-		public String id(){ return "fvtm:reverse_lights"; }
-	};
-	public static final Program BRAKE_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return (data.entity != null && ((RootVehicle)data.entity).isBraking()); }
-		@Override
-		public String id(){ return "fvtm:brake_lights"; }
-	};
-	
-	public static final Program LIGHTS_RAIL_FORWARD = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean(); }
-		@Override
-		public String id(){ return "fvtm:lights_rail_forward"; }
-	};
-	
-	public static final Program LIGHTS_RAIL_BACKWARD = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean(); }
-		@Override
-		public String id(){ return "fvtm:lights_rail_backward"; }
-	};
-	
-	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()); }
-		@Override
-		public String id(){ return "fvtm:turn_signal_left"; }
-	};
-	
-	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()); }
-		@Override
-		public String id(){ return "fvtm:turn_signal_right"; }
-	};
-	
-	public static final Program WARNING_LIGHTS = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return BLINKER_TOGGLE && data.vehicle.getWarningLights(); }
-		@Override
-		public String id(){ return "fvtm:warning_lights"; }
-	};
-	
-	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;
-	
-	public static final Program BACK_LIGHTS_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
-			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
-		}
-		@Override
-		public String id(){ return "fvtm:back_lights_signal_left"; }
-	};
-	
-	public static final Program BACK_LIGHTS_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
-			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
-		}
-		@Override
-		public String id(){ return "fvtm:back_lights_signal_right"; }
-	};
-	
-	public static final Program TAIL_LIGHTS_SIGNAL_LEFT = BACK_LIGHTS_SIGNAL_LEFT;
-	public static final Program TAIL_LIGHTS_SIGNAL_RIGHT = BACK_LIGHTS_SIGNAL_RIGHT;
-	
-	//
-	
-	public static final Program BASIC_SIGNAL_CLEAR = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-			return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() == 1;
-		}
-		@Override
-		public String id(){ return "fvtm:basic_signal_clear"; }
-	};
-	public static final Program BASIC_SIGNAL_GREEN = BASIC_SIGNAL_CLEAR;
-	
-	public static final Program BASIC_SIGNAL_STOP = new AlwaysGlow(){
-		@Override
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-			return data.tile == null || ((SignalTileEntity)data.tile).getSignalState() == 0;
-		}
-		@Override
-		public String id(){ return "fvtm:basic_signal_stop"; }
-	};
-	public static final Program BASIC_SIGNAL_RED = BASIC_SIGNAL_STOP;
-	
-	//
-	
-	public static final Program TRANSPARENT = new Transparent(63f, 63f){
-		@Override
-		public String id(){ return "fvtm:transparent"; }
-	};
-	
-	public static final Window WINDOW = new Window();
-	
 	public static final class Window implements Program {
 		
 		public Window(){}
@@ -402,6 +529,7 @@ public class DefaultPrograms {
 		public String id(){
 			return "fvtm:window";
 		}
+
 		@Override
 		public RenderOrder order(){
 			return RenderOrder.LAST;
@@ -459,104 +587,6 @@ public class DefaultPrograms {
 		}
 
 	}
-	
-	public static final Program WHEEL_AUTO_ALL = new Program(){
-		
-		private WheelSlot slot;
-		private AttrFloat attr = null;
-		private float am;
-		
-		@Override
-		public String id(){ return "fvtm:wheel_auto_all"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.steering){
-				attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
-				am = attr.initial + Minecraft.getMinecraft().getRenderPartialTicks() * (attr.value - attr.initial);
-				GL11.glRotatef(-am, 0, 1, 0);
-			}
-			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
-			if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 1, 0, 0);
-			if(slot != null && slot.steering) GL11.glRotatef(am, 0, 1, 0);
-		}
-		
-	};
-	
-	public static final Program WHEEL_AUTO_ALL_OPPOSITE = new Program(){
-		
-		private WheelSlot slot;
-		
-		@Override
-		public String id(){ return "fvtm:wheel_auto_all_opposite"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.steering) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-			GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
-			if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-			GL11.glRotatef(-data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
-			if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-		}
-		
-	};
-	
-	public static final Program WHEEL_AUTO_STEERING = new Program(){
-		
-		private WheelSlot slot;
-		
-		@Override
-		public String id(){ return "fvtm:wheel_auto_steering"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
-			if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(slot != null && slot.steering) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-			if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-		}
-		
-	};
-	
-	public static final Program WHEEL_AUTO_STEERING_OPPOSITE = new Program(){
-		
-		private WheelSlot slot;
-		
-		@Override
-		public String id(){ return "fvtm:wheel_auto_steering_opposite"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
-			if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
-			if(slot != null && slot.steering) GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-			if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-		}
-		
-	};
 
 	public static final Program BOGIE_AXLE_WHEEL = new Program(){
 		
@@ -574,84 +604,6 @@ public class DefaultPrograms {
 		}
 		
 	};
-
-	public static final Program BOGIE_AUTO = new Program(){
-		
-		@Override
-		public String id(){ return "fvtm:bogie_auto"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
-		}
-		
-	};
-
-	public static final Program BOGIE_AUTO_OPPOSITE = new Program(){
-		
-		@Override
-		public String id(){ return "fvtm:bogie_auto_opposite"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
-		}
-		
-	};
-	
-	public static final Program BOGIE_FRONT = new Program(){
-		
-		@Override
-		public String id(){ return "fvtm:bogie_front"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
-		}
-		
-	};
-	
-	public static final Program BOGIE_REAR = new Program(){
-		
-		@Override
-		public String id(){ return "fvtm:bogie_rear"; }
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
-		}
-		
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
-		}
-		
-	};
-	
-	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f);
-	public static final Program STEERING_WHEEL_X = new SteeringWheel(0, 1f);
-	public static final Program STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
-	public static final Program STEERING_WHEEL_ZN = new SteeringWheel(2, 1f, false);
-	public static final Program STEERING_WHEEL_XN = new SteeringWheel(0, 1f, false);
-	public static final Program STEERING_WHEEL_YN = new SteeringWheel(1, 1f, false);
-	public static final Program STEERING_WHEEL_CZ = new SteeringWheelCentered(2, 1f);
-	public static final Program STEERING_WHEEL_CX = new SteeringWheelCentered(0, 1f);
-	public static final Program STEERING_WHEEL_CY = new SteeringWheelCentered(1, 1f);
 	
 	public static class SteeringWheel implements Program {
 		
@@ -944,7 +896,7 @@ public class DefaultPrograms {
 		
 		public AlwaysGlow(){ super(189f, 4f); }
 		
-		public boolean shouldGlow(ModelGroup list, ModelRenderData data){ return true; }
+		public abstract boolean shouldGlow(ModelGroup list, ModelRenderData data);
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
@@ -964,7 +916,15 @@ public class DefaultPrograms {
 		
 		protected float lx, ly, x, y;
 		
-		public Transparent(float mapx, float mapy){ x = mapx; y = mapy; }
+		public Transparent(float mapx, float mapy){
+			x = mapx;
+			y = mapy;
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:transparent";
+		}
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
@@ -1051,21 +1011,6 @@ public class DefaultPrograms {
 
 	}
 	
-	public static final Program NO_CULLFACE = new Program(){
-		@Override
-		public String id(){ return "fvtm:no_cullface"; }
-		//
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-            GL11.glDisable(GL11.GL_CULL_FACE);
-		}
-		//
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-            GL11.glEnable(GL11.GL_CULL_FACE);
-		}
-	};
-	
 	public static class Scale implements Program {
 		
 		private float scale;
@@ -1126,7 +1071,7 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static class LightBeam implements Program {
+	public static abstract class LightBeam implements Program {
 
 		public Vec3d pos;
 		public ModelRendererTurbo shape;
@@ -1567,83 +1512,6 @@ public class DefaultPrograms {
 		}
 		
 	}
-	
-	public static Program TEXTURE_BINDER_SELECTED = new Program(){
-
-		@Override
-		public String id(){
-			return "fvtm:bind_selected_texture";
-		}
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			TexUtil.bindTexture(data.texture.getCurrentTexture());
-		}
-
-		@Override
-		public boolean post(){
-			return false;
-		}
-		
-	};
-	
-	public static Program TEXTURE_BINDER_BLOCK_4x4ROT = new Program(){
-
-		@Override
-		public String id(){
-			return "fvtm:bind_block_4x4rot_texture";
-		}
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.texture == null || data.tile == null) return;
-			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata() / 4));
-		}
-
-		@Override
-		public boolean post(){
-			return false;
-		}
-		
-	};
-	
-	public static Program TEXTURE_BINDER_BLOCK_VARIANT = new Program(){
-
-		@Override
-		public String id(){
-			return "fvtm:bind_block_variant_texture";
-		}
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata()));
-		}
-
-		@Override
-		public boolean post(){
-			return false;
-		}
-		
-	};
-	
-	public static Program RESCALE_NORMAL = new Program(){
-
-		@Override
-		public String id(){
-			return "fvtm:rescale_normal";
-		}
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		}
-		
-	}, GL_RESCALE_NORMAL = RESCALE_NORMAL;
 	
 	public static class TextRenderer extends Transparent {
 		

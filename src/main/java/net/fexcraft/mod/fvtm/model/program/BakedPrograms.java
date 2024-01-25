@@ -16,7 +16,7 @@ public class BakedPrograms {
         ModelGroup.PROGRAMS.add(new ColorSetter(0x32a852));
     }
 
-    public static class BakedProgram implements Program {
+    public static abstract class BakedProgram implements Program {
 
         @Override
         public boolean pre(){

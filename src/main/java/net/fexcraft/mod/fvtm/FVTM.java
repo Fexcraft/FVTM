@@ -24,7 +24,7 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.entity.Decoration;

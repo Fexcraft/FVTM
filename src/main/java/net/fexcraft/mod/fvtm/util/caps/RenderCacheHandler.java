@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -42,7 +44,7 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public NBTBase writeNBT(Capability<RenderCache> capability, RenderCache instance, EnumFacing side){
 			NBTTagCompound compound = new NBTTagCompound();
-			instance.getValues().forEach((key, value) -> {
+			instance.map().forEach((key, value) -> {
 				compound.setFloat(key, value);
 			}); return compound;
 		}
@@ -51,7 +53,9 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 		public void readNBT(Capability<RenderCache> capability, RenderCache instance, EnumFacing side, NBTBase nbt){
 			if(nbt == null || nbt instanceof NBTTagCompound == false) return;
 			NBTTagCompound compound = (NBTTagCompound)nbt; if(compound.isEmpty()) return;
-			for(String str : compound.getKeySet()){ instance.setValue(str, compound.getFloat(str)); }
+			for(String str : compound.getKeySet()){
+				instance.set(str, compound.getFloat(str));
+			}
 		}
 		
 	}
@@ -67,28 +71,36 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 	
 	public static class Instance implements RenderCache {
 		
-		protected TreeMap<String, Float> cache = new TreeMap<>();
+		protected LinkedHashMap<String, Float> cache = new LinkedHashMap<>();
 
 		public Instance(){}
 
 		@Override
-		public TreeMap<String, Float> getValues(){
+		public Map<String, Float> map(){
 			return cache;
 		}
 
 		@Override
-		public Float getValue(String id){
+		public Set<String> keys(){
+			return cache.keySet();
+		}
+
+		@Override
+		public Float get(String id){
 			return cache.get(id);
 		}
 
 		@Override
-		public Float getValue(String id, Float def){
-			return cache.containsKey(id) ? cache.get(id) : def;
+		public Float get(String id, Float def){
+			Float val = cache.get(id);
+			return val == null ? def : val;
 		}
 
 		@Override
-		public Float setValue(String id, Float value){
-			if(id == null) return 0f; if(value == null) cache.remove(id); return cache.put(id, value);
+		public Float set(String id, Float value){
+			if(id == null) return 0f;
+			if(value == null) cache.remove(id);
+			return cache.put(id, value);
 		}
 		
 	}

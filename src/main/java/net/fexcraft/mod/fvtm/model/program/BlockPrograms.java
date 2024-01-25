@@ -15,6 +15,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.TreeMap;
 
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
+
 /**
  * Dedicated Programs for Block Models
  *
@@ -33,8 +35,7 @@ public class BlockPrograms {
 
     public static abstract class BlockBoolBased implements Program {
 
-        private static final TreeMap<String, Integer> linked = new TreeMap<>();
-        protected String key, cacheid;
+        protected String key;
 
         public BlockBoolBased(String key){
             this.key = key;
@@ -42,15 +43,7 @@ public class BlockPrograms {
 
         @Override
         public void init(ModelGroup list){
-            if(cacheid != null) return;
-            if(linked.containsKey(key)){
-                cacheid = key + "_" + linked.get(key);
-                linked.put(key, linked.get(key) + 1);
-            }
-            else{
-                cacheid = key + "_0";
-                linked.put(key, 1);
-            }
+            //
         }
 
     }
@@ -64,12 +57,12 @@ public class BlockPrograms {
         private boolean equals, override;
         private float defrot;
 
-        public BlockBoolRotator(String key, boolean equals, float min, float max, float step, int axis, Float defrot){
+        public BlockBoolRotator(String key, boolean equals, float mn, float mx, float step, int axis, Float defrot){
             super(key);
             this.equals = equals;
             this.override = true;
-            this.min = min;
-            this.max = max;
+            this.min = mn;
+            this.max = mx;
             this.step = step;
             this.axis = axis;
             this.defrot = defrot == null ? 0 : defrot;
@@ -91,13 +84,13 @@ public class BlockPrograms {
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
             if(data.cache == null || data.block == null) return;
-            current = data.cache.getValue(cacheid);
+            current = data.cache.get(this, FLOAT_SUPP);
             if(current == null) current = 0f;
             current = data.block.getFunctionBool(key) == equals ? current + step : current - step;
             if(current > max) current = max;
             if(current < min) current = min;
             list.rotate(current + defrot, axis, override);
-            data.cache.setValue(cacheid, current);
+            data.cache.set(this, current);
         }
 
         @Override
@@ -146,7 +139,7 @@ public class BlockPrograms {
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
             if(data.cache == null || data.block == null) return;
-            current = data.cache.getValue(cacheid);
+            current = data.cache.get(this, FLOAT_SUPP);
             if(current == null) current = 0f;
             current = data.block.getFunctionBool(key) == bool ? current + step : current - step;
             if(current > max) current = max; if(current < min) current = min;
@@ -155,7 +148,7 @@ public class BlockPrograms {
                     axis == 0 ? current * Static.sixteenth : 0,
                     axis == 1 ? current * Static.sixteenth : 0,
                     axis == 2 ? current * Static.sixteenth : 0);
-            data.cache.setValue(cacheid, current);
+            data.cache.set(this, current);
         }
 
         @Override

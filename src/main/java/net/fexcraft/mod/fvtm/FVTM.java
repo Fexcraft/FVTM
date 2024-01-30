@@ -66,7 +66,7 @@ import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.client.CTab;
+import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;

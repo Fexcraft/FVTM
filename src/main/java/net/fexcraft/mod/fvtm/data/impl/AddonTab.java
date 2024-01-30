@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.registry.CreativeTab;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.client.CTab;
+import net.fexcraft.mod.fvtm.util.CTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;

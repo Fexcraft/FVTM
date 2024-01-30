@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.uni.UniReg;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -88,9 +89,16 @@ public class EntityWI extends EntityW {
 	}
 
 	@Override
+	@Deprecated
 	public void openUI(int ui, WorldW world, V3I pos){
 		if(entity instanceof EntityPlayer == false) return;
 		((EntityPlayer)entity).openGui(FVTM.getInstance(), ui, world.local(), pos.x, pos.y, pos.z);
+	}
+
+	@Override
+	public void openUI(String id, V3I pos){
+		if(entity instanceof EntityPlayer == false) return;
+		((EntityPlayer)entity).openGui(FVTM.getInstance(), UniReg.getUIID(id), entity.world, pos.x, pos.y, pos.z);
 	}
 
 	@Override

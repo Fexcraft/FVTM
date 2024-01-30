@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.ui.DecoEditor;
@@ -21,7 +22,7 @@ public class DecoContainer extends ContainerInterface {
 	protected DecorationData selected;
 
 	public DecoContainer(JsonMap map, EntityPlayer player, int entid){
-		super(map, WrapperHolder.getEntity(player));
+		super(map, WrapperHolder.getEntity(player), new V3I(entid, 0, 0));
 		entity = (Decoration)player.world.getEntityByID(entid);
 	}
 

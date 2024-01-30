@@ -68,7 +68,7 @@ public class InventoryBlockFunction extends BlockFunction {
 		if(!main) return false;
 		int ui = handler.type.isFluid() ? GuiHandler.BLOCK_INVENTORY_FLUID : GuiHandler.BLOCK_INVENTORY_ITEM;
 		if(key != null){
-			BlockEntity tile = world.getBlockEntity(pos);
+			BlockEntity tile = (BlockEntity)world.getBlockEntity(pos);
 			if(tile.getBlockData().getFunctionBool(key) != bool) return false;
 		}
 		player.openUI(ui, world, pos);

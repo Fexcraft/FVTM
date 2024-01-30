@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.construct;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -14,8 +15,9 @@ import net.minecraft.util.math.BlockPos;
 public class ConstructorContainer extends ContainerInterface {
 
 	private ConstructorEntity tile;
+
 	public ConstructorContainer(JsonMap map, EntityPlayer player, int x, int y, int z){
-		super(map, WrapperHolder.getEntity(player));
+		super(map, WrapperHolder.getEntity(player), new V3I(x, y, z));
 		tile = (ConstructorEntity)player.world.getTileEntity(new BlockPos(x, y, z));
 	}
 

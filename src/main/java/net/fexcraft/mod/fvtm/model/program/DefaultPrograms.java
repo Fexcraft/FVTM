@@ -1983,15 +1983,15 @@ public class DefaultPrograms {
 			progress += data.partialticks;
 			if(progress > time) progress = time;
 			mul = progress / time;
+			data.cache.set(this, progress);
 			list.rotate((mul = from + (to - from) * mul) + def, axis, or);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			list.rotate(or ? def : -(mul + def), axis, or);
+			list.rotate(or ? def : -mul + def, axis, or);
 		}
-
 
 		@Override
 		public Program parse(String[] args){
@@ -1999,9 +1999,21 @@ public class DefaultPrograms {
 			rot.axis = Integer.parseInt(args[0]);
 			rot.from = Float.parseFloat(args[1]);
 			rot.to = Float.parseFloat(args[2]);
-			rot.def = Float.parseFloat(args[3]);
 			rot.time = Float.parseFloat(args[3]);
-			rot.or = Boolean.parseBoolean(args[3]);
+			rot.def = args.length > 4 ? Float.parseFloat(args[4]) : 0;
+			rot.or = args.length > 5 && Boolean.parseBoolean(args[5]);
+			return rot;
+		}
+
+		@Override
+		public Program mirror(){
+			RotateTo rot = new RotateTo();
+			rot.axis = axis;
+			rot.from = to;
+			rot.to = from;
+			rot.def = def;
+			rot.time = time;
+			rot.or = or;
 			return rot;
 		}
 
@@ -2046,6 +2058,19 @@ public class DefaultPrograms {
 			trs.ty = Float.parseFloat(args[4]);
 			trs.tz = Float.parseFloat(args[5]);
 			trs.time = Float.parseFloat(args[6]);
+			return trs;
+		}
+
+		@Override
+		public Program mirror(){
+			TranslateTo trs = new TranslateTo();
+			trs.fx = tx;
+			trs.fy = ty;
+			trs.fz = tz;
+			trs.tx = fx;
+			trs.ty = fy;
+			trs.tz = fz;
+			trs.time = time;
 			return trs;
 		}
 

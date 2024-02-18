@@ -28,7 +28,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
 	public static final ResourceLocation lifttexture = new ResourceLocation("fvtm:textures/blocks/constructor_lift.png");
 
     @Override
-    public void render(ConstCenterEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+    public void render(ConstCenterEntity tile, double posX, double posY, double posZ, float ticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         TexUtil.bindTexture(lifttexture);
@@ -102,19 +102,19 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     }
                     if(!vdata.getType().getVehicleType().isRailVehicle()) heightoffset[0] += tile.getLiftState();
                     GL11.glTranslated(0, -heightoffset[0], 0);
-                    modvec.render(RENDERDATA.set(vdata, null, null, false));
+                    modvec.render(RENDERDATA.set(vdata, null, null, false, ticks));
                     vdata.getParts().forEach((key, partdata) -> {
                         TexUtil.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
                     		PartModel.translateAndRotatePartOnSwivelPointFast(vdata, partdata);
-	                        partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false));
+	                        partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false, ticks));
             	            GL11.glPopMatrix();
                     	}
                     	else{
 							GLUtils112.translate(partdata.getInstalledPos());
                     		partdata.getInstalledRot().rotate112();
-                    		partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false));
+                    		partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false, ticks));
                     		partdata.getInstalledRot().rotate112R();
 							GLUtils112.translateR(partdata.getInstalledPos());
                     	}

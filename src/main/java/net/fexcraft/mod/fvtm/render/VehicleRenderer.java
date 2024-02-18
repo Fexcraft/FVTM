@@ -76,7 +76,7 @@ public class VehicleRenderer {
 					GL11.glPushMatrix();
 					GL11.glRotatef(180f, 0f, 0f, 1f);
 	                TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
-	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false));
+	                modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false, ticks));
 					GL11.glPopMatrix();
 	            }
 				else {
@@ -134,7 +134,7 @@ public class VehicleRenderer {
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 			translate(entry.getValue().getInstalledPos());
 			entry.getValue().getInstalledRot().rotate112();
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle, cache, entry.getValue(), entry.getKey(), false));
+			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
 			entry.getValue().getInstalledRot().rotate112R();
 			translateR(entry.getValue().getInstalledPos());
 		}

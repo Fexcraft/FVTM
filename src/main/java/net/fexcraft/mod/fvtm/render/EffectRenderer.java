@@ -103,7 +103,7 @@ public class EffectRenderer {
                 GL11.glRotated(vehrot.y, 0, 0, 1);
                 GL11.glRotated(vehrot.z, 1, 0, 0);
                 GL11.glRotatef(180f, 0f, 0f, 1f);
-				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.getEntity(), veh.getEntity().getCapability(RENDERCACHE, null), null, null, false).sep());
+				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.getEntity(), veh.getEntity().getCapability(RENDERCACHE, null), null, null, false, event.getPartialTicks()).sep());
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();

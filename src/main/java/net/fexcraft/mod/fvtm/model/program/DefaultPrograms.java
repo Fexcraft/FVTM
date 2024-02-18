@@ -1,22 +1,5 @@
 package net.fexcraft.mod.fvtm.model.program;
 
-import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
-import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT2_SUPP;
-import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
-import java.util.function.Predicate;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
@@ -24,22 +7,21 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.function.part.EngineFunction;
-import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -51,6 +33,22 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.Predicate;
+
+import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT2_SUPP;
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
+import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 /**
  * 
@@ -434,7 +432,10 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new Translator(0, 0, 0, 0, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
 		ModelGroup.PROGRAMS.add(new RenderOrderSetter(null));
+		ModelGroup.PROGRAMS.add(new RotateTo());
+		ModelGroup.PROGRAMS.add(new TranslateTo());
 		//
+		AnimationPrograms.init();
 		BlockPrograms.init();
 		BakedPrograms.init();
 		//
@@ -746,7 +747,6 @@ public class DefaultPrograms {
 			list.rotate(override ? defrot : -(current + defrot), axis, override);
 			current = 0f;
 		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -1956,6 +1956,97 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return map.get(RenderOrder.valueOf(args[0].toUpperCase()));
+		}
+
+	}
+
+	public static class RotateTo implements Program {
+
+		private float from;
+		private float to;
+		private float def;
+		private float time;
+		private float mul;
+		private int axis;
+		private boolean or;
+		private float progress;
+
+		@Override
+		public String id(){
+			return "fvtm:rotate";
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			progress = data.cache.get(this, FLOAT_SUPP);
+			progress += data.partialticks;
+			if(progress > time) progress = time;
+			mul = progress / time;
+			list.rotate((mul = from + (to - from) * mul) + def, axis, or);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			list.rotate(or ? def : -(mul + def), axis, or);
+		}
+
+
+		@Override
+		public Program parse(String[] args){
+			RotateTo rot = new RotateTo();
+			rot.axis = Integer.parseInt(args[0]);
+			rot.from = Float.parseFloat(args[1]);
+			rot.to = Float.parseFloat(args[2]);
+			rot.def = Float.parseFloat(args[3]);
+			rot.time = Float.parseFloat(args[3]);
+			rot.or = Boolean.parseBoolean(args[3]);
+			return rot;
+		}
+
+	}
+
+	public static class TranslateTo implements Program {
+
+		private float fx, fy, fz;
+		private float tx, ty, tz;
+		private float progress;
+		private float time;
+		private float mul;
+
+		@Override
+		public String id(){
+			return "fvtm:translate";
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			GL11.glPushMatrix();
+			progress = data.cache.get(this, FLOAT_SUPP);
+			progress += data.partialticks;
+			if(progress > time) progress = time;
+			mul = progress / time;
+			data.cache.set(this, progress);
+			GL11.glTranslatef(fx + (tx - fx) * mul, fy + (ty - fy) * mul, fz + (tz - fz) * mul);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			GL11.glPopMatrix();
+		}
+
+		@Override
+		public Program parse(String[] args){
+			TranslateTo trs = new TranslateTo();
+			trs.fx = Float.parseFloat(args[0]);
+			trs.fy = Float.parseFloat(args[1]);
+			trs.fz = Float.parseFloat(args[2]);
+			trs.tx = Float.parseFloat(args[3]);
+			trs.ty = Float.parseFloat(args[4]);
+			trs.tz = Float.parseFloat(args[5]);
+			trs.time = Float.parseFloat(args[6]);
+			return trs;
 		}
 
 	}

@@ -172,7 +172,7 @@ public class VehicleModel extends DefaultModel implements FCLItemModel {
 			if(modVehicle != null){
 				GL11.glPushMatrix();
 				TexUtil.bindTexture(data.getCurrentTexture());
-				modVehicle.render(RENDERDATA.set(data, null, null, false));
+				modVehicle.render(RENDERDATA.set(data, null, null, false, Minecraft.getMinecraft().getRenderPartialTicks()));
 				GL11.glPopMatrix();
 			}
 			else {

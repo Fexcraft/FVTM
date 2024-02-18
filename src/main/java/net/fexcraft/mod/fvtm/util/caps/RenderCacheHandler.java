@@ -103,7 +103,10 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public <V> V set(Program prog, V value){
-			if(value == null) objects.remove(prog);
+			if(value == null){
+				objects.remove(prog);
+				return null;
+			}
 			return (V)objects.put(prog, value);
 		}
 		

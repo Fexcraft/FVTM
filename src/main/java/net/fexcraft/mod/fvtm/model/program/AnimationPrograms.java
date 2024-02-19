@@ -58,7 +58,7 @@ public class AnimationPrograms {
 			passed = data.cache.get(this, FLOAT_BOOL_SUPP);
 			if(attr.asBoolean() != passed.bl){
 				passed.bl = attr.asBoolean();
-				for(Program prog : progs.values()) prog.reverse(data);
+				for(Program prog : progs.values()) prog.reverse(data, passed.bl);
 			}
 			active.clear();
 			if(passed.bl){

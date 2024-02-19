@@ -2013,9 +2013,9 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void reverse(ModelRenderData data){
+		public void reverse(ModelRenderData data, boolean bool){
 			progress = data.cache.get(this, FLOAT_BOOL2_SUPP);
-			progress.bl0 = !progress.bl0;
+			progress.bl0 = bool;
 		}
 
 		@Override
@@ -2069,9 +2069,9 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void reverse(ModelRenderData data){
+		public void reverse(ModelRenderData data, boolean bool){
 			progress = data.cache.get(this, FLOAT_BOOL2_SUPP);
-			progress.bl0 = !progress.bl0;
+			progress.bl0 = bool;
 		}
 
 		@Override

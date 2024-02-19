@@ -46,8 +46,7 @@ import java.util.function.Predicate;
 
 import static net.fexcraft.mod.fvtm.Config.BLINKER_INTERVAL;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
-import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT2_SUPP;
-import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.*;
 import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 /**
@@ -1965,11 +1964,12 @@ public class DefaultPrograms {
 		private float from;
 		private float to;
 		private float def;
-		private float time;
 		private float mul;
+		private int time;
 		private int axis;
 		private boolean or;
-		private float progress;
+		/** fl - ticks passed, bl0 - reversing, bl1 - paused*/
+		private FloatBool2 progress;
 
 		@Override
 		public String id(){
@@ -1979,11 +1979,18 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			progress = data.cache.get(this, FLOAT_SUPP);
-			progress += data.partialticks;
-			if(progress > time) progress = time;
-			mul = progress / time;
-			data.cache.set(this, progress);
+			progress = data.cache.get(this, FLOAT_BOOL2_SUPP);
+			if(!progress.bl1){
+				if(progress.bl0){
+					progress.fl -= data.partialticks;
+					if(progress.fl < 0) progress.fl = 0;
+				}
+				else{
+					progress.fl += data.partialticks;
+					if(progress.fl > time) progress.fl = time;
+				}
+			}
+			mul = progress.fl / time;
 			list.rotate((mul = from + (to - from) * mul) + def, axis, or);
 		}
 
@@ -1999,22 +2006,27 @@ public class DefaultPrograms {
 			rot.axis = Integer.parseInt(args[0]);
 			rot.from = Float.parseFloat(args[1]);
 			rot.to = Float.parseFloat(args[2]);
-			rot.time = Float.parseFloat(args[3]);
+			rot.time = Integer.parseInt(args[3]);
 			rot.def = args.length > 4 ? Float.parseFloat(args[4]) : 0;
 			rot.or = args.length > 5 && Boolean.parseBoolean(args[5]);
 			return rot;
 		}
 
 		@Override
-		public Program mirror(){
-			RotateTo rot = new RotateTo();
-			rot.axis = axis;
-			rot.from = to;
-			rot.to = from;
-			rot.def = def;
-			rot.time = time;
-			rot.or = or;
-			return rot;
+		public void reverse(ModelRenderData data){
+			progress = data.cache.get(this, FLOAT_BOOL2_SUPP);
+			progress.bl0 = !progress.bl0;
+		}
+
+		@Override
+		public Program pause(ModelRenderData data, boolean pause){
+			data.cache.get(this, FLOAT_BOOL2_SUPP).bl1 = pause;
+			return this;
+		}
+
+		@Override
+		public int ticktime(){
+			return time;
 		}
 
 	}
@@ -2023,9 +2035,10 @@ public class DefaultPrograms {
 
 		private float fx, fy, fz;
 		private float tx, ty, tz;
-		private float progress;
-		private float time;
+		/** fl - ticks passed, bl0 - reversing, bl1 - paused*/
+		private FloatBool2 progress;
 		private float mul;
+		private int time;
 
 		@Override
 		public String id(){
@@ -2035,17 +2048,36 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			GL11.glPushMatrix();
-			progress = data.cache.get(this, FLOAT_SUPP);
-			progress += data.partialticks;
-			if(progress > time) progress = time;
-			mul = progress / time;
-			data.cache.set(this, progress);
+			progress = data.cache.get(this, FLOAT_BOOL2_SUPP);
+			if(!progress.bl1){
+				if(progress.bl0){
+					progress.fl -= data.partialticks;
+					if(progress.fl < 0) progress.fl = 0;
+				}
+				else{
+					progress.fl += data.partialticks;
+					if(progress.fl > time) progress.fl = time;
+				}
+			}
+			mul = progress.fl / time;
 			GL11.glTranslatef(fx + (tx - fx) * mul, fy + (ty - fy) * mul, fz + (tz - fz) * mul);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			GL11.glPopMatrix();
+		}
+
+		@Override
+		public void reverse(ModelRenderData data){
+			progress = data.cache.get(this, FLOAT_BOOL2_SUPP);
+			progress.bl0 = !progress.bl0;
+		}
+
+		@Override
+		public Program pause(ModelRenderData data, boolean pause){
+			data.cache.get(this, FLOAT_BOOL2_SUPP).bl1 = pause;
+			return this;
 		}
 
 		@Override
@@ -2057,21 +2089,13 @@ public class DefaultPrograms {
 			trs.tx = Float.parseFloat(args[3]);
 			trs.ty = Float.parseFloat(args[4]);
 			trs.tz = Float.parseFloat(args[5]);
-			trs.time = Float.parseFloat(args[6]);
+			trs.time = Integer.parseInt(args[6]);
 			return trs;
 		}
 
 		@Override
-		public Program mirror(){
-			TranslateTo trs = new TranslateTo();
-			trs.fx = tx;
-			trs.fy = ty;
-			trs.fz = tz;
-			trs.tx = fx;
-			trs.ty = fy;
-			trs.tz = fz;
-			trs.time = time;
-			return trs;
+		public int ticktime(){
+			return time;
 		}
 
 	}

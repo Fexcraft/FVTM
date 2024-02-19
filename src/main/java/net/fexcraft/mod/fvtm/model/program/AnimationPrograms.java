@@ -1,16 +1,14 @@
 package net.fexcraft.mod.fvtm.model.program;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.model.Program.FunctionalProgram;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.*;
 
@@ -31,8 +29,7 @@ public class AnimationPrograms {
 	
 	public static class AttrBoolAnimation extends DefaultPrograms.AttributeBased implements AnimationRoot {
 
-		private HashMap<int[], Program> tpro = new HashMap<>();
-		private HashMap<int[], Program> fpro = new HashMap<>();
+		private HashMap<V3I, Program> progs = new HashMap<>();
 		private ArrayList<Program> active = new ArrayList<>();
 		private FloatBool passed;
 		private int time;
@@ -50,8 +47,8 @@ public class AnimationPrograms {
 		@Override
 		public void addProgram(int offset, int dur, Program prog){
 			if(prog == null) return;
-			tpro.put(new int[]{ offset, dur }, prog);
-			fpro.put(new int[]{ time - offset, time - dur }, prog.mirror());
+			if(dur <= 0) dur = time;
+			progs.put(new V3I(offset, dur, prog.ticktime()), prog);
 		}
 
 		@Override
@@ -61,29 +58,24 @@ public class AnimationPrograms {
 			passed = data.cache.get(this, FLOAT_BOOL_SUPP);
 			if(attr.asBoolean() != passed.bl){
 				passed.bl = attr.asBoolean();
-				passed.fl = 0;
-				data.cache.set(this, passed);
-				for(Program prog : tpro.values()) prog.reset(data);
-				for(Program prog : fpro.values()) prog.reset(data);
-			}
-			if(passed.fl < time){
-				passed.fl += data.partialticks;
-				data.cache.set(this, passed);
+				for(Program prog : progs.values()) prog.reverse(data);
 			}
 			active.clear();
 			if(passed.bl){
-				for(Map.Entry<int[], Program> entry : tpro.entrySet()){
-					if(entry.getKey()[0] > passed.fl) continue;
-					if(entry.getKey()[1] > 0 && entry.getKey()[1] < passed.fl) continue;
-					active.add(entry.getValue());
+				if(passed.fl < time){
+					passed.fl += data.partialticks;
+					if(passed.fl > time) passed.fl = time;
 				}
 			}
 			else{
-				for(Map.Entry<int[], Program> entry : fpro.entrySet()){
-					if(entry.getKey()[0] > passed.fl) continue;
-					if(entry.getKey()[1] > 0 && entry.getKey()[1] < passed.fl) continue;
-					active.add(entry.getValue());
+				if(passed.fl > 0){
+					passed.fl -= data.partialticks;
+					if(passed.fl < 0) passed.fl = 0;
 				}
+			}
+			for(Map.Entry<V3I, Program> entry : progs.entrySet()){
+				if(passed.fl < entry.getKey().x || passed.fl > entry.getKey().y) continue;
+				active.add(entry.getValue().pause(data, passed.fl > entry.getKey().x + entry.getKey().z));
 			}
 			for(Program program : active){
 				program.pre(list, data);

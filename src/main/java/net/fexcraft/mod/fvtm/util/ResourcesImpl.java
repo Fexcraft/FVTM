@@ -254,6 +254,7 @@ public class ResourcesImpl extends FvtmResources {
 		VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), new VehicleItem(veh))));
 		BLOCKS.forEach(blk -> blk.setItemWrapper(wrapwrapper(blk.getID(), new BlockItem(blk))));
 		CLOTHES.forEach(cth -> cth.setItemWrapper(wrapwrapper(cth.getID(), new ClothItem(cth))));
+		WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), new WireItem(wire))));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -333,7 +334,7 @@ public class ResourcesImpl extends FvtmResources {
 		//Resources.VEHICLES.forEach(veh -> veh.loadModel());
 		Resources.CONTAINERS.forEach(con -> con.loadModel());
 		Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());
-		Resources.WIRES.forEach(cloth -> cloth.loadModel());
+		//Resources.WIRES.forEach(cloth -> cloth.loadModel());
 		TrafficSignLibrary.loadModels();
 	}
 

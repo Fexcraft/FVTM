@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.model.BlockModel;
+import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

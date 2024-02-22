@@ -4,7 +4,9 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentData;
 import org.lwjgl.opengl.GL11;
 
 public class TrafficSignPrograms {
@@ -31,7 +33,7 @@ public class TrafficSignPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			data.trafficsign_compdata.channels[channel].glColorApply();
+			((ComponentData)data.trafficsign_compdata).channels[channel].glColorApply();
 		}
 		
 		@Override
@@ -96,10 +98,10 @@ public class TrafficSignPrograms {
 			if(!(list.visible = ((BaseData)data.trafficsign_compdata).sides[index])) return;
 			GL11.glPushMatrix();
 			switch(index){
-				case 0: GL11.glTranslatef(0, -(data.trafficsign_compdata.scale1 - 1) * 0.5f, 0); break;
-				case 1: GL11.glTranslatef(-(data.trafficsign_compdata.scale0 - 1) * 0.5f, 0, 0); break;
-				case 2: GL11.glTranslatef((data.trafficsign_compdata.scale0 - 1) * 0.5f, 0, 0); break;
-				case 3: GL11.glTranslatef(0, (data.trafficsign_compdata.scale1 - 1) * 0.5f, 0); break;
+				case 0: GL11.glTranslatef(0, -(((ComponentData)data.trafficsign_compdata).scale1 - 1) * 0.5f, 0); break;
+				case 1: GL11.glTranslatef(-(((ComponentData)data.trafficsign_compdata).scale0 - 1) * 0.5f, 0, 0); break;
+				case 2: GL11.glTranslatef((((ComponentData)data.trafficsign_compdata).scale0 - 1) * 0.5f, 0, 0); break;
+				case 3: GL11.glTranslatef(0, (((ComponentData)data.trafficsign_compdata).scale1 - 1) * 0.5f, 0); break;
 			}
 		}
 		
@@ -174,10 +176,10 @@ public class TrafficSignPrograms {
 			if(!list.visible) return;
 			GL11.glPushMatrix();
 			switch(idx2){
-				case 0: GL11.glTranslatef(-(data.trafficsign_compdata.scale0 - 1) * 0.5f, -(data.trafficsign_compdata.scale1 - 1) * 0.5f, 0); break;
-				case 1: GL11.glTranslatef((data.trafficsign_compdata.scale0 - 1) * 0.5f, -(data.trafficsign_compdata.scale1 - 1) * 0.5f, 0); break;
-				case 2: GL11.glTranslatef((data.trafficsign_compdata.scale0 - 1) * 0.5f, (data.trafficsign_compdata.scale1 - 1) * 0.5f, 0); break;
-				case 3: GL11.glTranslatef(-(data.trafficsign_compdata.scale0 - 1) * 0.5f, (data.trafficsign_compdata.scale1 - 1) * 0.5f, 0); break;
+				case 0: GL11.glTranslatef(-(((ComponentData)data.trafficsign_compdata).scale0 - 1) * 0.5f, -(((ComponentData)data.trafficsign_compdata).scale1 - 1) * 0.5f, 0); break;
+				case 1: GL11.glTranslatef((((ComponentData)data.trafficsign_compdata).scale0 - 1) * 0.5f, -(((ComponentData)data.trafficsign_compdata).scale1 - 1) * 0.5f, 0); break;
+				case 2: GL11.glTranslatef((((ComponentData)data.trafficsign_compdata).scale0 - 1) * 0.5f, (((ComponentData)data.trafficsign_compdata).scale1 - 1) * 0.5f, 0); break;
+				case 3: GL11.glTranslatef(-(((ComponentData)data.trafficsign_compdata).scale0 - 1) * 0.5f, (((ComponentData)data.trafficsign_compdata).scale1 - 1) * 0.5f, 0); break;
 			}
 		}
 		

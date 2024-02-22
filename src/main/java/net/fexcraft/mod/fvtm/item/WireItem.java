@@ -8,22 +8,25 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.data.ContentItem;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.WireType;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
@@ -34,26 +37,30 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem {//}, ItemTex<WireType> {
+public class WireItem extends Item implements ContentItem<WireType>, JunctionGridItem {//}, ItemTex<WireType> {
 
-    public WireItem(WireType core){
-		super(core);
-		this.setHasSubtypes(true);
-		this.setMaxStackSize(64);
-		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-		if(Static.side().isServer()) return;
-        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
+	private WireType wire;
+
+    public WireItem(WireType type){
+		super();
+		wire = type;
+		setHasSubtypes(true);
+		setMaxStackSize(1);
+		setRegistryName(wire.getID().colon());
+		setTranslationKey(wire.getID().colon());
+		if(!EnvInfo.CLIENT) return;
+		setCreativeTab((CreativeTabs)FvtmResources.INSTANCE.getCreativeTab(wire));
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){
+        tooltip.add(Formatter.format("&9Name: &7" + wire.getName()));
+        for(String s : wire.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
-        tooltip.add(Formatter.format("&9Def. Slack: &7" + type.default_slack()));
-        tooltip.add(Formatter.format("&9Customisable: &7" + type.customisable()));
+        tooltip.add(Formatter.format("&9Def. Slack: &7" + wire.getDefaultSlack()));
+        tooltip.add(Formatter.format("&9Customisable: &7" + wire.isCustomisable()));
         tooltip.add(Formatter.format("&9- &6- &9- - - - &6-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:wirepoint")){
         	tooltip.add(Formatter.format("&9Block: &7" + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint"))));
@@ -110,14 +117,19 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
 		return true;
 	}
 
-	//@Override
-	public TypeCore<WireType> getDataType(){
-		return type;
-	}
-
 	@Override
 	public int getPlacingGrid(){
 		return 16;
+	}
+
+	@Override
+	public WireType getContent(){
+		return wire;
+	}
+
+	@Override
+	public ContentType getType(){
+		return ContentType.WIRE;
 	}
 
 }

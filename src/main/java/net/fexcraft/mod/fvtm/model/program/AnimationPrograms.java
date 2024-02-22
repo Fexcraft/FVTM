@@ -26,22 +26,17 @@ public class AnimationPrograms {
 		public void addProgram(int offset, int dur, Program prog);
 
 	}
-	
-	public static class AttrBoolAnimation extends DefaultPrograms.AttributeBased implements AnimationRoot {
 
-		private HashMap<V3I, Program> progs = new HashMap<>();
-		private ArrayList<Program> active = new ArrayList<>();
-		private FloatBool passed;
-		private int time;
+	public static abstract class AttrAnimation extends DefaultPrograms.AttributeBased implements AnimationRoot {
 
-		public AttrBoolAnimation(String attr, int tt){
+		protected HashMap<V3I, Program> progs = new HashMap<>();
+		protected ArrayList<Program> active = new ArrayList<>();
+		protected FloatBool passed;
+		protected int time;
+
+		public AttrAnimation(String attr, int tt){
 			super(attr);
 			time = tt;
-		}
-
-		@Override
-		public String id(){
-			return "fvtm:attribute_bool_animation";
 		}
 
 		@Override
@@ -55,32 +50,14 @@ public class AnimationPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
-			passed = data.cache.get(this, FLOAT_BOOL_SUPP);
-			if(attr.asBoolean() != passed.bl){
-				passed.bl = attr.asBoolean();
-				for(Program prog : progs.values()) prog.reverse(data, passed.bl);
-			}
 			active.clear();
-			if(passed.bl){
-				if(passed.fl < time){
-					passed.fl += data.partialticks;
-					if(passed.fl > time) passed.fl = time;
-				}
-			}
-			else{
-				if(passed.fl > 0){
-					passed.fl -= data.partialticks;
-					if(passed.fl < 0) passed.fl = 0;
-				}
-			}
-			for(Map.Entry<V3I, Program> entry : progs.entrySet()){
-				if(passed.fl < entry.getKey().x || passed.fl > entry.getKey().y) continue;
-				active.add(entry.getValue().pause(data, passed.fl > entry.getKey().x + entry.getKey().z));
-			}
+			collectActive(list, data);
 			for(Program program : active){
 				program.pre(list, data);
 			}
 		}
+
+		public void collectActive(ModelGroup group, ModelRenderData data){}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
@@ -90,6 +67,44 @@ public class AnimationPrograms {
 			}
 		}
 
+	}
+
+
+	public static class AttrBoolAnimation extends AttrAnimation {
+
+		public AttrBoolAnimation(String attr, int tt){
+			super(attr, tt);
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:attribute_bool_animation";
+		}
+
+		@Override
+		public void collectActive(ModelGroup group, ModelRenderData data){
+			passed = data.cache.get(this, FLOAT_BOOL_SUPP);
+			if(attr.asBoolean() != passed.bl){
+				passed.bl = attr.asBoolean();
+				for(Program prog : progs.values()) prog.reverse(data, passed.bl);
+			}
+			if(passed.bl){
+				if(passed.fl > 0){
+					passed.fl -= data.partialticks;
+					if(passed.fl < 0) passed.fl = 0;
+				}
+			}
+			else{
+				if(passed.fl < time){
+					passed.fl += data.partialticks;
+					if(passed.fl > time) passed.fl = time;
+				}
+			}
+			for(Map.Entry<V3I, Program> entry : progs.entrySet()){
+				if(passed.fl < entry.getKey().x || passed.fl > entry.getKey().y) continue;
+				active.add(entry.getValue().pause(data, passed.fl > entry.getKey().x + entry.getKey().z));
+			}
+		}
 
 		@Override
 		public Program parse(String[] args){

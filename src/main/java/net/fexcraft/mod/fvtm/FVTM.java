@@ -43,6 +43,7 @@ import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.render.*;
+import net.fexcraft.mod.fvtm.render.block.BakedModelLoader;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
@@ -136,12 +137,8 @@ public class FVTM {
 		Logger logger = event.getModLog();
 		FvtmLogger.LOGGER = new FvtmLogger(){
 			@Override
-			public void log(Object obj){
+			public void log0(Object obj){
 				logger.info(obj);
-			}
-			@Override
-			public void log(String str){
-				logger.info(str);
 			}
 		};
 		IDLManager.INSTANCE[0] = new IDLM();

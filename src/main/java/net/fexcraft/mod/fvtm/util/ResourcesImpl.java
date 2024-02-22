@@ -17,8 +17,6 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -44,6 +42,7 @@ import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
+import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms;
@@ -60,6 +59,7 @@ import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -212,7 +212,7 @@ public class ResourcesImpl extends FvtmResources {
 			case VEHICLE:{
 				Vehicle veh = (Vehicle)content;
 				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.noCustomItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), VehicleModel.EMPTY);
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), VehicleItemModel.INSTANCE);
 					return;
 				}
 				break;
@@ -324,6 +324,9 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void initModels(){
+		ArrayList<String> tt = new ArrayList<>();
+		for(TransformType value : TransformType.values()) tt.add(value.name());
+		TransformMap.TYPES = tt.toArray(new String[0]);
 		super.initModels();
 		getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
 		//Resources.PARTS.forEach(part -> part.loadModel());

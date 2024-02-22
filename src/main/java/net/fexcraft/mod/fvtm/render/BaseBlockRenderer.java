@@ -2,14 +2,13 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.model.BlockModel;
+import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

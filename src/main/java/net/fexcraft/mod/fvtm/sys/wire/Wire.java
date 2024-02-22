@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -57,7 +58,7 @@ public class Wire {
 		key = new WireKey(relay, relay0);
 		okey = new WireKey(relay0, relay);
 		type = wiretype;
-		slack = type.default_slack();
+		slack = type.getDefaultSlack();
 		rootpath = new V3D[]{ s_v, null, e_v };
 		start = s_v;
 		end = e_v;
@@ -131,7 +132,7 @@ public class Wire {
 	}
 
 	public Wire read(NBTTagCompound compound){
-		if(compound.hasKey("wiretype")) type = Resources.WIRES.get(compound.getString("wiretype"));
+		if(compound.hasKey("wiretype")) type = FvtmRegistry.WIRES.get(compound.getString("wiretype"));
 		start = new V3D(compound.getFloat("sx"), compound.getFloat("sy"), compound.getFloat("sz"));
 		end = new V3D(compound.getFloat("ex"), compound.getFloat("ey"), compound.getFloat("ez"));
 		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
@@ -180,7 +181,7 @@ public class Wire {
 		compound.setFloat("length", length);
 		key.save(compound);
 		if(copy) compound.setBoolean("copy", copy);
-		if(type != null) compound.setString("wiretype", type.getRegistryName().toString());
+		if(type != null) compound.setString("wiretype", type.getIDS());
 		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
 		if(deco_start != null) compound.setString("deco_start", deco_start);
 		if(deco_end != null) compound.setString("deco_end", deco_end);

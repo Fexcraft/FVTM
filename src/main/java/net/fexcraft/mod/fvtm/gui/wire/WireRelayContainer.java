@@ -61,7 +61,7 @@ public class WireRelayContainer extends GenericContainer {
 		holder = system.getHolder(tile.getPos());
 		conns = new ArrayList<>(holder.relays.keySet());
 		stack = player.getHeldItemMainhand();
-		type = ((WireItem)stack.getItem()).getType();
+		type = ((WireItem)stack.getItem()).getContent();
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
@@ -76,7 +76,7 @@ public class WireRelayContainer extends GenericContainer {
 				models.clear();
 				modelkeys.clear();
 				List<WireModel> umodels = WireModel.DECOS.values().stream().filter(model -> {
-					return model.accepts(wire.getWireType().wire_type());
+					return model.accepts(wire.getWireType().getType());
 				}).collect(Collectors.toList());
 				for(WireModel model : umodels){
 					if(!models.containsKey(model.decotype())){
@@ -103,7 +103,7 @@ public class WireRelayContainer extends GenericContainer {
 					WireRelay relay = holder.get(conns.indexOf(relid));
 					//String relid = conns.get(index);
 					ArrayList<String> list = data.types.get(relid);
-					if(!list.isEmpty() && !list.contains(type.wire_type())){
+					if(!list.isEmpty() && !list.contains(type.getType())){
 						Print.chat(player, "&bWire not compatible with relay.");
 						return;
 					}

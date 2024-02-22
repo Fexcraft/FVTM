@@ -58,7 +58,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 		if(filter){
 			for(String str : container.conns){
 				list = container.data.types.get(str);
-				if(list.isEmpty() || list.contains(container.type.wire_type())){
+				if(list.isEmpty() || list.contains(container.type.getType())){
 					conns.add(str);
 				}
 			}
@@ -78,7 +78,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 				relay = container.holder.get(conns.get(j));
 				if(!pass){
 					list = container.data.types.get(conns.get(j));
-					pass = list.isEmpty() || list.contains(container.type.wire_type());
+					pass = list.isEmpty() || list.contains(container.type.getType());
 				}
 				if(pass){
 					l = container.data.limits.get(t[i].string);

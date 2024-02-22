@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,7 +63,7 @@ public class UniItemInvContainer extends GenericContainer {
 		}
 		else if(ID == GuiHandler.BLOCK_INVENTORY_ITEM){
 			blk_tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
-			invhandler = blk_tile.getBlockData().getFunctionInventory().inventory();
+			invhandler = ((InventoryBlockFunction)blk_tile.getBlockData().getFunctionInventory()).inventory();
 			title = blk_tile.getBlockData().getType().getName();
 		}
 		else if(ID == GuiHandler.VEHICLE_INVENTORY_ITEM){
@@ -184,8 +185,8 @@ public class UniItemInvContainer extends GenericContainer {
 		if(con_tile != null) con_tile.markDirty();
 		if(blk_tile != null){
 			blk_tile.markDirty();
-			if(blk_tile.getBlockData().getFunctionInventory().hasBool()){
-				blk_tile.getBlockData().getFunctionInventory().onClose(blk_tile);
+			if(((InventoryBlockFunction)blk_tile.getBlockData().getFunctionInventory()).hasBool()){
+				((InventoryBlockFunction)blk_tile.getBlockData().getFunctionInventory()).onClose(blk_tile);
 			}
 		}
 		insert.closeInventory(player);

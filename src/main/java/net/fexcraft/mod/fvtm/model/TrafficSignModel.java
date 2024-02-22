@@ -128,7 +128,7 @@ public class TrafficSignModel extends DefaultModel {
 
 	@Override
 	public void render(ModelRenderData renderdata){
-		CompDataRoot data = renderdata.trafficsign_compdata;
+		CompDataRoot data = (CompDataRoot)renderdata.trafficsign_compdata;
 		if(fontdata != null){
 			FontData font = (FontData)data;
 			if(font.text() == null) font.init(fontdata);

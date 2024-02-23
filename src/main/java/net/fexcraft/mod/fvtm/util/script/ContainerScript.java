@@ -388,7 +388,7 @@ public class ContainerScript extends VehicleScript {
 				}
 				EnumFacing facing = EnumFacing.fromAngle(ent.getRotPoint().getPivot().deg_yaw());
 				if(ContainerItem.isValidPostitionForContainer(ent.getEntity().world, player, vec0, facing, condata)){
-		            ItemStack stack = condata.newItemStack();
+		            ItemStack stack = condata.getNewStack().local();
 		            stack.getTagCompound().setLong("PlacedPos", vec0.toLong());
 		            ContainerBlock.getPositions(condata, vec0, facing).forEach(blkpos -> {
 		                IBlockState state = ContainerBlock.INSTANCE.getDefaultState();

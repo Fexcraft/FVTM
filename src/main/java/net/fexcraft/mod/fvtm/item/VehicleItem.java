@@ -19,6 +19,8 @@ import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -108,15 +110,15 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 
-	//@Override
-	public VehicleData getData(ItemStack stack){
-		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-		return getData(stack.getTagCompound());
+	@Override
+	public VehicleData getData(StackWrapper stack){
+		if(!stack.hasTag()) stack.setTag(TagCW.create());
+		return getData(stack.getTag());
 	}
 
-	//@Override
-	public VehicleData getData(NBTTagCompound compound){
-		return new VehicleData(vehicle).read(new TagCWI(compound));
+	@Override
+	public VehicleData getData(TagCW compound){
+		return new VehicleData(vehicle).read(compound);
 	}
 	
     @Override

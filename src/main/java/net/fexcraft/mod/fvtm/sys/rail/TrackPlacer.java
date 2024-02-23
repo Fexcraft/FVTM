@@ -181,7 +181,7 @@ public class TrackPlacer {
 				while(items > 0){
 					EntityItem item = new EntityItem(world);
 					item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-					ItemStack stack = track.gauge.newItemStack();
+					ItemStack stack = track.gauge.getNewStack().local();
 					stack.setCount(items);
 					item.setItem(stack);
 					world.spawnEntity(item);
@@ -205,7 +205,7 @@ public class TrackPlacer {
 		int found = 0;
 		for(ItemStack stack : player.inventoryContainer.getInventory()){
 			if(stack.isEmpty() || stack.getItem() instanceof RailGaugeItem == false) continue;
-			if(((RailGaugeItem)stack.getItem()).getType() != type) continue;
+			if(((RailGaugeItem)stack.getItem()).getContent() != type) continue;
 			found += stack.getCount();
 		}
 		return found;
@@ -214,7 +214,7 @@ public class TrackPlacer {
 	private static void consumeOneItem(RailGauge type, EntityPlayer player){
 		for(ItemStack stack : player.inventoryContainer.getInventory()){
 			if(stack.isEmpty() || stack.getItem() instanceof RailGaugeItem == false) continue;
-			if(((RailGaugeItem)stack.getItem()).getType() != type) continue;
+			if(((RailGaugeItem)stack.getItem()).getContent() != type) continue;
 			stack.shrink(1);
 			return;
 		}

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -146,8 +147,8 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
     }
 
 	private RailGauge getGauge(int width){
-    	RailGauge gauge = Resources.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
-    	for(RailGauge railgauge : Resources.RAILGAUGES){
+    	RailGauge gauge = FvtmRegistry.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
+    	for(RailGauge railgauge : FvtmRegistry.RAILGAUGES){
     		if(railgauge.width() == width){ gauge = railgauge; break; }
     		if(Math.abs(width - railgauge.width()) < Math.abs(width - gauge.width())){
     			gauge = railgauge; continue;

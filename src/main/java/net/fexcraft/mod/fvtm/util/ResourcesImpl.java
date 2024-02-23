@@ -256,6 +256,7 @@ public class ResourcesImpl extends FvtmResources {
 		CLOTHES.forEach(cth -> cth.setItemWrapper(wrapwrapper(cth.getID(), new ClothItem(cth))));
 		WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), new WireItem(wire))));
 		CONTAINERS.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ContainerItem(con))));
+		RAILGAUGES.forEach(rail -> rail.setItemWrapper(wrapwrapper(rail.getID(), new RailGaugeItem(rail))));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -331,11 +332,6 @@ public class ResourcesImpl extends FvtmResources {
 		TransformMap.TYPES = tt.toArray(new String[0]);
 		super.initModels();
 		getModel("baked|fvtm:models/block/vpinfo.fmf", new ModelData(), BlockModel.class);
-		//Resources.PARTS.forEach(part -> part.loadModel());
-		//Resources.VEHICLES.forEach(veh -> veh.loadModel());
-		//Resources.CONTAINERS.forEach(con -> con.loadModel());
-		Resources.RAILGAUGES.forEach(gauge -> gauge.loadModel());
-		//Resources.WIRES.forEach(cloth -> cloth.loadModel());
 		TrafficSignLibrary.loadModels();
 	}
 

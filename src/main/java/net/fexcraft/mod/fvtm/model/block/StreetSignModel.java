@@ -2,14 +2,15 @@
 package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
-import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.model.PartItemModel;
 
 /** This file was exported via the FVTM Exporter V1.1 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.2.9 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-public class StreetSignModel extends PartModel {
+public class StreetSignModel extends DefaultModel {
 	
 	public static final StreetSignModel INSTANCE = new StreetSignModel();
 

@@ -121,7 +121,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Resources {
 
-	public static RegistryOld<Container> CONTAINERS = new RegistryOld<>();
 	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
 	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
@@ -141,14 +140,6 @@ public class Resources {
 		// search in packs for //
 		//
 		// init model loaders //
-	}
-
-	public static Container getContainer(String string){
-		return CONTAINERS.get(string);
-	}
-
-	public static Container getContainer(ResourceLocation resloc){
-		return CONTAINERS.get(resloc);
 	}
 
 	public static MultiBlock getMultiBlock(String string){
@@ -181,12 +172,12 @@ public class Resources {
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}*/
 
-	public static ContainerData getContainerData(NBTTagCompound compound){
+	/*public static ContainerData getContainerData(NBTTagCompound compound){
 		if(!compound.hasKey("Container")) return null;
 		Container con = getContainer(compound.getString("Container")); if(con == null) return null;
 		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
-	}
+	}*/
 
 	public static MultiBlockData getMultiBlockData(NBTTagCompound compound){
 		if(!compound.hasKey("type")) return null;

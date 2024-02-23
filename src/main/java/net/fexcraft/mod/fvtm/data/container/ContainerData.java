@@ -4,7 +4,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
@@ -13,13 +15,14 @@ import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ContainerData extends DataCore<Container, ContainerData> implements Colorable, TextureUser {
+public class ContainerData extends ContentData<Container, ContainerData> implements Colorable, TextureUser {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected Textureable texture;
@@ -54,18 +57,12 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 		return lock;
 	}
 
-	public ItemStack newItemStack(){
-		ItemStack stack = this.type.newItemStack();
-		stack.setTagCompound(this.write(new NBTTagCompound()));
-		return stack;
-	}
-
 	@Override
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		compound.setString("Container", type.getRegistryName().toString());
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		compound.set("Container", type.getIDS());
 		for(String str : channels.keySet()){
-			compound.setInteger("RGB_" + str, channels.get(str).packed);
+			compound.set("RGB_" + str, channels.get(str).packed);
 		}
 		texture.save(new TagCWI(compound));
 		inventory.save(new TagCWI(compound), "Inventory");
@@ -74,15 +71,15 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	}
 
 	@Override
-	public ContainerData read(NBTTagCompound compound){
-		if(compound.hasKey("RGBPrimary")){
+	public ContainerData read(TagCW compound){
+		if(compound.has("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");
 		}
-		if(compound.hasKey("RGBSecondary")){
+		if(compound.has("RGBSecondary")){
 			channels.get("secondary").packed = compound.getInteger("RGBSecondary");
 		}
 		for(String str : channels.keySet()){
-			if(compound.hasKey("RGB_" + str)){
+			if(compound.has("RGB_" + str)){
 				channels.get(str).packed = compound.getInteger("RGB_" + str);
 			}
 		}
@@ -94,15 +91,13 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	}
 
 	@Override
-	public ContainerData parse(JsonObject obj){
-		// TODO Auto-generated method stub
-		return null;
+	public ContainerData parse(JsonMap obj){
+		return this;
 	}
 
 	@Override
-	public JsonObject toJson(){
-		// TODO Auto-generated method stub
-		return null;
+	public JsonMap toJson(){
+		return new JsonMap();
 	}
 
 	public ContainerType getContainerType(){

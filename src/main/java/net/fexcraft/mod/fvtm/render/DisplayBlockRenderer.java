@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.util.AnotherUtil;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -48,7 +48,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                     TexUtil.bindTexture(partdata.getCurrentTexture());
                 	if(partdata.isInstalledOnSwivelPoint()){
                 		GL11.glPushMatrix();
-                		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
+                		AnotherUtil.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
                         partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, cache, partdata, key, false, ticks));
         	            GL11.glPopMatrix();
                 	}

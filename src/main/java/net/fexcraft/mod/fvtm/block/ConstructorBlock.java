@@ -122,7 +122,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         }
         else if(held.getItem() instanceof VehicleItem){
         	te.dropIfContainsAnyThing();
-        	te.setVehicleData(((VehicleItem)held.getItem()).getData(held), false);
+        	te.setVehicleData(((VehicleItem)held.getItem()).getDataFromTag(held.getTagCompound()), false);
         	te.liftstate = 0;
         	te.updateClient(null);
 			held.shrink(1);
@@ -130,7 +130,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         }
         else if(held.getItem() instanceof ContainerItem){
         	te.dropIfContainsAnyThing();
-        	te.setContainerData(((ContainerItem)held.getItem()).getData(held), false);
+        	te.setContainerData(((ContainerItem)held.getItem()).getDataFromTag(held.getTagCompound()), false);
         	te.liftstate = 0;
         	te.updateClient(null);
 			held.shrink(1);
@@ -138,7 +138,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         }
         else if(held.getItem() instanceof BlockItem){
         	te.dropIfContainsAnyThing();
-        	te.setBlockData(((BlockItem)held.getItem()).getData(held), false);
+        	te.setBlockData(((BlockItem)held.getItem()).getDataFromTag(held.getTagCompound()), false);
         	te.liftstate = 0;
         	te.updateClient(null);
 			held.shrink(1);

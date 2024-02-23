@@ -45,7 +45,7 @@ public class InvHandler {
 		return capacity;
 	}
 
-	public Fluid getFluid(){
+	public String getFluid(){
 		return null;
 	}
 

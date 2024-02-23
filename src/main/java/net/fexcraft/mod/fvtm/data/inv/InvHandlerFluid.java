@@ -20,8 +20,8 @@ public class InvHandlerFluid extends InvHandler {
 	}
 
 	@Override
-	public Fluid getFluid(){
-		return fluid;
+	public String getFluid(){
+		return fluid == null ? null : fluid.getName();
 	}
 
 	@Override

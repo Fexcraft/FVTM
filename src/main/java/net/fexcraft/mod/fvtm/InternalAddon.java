@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.discovery.ContainerType;
 public class InternalAddon extends AddonOld {
 	
 	public static final IDL REGNAME = IDLManager.getIDLCached("fvtm:fvtm");
-	public static final ResourceLocation STANDARD_GAUGE = new ResourceLocation("fvtm:standard");
+	public static final IDL STANDARD_GAUGE = IDLManager.getIDLCached("fvtm:standard");
 	public static InternalAddon INSTANCE;
 
 	public InternalAddon(ContainerType type, File file){

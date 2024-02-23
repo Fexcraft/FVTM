@@ -14,11 +14,13 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -110,15 +112,15 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 		else return data.isTextureExternal() ? "external" : "internal";
 	}
 
-	//@Override
-	public PartData getData(ItemStack stack){
-		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-		return getData(stack.getTagCompound());
+	@Override
+	public PartData getData(StackWrapper stack){
+		if(!stack.hasTag()) stack.setTag(TagCW.create());
+		return getData(stack.getTag());
 	}
 
-	//@Override
-	public PartData getData(NBTTagCompound compound){
-		return new PartData(part).read(new TagCWI(compound));
+	@Override
+	public PartData getData(TagCW compound){
+		return new PartData(part).read(compound);
 	}
 	
     @Override

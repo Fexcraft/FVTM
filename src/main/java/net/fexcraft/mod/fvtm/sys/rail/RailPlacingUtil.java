@@ -46,7 +46,7 @@ public class RailPlacingUtil {
 			compound.setLong("uuid_m", newid.getLeastSignificantBits());
 			compound.setBoolean("new", true);
 			compound.setTag("vector", vector.write());
-			compound.setString("gauge", gauge.getRegistryName().toString());
+			compound.setString("gauge", gauge.getIDS());
 			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
 			//
 			RailMarker marker = new RailMarker(world, newid);

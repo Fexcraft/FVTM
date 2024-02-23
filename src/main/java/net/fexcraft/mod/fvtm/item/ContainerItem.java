@@ -7,21 +7,23 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
@@ -33,25 +35,31 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerItem extends TypeCoreItem<Container> implements DataCoreItem<ContainerData> {//}, ItemTex<Container> {
+public class ContainerItem extends Item implements ContentItem.ContentDataItem<Container, ContainerData>, TextureableItem<Container> {
 
-    public ContainerItem(Container core){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-        if(Static.side().isServer()) return;
-        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
+	private Container container;
+
+    public ContainerItem(Container con){
+		super();
+		container = con;
+		setHasSubtypes(true);
+		setMaxStackSize(1);
+		setRegistryName(container.getID().colon());
+		setTranslationKey(container.getID().colon());
+		if(!EnvInfo.CLIENT) return;
+		setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(container));
 	}
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
-    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + container.getName()));
+        for(String s : container.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         ContainerData data = cache.getContainerData();
         if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
-        tooltip.add(Formatter.format("&9Type: &7" + type.getContainerType().name()));
+        tooltip.add(Formatter.format("&9Type: &7" + container.getContainerType().name()));
         //
         tooltip.add(Formatter.format("&9Capacity: &7" + (data.getType().getInventoryType() == InvType.FLUID ? data.getType().getCapacity() / 1000 : data.getType().getCapacity()) + " " + data.getType().getInventoryType().unit_suffix));
         tooltip.add(Formatter.format("&9Content: &7" + data.getInventory().getContentDesc()));
@@ -69,19 +77,20 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
 	}
 
 	@Override
-	public ContainerData getData(ItemStack stack){
-		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
+	public ContainerData getData(StackWrapper stack){
+		if(!stack.hasTag()) stack.setTag(TagCW.create());
+		return getData(stack.getTag());
 	}
 
 	@Override
-	public ContainerData getData(NBTTagCompound compound){
-		return new ContainerData(type).read(compound);
+	public ContainerData getData(TagCW compound){
+		return new ContainerData(container).read(compound);
 	}
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
-    		items.add(type.newItemStack());
+    		items.add(container.getNewStack().local());
     	}
     }
     
@@ -123,9 +132,14 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         }
     }
 
-	//@Override
-	public TypeCore<Container> getDataType(){
-		return type;
+	@Override
+	public ContentType getType(){
+		return ContentType.CONTAINER;
+	}
+
+	@Override
+	public Container getContent(){
+		return container;
 	}
 
 }

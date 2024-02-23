@@ -264,7 +264,7 @@ public class ContainerBlock extends BlockContainer {
         if(world.getTileEntity(pos) != null){
             try{
                 ContainerEntity tile = (ContainerEntity)world.getTileEntity(pos);
-                return tile.getContainerData().newItemStack();
+                return tile.getContainerData().getNewStack().local();
             }
             catch(Exception e){
                 //e.printStackTrace();

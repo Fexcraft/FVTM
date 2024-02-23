@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
@@ -95,7 +96,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
 				switch(packet.nbt.getString("subtask")){
 					case "new":{
-						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new GridV3D(packet.nbt.getCompoundTag("vector")), Resources.RAILGAUGES.get(packet.nbt.getString("gauge")));
+						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new GridV3D(packet.nbt.getCompoundTag("vector")), FvtmRegistry.RAILGAUGES.get(packet.nbt.getString("gauge")));
 						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
 						break;
 					}

@@ -98,7 +98,7 @@ public class InvHandlerVar extends InvHandler {
 				if(stack.isEmpty()) continue;
 				if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 				if(!stack.getTagCompound().hasKey("BlockFunction")){
-					BlockData data = ((BlockItem)stack.getItem()).getData(stack.getTagCompound());
+					BlockData data = ((BlockItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
 					data.write(stack.getTagCompound());
 				}
 				NBTTagCompound com = stack.getTagCompound().getCompoundTag("BlockFunction").getCompoundTag("fvtm:barrel");
@@ -124,7 +124,7 @@ public class InvHandlerVar extends InvHandler {
 				if(stack.isEmpty()) continue;
 				if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 				if(!stack.getTagCompound().hasKey("BlockFunction")){
-					BlockData data = ((BlockItem)stack.getItem()).getData(stack.getTagCompound());
+					BlockData data = ((BlockItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
 					data.write(stack.getTagCompound());
 				}
 				NBTTagCompound com = stack.getTagCompound().getCompoundTag("BlockFunction").getCompoundTag("fvtm:barrel");

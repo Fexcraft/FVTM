@@ -102,22 +102,22 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public VehicleData getVehicleData(){
-			return vdata == null ? vdata = ((VehicleItem)stack.getItem()).getData(stack) : vdata;
+			return vdata == null ? vdata = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound()) : vdata;
 		}
 
 		@Override
 		public PartData getPartData(){
-			return pdata == null ? pdata = ((PartItem)stack.getItem()).getData(stack) : pdata;
+			return pdata == null ? pdata = ((PartItem)stack.getItem()).getDataFromTag(stack.getTagCompound()) : pdata;
 		}
 
 		@Override
 		public ContainerData getContainerData(){
-			return condata == null ? condata = ((ContainerItem)stack.getItem()).getData(stack) : condata;
+			return condata == null ? condata = ((ContainerItem)stack.getItem()).getDataFromTag(stack.getTagCompound()) : condata;
 		}
 
 		@Override
 		public BlockData getBlockData(){
-			return bdata == null ? bdata = ((BlockItem)stack.getItem()).getData(stack) : bdata;
+			return bdata == null ? bdata = ((BlockItem)stack.getItem()).getDataFromTag(stack.getTagCompound()) : bdata;
 		}
 
 		@Override
@@ -140,7 +140,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public VehicleData getVehicleData(){
-			return data == null ? stack == null ? null : (data = ((VehicleItem)stack.getItem()).getData(stack)) : data;
+			return data == null ? stack == null ? null : (data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound())) : data;
 		}
 
 		@Override
@@ -184,7 +184,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public PartData getPartData(){
-			return data == null ? stack == null ? null : (data = ((PartItem)stack.getItem()).getData(stack)) : data;
+			return data == null ? stack == null ? null : (data = ((PartItem)stack.getItem()).getDataFromTag(stack.getTagCompound())) : data;
 		}
 
 		@Override
@@ -228,7 +228,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public BlockData getBlockData(){
-			return data == null ? stack == null ? null : (data = ((BlockItem)stack.getItem()).getData(stack)) : data;
+			return data == null ? stack == null ? null : (data = ((BlockItem)stack.getItem()).getDataFromTag(stack.getTagCompound())) : data;
 		}
 
 		@Override
@@ -267,7 +267,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public ContainerData getContainerData(){
-			return data == null ? stack == null ? null : (data = ((ContainerItem)stack.getItem()).getData(stack)) : data;
+			return data == null ? stack == null ? null : (data = ((ContainerItem)stack.getItem()).getDataFromTag(stack.getTagCompound())) : data;
 		}
 
 		@Override

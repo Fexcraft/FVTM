@@ -10,6 +10,9 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentItem;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
@@ -21,9 +24,12 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GridV3D;
 import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -34,19 +40,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionGridItem {
-	
+public class RailPresetItem extends Item implements ContentItem<RailGauge>, JunctionGridItem {
+
+	private RailGauge gauge;
 	private GridV3D[] path;
 	private String title;
 	private int rotations;
 
-    public RailPresetItem(RailGauge core, String name, GridV3D... vecs){
-		super(core);
-		this.setHasSubtypes(true);
-		this.setMaxStackSize(64);
-		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
-		path = vecs; if(Static.side().isServer()) return;
-        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
+    public RailPresetItem(RailGauge type, String name, GridV3D... vecs){
+		super();
+		gauge = type;
+		path = vecs;
+		setHasSubtypes(true);
+		setRegistryName(gauge.getID().colon());
+		setTranslationKey(gauge.getID().colon());
+        if(!EnvInfo.CLIENT) return;
+        setCreativeTab((CreativeTabs)FvtmResources.INSTANCE.getCreativeTab(gauge));
     }
     
     public RailPresetItem setSegmentation(int segments){
@@ -56,14 +65,14 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){
+        tooltip.add(Formatter.format("&9Name: &7" + gauge.getName()));
+        for(String s : gauge.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
-        tooltip.add(Formatter.format("&9Width: &7" + type.width() + "mb"));
-        if(type.getCompatible().size() > 0){
+        tooltip.add(Formatter.format("&9Width: &7" + gauge.width() + "mb"));
+        if(gauge.getCompatible().size() > 0){
             tooltip.add(Formatter.format("&9Compatible with:"));
-            for(String str : type.getCompatible()){
+            for(String str : gauge.getCompatible()){
                 tooltip.add(Formatter.format("&7 - " + str));
             }
         }
@@ -95,7 +104,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         	syscap.addJunction(vector.copy());
         	start = syscap.getJunction(vector);
         }
-        Track track = new Track(start, vecs, type).withPreset(type.getRegistryName() + "." + title);
+        Track track = new Track(start, vecs, gauge).withPreset(gauge.getIDS() + "." + title);
 		if(!TrackPlacer.set(player, player, world, null, track).place().result()) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);
@@ -142,4 +151,13 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		return rotations;
 	}
 
+	@Override
+	public RailGauge getContent(){
+		return gauge;
+	}
+
+	@Override
+	public ContentType getType(){
+		return ContentType.RAILGAUGE;
+	}
 }

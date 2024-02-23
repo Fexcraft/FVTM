@@ -14,8 +14,11 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -95,13 +98,14 @@ public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, Blo
 		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 
-	//@Override
-	public BlockData getData(ItemStack stack){
-		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
+	@Override
+	public BlockData getData(StackWrapper stack){
+		if(!stack.hasTag()) stack.setTag(TagCW.create());
+		return getData(stack.getTag());
 	}
 
-	//@Override
-	public BlockData getData(NBTTagCompound compound){
+	@Override
+	public BlockData getData(TagCW compound){
 		return new BlockData(type).read(compound);
 	}
 	

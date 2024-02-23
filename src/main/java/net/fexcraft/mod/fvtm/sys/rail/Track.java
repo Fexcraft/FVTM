@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -62,10 +63,10 @@ public class Track extends Path {
 		super.read(compound);
 		if(junction != null) unit = getUnit(compound.getLong("section"));
 		if(compound.hasKey("gauge")){
-			gauge = Resources.RAILGAUGES.get(compound.getString("gauge"));
+			gauge = FvtmRegistry.RAILGAUGES.get(compound.getString("gauge"));
 		}
 		if(gauge == null){
-			gauge = Resources.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
+			gauge = FvtmRegistry.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
 		}
 		if(junction == null || junction.root.getWorld().isRemote){
 			railmodel = null; restmodel = null;
@@ -85,7 +86,7 @@ public class Track extends Path {
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound = super.write(compound);
 		if(unit != null) compound.setLong("section", unit.getSectionId());
-		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
+		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getIDS()).toString());
 		if(preset != null) compound.setString("preset", preset);
 		//if(blockless) compound.setBoolean("blockless", true);
 		if(items > 0) compound.setInteger("items", items);
@@ -103,7 +104,7 @@ public class Track extends Path {
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){
-		return this.gauge.width() == gauge.width() || this.gauge.getCompatible().contains(gauge.getRegistryName().toString());
+		return this.gauge.width() == gauge.width() || this.gauge.getCompatible().contains(gauge.getIDS().toString());
 	}
 
 	public RailGauge getGauge(){

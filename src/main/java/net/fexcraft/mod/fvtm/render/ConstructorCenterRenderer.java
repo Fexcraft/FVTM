@@ -8,13 +8,9 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.util.GLUtils112;
-import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.fvtm.util.*;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -107,7 +103,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                         TexUtil.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
-                    		PartModel.translateAndRotatePartOnSwivelPointFast(vdata, partdata);
+                    		AnotherUtil.translateAndRotatePartOnSwivelPointFast(vdata, partdata);
 	                        partdata.getType().getModel().render(RENDERDATA.set(vdata, null, null, partdata, key, false, ticks));
             	            GL11.glPopMatrix();
                     	}

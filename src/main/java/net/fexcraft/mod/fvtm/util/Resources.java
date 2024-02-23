@@ -122,7 +122,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Resources {
 
 	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
-	public static RegistryOld<RailGauge> RAILGAUGES = new RegistryOld<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();

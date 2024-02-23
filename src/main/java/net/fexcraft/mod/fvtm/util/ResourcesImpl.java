@@ -196,7 +196,7 @@ public class ResourcesImpl extends FvtmResources {
 			case CONTAINER:{
 				Container con = null;//TODO
 				if(!con.noCustomItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ContainerModel.EMPTY);
+					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ContainerItemModel.INSTANCE);
 					return;
 				}
 				break;

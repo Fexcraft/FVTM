@@ -2,14 +2,15 @@
 package net.fexcraft.mod.fvtm.model.entity;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
-import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.model.PartItemModel;
 
 /** This file was exported via the FVTM Exporter v1.5 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.7.3 &copy; 2022 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-public class RoadMarkerModel extends PartModel {
+public class RoadMarkerModel extends DefaultModel {
 	
 	public static RoadMarkerModel INST = new RoadMarkerModel();
 	public ModelGroup arrow, marker;

@@ -74,7 +74,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
                     Print.bar(player, "VehicleData is locked.");
                 }
                 else{
-                    VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
+                    VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
                     VehicleData oldata = te.setVehicleData(data);
                     te.sendUpdate();
                     //

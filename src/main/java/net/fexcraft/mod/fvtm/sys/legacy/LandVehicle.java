@@ -592,7 +592,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	return true;
             }
             else if(stack.getItem() instanceof VehicleItem){
-                VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
+                VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
                 if(data.getType().isTrailer()){
                 	if(vehicle.getRearConnector() == null){
                 		Print.chat(player, "&cThis vehicle has no rear connector installed.");

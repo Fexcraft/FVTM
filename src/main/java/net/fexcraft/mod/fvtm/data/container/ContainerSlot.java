@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
+import net.fexcraft.mod.fvtm.util.AnotherUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.entity.Entity;
@@ -133,7 +134,7 @@ public class ContainerSlot {
 		if(rotpoint != null && entity != null){
 			VehicleEntity ent = (VehicleEntity)entity;
 			PartData data = ent.getVehicleData().getPart(id);
-    		net.fexcraft.mod.fvtm.model.PartModel.translateAndRotatePartOnSwivelPoint(ent.getVehicleData(), data, net.minecraft.client.Minecraft.getMinecraft().getRenderPartialTicks());
+    		AnotherUtil.translateAndRotatePartOnSwivelPoint(ent.getVehicleData(), data, net.minecraft.client.Minecraft.getMinecraft().getRenderPartialTicks());
 		}
 		for(int i = 0; i < containers.length; i++){
 			if(containers[i] != null){
@@ -161,7 +162,7 @@ public class ContainerSlot {
 		if(rotpoint != null && entity != null){
 			VehicleEntity ent = (VehicleEntity)entity;
 			PartData data = ent.getVehicleData().getPart(id);
-    		net.fexcraft.mod.fvtm.model.PartModel.translateAndRotatePartOnSwivelPoint(ent.getVehicleData(), data, net.minecraft.client.Minecraft.getMinecraft().getRenderPartialTicks());
+    		AnotherUtil.translateAndRotatePartOnSwivelPoint(ent.getVehicleData(), data, net.minecraft.client.Minecraft.getMinecraft().getRenderPartialTicks());
 		}
 		boolean bool = false;
 		for(int i = 0; i < length;){

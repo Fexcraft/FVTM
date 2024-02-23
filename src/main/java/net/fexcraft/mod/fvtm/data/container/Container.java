@@ -6,24 +6,27 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.data.root.Colorable.ColorHolder;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.model.ContainerItemModel;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.item.Item;
@@ -32,11 +35,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 
 /**
- * 
- * 
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder, ItemTextureable {
+public class Container extends Content<Container> implements TextureHolder, ColorHolder, WithItem, ItemTextureable {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected List<IDL> textures;
@@ -47,57 +48,50 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected ContainerType type;
 	protected ContainerItem item;
 	protected String modelid, ctab;
-	protected IDL itemloc;
+	protected IDL itemtexloc;
 	protected boolean no3ditem;
+	@Override
+	public Container parse(JsonMap map){
+		if((pack = ContentConfigUtil.getAddon(map)) == null) return null;
+		if((id = ContentConfigUtil.getID(pack, map)) == null) return null;
+		//
+		name = map.getString("Name", "Unnamed Material");
+		description = ContentConfigUtil.getStringList(map, "Description");
+		type = ContainerType.valueOf(map.getString("ContainerType", "MEDIUM").toUpperCase());
+		textures = ContentConfigUtil.getTextures(map);
+		if(map.has("ColorChannels")){
+			for(Entry<String, JsonValue<?>> entry : map.get("ColorChannels").asMap().entries()){
+				channels.put(entry.getKey(), new RGB(entry.getValue().string_value()));
+			}
+		}
+		if(channels.isEmpty()){
+			channels.put("primary", RGB.WHITE.copy());
+			channels.put("secondary", RGB.WHITE.copy());
+		}
+		keytype = map.has("KeyType") ? IDLManager.getIDLCached(map.getString("KeyType", null)) : null;
+		invtype = new InvHandler(InvType.parse(map.getString("InventoryType", "item"), false));
+		invtype.setCapacity(map.getInteger("InventorySize", invtype.type.isItem() ? 8 : 16000));
+        if(invtype.type.isFluid() && map.has("FluidType")) invtype.setArg(map.get("FluidType").string_value());
+        if(invtype.type.isItem() &&  map.has("ContentFilter")) invtype.setArg(map.get("ContentFilter").string_value());
+		//
+		if(EnvInfo.CLIENT){
+			modelid = map.getString("Model", null);
+			modeldata = new ModelData(map);
+		}
+		ctab = map.getString("CreativeTab", "default");
+		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
+		no3ditem = map.getBoolean("Disable3DItemModel", false);
+		return this;
+	}
 
 	@Override
-	public ResourceLocation getRegistryName(){
-		return registryname;
+	public ContentType getContentType(){
+		return ContentType.CONTAINER;
 	}
 
 	@Override
 	public List<IDL> getDefaultTextures(){
 		return textures;
-	}
-
-	@Override
-	public Container parse(JsonObject obj){
-		this.pack = DataUtil.getAddon(obj);
-		if(pack == null) return null;
-		this.registryname = DataUtil.getRegistryName(pack, obj);
-		if(registryname == null) return null;
-		//
-		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Vehicle");
-		this.description = DataUtil.getStringArray(obj, "Description", true, true);
-		this.type = ContainerType.valueOf(JsonUtil.getIfExists(obj, "ContainerType", "MEDIUM").toUpperCase());
-		this.textures = DataUtil.getTextures(obj);
-		channels.put("primary", DataUtil.getColor(obj, "Primary", false));
-		channels.put("secondary", DataUtil.getColor(obj, "Secondary", false));
-		if(obj.has("Colors")){
-			for(Entry<String, JsonElement> entry : obj.get("Colors").getAsJsonObject().entrySet()){
-				channels.put(entry.getKey(), new RGB(entry.getValue().getAsString()));
-			}
-		}
-		keytype = obj.has("KeyType") ? IDLManager.getIDLCached(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
-		invtype = new InvHandler(InvType.parse(JsonUtil.getIfExists(obj, "InventoryType", "item"), false));
-		invtype.setCapacity(JsonUtil.getIfExists(obj, "InventorySize", invtype.type.isItem() ? 8 : 16000).intValue());
-        if(invtype.type.isFluid() && obj.has("FluidType")) invtype.setArg(obj.get("FluidType").getAsString());
-        if(invtype.type.isItem() &&  obj.has("ContentFilter")) invtype.setArg(obj.get("ContentFilter").getAsString());
-		//
-		if(Static.isClient()){
-			modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-			modeldata = new ModelData();//TODO
-		}
-        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-		this.itemloc = IDLManager.getIDLCached(DataUtil.getItemTexture(registryname, getDataType(), obj).toString());
-        this.no3ditem = JsonUtil.getIfExists(obj, "DisableItem3DModel", false);
-		this.item = new ContainerItem(this);
-		return this;
-	}
-
-	@Override
-	public ContentType getDataType(){
-		return ContentType.CONTAINER;
 	}
 
 	@Override
@@ -108,19 +102,6 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	@Override
 	public void loadModel(){
 		this.model = FvtmResources.getModel(modelid, modeldata, DefaultModel.class);
-	}
-	
-	public ContainerItem getVehicleItem(){
-		return item;
-	}
-	
-	@Override
-	public Item getItem(){
-		return item;
-	}
-	
-	public ItemStack newItemStack(){
-		return new ItemStack(item, 1);
 	}
 	
 	public Model getModel(){
@@ -153,18 +134,23 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		return channels;
 	}
 
-	//@Override
+	@Override
+	public String getItemContainer(){
+		return null;
+	}
+
+	@Override
 	public String getCreativeTab(){
 		return ctab;
 	}
-	
+
 	public IDL getKeyType(){
 		return keytype;
 	}
 
 	@Override
 	public IDL getItemTexture(){
-		return itemloc;
+		return itemtexloc;
 	}
 	
 	@Override

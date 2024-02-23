@@ -11,6 +11,9 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentItem;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -23,10 +26,13 @@ import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
@@ -38,28 +44,31 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem{;//}, ItemTex<RailGauge> {
+public class RailGaugeItem extends Item implements ContentItem<RailGauge>, JunctionGridItem{;//}, ItemTex<RailGauge> {
 
-    public RailGaugeItem(RailGauge core){
-		super(core);
-		this.setHasSubtypes(true);
-		this.setMaxStackSize(64);
-		//TODO item registry this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
-		if(Static.side().isServer()) return;
-        //TODO this.setCreativeTab(Resources.getCreativeTab(type));
+	private RailGauge gauge;
+
+    public RailGaugeItem(RailGauge type){
+		super();
+		gauge = type;
+		setHasSubtypes(true);
+		setRegistryName(gauge.getID().colon());
+		setTranslationKey(gauge.getID().colon());
+        if(!EnvInfo.CLIENT) return;
+        setCreativeTab((CreativeTabs)FvtmResources.INSTANCE.getCreativeTab(gauge));
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){
+        tooltip.add(Formatter.format("&9Name: &7" + gauge.getName()));
+        for(String s : gauge.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
-        tooltip.add(Formatter.format("&9Width: &7" + type.width() + "mb"));
-        if(type.getCompatible().size() > 0){
+        tooltip.add(Formatter.format("&9Width: &7" + gauge.width() + "mb"));
+        if(gauge.getCompatible().size() > 0){
             tooltip.add(Formatter.format("&9Compatible with:"));
-            for(String str : type.getCompatible()){
+            for(String str : gauge.getCompatible()){
                 tooltip.add(Formatter.format("&7 - " + str));
             }
         }
@@ -97,7 +106,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         }
         ItemStack stack = player.getHeldItem(hand);
         GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID);
-		RailPlacingUtil.place(world, player, stack, getType(), syscap, vector);
+		RailPlacingUtil.place(world, player, stack, gauge, syscap, vector);
 		return EnumActionResult.SUCCESS;
     }
 	
@@ -113,7 +122,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			else{ stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.SUCCESS; }
 		}
 		else{
-			if(!junk.tracks.isEmpty() && junk.tracks.size() < 2 && !junk.tracks.get(0).isCompatibleGauge(type)){
+			if(!junk.tracks.isEmpty() && junk.tracks.size() < 2 && !junk.tracks.get(0).isCompatibleGauge(gauge)){
 				Print.chat(sender, "&9Item Gauge not compatible with the &7Junction's Gauge&9.");
 				return EnumActionResult.FAIL;
 			}
@@ -125,7 +134,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				Print.chat(sender, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
-			Track track = new Track(junk, getVectors(list), vector, type);
+			Track track = new Track(junk, getVectors(list), vector, gauge);
 			if(track.length > MAX_RAIL_TRACK_LENGTH){
 				Print.chat(sender, "&cTrack length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
@@ -179,9 +188,14 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		return true;
 	}
 
-	//@Override
-	public TypeCore<RailGauge> getDataType(){
-		return type;
+	@Override
+	public RailGauge getContent(){
+		return gauge;
+	}
+
+	@Override
+	public ContentType getType(){
+		return ContentType.RAILGAUGE;
 	}
 
 }

@@ -199,7 +199,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				for(ContainerData data : slot.getContainers()){
 					if(data == null) continue;
 					EntityItem stack = new EntityItem(entity.world);
-					stack.setItem(data.newItemStack());
+					stack.setItem(data.getNewStack().local());
 					stack.setPosition(entity.posX, entity.posY + 1, entity.posZ);
 					entity.world.spawnEntity(stack);
 				}

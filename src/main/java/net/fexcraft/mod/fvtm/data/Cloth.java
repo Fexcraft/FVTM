@@ -14,7 +14,6 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.item.ClothMaterial;
-import net.minecraft.inventory.EntityEquipmentSlot;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -24,7 +23,7 @@ public class Cloth extends Content<Cloth> implements ItemTextureable, WithItem {
 	protected short max_health;
 	protected ClothItem item;
 	protected String ctab, modelid;
-	protected EntityEquipmentSlot eq_slot;
+	protected String eq_slot;
 	protected ClothMaterial material;
 	protected ClothModel model;
 	protected ModelData modeldata;
@@ -41,7 +40,7 @@ public class Cloth extends Content<Cloth> implements ItemTextureable, WithItem {
 		name = map.getString("Name", "Unnamed Clothing");
 		description = ContentConfigUtil.getStringList(map, "Description");
 		max_health = (short)map.getInteger("MaxItemDamage", 0);
-		eq_slot = EntityEquipmentSlot.fromString(map.getString("EquipmentSlot", "head").toLowerCase());
+		eq_slot = map.getString("EquipmentSlot", "head");
 		if(map.has("ClothMaterial")){
 			String mat = map.get("ClothMaterial").string_value().toLowerCase();
 			material = ClothMaterial.get(mat.contains(":") ? mat : getAddon().getID().id() + ":" + mat);
@@ -87,7 +86,7 @@ public class Cloth extends Content<Cloth> implements ItemTextureable, WithItem {
 		return ctab;
 	}
 
-	public EntityEquipmentSlot getEquitmentSlot(){
+	public String getEqSlot(){
 		return eq_slot;
 	}
 

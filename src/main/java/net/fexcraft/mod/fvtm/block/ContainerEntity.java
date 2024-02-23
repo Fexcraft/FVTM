@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
@@ -82,7 +83,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
         super.readFromNBT(compound);
         core = compound.getBoolean("Core");
         if(core && compound.hasKey("Container")){
-            container = Resources.getContainerData(compound);
+            container = FvtmResources.getContainerData(compound);
         }
         if(!core){
             corepos = BlockPos.fromLong(compound.getLong("CorePos"));
@@ -160,7 +161,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
             	if(core.container != null){
                 	EntityItem ent = new EntityItem(world);
                     ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
-                    ent.setItem(core.container.newItemStack());
+                    ent.setItem(core.container.getNewStack().local());
                     world.spawnEntity(ent);
                     core.container = null;
             	}

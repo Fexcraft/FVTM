@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
@@ -206,7 +207,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         //
         if(packet.nbt.hasKey("ContainerData")){
-        	this.cdata = Resources.getContainerData(packet.nbt.getCompoundTag("ContainerData"));
+        	this.cdata = FvtmResources.getContainerData(packet.nbt.getCompoundTag("ContainerData"));
         }
         else if(packet.nbt.hasKey("ContainerDataReset") && packet.nbt.getBoolean("ContainerDataReset")){
         	this.cdata = null;
@@ -272,7 +273,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     	NBTTagCompound compound = new NBTTagCompound();
     	switch(type){
 			case "containerdata": case "container": case "con": {
-				if(cdata != null) compound.setTag("ContainerData", cdata.write(new NBTTagCompound()));
+				if(cdata != null) compound.setTag("ContainerData", cdata.write(null).local());
 				else compound.setBoolean("ContainerDataReset", true); break;
 			}
     		case "vehicledata": case "vehicle": case "veh": {
@@ -315,7 +316,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
-        if(cdata != null) compound.setTag("ContainerData", cdata.write(new NBTTagCompound()));
+        if(cdata != null) compound.setTag("ContainerData", cdata.write(null).local());
 			else compound.setBoolean("ContainerDataReset", true);
         if(vdata != null) compound.setTag("VehicleData", vdata.write(TagCW.create()).local());
 			else compound.setBoolean("VehicleDataReset", true);
@@ -338,7 +339,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         	vdata = null;
         }
         if(compound.hasKey("ContainerData")){
-        	this.cdata = Resources.getContainerData(compound.getCompoundTag("ContainerData"));
+        	this.cdata = FvtmResources.getContainerData(compound.getCompoundTag("ContainerData"));
         }
         else if(compound.hasKey("ContainerDataReset") && compound.getBoolean("ContainerDataReset")){
         	this.cdata = null;
@@ -366,7 +367,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
 	public void dropContainer(boolean update){
 		if(cdata == null) return;
-		dropItem(cdata.newItemStack());
+		dropItem(cdata.getNewStack().local());
 		cdata = null;
 		if(update) updateClient("containerdata");
 	}

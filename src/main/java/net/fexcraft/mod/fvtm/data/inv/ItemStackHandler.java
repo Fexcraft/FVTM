@@ -25,7 +25,7 @@ public class ItemStackHandler implements IItemHandler {
 
     public static boolean isContainerPart(ItemStack stack){
         if(stack.getItem() instanceof PartItem){
-            PartData data = ((PartItem)stack.getItem()).getData(stack);
+            PartData data = ((PartItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
             if(data.hasFunction("fvtm:inventory") || data.hasFunction("fvtm:container")){
                 return true;
             }

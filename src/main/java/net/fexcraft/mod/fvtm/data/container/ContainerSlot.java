@@ -51,7 +51,7 @@ public class ContainerSlot {
 		if(rotpoint != null) compound.setString("SwivelPoint", rotpoint);
 		for(byte i = 0; i < containers.length; i++){
 			if(containers[i] == null) continue;
-			compound.setTag("Slot" + i, containers[i].write(new NBTTagCompound()));
+			compound.setTag("Slot" + i, containers[i].write(null).local());
 		}
 		return compound;
 	}

@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.model.ContainerModel;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.util.AnotherUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -141,7 +141,7 @@ public class ContainerSlot {
 				// Print.debug("Rendering Slot Sub " + i);
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(renderoffset[i], 0, 0);
 				TexUtil.bindTexture(containers[i].getTexture().getTexture());
-				containers[i].getType().getModel().render(ContainerModel.RENDERDATA.set(containers[i], null, entity.getCapability(Capabilities.RENDERCACHE, null), false));
+				containers[i].getType().getModel().render(DefaultModel.RENDERDATA.set(containers[i], null, entity.getCapability(Capabilities.RENDERCACHE, null), false));
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
 			}
 		}

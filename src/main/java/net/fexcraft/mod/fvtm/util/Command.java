@@ -14,6 +14,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -155,15 +156,15 @@ public class Command extends CommandBase {
             		else if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
             			ItemStack stack = player.getHeldItemMainhand();
             			VehicleItem item = (VehicleItem)stack.getItem();
-            			if(item.getData(stack).getLock().isLocked()){
+            			if(item.getDataFromTag(stack.getTagCompound()).getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Container first.");
             			}
-            			else if(item.getData(stack).getAttributeInteger("generated_keys", 0) >= item.getContent().getMaxKeys()){
+            			else if(item.getDataFromTag(stack.getTagCompound()).getAttributeInteger("generated_keys", 0) >= item.getContent().getMaxKeys()){
                     		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
             			}
             			else{
-            				giveKeyItem(player, item.getContent().getKeyType().local(), item.getData(stack).getLock().getCode());
-            				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
+            				giveKeyItem(player, item.getContent().getKeyType().local(), item.getDataFromTag(stack.getTagCompound()).getLock().getCode());
+            				Attribute<Integer> attr = item.getDataFromTag(stack.getTagCompound()).getAttributeCasted("generated_keys");
             				attr.set(attr.asInteger() + 1);
             			}
             		}
@@ -175,11 +176,11 @@ public class Command extends CommandBase {
             		if(player.getHeldItemMainhand().getItem() instanceof ContainerItem){
             			ItemStack stack = player.getHeldItemMainhand();
             			ContainerItem item = (ContainerItem)stack.getItem();
-            			if(item.getData(stack).getLock().isLocked()){
+            			if(item.getDataFromTag(stack.getTagCompound()).getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Container first.");
             			}
             			else{
-            				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLock().getCode());
+            				giveKeyItem(player, item.getContent().getKeyType(), item.getDataFromTag(stack.getTagCompound()).getLock().getCode());
             			}
             		}
             		else{
@@ -327,7 +328,7 @@ public class Command extends CommandBase {
             	EntityPlayer player = (EntityPlayer)sender;
             	ItemStack stack = player.getHeldItemMainhand();
             	if(stack.getItem() instanceof VehicleItem){
-                	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
+                	VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
                 	if(args.length < 3){
                 		Print.chat(sender, "No Attribute ID specified.");
                 		return;

@@ -19,7 +19,8 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
-import net.fexcraft.mod.fvtm.model.ContainerModel;
+import net.fexcraft.mod.fvtm.model.ContainerItemModel;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -106,7 +107,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	
 	@Override
 	public void loadModel(){
-		this.model = FvtmResources.getModel(modelid, modeldata, ContainerModel.class);
+		this.model = FvtmResources.getModel(modelid, modeldata, DefaultModel.class);
 	}
 	
 	public ContainerItem getVehicleItem(){

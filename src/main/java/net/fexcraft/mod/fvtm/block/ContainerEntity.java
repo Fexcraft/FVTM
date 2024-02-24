@@ -12,8 +12,10 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -141,7 +143,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
         BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
         this.core = pos.equals(core);
         if(this.core){
-            container = stack.getCapability(Capabilities.VAPDATA, null).getContainerData();
+            container = ((ContainerItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
             Print.debug(container.write(new NBTTagCompound()).toString());
         }
         else{

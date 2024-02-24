@@ -40,7 +40,11 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-//@fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerEntity.class)
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class ContainerBlock extends BlockContainer {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -55,6 +59,8 @@ public class ContainerBlock extends BlockContainer {
         this.setHardness(Config.UNBREAKABLE_CONTAINERS ? -1F : 8.0F);
         this.setResistance(50.0F);
         //
+        setRegistryName("fvtm:container");
+        setTranslationKey(getRegistryName().toString());
         INSTANCE = this;
     }
 
@@ -110,7 +116,7 @@ public class ContainerBlock extends BlockContainer {
 
     @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).getIndex();
     }
 
     @Override

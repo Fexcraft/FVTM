@@ -3,29 +3,27 @@ package net.fexcraft.mod.fvtm.util.cap.pass;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.Passenger;
+import net.fexcraft.mod.fvtm.data.PassCap;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.I19U;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWI;
 import net.fexcraft.mod.uni.world.MessageSender;
-import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
-public class PassengerImplementation implements Passenger {
+public class PassengerImplementation implements PassCap {
 
 	private Entity entity;
 	private int vehicle = -1, seatindex = -1;
 	private byte check;
 	private boolean notified;
-	private EntityW wrapper;
+	private Passenger wrapper;
 
 	@Override
 	public void set(int veh, int seatid){
@@ -109,7 +107,7 @@ public class PassengerImplementation implements Passenger {
 	}
 
 	@Override
-	public EntityW asWrapper(){
+	public Passenger asWrapper(){
 		return wrapper;
 	}
 

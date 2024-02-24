@@ -38,7 +38,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

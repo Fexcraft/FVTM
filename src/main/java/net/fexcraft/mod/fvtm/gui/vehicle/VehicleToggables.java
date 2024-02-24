@@ -3,20 +3,16 @@ package net.fexcraft.mod.fvtm.gui.vehicle;
 import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_ATTRIBUTE_EDITOR;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
 
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;

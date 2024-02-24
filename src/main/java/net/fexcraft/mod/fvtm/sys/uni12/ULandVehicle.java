@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.uni12;
 import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.Axle;
@@ -49,7 +50,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.function.part.ContainerFunction;
@@ -59,10 +59,6 @@ import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPressState;
-import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -348,11 +344,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
-        	if(key.synced()){
-                Packets.sendToServer(key.sync_state() ? new PKT_VehKeyPressState(this, player, key, state) : new PKT_VehKeyPress(key));
+        	if(key.synced() && key.sync_state()){
+                PacketsImpl.sendToServer(new PKT_VehKeyPressState(this, player, key, state));
         	}
         	else{
-                Packets.sendToServer(new PKT_VehKeyPress(key));
+				Packets.send(Packet_VehKeyPress.class, key);
                 return true;
         	}
         }
@@ -390,7 +386,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case DISMOUNT: {
-                Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+                PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -879,11 +875,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         checkForCollisions();
         if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0 && truck == null){
         	vehicle.getAttribute("throttle").set((float)throttle);
-            Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+            PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
             ULandVehicle trailer = this.trailer;
             while(trailer != null){
-                Packets.sendToAllAround(new PKT_VehControl(trailer), getTargetPoint(trailer));
+                PacketsImpl.sendToAllAround(new PKT_VehControl(trailer), getTargetPoint(trailer));
                 //TODO for(SwivelPoint point : trailer.vehicle.getRotationPoints().values()) point.sendClientUpdate(trailer);
                 trailer = trailer.trailer;
             }

@@ -4,7 +4,7 @@ import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
 import java.util.UUID;
 
@@ -35,6 +35,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
@@ -46,13 +47,12 @@ import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.LoopSound;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
-import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.fvtm.packet.PKT_VehControl;
+import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
+import net.fexcraft.mod.fvtm.packet.PacketsImpl;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -214,7 +214,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		for(VehicleScript script : rek.data().getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
-            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
+			Packets.send(Packet_VehKeyPress.class, key);
+			return true;
         }
         switch(key){
             case ACCELERATE:{
@@ -253,7 +254,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case DISMOUNT: {
-                Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+                PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -589,7 +590,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(!world.isRemote && ticksExisted % servtick == 0){
         	throttle = rek.ent().throttle;
         	rek.data().getAttribute("throttle").set((float)throttle);
-            Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+            PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }

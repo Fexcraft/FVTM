@@ -2,10 +2,9 @@ package net.fexcraft.mod.fvtm.sys.wire;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
 /**
  * 

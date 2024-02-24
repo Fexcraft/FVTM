@@ -4,6 +4,9 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.UniReg;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -18,7 +21,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class EntityWI extends EntityW {
+public class EntityWI extends Passenger {
 
 	protected Entity entity;
 	protected WorldW world;
@@ -104,6 +107,12 @@ public class EntityWI extends EntityW {
 	@Override
 	public String getName() {
 		return entity.getName();
+	}
+
+	@Override
+	public SeatInstance getSeatOn(){
+		if(entity.getRidingEntity() instanceof RootVehicle == false) return null;
+		return ((RootVehicle)entity.getRidingEntity()).getSeatOf(entity);
 	}
 
 	@Override

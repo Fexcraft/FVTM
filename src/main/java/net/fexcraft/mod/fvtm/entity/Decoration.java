@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.DECORATION_EDITOR;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,10 +1,11 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.entity.Entity;
 
-public interface Passenger {
+public interface PassCap {
 	
 	public void set(int veh, int seat);
 	
@@ -20,6 +21,6 @@ public interface Passenger {
 
 	public MessageSender asSender();
 
-	public EntityW asWrapper();
+	public Passenger asWrapper();
 
 }

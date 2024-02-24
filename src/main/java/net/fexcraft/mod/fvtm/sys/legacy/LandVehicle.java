@@ -5,7 +5,7 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +38,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -46,16 +47,15 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.function.part.ContainerFunction;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
-import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
-import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.fvtm.packet.PKT_VehControl;
+import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
+import net.fexcraft.mod.fvtm.packet.PacketsImpl;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -263,7 +263,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
-            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
+			Packets.send(Packet_VehKeyPress.class, key);
+			return true;
         }
         switch(key){
             case ACCELERATE:{
@@ -303,7 +304,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case DISMOUNT: {
-                Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+                PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -742,7 +743,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
         	vehicle.getAttribute("throttle").set((float)throttle);
-            Packets.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+            PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }

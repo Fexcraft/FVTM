@@ -10,7 +10,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.Passenger;
+import net.fexcraft.mod.fvtm.data.PassCap;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -65,8 +65,8 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.*;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -699,7 +699,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	}
 
 	public SeatInstance getSeatOf(Entity entity){
-		Passenger pass = entity.getCapability(Capabilities.PASSENGER, null);
+		PassCap pass = entity.getCapability(Capabilities.PASSENGER, null);
 		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;
 		return vehicle.seats.get(pass.seat());
 	}
@@ -738,7 +738,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		if(world.isRemote || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
 		ItemStack stack = player.getHeldItem(hand);
 		SeatInstance seat = vehicle.seats.get(seatidx);
-		Passenger pass = player.getCapability(PASSENGER, null);
+		PassCap pass = player.getCapability(PASSENGER, null);
 		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString())) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass.asSender(), new SWI(stack));
 			sendLockStateUpdate();

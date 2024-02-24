@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.Passenger;
+import net.fexcraft.mod.fvtm.data.PassCap;
 import net.fexcraft.mod.fvtm.data.PlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.AABB;
@@ -42,6 +42,7 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.packet.PacketsImpl;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.render.block.BakedModelLoader;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
@@ -189,7 +190,7 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
 		CapabilityManager.INSTANCE.register(PlayerData.class, new PlayerDataHandler.Storage(), new PlayerDataHandler.Callable());
-		CapabilityManager.INSTANCE.register(Passenger.class, new PassengerStorage(), new PassengerCallable());
+		CapabilityManager.INSTANCE.register(PassCap.class, new PassengerStorage(), new PassengerCallable());
 		CapabilityManager.INSTANCE.register(TrafficSigns.class, new TrafficSignCapHandler.Storage(), new TrafficSignCapHandler.Callable());
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:vehicle"), NLandVehicle.class, "fvtm.vehicle", 0, this, 256, 1, true);
@@ -310,7 +311,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		(Packets.INSTANCE = new net.fexcraft.mod.fvtm.util.packet.Packets()).init();
+		(Packets.INSTANCE = new PacketsImpl()).init();
 		Resources.registerDefaultRecipes();
 		FvtmResources.loadRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());

@@ -31,8 +31,8 @@ public class Capabilities {
 	public static final Capability<PlayerData> PLAYERDATA = null;
 	
 	/** Optional Passenger Capability */
-	@CapabilityInject(Passenger.class)
-	public static final Capability<Passenger> PASSENGER = null;
+	@CapabilityInject(PassCap.class)
+	public static final Capability<PassCap> PASSENGER = null;
 	
 	/** TrafficSign Chunk Storage */
 	@CapabilityInject(TrafficSigns.class)

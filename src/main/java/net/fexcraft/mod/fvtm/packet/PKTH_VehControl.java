@@ -1,6 +1,5 @@
-package net.fexcraft.mod.fvtm.util.packet;
+package net.fexcraft.mod.fvtm.packet;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;

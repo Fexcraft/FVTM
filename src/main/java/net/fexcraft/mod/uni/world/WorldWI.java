@@ -4,6 +4,9 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -14,7 +17,7 @@ import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WorldWI extends WorldW {
+public class WorldWI extends FvtmWorld {
 
 	private World world;
 
@@ -60,4 +63,15 @@ public class WorldWI extends WorldW {
 		((Entity)player.direct()).startRiding(seat);
 	}
 
+	@Override
+	public int dim(){
+		return world.provider.getDimension();
+	}
+
+	@Override
+	public SeatInstance getSeat(int entid, int seatid){
+		Entity ent = world.getEntityByID(entid);
+		if(ent == null) return null;
+		return ((RootVehicle)ent).vehicle.seats.get(seatid);
+	}
 }

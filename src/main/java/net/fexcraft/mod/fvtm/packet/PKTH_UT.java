@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util.packet;
+package net.fexcraft.mod.fvtm.packet;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;

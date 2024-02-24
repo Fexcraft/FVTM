@@ -22,7 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
 
 public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 

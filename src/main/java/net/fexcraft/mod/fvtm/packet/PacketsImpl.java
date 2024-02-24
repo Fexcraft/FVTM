@@ -1,9 +1,9 @@
-package net.fexcraft.mod.fvtm.util.packet;
+package net.fexcraft.mod.fvtm.packet;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
@@ -11,7 +11,6 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -19,7 +18,6 @@ import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -28,20 +26,26 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
+public class PacketsImpl extends Packets {
 	
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
 	public static final String UTIL_LISTENER = "fvtm:utils";
+	public static final HashMap<Class<? extends PacketBase>, Class<? extends PacketBase>> PACKETS = new LinkedHashMap<>();
 
 	public void init(){
 		FvtmLogger.LOGGER.log("Starting Packet Handler initialization.");
 		//
-		instance.registerMessage(PKTH_SeatUpdate.Client.class, PKT_SeatUpdate.class, 0, Side.CLIENT);
-		instance.registerMessage(PKTH_SeatUpdate.Server.class, PKT_SeatUpdate.class, 1, Side.SERVER);
-		instance.registerMessage(PKTH_VehKeyPress.class, PKT_VehKeyPress.class, 2, Side.SERVER);
+		PACKETS.put(Packet_VehKeyPress.class, Packets12.PI_VehKeyPress.class);
+		//
+		instance.registerMessage(Packets12.HI_SeatUpdate_C.class, Packets12.PI_SeatUpdate.class, 0, Side.CLIENT);
+		instance.registerMessage(Packets12.HI_SeatUpdate_S.class, Packets12.PI_SeatUpdate.class, 1, Side.SERVER);
+		instance.registerMessage(Packets12.HI_VehKeyPress.class, Packets12.PI_VehKeyPress.class, 2, Side.SERVER);
 		instance.registerMessage(PKTH_VehControl.Client.class, PKT_VehControl.class, 3, Side.CLIENT);
 		instance.registerMessage(PKTH_VehControl.Server.class, PKT_VehControl.class, 4, Side.SERVER);
 		instance.registerMessage(PKTH_SPUpdate.Client.class, PKT_SPUpdate.class, 5, Side.CLIENT);
@@ -66,11 +70,6 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
-	}
-
-	@Override
-	public void send(SeatInstance seat){
-		sendToServer(new PKT_SeatUpdate(seat));
 	}
 
 	@Override
@@ -106,6 +105,45 @@ public class Packets extends net.fexcraft.mod.fvtm.packet.Packets {
 		com.set("task", "vehicle");
 		com.set("entity", vehicle.entity.getId());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(vehicle.entity.local()));
+	}
+
+	@Override
+	public void send0(Class<? extends PacketBase> packet, Object... data){
+		try{
+			instance.sendToServer((IMessage)PACKETS.get(packet).newInstance().fill(data));
+		}
+		catch(IllegalAccessException e){
+			throw new RuntimeException(e);
+		}
+		catch(InstantiationException e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void sendInRange0(Class<? extends PacketBase> packet, WorldW world, V3D pos, int range, Object... data){
+		try{
+			instance.sendToAllAround((IMessage)PACKETS.get(packet).newInstance().fill(data), new TargetPoint(world.dim(), pos.x, pos.y, pos.z, range));
+		}
+		catch(IllegalAccessException e){
+			throw new RuntimeException(e);
+		}
+		catch(InstantiationException e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void sendToAll0(Class<? extends PacketBase> packet, Object... data){
+		try{
+			instance.sendToAll((IMessage)PACKETS.get(packet).newInstance().fill(data));
+		}
+		catch(IllegalAccessException e){
+			throw new RuntimeException(e);
+		}
+		catch(InstantiationException e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static final void sendToServer(IMessage packet){

@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.Passenger;
+import net.fexcraft.mod.fvtm.data.PassCap;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -19,7 +19,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.LoopSound;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -36,8 +35,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import static net.fexcraft.mod.fvtm.util.packet.Packets.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.util.packet.Packets.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
 
 /** 
  * @author Ferdinand Calo' (FEX___96)
@@ -154,7 +153,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	}
 
 	public SeatCache getSeatOf(Entity entity){
-		Passenger pass = entity.getCapability(Capabilities.PASSENGER, null);
+		PassCap pass = entity.getCapability(Capabilities.PASSENGER, null);
 		if(pass == null || pass.seat() < 0 || seats == null || pass.seat() >= seats.length) return null;
 		return seats[pass.seat()];
 	}

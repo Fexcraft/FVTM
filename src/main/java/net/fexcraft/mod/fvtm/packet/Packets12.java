@@ -117,4 +117,42 @@ public class Packets12 {
 
 	}
 
+	//---//---//---//
+
+	public static class PI_VehKeyPressState extends Packet_VehKeyPressState implements IMessage {
+
+		@Override
+		public void fromBytes(ByteBuf buf){
+			decode(buf);
+		}
+
+		@Override
+		public void toBytes(ByteBuf buf){
+			encode(buf);
+		}
+
+	}
+
+	public static class HI_VehKeyPressState_S extends Handler_VehKeyPressState implements IMessageHandler<PI_VehKeyPressState, IMessage> {
+
+		@Override
+		public IMessage onMessage(PI_VehKeyPressState message, MessageContext ctx){
+			FMLCommonHandler.instance().getMinecraftServerInstance()
+				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			return null;
+		}
+
+	}
+
+	public static class HI_VehKeyPressState_C extends Handler_VehKeyPressState implements IMessageHandler<PI_VehKeyPressState, IMessage> {
+
+		@Override
+		public IMessage onMessage(PI_VehKeyPressState message, MessageContext ctx){
+			Minecraft.getMinecraft()
+				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			return null;
+		}
+
+	}
+
 }

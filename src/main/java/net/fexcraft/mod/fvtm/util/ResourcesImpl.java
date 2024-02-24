@@ -19,12 +19,8 @@ import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.Asphalt.AsphaltItem;
-import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
-import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
-import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -260,6 +256,7 @@ public class ResourcesImpl extends FvtmResources {
 		CONTAINERS.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ContainerItem(con))));
 		RAILGAUGES.forEach(rail -> {
 			rail.setItemWrapper(wrapwrapper(rail.getID(), new RailGaugeItem(rail)));
+			if(rail.getPresets() == null) return;
 			for(RailGauge.Preset preset : rail.getPresets()){
 				wrapwrapper(IDLManager.getIDLCached(rail.getIDS() + "." + preset.name.toLowerCase()), new RailPresetItem(rail, preset));
 			}
@@ -383,12 +380,16 @@ public class ResourcesImpl extends FvtmResources {
 		Asphalt.INSTANCE = new Asphalt();
 		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
 		//
+		ContainerBlock.INSTANCE = new ContainerBlock();
+		GameRegistry.registerTileEntity(ContainerEntity.class, new ResourceLocation("fvtm:container"));
+		//
 		if(EnvInfo.CLIENT) registerTESR();
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void registerTESR(){
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstCenterEntity.class, new net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer());
+		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
 	}
 
 	@Override

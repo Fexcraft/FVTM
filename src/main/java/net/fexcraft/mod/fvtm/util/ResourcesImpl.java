@@ -27,6 +27,7 @@ import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
@@ -54,6 +55,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -256,7 +258,12 @@ public class ResourcesImpl extends FvtmResources {
 		CLOTHES.forEach(cth -> cth.setItemWrapper(wrapwrapper(cth.getID(), new ClothItem(cth))));
 		WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), new WireItem(wire))));
 		CONTAINERS.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ContainerItem(con))));
-		RAILGAUGES.forEach(rail -> rail.setItemWrapper(wrapwrapper(rail.getID(), new RailGaugeItem(rail))));
+		RAILGAUGES.forEach(rail -> {
+			rail.setItemWrapper(wrapwrapper(rail.getID(), new RailGaugeItem(rail)));
+			for(RailGauge.Preset preset : rail.getPresets()){
+				wrapwrapper(IDLManager.getIDLCached(rail.getIDS() + "." + preset.name.toLowerCase()), new RailPresetItem(rail, preset));
+			}
+		});
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){

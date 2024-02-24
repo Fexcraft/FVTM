@@ -58,19 +58,6 @@ public class ContainerBlock extends BlockContainer {
         INSTANCE = this;
     }
 
-    public static class ITB extends ItemBlock {
-
-        public ITB(Block block){
-            super(block);
-        }
-
-        @Override
-        public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-            return EnumActionResult.PASS;
-        }
-
-    }
-
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta){
         return new ContainerEntity();

@@ -43,14 +43,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RailPresetItem extends Item implements ContentItem<RailGauge>, JunctionGridItem {
 
 	private RailGauge gauge;
-	private GridV3D[] path;
-	private String title;
+	private RailGauge.Preset preset;
 	private int rotations;
 
-    public RailPresetItem(RailGauge type, String name, GridV3D... vecs){
+    public RailPresetItem(RailGauge type, RailGauge.Preset set){
 		super();
 		gauge = type;
-		path = vecs;
+		preset = set;
 		setHasSubtypes(true);
 		setRegistryName(gauge.getID().colon());
 		setTranslationKey(gauge.getID().colon());
@@ -77,7 +76,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
             }
         }
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
-        tooltip.add(Formatter.format("&9Preset: &7" + title));
+        tooltip.add(Formatter.format("&9Preset: &7" + preset.name));
         tooltip.add(Formatter.format("&6Segmentation: &a" + (360f / rotations) + "\u00B0 &7/ &e" + rotations + "seg."));
         tooltip.add(Formatter.format("&b&oThis tool creates junctions where missing and places tracks, use with caution."));
     }
@@ -94,7 +93,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");
             return EnumActionResult.FAIL;
         }
-        GridV3D[] vecs = copyAndRotate(vector, path, player.rotationYaw);
+        GridV3D[] vecs = copyAndRotate(vector, preset.path, player.rotationYaw);
         Junction end = syscap.getJunction(vecs[vecs.length - 1]);
         if(end != null && end.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at End point has reached max allowed connections.");
@@ -104,7 +103,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         	syscap.addJunction(vector.copy());
         	start = syscap.getJunction(vector);
         }
-        Track track = new Track(start, vecs, gauge).withPreset(gauge.getIDS() + "." + title);
+        Track track = new Track(start, vecs, gauge).withPreset(gauge.getIDS() + "." + preset.name);
 		if(!TrackPlacer.set(player, player, world, null, track).place().result()) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);
@@ -114,7 +113,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         end.addnew(track.createOppositeCopy());
         start.checkTrackSectionConsistency();
         end.checkTrackSectionConsistency();
-        Print.bar(player, "&7Track of type &e'" + title + "' &7placed!");
+        Print.bar(player, "&7Track of type &e'" + preset.name + "' &7placed!");
         if(!player.capabilities.isCreativeMode) stack.shrink(1);
 		return EnumActionResult.SUCCESS;
     }
@@ -133,7 +132,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 
 	@Override
 	public GridV3D[] getVectors(ItemStack stack){
-		return path;
+		return preset.path;
 	}
 
 	@Override
@@ -160,4 +159,5 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 	public ContentType getType(){
 		return ContentType.RAILGAUGE;
 	}
+
 }

@@ -2,10 +2,12 @@ package net.fexcraft.mod.uni.world;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.minecraft.entity.Entity;
@@ -79,4 +81,12 @@ public class WorldWI extends FvtmWorld {
 		if(ent == null) return null;
 		return ((RootVehicle)ent).vehicle.data.getRotationPoint(pointid);
 	}
+
+	@Override
+	public Passenger getPassenger(int id){
+		Entity ent = world.getEntityByID(id);
+		if(ent == null) return null;
+		return ent.getCapability(Capabilities.PASSENGER, null).asWrapper();
+	}
+
 }

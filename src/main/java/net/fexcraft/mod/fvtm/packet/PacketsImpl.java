@@ -48,8 +48,8 @@ public class PacketsImpl extends Packets {
 		instance.registerMessage(Packets12.HI_VehKeyPress.class, Packets12.PI_VehKeyPress.class, 2, Side.SERVER);
 		instance.registerMessage(PKTH_VehControl.Client.class, PKT_VehControl.class, 3, Side.CLIENT);
 		instance.registerMessage(PKTH_VehControl.Server.class, PKT_VehControl.class, 4, Side.SERVER);
-		instance.registerMessage(PKTH_SPUpdate.Client.class, PKT_SPUpdate.class, 5, Side.CLIENT);
-		instance.registerMessage(PKTH_SPUpdate.Server.class, PKT_SPUpdate.class, 6, Side.SERVER);
+		instance.registerMessage(Packets12.HI_SPUpdate_C.class, Packets12.PI_SPUpdate.class, 5, Side.CLIENT);
+		instance.registerMessage(Packets12.HI_SPUpdate_S.class, Packets12.PI_SPUpdate.class, 6, Side.SERVER);
 		instance.registerMessage(PKTH_VehKeyPressState.Client.class, PKT_VehKeyPressState.class, 7, Side.CLIENT);
 		instance.registerMessage(PKTH_VehKeyPressState.Server.class, PKT_VehKeyPressState.class, 8, Side.SERVER);
 		//

@@ -357,6 +357,7 @@ public class FVTM {
 			event.getRegistry().register(ConstructorBlock.INSTANCE);
 			event.getRegistry().register(ConstCenterBlock.INSTANCE);
 			event.getRegistry().register(Asphalt.INSTANCE);
+			event.getRegistry().register(ContainerBlock.INSTANCE);
 		}
 
 		@SubscribeEvent

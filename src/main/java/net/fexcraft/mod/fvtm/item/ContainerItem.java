@@ -101,6 +101,7 @@ public class ContainerItem extends Item implements ContentItem.ContentDataItem<C
         BlockPos core = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.add(0, 1, 0);
         if(isValidPostitionForContainer(world, player, core, player.getHorizontalFacing(), data)){
             ItemStack stack = player.getHeldItem(hand);
+			if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setLong("PlacedPos", core.toLong());
             ContainerBlock.getPositions(data, core, player.getHorizontalFacing()).forEach(blkpos -> {
                 IBlockState state = ContainerBlock.INSTANCE.getDefaultState();

@@ -9,8 +9,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
-import net.fexcraft.mod.fvtm.item.RailGaugeItem;
-import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
@@ -33,7 +31,6 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 	 * Height between the placed track point and the actual position of the wheels on the rail. */
 	protected float height, height16;
 	protected float blockwidth, blockheight;
-	protected RailGaugeItem item;
 	protected List<String> compatible;
 	protected IDL rail_texture;
 	protected IDL ties_texture;
@@ -42,7 +39,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 	protected String modelid, ctab;
 	protected RailGaugeModel model;
 	protected ModelData modeldata;
-	protected ArrayList<RailPresetItem> presets;
+	protected ArrayList<Preset> presets;
 	protected IDL itemtexloc;
 	
 	public RailGauge(){}
@@ -80,17 +77,18 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 					JsonMap mep = val.asMap();
 					JsonArray path = mep.getArray("path");
 					JsonArray temp;
-					GridV3D[] vecs = new GridV3D[path.size()];
-					for(int i = 0; i < vecs.length; i++){
+					Preset pre = new Preset();
+					pre.path = new GridV3D[path.size()];
+					for(int i = 0; i < pre.path.length; i++){
 						temp = path.get(i).asArray();
 						double x = temp.get(0).float_value();
 						double y = temp.get(1).float_value();
 						double z = temp.get(2).float_value();
-						vecs[i] = new GridV3D(new V3D(x, y, z));
+						pre.path[i] = new GridV3D(new V3D(x, y, z));
 					}
-					RailPresetItem item = new RailPresetItem(this, mep.get("name").string_value().toLowerCase(), vecs);
-					item.setSegmentation(mep.getInteger("segmentation", 4));
-					presets.add(item);
+					pre.name = mep.get("name").string_value().toLowerCase();
+					pre.segmentation = mep.getInteger("segmentation", pre.segmentation);
+					presets.add(pre);
 				}
 				catch(Exception e){
 					Print.log("Failed to load a RailGauge Preset for '" + id.colon() + "'!");
@@ -101,6 +99,14 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 			});
 		}
 		return this;
+	}
+
+	public static class Preset {
+
+		public GridV3D[] path;
+		public String name;
+		public int segmentation = 4;
+
 	}
 
 	@Override
@@ -173,7 +179,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return ctab;
 	}
 
-	public ArrayList<RailPresetItem> getPresets(){
+	public ArrayList<Preset> getPresets(){
 		return presets;
 	}
 

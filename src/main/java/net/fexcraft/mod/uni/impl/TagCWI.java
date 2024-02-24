@@ -28,7 +28,7 @@ public class TagCWI implements TagCW {
 		if(com instanceof NBTTagCompound){
 			compound = (NBTTagCompound)com;
 		}
-		else com = new NBTTagCompound();
+		else compound = new NBTTagCompound();
 	}
 
 	@Override

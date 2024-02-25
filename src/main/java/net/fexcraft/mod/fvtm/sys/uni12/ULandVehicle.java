@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni12;
 
 import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import java.util.ArrayList;
@@ -48,6 +48,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.PacketsImpl;
@@ -395,7 +396,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 /*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                     Print.chat(player, "Turn engine off first!"); return true;
                 }*/
-            	player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
+            	player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
                 return true;
             }
             case TOGGABLES: {//client side
@@ -760,7 +761,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     Print.chat(player, "Turn engine off first!");
                 }
                 else{
-                	player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
+                	player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
                 }
                 return true;
             }

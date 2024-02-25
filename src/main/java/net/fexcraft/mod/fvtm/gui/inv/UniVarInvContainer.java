@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,7 +63,7 @@ public class UniVarInvContainer extends GenericContainer {
 			title = con_tile.getContainerData().getType().getName();
 			//coninv = true;
 		}
-		else if(ID == GuiHandler.BLOCK_INVENTORY_VAR){
+		else if(ID == UIKey.BLOCK_INVENTORY_VAR.id){
 			blk_tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 			invhandler = (InvHandlerVar)((InventoryBlockFunction)blk_tile.getBlockData().getFunctionInventory()).inventory();
 			title = blk_tile.getBlockData().getType().getName();

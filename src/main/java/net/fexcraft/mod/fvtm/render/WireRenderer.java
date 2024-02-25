@@ -16,7 +16,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -276,14 +276,14 @@ public class WireRenderer {
 		if(wire.deco_end != null) wire.deco_e = WireModel.DECOS.get(wire.deco_end);
 		float hwl = wire.length / 2;
 		if(wire.deco_s != null){
-			float len = wire.deco_s.getLongestDownward();
+			float len = getLongestDownward(wire.deco_s);
 			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
 	        double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model_start_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_start_angle_down = Static.toDegrees(wire.model_start_angle_down);
 		}
 		if(wire.deco_e != null){
-			float len = wire.deco_e.getLongestDownward();
+			float len = getLongestDownward(wire.deco_e);
 			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
 	        double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
@@ -311,6 +311,19 @@ public class WireRenderer {
 				}
 			}
 		}
+	}
+
+	public static float getLongestDownward(WireModel model){
+		float l = 0.01f;
+		for(ModelGroup list : model.groups){
+			for(Program program : list.getAllPrograms()){
+				if(program instanceof WirePrograms.DownwardAngled){
+					WirePrograms.DownwardAngled prog = (WirePrograms.DownwardAngled)program;
+					if(prog.length() > l) l = prog.length();
+				}
+			}
+		}
+		return l;
 	}
 
 }

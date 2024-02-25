@@ -50,7 +50,6 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.PacketsImpl;
 import net.fexcraft.mod.uni.world.MessageSenderI;
@@ -254,7 +253,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case DISMOUNT: {
-                PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+                //TODO PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -590,7 +589,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(!world.isRemote && ticksExisted % servtick == 0){
         	throttle = rek.ent().throttle;
         	rek.data().getAttribute("throttle").set((float)throttle);
-            PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+            //TODO PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }

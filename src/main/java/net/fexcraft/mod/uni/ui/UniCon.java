@@ -1,6 +1,8 @@
 package net.fexcraft.mod.uni.ui;
 
-import net.fexcraft.mod.fvtm.packet.PKT_UT;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.packet.PacketsImpl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,12 +24,10 @@ public class UniCon extends Container {
 		this.con = con;
 		this.player = player;
 		con.SEND_TO_CLIENT = com -> {
-			com.set("to", "ui");
-			PacketsImpl.sendTo(new PKT_UT(com), (EntityPlayerMP)player);
+			Packets.sendTo(Packet_TagListener.class, player.getCapability(Capabilities.PASSENGER, null).asWrapper(), "ui", com);
 		};
 		con.SEND_TO_SERVER = com -> {
-			com.set("to", "ui");
-			PacketsImpl.sendToServer(new PKT_UT(com));
+			Packets.send(Packet_TagListener.class, "ui", com);
 		};
 	}
 

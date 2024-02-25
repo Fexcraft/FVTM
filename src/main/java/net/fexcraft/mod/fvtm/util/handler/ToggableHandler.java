@@ -160,9 +160,9 @@ public class ToggableHandler {
 			}
 			default: return false;
 		}
-		entity.vehicle.data.getScripts().forEach(script -> {
+		/*entity.vehicle.data.getScripts().forEach(script -> {
 			script.onAttributeToggle(entity, attr, old, player);
-		});
+		});*///TODO
 		if(player.world.isRemote){
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 			last = attr.id;

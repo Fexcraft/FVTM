@@ -118,7 +118,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCapability Implementation Found!");}
-        rek.data().getScripts().forEach((script) -> script.onSpawn(this, rek.data()));
+        //TODO rek.data().getScripts().forEach((script) -> script.onSpawn(this, rek.data()));
         if(remote){
         	float c = rek.data().getAttributeFloat("collision_range", 2f);
         	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
@@ -181,7 +181,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         super.setDead(); if(!world.isRemote) rek.ent().entity = null;
         //if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         //
-        rek.data().getScripts().forEach((script) -> script.onRemove(this, rek.data()));
+        //TODO rek.data().getScripts().forEach((script) -> script.onRemove(this, rek.data()));
     }
 
 	@Override
@@ -209,7 +209,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		for(VehicleScript script : rek.data().getScripts()) if(script.onKeyPress(key, seat, player)) return true;
+		//TODO for(VehicleScript script : rek.data().getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
 			Packets.send(Packet_VehKeyPress.class, key);
@@ -491,13 +491,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	return true;
         }
         //TODO else if(ToggableHandler.handleClick(player, KeyPress.MOUSE_RIGHT)) return true;
-        if(!rek.data().getScripts().isEmpty()){
+        /*if(!rek.data().getScripts().isEmpty()){
             for(VehicleScript script : rek.data().getScripts()){
                 if(script.onInteract(this, rek.data(), player, hand)){
                     return true;
                 }
             }
-        }
+        }*///TODO
         return false;
     }
 
@@ -583,7 +583,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         //TODO for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
         for(SeatCache seat : seats) seat.updatePosition();
-        rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
+        //TODO rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         if(!world.isRemote && ticksExisted % servtick == 0){
         	throttle = rek.ent().throttle;
@@ -658,11 +658,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : rek.data().getScripts()){
+            /*for(VehicleScript script : rek.data().getScripts()){
                 if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
                     script.onDataPacket(this, rek.data(), pkt.nbt, Side.SERVER);
                 }
-            }
+            }*///TODO
         }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
@@ -694,11 +694,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @SideOnly(Side.CLIENT) @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : rek.data().getScripts()){
+            /*for(VehicleScript script : rek.data().getScripts()){
                 if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
                     script.onDataPacket(this, rek.data(), pkt.nbt, Side.CLIENT);
                 }
-            }
+            }*///TODO
         }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){

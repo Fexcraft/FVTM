@@ -72,7 +72,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_SeatUpdate message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;
 		}
 
@@ -110,7 +110,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_SPUpdate message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;
 		}
 
@@ -148,7 +148,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_VehKeyPressState message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;
 		}
 
@@ -186,7 +186,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_TagListener message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;
 		}
 
@@ -224,7 +224,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_VehMove message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;
 		}
 

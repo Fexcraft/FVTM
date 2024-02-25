@@ -344,13 +344,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
-        	if(key.synced() && key.sync_state()){
-                PacketsImpl.sendToServer(new PKT_VehKeyPressState(this, player, key, state));
-        	}
-        	else{
+			if(key.synced() && key.sync_state()){
+				Packets.send(Packet_VehKeyPressState.class, key, state, getEntityId(), player.getEntityId());
+			}
+			else{
 				Packets.send(Packet_VehKeyPress.class, key);
-                return true;
-        	}
+				return true;
+			}
         }
         switch(key){
             case ACCELERATE:{

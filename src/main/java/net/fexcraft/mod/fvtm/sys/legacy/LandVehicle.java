@@ -53,7 +53,6 @@ import net.fexcraft.mod.fvtm.function.part.ContainerFunction;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.fvtm.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.PacketsImpl;
 import net.fexcraft.mod.uni.world.MessageSenderI;
@@ -304,7 +303,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case DISMOUNT: {
-                PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+                //TODO PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
                 player.dismountRidingEntity();
                 return true;
             }
@@ -743,7 +742,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
         	vehicle.getAttribute("throttle").set((float)throttle);
-            PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
+            //TODO PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }

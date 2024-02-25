@@ -64,6 +64,7 @@ import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.*;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
+import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
@@ -378,7 +379,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 					player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.engine_on"), true);
 				}
 				else{
-					player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
+					player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
 				}
 				return true;
 			}

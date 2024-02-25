@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 public class AttrReqHandler {
 

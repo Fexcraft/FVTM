@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.UUID;

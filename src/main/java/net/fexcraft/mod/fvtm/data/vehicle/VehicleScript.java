@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.relauncher.Side;
 
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 /** @author Ferdinand Calo' (FEX___96) */
 public abstract class VehicleScript {

@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.gui.vehicle;
 import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_ATTRIBUTE_EDITOR;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
 import java.util.ArrayList;
 

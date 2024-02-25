@@ -5,7 +5,7 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import java.util.List;
 import java.util.UUID;
@@ -55,7 +55,7 @@ import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
-import net.fexcraft.mod.fvtm.packet.PacketsImpl;
+import net.fexcraft.mod.fvtm.util.PacketsImpl;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;

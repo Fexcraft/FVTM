@@ -65,8 +65,8 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.*;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -235,10 +235,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		if(vehicle.rear != null) vehicle.rear.front = null;
 	}
 
-	public void setPosRotMot(double px, double py, double pz, double yaw, double pit, double rol, double thr, double steer, int fuel){
-		serverX = px;
-		serverY = py;
-		serverZ = pz;
+	public void setPosRotMot(V3D pos, double yaw, double pit, double rol, double thr, double steer, int fuel){
+		serverX = pos.x;
+		serverY = pos.y;
+		serverZ = pos.z;
 		serverYaw = yaw;
 		serverPitch = pit;
 		serverRoll = rol;

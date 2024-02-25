@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;

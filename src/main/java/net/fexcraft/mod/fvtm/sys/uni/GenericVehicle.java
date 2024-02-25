@@ -35,8 +35,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 /** 
  * @author Ferdinand Calo' (FEX___96)

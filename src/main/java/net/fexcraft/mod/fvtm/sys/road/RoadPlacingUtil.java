@@ -18,8 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 public class RoadPlacingUtil {
 	

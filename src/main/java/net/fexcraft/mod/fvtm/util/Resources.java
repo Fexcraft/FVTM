@@ -6,7 +6,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 import static net.fexcraft.mod.fvtm.FvtmResources.getModel;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
 import java.io.Closeable;
 import java.io.File;

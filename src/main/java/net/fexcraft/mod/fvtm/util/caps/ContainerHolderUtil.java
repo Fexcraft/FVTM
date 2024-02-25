@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINERS;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;

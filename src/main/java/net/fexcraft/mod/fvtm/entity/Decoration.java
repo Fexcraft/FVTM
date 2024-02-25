@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.DECORATION_EDITOR;
-import static net.fexcraft.mod.fvtm.packet.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
 import java.util.ArrayList;
 

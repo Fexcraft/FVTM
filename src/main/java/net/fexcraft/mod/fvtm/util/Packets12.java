@@ -1,10 +1,9 @@
-package net.fexcraft.mod.fvtm.packet;
+package net.fexcraft.mod.fvtm.util;
 
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.packet.Handler_VehKeyPress;
-import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
+import net.fexcraft.mod.fvtm.packet.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -186,6 +185,44 @@ public class Packets12 {
 
 		@Override
 		public IMessage onMessage(PI_TagListener message, MessageContext ctx){
+			Minecraft.getMinecraft()
+				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			return null;
+		}
+
+	}
+
+	//---//---//---//
+
+	public static class PI_VehMove extends Packet_VehMove implements IMessage {
+
+		@Override
+		public void fromBytes(ByteBuf buf){
+			decode(buf);
+		}
+
+		@Override
+		public void toBytes(ByteBuf buf){
+			encode(buf);
+		}
+
+	}
+
+	public static class HI_VehMove_S extends Handler_VehMove implements IMessageHandler<PI_VehMove, IMessage> {
+
+		@Override
+		public IMessage onMessage(PI_VehMove message, MessageContext ctx){
+			FMLCommonHandler.instance().getMinecraftServerInstance()
+				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			return null;
+		}
+
+	}
+
+	public static class HI_VehMove_C extends Handler_VehMove implements IMessageHandler<PI_VehMove, IMessage> {
+
+		@Override
+		public IMessage onMessage(PI_VehMove message, MessageContext ctx){
 			Minecraft.getMinecraft()
 				.addScheduledTask(handleClient(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;

@@ -42,7 +42,7 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.packet.PacketsImpl;
+import net.fexcraft.mod.fvtm.util.PacketsImpl;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.render.block.BakedModelLoader;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;

@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +28,7 @@ public class RecServer implements IPacketListener<PacketNBTTagCompound> {
 		};
 		switch(task){
 			case "update_region":{
-				system.updateRegion(packet.nbt, player); return;
+				system.updateRegion(TagCW.wrap(packet.nbt), player); return;
 			}
 			default: return;
 		}

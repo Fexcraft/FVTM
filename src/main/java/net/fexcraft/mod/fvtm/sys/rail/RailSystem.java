@@ -22,7 +22,9 @@ import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -57,14 +59,14 @@ public class RailSystem extends DetachedSystem {
 		try{
 			File file = new File(getSaveRoot(), "/railsystem.dat");
 			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			NBTTagCompound compound = CompressedStreamTools.read(file);
-			if(compound == null || compound.isEmpty()) return;
+			TagCW compound = TagCW.wrap(CompressedStreamTools.read(file));
+			if(compound == null || compound.empty()) return;
 			gc_entities = compound.getLong("GlobalCounterEntities");
 			gc_sections = compound.getLong("GlobalCounterSections");
 			gc_compounds = compound.getLong("GlobalCounterCompounds");
-			if(compound.hasKey("Entities")){
-				NBTTagCompound enty = compound.getCompoundTag("Entities");
-				for(String str : enty.getKeySet()){
+			if(compound.has("Entities")){
+				TagCW enty = compound.getCompound("Entities");
+				for(String str : enty.keys()){
 					try{
 						entities.put(Long.parseLong(str, 16), new RegionKey(enty.getLong(str)));
 					}
@@ -160,7 +162,7 @@ public class RailSystem extends DetachedSystem {
 			return null;
 		}
 		
-		public Region get(GridV3D vec, boolean load){
+		public Region get(QV3D vec, boolean load){
 			Region region = get(RegionKey.getRegionXZ(vec));
 			if(region != null || !load) return region;
 			put(new RegionKey(vec), region = new Region(vec, root, false));
@@ -190,11 +192,11 @@ public class RailSystem extends DetachedSystem {
 		return regions;
 	}
 
-	public Junction getJunction(GridV3D vec){
+	public Junction getJunction(QV3D vec){
 		Region region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
 	}
 
-	public Junction getJunction(GridV3D vec, boolean load){
+	public Junction getJunction(QV3D vec, boolean load){
 		Region region = regions.get(vec, load); return region.getJunction(vec);
 	}
 
@@ -202,8 +204,8 @@ public class RailSystem extends DetachedSystem {
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<GridV3D, Junction> entry : region.getJunctions().entrySet()){
-			if(entry.getKey().pos.getX() >> 4 == cx && entry.getKey().pos.getZ() >> 4 == cz){
+		for(Entry<QV3D, Junction> entry : region.getJunctions().entrySet()){
+			if(entry.getKey().pos.x >> 4 == cx && entry.getKey().pos.z >> 4 == cz){
 				arr.add(entry.getValue());
 			}
 		}
@@ -214,7 +216,7 @@ public class RailSystem extends DetachedSystem {
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(pos));
 		if(region == null) return arr;
-		for(Entry<GridV3D, Junction> entry : region.getJunctions().entrySet()){
+		for(Entry<QV3D, Junction> entry : region.getJunctions().entrySet()){
 			if(entry.getKey().pos.equals(pos)){
 				arr.add(entry.getValue());
 			}
@@ -222,7 +224,7 @@ public class RailSystem extends DetachedSystem {
 		return arr;
 	}
 
-	public boolean delJunction(GridV3D vector){
+	public boolean delJunction(QV3D vector){
 		Region region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
@@ -250,7 +252,7 @@ public class RailSystem extends DetachedSystem {
 		} return true;
 	}*/
 
-	public void addJunction(GridV3D vector){
+	public void addJunction(QV3D vector){
 		Region region = regions.get(vector, true);
 		if(region == null) /** this rather an error */ return;
 		Junction junction = new Junction(region, vector);
@@ -260,7 +262,7 @@ public class RailSystem extends DetachedSystem {
 		return;
 	}
 
-	public void updateJuncton(GridV3D vector){
+	public void updateJuncton(QV3D vector){
 		Region region = regions.get(vector, true);
 		if(region == null) /** This is rather bad. */
 			return;
@@ -287,8 +289,8 @@ public class RailSystem extends DetachedSystem {
 			Print.debug("Processing Entities in Queue " + Region.fillqueue.size());
 			ArrayList<Long> torem = new ArrayList<>(); Region region;
 			for(Long uid : Region.fillqueue.keySet()){
-				NBTTagCompound com = Region.fillqueue.get(uid);
-				boolean single = com.hasKey("Singular") ? com.getBoolean("Singular") : true;
+				TagCW com = Region.fillqueue.get(uid);
+				boolean single = com.has("Singular") ? com.getBoolean("Singular") : true;
 				if(single){
 					region = getRegions().get(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
@@ -305,15 +307,14 @@ public class RailSystem extends DetachedSystem {
 					torem.add(uid);
 				}
 				else{
-					NBTTagList ents = (NBTTagList)com.getTag("Entities"); boolean allregionsloaded = true;
-					for(NBTBase bas : ents){
-						NBTTagCompound nbt = (NBTTagCompound)bas;
-						if(!nbt.hasKey("region")) continue;
-						region = getRegions().get(nbt.getIntArray("region"), true);
+					boolean allregionsloaded = true;
+					for(TagCW tag : com.getList("Entities")){
+						if(tag == null || !tag.has("region")) continue;
+						region = getRegions().get(tag.getIntArray("region"), true);
 						if(region == null || !region.loaded){ allregionsloaded = false; break; }
 					}
 					if(allregionsloaded){
-						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, ents);
+						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, com.getList("Entities"));
 						if(multiple.getEntitites().size() == 0) continue;
 						multiple.forward = com.getBoolean("Forward");
 						for(RailEntity ent : multiple.entities) ent.region.spawnEntity(ent.start());
@@ -336,10 +337,11 @@ public class RailSystem extends DetachedSystem {
 		regions.clear();
 	}
 
-	public void updateRegion(NBTTagCompound compound, @Nullable EntityPlayerMP player){
+	public void updateRegion(TagCW compound, @Nullable EntityPlayerMP player){
 		int[] xz = compound.getIntArray("XZ");
 		if(world.isRemote){
-			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false)); region.read(compound);
+			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false));
+			region.read(compound);
 		}
 		else{
 			Region region = regions.get(xz, true); region.updateClient(player);
@@ -421,7 +423,9 @@ public class RailSystem extends DetachedSystem {
 
 	public void sendReload(String string, ICommandSender sender){
 		Region region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
-		if(region != null) region.updateClient(string, new GridV3D(sender.getPositionVector()));
+		if(region != null){
+			region.updateClient(string, new QV3D(sender.getPositionVector().x, sender.getPositionVector().y, sender.getPositionVector().z, 0));
+		}
 	}
 
 	public boolean isRemote(){

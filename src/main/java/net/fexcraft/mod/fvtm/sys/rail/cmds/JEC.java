@@ -6,6 +6,8 @@ import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -33,44 +35,46 @@ public abstract class JEC {
 		this.type = type; for(String str : targets) this.targets.add(str); this.diron = dir; this.label = label;
 	}
 	
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		compound.setString("Type", type.name());
-		NBTTagList list = new NBTTagList();
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		compound.set("Type", type.name());
+		TagLW list = TagLW.create();
 		for(String str : targets){
-			list.appendTag(new NBTTagString(str));
-		} compound.setTag("Targets", list);
-		compound.setTag("Data", writeData());
-		compound.setByte("EntryDir", (byte)diron.ordinal());
-		compound.setInteger("Interval", interval);
-		compound.setString("Label", label);
+			list.add(str);
+		}
+		compound.set("Targets", list);
+		compound.set("Data", writeData());
+		compound.set("EntryDir", (byte)diron.ordinal());
+		compound.set("Interval", interval);
+		compound.set("Label", label);
 		return compound;
 	}
 	
-	public JEC(NBTTagCompound compound){
+	public JEC(TagCW compound){
 		type = JECType.valueOf(compound.getString("Type"));
-		NBTTagList list = (NBTTagList)compound.getTag("Targets");
+		NBTTagList list = compound.getList("Targets").local();
 		for(NBTBase base : list){ targets.add(((NBTTagString)base).getString()); }
-		readData(compound.getTag("Data"));
-		diron = EntryDirection.values()[compound.getByte("EntryDir")];
+		readData(compound.getCompound("Data"));
+		diron = EntryDirection.values()[compound.getInteger("EntryDir")];
 		interval = compound.getInteger("Interval");
 		label = compound.getString("Label");
 	}
 	
-	public static JEC read(NBTTagCompound compound){
-		if(compound == null || !compound.hasKey("Type")) return null;
+	public static JEC read(TagCW compound){
+		if(compound == null || !compound.has("Type")) return null;
 		JECType type = JECType.valueOf(compound.getString("Type"));
 		if(type == null) return null;
 		try{
 			return type.getJCClass().getConstructor(NBTTagCompound.class).newInstance(compound);
-		} catch(Exception e){ e.printStackTrace(); return null; }
+		}
+		catch(Exception e){ e.printStackTrace(); return null; }
 	}
 	
 	public abstract JEC copy();
 	
-	public abstract NBTBase writeData();
+	public abstract TagCW writeData();
 	
-	public abstract void readData(NBTBase base);
+	public abstract void readData(TagCW base);
 	
 	/** Called from RailEntities in their update method. @returns true if the command is done and should be removed, false otherwise */
 	public abstract void processEntity(RailEntity entity);

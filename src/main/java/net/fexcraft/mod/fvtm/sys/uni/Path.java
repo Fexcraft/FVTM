@@ -5,8 +5,9 @@ import static net.fexcraft.mod.fvtm.Config.RAIL_SEGMENTATOR;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.Vector3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -16,30 +17,30 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public abstract class Path {
 	
-	public GridV3D start, end;
-	public GridV3D[] rootpath;
+	public QV3D start, end;
+	public QV3D[] rootpath;
 	public boolean copy;
 	public V3D[] vecpath;
 	public PathKey id, op;
 	public double length;
 	
-	public Path(GridV3D[] gridvecs, GridV3D vector){
+	public Path(QV3D[] gridvecs, QV3D vector){
 		start = gridvecs[0];
 		end = vector;
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
-		rootpath = new GridV3D[gridvecs.length + 1];
+		rootpath = new QV3D[gridvecs.length + 1];
 		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = gridvecs[i].copy();
 		rootpath[rootpath.length - 1] = vector.copy();
 		construct();
 	}
 
-	public Path(GridV3D[] gridvecs){
+	public Path(QV3D[] gridvecs){
 		start = gridvecs[0];
 		end = gridvecs[gridvecs.length - 1];
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
-		rootpath = new GridV3D[gridvecs.length];
+		rootpath = new QV3D[gridvecs.length];
 		for(int i = 0; i < rootpath.length; i++) rootpath[i] = gridvecs[i].copy();
 		construct();
 	}
@@ -49,22 +50,22 @@ public abstract class Path {
 	protected void construct(){
 		vecpath = new V3D[rootpath.length];
 		if(vecpath.length == 2){
-			vecpath[0] = rootpath[0].vector;
-			vecpath[1] = rootpath[rootpath.length - 1].vector;
+			vecpath[0] = rootpath[0].vec;
+			vecpath[1] = rootpath[rootpath.length - 1].vec;
 			length = vecpath[0].dis(vecpath[1]);
 		}
 		else{
 			for(int i = 0; i < rootpath.length; i++){
-				vecpath[i] = rootpath[i].vector;
+				vecpath[i] = rootpath[i].vec;
 			}
 			//
 			V3D[] vecs = curve(vecpath);
 			vecpath = new V3D[vecs.length + 2];
-			vecpath[0] = new V3D(start.vector);
+			vecpath[0] = new V3D(start.vec);
 			for(int i = 0; i < vecs.length; i++){
 				vecpath[i + 1] = vecs[i];
 			}
-			vecpath[vecpath.length - 1] = new V3D(end.vector);
+			vecpath[vecpath.length - 1] = new V3D(end.vec);
 			length = this.calcLength();
 		}
 	}
@@ -113,31 +114,32 @@ public abstract class Path {
 		return getLength(null);
 	}
 	
-	public Path read(NBTTagCompound compound){
-		id = new PathKey(compound);
+	public Path read(TagCW compound){
+		id = new PathKey(compound.local());
 		op = new PathKey(id, true);
 		copy = compound.getBoolean("copy");
-		start = new GridV3D(compound.getCompoundTag("start"));
-		end = new GridV3D(compound.getCompoundTag("end"));
-		rootpath = new GridV3D[compound.getInteger("vectors")];
+		start = new QV3D(compound, "start");
+		end = new QV3D(compound, "end");
+		rootpath = new QV3D[compound.getInteger("vectors")];
 		for(int i = 0; i < rootpath.length; i++){
-			rootpath[i] = new GridV3D(compound.getCompoundTag("vector-" + i));
+			rootpath[i] = new QV3D(compound, "vector-" + i);
 		}
 		construct();
-		length = compound.hasKey("length") ? compound.getDouble("length") : calcLength();
+		length = compound.has("length") ? compound.getDouble("length") : calcLength();
 		return this;
 	}
 
-	public NBTTagCompound write(NBTTagCompound compound){
-		compound = id.write(compound == null ? new NBTTagCompound() : compound);
-		compound.setBoolean("copy", copy);
-		compound.setTag("start", start.write());
-		compound.setTag("end", end.write());
-		compound.setInteger("vectors", rootpath.length);
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		id.write(compound.local());
+		compound.set("copy", copy);
+		start.write(compound, "start");
+		end.write(compound, "end");
+		compound.set("vectors", rootpath.length);
 		for(int i = 0; i < rootpath.length; i++){
-			compound.setTag("vector-" + i, rootpath[i].write());
+			rootpath[i].write(compound, "vector-" + i);
 		}
-		compound.setDouble("length", length);
+		compound.set("length", length);
 		return compound;
 	}
 	
@@ -163,7 +165,7 @@ public abstract class Path {
 		instance.start = end;
 		instance.end = start;
 		instance.copy = true;
-		instance.rootpath = new GridV3D[rootpath.length]; int j = rootpath.length - 1;
+		instance.rootpath = new QV3D[rootpath.length]; int j = rootpath.length - 1;
 		for(int i = 0; i < instance.rootpath.length; i++){
 			instance.rootpath[i] = rootpath[j--].copy();
 		}

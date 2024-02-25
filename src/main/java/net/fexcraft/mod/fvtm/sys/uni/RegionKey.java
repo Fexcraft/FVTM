@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 import java.nio.ByteBuffer;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -20,7 +20,7 @@ public class RegionKey implements Comparable<RegionKey> {
 		this.x = arr[0]; this.z = arr[1];
 	}
 	
-	public RegionKey(GridV3D vec){
+	public RegionKey(QV3D vec){
 		this(getRegionXZ(vec));
 	}
 
@@ -61,8 +61,8 @@ public class RegionKey implements Comparable<RegionKey> {
 		return new int[]{(int)Math.floor(cx / 32.0), (int)Math.floor(cz / 32.0)};
 	}
 	
-	public static int[] getRegionXZ(GridV3D vec){
-		return getRegionXZ((int)vec.pos.getX() >> 4, (int)vec.pos.getZ() >> 4);
+	public static int[] getRegionXZ(QV3D vec){
+		return getRegionXZ((int)vec.pos.x >> 4, (int)vec.pos.z >> 4);
 	}
 
 	public static int[] getRegionXZ(Vec3f pos){
@@ -81,7 +81,7 @@ public class RegionKey implements Comparable<RegionKey> {
 		return getRegionXZ(key.pos[0] >> 4, key.pos[2] >> 4);
 	}
 
-	public boolean isInRegion(GridV3D vec){
+	public boolean isInRegion(QV3D vec){
 		int[] id = getRegionXZ(vec);
 		return id[0] == x && id[1] == z;
 	}

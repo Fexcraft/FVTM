@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -47,7 +47,7 @@ public class RailItemTest extends Item implements JunctionGridItem {
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        GridV3D vector = new GridV3D(new Vec3d(pos).add(hitX, hitY, hitZ));
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
 		Junction junk = syscap.getJunction(vector, true);
 		if(junk == null){
 			Print.bar(player, "&c&oNo Junction found at this position.");

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
 
 import java.util.List;
 
@@ -15,14 +14,13 @@ import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
@@ -87,13 +85,13 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         RailSystem syscap =SystemManager.get(Systems.RAIL, world);
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);
-        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID);
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
         Junction start = syscap.getJunction(vector);
         if(start != null && start.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");
             return EnumActionResult.FAIL;
         }
-        GridV3D[] vecs = copyAndRotate(vector, preset.path, player.rotationYaw);
+        QV3D[] vecs = copyAndRotate(vector, preset.path, player.rotationYaw);
         Junction end = syscap.getJunction(vecs[vecs.length - 1]);
         if(end != null && end.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at End point has reached max allowed connections.");
@@ -118,20 +116,21 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 		return EnumActionResult.SUCCESS;
     }
 	
-	public GridV3D[] copyAndRotate(GridV3D pos, GridV3D[] path, float yaw){
-		GridV3D[] vecs = new GridV3D[path.length];
+	public QV3D[] copyAndRotate(QV3D pos, QV3D[] path, float yaw){
+		QV3D[] vecs = new QV3D[path.length];
 		for(int i = 0; i < vecs.length; i++) vecs[i] = path[i];
 		float seg = 360f / rotations;
 		int con = (int)((((int)yaw + 90f) * rotations) / 360f);
 		if(con % seg > seg / 2) con++;
 		for(int i = 0; i < vecs.length; i++){
-			if(i != 0 && i != vecs.length - 1) vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector));
-			else vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector), RAIL_PLACING_GRID);
-		} return vecs;
+			if(i != 0 && i != vecs.length - 1) vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec), 0);
+			else vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec), 0);
+		}
+		return vecs;
 	}
 
 	@Override
-	public GridV3D[] getVectors(ItemStack stack){
+	public QV3D[] getVectors(ItemStack stack){
 		return preset.path;
 	}
 

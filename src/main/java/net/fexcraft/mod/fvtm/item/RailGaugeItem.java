@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
-import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
 
 import java.util.List;
 
@@ -10,14 +9,11 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
@@ -25,8 +21,9 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.ICommandSender;
@@ -88,7 +85,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
         	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints");
     		for(int k = 0; k < list.tagCount(); k++){
-            	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new GridV3D(list.getCompoundTagAt(k)).toString()));
+            	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new QV3D(TagCW.wrap(list.getCompoundTagAt(k)), null).toString()));
     		}
         }
         else{
@@ -105,17 +102,18 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID);
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
 		RailPlacingUtil.place(world, player, stack, gauge, syscap, vector);
 		return EnumActionResult.SUCCESS;
     }
 	
-	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, GridV3D vector, ICommandSender sender, boolean noblocks){
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, QV3D vector, ICommandSender sender, boolean noblocks){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
 			if(list.isEmpty() || !createdJunction(sender, syscap, player, list, vector)){
-				list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:railpoints", list);
+				list.appendTag(vector.write(null, null).local());
+				stack.getTagCompound().setTag("fvtm:railpoints", list);
 				Print.chatbar(sender, list.tagCount() + (getSuffix(list.tagCount())) + " Point Added!");
 				return EnumActionResult.SUCCESS;
 			}
@@ -157,8 +155,8 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 		}
 	}
 
-	private boolean createdJunction(ICommandSender sender, RailSystem syscap, EntityPlayer player, NBTTagList list, GridV3D vector){
-		if(list.tagCount() != 1) return false; GridV3D vec = getFirstVector(list); if(!vec.equals(vector)) return false;
+	private boolean createdJunction(ICommandSender sender, RailSystem syscap, EntityPlayer player, NBTTagList list, QV3D vector){
+		if(list.tagCount() != 1) return false; QV3D vec = getFirstVector(list); if(!vec.equals(vector)) return false;
 		syscap.addJunction(vector); Print.chat(sender, "Junction Created!"); return true;
 	}
 
@@ -167,20 +165,20 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	}
 	
 	@Override
-	public GridV3D[] getVectors(ItemStack stack){
-		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:railpoints")) return new GridV3D[0];
+	public QV3D[] getVectors(ItemStack stack){
+		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:railpoints")) return new QV3D[0];
 		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints"));
 	}
 
-	public GridV3D[] getVectors(NBTTagList list){
-		GridV3D[] arr = new GridV3D[list.tagCount()];
+	public QV3D[] getVectors(NBTTagList list){
+		QV3D[] arr = new QV3D[list.tagCount()];
 		for(int i = 0; i < arr.length; i++){
-			arr[i] = new GridV3D(list.getCompoundTagAt(i));
+			arr[i] = new QV3D(TagCW.wrap(list.getCompoundTagAt(i)), null);
 		} return arr;
 	}
 
-	private GridV3D getFirstVector(NBTTagList list){
-		return new GridV3D(list.getCompoundTagAt(0));
+	private QV3D getFirstVector(NBTTagList list){
+		return new QV3D(TagCW.wrap(list.getCompoundTagAt(0)), null);
 	}
 
 	@Override

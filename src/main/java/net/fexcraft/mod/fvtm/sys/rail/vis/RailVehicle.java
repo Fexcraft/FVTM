@@ -740,7 +740,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	break;
                 }
                 case "update_track":{
-                	rek.last = rek.current; rek.current = rek.sys.getTrack(new PathKey(pkt.nbt));
+                	rek.last = rek.current; rek.current = rek.sys.getTrack(new PathKey((TagCW)pkt.nbt));
                 	break;
                 }
                 case "update_passed":{

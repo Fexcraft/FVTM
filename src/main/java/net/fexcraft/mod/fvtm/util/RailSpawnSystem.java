@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
-
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -55,7 +53,7 @@ public class RailSpawnSystem extends EntitySystem {
         	Print.chat(placer, "&cWorld Capability not found.");
         	return false;
         }
-        GridV3D vector = new GridV3D(placer.getEntityWorld(), pos, RAIL_PLACING_GRID);
+        QV3D vector = new QV3D(pos.x, pos.y, pos.z, 0);
 		Junction junk = syscap.getJunction(vector, true);
 		BlockPos bpos = new BlockPos(pos);
 		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;

@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
-import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
-
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.item.ItemStack;
 
 public interface JunctionGridItem {
@@ -10,7 +8,7 @@ public interface JunctionGridItem {
 	public static float[][] default_grid_colours = new float[][]{
 		{ 0f, 1f, 0f, 1f }, { 0f, 1f, 0f, 1f }
 	};
-	public static GridV3D[] EMPTY = new GridV3D[0];
+	public static QV3D[] EMPTY = new QV3D[0];
 	
 	public default boolean showJunctionGrid(){ return true; }
 	
@@ -20,12 +18,12 @@ public interface JunctionGridItem {
 	
 	public default boolean hasVectors(){ return false; }
 	
-	public default GridV3D[] getVectors(ItemStack stack){ return EMPTY; }
+	public default QV3D[] getVectors(ItemStack stack){ return EMPTY; }
 	
 	public default boolean offsetVectors(){ return false; }
 	
 	public default int getSegments(){ return 4; }
 
-	public default int getPlacingGrid(){ return RAIL_PLACING_GRID; };
+	public default int getPlacingGrid(){ return 2; };
 
 }

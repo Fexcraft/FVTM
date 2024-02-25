@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
-import static net.fexcraft.mod.fvtm.Config.ROAD_PLACING_GRID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +10,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -24,8 +23,9 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Compat;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.Perms;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -133,13 +133,14 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	Print.chat(player, "&cNo permission to use this item.");
         	return EnumActionResult.FAIL;
         }
-        GridV3D vector = new GridV3D(world, new Vec3d(pos.down()).add(hitX, hitY, hitZ), ROAD_PLACING_GRID);
+		pos = pos.down();
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
     	RoadPlacingUtil.place(world, player, stack, vector);
 		return EnumActionResult.SUCCESS;
     }
 
 	@SuppressWarnings("deprecation")
-	public boolean placeRoad(EntityPlayer player, World world, ItemStack stack, GridV3D vector, Road _road, ICommandSender sender){
+	public boolean placeRoad(EntityPlayer player, World world, ItemStack stack, QV3D vector, Road _road, ICommandSender sender){
 		if(_road.length > MAX_ROAD_LENGTH){
 			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
 			return false;
@@ -147,9 +148,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     	ItemStack stack0 = null;
 		int[] layers = stack.getTagCompound().getIntArray("RoadLayers");
 		IBlockState top = null, bot = null, righ = null, left = null, roadB = null, lineB = null;
-		ArrayList<GridV3D> border_r = null, border_l = null, roof = null, ground = null, road, line = null;
+		ArrayList<QV3D> border_r = null, border_l = null, roof = null, ground = null, road, line = null;
     	int borderheight_l = 0, borderheight_r = 0, topheight = 0;
-    	ArrayList<ArrayList<GridV3D>> roadfill = null, rooffill = null, linefill = null;
+    	ArrayList<ArrayList<QV3D>> roadfill = null, rooffill = null, linefill = null;
     	boolean flnx = false, hlines = layers.length > 5 && layers[5] > 0;
     	if(stack.getTagCompound().hasKey("RoadFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("RoadFill"));
@@ -207,7 +208,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     		loadFill(linefill, linefillB, layers[0], stack.getTagCompound().getCompoundTag("CustomLinesFill"));
     	}
 		//
-		BlockPos blk;
+		BlockPos.MutableBlockPos blk = new BlockPos.MutableBlockPos();
 		V3D last, vec;
 		IBlockState state;
 		int width = layers[0], height;
@@ -220,56 +221,56 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		angle = Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
 		angle += Static.rad90;
 		for(double fl = -half; fl <= half; fl += 0.25){
-			if(road != null) road.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 0, 0)))));
-			if(ground != null) ground.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, -1, 0)))));
-			if(line != null) line.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 1, 0)))));
-			if(roof != null) roof.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, topheight, 0)))));
+			if(road != null) road.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 0, 0))), 0));
+			if(ground != null) ground.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, -1, 0))), 0));
+			if(line != null) line.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 1, 0))), 0));
+			if(roof != null) roof.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, topheight, 0))), 0));
 		}
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
-				roadfill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0)))));
+				roadfill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0))), 0));
 			}
 		}
 		if(linefill != null){
 			for(int i = 0; i < linefill.size(); i++){
-				linefill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 1, 0)))));
+				linefill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 1, 0))), 0));
 			}
 		}
 		if(rooffill != null){
 			for(int i = 0; i < rooffill.size(); i++){
-				rooffill.get(i).add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), topheight, 0)))));
+				rooffill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), topheight, 0))), 0));
 			}
 		}
-		if(border_l != null) border_l.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(-half - 1, 0, 0)))));
-		if(border_r != null) border_r.add(new GridV3D(_road.vecpath[0].add(grv(angle, new V3D(half + 1, 0, 0)))));
+		if(border_l != null) border_l.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half - 1, 0, 0))), 0));
+		if(border_r != null) border_r.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(half + 1, 0, 0))), 0));
 		while(passed < _road.length){ passed += 0.125f;
 			last = vec; vec = _road.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
 			double off = roadfill == null ? 0 : 0.25;
 			for(double fl = -half; fl <= half; fl += 0.25){
-				if(road != null) road.add(new GridV3D(vec.add(grv(angle, new V3D(fl, 0, 0)))));
-				if(ground != null) ground.add(new GridV3D(vec.add(grv(angle, new V3D(fl + off, -1, 0)))));
-				if(line != null) line.add(new GridV3D(vec.add(grv(angle, new V3D(fl, 1, 0)))));
-				if(roof != null) roof.add(new GridV3D(vec.add(grv(angle, new V3D(fl, topheight, 0)))));
+				if(road != null) road.add(new QV3D(vec.add(grv(angle, new V3D(fl, 0, 0))), 0));
+				if(ground != null) ground.add(new QV3D(vec.add(grv(angle, new V3D(fl + off, -1, 0))), 0));
+				if(line != null) line.add(new QV3D(vec.add(grv(angle, new V3D(fl, 1, 0))), 0));
+				if(roof != null) roof.add(new QV3D(vec.add(grv(angle, new V3D(fl, topheight, 0))), 0));
 			}
 			if(roadfill != null){
 				for(int i = 0; i < roadfill.size(); i++){
-					roadfill.get(i).add(new GridV3D(vec.add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0)))));
+					roadfill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0))), 0));
 				}
 			}
 			if(linefill != null){
 				for(int i = 0; i < linefill.size(); i++){
-					linefill.get(i).add(new GridV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), 1, 0)))));
+					linefill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), 1, 0))), 0));
 				}
 			}
 			if(rooffill != null){
 				for(int i = 0; i < rooffill.size(); i++){
-					rooffill.get(i).add(new GridV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), topheight, 0)))));
+					rooffill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), topheight, 0))), 0));
 				}
 			}
-			if(border_l != null) border_l.add(new GridV3D(vec.add(grv(angle, new V3D(-half - 1 + off, 0, 0)))));
-			if(border_r != null) border_r.add(new GridV3D(vec.add(grv(angle, new V3D(half + 1 + off, 0, 0)))));
+			if(border_l != null) border_l.add(new QV3D(vec.add(grv(angle, new V3D(-half - 1 + off, 0, 0))), 0));
+			if(border_r != null) border_r.add(new QV3D(vec.add(grv(angle, new V3D(half + 1 + off, 0, 0))), 0));
 		}
 		JsonMap map = new JsonMap();
 		if(road != null){
@@ -286,8 +287,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		if(linefill != null){
 			for(int i = 0; i < linefill.size(); i++){
 				block = linefillB.get(i);
-				for(GridV3D v : linefill.get(i)){
-					state = world.getBlockState(blk = v.y != 0 ? v.pos.up() : v.pos);
+				for(QV3D v : linefill.get(i)){
+					blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
+					state = world.getBlockState(blk);
 					if(state.getBlock() != block.getBlock()){
 						insert(map, blk, state);
 						world.setBlockState(blk, block);
@@ -298,8 +300,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		if(rooffill != null){
 			for(int i = 0; i < rooffill.size(); i++){
 				block = rooffillB.get(i);
-				for(GridV3D v : rooffill.get(i)){
-					state = world.getBlockState(blk = v.y != 0 ? v.pos.up() : v.pos);
+				for(QV3D v : rooffill.get(i)){
+					blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
+					state = world.getBlockState(blk);
 					if(state.getBlock() != block.getBlock()){
 						insert(map, blk, state);
 						world.setBlockState(blk, block);
@@ -308,8 +311,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			}
 		}
 		if(border_l != null){
-			for(GridV3D v : border_l){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+			for(QV3D v : border_l){
+				height = v.y;
+				blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 				for(int i = -1/*1*/; i < borderheight_l + 1; i++){
 					//if(i == 1 && height > 8) continue;
 					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
@@ -320,8 +324,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			}
 		}
 		if(border_r != null){
-			for(GridV3D v : border_r){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+			for(QV3D v : border_r){
+				height = v.y;
+				blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 				for(int i = -1/*1*/; i < borderheight_r + 1; i++){
 					//if(i == 1 && height > 8) continue;
 					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
@@ -332,8 +337,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			}
 		}
 		if(ground != null){
-			for(GridV3D v : ground){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+			for(QV3D v : ground){
+				height = v.y;
+				blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 				state = world.getBlockState(blk);
 				if(!Compat.isFVTMRoad(state.getBlock()) && !Compat.isValidFlenix(state.getBlock())){
 					insert(map, blk, world.getBlockState(blk));
@@ -342,15 +348,17 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			}
 		}
 		if(line != null){
-			for(GridV3D v : line){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+			for(QV3D v : line){
+				height = v.y;
+				blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 				insert(map, blk, world.getBlockState(blk));
 				world.setBlockState(blk, lineB);
 			}
 		}
 		if(roof != null){
-			for(GridV3D v : roof){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+			for(QV3D v : roof){
+				height = v.y;
+				blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 				try{
 					//if(world.getBlockState(blk).isOpaqueCube()){
 						insert(map, blk, world.getBlockState(blk));
@@ -379,7 +387,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void loadFill(ArrayList<ArrayList<GridV3D>> fill, ArrayList<IBlockState> fillB, int layers, NBTTagCompound compound){
+	private void loadFill(ArrayList<ArrayList<QV3D>> fill, ArrayList<IBlockState> fillB, int layers, NBTTagCompound compound){
 		for(int i = 0; i < layers; i++){
 			fill.add(new ArrayList<>());
 			IBlockState state = Blocks.AIR.getDefaultState();
@@ -393,13 +401,14 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void roadFill(World world, ArrayList<GridV3D> fill, IBlockState block, int topheight, boolean flenix, JsonMap map){
+	private void roadFill(World world, ArrayList<QV3D> fill, IBlockState block, int topheight, boolean flenix, JsonMap map){
 		int height = 0;
-		BlockPos blk;
+		BlockPos.MutableBlockPos blk = new BlockPos.MutableBlockPos();
 		boolean bool;
-		for(GridV3D v : fill){
+		for(QV3D v : fill){
 			height = v.y;
-			IBlockState state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
+			blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
+			IBlockState state = world.getBlockState(blk);
 			if(!isRoad(state, block) || isLower(state, height)){
 				if(bool = isRoad(world.getBlockState(blk.up()))) height = 0;
 				insert(map, blk, state);
@@ -437,29 +446,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         return new V3D(co * vec.x, vec.y, si * vec.x);
 	}
 
-	private boolean lastEquals(NBTTagList list, GridV3D vector){
-		if(list.isEmpty() || list.tagCount() < 2) return false; return getLastVector(list).equals(vector);
-	}
-
 	private String getSuffix(int tagCount){
 		if(tagCount < 4) return tagCount == 1 ? "st" : tagCount == 2 ? "nd" : "rd"; else return "th";
-	}
-	
-	public GridV3D getLastVector(NBTTagList list){
-		return new GridV3D(list.getCompoundTagAt(list.tagCount() - 1));
-	}
-	
-	@Override
-	public GridV3D[] getVectors(ItemStack stack){
-		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:roadpoints")) return new GridV3D[0];
-		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints"), false);
-	}
-
-	public GridV3D[] getVectors(NBTTagList list, boolean all){
-		GridV3D[] arr = new GridV3D[list.tagCount() - (all ? 0 : 1)];
-		for(int i = 0; i < arr.length; i++){
-			arr[i] = new GridV3D(list.getCompoundTagAt(i));
-		} return arr;
 	}
 
 	@Override
@@ -469,11 +457,11 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	
 	public static class Road extends Path {
 
-		public Road(GridV3D[] gridvecs){
+		public Road(QV3D[] gridvecs){
 			super(gridvecs);
 		}
 		
-		public Road(GridV3D[] gridvecs, GridV3D vector){
+		public Road(QV3D[] gridvecs, QV3D vector){
 			super(gridvecs, vector);
 		}
 

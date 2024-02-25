@@ -2,11 +2,10 @@ package net.fexcraft.mod.uni.impl;
 
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.*;
+
+import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -76,6 +75,31 @@ public class TagLWI implements TagLW {
 	@Override
 	public int size(){
 		return list.tagCount();
+	}
+
+	@Override
+	public void forEach(Consumer<? super TagCW> cons){
+		for(NBTBase base : list){
+			if(base instanceof NBTTagCompound == false) continue;
+			cons.accept(TagCW.wrap(base));
+		}
+	}
+
+	@Override
+	public Iterator<TagCW> iterator(){
+		return new Iterator<TagCW>(){
+			int idx;
+			@Override
+			public boolean hasNext(){
+				return idx < list.tagCount();
+			}
+			@Override
+			public TagCW next(){
+				NBTBase base = list.get(idx++);
+				if(base instanceof NBTTagCompound == false) return null;
+				return TagCW.wrap(base);
+			}
+		};
 	}
 
 	@Override

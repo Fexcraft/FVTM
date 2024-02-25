@@ -11,7 +11,7 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -54,9 +54,9 @@ public class DecorationItem extends Item implements JunctionGridItem {
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
-		GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), 16);
+		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
 		Decoration decoen = new Decoration(world);
-		decoen.setPosition(vector.vector.x, vector.vector.y, vector.vector.z);
+		decoen.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);

@@ -7,22 +7,23 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_SetSwitch extends JEC {
 	
-	private GridV3D junction;
+	private QV3D junction;
 	private byte entry, state;
 
 	public CMD_SetSwitch(String label, EntryDirection dir, byte entry, byte state, @Nullable String junction, String[] targets){
 		super(label, JECType.SET_STATE, dir, targets); this.entry = entry; this.state = state;
-		this.junction = junction == null || junction.length() == 0 || junction.equals("this") ? null : GridV3D.fromIDString(junction, true);
+		this.junction = junction == null || junction.length() == 0 || junction.equals("this") ? null : QV3D.fromIDString(junction);
 	}
 
-	public CMD_SetSwitch(NBTTagCompound compound){
+	public CMD_SetSwitch(TagCW compound){
 		super(compound);
 	}
 
@@ -32,29 +33,30 @@ public class CMD_SetSwitch extends JEC {
 	}
 
 	@Override
-	public NBTBase writeData(){
-		if(junction == null){
+	public TagCW writeData(){
+		/*if(junction == null){
 			return new NBTTagByteArray(new byte[]{ entry, state });
 		}
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setByteArray("State", new byte[]{ entry, state });
 		compound.setString("Junction", junction.asIDString());
-		return compound;
+		return compound;*///TODO
+		return TagCW.create();
 	}
 
 	@Override
-	public void readData(NBTBase base){
-		byte[] arr = null;
+	public void readData(TagCW base){
+		/*byte[] arr = null;
 		if(base instanceof NBTTagCompound){
 			NBTTagCompound compound = (NBTTagCompound)base;
-			junction = GridV3D.fromIDString(compound.getString("Junction"));
+			junction = QV3D.fromIDString(compound.getString("Junction"));
 			arr = compound.getByteArray("State");
 		}
 		else{
 			try{ arr = ((NBTTagByteArray)base).getByteArray(); } catch(Exception e){ e.printStackTrace(); }
 		}
 		//
-		entry = arr[0]; state = arr[1];
+		entry = arr[0]; state = arr[1];*///TODO
 	}
 
 	@Override

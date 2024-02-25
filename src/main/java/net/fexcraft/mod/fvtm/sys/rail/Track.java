@@ -7,8 +7,8 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
-import net.fexcraft.mod.fvtm.util.GridV3D;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,14 +30,14 @@ public class Track extends Path {
 	public String preset;
 	public int items;
 	
-	public Track(Junction junction, GridV3D[] gridvecs, GridV3D vector, RailGauge gauge){
+	public Track(Junction junction, QV3D[] gridvecs, QV3D vector, RailGauge gauge){
 		super(gridvecs, vector);
 		this.junction = junction;
 		this.gauge = gauge;
 		setunit();
 	}
 
-	public Track(Junction junction, GridV3D[] gridvecs, RailGauge gauge){
+	public Track(Junction junction, QV3D[] gridvecs, RailGauge gauge){
 		super(gridvecs);
 		this.junction = junction;
 		this.gauge = gauge;
@@ -59,10 +59,10 @@ public class Track extends Path {
 	public Track(Junction junc){ super(); this.junction = junc; }
 
 	@Override
-	public Track read(NBTTagCompound compound){
+	public Track read(TagCW compound){
 		super.read(compound);
 		if(junction != null) unit = getUnit(compound.getLong("section"));
-		if(compound.hasKey("gauge")){
+		if(compound.has("gauge")){
 			gauge = FvtmRegistry.RAILGAUGES.get(compound.getString("gauge"));
 		}
 		if(gauge == null){
@@ -71,9 +71,9 @@ public class Track extends Path {
 		if(junction == null || junction.root.getWorld().isRemote){
 			railmodel = null; restmodel = null;
 		}
-		if(compound.hasKey("preset")) preset = compound.getString("preset");
+		if(compound.has("preset")) preset = compound.getString("preset");
 		//if(compound.hasKey("blockless")) blockless = compound.getBoolean("blockless");
-		if(compound.hasKey("items")) items = compound.getInteger("items");
+		if(compound.has("items")) items = compound.getInteger("items");
 		return this;
 	}
 
@@ -83,13 +83,13 @@ public class Track extends Path {
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound compound){
+	public TagCW write(TagCW compound){
 		compound = super.write(compound);
-		if(unit != null) compound.setLong("section", unit.getSectionId());
-		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getIDS()).toString());
-		if(preset != null) compound.setString("preset", preset);
+		if(unit != null) compound.set("section", unit.getSectionId());
+		compound.set("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getIDS()).toString());
+		if(preset != null) compound.set("preset", preset);
 		//if(blockless) compound.setBoolean("blockless", true);
-		if(items > 0) compound.setInteger("items", items);
+		if(items > 0) compound.set("items", items);
 		return compound;
 	}
 	

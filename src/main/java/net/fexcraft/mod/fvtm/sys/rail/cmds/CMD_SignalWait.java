@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -15,7 +16,7 @@ public class CMD_SignalWait extends JEC {
 		super(label, JECType.SIGNAL_WAIT, dir, new String[0]); this.junction = junction;
 	}
 
-	public CMD_SignalWait(NBTTagCompound compound){
+	public CMD_SignalWait(TagCW compound){
 		super(compound);
 	}
 
@@ -25,12 +26,12 @@ public class CMD_SignalWait extends JEC {
 	}
 
 	@Override
-	public NBTBase writeData(){
-		return junction.getVec316f().write();
+	public TagCW writeData(){
+		return junction.getVec316f().write(null, null);
 	}
 
 	@Override
-	public void readData(NBTBase base){
+	public void readData(TagCW base){
 		//TODO
 	}
 

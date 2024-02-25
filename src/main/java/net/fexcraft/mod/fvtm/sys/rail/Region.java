@@ -13,7 +13,10 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.impl.TagLWI;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -31,9 +34,9 @@ import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
  */
 public class Region {
 	
-	public static final TreeMap<Long, NBTTagCompound> fillqueue = new TreeMap<>();
+	public static final TreeMap<Long, TagCW> fillqueue = new TreeMap<>();
 	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
-	private TreeMap<GridV3D, Junction> junctions = new TreeMap<>();
+	private TreeMap<QV3D, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess; private int timer = 0;
@@ -47,7 +50,7 @@ public class Region {
 		if(load) load();
 	}
 
-	public Region(GridV3D vec, RailSystem root, boolean load){
+	public Region(QV3D vec, RailSystem root, boolean load){
 		key = new RegionKey(vec);
 		world = root;
 		if(load) load();//.updateClient(vec);
@@ -86,30 +89,28 @@ public class Region {
 		}
 		if(!file.exists() || failed) compound = new NBTTagCompound();
 		//
-		return this.read(compound).setAccessed();
+		return this.read(TagCW.wrap(compound)).setAccessed();
 	}
 
-	public Region read(NBTTagCompound compound){
-		if(compound.hasKey("Junctions")){
+	public Region read(TagCW compound){
+		if(compound.has("Junctions")){
 			if(!junctions.isEmpty()){
 				junctions.clear();
 			}
-			NBTTagList list = (NBTTagList)compound.getTag("Junctions");
-			for(NBTBase base : list){
-				Junction junk = new Junction(this).read((NBTTagCompound)base);
+			TagLW list = compound.getList("Junctions");
+			list.forEach(tag -> {
+				Junction junk = new Junction(this).read(tag);
 				junctions.put(junk.getVec316f(), junk);
 				//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionLoaded(world, junk));
-			}
+			});
 		}
 		loaded = true;
 		//
-		if(compound.hasKey("Entities")){
+		if(compound.has("Entities")){
 			if(!entities.isEmpty()) entities.clear();
-			NBTTagList list = (NBTTagList)compound.getTag("Entities");
-			for(NBTBase base : list){
-				NBTTagCompound com = (NBTTagCompound)base;
-				fillqueue.put(com.getLong("Compound"), com);
-			}
+			compound.getList("Entities").forEach(tag -> {
+				fillqueue.put(tag.getLong("Compound"), tag.local());
+			});
 		}
 		return this;
 	}
@@ -117,14 +118,14 @@ public class Region {
 	public Region save(){
 		File file = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		NBTTagCompound compound = write(false);
-		if(compound.isEmpty()){
+		TagCW compound = write(false);
+		if(compound.empty()){
 			Print.debug("RailRegion [" + key.toString() + "] has no data to save, skipping.");
 			return this;
 		}
-		compound.setLong("Saved", Time.getDate());
+		compound.set("Saved", Time.getDate());
 		try{
-			CompressedStreamTools.write(compound, file);
+			CompressedStreamTools.write(compound.local(), file);
 		}
 		catch(IOException e){
 			e.printStackTrace();
@@ -133,42 +134,42 @@ public class Region {
 		return this;
 	}
 
-	private NBTTagCompound write(boolean clientpacket){
-		NBTTagCompound compound = new NBTTagCompound();
+	private TagCW write(boolean clientpacket){
+		TagCW compound = TagCW.create();
 		if(!junctions.isEmpty()){
-			NBTTagList list = new NBTTagList();
+			TagLW list = TagLW.create();
 			for(Junction junk : junctions.values()){
-				list.appendTag(junk.write(null));
+				list.add(junk.write(null));
 			}
-			compound.setTag("Junctions", list);
+			compound.set("Junctions", list);
 		}
 		if(clientpacket) return compound;
 		if(!entities.isEmpty()){
-			NBTTagList list = new NBTTagList();
+			TagLW list = TagLW.create();
 			for(RailEntity entity : entities.values()){
 				if(entity.com.isSingular()){
-					list.appendTag(entity.write(null));
+					list.add(entity.write(null));
 				}
 				else if(entity.com.isMultiple() && entity.com.isHead(entity)){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setLong("Compound", entity.com.uid);
-					com.setBoolean("Forward", entity.com.forward);
-					com.setBoolean("Singular", false);
+					TagCW com = TagCW.create();
+					com.set("Compound", entity.com.uid);
+					com.set("Forward", entity.com.forward);
+					com.set("Singular", false);
 					//com.setBoolean("Head", true);
-					NBTTagList ents = new NBTTagList();
+					TagLW ents = TagLW.create();
 					for(RailEntity ent : entity.com.entities){
-						ents.appendTag(ent.write(null));
+						ents.add(ent.write(null));
 					}
-					com.setTag("Entities", ents);
-					list.appendTag(com);
+					com.set("Entities", ents);
+					list.add(com);
 				}
 			}
-			compound.setTag("Entities", list);
+			compound.set("Entities", list);
 		}
 		return compound;
 	}
 
-	public Junction getJunction(GridV3D vec){
+	public Junction getJunction(QV3D vec){
 		if(!key.isInRegion(vec)) return world.getJunction(vec);
 		return junctions.get(vec);
 	}
@@ -190,94 +191,94 @@ public class Region {
 		return key;
 	}
 
-	public TreeMap<GridV3D, Junction> getJunctions(){
+	public TreeMap<QV3D, Junction> getJunctions(){
 		return junctions;
 	}
 	
-	public void updateClient(GridV3D vector){
+	public void updateClient(QV3D vector){
 		updateClient("all", vector);
 	}
 	
-	public void updateClient(String kind, GridV3D vector){
+	public void updateClient(String kind, QV3D vector){
 		if(world.getWorld().isRemote) return;
-		NBTTagCompound compound = null;
+		TagCW compound = null;
 		switch(kind){
 			case "all":{
 				compound = this.write(true);
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_region");
-				compound.setIntArray("XZ", key.toArray());
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "update_region");
+				compound.set("XZ", key.toArray());
 				break;
 			}
 			case "junction":{
 				Junction junction = getJunction(vector);
 				if(junction == null) return;
-				compound = junction.write(new NBTTagCompound());
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_junction");
+				compound = junction.write(null);
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "update_junction");
 				break;
 			}
 			case "no_junction":{
-				compound = vector.write();
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "rem_junction");
+				vector.write(compound, "vector");
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "rem_junction");
 				break;
 			}
 			case "junction_state":{
 				Junction junction = getJunction(vector);
 				if(junction == null) return;
-				compound = new NBTTagCompound();
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_junction_state");
-				compound.setTag("pos", junction.getVec316f().write());
-				compound.setBoolean("switch0", junction.switch0);
-				compound.setBoolean("switch1", junction.switch1);
+				compound = TagCW.create();
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "update_junction_state");
+				junction.getVec316f().write(compound, "pos");
+				compound.set("switch0", junction.switch0);
+				compound.set("switch1", junction.switch1);
 				break;
 			}
 			case "junction_signal":{
 				Junction junction = getJunction(vector);
 				if(junction == null) return;
-				compound = new NBTTagCompound();
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_junction_signal");
-				compound.setTag("pos", junction.getVec316f().write());
+				compound = TagCW.create();
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "update_junction_signal");
+				junction.getVec316f().write(compound, "pos");
 				if(junction.signal == null){
-					compound.setBoolean("nosignal", true);
+					compound.set("nosignal", true);
 				}
 				else{
-					compound.setInteger("signal", junction.signal.ordinal());
-					compound.setInteger("signal_dir", junction.signal_dir.ordinal());
+					compound.set("signal", junction.signal.ordinal());
+					compound.set("signal_dir", junction.signal_dir.ordinal());
 				}
 				break;
 			}
 			case "junction_signal_state":{
 				Junction junction = getJunction(vector);
 				if(junction == null) return;
-				compound = new NBTTagCompound();
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_junction_signal_state");
-				compound.setTag("pos", junction.getVec316f().write());
-				compound.setBoolean("signal0", junction.signal0);
-				compound.setBoolean("signal1", junction.signal1);
+				compound = TagCW.create();
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "update_junction_signal_state");
+				junction.getVec316f().write(compound, "pos");
+				compound.set("signal0", junction.signal0);
+				compound.set("signal1", junction.signal1);
 				break;
 			}
 			case "sections":{
-				compound = new NBTTagCompound();
-				compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_sections");
-				NBTTagList list = new NBTTagList();
+				compound = TagCW.create();
+				compound.set("target_listener", "fvtm:railsys");
+				compound.set("task", "update_sections");
+				TagLW list = TagLW.create();
 				for(TrackUnit unit : world.getTrackUnits().values()){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("unit", unit.getUID());
-					com.setLong("section", unit.getSectionId());
-					list.appendTag(com);
+					TagCW com = TagCW.create();
+					com.set("unit", unit.getUID());
+					com.set("section", unit.getSectionId());
+					list.add(com);
 				}
-				compound.setTag("units", list);
+				compound.set("units", list);
 				break;
 			}
 		}
 		if(compound == null) return;
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(world.getDimension(), vector.pos));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(world.getDimension(), vector.pos));
 	}
 
 	public void updateClient(String kind, RailEntity entity){
@@ -297,9 +298,11 @@ public class Region {
 
 	public void updateClient(EntityPlayerMP player){
 		if(world.getWorld().isRemote) return;
-		NBTTagCompound compound = this.write(true); compound.setString("target_listener", "fvtm:railsys");
-		compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
-		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound), player);
+		TagCW compound = this.write(true);
+		compound.set("target_listener", "fvtm:railsys");
+		compound.set("task", "update_region");
+		compound.set("XZ", key.toArray());
+		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound.local()), player);
 	}
 
 	public ConcurrentHashMap<Long, RailEntity> getEntities(){
@@ -321,7 +324,7 @@ public class Region {
 	}
 
 	public Track getTrack(PathKey key){
-		Junction junction = getJunction(key.toVec3f(0));
+		Junction junction = getJunction(key.toQV3D(0));
 		return junction == null ? null : junction.getTrack(key);
 	}
 

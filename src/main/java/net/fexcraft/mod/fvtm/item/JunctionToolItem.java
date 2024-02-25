@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.Config.RAIL_PLACING_GRID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.JUNCTION_ADJUSTER;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
@@ -18,7 +17,8 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -48,8 +48,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         tooltip.add(Formatter.format("&9Junction Editing Toolbox"));
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:junction")){
-        	NBTTagCompound com = stack.getTagCompound().getCompoundTag("fvtm:junction");
-        	tooltip.add(Formatter.format("&9Junction Selected: &7" + new GridV3D(com).toString()));
+        	tooltip.add(Formatter.format("&9Junction Selected: &7" + new QV3D(TagCW.wrap(stack.getTagCompound()), "fvtm:junction").toString()));
         }
         else{
         	tooltip.add("No Junction Position Cached.");
@@ -64,7 +63,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        GridV3D vector = new GridV3D(world, new Vec3d(pos).add(hitX, hitY, hitZ), RAIL_PLACING_GRID), cached;
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0), cached;
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
         	Junction junc = syscap.getJunction(vector);
@@ -88,9 +87,9 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 		}
 		else{
 	        if(stack.getTagCompound().hasKey("fvtm:junction")){
-	        	cached = new GridV3D(stack.getTagCompound().getCompoundTag("fvtm:junction"));
+	        	cached = new QV3D(TagCW.wrap(stack.getTagCompound()), "fvtm:junction");
 	        	if(cached.equals(vector)){
-	        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, cached.write(), player);
+	        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, cached.write(null, null).local(), player);
 	                return EnumActionResult.SUCCESS;
 	        	}
 	        	if(junk.tracks.size() <= 2){
@@ -99,10 +98,10 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 	        	}
 	        }
 			if(junk.tracks.size() < 2){
-        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, vector.write(), player);
+        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, vector.write(null, null).local(), player);
 			}
 			else{
-				stack.getTagCompound().setTag("fvtm:junction", vector.write());
+				vector.write(TagCW.wrap(stack.getTagCompound()), "fvtm:junction");
     			Print.bar(player, "&a&lJunction Position Cached.");
 			}
             return EnumActionResult.SUCCESS;

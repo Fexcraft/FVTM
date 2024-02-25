@@ -5,12 +5,13 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
 	
-	protected GridV3D juncpos;
+	protected QV3D juncpos;
 	protected Junction junction;
 	
 	public SwitchTileEntity(){}
@@ -49,7 +50,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
         if(juncpos != null){
-        	compound.setTag("junction", juncpos.write());
+        	juncpos.write(TagCW.wrap(compound), "junction");
         }
         return compound;
     }
@@ -58,8 +59,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
         if(compound.hasKey("junction")){
-        	juncpos = new GridV3D(compound.getCompoundTag("junction"));
-
+        	juncpos = new QV3D(TagCW.wrap(compound), "junction");
         }
         else{
         	juncpos = null;
@@ -68,7 +68,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     }
 
     @Override
-	public void setJunction(GridV3D vec){
+	public void setJunction(QV3D vec){
 		juncpos = vec;
 		linkJunction(world, pos, vec);
 		sendUpdate();
@@ -89,7 +89,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 	}
 
     @Override
-	public GridV3D getJuncPos(){
+	public QV3D getJuncPos(){
 		return juncpos;
 	}
     

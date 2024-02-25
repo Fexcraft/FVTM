@@ -7,7 +7,8 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,26 +29,26 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 		try{
 			switch(task){
 				case "update_region":{
-					system.updateRegion(packet.nbt, null);
+					system.updateRegion(TagCW.wrap(packet.nbt), null);
 					return;
 				}
 				case "update_junction":{
-					GridV3D vec = new GridV3D(packet.nbt.getCompoundTag("Pos"));
-					Junction junction = system.getJunction(vec); if(junction != null) junction.read(packet.nbt);
+					QV3D vec = new QV3D(TagCW.wrap(packet.nbt), "Pos");
+					Junction junction = system.getJunction(vec); if(junction != null) junction.read(TagCW.wrap(packet.nbt));
 					else{
 						Region region = system.getRegions().get(vec, false);
-						if(region != null) region.getJunctions().put(vec, new Junction(region, vec).read(packet.nbt));
+						if(region != null) region.getJunctions().put(vec, new Junction(region, vec).read(TagCW.wrap(packet.nbt)));
 					}
 					return;
 				}
 				case "rem_junction":{
-					GridV3D vec = new GridV3D(packet.nbt); //RailRegion region = system.getRegions().get(vec, false);
+					QV3D vec = new QV3D(TagCW.wrap(packet.nbt), null); //RailRegion region = system.getRegions().get(vec, false);
 					//if(region != null) region.getJunctions().remove(vec); return;
 					system.delJunction(vec);
 					return;
 				}
 				case "update_junction_state":{
-					Junction junction = system.getJunction(new GridV3D(packet.nbt.getCompoundTag("pos")));
+					Junction junction = system.getJunction(new QV3D(TagCW.wrap(packet.nbt), "pos"));
 					if(junction != null){
 						junction.switch0 = packet.nbt.getBoolean("switch0");
 						junction.switch1 = packet.nbt.getBoolean("switch1");
@@ -55,7 +56,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					return;
 				}
 				case "update_junction_signal":{
-					Junction junction = system.getJunction(new GridV3D(packet.nbt.getCompoundTag("pos")));
+					Junction junction = system.getJunction(new QV3D(TagCW.wrap(packet.nbt), "pos"));
 					if(junction != null){
 						if(packet.nbt.hasKey("nosignal") && packet.nbt.getBoolean("nosignal")){
 							junction.signal = null;
@@ -69,7 +70,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					} return;
 				}
 				case "update_junction_signal_state":{
-					Junction junction = system.getJunction(new GridV3D(packet.nbt.getCompoundTag("pos")));
+					Junction junction = system.getJunction(new QV3D(TagCW.wrap(packet.nbt), "pos"));
 					if(junction != null){
 						junction.signal0 = packet.nbt.getBoolean("signal0");
 						junction.signal1 = packet.nbt.getBoolean("signal1");

@@ -176,11 +176,11 @@ public class DataUtil {
 		return new Vec3d(list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2));
 	}
 
-	public static NBTBase writeVec(V3D vec){
-		NBTTagList list = new NBTTagList();
-		list.appendTag(new NBTTagDouble(vec.x));
-		list.appendTag(new NBTTagDouble(vec.y));
-		list.appendTag(new NBTTagDouble(vec.z));
+	public static TagLW writeVec(V3D vec){
+		TagLW list = TagLW.create();
+		list.add(vec.x);
+		list.add(vec.y);
+		list.add(vec.z);
 		return list;
 	}
 

@@ -21,10 +21,12 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -341,43 +343,44 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	protected void updateClient(String string){
-		if(entity == null) return; NBTTagCompound compound = new NBTTagCompound();
+		if(entity == null) return;
+		TagCW compound = TagCW.create();
 		switch(string){
 			case "track":{
-				compound.setString("task", "update_track");
+				compound.set("task", "update_track");
 				current.getId().write(compound);
 				break;
 			}
 			case "passed":{
-				compound.setString("task", "update_passed");
-				compound.setDouble("passed", passed);
+				compound.set("task", "update_passed");
+				compound.set("passed", passed);
 				break;
 			}
 			case "couplers":{
-				compound.setString("task", "update_coupled");
-				compound.setLong("front", front.hasEntity() ? front.entity.uid : -1l);
-				//compound.setBoolean("front_static", front.coupled);
-				compound.setLong("rear", rear.hasEntity() ? rear.entity.uid : -1l);
-				//compound.setBoolean("rear_static", rear.coupled);
+				compound.set("task", "update_coupled");
+				compound.set("front", front.hasEntity() ? front.entity.uid : -1l);
+				//compound.set("front_static", front.coupled);
+				compound.set("rear", rear.hasEntity() ? rear.entity.uid : -1l);
+				//compound.set("rear_static", rear.coupled);
 				break;
 			}
 			case "commands":{
-				compound.setString("task", "update_commands");
-				NBTTagList list = new NBTTagList();
-				for(JEC cmd : commands) list.appendTag(cmd.write(null));
-				compound.setTag("commands", list);
+				compound.set("task", "update_commands");
+				TagLW list = TagLW.create();
+				for(JEC cmd : commands) list.add(cmd.write(null));
+				compound.set("commands", list);
 				break;
 			}
 			case "forward":{
-				compound.setString("task", "update_forward");
-				compound.setBoolean("forward", vehdata.getAttribute("forward").asBoolean());
+				compound.set("task", "update_forward");
+				compound.set("forward", vehdata.getAttribute("forward").asBoolean());
 				break;
 			}
 		}
-		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
+		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound.local());
 	}
 
-	public void updateRegion(GridV3D start){
+	public void updateRegion(QV3D start){
 		region.getEntities().remove(uid);
 		region = region.getWorld().getRegions().get(RegionKey.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
@@ -493,74 +496,74 @@ public class RailEntity implements Comparable<RailEntity>{
 		return false;
 	}
 
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		compound.setLong("uid", uid);
-		compound.setIntArray("region", region.getKey().toArray());
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		compound.set("uid", uid);
+		compound.set("region", region.getKey().toArray());
 		current.getId().write(compound);
-		compound.setTag("pos", DataUtil.writeVec(pos));
-		compound.setTag("prev", DataUtil.writeVec(prev));
-		compound.setTag("cfront", DataUtil.writeVec(cfront));
-		compound.setTag("bfront", DataUtil.writeVec(bfront));
-		compound.setTag("crear", DataUtil.writeVec(crear));
-		compound.setTag("brear", DataUtil.writeVec(brear));
-		compound.setBoolean("forward", com.getOrient(this));
-		compound.setDouble("passed", passed);
-		compound.setLong("Placer0", placer.getMostSignificantBits());
-		compound.setLong("Placer1", placer.getLeastSignificantBits());
+		compound.set("pos", DataUtil.writeVec(pos));
+		compound.set("prev", DataUtil.writeVec(prev));
+		compound.set("cfront", DataUtil.writeVec(cfront));
+		compound.set("bfront", DataUtil.writeVec(bfront));
+		compound.set("crear", DataUtil.writeVec(crear));
+		compound.set("brear", DataUtil.writeVec(brear));
+		compound.set("forward", com.getOrient(this));
+		compound.set("passed", passed);
+		compound.set("Placer0", placer.getMostSignificantBits());
+		compound.set("Placer1", placer.getLeastSignificantBits());
 		if(front.entity != null){
-			compound.setLong("front_coupled", front.entity.uid);
-			compound.setBoolean("front_coupler", front.isFront());
+			compound.set("front_coupled", front.entity.uid);
+			compound.set("front_coupler", front.isFront());
 		}
-		compound.setBoolean("front_auto", front.autocoupler);
+		compound.set("front_auto", front.autocoupler);
 		if(rear.entity != null){
-			compound.setLong("rear_coupled", rear.entity.uid);
-			compound.setBoolean("rear_coupler", rear.isFront());
+			compound.set("rear_coupled", rear.entity.uid);
+			compound.set("rear_coupler", rear.isFront());
 		}
-		compound.setBoolean("rear_auto", rear.autocoupler);
+		compound.set("rear_auto", rear.autocoupler);
 		if(!commands.isEmpty()){
-			NBTTagList list = new NBTTagList();
-			for(JEC cmd : commands) list.appendTag(cmd.write(null));
-			compound.setTag("Commands", list);
+			TagLW list = TagLW.create();
+			for(JEC cmd : commands) list.add(cmd.write(null));
+			compound.set("Commands", list);
 		}
-		compound.setLong("Compound", com.getUID());
-		compound.setBoolean("Singular", com.isSingular());
-		compound.setDouble("throttle", throttle);
+		compound.set("Compound", com.getUID());
+		compound.set("Singular", com.isSingular());
+		compound.set("throttle", throttle);
 		return vehdata.write(new TagCWI(compound)).local();
 	}
 	
-	public RailEntity read(NBTTagCompound compound){
-		uid = compound.getLong("uid"); if(region == null) Print.debug("region is NULL");
+	public RailEntity read(TagCW compound){
+		uid = compound.getLong("uid");
+		if(region == null) Print.debug("region is NULL");
 		current = region.getTrack(new PathKey(compound));
 		if(current == null) Print.log("track not found! " + new PathKey(compound).toString());
 		if(current == null){ this.dispose(); return this; }
-		pos = DataUtil.readVec(compound.getTag("pos"));
-		prev = DataUtil.readVec(compound.getTag("prev"));
-		cfront = DataUtil.readVec(compound.getTag("cfront"));
-		bfront = DataUtil.readVec(compound.getTag("bfront"));
-		crear = DataUtil.readVec(compound.getTag("crear"));
-		brear = DataUtil.readVec(compound.getTag("brear"));
-		//forward = compound.hasKey("forward") ? compound.getBoolean("forward") : true;
+		pos = DataUtil.readVec(compound.getList("pos"));
+		prev = DataUtil.readVec(compound.getList("prev"));
+		cfront = DataUtil.readVec(compound.getList("cfront"));
+		bfront = DataUtil.readVec(compound.getList("bfront"));
+		crear = DataUtil.readVec(compound.getList("crear"));
+		brear = DataUtil.readVec(compound.getList("brear"));
+		//forward = compound.has("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
 		throttle = compound.getFloat("throttle");
 		front.autocoupler = compound.getBoolean("front_auto");
 		rear.autocoupler = compound.getBoolean("rear_auto");
 		//
-		if(compound.hasKey("Commands")){
-			commands.clear(); NBTTagList cmds = (NBTTagList)compound.getTag("Commands");
-			for(NBTBase base : cmds){
-				if(base instanceof NBTTagCompound == false) continue;
-				JEC command = JEC.read((NBTTagCompound)base);
+		if(compound.has("Commands")){
+			commands.clear();
+			compound.getList("Commands").forEach(tag -> {
+				JEC command = JEC.read(tag);
 				if(command != null) commands.add(command);
-			}
+			});
 		}
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehdata == null) vehdata = null;//TODO Resources.getVehicleData(compound);
 		else vehdata.read(new TagCWI(compound));
 		if(vehdata == null){ this.dispose(); return null; }
-		//if(compound.hasKey("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
-		//if(compound.hasKey("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
+		//if(compound.has("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
+		//if(compound.has("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
 		//TODO try coupling later, to prevent overflow
 		//TODO add REC loading instead later
 		//

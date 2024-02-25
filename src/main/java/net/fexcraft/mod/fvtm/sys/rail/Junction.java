@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.JunctionTrackingTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
@@ -13,7 +12,9 @@ import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class Junction {
 	
-	private GridV3D vecpos;
+	private QV3D vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
 	public RailSystem root;
@@ -62,7 +63,7 @@ public class Junction {
 	public Double bufferrot;
 	
 	/** General Constructor */
-	public Junction(Region region, GridV3D pos){
+	public Junction(Region region, QV3D pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
 		this.region = region; this.switch0 = this.switch1 = false; type = PathJuncType.STRAIGHT;
 	}
@@ -76,8 +77,8 @@ public class Junction {
 		this.root = data; return this;
 	}
 	
-	public Junction read(NBTTagCompound compound){
-		this.vecpos = new GridV3D(compound.getCompoundTag("Pos"));
+	public Junction read(TagCW compound){
+		this.vecpos = new QV3D(compound, "Pos");
 		this.switch0 = compound.getBoolean("Switch0");
 		this.switch1 = compound.getBoolean("Switch1");
 		//this.crossing = compound.getBoolean("Crossing");
@@ -93,37 +94,37 @@ public class Junction {
 			}
 			tracks.clear();
 			for(int i = 0; i < trackam; i++){
-				try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
+				try{ tracks.add(new Track(this).read(compound.getCompound("Track" + i))); }
 				catch(Exception e){ e.printStackTrace(); }
 			}
 		} else tracks.clear(); frustumbb = null;
 		//TODO see if necessary //if(!root.getWorld().isRemote) checkTrackSectionConsistency();
-		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
-		if(compound.hasKey("SignalDir")) signal_dir = EntryDirection.getFromSaveByte(compound.getByte("SignalDir"));
-		if(tracks.size() > 2) type = compound.hasKey("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
+		if(compound.has("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
+		if(compound.has("SignalDir")) signal_dir = EntryDirection.getFromSaveByte((byte)compound.getInteger("SignalDir"));
+		if(tracks.size() > 2) type = compound.has("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
 		else type = PathJuncType.STRAIGHT;
-		station = compound.hasKey("Station") ? compound.getString("Station") : null;
-		if(compound.hasKey("JunctionCommands")){
-			forswitch.clear(); NBTTagList list = (NBTTagList)compound.getTag("JunctionCommands");
-			for(NBTBase base : list){
-				JEC cmd = JEC.read((NBTTagCompound)base);
+		station = compound.has("Station") ? compound.getString("Station") : null;
+		if(compound.has("JunctionCommands")){
+			forswitch.clear();
+			compound.getList("JunctionCommands").forEach(tag -> {
+				JEC cmd = JEC.read(tag);
 				if(cmd != null) forswitch.add(cmd);
-			}
+			});
 		}
-		if(compound.hasKey("EntityCommands")){
-			forswitch.clear(); NBTTagList list = (NBTTagList)compound.getTag("EntityCommands");
-			for(NBTBase base : list){
-				JEC cmd = JEC.read((NBTTagCompound)base);
+		if(compound.has("EntityCommands")){
+			forswitch.clear();
+			compound.getList("EntityCommands").forEach(tag -> {
+				JEC cmd = JEC.read(tag);
 				if(cmd != null) fortrains.add(cmd);
-			}
+			});
 		}
 		if(signal != null){
 			signal0 = compound.getBoolean("Signal0");
 			signal1 = compound.getBoolean("Signal1");
 		}
 		entities.clear();
-		if(compound.hasKey("LinkedBlocks")){
-			NBTTagList list = (NBTTagList)compound.getTag("LinkedBlocks");
+		if(compound.has("LinkedBlocks")){
+			NBTTagList list = compound.getList("LinkedBlocks").local();
 			for(int i = 0; i < list.tagCount(); i++){
 				entities.add(BlockPos.fromLong(((NBTTagLong)list.get(i)).getLong()));
 			}
@@ -131,50 +132,50 @@ public class Junction {
 		return this;
 	}
 
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
 		for(int i = 0; i < tracks.size(); i++){
-			compound.setTag("Track" + i, tracks.get(i).write(null));
+			compound.set("Track" + i, tracks.get(i).write(null));
 		}
-		compound.setInteger("Tracks", tracks.size());
-		compound.setBoolean("Switch0", switch0);
-		compound.setBoolean("Switch1", switch1);
+		compound.set("Tracks", tracks.size());
+		compound.set("Switch0", switch0);
+		compound.set("Switch1", switch1);
 		//compound.setBoolean("Crossing", crossing);
-		compound.setTag("Pos", vecpos.write());
-		if(signal != null) compound.setString("SignalType", signal.name());
-		if(signal_dir != null) compound.setByte("SignalDir", signal_dir.getSaveByte());
-		if(tracks.size() > 2) compound.setString("Type", type.name());
-		if(station != null) compound.setString("Station", station);
+		vecpos.write(compound, "Pos");
+		if(signal != null) compound.set("SignalType", signal.name());
+		if(signal_dir != null) compound.set("SignalDir", signal_dir.getSaveByte());
+		if(tracks.size() > 2) compound.set("Type", type.name());
+		if(station != null) compound.set("Station", station);
 		if(!forswitch.isEmpty()){
-			NBTTagList list = new NBTTagList();
-			for(JEC cmd : forswitch) list.appendTag(cmd.write(null));
-			compound.setTag("JunctionCommands", list);
+			TagLW list = TagLW.create();
+			for(JEC cmd : forswitch) list.add(cmd.write(null));
+			compound.set("JunctionCommands", list);
 		}
 		if(!fortrains.isEmpty()){
-			NBTTagList list = new NBTTagList();
-			for(JEC cmd : fortrains) list.appendTag(cmd.write(null));
-			compound.setTag("EntityCommands", list);
+			TagLW list = TagLW.create();
+			for(JEC cmd : fortrains) list.add(cmd.write(null));
+			compound.set("EntityCommands", list);
 		}
 		if(signal != null){
-			compound.setBoolean("Signal0", signal0);
-			compound.setBoolean("Signal1", signal1);
+			compound.set("Signal0", signal0);
+			compound.set("Signal1", signal1);
 		}
 		if(!entities.isEmpty()){
-			NBTTagList list = new NBTTagList();
+			TagLW list = TagLW.create();
 			for(BlockPos pos : entities){
-				list.appendTag(new NBTTagLong(pos.toLong()));
+				list.add(pos.toLong());
 			}
-			compound.setTag("LinkedBlocks", list);
+			compound.set("LinkedBlocks", list);
 		}
 		return compound;
 	}
 	
-	public GridV3D getVec316f(){
+	public QV3D getVec316f(){
 		return vecpos;
 	}
 	
 	public V3D getVec(){
-		return vecpos.vector;
+		return vecpos.vec;
 	}
 
 	public void addnew(Track track){
@@ -400,7 +401,7 @@ public class Junction {
 	@SuppressWarnings("unused")
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
-			if(vecpos.vector.dis(new V3D(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
+			if(vecpos.vec.dis(new V3D(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
 		}
 		return false;
 	}
@@ -472,14 +473,14 @@ public class Junction {
 		if(frustumbb != null) return frustumbb;
 		V3D min = new V3D(), max = new V3D(), other;
 		for(Track track : tracks){
-			other = track.start.vector;
+			other = track.start.vec;
 			if(other.x < min.x) min.x = other.x;
 			if(other.y < min.y) min.y = other.y;
 			if(other.z < min.z) min.z = other.z;
 			if(other.x > max.x) max.x = other.x;
 			if(other.y > max.y) max.y = other.y;
 			if(other.z > max.z) max.z = other.z;
-			other = track.end.vector;
+			other = track.end.vec;
 			if(other.x < min.x) min.x = other.x;
 			if(other.y < min.y) min.y = other.y;
 			if(other.z < min.z) min.z = other.z;
@@ -488,8 +489,8 @@ public class Junction {
 			if(other.z > max.z) max.z = other.z;
 		}
 		if(size() == 0){
-			min = vecpos.vector.add(-.5f,-.5f,-.5f);
-			max = vecpos.vector.add(+.5f,+.5f,+.5f);
+			min = vecpos.vec.add(-.5f,-.5f,-.5f);
+			max = vecpos.vec.add(+.5f,+.5f,+.5f);
 		}
 		return frustumbb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
 	}

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class PathKey implements Comparable<PathKey> {
@@ -9,13 +10,13 @@ public class PathKey implements Comparable<PathKey> {
 	protected int[] pos = new int[6];
 	protected byte[] xyz = new byte[6];
 	
-	public PathKey(GridV3D start, GridV3D end){
-		pos[0] = start.pos.getX();
-		pos[1] = start.pos.getY();
-		pos[2] = start.pos.getZ();
-		pos[3] = end.pos.getX();
-		pos[4] = end.pos.getY();
-		pos[5] = end.pos.getZ();
+	public PathKey(QV3D start, QV3D end){
+		pos[0] = start.pos.x;
+		pos[1] = start.pos.y;
+		pos[2] = start.pos.z;
+		pos[3] = end.pos.x;
+		pos[4] = end.pos.y;
+		pos[5] = end.pos.z;
 		xyz[0] = start.x;
 		xyz[1] = start.y;
 		xyz[2] = start.z;
@@ -35,14 +36,14 @@ public class PathKey implements Comparable<PathKey> {
 		}
 	}
 
-	public PathKey(NBTTagCompound compound){
-		if(compound.hasKey("key_pos")) pos = compound.getIntArray("key_pos");
-		if(compound.hasKey("key_xyz")) xyz = compound.getByteArray("key_xyz");
+	public PathKey(TagCW compound){
+		if(compound.has("key_pos")) pos = compound.getIntArray("key_pos");
+		if(compound.has("key_xyz")) xyz = compound.getByteArray("key_xyz");
 	}
 	
-	public NBTTagCompound write(NBTTagCompound compound){
-		compound.setIntArray("key_pos", pos);
-		compound.setByteArray("key_xyz", xyz);
+	public TagCW write(TagCW compound){
+		compound.set("key_pos", pos);
+		compound.set("key_xyz", xyz);
 		return compound;
 	}
 
@@ -90,8 +91,8 @@ public class PathKey implements Comparable<PathKey> {
 		return true;
 	}
 
-	public GridV3D toVec3f(int i){
-		return new GridV3D(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
+	public QV3D toQV3D(int i){
+		return QV3D.exact(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
 	}
 	
 	@Override

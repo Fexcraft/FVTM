@@ -14,7 +14,8 @@ import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,7 +33,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 	@Override
 	public void initPacket(NBTTagCompound compound){
 		if((compound = GuiHandler.validate(player, compound, player.world.isRemote)) == null) return;
-		junction = SystemManager.get(Systems.RAIL, player.world, RailSystem.class).getJunction(new GridV3D(compound));
+		junction = SystemManager.get(Systems.RAIL, player.world, RailSystem.class).getJunction(new QV3D(TagCW.wrap(compound), null));
 	}
 
 	@Override

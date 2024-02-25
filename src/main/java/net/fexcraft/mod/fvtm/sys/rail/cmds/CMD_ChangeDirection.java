@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -17,7 +18,7 @@ public class CMD_ChangeDirection extends JEC {
 		super(label, JECType.REVERSE, dir, new String[]{});
 	}*/
 
-	public CMD_ChangeDirection(NBTTagCompound compound){
+	public CMD_ChangeDirection(TagCW compound){
 		super(compound);
 	}
 
@@ -27,12 +28,12 @@ public class CMD_ChangeDirection extends JEC {
 	}
 
 	@Override
-	public NBTBase writeData(){
-		return new NBTTagCompound();
+	public TagCW writeData(){
+		return TagCW.create();
 	}
 
 	@Override
-	public void readData(NBTBase base){
+	public void readData(TagCW base){
 		//
 	}
 

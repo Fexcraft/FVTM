@@ -96,7 +96,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
 				switch(packet.nbt.getString("subtask")){
 					case "new":{
-						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new GridV3D(packet.nbt.getCompoundTag("vector")), FvtmRegistry.RAILGAUGES.get(packet.nbt.getString("gauge")));
+						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new QV3D(TagCW.wrap(packet.nbt), "vector"), FvtmRegistry.RAILGAUGES.get(packet.nbt.getString("gauge")));
 						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
 						break;
 					}
@@ -108,13 +108,13 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 					case "add":{
 						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
 						if(track == null) return;
-						track.add(new GridV3D(packet.nbt.getCompoundTag("vector")));
+						track.add(new QV3D(TagCW.wrap(packet.nbt), "vector"));
 						break;
 					}
 					case "remove":{
 						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
 						if(track == null) return;
-						track.remove(player, new GridV3D(packet.nbt.getCompoundTag("vector")));
+						track.remove(player, new QV3D(TagCW.wrap(packet.nbt), "vector"));
 						break;
 					}
 					case "selected":{
@@ -129,7 +129,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
 				switch(packet.nbt.getString("subtask")){
 					case "new":{
-						RoadPlacingUtil.CL_CURRENT = new NewRoad(uuid, new GridV3D(packet.nbt.getCompoundTag("vector")), packet.nbt.getInteger("width"));
+						RoadPlacingUtil.CL_CURRENT = new NewRoad(uuid, new QV3D(TagCW.wrap(packet.nbt), "vector"), packet.nbt.getInteger("width"));
 						RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
 						break;
 					}
@@ -141,13 +141,13 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 					case "add":{
 						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
 						if(road == null) return;
-						road.add(new GridV3D(packet.nbt.getCompoundTag("vector")), packet.nbt.getInteger("width"));
+						road.add(new QV3D(TagCW.wrap(packet.nbt), "vector"), packet.nbt.getInteger("width"));
 						break;
 					}
 					case "remove":{
 						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
 						if(road == null) return;
-						road.remove(player, new GridV3D(packet.nbt.getCompoundTag("vector")));
+						road.remove(player, new QV3D(TagCW.wrap(packet.nbt), "vector"));
 						break;
 					}
 					case "selected":{

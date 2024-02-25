@@ -5,21 +5,22 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_SetSignal extends JEC {
 	
-	private GridV3D signal;
+	private QV3D signal;
 	private byte state;
 	private int timed;
 
-	public CMD_SetSignal(String label, EntryDirection dir, GridV3D optional, byte state, int timed, String[] targets){
+	public CMD_SetSignal(String label, EntryDirection dir, QV3D optional, byte state, int timed, String[] targets){
 		super(label, JECType.SET_SIGNAL, dir, targets); signal = optional; this.state = state; this.timed = timed;
 	}
 
-	public CMD_SetSignal(NBTTagCompound compound){
+	public CMD_SetSignal(TagCW compound){
 		super(compound);
 	}
 
@@ -29,16 +30,16 @@ public class CMD_SetSignal extends JEC {
 	}
 
 	@Override
-	public NBTBase writeData(){
-		NBTTagCompound compound = signal == null ? new NBTTagCompound() : signal.write();
-		compound.setByte("state", state); if(timed > 0) compound.setInteger("timed", timed);
+	public TagCW writeData(){
+		TagCW compound = signal == null ? TagCW.create() : signal.write(null, null);
+		compound.set("state", state); if(timed > 0) compound.set("timed", timed);
 		return compound;
 	}
 
 	@Override
-	public void readData(NBTBase base){
+	public void readData(TagCW base){
 		NBTTagCompound compound = (NBTTagCompound)base;
-		if(compound.hasKey("vec_pos")) signal = new GridV3D(compound);
+		if(compound.hasKey("vec_pos")) signal = new QV3D(TagCW.wrap(compound), "vec_pos");
 		state = compound.getByte("state"); timed = compound.hasKey("timed") ? compound.getInteger("timed") : 0;
 	}
 

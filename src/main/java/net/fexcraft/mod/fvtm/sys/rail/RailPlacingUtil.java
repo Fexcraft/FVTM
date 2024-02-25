@@ -18,10 +18,12 @@ import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class RailPlacingUtil {
@@ -30,27 +32,27 @@ public class RailPlacingUtil {
 	public static final ConcurrentHashMap<UUID, UUID> CURRENT = new ConcurrentHashMap<>();
 	public static NewTrack CL_CURRENT = null;
 
-	public static void place(World world, EntityPlayer player, ItemStack stack, RailGauge gauge, RailSystem syscap, GridV3D vector){
+	public static void place(World world, EntityPlayer player, ItemStack stack, RailGauge gauge, RailSystem syscap, QV3D vector){
 		UUID trackid = CURRENT.get(player.getGameProfile().getId());
 		if(trackid == null){
 			UUID newid = genId();
 			QUEUE.put(newid, new NewTrack(newid, vector, gauge));
 			CURRENT.put(player.getGameProfile().getId(), newid);
 			//
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", UTIL_LISTENER);
-			compound.setString("task", "rail_place_util");
-			compound.setString("subtask", "new");
-			compound.setLong("uuid_l", newid.getMostSignificantBits());
-			compound.setLong("uuid_m", newid.getLeastSignificantBits());
-			compound.setBoolean("new", true);
-			compound.setTag("vector", vector.write());
-			compound.setString("gauge", gauge.getIDS());
-			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+			TagCW compound = TagCW.create();
+			compound.set("target_listener", UTIL_LISTENER);
+			compound.set("task", "rail_place_util");
+			compound.set("subtask", "new");
+			compound.set("uuid_l", newid.getMostSignificantBits());
+			compound.set("uuid_m", newid.getLeastSignificantBits());
+			compound.set("new", true);
+			compound.set("gauge", gauge.getIDS());
+			vector.write(compound, "vector");
+			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound.local()));
 			//
 			RailMarker marker = new RailMarker(world, newid);
 			marker.position = vector;
-			marker.setPosition(vector.vector.x, vector.vector.y, vector.vector.z);
+			marker.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 			world.spawnEntity(marker);
 			return;
 		}
@@ -58,18 +60,18 @@ public class RailPlacingUtil {
 		if(track == null) CURRENT.remove(player.getGameProfile().getId());
 		track.add(vector);
 		//
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", UTIL_LISTENER);
-		compound.setString("task", "rail_place_util");
-		compound.setString("subtask", "add");
-		compound.setLong("uuid_l", trackid.getMostSignificantBits());
-		compound.setLong("uuid_m", trackid.getLeastSignificantBits());
-		compound.setTag("vector", vector.write());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
+		TagCW compound = TagCW.create();
+		compound.set("target_listener", UTIL_LISTENER);
+		compound.set("task", "rail_place_util");
+		compound.set("subtask", "add");
+		compound.set("uuid_l", trackid.getMostSignificantBits());
+		compound.set("uuid_m", trackid.getLeastSignificantBits());
+		vector.write(compound, "vector");
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(player.dimension, new BlockPos(vector.pos.x, vector.pos.y, vector.pos.z)));
 		//
 		RailMarker marker = new RailMarker(world, trackid);
 		marker.position = vector;
-		marker.setPosition(vector.vector.x, vector.vector.y, vector.vector.z);
+		marker.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 		world.spawnEntity(marker);
 	}
 	
@@ -81,30 +83,30 @@ public class RailPlacingUtil {
 
 	public static class NewTrack {
 		
-		public ArrayList<GridV3D> points = new ArrayList<>();
+		public ArrayList<QV3D> points = new ArrayList<>();
 		public ArrayList<ArrayList<V3D>> preview;
 		public RailGauge gauge;
 		public Track track;
 		public int selected = -1;
 		public UUID id;
 
-		public NewTrack(UUID uuid, GridV3D vector, RailGauge gauge){
+		public NewTrack(UUID uuid, QV3D vector, RailGauge gauge){
 			points.add(vector);
 			this.gauge = gauge;
 			id = uuid;
 		}
 
-		public void add(GridV3D vector){
+		public void add(QV3D vector){
 			points.add(selected == -1 ? points.size() : ++selected, vector);
 			preview = null;
 			gentrack();
 		}
 
 		public void gentrack(){
-			track = points.size() > 1 ? new Track(null, points.toArray(new GridV3D[0]), gauge) : null;
+			track = points.size() > 1 ? new Track(null, points.toArray(new QV3D[0]), gauge) : null;
 		}
 
-		public void select(EntityPlayer player, GridV3D vector){
+		public void select(EntityPlayer player, QV3D vector){
 			int sel = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -120,10 +122,10 @@ public class RailPlacingUtil {
 			compound.setString("subtask", "selected");
 			compound.setLong("uuid_l", id.getMostSignificantBits());
 			compound.setLong("uuid_m", id.getLeastSignificantBits());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, new BlockPos(vector.pos.x, vector.pos.y, vector.pos.z)));
 		}
 
-		public void remove(EntityPlayer player, GridV3D vector){
+		public void remove(EntityPlayer player, QV3D vector){
 			int rem = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -143,15 +145,15 @@ public class RailPlacingUtil {
 				return;
 			}
 			//
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", UTIL_LISTENER);
-			compound.setString("task", "rail_place_util");
-			compound.setInteger("remove", rem);
-			compound.setString("subtask", "remove");
-			compound.setLong("uuid_l", id.getMostSignificantBits());
-			compound.setLong("uuid_m", id.getLeastSignificantBits());
-			compound.setTag("vector", vector.write());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, vector.pos));
+			TagCW compound = TagCW.create();
+			compound.set("target_listener", UTIL_LISTENER);
+			compound.set("task", "rail_place_util");
+			compound.set("remove", rem);
+			compound.set("subtask", "remove");
+			compound.set("uuid_l", id.getMostSignificantBits());
+			compound.set("uuid_m", id.getLeastSignificantBits());
+			vector.write(compound, "vector");
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(player.dimension, new BlockPos(vector.pos.x, vector.pos.y, vector.pos.z)));
 		}
 		
 		public void reset(){
@@ -166,7 +168,7 @@ public class RailPlacingUtil {
 			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
 		}
 
-		public int indexOf(GridV3D vector){
+		public int indexOf(QV3D vector){
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
 					return i;
@@ -175,7 +177,7 @@ public class RailPlacingUtil {
 			return -2;
 		}
 
-		public void create(EntityPlayer player, GridV3D vector){
+		public void create(EntityPlayer player, QV3D vector){
 			RailSystem sys = SystemManager.get(Systems.RAIL, player.world);
 			Junction junc = sys.getJunction(vector, true);
 			UUID current = CURRENT.get(player.getGameProfile().getId());
@@ -214,7 +216,7 @@ public class RailPlacingUtil {
 				return;
 			}
 			else{
-				Track track = new Track(junc, ntrack.points.toArray(new GridV3D[0]), gauge);
+				Track track = new Track(junc, ntrack.points.toArray(new QV3D[0]), gauge);
 				if(track.length > MAX_RAIL_TRACK_LENGTH){
 					Print.chat(player, "&cTrack length exceeds the configured max length.");
 					return;
@@ -239,7 +241,7 @@ public class RailPlacingUtil {
 		}
 
 		private boolean allsame(){
-			GridV3D vec = points.get(0);
+			QV3D vec = points.get(0);
 			for(int i = 1; i < points.size(); i++){
 				if(!vec.equals(points.get(i))) return false;
 			}

@@ -204,4 +204,9 @@ public class PacketsImpl extends Packets {
 	public static TargetPoint getTargetPoint(int dim, BlockPos pos){
 		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.VEHICLE_UPDATE_RANGE);
 	}
+
+	public static TargetPoint getTargetPoint(int dim, V3I pos){
+		return new NetworkRegistry.TargetPoint(dim, pos.x, pos.y, pos.z, Config.VEHICLE_UPDATE_RANGE);
+	}
+
 }

@@ -11,7 +11,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
@@ -79,7 +79,7 @@ public class TrackPlacer {
 		boolean regblocks = false;//this.blocks;// && !DISABLE_RAIL_BLOCKS;
 		if(register ? creative ? regblocks : useitems : (/*!track.blockless &&*/ regblocks)){
 			double angle, half = (width * 0.5f) - 0.25f;
-			ArrayList<GridV3D> path = new ArrayList<>();
+			ArrayList<QV3D> path = new ArrayList<>();
 			V3D last, vec = track.getVectorPosition0(0.001f, false);
 			angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 			angle += Static.rad90;
@@ -92,7 +92,7 @@ public class TrackPlacer {
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
 				for(double fl = -half; fl <= half; fl += 0.25f){
-					path.add(new GridV3D(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
+					path.add(new QV3D(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0))), 0));
 				}
 				passed += 0.125f;
 			}
@@ -100,9 +100,11 @@ public class TrackPlacer {
 			BlockPos blk;
 			IBlockState state;
 			if(regblocks){
-				for(GridV3D v : path){
+				for(QV3D v : path){
 					height = v.y;
-					state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
+					blk = new BlockPos(v.pos.x, v.pos.y, v.pos.z);
+					if(height == 0) blk = blk.down();
+					state = world.getBlockState(blk);
 					if(!state.getBlock().isReplaceable(world, blk)){
 			            if(player != null) Print.chatbar(sender, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
 			            return false;
@@ -111,9 +113,11 @@ public class TrackPlacer {
 			}
 			boolean rb;
 			HashMap<BlockPos, Integer> blocks = new HashMap<>();
-			for(GridV3D v : path){
+			for(QV3D v : path){
 				height = v.y;
-				state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
+				blk = new BlockPos(v.pos.x, v.pos.y, v.pos.z);
+				if(height == 0) blk = blk.down();
+				state = world.getBlockState(blk);
 				//rb = state.getBlock() == RailBlock.INSTANCE;
 				if(register){// ? true : rb){
 					if(!blocks.containsKey(blk)) blocks.put(blk, height);
@@ -169,7 +173,7 @@ public class TrackPlacer {
 			}
 		}
 		if(!register && !creative){
-			if(pos == null) pos = track.start.pos;
+			if(pos == null) pos = new BlockPos(track.start.pos.x, track.start.pos.y, track.start.pos.z);
 			if(track.preset != null){
 				EntityItem item = new EntityItem(world);
 				item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);

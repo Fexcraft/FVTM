@@ -31,7 +31,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.minecraft.client.Minecraft;
@@ -54,7 +54,7 @@ public class RailRenderer {
     
 	private JunctionGridItem jitem;
     private ItemStack stack;
-    private GridV3D[] vecs;
+    private QV3D[] vecs;
 	//
 	public static final RGB MIDDLE_GRAY = new RGB(127, 127, 127);
 	public static boolean HOLDING;
@@ -65,14 +65,14 @@ public class RailRenderer {
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
-    		GridV3D vec = new GridV3D(event.getPlayer().world, event.getTarget().hitVec, jitem.getPlacingGrid());
+    		QV3D vec = new QV3D(event.getTarget().hitVec.x, event.getTarget().hitVec.y, event.getTarget().hitVec.z, jitem.getPlacingGrid());
     		if(jitem.offsetVectors()){
-        		vecs = new GridV3D[jitem.getVectors(stack).length];
+        		vecs = new QV3D[jitem.getVectors(stack).length];
     			double seg = 360f / jitem.getSegments();
     			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			if(con % seg > seg / 2) con++;
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new GridV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), jitem.getPlacingGrid());
+    				vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vec).add(vec.vec), jitem.getPlacingGrid());
     			}
 				if(Static.dev()) Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}
@@ -88,13 +88,13 @@ public class RailRenderer {
     		//GL11.glTranslated(-x, -y, -z);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPushMatrix();
-            GL11.glTranslated(vec.vector.x - x, vec.vector.y - y, vec.vector.z - z);
+            GL11.glTranslated(vec.vec.x - x, vec.vec.y - y, vec.vec.z - z);
             model1.render();
             GL11.glPopMatrix();
             //
             for(int v = 0; v < vecs.length; v++){
         		GL11.glPushMatrix();
-                GL11.glTranslated(vecs[v].vector.x - x, vecs[v].vector.y - y, vecs[v].vector.z - z);
+                GL11.glTranslated(vecs[v].vec.x - x, vecs[v].vec.y - y, vecs[v].vec.z - z);
                 model0.render();
                 if(jitem.offsetVectors() && (v == 0 || v == vecs.length - 1)) model.render();
                 GL11.glPopMatrix();
@@ -111,9 +111,9 @@ public class RailRenderer {
             if(vecs.length > 1){
                 for(int i = 1; i < vecs.length; i++){
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vecs[i - 1].vector.x - x, vecs[i - 1].vector.y + 0.01 - y, vecs[i - 1].vector.z - z)
+                    bufferbuilder.pos(vecs[i - 1].vec.x - x, vecs[i - 1].vec.y + 0.01 - y, vecs[i - 1].vec.z - z)
                     	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-                    bufferbuilder.pos(vecs[i].vector.x - x, vecs[i].vector.y + 0.01 - y, vecs[i].vector.z - z)
+                    bufferbuilder.pos(vecs[i].vec.x - x, vecs[i].vec.y + 0.01 - y, vecs[i].vec.z - z)
                     	.color(color[1][0], color[1][1], color[1][2], color[1][3]).endVertex();
                     tessellator.draw();
                 }
@@ -216,7 +216,7 @@ public class RailRenderer {
 				double[] arr = null;
 				for(int i = 1; i < size - 1; i++){
 					arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
-					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vector.sub(cx, cy, cz);
+					vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec.sub(cx, cy, cz);
 	                bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 	                bufferbuilder.pos(arr[0] - cx, arr[1] + 0.05 - cy, arr[2] - cz).color(0, 1, 1, 1F).endVertex();
 	                bufferbuilder.pos(vec1.x, vec1.y + 0.05, vec1.z).color(0, 1, 1, 1F).endVertex();
@@ -321,7 +321,7 @@ public class RailRenderer {
     		if(value.signal != null && value.size() == 2){
     			if(value.signalpos0 == null){
     				Track track = value.tracks.get(value.signal_dir.getTrackId());
-					V3D vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+					V3D vec0 = track.start.vec, vec1 = track.getVectorPosition0(0.001f, false);
     				value.signalrot0 = Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
     				value.signalrot0 += Static.rad90;
     				value.signalpos0 = vec0.add(VecUtil.rotByRad(value.signalrot0, new V3D(track.gauge.getModel().signal_offset, 0, 0)));
@@ -329,7 +329,7 @@ public class RailRenderer {
     			}
     			if(value.signal_dir.isBoth() && value.signalpos1 == null){
 					Track track = value.tracks.get(1);
-					V3D vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+					V3D vec0 = track.start.vec, vec1 = track.getVectorPosition0(0.001f, false);
     				value.signalrot1 = Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
     				value.signalrot1 += Static.rad90;
     				value.signalpos1 = vec0.add(VecUtil.rotByRad(value.signalrot1, new V3D(track.gauge.getModel().signal_offset, 0, 0)));
@@ -368,7 +368,7 @@ public class RailRenderer {
     		if(value.size() == 1){
     			if(value.bufferrot == null){
     				Track track = value.tracks.get(0);
-					V3D vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+					V3D vec0 = track.start.vec, vec1 = track.getVectorPosition0(0.001f, false);
     				value.bufferrot = Math.atan2(vec0.z - vec1.z, vec0.x - vec1.x);
     				value.bufferrot += Static.rad90;
 					value.bufferrot = Math.toDegrees(-value.bufferrot);

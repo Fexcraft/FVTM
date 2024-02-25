@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,20 +36,20 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
 
     public RailTestEntity(World world, Track start){
         this(world); current = start;
-        this.setPosition(start.start.vector.x, start.start.vector.y, start.start.vector.z);
+        this.setPosition(start.start.vec.x, start.start.vec.y, start.start.vec.z);
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer){
     	buffer.writeDouble(posX); buffer.writeDouble(posY); buffer.writeDouble(posZ);
-        if(current != null) ByteBufUtils.writeTag(buffer, current.getId().write(new NBTTagCompound()));
+        if(current != null) ByteBufUtils.writeTag(buffer, current.getId().write(TagCW.create()).local());
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer){
     	setPosition(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     	if(buffer.isReadable()){
-    		current = SystemManager.get(Systems.RAIL, world, RailSystem.class).getTrack(new PathKey(ByteBufUtils.readTag(buffer)));
+    		current = SystemManager.get(Systems.RAIL, world, RailSystem.class).getTrack(new PathKey(TagCW.wrap(ByteBufUtils.readTag(buffer))));
     	}
     	Print.debug(current, posX, posY, posZ);
     }
@@ -58,19 +59,19 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     	NBTTagCompound compound = pkt.nbt;
     	this.setPosition(compound.getDouble("x"), compound.getDouble("y"), compound.getDouble("z"));
     	this.passed = compound.getFloat("passed");
-    	if(compound.hasKey("id")){ current.read(compound); }
+    	if(compound.hasKey("id")){ current.read(TagCW.wrap(compound)); }
     	if(compound.hasKey("reset")){ current = null; }
 	}
 
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
-    	if(current != null) compound.setTag("Current", current.write(null));
+    	if(current != null) compound.setTag("Current", current.write(null).local());
     	compound.setFloat("Passed", passed);
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound){
-    	if(current != null) compound.setTag("Current", current.write(null));
+    	if(current != null) compound.setTag("Current", current.write(null).local());
     	passed = compound.getFloat("Passed");
     }
     
@@ -121,7 +122,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     		NBTTagCompound compound = new NBTTagCompound();
     		compound.setDouble("x", posX); compound.setDouble("y", posY);
     		compound.setDouble("z", posZ); compound.setFloat("passed", passed);
-    		if(current != null) current.write(compound); else compound.setBoolean("reset", true);
+    		if(current != null) current.write(TagCW.wrap(compound)); else compound.setBoolean("reset", true);
     		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
     	}
     }

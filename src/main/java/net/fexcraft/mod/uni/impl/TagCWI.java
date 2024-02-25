@@ -72,6 +72,16 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public int[] getIntArray(String key){
+		return compound.getIntArray(key);
+	}
+
+	@Override
+	public byte[] getByteArray(String key){
+		return compound.getByteArray(key);
+	}
+
+	@Override
 	public boolean has(String key){
 		return compound.hasKey(key);
 	}
@@ -114,6 +124,16 @@ public class TagCWI implements TagCW {
 	@Override
 	public void set(String key, TagLW val){
 		compound.setTag(key, val.local());
+	}
+
+	@Override
+	public void set(String key, int[] val){
+		compound.setIntArray(key, val);
+	}
+
+	@Override
+	public void set(String key, byte[] val){
+		compound.setByteArray(key, val);
 	}
 
 	@Override

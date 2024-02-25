@@ -4,11 +4,11 @@ import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
-import net.fexcraft.mod.fvtm.util.GridV3D;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
 	
-	public GridV3D position;
+	public QV3D position;
 	public UUID queueid;
 
     public RoadMarker(World world){
@@ -47,9 +47,9 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         		buffer.writeLong(queueid.getMostSignificantBits());
         		buffer.writeLong(queueid.getLeastSignificantBits());
     		}
-    		buffer.writeDouble(position.vector.x);
-    		buffer.writeDouble(position.vector.y);
-    		buffer.writeDouble(position.vector.z);
+    		buffer.writeDouble(position.vec.x);
+    		buffer.writeDouble(position.vec.y);
+    		buffer.writeDouble(position.vec.z);
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -62,7 +62,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
     		long m = buffer.readLong(), l = buffer.readLong();
     		if(m == 0 && l == 0) queueid = null;
     		else queueid = new UUID(m, l);
-    		position = new GridV3D(new V3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
+    		position = new QV3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble(), 0);
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -75,7 +75,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         	queueid = new UUID(compound.getLong("uuid0"), compound.getLong("uuid1"));
         }
         if(compound.hasKey("position")){
-        	position = new GridV3D(compound.getCompoundTag("position"));
+        	position = new QV3D(TagCW.wrap(compound), "position");
         }
     }
 
@@ -86,7 +86,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
     		compound.setLong("uuid1", queueid.getLeastSignificantBits());
     	}
     	if(position != null){
-    		compound.setTag("position", position.write());
+    		position.write(TagCW.wrap(compound), "position");
     	}
     }
     

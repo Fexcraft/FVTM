@@ -48,7 +48,7 @@ public class RoadRenderer {
 		double[] arr = null;
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
-			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vector.sub(cx, cy, cz);;
+			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec.sub(cx, cy, cz);;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
             bufferbuilder.pos(arr[0] - cx, arr[1] + 1.25 - cy, arr[2] - cz).color(0, 1, 1, 1F).endVertex();
             bufferbuilder.pos(vec1.x, vec1.y + 1.25, vec1.z).color(0, 1, 1, 1F).endVertex();

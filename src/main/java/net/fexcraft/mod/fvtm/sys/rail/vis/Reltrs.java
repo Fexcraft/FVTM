@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity.TRO;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Reltrs {
@@ -29,14 +30,14 @@ public class Reltrs {
 	public Reltrs(RailSystem system, NBTTagCompound compound){
 		uid = compound.getLong("UID"); sys = system;
 		//current = sys.getTrack(new PathKey(compound));
-		current = new Track(null).read(compound.getCompoundTag("Track"));
+		current = new Track(null).read(TagCW.wrap(compound.getCompoundTag("Track")));
 		if(entity == null){
 			if(data == null){
 				//TODO data = Resources.getVehicleData(compound);
 			}
 			else data.read(new TagCWI(compound));
 		}
-		else entity.read(compound);
+		else entity.read(TagCW.wrap(compound));
 		frbogiedis = compound.getDouble("fr_bogie");
 		rrbogiedis = compound.getDouble("rr_bogie");
 	}
@@ -47,7 +48,7 @@ public class Reltrs {
 		compound.setDouble("fr_bogie", frbogiedis);
 		compound.setDouble("rr_bogie", frbogiedis);
 		//entity.current.id.write(compound);
-		compound.setTag("Track", entity.current.write(new NBTTagCompound()));
+		compound.setTag("Track", entity.current.write(null).local());
 		return compound;
 	}
 	

@@ -7,8 +7,9 @@ import java.util.function.Consumer;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 /**
  * "Rail Entities Compound"
@@ -37,11 +38,12 @@ public abstract class Compound {
 			entities.add(root); root.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Singular(Region region, long uid, NBTTagCompound compound){
+		public Singular(Region region, long uid, TagCW compound){
 			super(uid); RailEntity root = new RailEntity(region, this);
 			root = root.read(compound);
 			if(root == null) return;
-			entities.add(root); COMPOUNDS.put(uid, this);
+			entities.add(root);
+			COMPOUNDS.put(uid, this);
 		}
 
 		public Singular(RailEntity ent, long uid){
@@ -107,11 +109,12 @@ public abstract class Compound {
 			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Multiple(RailSystem system, Region region, Long id, NBTTagList list){
-			super(id); RailEntity prev = null, curr; NBTTagCompound compound;
-			for(int i = 0; i < list.tagCount(); i++){
-				compound = (NBTTagCompound)list.get(i);
-				if(!compound.hasKey("region")) return;
+		public Multiple(RailSystem system, Region region, Long id, TagLW list){
+			super(id);
+			RailEntity prev = null, curr;
+			for(TagCW compound : list){
+				if(compound == null) continue;
+				if(!compound.has("region")) return;
 				if(FvtmRegistry.VEHICLES.get(compound.getString("Vehicle")) == null){
 					Print.log("COMPOUND(" + id + ") Rail Vehicle with id '" + compound.getString("Vehicle") + "' not found, removing.");
 					Print.log("NBT:" + compound);
@@ -120,11 +123,11 @@ public abstract class Compound {
 				curr = new RailEntity(region == null ? system.getRegions().get(compound.getIntArray("region")) : region, this).read(compound);
 				if(curr == null) continue;
 				if(prev != null){
-					if(compound.hasKey("front_coupled") && compound.getLong("front_coupled") == prev.uid){
+					if(compound.has("front_coupled") && compound.getLong("front_coupled") == prev.uid){
 						(compound.getBoolean("front_coupler") ? prev.front : prev.rear).entity = curr;
 						curr.front.entity = prev;
 					}
-					else if(compound.hasKey("rear_coupled") && compound.getLong("rear_coupled") == prev.uid){
+					else if(compound.has("rear_coupled") && compound.getLong("rear_coupled") == prev.uid){
 						(compound.getBoolean("rear_coupler") ? prev.front : prev.rear).entity = curr;
 						curr.rear.entity = prev;
 					}

@@ -3,8 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.vis;
 import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 
 import java.util.UUID;
 
@@ -261,7 +260,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 if(rek.data().getPart("engine") != null && rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                     Print.chat(player, "Turn engine off first!"); return true;
                 }
-                player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
+                player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
                 return true;
             }
             case TOGGABLES: {//client side
@@ -482,7 +481,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     Print.chat(player, "Turn engine off first!");
                 }
                 else{
-                	player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
+                	player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
                 }
                 return true;
             }

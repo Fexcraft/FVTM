@@ -147,7 +147,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCap Implementation Found!");}
-        vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
+        //TODO vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
         //
         if(!remote && truck != null){
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
@@ -228,7 +228,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         //if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         if(wheels != null) for(WheelEntity wheel : wheels) if(wheel != null) wheel.setDead();
         //
-        vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
+        //TODO vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
         if(truck != null){ truck.trailer = null; } if(trailer != null){ trailer.truck = null;}
         //Static.exception(null, false);
     }
@@ -258,7 +258,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
+		//TODO for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driver_only()) return false;
         if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
 			Packets.send(Packet_VehKeyPress.class, key);
@@ -627,13 +627,13 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	return true;
         }
         //else if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)) return true;
-        if(!vehicle.getScripts().isEmpty()){
+        /*if(!vehicle.getScripts().isEmpty()){
             for(VehicleScript script : vehicle.getScripts()){
                 if(script.onInteract(this, vehicle, player, hand)){
                     return true;
                 }
             }
-        }
+        }*///TODO
         return false;
     }
 
@@ -733,7 +733,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         for(SeatCache seat : seats) seat.updatePosition();
-        vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
+        //TODO vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
         /*if(drivenByPlayer){
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
@@ -1067,11 +1067,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : vehicle.getScripts()){
+            /*for(VehicleScript script : vehicle.getScripts()){
                 if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
                     script.onDataPacket(this, vehicle, pkt.nbt, Side.SERVER);
                 }
-            }
+            }*///TODO
         }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
@@ -1104,11 +1104,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : vehicle.getScripts()){
+            /*for(VehicleScript script : vehicle.getScripts()){
                 if(script.getId().equals(pkt.nbt.getString("ScriptId"))){
                     script.onDataPacket(this, vehicle, pkt.nbt, Side.CLIENT);
                 }
-            }
+            }*///TODO
         }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){

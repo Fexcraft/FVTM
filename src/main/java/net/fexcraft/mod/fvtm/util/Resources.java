@@ -59,7 +59,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.ModelData;
-import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -547,7 +547,7 @@ public class Resources {
 		}
 		WireModel model = (WireModel)getModel(name, new ModelData(), WireModel.class);
 		if(array != null){
-			if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).string_value()));
+			if(array.size() > 1) model.texture(IDLManager.getIDLCached(array.get(1).string_value()));
 			if(array.size() > 2) model.accepts(array.get(2).asArray().toStringList());
 			if(array.size() > 3) model.decotype(array.get(3).string_value());
 		}

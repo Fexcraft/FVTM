@@ -38,9 +38,9 @@ public class AttrReqHandler {
 		toggleAttr(attr, bool, packet, false, null);
 		Object syncval = attr.value();
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(vehent));
-		vehent.vehicle.data.getScripts().forEach(script -> {
+		/*vehent.vehicle.data.getScripts().forEach(script -> {
 			script.onAttributeToggle(vehent, attr, old, player);
-		});
+		});*///TODO
 		if(!attr.sync) return;
 		if(vehent.vehicle.type.isRailVehicle()){
 			/*RailVehicle rail = (RailVehicle)vehent;

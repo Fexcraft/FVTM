@@ -6,6 +6,8 @@ import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
+import static net.fexcraft.mod.fvtm.function.part.TireFunction.DEF_MAT_TIRE_ARR;
+
 public class BlockUtil {
 	
 	public static HashMap<String, Material> VANILLA_MATERIALS = new /*Linked*/HashMap<>();
@@ -125,7 +127,6 @@ public class BlockUtil {
 		return MapColor.STONE;
 	}
 
-	public static HashMap<Material, TireFunction.MatTireAttr> DEF_MAT_TIRE_ARR = new HashMap<>();
 	static {
 		float dc = TireFunction.MatTireAttr.DEF_COR, ds = TireFunction.MatTireAttr.DEF_COR_STEER;
 		DEF_MAT_TIRE_ARR.put(null, new TireFunction.MatTireAttr(TireFunction.MatTireAttr.DEF_GRIP, TireFunction.MatTireAttr.DEF_RAIN_GRIP, dc, ds));

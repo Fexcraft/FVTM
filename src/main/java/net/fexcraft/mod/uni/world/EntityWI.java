@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.uni.UniReg;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -93,9 +94,9 @@ public class EntityWI extends Passenger {
 
 	@Override
 	@Deprecated
-	public void openUI(int ui, WorldW world, V3I pos){
+	public void openUI(Object key, V3I pos){
 		if(entity instanceof EntityPlayer == false) return;
-		((EntityPlayer)entity).openGui(FVTM.getInstance(), ui, world.local(), pos.x, pos.y, pos.z);
+		((EntityPlayer)entity).openGui(FVTM.getInstance(), ((UIKey)key).id, world.local(), pos.x, pos.y, pos.z);
 	}
 
 	@Override

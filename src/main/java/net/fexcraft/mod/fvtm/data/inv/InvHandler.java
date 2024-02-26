@@ -10,7 +10,6 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 
 public class InvHandler {

@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.DECORATION_EDITOR;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -11,6 +9,7 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +19,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -60,7 +58,7 @@ public class DecorationItem extends Item implements JunctionGridItem {
 		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
-    	player.openGui(FVTM.getInstance(), DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
+    	player.openGui(FVTM.getInstance(), UIKey.ID12_DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
 		return EnumActionResult.SUCCESS;
 	}
 

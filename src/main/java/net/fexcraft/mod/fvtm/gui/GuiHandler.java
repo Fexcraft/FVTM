@@ -70,7 +70,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int WIRE_RELAY_MAIN = 710;
 	public static final int WIRE_RELAY_EDIT = 711;
 	public static final int WIRE_EDIT = 712;
-	public static final int DECORATION_EDITOR = 713;
+	//public static final int DECORATION_EDITOR = 713;
 	public static final int VEHICLE_AND_PART_INFO = 714;
 	/* 90x - constructor main */
 	public static final int CONSTRUCTOR_MAIN = 900;
@@ -146,7 +146,7 @@ public class GuiHandler implements IGuiHandler {
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
 			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
-			case DECORATION_EDITOR:{
+			case UIKey.ID12_DECORATION_EDITOR:{
 				if(DECORATION_CATEGORIES.isEmpty()) return null;
 				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), player, x), player);
 			}
@@ -212,7 +212,7 @@ public class GuiHandler implements IGuiHandler {
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
 				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
-				case DECORATION_EDITOR: {
+				case UIKey.ID12_DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json");
 					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), null, player);

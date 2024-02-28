@@ -165,7 +165,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
-		TagCW com = new TagCWI(compound);
+		TagCW com = TagCW.wrap(compound);
 		if(vehicle.data == null){
 			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
 		}
@@ -181,7 +181,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		TagCW com = new TagCWI(compound);
+		TagCW com = TagCW.wrap(compound);
 		vehicle.data.write(com);
 		vehicle.point.savePivot(com);
 	}
@@ -200,14 +200,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	public void readSpawnData(ByteBuf buffer){
 		try{
-			TagCW com = new TagCWI(ByteBufUtils.readTag(buffer));
+			TagCW com = TagCW.wrap(ByteBufUtils.readTag(buffer));
 			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
 			vehicle.point.loadPivot(com);
 			prevRotationYaw = vehicle.point.getPivot().deg_yaw();
 			prevRotationPitch = vehicle.point.getPivot().deg_pitch();
 			prevRotationRoll = vehicle.point.getPivot().deg_roll();
 			if(com.has("TruckId")){
-				vehicle.front = ((NLandVehicle)world.getEntityByID(com.getInteger("TrickId"))).vehicle;
+				vehicle.front = ((NLandVehicle)world.getEntityByID(com.getInteger("TruckId"))).vehicle;
 				vehicle.front.rear = vehicle;
 			}
 			init();

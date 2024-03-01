@@ -14,6 +14,8 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
@@ -147,8 +149,8 @@ public class WireRenderer {
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotated(wire.model_start_angle, 0, 1, 0);
-    	        		TexUtil.bindTexture(wire.deco_s.texture());
-            			wire.deco_s.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
+    	        		TexUtil.bindTexture(wire.deco_s.getTexture());
+            			wire.deco_s.getModel().render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
         			}
@@ -162,8 +164,8 @@ public class WireRenderer {
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotated(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
-    	        		TexUtil.bindTexture(wire.deco_e.texture());
-            			wire.deco_e.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
+    	        		TexUtil.bindTexture(wire.deco_e.getTexture());
+            			wire.deco_e.getModel().render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
@@ -171,8 +173,8 @@ public class WireRenderer {
         			if(wire.deco_m == null) genWireDeco(relay, wire);
         			if(wire.deco_m.size() > 0){
         				WireModel wm;
-        				for(Entry<String, WireModel> dm : wire.deco_m.entrySet()){
-                			wm = dm.getValue();
+        				for(Entry<String, WireDeco> dm : wire.deco_m.entrySet()){
+                			wm = dm.getValue().getModel();
                 			for(ModelGroup list : wm.groups){
                 				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
                 					ArrayList<ModelRendererTurbo> tlist = wire.deco_g.containsKey(dm.getKey()) ? wire.deco_g.get(dm.getKey()).get(list.name) : null;
@@ -183,7 +185,7 @@ public class WireRenderer {
                             			GL11.glRotated(180, 0, 0, 1);
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
-                    	        		TexUtil.bindTexture(wm.texture());
+                    	        		TexUtil.bindTexture(dm.getValue().getTexture());
                     					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
                     					if(tlist != null){
                     		        		TexUtil.bindTexture(wire.getWireType().getTexture());
@@ -199,7 +201,7 @@ public class WireRenderer {
                         			GL11.glRotated(180, 0, 0, 1);
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
-                	        		TexUtil.bindTexture(wm.texture());
+                	        		TexUtil.bindTexture(dm.getValue().getTexture());
                 					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();
@@ -272,18 +274,18 @@ public class WireRenderer {
 		wire.model_end_angle = Static.toDegrees(wire.model_end_angle);
 		wire.model_start_angle = wire.model_end_angle - 180;
 		//
-		if(wire.deco_start != null) wire.deco_s = WireModel.DECOS.get(wire.deco_start);
-		if(wire.deco_end != null) wire.deco_e = WireModel.DECOS.get(wire.deco_end);
+		if(wire.deco_start != null) wire.deco_s = FvtmRegistry.WIREDECOS.get(wire.deco_start);
+		if(wire.deco_end != null) wire.deco_e = FvtmRegistry.WIREDECOS.get(wire.deco_end);
 		float hwl = wire.length / 2;
 		if(wire.deco_s != null){
-			float len = getLongestDownward(wire.deco_s);
+			float len = getLongestDownward(wire.deco_s.getModel());
 			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
 	        double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model_start_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_start_angle_down = Static.toDegrees(wire.model_start_angle_down);
 		}
 		if(wire.deco_e != null){
-			float len = getLongestDownward(wire.deco_e);
+			float len = getLongestDownward(wire.deco_e.getModel());
 			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
 	        double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
@@ -297,12 +299,12 @@ public class WireRenderer {
 		wire.deco_g = new HashMap<>();
 		if(wire.decos == null) return;
 		for(Entry<String, String> entry : wire.decos.entrySet()){
-			WireModel deco = WireModel.DECOS.get(entry.getValue());
+			WireDeco deco = FvtmRegistry.WIREDECOS.get(entry.getValue());
 			if(deco != null){
 				wire.deco_m.put(entry.getKey(), deco);
 				wire.deco_d.put(entry.getKey(), new HashMap<>());
 				wire.deco_g.put(entry.getKey(), new HashMap<>());
-				for(ModelGroup list : deco.groups){
+				for(ModelGroup list : deco.getModel().groups){
 					for(Program program : list.getAllPrograms()){
 						if(program instanceof WirePrograms.SpacedDeco == false) continue;
 						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));

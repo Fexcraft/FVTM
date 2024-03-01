@@ -61,7 +61,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 				texts.get("t" + i).string = "";
 			}
 			else{
-				texts.get("t" + i).string = container.models.get(WireRelayContainer.CURRDECO).get(j).key();
+				texts.get("t" + i).string = container.models.get(WireRelayContainer.CURRDECO).get(j).getIDS();
 			}
 		}
 	}
@@ -135,7 +135,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "select_deco");
 			compound.setString("type", WireRelayContainer.CURRDECO);
-			compound.setString("selected", container.models.get(WireRelayContainer.CURRDECO).get(index + scroll).key());
+			compound.setString("selected", container.models.get(WireRelayContainer.CURRDECO).get(index + scroll).getIDS());
 			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
 			compound.setBoolean("opp", container.opp);
 			this.container.send(Side.SERVER, compound);

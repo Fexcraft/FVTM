@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -42,11 +43,11 @@ public class Wire {
 	public double model_start_angle, model_end_angle;
 	public double model_start_angle_down, model_end_angle_down;
 	@SideOnly(Side.CLIENT)
-	public WireModel deco_s, deco_e;
+	public WireDeco deco_s, deco_e;
 	public String deco_start, deco_end;
 	public HashMap<String, String> decos;
 	@SideOnly(Side.CLIENT)
-	public HashMap<String, WireModel> deco_m;
+	public HashMap<String, WireDeco> deco_m;
 	@SideOnly(Side.CLIENT)
 	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
 	@SideOnly(Side.CLIENT)

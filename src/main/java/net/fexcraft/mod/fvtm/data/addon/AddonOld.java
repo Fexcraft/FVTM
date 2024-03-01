@@ -122,9 +122,6 @@ public class AddonOld extends TypeCore<AddonOld> {
 				supp_tex.put(entry.getKey(), new TextureSupply(entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap()));
 			});
 		}
-		if(obj.has("WireDecos")){
-			FvtmRegistry.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), JsonHandler.parse(obj.get("WireDecos").toString(), true).asMap());
-		}
 		if(obj.has("Particles") && Static.isClient()){
 			JsonObject par = obj.get("Particles").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : par.entrySet()){

@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.WIRE_DECO_CACHE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 import static net.fexcraft.mod.fvtm.FvtmResources.getModel;
@@ -114,7 +113,6 @@ public class Resources {
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
-	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	
@@ -520,38 +518,6 @@ public class Resources {
 				}
 			}
 		}
-	}
-
-	public static void loadWireDecorations(boolean client){
-		for(Entry<String, JsonMap> cache : WIRE_DECO_CACHE.entrySet()){
-			for(Entry<String, JsonValue<?>> entry : cache.getValue().entries()){
-				if(client){
-					parseWireDecoModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
-				}
-				WIRE_DECOS.add(cache.getKey() + ":" + entry.getKey());
-			}
-		}
-		WIRE_DECO_CACHE.clear();
-	}
-
-	@SideOnly(Side.CLIENT)
-	private static void parseWireDecoModel(String key, JsonValue value){
-		String name = null;
-		List<JsonValue<?>> array = null;
-		if(value.isArray()){
-			array = value.asArray().value;
-			name = array.get(0).string_value();
-		}
-		else{
-			name = value.string_value();
-		}
-		WireModel model = (WireModel)getModel(name, new ModelData(), WireModel.class);
-		if(array != null){
-			if(array.size() > 1) model.texture(IDLManager.getIDLCached(array.get(1).string_value()));
-			if(array.size() > 2) model.accepts(array.get(2).asArray().toStringList());
-			if(array.size() > 3) model.decotype(array.get(3).string_value());
-		}
-		WireModel.DECOS.put(key, model.key(key));
 	}
 	
 	private static Field i18n_locale;

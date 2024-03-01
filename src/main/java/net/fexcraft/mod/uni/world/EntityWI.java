@@ -117,6 +117,21 @@ public class EntityWI extends Passenger {
 	}
 
 	@Override
+	public void set(int veh, int seatid){
+		//
+	}
+
+	@Override
+	public int vehicle(){
+		return 0;
+	}
+
+	@Override
+	public int seat(){
+		return 0;
+	}
+
+	@Override
 	public <E> E local(){
 		return (E)entity;
 	}

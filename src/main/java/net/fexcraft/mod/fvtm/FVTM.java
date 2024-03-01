@@ -257,7 +257,6 @@ public class FVTM {
 			FvtmResources.initModelSystem();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
-		Resources.loadWireDecorations(event.getSide().isClient());
 		MinecraftForge.EVENT_BUS.register(new ResizeUtil());
 	}
 

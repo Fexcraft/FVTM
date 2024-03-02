@@ -1,14 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
-
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -17,7 +11,6 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Lockable.LockableItem;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -37,6 +30,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
+import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -117,7 +116,7 @@ public class MaterialItem extends Item implements ContentItem<Material>, Lockabl
     public String getStoredFuelName(ItemStack stack){
     	if(!material.isFuelContainer()) return "Nothing.";
 		if(material.getFuelType() != null) return material.getFuelType().getName();
-    	if(stack.hasTagCompound()) return Resources.getFuelName(stack.getTagCompound().getString("StoredFuelType"));
+    	if(stack.hasTagCompound()) return FvtmRegistry.getFuelName(stack.getTagCompound().getString("StoredFuelType"));
     	else return "none";
     }
 

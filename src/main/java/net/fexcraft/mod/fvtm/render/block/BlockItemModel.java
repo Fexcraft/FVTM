@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -77,7 +77,7 @@ public class BlockItemModel implements FCLItemModel {
                 break;
         }
         GL11.glScalef(scal[0], scal[1], scal[2]);
-        bindTexture(model.bindtex ? data.getCurrentTexture().local() : Resources.WHITE_TEXTURE);
+        bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
         model.render(RENDERDATA.set(data, null, null, null, true));
         Block block = ((ItemBlock)item.getItem()).getBlock();
         for(IProperty<?> property : block.getBlockState().getProperties()){

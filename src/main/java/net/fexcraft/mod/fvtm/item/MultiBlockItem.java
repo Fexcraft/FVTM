@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock0;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -29,12 +29,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements DataCoreItem<MultiBlockData>{;//}, ItemTex<MultiBlock> {
+public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock0> implements DataCoreItem<MultiBlockData>{;//}, ItemTex<MultiBlock> {
 
 	@SideOnly(Side.CLIENT)
 	private CreativeTabs ctab;
 
-    public MultiBlockItem(MultiBlock block) {
+    public MultiBlockItem(MultiBlock0 block) {
 		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
@@ -90,7 +90,7 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
             EnumFacing facing = player.getHorizontalFacing();
             for(int i = 0; i < poslist.size(); i++){
             	net.minecraft.block.Block block = net.minecraft.block.Block.REGISTRY.getObject(type.getBlocks().get(i).getKey());
-            	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, MultiBlock.rotate(type.getBlocks().get(i).getValue(), facing));
+            	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, MultiBlock0.rotate(type.getBlocks().get(i).getValue(), facing));
                 state.getBlock().onBlockPlacedBy(world, poslist.get(i), state.withProperty(Properties.FACING, facing), player, stack);
             }
             stack.shrink(1);
@@ -119,7 +119,7 @@ public class MultiBlockItem extends TypeCore.TypeCoreItem<MultiBlock> implements
     }
 
     //@Override
-    public TypeCore<MultiBlock> getDataType(){
+    public TypeCore<MultiBlock0> getDataType(){
         return type;
     }
 }

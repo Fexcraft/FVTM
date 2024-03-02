@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
-import static net.fexcraft.mod.fvtm.FvtmResources.getModel;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
 import java.io.Closeable;
@@ -16,15 +15,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -47,7 +42,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock0;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -57,8 +52,6 @@ import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.model.ModelData;
-import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -107,7 +100,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Resources {
 
-	public static RegistryOld<MultiBlock> MULTIBLOCKS = new RegistryOld<>();
+	public static RegistryOld<MultiBlock0> MULTIBLOCKS = new RegistryOld<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
@@ -126,11 +119,11 @@ public class Resources {
 		// init model loaders //
 	}
 
-	public static MultiBlock getMultiBlock(String string){
+	public static MultiBlock0 getMultiBlock(String string){
 		return MULTIBLOCKS.get(string);
 	}
 
-	public static MultiBlock getMultiBlock(ResourceLocation resloc){
+	public static MultiBlock0 getMultiBlock(ResourceLocation resloc){
 		return MULTIBLOCKS.get(resloc);
 	}
 
@@ -165,9 +158,9 @@ public class Resources {
 
 	public static MultiBlockData getMultiBlockData(NBTTagCompound compound){
 		if(!compound.hasKey("type")) return null;
-		MultiBlock block = getMultiBlock(compound.getString("type"));
+		MultiBlock0 block = getMultiBlock(compound.getString("type"));
 		if(block == null) return null;
-		try{ return ((MultiBlockData)block.getDataClass().getConstructor(MultiBlock.class).newInstance(block)).read(compound); }
+		try{ return ((MultiBlockData)block.getDataClass().getConstructor(MultiBlock0.class).newInstance(block)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 	

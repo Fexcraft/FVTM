@@ -60,7 +60,7 @@ public class MB_Access {
 			return;
 		}
 		//Print.debug("filling " + facing);
-		facing = MultiBlock.rotate(facing, rotateby);
+		facing = MultiBlock0.rotate(facing, rotateby);
 		if(!capabilities.containsKey(facing)) capabilities.put(facing, new ArrayList<>());
 		InvHandler handler = data.getInventories().get(target);
 		Capability<?> cap = null;

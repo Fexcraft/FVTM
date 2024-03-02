@@ -19,11 +19,11 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class MultiBlockData {
 
-	private MultiBlock type;
+	private MultiBlock0 type;
 	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
 	private BlockScript script;
 	
-	public MultiBlockData(MultiBlock type){
+	public MultiBlockData(MultiBlock0 type){
 		this.type = type;
 		for(Entry<String, InvHandler> entry : type.getDefaultInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen(6));
@@ -40,7 +40,7 @@ public class MultiBlockData {
 		}
 	}
 	
-	public MultiBlockData(MultiBlock type, NBTTagCompound compound){
+	public MultiBlockData(MultiBlock0 type, NBTTagCompound compound){
 		this(type);
 		this.read(compound);
 	}
@@ -57,7 +57,7 @@ public class MultiBlockData {
 		return this;
 	}
 
-	public MultiBlock getType(){
+	public MultiBlock0 getType(){
 		return type;
 	}
 	

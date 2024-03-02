@@ -39,7 +39,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlock extends TypeCore<MultiBlock> implements ItemTextureable {
+public class MultiBlock0 extends TypeCore<MultiBlock0> implements ItemTextureable {
 
 	private Map<String, InvHandler> inventories = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
@@ -53,7 +53,7 @@ public class MultiBlock extends TypeCore<MultiBlock> implements ItemTextureable 
 	private String ctab;
 
 	@Override
-	public MultiBlock parse(JsonObject obj){
+	public MultiBlock0 parse(JsonObject obj){
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
 		this.registryname = DataUtil.getRegistryName(pack, obj);

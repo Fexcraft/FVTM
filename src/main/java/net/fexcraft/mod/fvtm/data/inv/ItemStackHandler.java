@@ -1,39 +1,40 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
-import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 
 public class ItemStackHandler implements IItemHandler {
-	
+
 	protected InvHandlerItem handler;
 	protected int min;
 
-    public ItemStackHandler(InvHandlerItem invhandler, int min){
+	public ItemStackHandler(InvHandlerItem invhandler, int min){
 		handler = invhandler;
 		this.min = min;
 	}
 
-    private boolean isValid(ItemStack stack){
-        return handler.filter == null ? true : handler.filter.isValid(stack);
-    }
+	private boolean isValid(ItemStack stack){
+		return handler.filter == null ? true : handler.filter.isValid(stack);
+	}
 
-    public static boolean isContainerPart(ItemStack stack){
-        if(stack.getItem() instanceof PartItem){
-            PartData data = ((PartItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
-            if(data.hasFunction("fvtm:inventory") || data.hasFunction("fvtm:container")){
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    //
+	public static boolean isContainerPart(ItemStack stack){
+		if(stack.getItem() instanceof PartItem){
+			PartData data = ((PartItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
+			if(data.hasFunction("fvtm:inventory") || data.hasFunction("fvtm:container")){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//
 
 	@Override
 	public int getSlots(){
@@ -44,7 +45,7 @@ public class ItemStackHandler implements IItemHandler {
 	public ItemStack getStackInSlot(int idx){
 		if(idx < 0 || idx >= handler.stacks.size()) return ItemStack.EMPTY;
 		StackEntry entry = handler.stacks.get(idx);
-		ItemStack stack = entry.stack.copy();
+		ItemStack stack = entry.stack.copy().local();
 		stack.setCount(entry.overmax() ? entry.amount : entry.max());
 		return stack;
 	}
@@ -52,16 +53,16 @@ public class ItemStackHandler implements IItemHandler {
 	@Override
 	public ItemStack insertItem(int unused, ItemStack stack, boolean simulate){
 		if(stack.isEmpty()) return ItemStack.EMPTY;
-        if(stack.getItem() instanceof VehicleItem || stack.getItem() instanceof ContainerItem || isContainerPart(stack) || !isValid(stack)){
-            return stack;
-        }
-		StackEntry entry = handler.getEntryFor(stack);
+		if(stack.getItem() instanceof VehicleItem || stack.getItem() instanceof ContainerItem || isContainerPart(stack) || !isValid(stack)){
+			return stack;
+		}
+		StackEntry entry = handler.getEntryFor(FvtmResources.wrapStack(stack));
 		if(entry == null){
 			if(handler.full()) return stack;
 			if(simulate) return ItemStack.EMPTY;
-			entry = new StackEntry(stack.writeToNBT(new NBTTagCompound()));
+			entry = new StackEntry(TagCW.wrap(stack.writeToNBT(new NBTTagCompound())));
 			entry.amount = stack.getCount();
-			entry.stack.setCount(1);
+			entry.stack.count(1);
 			handler.stacks.add(entry);
 			return ItemStack.EMPTY;
 		}
@@ -90,7 +91,7 @@ public class ItemStackHandler implements IItemHandler {
 		if(idx < 0 || idx >= handler.stacks.size()) return ItemStack.EMPTY;
 		StackEntry entry = handler.stacks.get(idx);
 		int exam = entry.max() < amount ? entry.max() : amount;
-		ItemStack stack = entry.genstack(exam);
+		ItemStack stack = entry.genstack(exam).local();
 		if(!simulate){
 			entry.amount -= exam;
 			if(entry.amount <= 0){

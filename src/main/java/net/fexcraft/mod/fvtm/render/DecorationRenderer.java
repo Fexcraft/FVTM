@@ -1,14 +1,12 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.model.DebugModels;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -16,13 +14,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+
 public class DecorationRenderer {
 
 	public static void renderDecorations(World world, double cx, double cy, double cz, float partialticks){
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		//GL11.glTranslated(-cx, -cy, -cz);
-		TexUtil.bindTexture(Resources.WHITE_TEXTURE);
+		TexUtil.bindTexture(FvtmRegistry.WHITE_TEXTURE);
 		for(Entity ent : world.loadedEntityList){
 			if(ent instanceof Decoration == false) continue;
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;

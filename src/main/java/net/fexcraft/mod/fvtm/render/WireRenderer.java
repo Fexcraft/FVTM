@@ -1,13 +1,5 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
@@ -23,13 +15,8 @@ import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
-import net.fexcraft.mod.fvtm.sys.wire.Wire;
-import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
-import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
-import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.minecraft.client.Minecraft;
@@ -39,6 +26,14 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
 public class WireRenderer {
     
@@ -77,7 +72,7 @@ public class WireRenderer {
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB())) continue;
                 	GL11.glPushMatrix();
-                	TexUtil.bindTexture(Resources.NULL_TEXTURE);
+                	TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
                 	GL11.glTranslated(relay.pos.x, relay.pos.y, relay.pos.z);
                 	if(Command.OTHER){// && relays[i].wires.isEmpty()){
                 		model.render();

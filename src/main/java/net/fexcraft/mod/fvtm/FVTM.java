@@ -25,6 +25,8 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem;
+import net.fexcraft.mod.fvtm.data.impl.InvHandlerItemImpl;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.event.Registerer12;
 import net.fexcraft.mod.fvtm.event.ResizeHandler;
@@ -148,6 +150,7 @@ public class FVTM {
 		TagLW.SUPPLIER[0] = () -> new TagLWI();
 		AABB.SUPPLIER = () -> new AABBI();
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
+		InvHandlerItem.IMPL = InvHandlerItemImpl.class;
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		StateWrapper.GETTER = state -> new StateWrapperI((IBlockState)state);
 		if(EnvInfo.CLIENT){

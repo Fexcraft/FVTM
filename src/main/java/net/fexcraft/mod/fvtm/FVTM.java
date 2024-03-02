@@ -311,8 +311,7 @@ public class FVTM {
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
 		(Packets.INSTANCE = new PacketsImpl()).init();
-		Resources.registerDefaultRecipes();
-		FvtmResources.loadRecipes();
+		FvtmResources.INSTANCE.registerRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.wire.RecServer());

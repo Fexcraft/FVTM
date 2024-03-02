@@ -11,7 +11,9 @@ import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -67,6 +69,14 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public int dim(){
 		return world.provider.getDimension();
+	}
+
+	@Override
+	public void drop(StackWrapper stack, V3D vec){
+		EntityItem item = new EntityItem(world);
+		item.setPosition(vec.x, vec.y, vec.z);
+		item.setItem(stack.local());
+		world.spawnEntity(item);
 	}
 
 	@Override

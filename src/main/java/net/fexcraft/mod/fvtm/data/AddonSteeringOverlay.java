@@ -1,12 +1,11 @@
 package net.fexcraft.mod.fvtm.data;
 
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.TreeMap;
 
 /**
  * Prototype of Addon based steering overlays.
@@ -15,12 +14,14 @@ import net.minecraft.entity.player.EntityPlayer;
  *
  */
 public abstract class AddonSteeringOverlay {
-	
-	protected VehicleSteeringOverlay root;
+
+	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
+	//
+	protected net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay root;
 	protected EntityPlayer playerentity;
 	protected EntityW player;
 
-	public AddonSteeringOverlay(VehicleSteeringOverlay root, EntityPlayer player){
+	public AddonSteeringOverlay(net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay root, EntityPlayer player){
 		this.root = root;
 		this.player = (playerentity = player).getCapability(Capabilities.PASSENGER, null).asWrapper();
 	}

@@ -11,11 +11,9 @@ import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -53,7 +51,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -67,7 +64,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -76,69 +72,10 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Resources {
-
-	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
-	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
-	
-	/** Registers a Attribute class into FVTM Resources.*/
-	public static void registerAttributeType(ResourceLocation regname, Class<? extends Attribute<?>> clazz, boolean override){
-		registerAttributeType(regname.toString(), clazz, override);
-	}
-	
-	/** Registers a Attribute class into FVTM Resources.*/
-	public static void registerAttributeType(String regname, Class<? extends Attribute<?>> clazz, boolean override){
-		if(ATTRIBUTE_TYPES.containsKey(regname) && !override) return;
-		ATTRIBUTE_TYPES.put(regname, clazz);
-	}
-	
-	public static Class<? extends Attribute<?>> getAttributeType(ResourceLocation regname){
-		return getAttributeType(regname.toString());
-	}
-	
-	public static Class<? extends Attribute<?>> getAttributeType(String id){
-		return ATTRIBUTE_TYPES.get(id);
-	}
-
-	public static TreeMap<String, Class<? extends Attribute<?>>> getAttributeTypes(){
-		return ATTRIBUTE_TYPES;
-	}
-
-	private static Field flightdata;
-	private static boolean flightdata_failed = false;
-	/** do not remember on what this is based **/
-	public static void resetFlight(EntityPlayerMP passenger){
-		if(flightdata == null && !flightdata_failed){
-			try{
-				flightdata = ObfuscationReflectionHelper.findField(NetHandlerPlayServer.class, "field_147365_f");
-			}
-			catch(Exception e){
-				Print.log("Failed to get field. [FLIGHTDATA:ERR:0]");
-			}
-		}
-		if(flightdata != null && !flightdata_failed){
-			try{
-				flightdata.setInt(passenger.connection, 0);
-			}
-			catch(IllegalArgumentException | IllegalAccessException e){
-				if(Static.dev()){
-					e.printStackTrace();
-				}
-				flightdata_failed = true;
-			}
-		}
-		/*passenger.lastTickPosX = passenger.prevPosX;
-		passenger.lastTickPosY = passenger.prevPosY;
-		passenger.lastTickPosZ = passenger.prevPosZ;*/
-	}
-
-	public static String getFuelName(ResourceLocation id){
-		return getFuelName(id.toString());
-	}
-
-	public static String getFuelName(String id){
-		Fuel fuel = getFuel(id); return fuel == null ? "not-found" : fuel.getName();
-	}
 	
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
@@ -292,30 +229,11 @@ public class Resources {
 		SystemManager.PLAYERON = false;
 	}
 	
-	/*@SubscribeEvent
-	public void onEntityDamage(LivingDamageEvent event){
-		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof SeatEntity){
-			event.setCanceled(true);
-		}
-	}*/
-	
 	@SubscribeEvent
 	public void onEntityAttack(LivingAttackEvent event){
 		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof GenericVehicle){// && !event.getSource().isProjectile()){
 			event.setCanceled(true);
 		}
-	}
-	
-	/*@SubscribeEvent
-	public void onSpawn(EntityJoinWorldEvent event){
-		Print.debug(event.getEntity());
-	}*/
-	
-	public static final boolean isModLoaded(String modid){
-		if(LOADED_MODS.containsKey(modid)) return LOADED_MODS.get(modid);
-		boolean bool = Loader.isModLoaded(modid);
-		LOADED_MODS.put(modid, bool);
-		return bool;
 	}
 
 	public static void linkTextureSuppliers(){
@@ -335,7 +253,7 @@ public class Resources {
 							break;
 						}
 						case "container":{
-							//TODO containers holder = CONTAINERS.get(split[1]);
+							holder = CONTAINERS.get(split[1]);
 							break;
 						}
 					}
@@ -346,6 +264,34 @@ public class Resources {
 				}
 			}
 		}
+	}
+
+	private static Field flightdata;
+	private static boolean flightdata_failed = false;
+	/** do not remember on what this is based **/
+	public static void resetFlight(EntityPlayerMP passenger){
+		if(flightdata == null && !flightdata_failed){
+			try{
+				flightdata = ObfuscationReflectionHelper.findField(NetHandlerPlayServer.class, "field_147365_f");
+			}
+			catch(Exception e){
+				Print.log("Failed to get field. [FLIGHTDATA:ERR:0]");
+			}
+		}
+		if(flightdata != null && !flightdata_failed){
+			try{
+				flightdata.setInt(passenger.connection, 0);
+			}
+			catch(IllegalArgumentException | IllegalAccessException e){
+				if(Static.dev()){
+					e.printStackTrace();
+				}
+				flightdata_failed = true;
+			}
+		}
+		/*passenger.lastTickPosX = passenger.prevPosX;
+		passenger.lastTickPosY = passenger.prevPosY;
+		passenger.lastTickPosZ = passenger.prevPosZ;*/
 	}
 	
 	private static Field i18n_locale;

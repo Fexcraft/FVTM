@@ -9,9 +9,11 @@ import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -108,6 +110,11 @@ public class EntityWI extends Passenger {
 	@Override
 	public String getName() {
 		return entity.getName();
+	}
+
+	@Override
+	public void drop(StackWrapper stack, float height){
+		entity.entityDropItem(stack.local(), height);
 	}
 
 	@Override

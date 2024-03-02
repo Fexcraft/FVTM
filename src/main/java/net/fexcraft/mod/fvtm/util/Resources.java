@@ -29,7 +29,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
@@ -40,7 +39,7 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
+import net.fexcraft.mod.fvtm.data.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -383,7 +382,7 @@ public class Resources {
 			new ItemStack(Blocks.LEVER, 4),
 			new ItemStack(Items.GLASS_BOTTLE, 2)
 		);
-		String gauge = InternalAddon.STANDARD_GAUGE.toString();
+		String gauge = FvtmRegistry.STANDARD_GAUGE.toString();
 		Item gaugeitem = Item.getByNameOrId(gauge);
 		Item gaugeitem16 = Item.getByNameOrId(gauge + ".16_straight");
 		RecipeRegistry.addBluePrintRecipe(blockcat,

@@ -29,7 +29,7 @@ import net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
-import net.fexcraft.mod.fvtm.util.ResizeUtil;
+import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
@@ -418,15 +418,15 @@ public class EffectRenderer {
 		if(event.getEntity().getRidingEntity() instanceof GenericVehicle){
 			((GenericVehicle)event.getEntity().getRidingEntity()).updateSittingState(event.getEntity());
 		}
-		float scale = ResizeUtil.getScale(event.getEntityPlayer());
+		float scale = ResizeHandler.getScale(event.getEntityPlayer());
 		GlStateManager.pushMatrix();
 		if(scale != 1){
 			EntityPlayer player = event.getEntityPlayer();
 	    	float width = player.width, height = player.height;
 			float hw = width * 0.5f;
-			player.setEntityBoundingBox(new AxisAlignedBB(player.posX - hw, player.posY + ResizeUtil.SITH, player.posZ - hw, player.posX + hw, player.posY + height + ResizeUtil.SITH, player.posZ + hw));
+			player.setEntityBoundingBox(new AxisAlignedBB(player.posX - hw, player.posY + ResizeHandler.SITH, player.posZ - hw, player.posX + hw, player.posY + height + ResizeHandler.SITH, player.posZ + hw));
 			scale = height * scale / height;
-			GlStateManager.translate(event.getX(), event.getY() + ResizeUtil.SITH, event.getZ());
+			GlStateManager.translate(event.getX(), event.getY() + ResizeHandler.SITH, event.getZ());
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
 		}
@@ -481,7 +481,7 @@ public class EffectRenderer {
 		if(event.getEntity().getRidingEntity() instanceof GenericVehicle){
 			((GenericVehicle)event.getEntity().getRidingEntity()).updateSittingState(event.getEntity());
 		}
-		float scale = ResizeUtil.getScale(event.getEntity());
+		float scale = ResizeHandler.getScale(event.getEntity());
 		GlStateManager.pushMatrix();
 		if(scale != 1){
 			Entity entity = event.getEntity();

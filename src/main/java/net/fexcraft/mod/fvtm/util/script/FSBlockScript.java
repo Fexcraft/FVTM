@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockScript;
 import net.fexcraft.mod.fvtm.data.block.MB_Interact;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,7 +42,7 @@ public class FSBlockScript implements BlockScript {
 	}
 
 	public BlockScript init(MultiBlockData data){
-		Object[] obj = Resources.getInputStream(resloc);
+		Object[] obj = EventHandler.getInputStream(resloc);
 		script = new Script((InputStream)obj[0], id);
 		if(obj.length > 1){
 			for(Closeable cl : (Closeable[])obj[1]){

@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.InternalAddon;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
@@ -66,7 +66,7 @@ public class Track extends Path {
 			gauge = FvtmRegistry.RAILGAUGES.get(compound.getString("gauge"));
 		}
 		if(gauge == null){
-			gauge = FvtmRegistry.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
+			gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
 		}
 		if(junction == null || junction.root.getWorld().isRemote){
 			railmodel = null; restmodel = null;
@@ -86,7 +86,7 @@ public class Track extends Path {
 	public TagCW write(TagCW compound){
 		compound = super.write(compound);
 		if(unit != null) compound.set("section", unit.getSectionId());
-		compound.set("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getIDS()).toString());
+		compound.set("gauge", (gauge == null ? FvtmRegistry.STANDARD_GAUGE : gauge.getIDS()).toString());
 		if(preset != null) compound.set("preset", preset);
 		//if(blockless) compound.setBoolean("blockless", true);
 		if(items > 0) compound.set("items", items);

@@ -1,21 +1,20 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.api.registry.fTESR;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.util.AnotherUtil;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.lwjgl.opengl.GL11;
+
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 @fTESR
 public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntity> {
@@ -27,7 +26,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         GL11.glRotatef(te.getBlockMetadata() * 22.5f, 0, 1, 0);
-        Minecraft.getMinecraft().renderEngine.bindTexture(Resources.NULL_TEXTURE);
+		TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
         RenderCache cache = te.getCapability(Capabilities.RENDERCACHE, null);
         heightoffset = 0;
         //

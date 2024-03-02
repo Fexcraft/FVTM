@@ -299,7 +299,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             for(String part : vehicle.getInventories()){
             	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory");
             	if(func == null) continue;
-        		func.inventory().dropAllAt(this);
+        		func.inventory().dropAllAt(this.getCapability(Capabilities.PASSENGER, null).asWrapper());
             }
         }
         this.getCapability(Capabilities.CONTAINER, null).dropContents();

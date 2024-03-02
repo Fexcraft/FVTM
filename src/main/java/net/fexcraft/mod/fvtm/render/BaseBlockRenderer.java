@@ -1,17 +1,16 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.mc.api.registry.fTESR;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         model = (BlockModel)data.getType().getModel();
-        TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture().local() : Resources.WHITE_TEXTURE);
+        TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
         GL11.glPushMatrix();
         GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0, 1, 0);
         model.render(BlockModel.RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false));

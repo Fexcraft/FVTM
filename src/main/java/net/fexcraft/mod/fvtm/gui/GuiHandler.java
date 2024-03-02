@@ -102,9 +102,6 @@ public class GuiHandler implements IGuiHandler {
 	public static final int CONTAINER_INVENTORY_FLUID = 942;
 	public static final int CONTAINER_INVENTORY_VAR = 943;
 	/* 95x - multiblock block */
-	public static final int MULTIBLOCK_INVENTORY_ITEM = 9511;
-	public static final int MULTIBLOCK_INVENTORY_FLUID = 9512;
-	public static final int MULTIBLOCK_INVENTORY_VAR = 9513;
 	public static final int MULTIBLOCK_CRAFT_MAIN = 952;
 	public static final int MULTIBLOCK_CRAFT_CHOOSE = 953;
 
@@ -155,15 +152,15 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_BLOCK_INVENTORY_ITEM:
 			case VEHICLE_INVENTORY_ITEM:
 			case CONTAINER_INVENTORY_ITEM:
-			case MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvContainer(player, world, ID, x, y, z);
+			case UIKey.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvContainer(player, world, ID, x, y, z);
 			case UIKey.ID12_BLOCK_INVENTORY_FLUID:
 			case VEHICLE_INVENTORY_FLUID:
 			case CONTAINER_INVENTORY_FLUID:
-			case MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
+			case UIKey.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
 			case UIKey.ID12_BLOCK_INVENTORY_VAR:
 			case VEHICLE_INVENTORY_VAR:
 			case CONTAINER_INVENTORY_VAR:
-			case MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
+			case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
 			
 		}
 		return null;
@@ -222,15 +219,15 @@ public class GuiHandler implements IGuiHandler {
 				case UIKey.ID12_BLOCK_INVENTORY_ITEM:
 				case VEHICLE_INVENTORY_ITEM:
 				case CONTAINER_INVENTORY_ITEM:
-				case MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvUi(player, world, ID, x, y, z);
+				case UIKey.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvUi(player, world, ID, x, y, z);
 				case UIKey.ID12_BLOCK_INVENTORY_FLUID:
 				case VEHICLE_INVENTORY_FLUID:
 				case CONTAINER_INVENTORY_FLUID:
-				case MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);
+				case UIKey.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);
 				case UIKey.ID12_BLOCK_INVENTORY_VAR:
 				case VEHICLE_INVENTORY_VAR:
 				case CONTAINER_INVENTORY_VAR:
-				case MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
+				case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
 			}
 		}
 		catch(Exception e){

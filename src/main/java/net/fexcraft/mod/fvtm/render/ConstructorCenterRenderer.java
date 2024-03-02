@@ -1,9 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -11,12 +8,15 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.util.*;
-import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.fvtm.util.AnotherUtil;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
+
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -148,7 +148,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
     }
 
 	private RailGauge getGauge(int width){
-    	RailGauge gauge = FvtmRegistry.RAILGAUGES.get(InternalAddon.STANDARD_GAUGE);
+    	RailGauge gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
     	for(RailGauge railgauge : FvtmRegistry.RAILGAUGES){
     		if(railgauge.width() == width){ gauge = railgauge; break; }
     		if(Math.abs(width - railgauge.width()) < Math.abs(width - gauge.width())){

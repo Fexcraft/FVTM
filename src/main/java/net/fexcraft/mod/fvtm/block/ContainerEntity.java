@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
@@ -14,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -167,7 +169,7 @@ public class ContainerEntity extends TileEntity implements IPacketReceiver<Packe
             	}
                 //
                 if(VEHICLES_DROP_CONTENTS && !world.isRemote){
-                    getContainerData().getInventory().dropAllAt(world, blkpos);
+                    getContainerData().getInventory().dropAllAt(WrapperHolder.getWorld(world), new V3I(blkpos.getX(), blkpos.getY(), blkpos.getZ()));
                 }
             }
             if(asplayer ? !blkpos.equals(pos) : true){

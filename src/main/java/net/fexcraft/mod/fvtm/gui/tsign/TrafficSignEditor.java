@@ -17,6 +17,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.gui.construct.ConstPainter;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
@@ -736,7 +737,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
         //GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.rotate(180, 0, 1, 0);
         //
-        TexUtil.bindTexture(Resources.WHITE_TEXTURE);
+        TexUtil.bindTexture(FvtmRegistry.WHITE_TEXTURE);
         data.render(mc.world, false, pticks);
         //
         GlStateManager.popMatrix();

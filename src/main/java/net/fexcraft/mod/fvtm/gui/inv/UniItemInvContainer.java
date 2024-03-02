@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -137,8 +138,9 @@ public class UniItemInvContainer extends GenericContainer {
 				ItemStack stack = insert.getStackInSlot(0);
 				if(stack.isEmpty()) return;
 				ItemStack stack1 = stack.copy();
-				if((stack = invhandler.getStackHandler().insertItem(0, stack, true)).isEmpty() || stack1.getCount() > stack.getCount()){
-					insert.setInventorySlotContents(0, invhandler.getStackHandler().insertItem(0, stack1, false));
+				ItemStackHandler handler = invhandler.getStackHandler();
+				if((stack = handler.insertItem(0, stack, true)).isEmpty() || stack1.getCount() > stack.getCount()){
+					insert.setInventorySlotContents(0, handler.insertItem(0, stack1, false));
 					NBTTagCompound compound = new NBTTagCompound();
 					invhandler.save(new TagCWI(compound), "inventory");
 					compound.setTag("insert", insert.getStackInSlot(0).writeToNBT(new NBTTagCompound()));

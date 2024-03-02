@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +47,7 @@ public class FSVehicleScript extends VehicleScript {
 
 	public VehicleScript init(VehicleData data, JsonElement elm){
 		parseId(elm);
-		Object[] obj = Resources.getInputStream(resloc);
+		Object[] obj = EventHandler.getInputStream(resloc);
 		script = new Script((InputStream)obj[0], id);
 		if(obj.length > 1){
 			for(Closeable cl : (Closeable[])obj[1]){

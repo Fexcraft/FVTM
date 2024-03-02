@@ -58,12 +58,14 @@ import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -271,6 +273,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerRecipes(){
+		StackWrapper.EMPTY = new SWI(ItemStack.EMPTY);
 		String blockcat = "fvtm.recipes.blocks";
 		RecipeRegistry.addBluePrintRecipe(blockcat,
 			new ItemStack(ConstructorBlock.INSTANCE),
@@ -367,13 +370,23 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public StackWrapper newStack(ItemWrapper item){
+	public StackWrapper newStack0(ItemWrapper item){
 		return new SWI(item);
 	}
 
 	@Override
-	public StackWrapper newStack(Object local){
-		return new SWI((ItemStack)local);
+	public StackWrapper newStack0(TagCW com){
+		return new SWI(new ItemStack((NBTTagCompound)com.direct()));
+	}
+
+	@Override
+	public StackWrapper newStack0(Object item){
+		return new SWI(new IWI((Item)item));
+	}
+
+	@Override
+	public StackWrapper wrapStack0(Object stack){
+		return new SWI((ItemStack)stack);
 	}
 
 	@Override

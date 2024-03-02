@@ -113,6 +113,11 @@ public class TagLWI implements TagLW {
 	}
 
 	@Override
+	public boolean empty(){
+		return list == null || list.isEmpty();
+	}
+
+	@Override
 	public String toString(){
 		return list == null ? "null" : list.toString();
 	}

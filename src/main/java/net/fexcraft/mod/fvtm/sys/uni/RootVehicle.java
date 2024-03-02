@@ -23,7 +23,7 @@ import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.util.MathUtils;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.impl.SWI;
@@ -660,7 +660,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		pass.prevRotationPitch = seat.pepitch;*/
 		pass.setPosition(pos.x, pos.y - (pass instanceof EntityPlayer ? 0.7 : 0), pos.z);
 		if(!world.isRemote && pass instanceof EntityPlayerMP){
-			Resources.resetFlight((EntityPlayerMP)pass);
+			EventHandler.resetFlight((EntityPlayerMP)pass);
 		}
 	}
 

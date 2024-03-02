@@ -26,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -46,6 +47,7 @@ public class UniFluidInvContainer extends GenericContainer {
 	protected EntityPlayerMP mpp;
 	protected long fluid_date;
 	protected GenericIInventory fluid_io;
+	protected FluidTank tank;
 
 	public UniFluidInvContainer(EntityPlayer player, World world, int ID, int x, int y, int z){
 		super(player);
@@ -92,6 +94,7 @@ public class UniFluidInvContainer extends GenericContainer {
 			invhandler = func.inventory();
 			title = entity.getVehicleData().getType().getName() + " - " + inv_id;
 		}
+		tank = invhandler.getTank();
 		//
 		this.inventoryItemStacks.clear();
 		this.inventorySlots.clear();
@@ -180,7 +183,7 @@ public class UniFluidInvContainer extends GenericContainer {
 					}
 				}
 				//
-				if(invhandler.getTank().getFluidAmount() > 0){
+				if(((FluidTank)invhandler.getTank()).getFluidAmount() > 0){
 					stack = fluid_io.getStackInSlot(1);
 					if(!stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)){
 						FluidActionResult result = FluidUtil.tryFillContainer(stack, invhandler.getTank(), 1000, player, true);

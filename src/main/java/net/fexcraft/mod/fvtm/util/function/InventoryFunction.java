@@ -7,6 +7,7 @@ import net.fexcraft.app.json.FJson;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.fvtm.data.inv.InvHandlerInit;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -41,7 +43,7 @@ public class InventoryFunction extends PartFunction {
 	@Override
 	public PartFunction init(Part part, FJson json){
 		JsonMap map = json.asMap();
-		inventory = new InvHandler(InvType.parse(map.getString("type", "item"), false));
+		inventory = new InvHandlerInit(InvType.parse(map.getString("type", "item"), false));
 		inventory.setCapacity(map.getInteger("capacity", 0));
 		inventory.setArg(map.getString("fluid", "minecraft:water"));
 		//
@@ -140,7 +142,8 @@ public class InventoryFunction extends PartFunction {
         tooltip.add(Formatter.format("&9Inventory Size: &7" + inventory.capacity() + " " + inventory.type.unit_suffix));
         tooltip.add(Formatter.format("&9Inventory Type: &7" + inventory.type.name()));
         if(inventory.type.isFluid()){
-            tooltip.add(Formatter.format("&9Inv. Content: &7" + (inventory.getTank().getFluidAmount() == 0 ? "empty" : inventory.getTank().getFluid().getLocalizedName())));
+			FluidTank tank = inventory.getTank();
+            tooltip.add(Formatter.format("&9Inv. Content: &7" + (tank.getFluidAmount() == 0 ? "empty" : tank.getFluid().getLocalizedName())));
         }
     }
 

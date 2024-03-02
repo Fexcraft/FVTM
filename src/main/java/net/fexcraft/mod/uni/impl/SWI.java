@@ -50,4 +50,44 @@ public class SWI extends StackWrapper {
 		return stack.hasTagCompound();
 	}
 
+	@Override
+	public String getName(){
+		return stack.getDisplayName();
+	}
+
+	@Override
+	public int maxsize(){
+		return stack.getMaxStackSize();
+	}
+
+	@Override
+	public int damage(){
+		return stack.getItemDamage();
+	}
+
+	@Override
+	public int count(){
+		return stack.getCount();
+	}
+
+	@Override
+	public void count(int am){
+		stack.setCount(am);
+	}
+
+	@Override
+	public StackWrapper copy(){
+		return FvtmResources.wrapStack(stack.copy());
+	}
+
+	@Override
+	public void save(TagCW com){
+		stack.writeToNBT(com.local());
+	}
+
+	@Override
+	public boolean empty(){
+		return stack.isEmpty();
+	}
+
 }

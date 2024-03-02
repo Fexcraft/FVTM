@@ -1,12 +1,13 @@
 package net.fexcraft.mod.fvtm.gui.inv;
 
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
-import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
+import net.fexcraft.mod.fvtm.data.inv.StackEntry;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -53,8 +54,8 @@ public class InvSlot extends Slot {
 	
 	@Override
     public ItemStack getStack(){
-		if(full) return entry.genstack(64);
-		else return entry.modstack();
+		if(full) return entry.genstack(64).local();
+		else return entry.modstack().local();
     }
 
 	@Override
@@ -74,7 +75,7 @@ public class InvSlot extends Slot {
 
 	@Override
     public ItemStack decrStackSize(int amount){
-		ItemStack stack = entry.genstack(amount);
+		ItemStack stack = entry.genstack(amount).local();
 		entry.amount -= amount;
 		if(entry.amount <= 0){
 			handler.getStacks().remove(entry);
@@ -94,7 +95,7 @@ public class InvSlot extends Slot {
 	}
 
 	private void relinkentry(){
-		entry = new StackEntry(new NBTTagCompound());
+		entry = new StackEntry(TagCW.create());
 	}
 
 }

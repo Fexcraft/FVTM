@@ -1,17 +1,9 @@
 package net.fexcraft.mod.fvtm.item;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Cloth;
-import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -24,6 +16,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ClothItem extends ItemArmor implements ItemTextureable.TextureableItem<Cloth> {
 	

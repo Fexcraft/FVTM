@@ -1,45 +1,20 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-
-import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
-import net.fexcraft.mod.fvtm.block.VPInfo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -57,20 +32,13 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
-import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
-import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
-import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
-import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
-import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
+import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -87,7 +55,6 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -95,24 +62,24 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+
+import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
+import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
+
 public class Resources {
 
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
-	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
-	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
-	//
-	private static Field respackfile = null;
-	
-	public Resources(FMLPreInitializationEvent event){
-		//registerAttributeTypes();
-		//registerModifierImpls();
-		//registerFunctions();
-		//
-		// search in packs for //
-		//
-		// init model loaders //
-	}
 	
 	/** Registers a Attribute class into FVTM Resources.*/
 	public static void registerAttributeType(ResourceLocation regname, Class<? extends Attribute<?>> clazz, boolean override){

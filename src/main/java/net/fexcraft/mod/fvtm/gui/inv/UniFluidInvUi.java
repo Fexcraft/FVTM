@@ -35,7 +35,7 @@ public class UniFluidInvUi extends GenericGui<UniFluidInvContainer> {
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		float percent = container.invhandler.getTank().getFluidAmount() * 1f / container.invhandler.getTank().getCapacity() * 100f;
+		float percent = container.tank.getFluidAmount() * 1f / container.tank.getCapacity() * 100f;
 		if(percent > 0) drawTexturedModalRect(guiLeft + 10, guiTop + 49, 0, 238, (int)percent, 18);
 	}
 

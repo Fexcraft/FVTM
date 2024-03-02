@@ -1,15 +1,8 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
-import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
-
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import net.fexcraft.lib.common.math.*;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -30,18 +23,13 @@ import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
-import net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
-import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
@@ -69,6 +57,14 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
+import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 
 public class EffectRenderer {
 
@@ -542,7 +538,7 @@ public class EffectRenderer {
 		GL11.glPushMatrix();
 		GL11.glTranslated(-x, -y, -z);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		TexUtil.bindTexture(Resources.WHITE_TEXTURE);
+		TexUtil.bindTexture(FvtmRegistry.WHITE_TEXTURE);
 		for(V3I vec : poslist){
 			GL11.glPushMatrix();
 	        GL11.glTranslated(vec.x, vec.y, vec.z);

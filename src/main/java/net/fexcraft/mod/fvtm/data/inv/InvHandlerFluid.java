@@ -1,11 +1,16 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
+
+import java.util.ArrayList;
 
 public class InvHandlerFluid extends InvHandler {
 	
@@ -35,18 +40,44 @@ public class InvHandlerFluid extends InvHandler {
 		tank.readFromNBT(compound.getCompound(ctag).local());
 	}
 
+	@Override
 	public FluidTank getTank(){
 		return tank;
 	}
 
 	@Override
 	public String getContentDesc(){
-		if(tank.getFluid() == null) return super.getContentDesc();
+		if(tank.getFluid() == null) return "";
 		return tank.getFluidAmount() + "mB " + tank.getFluid().getLocalizedName();
 	}
 
 	@Override
-	public Object getCapObj(){
+	public void dropAllAt(EntityW entity){
+
+	}
+
+	@Override
+	public void dropAllAt(WorldW world, V3I pos){
+
+	}
+
+	@Override
+	public String getSavePrefix(){
+		return "tank-";
+	}
+
+	@Override
+	public ArrayList<StackEntry> getStacks(){
+		return null;
+	}
+
+	@Override
+	public <ISH> ISH getStackHandler(){
+		return null;
+	}
+
+	@Override
+	public Object getCapability(){
 		return tank;
 	}
 

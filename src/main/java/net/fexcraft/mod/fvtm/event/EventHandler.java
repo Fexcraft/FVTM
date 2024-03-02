@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util;
+package net.fexcraft.mod.fvtm.event;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -75,7 +75,7 @@ import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Resources {
+public class EventHandler {
 	
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){

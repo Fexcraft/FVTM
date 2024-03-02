@@ -27,7 +27,6 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentType;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary.Library;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.BufferBuilder;

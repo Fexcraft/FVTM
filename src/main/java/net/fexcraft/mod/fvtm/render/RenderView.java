@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.entity.RenderViewEntity;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.Render;
@@ -43,7 +43,7 @@ public class RenderView extends Render<RenderViewEntity> implements IRenderFacto
 
 	@Override
 	protected ResourceLocation getEntityTexture(RenderViewEntity entity){
-		return Resources.NULL_TEXTURE;
+		return FvtmRegistry.NULL_TEXTURE.local();
 	}
 
 	@Override

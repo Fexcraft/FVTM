@@ -16,6 +16,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -59,6 +60,8 @@ import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -216,7 +219,8 @@ public class ResourcesImpl extends FvtmResources {
 				}
 				break;
 			}
-			default: break;
+			default:
+				break;
 		}
 		if(loc.isConfigPack() || isItemModelMissing(content)){
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ItemPlaceholderModel.INSTANCE);
@@ -264,6 +268,90 @@ public class ResourcesImpl extends FvtmResources {
 			}
 		});
 	}
+
+	@Override
+	public void registerRecipes(){
+		String blockcat = "fvtm.recipes.blocks";
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(ConstructorBlock.INSTANCE),
+			new ItemStack(Blocks.IRON_BLOCK),
+			new ItemStack(Items.COMPARATOR, 4),
+			new ItemStack(Items.REPEATER, 8),
+			new ItemStack(Items.REDSTONE, 16),
+			new ItemStack(Items.BOOK, 2),
+			new ItemStack(Blocks.LEVER, 8)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(ConstCenterBlock.INSTANCE),
+			new ItemStack(Blocks.IRON_BLOCK, 2),
+			new ItemStack(Items.IRON_INGOT, 8),
+			new ItemStack(Items.COMPARATOR, 2),
+			new ItemStack(Items.REPEATER, 4),
+			new ItemStack(Items.REDSTONE, 4),
+			new ItemStack(Items.BOOK, 1),
+			new ItemStack(Blocks.LEVER, 2),
+			new ItemStack(Blocks.PISTON, 2)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(VPInfo.INSTANCE),
+			new ItemStack(Blocks.IRON_BLOCK),
+			new ItemStack(Items.BOOK, 16),
+			new ItemStack(Items.REDSTONE, 4),
+			new ItemStack(Blocks.LEVER, 4),
+			new ItemStack(Items.GLASS_BOTTLE, 2)
+		);
+		String gauge = FvtmRegistry.STANDARD_GAUGE.toString();
+		Item gaugeitem = Item.getByNameOrId(gauge);
+		Item gaugeitem16 = Item.getByNameOrId(gauge + ".16_straight");
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(gaugeitem),
+			new ItemStack(Items.IRON_INGOT, 4),
+			new ItemStack(Blocks.PLANKS, 4)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".4_straight")),
+			new ItemStack(gaugeitem, 4),
+			new ItemStack(Items.IRON_INGOT, 2)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".8_straight")),
+			new ItemStack(gaugeitem, 8),
+			new ItemStack(Items.IRON_INGOT, 3)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".16_straight")),
+			new ItemStack(gaugeitem, 16),
+			new ItemStack(Items.IRON_INGOT, 4)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".32_straight")),
+			new ItemStack(gaugeitem, 32),
+			new ItemStack(Items.IRON_INGOT, 8)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")),
+			new ItemStack(gaugeitem, 16),
+			new ItemStack(Items.IRON_INGOT, 4),
+			new ItemStack(Blocks.PLANKS, 4)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")),
+			new ItemStack(gaugeitem, 16),
+			new ItemStack(Items.IRON_INGOT, 4),
+			new ItemStack(Blocks.PLANKS, 4)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")),
+			new ItemStack(gaugeitem16),
+			new ItemStack(Blocks.PLANKS, 4)
+		);
+		RecipeRegistry.addBluePrintRecipe(blockcat,
+			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")),
+			new ItemStack(gaugeitem16),
+			new ItemStack(Blocks.PLANKS, 4)
+		);
+	}
+
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
 		ItemWrapper wrapper = new IWI(item);
@@ -318,11 +406,13 @@ public class ResourcesImpl extends FvtmResources {
 						float scale = Float.parseFloat(args[1]);
 						return new TF_Scale(scale, scale, scale);
 					}
-					else return new TF_Scale(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					else
+						return new TF_Scale(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
 				case "gl_rescale_normal":
 				case "rescale_normal":
 					return Transforms.TF_RESCALE_NORMAL;
-				default: return null;
+				default:
+					return null;
 			}
 		};
 		DefaultPrograms.init();
@@ -361,7 +451,7 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public IDL getExternalTexture(String custom) {
+	public IDL getExternalTexture(String custom){
 		return ExternalTextureLoader.get(custom);
 	}
 
@@ -405,7 +495,7 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public boolean sendToggle(Attribute<?> attr, EntityW vehicle, KeyPress key, Float val, EntityW player) {
+	public boolean sendToggle(Attribute<?> attr, EntityW vehicle, KeyPress key, Float val, EntityW player){
 		return ToggableHandler.sendToggle(attr, vehicle.local(), key, val, player.local());
 	}
 

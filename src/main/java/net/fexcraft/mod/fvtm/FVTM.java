@@ -167,7 +167,7 @@ public class FVTM {
 		});
 		ClothMaterial.MANAGER[0] = new ClothMaterialManager();
 		FvtmRegistry.NONE_CLOTH_MAT = IDLManager.getIDLCached("fvtm:none");
-		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
+		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", FvtmRegistry.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
 		if(EnvInfo.CLIENT){
 			Config.addListener(DefaultPrograms::setupBlinkerTimer);
@@ -252,7 +252,7 @@ public class FVTM {
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();
 		MinecraftForge.EVENT_BUS.register(new Registerer());
-		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
+		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources());
 		MinecraftForge.EVENT_BUS.register(new RVStore());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			FvtmResources.initModelSystem();

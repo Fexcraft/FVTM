@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -222,7 +223,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				InputType local = entry.getInputType();
 				String inventory = getInvId(data, local.toInventory(), entry.inventory, "input");
 				if(local.toInventory().isFluid()){
-					data.getInventory(inventory).getTank().drain(entry.fluid, true);
+					((FluidTank)data.getInventory(inventory).getTank()).drain(entry.fluid, true);
 				}
 				else{
 					IItemHandler handler = data.getInventory(inventory).getStackHandler();
@@ -239,7 +240,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				InvType local = entry.getInventoryType();
 				String inventory = getInvId(data, local, entry.inventory, "output");
 				if(local.isFluid()){
-					data.getInventory(inventory).getTank().fill(entry.fluid, true);
+					((FluidTank)data.getInventory(inventory).getTank()).fill(entry.fluid, true);
 				}
 				else{
 					IItemHandler handler = data.getInventory(inventory).getStackHandler();
@@ -269,7 +270,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				if(entry.overflow) continue;
 				if(local.isFluid()){
-					if(data.getInventory(invid).getTank().fill(entry.fluid, false) < entry.fluid.amount){
+					if(((FluidTank)data.getInventory(invid).getTank()).fill(entry.fluid, false) < entry.fluid.amount){
 						fits = false;
 						break;
 					}
@@ -305,7 +306,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					break;
 				}
 				if(local.toInventory().isFluid()){
-					FluidStack drained = data.getInventory(invid).getTank().drain(entry.fluid, false);
+					FluidStack drained = ((FluidTank)data.getInventory(invid).getTank()).drain(entry.fluid, false);
 					if(drained == null || drained.amount < entry.fluid.amount){
 						passed = false;
 						break;

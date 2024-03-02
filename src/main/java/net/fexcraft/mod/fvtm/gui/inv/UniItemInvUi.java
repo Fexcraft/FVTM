@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.inv;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem.StackEntry;
+import net.fexcraft.mod.fvtm.data.inv.StackEntry;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,7 +65,7 @@ public class UniItemInvUi extends GenericGui<UniItemInvContainer> {
 				continue;
 			}
 			StackEntry entry = container.invhandler.getStacks().get(index);
-			texts.get("name" + row).string = entry.stack.getDisplayName();
+			texts.get("name" + row).string = entry.stack.getName();
 			texts.get("info" + row).string = entry.amount + " items    " + entry.stacksize() + " stacks";
 		}
 		size = 0;

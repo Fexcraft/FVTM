@@ -49,7 +49,7 @@ public class MB_Access {
 		return sidefrom;
 	}
 
-	public void fill(MultiBlockData data, EnumFacing facing, EnumFacing rotateby, Map<EnumFacing, List<CapabilityContainer>> capabilities){
+	public void fill(MultiBlockData0 data, EnumFacing facing, EnumFacing rotateby, Map<EnumFacing, List<CapabilityContainer>> capabilities){
 		if(facing == null){
 			if(sidefrom == null){
 				for(EnumFacing face : EnumFacing.VALUES){

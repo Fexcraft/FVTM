@@ -5,7 +5,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MB_Access;
 import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
 	
 	public List<MB_Trigger> triggers;
 	protected MultiblockTileEntity reference;
-	protected MultiBlockData mdata;
+	protected MultiBlockData0 mdata;
 	protected BlockPos core;
 	protected boolean iscore;
 	
@@ -54,11 +54,11 @@ public class MultiblockTileEntity extends BlockTileEntity {
 		return iscore;
 	}
 
-	public MultiBlockData getMultiBlockData(){
+	public MultiBlockData0 getMultiBlockData(){
 		return iscore ? mdata : getMultiBlockDataFromCore();
 	}
 	
-	private MultiBlockData getMultiBlockDataFromCore(){
+	private MultiBlockData0 getMultiBlockDataFromCore(){
 		if(reference != null) return reference.getMultiBlockData();
 		if(core == null){
 			//Print.debug("no core from");
@@ -103,7 +103,7 @@ public class MultiblockTileEntity extends BlockTileEntity {
     private Map<EnumFacing, List<MB_Access.CapabilityContainer>> capabilities;
 
     private void loadCapabilities(){
-    	MultiBlockData data = getMultiBlockData();
+    	MultiBlockData0 data = getMultiBlockData();
     	if(data == null){
     		//Print.debug("no data");
     		return;

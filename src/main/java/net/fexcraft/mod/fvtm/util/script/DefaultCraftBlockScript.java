@@ -8,7 +8,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.gui.block.GBCElm;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -84,7 +84,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean consume(MultiBlockData data, String id, int amount, boolean simulate){
+	public boolean consume(MultiBlockData0 data, String id, int amount, boolean simulate){
 		return true;
 	}
 
@@ -94,7 +94,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata){
+	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData0 mdata){
 		ArrayList list = new ArrayList();
 		if(add_def_ui){
 			if(bdata.getType().isTickable()){

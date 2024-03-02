@@ -43,7 +43,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock0;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -156,11 +156,11 @@ public class Resources {
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}*/
 
-	public static MultiBlockData getMultiBlockData(NBTTagCompound compound){
+	public static MultiBlockData0 getMultiBlockData(NBTTagCompound compound){
 		if(!compound.hasKey("type")) return null;
 		MultiBlock0 block = getMultiBlock(compound.getString("type"));
 		if(block == null) return null;
-		try{ return ((MultiBlockData)block.getDataClass().getConstructor(MultiBlock0.class).newInstance(block)).read(compound); }
+		try{ return ((MultiBlockData0)block.getDataClass().getConstructor(MultiBlock0.class).newInstance(block)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 	

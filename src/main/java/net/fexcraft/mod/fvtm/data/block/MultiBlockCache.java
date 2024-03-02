@@ -13,11 +13,11 @@ public interface MultiBlockCache {
 
 	public void setWorld(World world);
 	
-	public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data);
+	public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData0 data);
 
-	public void unregisterMultiBlock(BlockPos pos, EnumFacing byIndex, MultiBlockData multiBlockData);
+	public void unregisterMultiBlock(BlockPos pos, EnumFacing byIndex, MultiBlockData0 multiBlockData);
 	
-	public MultiBlockData getMultiBlock(BlockPos pos);
+	public MultiBlockData0 getMultiBlock(BlockPos pos);
 
 	public BlockPos getMultiBlockCore(BlockPos pos);
 

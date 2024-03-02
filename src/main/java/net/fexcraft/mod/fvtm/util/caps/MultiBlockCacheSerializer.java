@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.util.EnumFacing;
@@ -70,7 +70,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 		
 		@SuppressWarnings("unused")
 		private World world;
-		private HashMap<BlockPos, MultiBlockData> blocks = new HashMap<>(); 
+		private HashMap<BlockPos, MultiBlockData0> blocks = new HashMap<>();
 		private HashMap<BlockPos, BlockPos> cores = new HashMap<>(); 
 
 		@Override
@@ -79,7 +79,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 		}
 
 		@Override
-		public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data){
+		public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData0 data){
 			ArrayList<BlockPos> positions = data.getType().getPositions(posfrom, rotation);
 			for(BlockPos pos : positions){
 				blocks.put(pos, data);
@@ -88,7 +88,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 		}
 
 		@Override
-		public void unregisterMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data){
+		public void unregisterMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData0 data){
 			ArrayList<BlockPos> positions = data.getType().getPositions(posfrom, rotation);
 			for(BlockPos pos : positions){
 				blocks.remove(pos);
@@ -97,7 +97,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 		}
 
 		@Override
-		public MultiBlockData getMultiBlock(BlockPos pos){
+		public MultiBlockData0 getMultiBlock(BlockPos pos){
 			return blocks.get(pos);
 		}
 

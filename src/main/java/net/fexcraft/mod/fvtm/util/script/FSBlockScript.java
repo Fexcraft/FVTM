@@ -11,7 +11,7 @@ import net.fexcraft.lib.script.Script;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockScript;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +40,7 @@ public class FSBlockScript implements BlockScript {
 		if(id.endsWith(".script")) id = id.substring(0, id.length() - 7);
 	}
 
-	public BlockScript init(MultiBlockData data){
+	public BlockScript init(MultiBlockData0 data){
 		Object[] obj = Resources.getInputStream(resloc);
 		script = new Script((InputStream)obj[0], id);
 		if(obj.length > 1){
@@ -59,12 +59,12 @@ public class FSBlockScript implements BlockScript {
 	}
 
 	@Override
-	public void read(MultiBlockData data, NBTTagCompound tag){
+	public void read(MultiBlockData0 data, NBTTagCompound tag){
 		
 	}
 
 	@Override
-	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound){
+	public NBTTagCompound write(MultiBlockData0 data, NBTTagCompound compound){
 		
 		return compound;
 	}
@@ -74,7 +74,7 @@ public class FSBlockScript implements BlockScript {
 		update.process(context.update(tile));
 	}
 
-	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
+	public boolean onTrigger(MultiBlockData0 data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
 		if(!hasInteract) return false;
 		//TODO
 		return true;

@@ -283,7 +283,7 @@ public class MultiBlock0 extends TypeCore<MultiBlock0> implements ItemTextureabl
 		return triggers.stream().filter(trigger -> trigger.getBlockPos().equals(rpos)).collect(Collectors.toList());
 	}
 
-	public void getCapabilities(MultiBlockData data, EnumFacing facing, BlockPos pos, BlockPos core, Map<EnumFacing, List<MB_Access.CapabilityContainer>> capabilities){
+	public void getCapabilities(MultiBlockData0 data, EnumFacing facing, BlockPos pos, BlockPos core, Map<EnumFacing, List<MB_Access.CapabilityContainer>> capabilities){
 		pos = core.subtract(pos);
 		pos = pos.up(-pos.getY() * 2);
 		pos = pos.rotate(getRotation(facing, true));
@@ -307,7 +307,7 @@ public class MultiBlock0 extends TypeCore<MultiBlock0> implements ItemTextureabl
 
 	@Override
 	public Class<?> getDataClass(){
-		return MultiBlockData.class;
+		return MultiBlockData0.class;
 	}
 
 	@Nullable

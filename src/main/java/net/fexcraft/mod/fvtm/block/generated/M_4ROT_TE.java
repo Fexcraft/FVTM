@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -73,7 +73,7 @@ public class M_4ROT_TE extends BlockBase {
                 Print.chat(player, "No TileEntity found.");
                 return true;
             }
-            MultiBlockData data = te.getMultiBlockData();
+            MultiBlockData0 data = te.getMultiBlockData();
             if(data == null){
                 Print.chat(player, "MultiBlockData not found [TE].");
                 return true;
@@ -87,7 +87,7 @@ public class M_4ROT_TE extends BlockBase {
         return true;
     }
     
-    protected static boolean processTriggers(MultiblockTileEntity te, List<MB_Trigger> triggers, MultiBlockData data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
+    protected static boolean processTriggers(MultiblockTileEntity te, List<MB_Trigger> triggers, MultiBlockData0 data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
     	for(MB_Trigger trigger : triggers){
         	boolean pass = trigger.isWholeBlock();
         	IBlockState corestate = player.world.getBlockState(core);
@@ -170,7 +170,7 @@ public class M_4ROT_TE extends BlockBase {
     
 	public static void processBreak(World world, BlockPos pos, boolean hastile){
 		MultiblockTileEntity broken = hastile ? (MultiblockTileEntity)world.getTileEntity(pos) : null;
-		MultiBlockData data = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos) : broken.getMultiBlockData();
+		MultiBlockData0 data = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos) : broken.getMultiBlockData();
 		if(data == null){
 			//Print.debug("Multiblock at " + pos + " not found!");
 			return;

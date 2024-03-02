@@ -11,7 +11,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,7 +55,7 @@ public class M_4ROT extends PlainBase {
     		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     	}
         if(!world.isRemote){
-            MultiBlockData data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
+            MultiBlockData0 data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
             BlockPos core = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos);
             if(data == null){
                 Print.chat(player, "MultiBlockData not found [CAP].");

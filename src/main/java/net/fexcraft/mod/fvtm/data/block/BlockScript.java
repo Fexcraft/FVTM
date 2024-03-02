@@ -17,13 +17,13 @@ import net.minecraft.util.math.Vec3d;
  */
 public interface BlockScript {
 
-	public void read(MultiBlockData data, NBTTagCompound tag);
+	public void read(MultiBlockData0 data, NBTTagCompound tag);
 
-	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound);
+	public NBTTagCompound write(MultiBlockData0 data, NBTTagCompound compound);
 
 	public void onUpdate(MultiblockTickableTE tile);
 
-	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit);
+	public boolean onTrigger(MultiBlockData0 data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit);
 	
 	public default void sendPacket(TileEntity tile, NBTTagCompound packet){
 		if(!packet.hasKey("target")) packet.setString("target", "script");

@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.gui.block.GBCElm;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,7 +43,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public void read(MultiBlockData data, NBTTagCompound tag){
+	public void read(MultiBlockData0 data, NBTTagCompound tag){
 		if(script == null){
 			scriptwrapper.init(data);
 			script = scriptwrapper.script();
@@ -126,7 +126,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound){
+	public NBTTagCompound write(MultiBlockData0 data, NBTTagCompound compound){
 		super.write(data, compound);
 		if(scriptwrapper.hasSave) scriptwrapper.save.process();
 		/*for(Entry<String, Elm> entry : consumables.entrySet()){
@@ -186,7 +186,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean consume(MultiBlockData data, String id, int amount, boolean simulate){
+	public boolean consume(MultiBlockData0 data, String id, int amount, boolean simulate){
 		InvHandler handler = data.getInventory(id);
 		if(handler == null) return false;
 		if(hasConsume){
@@ -207,7 +207,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata){
+	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData0 mdata){
 		ArrayList list = new ArrayList();
 		if(add_def_ui.scr_bln()){
 			if(bdata.getType().isTickable()){

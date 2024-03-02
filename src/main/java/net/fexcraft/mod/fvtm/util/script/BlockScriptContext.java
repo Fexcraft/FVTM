@@ -8,7 +8,7 @@ import net.fexcraft.lib.script.ScrBlock;
 import net.fexcraft.lib.script.ScrElm;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,12 +18,12 @@ public class BlockScriptContext implements ScrElm {
 	public HashMap<String, BiFunction<ScrBlock, ArrayList<ScrElm>, ScrElm>> exes = new HashMap<>();
 	private FSBlockScript wrapper;
 	private BlockTileEntity entity;
-	protected MultiBlockData data;
+	protected MultiBlockData0 data;
 	//
 	private NBTTagCompound packet;
 	private Side side;
 
-	public BlockScriptContext(MultiBlockData data, FSBlockScript fscript){
+	public BlockScriptContext(MultiBlockData0 data, FSBlockScript fscript){
 		this.data = data;
 		wrapper = fscript;
 	}
@@ -65,7 +65,7 @@ public class BlockScriptContext implements ScrElm {
 		return entity;
 	}
 
-	public MultiBlockData mdata(){
+	public MultiBlockData0 mdata(){
 		return data;
 	}
 

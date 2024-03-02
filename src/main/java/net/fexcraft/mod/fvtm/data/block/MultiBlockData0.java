@@ -17,13 +17,13 @@ import net.minecraft.nbt.NBTTagCompound;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class MultiBlockData {
+public class MultiBlockData0 {
 
 	private MultiBlock0 type;
 	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
 	private BlockScript script;
 	
-	public MultiBlockData(MultiBlock0 type){
+	public MultiBlockData0(MultiBlock0 type){
 		this.type = type;
 		for(Entry<String, InvHandler> entry : type.getDefaultInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen(6));
@@ -40,12 +40,12 @@ public class MultiBlockData {
 		}
 	}
 	
-	public MultiBlockData(MultiBlock0 type, NBTTagCompound compound){
+	public MultiBlockData0(MultiBlock0 type, NBTTagCompound compound){
 		this(type);
 		this.read(compound);
 	}
 	
-	public MultiBlockData read(NBTTagCompound compound){
+	public MultiBlockData0 read(NBTTagCompound compound){
 		for(Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getBlkSavePrefix();
 			if(!compound.hasKey(pre + entry.getKey())) continue;

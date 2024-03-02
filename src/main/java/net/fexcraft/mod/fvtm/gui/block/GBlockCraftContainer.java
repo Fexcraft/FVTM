@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.gui.block;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
 
-import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -10,7 +9,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,7 +23,7 @@ public class GBlockCraftContainer extends GenericContainer {
 	protected GenericGui<GBlockCraftContainer> gui;
 	protected MultiblockTileEntity tile;
 	protected CraftBlockScript script;
-	protected MultiBlockData data;
+	protected MultiBlockData0 data;
 	protected EntityPlayerMP mpp;
 	public int page, crafted;
 	public int crafttime;

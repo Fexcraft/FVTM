@@ -7,7 +7,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.addon.AddonOld;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper.InputType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
@@ -481,7 +481,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		
 	}
 
-	public static void parseRecipes(AddonOld addon, String filename, InputStream stream){
+	public static void parseRecipes(Addon addon, String filename, InputStream stream){
 		try{
 			Scanner scanner = new Scanner(stream);
 			String line = null;
@@ -503,14 +503,14 @@ public abstract class CraftBlockScript implements BlockScript {
 					}
 					else if(blkid.equals("itemgroup")){
 						if(!override && ITEMGROUPS.containsKey(rcpid)){
-							Print.log(String.format("Duplicate ItemGroup ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), rcpid, filename));
+							Print.log(String.format("Duplicate ItemGroup ID detected from addon '%s' with id '%s' from file '%s'!", addon.getIDS(), rcpid, filename));
 							continue;
 						}
 						parser = new ItemGroupParser().start(blkid, rcpid);
 					}
 					else{
 						if(!override && RECIPE_REGISTRY.containsKey(rcpid)){
-							Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), rcpid, filename));
+							Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getIDS(), rcpid, filename));
 							continue;
 						}
 						parser = new RecipeParserImpl().start(blkid, rcpid);
@@ -539,7 +539,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		
 		public void read(String line);
 		
-		public void finish(AddonOld addon);
+		public void finish(Addon addon);
 		
 	}
 	
@@ -574,8 +574,8 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 
 		@Override
-		public void finish(AddonOld addon){
-			RecipeRegistry.addBluePrintRecipe(category.length() == 0 ? addon.getRegistryName().getPath() + ".recipes" : category, out, stacks.toArray(new ItemStack[0]));
+		public void finish(Addon addon){
+			RecipeRegistry.addBluePrintRecipe(category.length() == 0 ? addon.getID().path() + ".recipes" : category, out, stacks.toArray(new ItemStack[0]));
 		}
 		
 	}
@@ -599,7 +599,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 
 		@Override
-		public void finish(AddonOld addon){
+		public void finish(Addon addon){
 			ITEMGROUPS.put(id, Ingredient.fromStacks(stacks.toArray(new ItemStack[0])));
 		}
 		
@@ -679,15 +679,15 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 
 		@Override
-		public void finish(AddonOld addon){
+		public void finish(Addon addon){
 			if(recipe.input.isEmpty() && recipe.consume.isEmpty()){
-				Print.debug("Recipe '" + recipe.id + "' for '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "' has no input/consumption, skipping!");
+				Print.debug("Recipe '" + recipe.id + "' for '" + recipe.targetmachine + "' from '" + addon.getIDS() + "' has no input/consumption, skipping!");
 				return;
 			}
 			RECIPE_REGISTRY.put(recipe.id, recipe);
 			if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
 			SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
-			Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
+			Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getIDS() + "'!");
 		}
 		
 	}

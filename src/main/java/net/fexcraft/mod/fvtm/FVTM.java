@@ -25,6 +25,9 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.event.EventHandler;
+import net.fexcraft.mod.fvtm.event.Registerer12;
+import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
@@ -66,7 +69,7 @@ import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.util.handler.RVStore;
+import net.fexcraft.mod.fvtm.event.RenderViewHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.fvtm.util.CTab;
@@ -88,14 +91,12 @@ import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -104,7 +105,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -130,7 +130,6 @@ public class FVTM {
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
-	private static Resources RESOURCES;
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
@@ -251,19 +250,19 @@ public class FVTM {
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();
-		MinecraftForge.EVENT_BUS.register(new Registerer());
-		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources());
-		MinecraftForge.EVENT_BUS.register(new RVStore());
+		MinecraftForge.EVENT_BUS.register(new Registerer12());
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		MinecraftForge.EVENT_BUS.register(new RenderViewHandler());
+		MinecraftForge.EVENT_BUS.register(new ResizeHandler());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			FvtmResources.initModelSystem();
 			AddonSteeringOverlay.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
-		MinecraftForge.EVENT_BUS.register(new ResizeUtil());
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
-		Resources.linkTextureSuppliers();
+		EventHandler.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
@@ -286,7 +285,7 @@ public class FVTM {
 				DefaultPrograms.setupBlinkerTimer();
 			}
 			try{
-				Resources.loadLitePackLang();
+				EventHandler.loadLitePackLang();
 			}
 			catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | FileNotFoundException e){
 				e.printStackTrace();
@@ -344,52 +343,6 @@ public class FVTM {
 
 	public static FVTM getInstance(){
 		return INSTANCE;
-	}
-	
-	public static Resources getResources(){
-		return RESOURCES;
-	}
-
-	public static class Registerer {
-
-		@SubscribeEvent
-		public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
-			event.getRegistry().register(ConstructorBlock.INSTANCE);
-			event.getRegistry().register(ConstCenterBlock.INSTANCE);
-			event.getRegistry().register(Asphalt.INSTANCE);
-			event.getRegistry().register(ContainerBlock.INSTANCE);
-		}
-
-		@SubscribeEvent
-		public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
-			event.getRegistry().register(ConstructorBlock.ITEM);
-			event.getRegistry().register(ConstCenterBlock.ITEM);
-			event.getRegistry().register(Asphalt.ITEM);
-			//
-			event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
-			event.getRegistry().register(ToolboxItem.INSTANCE = new ToolboxItem());
-			event.getRegistry().register(DecorationItem.INSTANCE);
-			if(EnvInfo.CLIENT){
-				regModel(ConstructorBlock.ITEM);
-				regModel(ConstCenterBlock.ITEM);
-				regModel(Asphalt.ITEM, 16);
-				//
-				regModel(DecorationItem.INSTANCE);
-				regModel(RoadToolItem.INSTANCE);
-				regModel(ToolboxItem.INSTANCE, 3);
-			}
-		}
-
-		private void regModel(Item item){
-			net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
-		}
-
-		private void regModel(Item item, int vars){
-			for(int v = 0; v < vars; v++){
-				net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName().toString() + "_" + v), "inventory"));
-			}
-		}
-
 	}
 
 }

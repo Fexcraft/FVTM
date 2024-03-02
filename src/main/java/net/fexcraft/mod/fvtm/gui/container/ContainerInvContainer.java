@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -25,6 +26,7 @@ public class ContainerInvContainer extends GenericContainer {
 	//
 	protected long fluid_date;
 	protected GenericIInventory fluid_io;
+	protected FluidTank tank;
 	protected int slots;
 	//
 	protected ContainerEntity tile;
@@ -54,6 +56,7 @@ public class ContainerInvContainer extends GenericContainer {
 			for(int col = 0; col < 9; col++){
 				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
 			}
+			tank = tile.getContainerData().getInventory().getTank();
 		}
 	}
 
@@ -126,7 +129,7 @@ public class ContainerInvContainer extends GenericContainer {
 					}
 				}
 				//
-				if(tile.getContainerData().getInventory().getTank().getFluidAmount() > 0){
+				if(((FluidTank)tile.getContainerData().getInventory().getTank()).getFluidAmount() > 0){
 					stack = fluid_io.getStackInSlot(1);
 					if(!stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)){
 						FluidActionResult result = FluidUtil.tryFillContainer(stack, tile.getContainerData().getInventory().getTank(), 1000, player, true);

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -26,7 +26,7 @@ public class RenderTrafficSign extends Render<TrafficSignEntity> implements IRen
 
     @Override
     protected ResourceLocation getEntityTexture(TrafficSignEntity entity){
-        return Resources.WHITE_TEXTURE;//TODO entity.sign.getTexture();
+        return FvtmRegistry.WHITE_TEXTURE.local();//TODO entity.sign.getTexture();
     }
     
     @Override

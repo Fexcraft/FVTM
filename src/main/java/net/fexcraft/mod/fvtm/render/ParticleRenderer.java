@@ -1,16 +1,16 @@
 package net.fexcraft.mod.fvtm.render;
 
-import java.util.ArrayList;
-
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.entity.ParticleEntity;
 import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.client.Minecraft;
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 public class ParticleRenderer {
 	
@@ -22,7 +22,7 @@ public class ParticleRenderer {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //GL11.glTranslated(-cx, -cy, -cz);
-        Minecraft.getMinecraft().renderEngine.bindTexture(Resources.WHITE_TEXTURE);
+		TexUtil.bindTexture(FvtmRegistry.WHITE_TEXTURE);
         ents.addAll(sys.particles);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

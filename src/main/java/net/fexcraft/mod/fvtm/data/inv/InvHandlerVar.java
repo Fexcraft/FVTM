@@ -1,12 +1,18 @@
 package net.fexcraft.mod.fvtm.data.inv;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+
+import java.util.ArrayList;
 
 public class InvHandlerVar extends InvHandler {
 	
@@ -35,6 +41,56 @@ public class InvHandlerVar extends InvHandler {
 	public void load(NBTTagCompound compound, String ctag){
 		value = compound.getInteger(ctag);
 		if(compound.hasKey(ctag + "-items")) DataUtil.loadAllItems(compound, stacks, ctag + "-items");
+	}
+
+	@Override
+	public TagCW save(TagCW compound, String ctag){
+		return null;
+	}
+
+	@Override
+	public void load(TagCW compound, String ctag){
+
+	}
+
+	@Override
+	public String getContentDesc(){
+		return null;
+	}
+
+	@Override
+	public void dropAllAt(EntityW entity){
+
+	}
+
+	@Override
+	public void dropAllAt(WorldW world, V3I pos){
+
+	}
+
+	@Override
+	public String getSavePrefix(){
+		return "var-";
+	}
+
+	@Override
+	public ArrayList<StackEntry> getStacks(){
+		return null;
+	}
+
+	@Override
+	public <FT> FT getTank(){
+		return null;
+	}
+
+	@Override
+	public <ISH> ISH getStackHandler(){
+		return null;
+	}
+
+	@Override
+	public Object getCapability(){
+		return value;
 	}
 
 	@Override
@@ -71,11 +127,6 @@ public class InvHandlerVar extends InvHandler {
 		value++;
 	}
 
-	@Override
-	public Object getCapObj(){
-		return value;
-	}
-
 	public int items(){
 		return items;
 	}
@@ -90,7 +141,7 @@ public class InvHandlerVar extends InvHandler {
 
 	private int i = 0, s = 0;
 
-	@Override
+	//@Override
 	public void update(MultiblockTickableTE tile, String key){
 		if(tile.getWorld().isRemote) return;
 		if(in){

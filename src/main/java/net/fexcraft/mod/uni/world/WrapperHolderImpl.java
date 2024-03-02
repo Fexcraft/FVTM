@@ -3,12 +3,9 @@ package net.fexcraft.mod.uni.world;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.HashMap;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -36,17 +33,30 @@ public class WrapperHolderImpl extends WrapperHolder {
 	}
 
 	@Override
-	public BlockSide getSide0(Object o){
+	public CubeSide getSide0(Object o){
 		EnumFacing facing = (EnumFacing)o;
 		switch(facing){
-			case UP: return BlockSide.UP;
-			case DOWN: return BlockSide.DOWN;
-			case NORTH: return BlockSide.NORTH;
-			case WEST: return BlockSide.WEST;
-			case EAST: return BlockSide.EAST;
-			case SOUTH: return BlockSide.SOUTH;
+			case UP: return CubeSide.UP;
+			case DOWN: return CubeSide.DOWN;
+			case NORTH: return CubeSide.NORTH;
+			case WEST: return CubeSide.WEST;
+			case EAST: return CubeSide.EAST;
+			case SOUTH: return CubeSide.SOUTH;
 		}
-		return BlockSide.NORTH;
+		return CubeSide.NORTH;
+	}
+
+	@Override
+	public <S> S getLocalSide0(CubeSide side){
+		switch(side){
+			case UP: return (S)EnumFacing.UP;
+			case DOWN: return (S)EnumFacing.DOWN;
+			case NORTH: return (S)EnumFacing.NORTH;
+			case SOUTH: return (S)EnumFacing.SOUTH;
+			case EAST: return (S)EnumFacing.EAST;
+			case WEST: return (S)EnumFacing.WEST;
+		}
+		return (S)EnumFacing.NORTH;
 	}
 
 }

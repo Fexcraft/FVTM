@@ -42,8 +42,6 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock0;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -100,7 +98,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Resources {
 
-	public static RegistryOld<MultiBlock0> MULTIBLOCKS = new RegistryOld<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
@@ -117,51 +114,6 @@ public class Resources {
 		// search in packs for //
 		//
 		// init model loaders //
-	}
-
-	public static MultiBlock0 getMultiBlock(String string){
-		return MULTIBLOCKS.get(string);
-	}
-
-	public static MultiBlock0 getMultiBlock(ResourceLocation resloc){
-		return MULTIBLOCKS.get(resloc);
-	}
-
-	/*public static PartData getPartData(NBTTagCompound compound){
-		if(!compound.hasKey("Part")) return null;
-		Part part = getPart(compound.getString("Part")); if(part == null) return null;
-		try{ return ((PartData)part.getDataClass().getConstructor(Part.class).newInstance(part)).read(compound); }
-		catch(Throwable e){ e.printStackTrace(); return null; }
-	}
-
-	/*public static VehicleData getVehicleData(NBTTagCompound compound){
-		if(!compound.hasKey("Vehicle")) return null;
-		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
-		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
-		catch(Throwable e){ e.printStackTrace(); return null; }
-	}
-
-	public static VehicleData readVehicleData(NBTTagCompound compound, VehicleData data){
-		if(data != null) return data.read(compound);
-		if(!compound.hasKey("Vehicle")) return null;
-		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
-		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
-		catch(Throwable e){ e.printStackTrace(); return null; }
-	}*/
-
-	/*public static ContainerData getContainerData(NBTTagCompound compound){
-		if(!compound.hasKey("Container")) return null;
-		Container con = getContainer(compound.getString("Container")); if(con == null) return null;
-		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
-		catch(Throwable e){ e.printStackTrace(); return null; }
-	}*/
-
-	public static MultiBlockData0 getMultiBlockData(NBTTagCompound compound){
-		if(!compound.hasKey("type")) return null;
-		MultiBlock0 block = getMultiBlock(compound.getString("type"));
-		if(block == null) return null;
-		try{ return ((MultiBlockData0)block.getDataClass().getConstructor(MultiBlock0.class).newInstance(block)).read(compound); }
-		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 	
 	/** Registers a Attribute class into FVTM Resources.*/

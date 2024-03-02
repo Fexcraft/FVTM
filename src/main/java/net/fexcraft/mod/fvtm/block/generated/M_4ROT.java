@@ -1,17 +1,11 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
-
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +21,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+import static net.fexcraft.mod.uni.world.WrapperHolder.getSide;
 
 public class M_4ROT extends PlainBase {
 
@@ -55,7 +56,7 @@ public class M_4ROT extends PlainBase {
     		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     	}
         if(!world.isRemote){
-            MultiBlockData0 data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
+            MultiBlockData data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
             BlockPos core = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos);
             if(data == null){
                 Print.chat(player, "MultiBlockData not found [CAP].");
@@ -65,7 +66,7 @@ public class M_4ROT extends PlainBase {
                 Print.chat(player, "MultiBlock Core not found.");
                 return true;
             }
-            if(M_4ROT_TE.processTriggers(null, data.getType().getTriggers(state.getValue(FACING), pos, core), data, core, player, hand, state, pos, side, hitX, hitY, hitZ)){
+            if(M_4ROT_TE.processTriggers(null, data.getType().getInteract(getSide(state.getValue(FACING)), new V3I(pos.getX(), pos.getY(), pos.getZ()), new V3I(core.getX(), core.getY(), core.getZ())), data, core, player, hand, state, pos, side, hitX, hitY, hitZ)){
             	return true;
             }
             return false;

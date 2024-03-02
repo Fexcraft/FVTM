@@ -1,9 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
-
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock0;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +12,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 public class DBSW_4ROT_TE extends G_4ROT_TE {
 
@@ -55,7 +55,7 @@ public class DBSW_4ROT_TE extends G_4ROT_TE {
     	if(side.getAxis().isVertical()) return 0;
     	boolean s0 = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch0State();
     	boolean s1 = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch1State();
-    	switch(MultiBlock0.rotate(side, state.getValue(FACING))){
+    	switch(MultiBlock.rotate(side, state.getValue(FACING))){
     		case NORTH: return s0? 15 : 0;
     		case SOUTH: return !s0 ? 15 : 0;
     		case WEST: return s1? 15 : 0;

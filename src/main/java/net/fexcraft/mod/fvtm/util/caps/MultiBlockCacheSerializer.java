@@ -1,11 +1,10 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.util.EnumFacing;
@@ -14,6 +13,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBase>{
 	
@@ -70,7 +72,7 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 		
 		@SuppressWarnings("unused")
 		private World world;
-		private HashMap<BlockPos, MultiBlockData0> blocks = new HashMap<>();
+		private HashMap<BlockPos, MultiBlockData> blocks = new HashMap<>();
 		private HashMap<BlockPos, BlockPos> cores = new HashMap<>(); 
 
 		@Override
@@ -79,25 +81,27 @@ public class MultiBlockCacheSerializer implements ICapabilitySerializable<NBTBas
 		}
 
 		@Override
-		public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData0 data){
-			ArrayList<BlockPos> positions = data.getType().getPositions(posfrom, rotation);
-			for(BlockPos pos : positions){
+		public void registerMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data){
+			ArrayList<V3I> positions = data.getType().getPositions(new V3I(posfrom.getX(), posfrom.getY(), posfrom.getZ()), WrapperHolder.getSide(rotation));
+			for(V3I vec : positions){
+				BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
 				blocks.put(pos, data);
 				cores.put(pos, posfrom);
 			}
 		}
 
 		@Override
-		public void unregisterMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData0 data){
-			ArrayList<BlockPos> positions = data.getType().getPositions(posfrom, rotation);
-			for(BlockPos pos : positions){
-				blocks.remove(pos);
-				cores.remove(pos);
+		public void unregisterMultiBlock(BlockPos posfrom, EnumFacing rotation, MultiBlockData data){
+			ArrayList<V3I> positions = data.getType().getPositions(new V3I(posfrom.getX(), posfrom.getY(), posfrom.getZ()), WrapperHolder.getSide(rotation));
+			for(V3I vec : positions){
+				BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+				blocks.remove(pos, data);
+				cores.remove(pos, posfrom);
 			}
 		}
 
 		@Override
-		public MultiBlockData0 getMultiBlock(BlockPos pos){
+		public MultiBlockData getMultiBlock(BlockPos pos){
 			return blocks.get(pos);
 		}
 

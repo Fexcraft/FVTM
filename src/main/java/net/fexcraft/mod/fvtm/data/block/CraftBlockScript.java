@@ -1,18 +1,7 @@
 package net.fexcraft.mod.fvtm.data.block;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -22,23 +11,29 @@ import net.fexcraft.mod.fvtm.data.addon.AddonOld;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper.InputType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
 
 /**
  * Base class for Crafter-Type MultiBlock Scripts.
@@ -58,19 +53,19 @@ public abstract class CraftBlockScript implements BlockScript {
 	protected int processed;
 
 	@Override
-	public void read(MultiBlockData0 data, NBTTagCompound tag){
-		selected = tag.hasKey("selected") ? RECIPE_REGISTRY.get(tag.getString("selected")) : null;
-		autosel = tag.hasKey("auto_selected") ? RECIPE_REGISTRY.get(tag.getString("auto_selected")) : null;
-		cooldown = tag.hasKey("cooldown") ? tag.getInteger("cooldown") : 0;
-		processed = tag.hasKey("processed") ? tag.getInteger("processed") : 0;
+	public void read(MultiBlockData data, TagCW tag){
+		selected = tag.has("selected") ? RECIPE_REGISTRY.get(tag.getString("selected")) : null;
+		autosel = tag.has("auto_selected") ? RECIPE_REGISTRY.get(tag.getString("auto_selected")) : null;
+		cooldown = tag.has("cooldown") ? tag.getInteger("cooldown") : 0;
+		processed = tag.has("processed") ? tag.getInteger("processed") : 0;
 	}
 
 	@Override
-	public NBTTagCompound write(MultiBlockData0 data, NBTTagCompound compound){
-		if(selected != null) compound.setString("selected", selected.id);
-		if(autosel != null) compound.setString("auto_selected", autosel.id);
-		compound.setInteger("cooldown", cooldown);
-		compound.setInteger("processed", processed);
+	public TagCW write(MultiBlockData data, TagCW compound){
+		if(selected != null) compound.set("selected", selected.id);
+		if(autosel != null) compound.set("auto_selected", autosel.id);
+		compound.set("cooldown", cooldown);
+		compound.set("processed", processed);
 		return compound;
 	}
 
@@ -114,9 +109,9 @@ public abstract class CraftBlockScript implements BlockScript {
 		processed = 0;
 	}
 
-	protected void searchForRecipe(MultiBlockData0 multidata){
+	protected void searchForRecipe(MultiBlockData multidata){
 		if(blockid == null){
-			blockid = multidata.getType().getRegistryName().toString();
+			blockid = multidata.getType().getIDS();
 		}
 		ArrayList<Recipe> recipes = SORTED_REGISTRY.get(blockid);
 		if(recipes == null || recipes.isEmpty()) return;
@@ -136,7 +131,7 @@ public abstract class CraftBlockScript implements BlockScript {
 	}
 
 	@Override
-	public boolean onTrigger(MultiBlockData0 data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
+	public boolean onTrigger(MultiBlockData data, MB_Interact trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, V3D hit){
 		switch(trigger.getTarget()){
 			case "open_gui":{
 				player.openGui(FVTM.getInstance(), MULTIBLOCK_CRAFT_MAIN, player.world, core.getX(), core.getY(), core.getZ());
@@ -150,7 +145,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		}
 	}
 
-	public abstract List<Object[]> getUIElements(BlockData bdata, MultiBlockData0 mdata);
+	public abstract List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata);
 
 	public String getCurrentRecipe(){
 		return selected == null ? autosel == null ? "none" : autosel.id : selected.id;
@@ -179,7 +174,7 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public abstract boolean update_client();
 	
-	public abstract boolean consume(MultiBlockData0 data, String id, int amount, boolean simulate);
+	public abstract boolean consume(MultiBlockData data, String id, int amount, boolean simulate);
 
 	public int getCooldown(){
 		return cooldown;
@@ -219,7 +214,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			id = rcpid;
 		}
 
-		public void craft(CraftBlockScript script, MultiBlockData0 data){
+		public void craft(CraftBlockScript script, MultiBlockData data){
 			for(Entry<String, Integer> cons : consume.entrySet()){
 				script.consume(data, cons.getKey(), cons.getValue(), false);
 			}
@@ -258,7 +253,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			script.addCooldown();
 		}
 
-		public boolean canCraft(CraftBlockScript script, MultiBlockData0 data, boolean addcooldown){
+		public boolean canCraft(CraftBlockScript script, MultiBlockData data, boolean addcooldown){
 			boolean fits = true;
 			ArrayList<Integer> ints = new ArrayList<>();
 			for(OutputWrapper entry : output){
@@ -362,7 +357,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		
 	}
 
-	public static String getInvId(MultiBlockData0 data, InvType type, String invname, String fix){
+	public static String getInvId(MultiBlockData data, InvType type, String invname, String fix){
 		if(data.getInventories().containsKey(invname)) return invname;
 		ArrayList<String> coll = new ArrayList<>();
 		for(Entry<String, InvHandler> entry : data.getInventories().entrySet()){
@@ -745,7 +740,7 @@ public abstract class CraftBlockScript implements BlockScript {
 
 	public void setSelectedRecipe(MultiblockTileEntity tile, String string){
 		if(blockid == null){
-			blockid = tile.getMultiBlockData().getType().getRegistryName().toString();
+			blockid = tile.getMultiBlockData().getType().getIDS();
 		}
 		this.addCooldown();
 		for(Recipe recipe : SORTED_REGISTRY.get(blockid)){

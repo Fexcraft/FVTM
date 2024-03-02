@@ -1,8 +1,5 @@
 package net.fexcraft.mod.fvtm.util.script;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.script.ScrAction;
@@ -14,11 +11,15 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.gui.block.GBCElm;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Basic implementation of CraftBlockScript, enough on itself or to be used to extend.
@@ -43,7 +44,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public void read(MultiBlockData0 data, NBTTagCompound tag){
+	public void read(MultiBlockData data, TagCW tag){
 		if(script == null){
 			scriptwrapper.init(data);
 			script = scriptwrapper.script();
@@ -126,7 +127,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public NBTTagCompound write(MultiBlockData0 data, NBTTagCompound compound){
+	public TagCW write(MultiBlockData data, TagCW compound){
 		super.write(data, compound);
 		if(scriptwrapper.hasSave) scriptwrapper.save.process();
 		/*for(Entry<String, Elm> entry : consumables.entrySet()){
@@ -186,7 +187,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean consume(MultiBlockData0 data, String id, int amount, boolean simulate){
+	public boolean consume(MultiBlockData data, String id, int amount, boolean simulate){
 		InvHandler handler = data.getInventory(id);
 		if(handler == null) return false;
 		if(hasConsume){
@@ -207,7 +208,7 @@ public class DefaultCraftBlockFS extends CraftBlockScript {
 	}
 
 	@Override
-	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData0 mdata){
+	public List<Object[]> getUIElements(BlockData bdata, MultiBlockData mdata){
 		ArrayList list = new ArrayList();
 		if(add_def_ui.scr_bln()){
 			if(bdata.getType().isTickable()){

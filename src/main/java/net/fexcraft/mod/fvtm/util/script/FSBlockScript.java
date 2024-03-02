@@ -1,18 +1,16 @@
 package net.fexcraft.mod.fvtm.util.script;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.google.gson.JsonObject;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.script.ScrAction;
 import net.fexcraft.lib.script.Script;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockScript;
-import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
+import net.fexcraft.mod.fvtm.data.block.MB_Interact;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -20,7 +18,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FSBlockScript implements BlockScript {
 	
@@ -40,7 +41,7 @@ public class FSBlockScript implements BlockScript {
 		if(id.endsWith(".script")) id = id.substring(0, id.length() - 7);
 	}
 
-	public BlockScript init(MultiBlockData0 data){
+	public BlockScript init(MultiBlockData data){
 		Object[] obj = Resources.getInputStream(resloc);
 		script = new Script((InputStream)obj[0], id);
 		if(obj.length > 1){
@@ -59,12 +60,12 @@ public class FSBlockScript implements BlockScript {
 	}
 
 	@Override
-	public void read(MultiBlockData0 data, NBTTagCompound tag){
+	public void read(MultiBlockData data, TagCW tag){
 		
 	}
 
 	@Override
-	public NBTTagCompound write(MultiBlockData0 data, NBTTagCompound compound){
+	public TagCW write(MultiBlockData data, TagCW compound){
 		
 		return compound;
 	}
@@ -74,7 +75,7 @@ public class FSBlockScript implements BlockScript {
 		update.process(context.update(tile));
 	}
 
-	public boolean onTrigger(MultiBlockData0 data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
+	public boolean onTrigger(MultiBlockData data, MB_Interact trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, V3D hit){
 		if(!hasInteract) return false;
 		//TODO
 		return true;

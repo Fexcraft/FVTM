@@ -1,14 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
@@ -16,9 +9,11 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MB_Access.CapabilityContainer;
-import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
-import net.fexcraft.mod.fvtm.data.block.MultiBlockData0;
+import net.fexcraft.mod.fvtm.data.block.MB_Interact;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
+import net.fexcraft.mod.uni.world.CubeSide;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,9 +31,16 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 public class M_4ROT_TE extends BlockBase {
 
@@ -73,12 +75,14 @@ public class M_4ROT_TE extends BlockBase {
                 Print.chat(player, "No TileEntity found.");
                 return true;
             }
-            MultiBlockData0 data = te.getMultiBlockData();
+            MultiBlockData data = te.getMultiBlockData();
             if(data == null){
                 Print.chat(player, "MultiBlockData not found [TE].");
                 return true;
             }
-            if(te.triggers == null) te.triggers = data.getType().getTriggers(state.getValue(FACING), pos, te.isCore() ? pos : te.getCore());
+			V3I vpos = new V3I(pos.getX(), pos.getY(), pos.getZ());
+			V3I vcor = te.isCore() ? vpos : new V3I(te.getCore().getX(), te.getCore().getY(), te.getCore().getZ());
+            if(te.triggers == null) te.triggers = data.getType().getInteract(WrapperHolder.getSide(state.getValue(FACING)), vpos, vcor);
             if(processTriggers(te, te.triggers, data, te.isCore() ? pos : te.getCore(), player, hand, state, pos, side, hitX, hitY, hitZ)){
             	return true;
             }
@@ -87,13 +91,13 @@ public class M_4ROT_TE extends BlockBase {
         return true;
     }
     
-    protected static boolean processTriggers(MultiblockTileEntity te, List<MB_Trigger> triggers, MultiBlockData0 data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
-    	for(MB_Trigger trigger : triggers){
+    protected static boolean processTriggers(MultiblockTileEntity te, List<MB_Interact> triggers, MultiBlockData data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
+    	for(MB_Interact trigger : triggers){
         	boolean pass = trigger.isWholeBlock();
         	IBlockState corestate = player.world.getBlockState(core);
-        	Vec3d hit = new Vec3d(x, y, z);
+        	V3D hit = new V3D(x, y, z);
         	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(hit);//TODO aabb rotation
-        	if(!pass && trigger.getSide() != null) pass = trigger.getSide(corestate.getValue(FACING)) == side;
+        	if(!pass && trigger.getSide() != null) pass = trigger.getSide(corestate.getValue(FACING).getIndex()) == CubeSide.fromIndex(side.getIndex(), null);
         	if(pass){
         		if(trigger.forInventory()){
         			InvHandler handler = data.getInventory(trigger.getTarget());
@@ -170,7 +174,7 @@ public class M_4ROT_TE extends BlockBase {
     
 	public static void processBreak(World world, BlockPos pos, boolean hastile){
 		MultiblockTileEntity broken = hastile ? (MultiblockTileEntity)world.getTileEntity(pos) : null;
-		MultiBlockData0 data = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos) : broken.getMultiBlockData();
+		MultiBlockData data = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos) : broken.getMultiBlockData();
 		if(data == null){
 			//Print.debug("Multiblock at " + pos + " not found!");
 			return;
@@ -185,8 +189,9 @@ public class M_4ROT_TE extends BlockBase {
 			//Print.debug("Block at " + pos + "is NOT a MultiBlock! " + core);
 			return;
 		}
-		ArrayList<BlockPos> positions = data.getType().getPositions(corepos, core.getValue(FACING).getOpposite());
-		positions.forEach(blkpos -> {
+		ArrayList<V3I> positions = data.getType().getPositions(new V3I(corepos.getX(), corepos.getY(), corepos.getZ()), WrapperHolder.getSide(core.getValue(FACING).getOpposite()));
+		positions.forEach(vec -> {
+			BlockPos blkpos = new BlockPos(vec.x, vec.y, vec.z);
 			IBlockState posstate = world.getBlockState(blkpos);
 			if(posstate.getBlock() instanceof M_4ROT_TE || posstate.getBlock() instanceof M_4ROT){
 				MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(blkpos);
@@ -196,7 +201,7 @@ public class M_4ROT_TE extends BlockBase {
 					}
 					EntityItem item = new EntityItem(world);
 					item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);
-					item.setItem(tile.getMultiBlockData().newItemStack());
+					item.setItem(tile.getMultiBlockData().getNewStack().local());
 					world.spawnEntity(item);
 				}
 	            world.setBlockState(blkpos, Blocks.AIR.getDefaultState());

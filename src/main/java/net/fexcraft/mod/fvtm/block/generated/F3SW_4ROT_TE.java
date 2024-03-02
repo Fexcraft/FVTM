@@ -1,9 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
-
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.MultiBlock0;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +12,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 public class F3SW_4ROT_TE extends G_4ROT_TE {
 
@@ -54,7 +54,7 @@ public class F3SW_4ROT_TE extends G_4ROT_TE {
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
     	if(side.getAxis().isVertical()) return 0;
     	int track = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch2State();
-    	switch(MultiBlock0.rotate(side, state.getValue(FACING))){
+    	switch(MultiBlock.rotate(side, state.getValue(FACING))){
     		case NORTH: return track == 1 ? 15 : 0;
     		case WEST: return track == 0 ? 15 : 0;
     		case EAST: return track == 2 ? 15 : 0;

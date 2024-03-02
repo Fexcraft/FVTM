@@ -1,7 +1,9 @@
 package net.fexcraft.mod.uni.impl;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -29,6 +31,16 @@ public class AABBI extends AABB {
     @Override
     public <AB> AB offset(int x, int y, int z){
         return (AB)aabb.offset(x, y, z);
+    }
+
+    @Override
+    public boolean contains(V3D vec){
+        return aabb.contains(new Vec3d(vec.x, vec.y, vec.z));
+    }
+
+    @Override
+    public boolean contains(Object vec){
+        return aabb.contains((Vec3d)vec);
     }
 
 }

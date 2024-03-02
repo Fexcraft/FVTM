@@ -8,11 +8,7 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.*;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
@@ -47,6 +43,7 @@ import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
@@ -535,7 +532,7 @@ public class EffectRenderer {
     	MultiBlockItem item = (MultiBlockItem)stack.getItem();
     	BlockPos pos = event.getTarget().getBlockPos().add(0, 1, 0);
         pos = event.getPlayer().world.getBlockState(pos).getBlock().isReplaceable(event.getPlayer().world, pos) ? pos : pos.add(0, 1, 0);
-        ArrayList<BlockPos> poslist = item.getType().getPositions(pos, event.getPlayer().getHorizontalFacing());
+        ArrayList<V3I> poslist = item.getContent().getPositions(new V3I(pos.getX(), pos.getY(), pos.getZ()), WrapperHolder.getSide(event.getPlayer().getHorizontalFacing()));
         //
 		EntityPlayer player = event.getPlayer();
 		GlStateManager.disableTexture2D();
@@ -546,9 +543,9 @@ public class EffectRenderer {
 		GL11.glTranslated(-x, -y, -z);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		TexUtil.bindTexture(Resources.WHITE_TEXTURE);
-		for(BlockPos blkpos : poslist){
+		for(V3I vec : poslist){
 			GL11.glPushMatrix();
-	        GL11.glTranslated(blkpos.getX(), blkpos.getY(), blkpos.getZ());
+	        GL11.glTranslated(vec.x, vec.y, vec.z);
 	        blkpreview.render();
 	        GL11.glPopMatrix();
 		}

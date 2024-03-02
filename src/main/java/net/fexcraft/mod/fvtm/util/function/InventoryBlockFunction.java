@@ -9,10 +9,9 @@ import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.function.block.BoolBlockFunction;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.BlockSide;
+import net.fexcraft.mod.uni.world.CubeSide;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -65,7 +64,7 @@ public class InventoryBlockFunction extends BlockFunction {
 	}
 
 	@Override
-	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, BlockSide side, EntityW player, boolean main){
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean main){
 		if(!main) return false;
 		UIKey ui = handler.type.isFluid() ? UIKey.BLOCK_INVENTORY_FLUID : UIKey.BLOCK_INVENTORY_ITEM;
 		if(key != null){

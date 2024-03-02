@@ -20,7 +20,6 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -58,7 +57,7 @@ public class DataUtil {
 			Addon addon = FvtmRegistry.getAddon(addin);
 			if(addon != null) return addon;
 		}
-		return ADDONS.get(InternalAddon.REGNAME);
+		return ADDONS.get(FvtmRegistry.INTERNAL_ADDON_ID);
 	}
 	
 	public static List<String> getStringArray(JsonObject obj, String key, boolean split, boolean immutable){

@@ -197,7 +197,7 @@ public class M_4ROT_TE extends BlockBase {
 				MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(blkpos);
 				if(tile != null && tile.iscore){
 					for(InvHandler handler : tile.getMultiBlockData().getInventories().values()){
-						handler.dropAllAt(world, tile.getPos());
+						handler.dropAllAt(WrapperHolder.getWorld(world), tile.getV3I());
 					}
 					EntityItem item = new EntityItem(world);
 					item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);

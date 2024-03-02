@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Pivot;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.uni.world.EntityWI;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
@@ -178,7 +178,7 @@ public class SeatCache {
         double yoff = passenger instanceof EntityPlayer ? passenger.getYOffset() : 0;
         passenger.setPosition(pos.x, pos.y + yoff, pos.z);
         if(!vehicle.world.isRemote && passenger instanceof EntityPlayerMP){
-        	Resources.resetFlight((EntityPlayerMP)passenger);
+        	EventHandler.resetFlight((EntityPlayerMP)passenger);
         }
 	}
 

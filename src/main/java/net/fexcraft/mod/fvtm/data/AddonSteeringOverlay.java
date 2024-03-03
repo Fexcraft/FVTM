@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +20,7 @@ public abstract class AddonSteeringOverlay {
 	//
 	protected net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay root;
 	protected EntityPlayer playerentity;
-	protected EntityW player;
+	protected Passenger player;
 
 	public AddonSteeringOverlay(net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay root, EntityPlayer player){
 		this.root = root;

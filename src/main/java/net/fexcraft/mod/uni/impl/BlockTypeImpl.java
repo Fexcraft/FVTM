@@ -13,6 +13,7 @@ public class BlockTypeImpl {
         switch(type){
             case GENERIC_4ROT: return plain ? G_4ROT.class : G_4ROT_TE.class;
             case GENERIC_4X4ROT: return plain ? G_4x4ROT.class : G_4x4ROT_TE.class;
+            case GENERIC_8ROT: return plain ? G_8ROT.class : G_8ROT_TE.class;
             case GENERIC_16ROT: return plain ? G_16ROT.class : G_16ROT_TE.class;
             case GENERIC_SIMPLE: return plain ? G_SIMPLE.class : G_SIMPLE_TE.class;
             case GENERIC_2VAR: return plain ? G_VAR.T2.class : G_VAR_TE.T2.class;

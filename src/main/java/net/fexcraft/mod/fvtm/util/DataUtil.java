@@ -130,36 +130,6 @@ public class DataUtil {
 		}
 		return result == null ? nell ? null : new RGB() : result;
 	}
-    
-    /** Allows for loading more than 256 slots. **/
-    public static void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, String customtag){
-        NBTTagList list = tag.getTagList(customtag == null ? "Items" : customtag, 10);
-        for(int i = 0; i < list.tagCount(); ++i){
-            NBTTagCompound compound = list.getCompoundTagAt(i);
-            int j = compound.getShort("Slot");
-            if(j >= 0 && j < stacks.size()){
-                stacks.set(j, new ItemStack(compound));
-            }
-        }
-    }
-    
-    /** Allows for saving more than 256 slots. **/
-    public static NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, boolean saveEmpty, String customtag){
-        NBTTagList list = new NBTTagList();
-        for(int i = 0; i < stacks.size(); ++i){
-            ItemStack stack = stacks.get(i);
-            if(!stack.isEmpty()){
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setShort("Slot", (short)i);
-                stack.writeToNBT(compound);
-                list.appendTag(compound);
-            }
-        }
-        if(!list.isEmpty() || saveEmpty){
-            tag.setTag(customtag != null ? customtag : "Items", list);
-        }
-        return tag;
-    }
 
 	public static NBTBase writeVec3d(Vec3d vec){
 		NBTTagList list = new NBTTagList();

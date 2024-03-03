@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.model.ModelGroup;
-import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.model.*;
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonElement;
@@ -17,7 +17,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
@@ -47,18 +46,17 @@ public class WirePrograms {
 			deg = angle;
 		}
 
+		@Override
 		public String id(){
 			return "fvtm:wire_rotate_y";
 		}
 		
-		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
 			GL11.glRotatef(deg, 0, 1, 0);
 		}
 
-		public Program parse(JsonElement elm){
-			return new RotateY(elm.getAsJsonArray().get(0).getAsFloat());
-		}
-		
+		@Override
 		public Program parse(String[] args){
 			return args.length > 0 ? new RotateY(Float.parseFloat(args[0])) : this;
 		}
@@ -67,11 +65,13 @@ public class WirePrograms {
 	
 	public static Program ROTATED = new Program(){
 
+		@Override
 		public String id(){
 			return "fvtm:wire_rotated";
 		}
-		
-		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
 			GL11.glRotated(WireRenderer.ANGLE, 0, 1, 0);
 		}
 		
@@ -86,27 +86,18 @@ public class WirePrograms {
 			this.length = length;
 			diswire = disable;
 		}
-		
-		public DownwardAngled(float length){
-			this(length, false);
-		}
-		
-		public DownwardAngled(){
-			this(sixteenth);
-		}
 
+		@Override
 		public String id(){
 			return "fvtm:wire_downward_angled";
 		}
 		
-		public void preRender(ModelGroup list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
 			GL11.glRotated(WireRenderer.ANGLE_DOWN, 1, 0, 0);
 		}
 
-		public Program parse(JsonElement elm){
-			return new DownwardAngled(elm.getAsJsonArray().get(0).getAsFloat(), elm.getAsJsonArray().get(1).getAsBoolean());
-		}
-		
+		@Override
 		public Program parse(String[] args){
 			return new DownwardAngled(args.length > 0 ? Float.parseFloat(args[0]) : sixteenth, args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
 		}
@@ -162,10 +153,12 @@ public class WirePrograms {
 			}
 		}
 
+		@Override
 		public String id(){
 			return "fvtm:wire_spaced_deco";
 		}
-		
+
+		@Override
 		public Program parse(String[] args){
 			return new SpacedDeco(args);
 		}
@@ -236,10 +229,12 @@ public class WirePrograms {
 			model[3] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
 		}
 
-		public String getId(){
+		@Override
+		public String id(){
 			return "fvtm:wire_catenary_dropper";
 		}
-		
+
+		@Override
 		public Program parse(String[] args){
 			return new CatenaryDropper(args);
 		}

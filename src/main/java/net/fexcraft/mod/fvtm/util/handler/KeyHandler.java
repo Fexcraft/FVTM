@@ -2,15 +2,12 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
@@ -102,7 +99,7 @@ public class KeyHandler {
     }
 
     public void handleKeyboardInput(){
-        EntityW player = minecraft.player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+        Passenger player = minecraft.player.getCapability(Capabilities.PASSENGER, null).asWrapper();
         SeatInstance seat = ((RootVehicle)minecraft.player.getRidingEntity()).getSeatOf(minecraft.player);
         if(seat == null) return;
         boolean uni12 = false;

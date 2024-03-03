@@ -25,7 +25,7 @@ public class ClothItem extends ItemArmor implements ItemTextureable.TextureableI
 	private Cloth cloth;
 	
 	public ClothItem(Cloth cloth){
-		super((ArmorMaterial)cloth.getMaterial().local(), 0, EntityEquipmentSlot.fromString(cloth.getEqSlot()));
+		super((ArmorMaterial)cloth.getMaterial().local(), 0, EntityEquipmentSlot.fromString(cloth.getEqSlot().toLowerCase()));
 		this.cloth = cloth;
 		setHasSubtypes(true);
 		setRegistryName(cloth.getID().colon());

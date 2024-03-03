@@ -56,8 +56,6 @@ public class GuiHandler implements IGuiHandler {
 	public static final HashMap<String, NBTTagCompound> SERVER_GUIDATA_CACHE = new HashMap<>();
 	public static final String LISTENERID = "fvtm:gui";
 
-	/* 60x - toolbox*/
-	public static final int TOOLBOX_COLORS = 600;
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	public static final int JUNCTION_ADJUSTER = 701;
@@ -109,7 +107,7 @@ public class GuiHandler implements IGuiHandler {
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
 		switch(ID){
-			case TOOLBOX_COLORS:{
+			case UIKey.ID12_TOOLBOX_COLORS:{
 				return new UniCon(new ToolboxPaintContainer(FvtmResources.getJson("assets/fvtm/uis/toolbox_colors.json"), player, x), player);
 			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
@@ -171,7 +169,7 @@ public class GuiHandler implements IGuiHandler {
 		try{
 			EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
 			switch(ID){
-				case TOOLBOX_COLORS: {
+				case UIKey.ID12_TOOLBOX_COLORS: {
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/toolbox_colors.json");
 					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), null, player);
 				}

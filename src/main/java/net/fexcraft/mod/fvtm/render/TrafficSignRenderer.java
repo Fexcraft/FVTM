@@ -24,7 +24,6 @@ public class TrafficSignRenderer {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //GL11.glTranslated(-cx, -cy, -cz);
-    	TexUtil.bindTexture(FvtmRegistry.WHITE_TEXTURE);
         for(Chunk chunk : TrafficSignLibrary.CHUNKS){
         	TrafficSigns cap = chunk.getCapability(Capabilities.TRAFFIC_SIGNS, null);
         	if(cap == null) continue;

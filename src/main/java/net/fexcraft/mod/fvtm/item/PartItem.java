@@ -85,7 +85,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
         if(part.getDefaultFunctions().size() > 0){
         	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", part.getDefaultFunctions().size()));
         }
-        if(part.getModel().getCreators().size() > 0){
+        if(part.getModel() != null && part.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
             for(String str : part.getModel().getCreators()){
             	tooltip.add(Formatter.format("&7- " + str));

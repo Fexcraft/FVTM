@@ -27,7 +27,7 @@ public class MultiblockTickableTE extends MultiblockTileEntity implements IPacke
 		}
 		pass = 20;
 		for(Map.Entry<String, InvHandler> entry : mdata.getInventories().entrySet()){
-			entry.getValue().update(this, entry.getKey());
+			entry.getValue().update(this, entry.getKey(), world.isRemote);
 		}
 	}
 

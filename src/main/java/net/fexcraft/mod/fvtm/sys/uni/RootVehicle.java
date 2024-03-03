@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
@@ -22,6 +23,7 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -333,7 +335,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if(isDead || hand == EnumHand.OFF_HAND) return false;
 		ItemStack stack = player.getHeldItemMainhand();
-		StackWrapper wrapper = FvtmResources.INSTANCE.newStack(stack);
+		StackWrapper wrapper = FvtmResources.wrapStack(stack);
+		Passenger pass = player.getCapability(PASSENGER, null).asWrapper();
 		if(world.isRemote){
 			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return true;
 			if(Lockable.isKey(wrapper.getItem())) return true;
@@ -362,7 +365,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 				}
 				else if(stack.getMetadata() == 2){
-					player.openGui(FVTM.getInstance(), TOOLBOX_COLORS, world, getEntityId(), 0, 0);
+					pass.openUI(UIKey.TOOLBOX_COLORS, new V3I(getEntityId(), 0, 0));
 				}
 				return true;
 			}

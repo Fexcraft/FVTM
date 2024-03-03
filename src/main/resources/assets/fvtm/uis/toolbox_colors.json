@@ -1,29 +1,29 @@
 {
-    "_info_": "Color/Paint Toolbox UI",
-    "background": false,
-    "size": [ 256, 256 ],
-    "tabs": {
-        "main": {
-            "texture": "fvtm:textures/gui/toolbox_colors.png",
-            "size": [ 141, 169 ],
-            "pos": [ 0, 0 ],
-            "absolute": true,
-            "buttons": [
-                "help", "info",
-                "prev", "next",
-                "rgb", "hex", "colorpicker",
+	"_info_": "Color/Paint Toolbox UI",
+	"background": false,
+	"size": [ 256, 256 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/toolbox_colors.png",
+			"size": [ 141, 169 ],
+			"pos": [ 0, 0 ],
+			"absolute": true,
+			"buttons": [
+				"help", "info",
+				"prev", "next",
+				"rgb", "hex", "colorpicker",
 				"selected", "select", "save",
 				"pal_hor", "pal_shade", "pal_save"
-            ],
-            "texts": [
-                "title", "channel"
-            ],
-            "fields": [
-                "rgb", "hex"
-            ]
-        }
-    },
-    "buttons": {
+			],
+			"texts": [
+				"title", "channel"
+			],
+			"fields": [
+				"rgb", "hex"
+			]
+		}
+	},
+	"buttons": {
 		"help": {
 			"absolute": true,
 			"size": [ 9, 9 ],
@@ -114,16 +114,16 @@
 			"color": "ffffff",
 			"palette": [ 1, 26, 5, 5 ]
 		}
-    },
-    "texts": {
-        "title": {
-            "absolute": true,
-            "size": [ 109, 7 ],
-            "pos": [ 25, 2 ],
-            "autoscale": true,
-            "color": "242424",
-            "value": "Painting Toolbox"
-        },
+	},
+	"texts": {
+		"title": {
+			"absolute": true,
+			"size": [ 109, 7 ],
+			"pos": [ 25, 2 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Painting Toolbox"
+		},
 		"channel": {
 			"absolute": true,
 			"size": [ 106, 8 ],
@@ -132,8 +132,8 @@
 			"color": "cfcfcf",
 			"value": "-"
 		}
-    },
-    "fields": {
+	},
+	"fields": {
 		"rgb": {
 			"absolute": true,
 			"size": [ 117, 8 ],
@@ -146,5 +146,5 @@
 			"pos": [ 4, 61 ],
 			"background": false
 		}
-    }
+	}
 }

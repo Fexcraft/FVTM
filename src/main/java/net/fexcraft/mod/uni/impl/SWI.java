@@ -6,6 +6,7 @@ import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -88,6 +89,11 @@ public class SWI extends StackWrapper {
 	@Override
 	public boolean empty(){
 		return stack.isEmpty();
+	}
+
+	@Override
+	public void createTagIfMissing(){
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 	}
 
 }

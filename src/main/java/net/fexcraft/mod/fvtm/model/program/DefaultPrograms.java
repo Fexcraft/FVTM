@@ -27,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -1878,8 +1879,8 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.tile == null) return;
 			var = (InvHandlerVar)((MultiblockTileEntity)data.tile).getMultiBlockData().getInventory(inv);
-			if(var == null || var.stackAt(index).isEmpty()) return;
-			bdata = var.stackAt(index).getCapability(Capabilities.VAPDATA, null).getBlockData();
+			if(var == null || var.stackAt(index).empty()) return;
+			bdata = ((ItemStack)var.stackAt(index).direct()).getCapability(Capabilities.VAPDATA, null).getBlockData();
 			if(bdata.getType().getModel() == null) return;
 			pos.translate();
 			TexUtil.bindTexture(bdata.getTexture().getTexture());

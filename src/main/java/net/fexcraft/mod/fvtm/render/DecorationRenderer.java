@@ -22,7 +22,6 @@ public class DecorationRenderer {
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		//GL11.glTranslated(-cx, -cy, -cz);
-		TexUtil.bindTexture(FvtmRegistry.WHITE_TEXTURE);
 		for(Entity ent : world.loadedEntityList){
 			if(ent instanceof Decoration == false) continue;
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;

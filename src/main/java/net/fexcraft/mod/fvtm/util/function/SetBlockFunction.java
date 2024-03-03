@@ -7,6 +7,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.fexcraft.mod.uni.world.CubeSide;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -42,7 +43,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 	}
 
 	@Override
-	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean main){
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, Passenger player, boolean main){
 		if(!main || Static.random.nextFloat() < (1f - chance)) return false;
 		Block block = Block.getBlockFromName(nblock);
 		if(block != null){

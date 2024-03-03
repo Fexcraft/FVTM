@@ -96,9 +96,9 @@ public class EntityWI extends Passenger {
 
 	@Override
 	@Deprecated
-	public void openUI(Object key, V3I pos){
+	public void openUI(UIKey key, V3I pos){
 		if(entity instanceof EntityPlayer == false) return;
-		((EntityPlayer)entity).openGui(FVTM.getInstance(), ((UIKey)key).id, world.local(), pos.x, pos.y, pos.z);
+		((EntityPlayer)entity).openGui(FVTM.getInstance(), key.id, world.local(), pos.x, pos.y, pos.z);
 	}
 
 	@Override

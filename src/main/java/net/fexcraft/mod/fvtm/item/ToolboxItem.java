@@ -2,14 +2,9 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,50 +17,42 @@ import java.util.List;
  */
 public class ToolboxItem extends Item {
 
-    public static ToolboxItem INSTANCE;
+	public static ToolboxItem INSTANCE;
 
-    public ToolboxItem(){
-        super();
-        INSTANCE = this;
-        setMaxStackSize(1);
-        setRegistryName("fvtm:toolbox");
-        setTranslationKey("fvtm:toolbox");
-    }
+	public ToolboxItem(){
+		super();
+		INSTANCE = this;
+		setMaxStackSize(1);
+		setRegistryName("fvtm:toolbox");
+		setTranslationKey("fvtm:toolbox");
+	}
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-        switch(stack.getItemDamage()){
-            case 0:{
-                tooltip.add("Part Removal and Maintenance Toolbox");
-                break;
-            }
-            case 1:{
-                tooltip.add("Livery/Texture Management Toolbox");
-                break;
-            }
-            case 2:{
-                tooltip.add("Color Channel Painting Toolbox");
-                break;
-            }
-        }
-    }
-	
-	/*@Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || hand == EnumHand.OFF_HAND) return EnumActionResult.PASS;
-        ItemStack stack = player.getHeldItemMainhand();
-        //
-        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-    }*/
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
+		switch(stack.getItemDamage()){
+			case 0:{
+				tooltip.add("Part Removal and Maintenance Toolbox");
+				break;
+			}
+			case 1:{
+				tooltip.add("Livery/Texture Management Toolbox");
+				break;
+			}
+			case 2:{
+				tooltip.add("Color Channel Painting Toolbox");
+				break;
+			}
+		}
+	}
 
-        @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
-    	if(tab == CreativeTabs.SEARCH || tab == getCreativeTab()){
-    		items.add(new ItemStack(INSTANCE, 1, 0));
-    		items.add(new ItemStack(INSTANCE, 1, 1));
-    		items.add(new ItemStack(INSTANCE, 1, 2));
-    	}
-    }
+	@Override
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
+		if(tab == CreativeTabs.SEARCH || tab == getCreativeTab()){
+			items.add(new ItemStack(INSTANCE, 1, 0));
+			items.add(new ItemStack(INSTANCE, 1, 1));
+			items.add(new ItemStack(INSTANCE, 1, 2));
+		}
+	}
 
 }

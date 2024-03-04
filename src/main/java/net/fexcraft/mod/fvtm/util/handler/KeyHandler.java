@@ -36,23 +36,23 @@ public class KeyHandler {
 
     public KeyHandler(){
         minecraft = Minecraft.getMinecraft();
-        ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("key.fvtm.engine", KeyConflictContex.VEHICLE, Keyboard.KEY_LCONTROL, category));
-        ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("key.fvtm.vehicle_inventory", KeyConflictContex.VEHICLE, Keyboard.KEY_R, category));
-        ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("key.fvtm.vehicle_doors", KeyConflictContex.VEHICLE, Keyboard.KEY_K, category));
-        ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("key.fvtm.vehicle_scripts", KeyConflictContex.VEHICLE, Keyboard.KEY_G, category));
-        ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("key.fvtm.vehicle_lights", KeyConflictContex.VEHICLE, Keyboard.KEY_L, category));
-        ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("key.fvtm.vehicle_trailer", KeyConflictContex.VEHICLE, Keyboard.KEY_0, category));
-        ClientRegistry.registerKeyBinding(wagonToggle = new KeyBinding("key.fvtm.vehicle_wagon", KeyConflictContex.VEHICLE, Keyboard.KEY_MINUS, category));
-        ClientRegistry.registerKeyBinding(arrow_up = new KeyBinding("key.fvtm.arrow_up", KeyConflictContex.VEHICLE, Keyboard.KEY_UP, category));
-        ClientRegistry.registerKeyBinding(arrow_down = new KeyBinding("key.fvtm.arrow_down", KeyConflictContex.VEHICLE, Keyboard.KEY_DOWN, category));
-        ClientRegistry.registerKeyBinding(arrow_left = new KeyBinding("key.fvtm.arrow_left", KeyConflictContex.VEHICLE, Keyboard.KEY_LEFT, category));
-        ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("key.fvtm.arrow_right", KeyConflictContex.VEHICLE, Keyboard.KEY_RIGHT, category));
-        ClientRegistry.registerKeyBinding(reset = new KeyBinding("key.fvtm.reset", KeyConflictContex.TOGGABLE, Keyboard.KEY_SEMICOLON, category));
-        ClientRegistry.registerKeyBinding(brake = new KeyBinding("key.fvtm.brake", KeyConflictContex.VEHICLE, Keyboard.KEY_SPACE, category));
-        ClientRegistry.registerKeyBinding(pbrake = new KeyBinding("key.fvtm.pbrake", KeyConflictContex.VEHICLE, Keyboard.KEY_O, category));
+        ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("key.fvtm.engine", KeyConflictContext.VEHICLE, Keyboard.KEY_LCONTROL, category));
+        ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("key.fvtm.vehicle_inventory", KeyConflictContext.VEHICLE, Keyboard.KEY_R, category));
+        ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("key.fvtm.vehicle_doors", KeyConflictContext.VEHICLE, Keyboard.KEY_K, category));
+        ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("key.fvtm.vehicle_scripts", KeyConflictContext.VEHICLE, Keyboard.KEY_G, category));
+        ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("key.fvtm.vehicle_lights", KeyConflictContext.VEHICLE, Keyboard.KEY_L, category));
+        ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("key.fvtm.vehicle_trailer", KeyConflictContext.VEHICLE, Keyboard.KEY_0, category));
+        ClientRegistry.registerKeyBinding(wagonToggle = new KeyBinding("key.fvtm.vehicle_wagon", KeyConflictContext.VEHICLE, Keyboard.KEY_MINUS, category));
+        ClientRegistry.registerKeyBinding(arrow_up = new KeyBinding("key.fvtm.arrow_up", KeyConflictContext.VEHICLE, Keyboard.KEY_UP, category));
+        ClientRegistry.registerKeyBinding(arrow_down = new KeyBinding("key.fvtm.arrow_down", KeyConflictContext.VEHICLE, Keyboard.KEY_DOWN, category));
+        ClientRegistry.registerKeyBinding(arrow_left = new KeyBinding("key.fvtm.arrow_left", KeyConflictContext.VEHICLE, Keyboard.KEY_LEFT, category));
+        ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("key.fvtm.arrow_right", KeyConflictContext.VEHICLE, Keyboard.KEY_RIGHT, category));
+        ClientRegistry.registerKeyBinding(reset = new KeyBinding("key.fvtm.reset", KeyConflictContext.TOGGABLE, Keyboard.KEY_SEMICOLON, category));
+        ClientRegistry.registerKeyBinding(brake = new KeyBinding("key.fvtm.brake", KeyConflictContext.VEHICLE, Keyboard.KEY_SPACE, category));
+        ClientRegistry.registerKeyBinding(pbrake = new KeyBinding("key.fvtm.pbrake", KeyConflictContext.VEHICLE, Keyboard.KEY_O, category));
     }
     
-    public static enum KeyConflictContex implements IKeyConflictContext {
+    public static enum KeyConflictContext implements IKeyConflictContext {
 
     	VEHICLE {
     		@Override

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util.handler;
+package net.fexcraft.mod.fvtm.data.inv;
 
 import java.util.TreeMap;
 

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINERS;
+import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_CONTAINERS;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import net.fexcraft.lib.common.math.Time;
@@ -188,7 +188,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		@Override
 		public void openGUI(EntityPlayer player){
 			if(player == null) Static.exception(new Exception("Tried to open GUI on server side, but no player specified / is NULL."), false);
-			player.openGui(FVTM.getInstance(), VEHICLE_CONTAINERS, entity.world, 0, entity.getEntityId(), 0);
+			player.openGui(FVTM.getInstance(), VEHICLE_CONTAINERS.id, entity.world, 0, entity.getEntityId(), 0);
 		}
 
 		@Override

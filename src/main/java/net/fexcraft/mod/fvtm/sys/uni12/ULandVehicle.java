@@ -1,20 +1,9 @@
 package net.fexcraft.mod.fvtm.sys.uni12;
 
-import static net.fexcraft.mod.fvtm.Config.*;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
-import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -25,46 +14,40 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.item.ContainerItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.packet.*;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.sys.uni.Axle;
-import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
-import net.fexcraft.mod.fvtm.ui.UIKey;
-import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
-import net.fexcraft.mod.fvtm.util.LoopSound;
-import net.fexcraft.mod.fvtm.util.PacketsImpl;
-import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
-import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.function.part.ContainerFunction;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.uni.world.MessageSenderI;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
+import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
+import net.fexcraft.mod.fvtm.util.LoopSound;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
+import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -75,16 +58,21 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
+
+import static net.fexcraft.mod.fvtm.Config.*;
+import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -712,6 +700,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
         if(isDead || hand == EnumHand.OFF_HAND) return false;
         ItemStack stack = player.getHeldItem(hand);
+		Passenger pass = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
         if(world.isRemote){
         	if((!stack.isEmpty() && stack.getItem() instanceof PartItem == false) || Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))) return true;
             if(vehicle.getLock().isLocked()){
@@ -727,8 +716,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	return true;
         }
         if(!stack.isEmpty()){
-            if(stack.getItem() instanceof MaterialItem ){//TODO && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
-            	player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
+            if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
+				pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
             	return true;
             }
             else if(stack.getItem() instanceof VehicleItem){

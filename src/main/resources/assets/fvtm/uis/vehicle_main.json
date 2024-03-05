@@ -1,0 +1,104 @@
+{
+	"_info_": "Color/Paint Toolbox UI",
+	"background": false,
+	"size": [ 169, 96 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/vehicle_main.png",
+			"size": [ 169, 96 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"status",
+				"fuel",
+				"attributes",
+				"inventories",
+				"containers",
+				"connectors"
+			],
+			"texts": [
+				"status",
+				"fuel",
+				"attributes",
+				"inventories",
+				"containers",
+				"connectors"
+			]
+		}
+	},
+	"buttons": {
+		"status": {
+			"size": [ 155, 12 ],
+			"pos": [ 7, 7 ],
+			"uv": [ 7, 7 ]
+		},
+		"fuel": {
+			"size": [ 155, 12 ],
+			"pos": [ 7, 21 ],
+			"uv": [ 7, 21 ]
+		},
+		"attributes": {
+			"size": [ 155, 12 ],
+			"pos": [ 7, 35 ],
+			"uv": [ 7, 35 ]
+		},
+		"inventories": {
+			"size": [ 155, 12 ],
+			"pos": [ 7, 49 ],
+			"uv": [ 7, 49 ]
+		},
+		"containers": {
+			"size": [ 155, 12 ],
+			"pos": [ 7, 63 ],
+			"uv": [ 7, 63 ]
+		},
+		"connectors": {
+			"size": [ 155, 12 ],
+			"pos": [ 7, 77 ],
+			"uv": [ 7, 77 ]
+		}
+	},
+	"texts": {
+		"status": {
+			"size": [ 140, 8 ],
+			"pos": [ 20, 9 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Status / Vehicle Info"
+		},
+		"fuel": {
+			"size": [ 140, 8 ],
+			"pos": [ 20, 23 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Fuel"
+		},
+		"attributes": {
+			"size": [ 140, 8 ],
+			"pos": [ 20, 37 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Attributes"
+		},
+		"inventories": {
+			"size": [ 140, 8 ],
+			"pos": [ 20, 51 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Inventories"
+		},
+		"containers": {
+			"size": [ 140, 8 ],
+			"pos": [ 20, 65 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Containers"
+		},
+		"connectors": {
+			"size": [ 140, 8 ],
+			"pos": [ 20, 79 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Connectors"
+		}
+	}
+}

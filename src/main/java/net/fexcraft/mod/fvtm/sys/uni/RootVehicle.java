@@ -354,7 +354,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
+				pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
 				return true;
 			}
 			else if(stack.getItem() instanceof ToolboxItem){

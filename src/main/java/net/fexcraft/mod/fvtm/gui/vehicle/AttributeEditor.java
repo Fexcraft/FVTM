@@ -1,17 +1,11 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
-import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_TOGGABLES;
-
-import java.util.ArrayList;
-
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
@@ -20,6 +14,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+
+import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 public class AttributeEditor extends GenericGui<VehicleContainer> {
 
@@ -109,7 +108,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
 			case "retn":{
-				openGui(VEHICLE_TOGGABLES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
+				openGui(UIKey.ID12_VEHICLE_TOGGABLES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
 				return true;
 			}
 			case "help":{

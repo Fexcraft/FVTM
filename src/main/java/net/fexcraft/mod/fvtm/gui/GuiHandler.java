@@ -88,16 +88,16 @@ public class GuiHandler implements IGuiHandler {
 	//
 	/* 93x - vehicle */
 	//public static final int VEHICLE_MAIN = 930;
-	public static final int VEHICLE_ATTRIBUTE_EDITOR = 932;
-	public static final int VEHICLE_FUEL = 933;
-	public static final int VEHICLE_TOGGABLES = 934;
-	public static final int VEHICLE_INVENTORIES = 935;
+	//public static final int VEHICLE_ATTRIBUTE_EDITOR = 932;
+	//public static final int VEHICLE_FUEL = 933;
+	//public static final int VEHICLE_TOGGABLES = 934;
+	//public static final int VEHICLE_INVENTORIES = 935;
 	public static final int VEHICLE_INVENTORY_ITEM = 9361;
 	public static final int VEHICLE_INVENTORY_FLUID = 9362;
 	public static final int VEHICLE_INVENTORY_VAR = 9363;
-	public static final int VEHICLE_CONTAINERS = 937;
+	//public static final int VEHICLE_CONTAINERS = 937;
 	public static final int VEHICLE_CONTAINER = 938;
-	public static final int VEHICLE_CONNECTORS = 939;
+	//public static final int VEHICLE_CONNECTORS = 939;
 	/* 94x - container */
 	public static final int CONTAINER_INVENTORY_ITEM = 941;
 	public static final int CONTAINER_INVENTORY_FLUID = 942;
@@ -132,19 +132,19 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstContainerTex(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstContainer(player, world, x, y, z);
 			case UIKey.ID12_VEHICLE_MAIN:
-				return new UniCon(new CIImpl(FvtmResources.getJson("assets/fvtm/uis/vehicle_main.json"), entity, pos), player);
-			case VEHICLE_FUEL:
-			case VEHICLE_TOGGABLES:
-			case VEHICLE_INVENTORIES:
-			case VEHICLE_CONTAINERS:
+				return new UniCon(new VehicleMainCon(FvtmResources.getJson("assets/fvtm/uis/vehicle_main.json"), entity, pos), player);
+			case UIKey.ID12_VEHICLE_FUEL:
+			case UIKey.ID12_VEHICLE_TOGGABLES:
+			case UIKey.ID12_VEHICLE_INVENTORIES:
+			case UIKey.ID12_VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
-			case VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
+			case UIKey.ID12_VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
 			case WIRE_RELAY_MAIN:
 			case WIRE_RELAY_EDIT:
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
-			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
+			case UIKey.ID12_VEHICLE_ATTR_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
 			case UIKey.ID12_DECORATION_EDITOR:{
 				if(DECORATION_CATEGORIES.isEmpty()) return null;
@@ -201,20 +201,20 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_PAINTER: return new ConstPainter(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_MAIN:{
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_main.json");
-					return new UniUI(new VehicleMain(map, new CIImpl(map, entity, pos)), player);
+					return new UniUI(new VehicleMain(map, new VehicleMainCon(map, entity, pos)), player);
 				}
-				case VEHICLE_FUEL: return new VehicleFuel(player, world, x, y, z);
-				case VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
-				case VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
-				case VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_FUEL: return new VehicleFuel(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
 				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
-				case VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraft(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
 				case WIRE_RELAY_MAIN: return new WireRelayChooser(player, world, x, y, z);
 				case WIRE_RELAY_EDIT: return new WireRelayEditor(player, world, x, y, z);
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
-				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_ATTR_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
 				case UIKey.ID12_DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;

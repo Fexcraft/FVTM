@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -41,7 +42,9 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.ui.*;
+import net.fexcraft.mod.fvtm.ui.VehicleMain;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -106,6 +109,7 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+		V3I pos = new V3I(x, y, z);
 		switch(ID){
 			case UIKey.ID12_TOOLBOX_COLORS:{
 				return new UniCon(new ToolboxPaintContainer(FvtmResources.getJson("assets/fvtm/uis/toolbox_colors.json"), player, x), player);
@@ -128,6 +132,7 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstContainerTex(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstContainer(player, world, x, y, z);
 			case UIKey.ID12_VEHICLE_MAIN:
+				return new UniCon(new CIImpl(FvtmResources.getJson("assets/fvtm/uis/vehicle_main.json"), entity, pos), player);
 			case VEHICLE_FUEL:
 			case VEHICLE_TOGGABLES:
 			case VEHICLE_INVENTORIES:
@@ -168,10 +173,11 @@ public class GuiHandler implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		try{
 			EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+			V3I pos = new V3I(x, y, z);
 			switch(ID){
 				case UIKey.ID12_TOOLBOX_COLORS: {
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/toolbox_colors.json");
-					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), null, player);
+					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), player);
 				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
@@ -184,7 +190,7 @@ public class GuiHandler implements IGuiHandler {
 				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
 				case CONSTRUCTOR_MAIN:{
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/constructor_main.json");
-					return new UniUI(new ConstructorMain(map, new ConstructorContainer(map, player, x, y, z)), null, player);
+					return new UniUI(new ConstructorMain(map, new ConstructorContainer(map, player, x, y, z)), player);
 				}
 				//case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
 				case CONSTRUCTOR_CONTENTINFO: return new ConstContentData(player, world, x, y, z);
@@ -193,7 +199,10 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_PARTINSTALLER: return new ConstPartInstaller(player, world, x, y, z);
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstTextureManager(player, world, x, y, z);
 				case CONSTRUCTOR_PAINTER: return new ConstPainter(player, world, x, y, z);
-				case UIKey.ID12_VEHICLE_MAIN: return new VehicleMain(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_MAIN:{
+					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_main.json");
+					return new UniUI(new VehicleMain(map, new CIImpl(map, entity, pos)), player);
+				}
 				case VEHICLE_FUEL: return new VehicleFuel(player, world, x, y, z);
 				case VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
 				case VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
@@ -210,7 +219,7 @@ public class GuiHandler implements IGuiHandler {
 				case UIKey.ID12_DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json");
-					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), null, player);
+					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), player);
 				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//

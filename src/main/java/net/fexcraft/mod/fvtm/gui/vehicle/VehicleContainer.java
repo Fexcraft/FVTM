@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -14,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,7 +46,7 @@ public class VehicleContainer extends GenericContainer {
 
 	public VehicleContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
-		if(x == VEHICLE_FUEL){
+		if(x == UIKey.VEHICLE_FUEL.id){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 			vehent = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			this.inventoryItemStacks.clear();

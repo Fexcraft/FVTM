@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_ATTRIBUTE_EDITOR;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -145,7 +145,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("edit")){
 			int row = Integer.parseInt(button.name.replace("edit", "")) + scroll;
 			if(row >= attributes.size()) return true;
-			openGui(VEHICLE_ATTRIBUTE_EDITOR, new int[] { veh.vehicle.data.getAttributeIndex(attributes.get(row)), veh.getEntityId(), 0 }, LISTENERID);
+			openGui(UIKey.VEHICLE_ATTR_EDITOR.id, new int[] { veh.vehicle.data.getAttributeIndex(attributes.get(row)), veh.getEntityId(), 0 }, LISTENERID);
 			return true;
 		}
 		return false;

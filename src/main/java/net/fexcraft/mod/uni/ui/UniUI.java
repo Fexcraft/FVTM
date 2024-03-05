@@ -36,6 +36,10 @@ public class UniUI extends GuiContainer {
 		ySize = ui.height;
 	}
 
+	public UniUI(UserInterface ui, EntityPlayer player){
+		this(ui, null, player);
+	}
+
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks){
 		super.drawScreen(mouseX, mouseY, partialTicks);

@@ -7,10 +7,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
-import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -106,6 +103,13 @@ public class WorldWI extends FvtmWorld {
 		if(ent == null) return;
 		((RootVehicle)ent).setPosRotMot(
 			packet.pos, packet.yaw, packet.pitch, packet.roll, packet.throttle, packet.steering, packet.fuel);
+	}
+
+	@Override
+	public VehicleInstance getVehicle(int entid){
+		Entity ent = world.getEntityByID(entid);
+		if(ent instanceof RootVehicle == false) return null;
+		return ((RootVehicle)ent).vehicle;
 	}
 
 }

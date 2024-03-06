@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,6 +35,17 @@ public class UniUI extends GuiContainer {
 		(container = con).setup(this);
 		xSize = ui.width;
 		ySize = ui.height;
+		ui.drawer = new UserInterface.Drawer() {
+			@Override
+			public void draw(int x, int y, int u, int v, int w, int h){
+				drawTexturedModalRect(x, y, u, v, w, h);
+			}
+
+			@Override
+			public void bind(IDL texture){
+				TexUtil.bindTexture(texture);
+			}
+		};
 	}
 
 	public UniUI(UserInterface ui, EntityPlayer player){
@@ -51,6 +63,8 @@ public class UniUI extends GuiContainer {
 		super.initGui();
 		ui.screen_width = width;
 		ui.screen_height = height;
+		ui.gLeft = guiLeft;
+		ui.gTop = guiTop;
 		/*buttons.clear();
 		texts.clear();
 		fields.clear();
@@ -107,6 +121,7 @@ public class UniUI extends GuiContainer {
 				drawTexturedModalRect(guiLeft + tab.x, guiTop + tab.y, tx, ty, tab.width, tab.height);
 			}
 		}
+		ui.drawbackground(ticks, mx, my);
 	}
 
 	protected void postdraw(float ticks, int mx, int my){
@@ -125,7 +140,7 @@ public class UniUI extends GuiContainer {
 
 	@Override
 	protected void mouseClicked(int mx, int my, int mb) throws IOException {
-		if(ui.onClick(guiLeft, guiTop, mx, my, mb)) return;
+		if(ui.onClick(mx, my, mb)) return;
 		super.mouseClicked(mx, my, mb);
 	}
 
@@ -165,7 +180,7 @@ public class UniUI extends GuiContainer {
 			for(Entry<String, UIButton> entry : tab.buttons.entrySet()){
 				if(exit) break;
 				if(entry.getValue().hovered(guiLeft, guiTop, x, y)){
-					exit = entry.getValue().onscroll(guiLeft, guiTop, x, y, am) || ui.onScroll(entry.getValue(), entry.getKey(), guiLeft, guiTop, x, y, am);
+					exit = entry.getValue().onscroll(guiLeft, guiTop, x, y, am) || ui.onScroll(entry.getValue(), entry.getKey(), x, y, am);
 				}
 			}
 			for(UIText text : tab.texts.values()){

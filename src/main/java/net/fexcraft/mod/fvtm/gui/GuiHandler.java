@@ -42,9 +42,11 @@ import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.ui.*;
-import net.fexcraft.mod.fvtm.ui.VehicleMain;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuel;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMain;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMainCon;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -134,6 +136,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_VEHICLE_MAIN:
 				return new UniCon(new VehicleMainCon(FvtmResources.getJson("assets/fvtm/uis/vehicle_main.json"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_FUEL:
+				return new UniCon(new VehicleFuelCon(FvtmResources.getJson("assets/fvtm/uis/vehicle_fuel.json"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_TOGGABLES:
 			case UIKey.ID12_VEHICLE_INVENTORIES:
 			case UIKey.ID12_VEHICLE_CONTAINERS:
@@ -203,7 +206,10 @@ public class GuiHandler implements IGuiHandler {
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_main.json");
 					return new UniUI(new VehicleMain(map, new VehicleMainCon(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_FUEL: return new VehicleFuel(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_FUEL: {
+					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_fuel.json");
+					return new UniUI(new VehicleFuel(map, new VehicleFuelCon(map, entity, pos)), player);
+				}
 				case UIKey.ID12_VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);

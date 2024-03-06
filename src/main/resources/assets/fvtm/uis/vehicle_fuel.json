@@ -1,0 +1,37 @@
+{
+	"_info_": "Vehicle Fuel UI",
+	"background": false,
+	"size": [ 176, 154 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/vehicle_fuel.png",
+			"size": [ 176, 154 ],
+			"pos": [ 0, 0 ],
+			"texts": [
+				"accepts",
+				"fuel_name",
+				"fuel_stored"
+			]
+		}
+	},
+	"texts": {
+		"accepts": {
+			"size": [ 158, 8 ],
+			"pos": [ 9, 9 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"fuel_name": {
+			"size": [ 158, 8 ],
+			"pos": [ 9, 23 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"fuel_stored": {
+			"size": [ 158, 8 ],
+			"pos": [ 9, 37 ],
+			"autoscale": true,
+			"color": "242424"
+		}
+	}
+}

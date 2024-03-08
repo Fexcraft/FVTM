@@ -1,16 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -23,9 +15,8 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Compat;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.Perms;
-import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -36,16 +27,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
 
 public class RoadToolItem extends Item implements JunctionGridItem {
 	
@@ -134,7 +129,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	return EnumActionResult.FAIL;
         }
 		pos = pos.down();
-        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
     	RoadPlacingUtil.place(world, player, stack, vector);
 		return EnumActionResult.SUCCESS;
     }
@@ -221,56 +216,56 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		angle = Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
 		angle += Static.rad90;
 		for(double fl = -half; fl <= half; fl += 0.25){
-			if(road != null) road.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 0, 0))), 0));
-			if(ground != null) ground.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, -1, 0))), 0));
-			if(line != null) line.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 1, 0))), 0));
-			if(roof != null) roof.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, topheight, 0))), 0));
+			if(road != null) road.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 0, 0))), 16));
+			if(ground != null) ground.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, -1, 0))), 16));
+			if(line != null) line.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, 1, 0))), 16));
+			if(roof != null) roof.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(fl, topheight, 0))), 16));
 		}
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
-				roadfill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0))), 0));
+				roadfill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0))), 16));
 			}
 		}
 		if(linefill != null){
 			for(int i = 0; i < linefill.size(); i++){
-				linefill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 1, 0))), 0));
+				linefill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), 1, 0))), 16));
 			}
 		}
 		if(rooffill != null){
 			for(int i = 0; i < rooffill.size(); i++){
-				rooffill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), topheight, 0))), 0));
+				rooffill.get(i).add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half + 0.25 + (i * 1), topheight, 0))), 16));
 			}
 		}
-		if(border_l != null) border_l.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half - 1, 0, 0))), 0));
-		if(border_r != null) border_r.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(half + 1, 0, 0))), 0));
+		if(border_l != null) border_l.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(-half - 1, 0, 0))), 16));
+		if(border_r != null) border_r.add(new QV3D(_road.vecpath[0].add(grv(angle, new V3D(half + 1, 0, 0))), 16));
 		while(passed < _road.length){ passed += 0.125f;
 			last = vec; vec = _road.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
 			double off = roadfill == null ? 0 : 0.25;
 			for(double fl = -half; fl <= half; fl += 0.25){
-				if(road != null) road.add(new QV3D(vec.add(grv(angle, new V3D(fl, 0, 0))), 0));
-				if(ground != null) ground.add(new QV3D(vec.add(grv(angle, new V3D(fl + off, -1, 0))), 0));
-				if(line != null) line.add(new QV3D(vec.add(grv(angle, new V3D(fl, 1, 0))), 0));
-				if(roof != null) roof.add(new QV3D(vec.add(grv(angle, new V3D(fl, topheight, 0))), 0));
+				if(road != null) road.add(new QV3D(vec.add(grv(angle, new V3D(fl, 0, 0))), 16));
+				if(ground != null) ground.add(new QV3D(vec.add(grv(angle, new V3D(fl + off, -1, 0))), 16));
+				if(line != null) line.add(new QV3D(vec.add(grv(angle, new V3D(fl, 1, 0))), 16));
+				if(roof != null) roof.add(new QV3D(vec.add(grv(angle, new V3D(fl, topheight, 0))), 16));
 			}
 			if(roadfill != null){
 				for(int i = 0; i < roadfill.size(); i++){
-					roadfill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0))), 0));
+					roadfill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + 0.25 + (i * 1), 0, 0))), 16));
 				}
 			}
 			if(linefill != null){
 				for(int i = 0; i < linefill.size(); i++){
-					linefill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), 1, 0))), 0));
+					linefill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), 1, 0))), 16));
 				}
 			}
 			if(rooffill != null){
 				for(int i = 0; i < rooffill.size(); i++){
-					rooffill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), topheight, 0))), 0));
+					rooffill.get(i).add(new QV3D(vec.add(grv(angle, new V3D(-half + off + (i * 1), topheight, 0))), 16));
 				}
 			}
-			if(border_l != null) border_l.add(new QV3D(vec.add(grv(angle, new V3D(-half - 1 + off, 0, 0))), 0));
-			if(border_r != null) border_r.add(new QV3D(vec.add(grv(angle, new V3D(half + 1 + off, 0, 0))), 0));
+			if(border_l != null) border_l.add(new QV3D(vec.add(grv(angle, new V3D(-half - 1 + off, 0, 0))), 16));
+			if(border_r != null) border_r.add(new QV3D(vec.add(grv(angle, new V3D(half + 1 + off, 0, 0))), 16));
 		}
 		JsonMap map = new JsonMap();
 		if(road != null){

@@ -136,7 +136,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_VEHICLE_MAIN:
 				return new UniCon(new VehicleMainCon(FvtmResources.getJson("assets/fvtm/uis/vehicle_main.json"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_FUEL:
-				return new UniCon(new VehicleFuelCon(FvtmResources.getJson("assets/fvtm/uis/vehicle_fuel.json"), entity, pos), player);
+				return new UniCon(new VehicleFuelConImpl(FvtmResources.getJson("assets/fvtm/uis/vehicle_fuel.json"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_TOGGABLES:
 			case UIKey.ID12_VEHICLE_INVENTORIES:
 			case UIKey.ID12_VEHICLE_CONTAINERS:
@@ -208,7 +208,7 @@ public class GuiHandler implements IGuiHandler {
 				}
 				case UIKey.ID12_VEHICLE_FUEL: {
 					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_fuel.json");
-					return new UniUI(new VehicleFuel(map, new VehicleFuelCon(map, entity, pos)), player);
+					return new UniUI(new VehicleFuel(map, new VehicleFuelConImpl(map, entity, pos)), player);
 				}
 				case UIKey.ID12_VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);

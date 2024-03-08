@@ -33,5 +33,21 @@
 			"autoscale": true,
 			"color": "242424"
 		}
+	},
+	"slots": {
+		"fuel": {
+			"pos": [ 116, 50 ],
+			"player": false
+		},
+		"player3x9": {
+			"pos": [ 8, 74 ],
+			"index": 9,
+			"repeat": [ 9, 3 ]
+		},
+		"player1x9": {
+			"pos": [ 8, 130 ],
+			"index": 0,
+			"repeat": [ 9, 1 ]
+		}
 	}
 }

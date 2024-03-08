@@ -104,7 +104,7 @@ public class EntityWI extends Passenger {
 	@Override
 	public void openUI(String id, V3I pos){
 		if(entity instanceof EntityPlayer == false) return;
-		((EntityPlayer)entity).openGui(FVTM.getInstance(), UniReg.getUIID(id), entity.world, pos.x, pos.y, pos.z);
+		((EntityPlayer)entity).openGui(FVTM.getInstance(), UIKey.get(id), entity.world, pos.x, pos.y, pos.z);
 	}
 
 	@Override

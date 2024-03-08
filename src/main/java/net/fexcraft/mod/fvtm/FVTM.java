@@ -81,20 +81,15 @@ import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.fexcraft.mod.uni.ui.UIButton;
-import net.fexcraft.mod.uni.ui.UIField;
-import net.fexcraft.mod.uni.ui.UITab;
-import net.fexcraft.mod.uni.ui.UIText;
-import net.fexcraft.mod.uni.ui.UUIButton;
-import net.fexcraft.mod.uni.ui.UUIField;
-import net.fexcraft.mod.uni.ui.UUITab;
-import net.fexcraft.mod.uni.ui.UUIText;
+import net.fexcraft.mod.uni.ui.*;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
@@ -163,6 +158,13 @@ public class FVTM {
 			UIField.IMPLEMENTATION = UUIField.class;
 			GLO.SUPPLIER = () -> new GLObject();
 		}
+		UISlot.SLOT_GETTER = (type, args) -> {
+			switch(type){
+				case "default":
+				default:
+					return new Slot((IInventory)args[0], (Integer)args[1], (Integer)args[2], (Integer)args[3]);
+			}
+		};
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);

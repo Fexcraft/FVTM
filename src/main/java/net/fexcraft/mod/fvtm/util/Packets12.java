@@ -223,6 +223,7 @@ public class Packets12 {
 
 		@Override
 		public IMessage onMessage(PI_VehMove message, MessageContext ctx){
+			if(Minecraft.getMinecraft().player == null) return null;
 			Minecraft.getMinecraft()
 				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
 			return null;

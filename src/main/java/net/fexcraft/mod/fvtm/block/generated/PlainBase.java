@@ -1,10 +1,5 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -14,17 +9,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.fexcraft.mod.uni.world.StateWrapper.GETTER;
 import static net.fexcraft.mod.uni.world.WrapperHolder.*;
@@ -116,6 +111,11 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	@Override
 	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity){
 		return type.isLadder();
+	}
+
+	@Override
+	public boolean isPassable(IBlockAccess world, BlockPos pos){
+		return type.getPassable() == null ? super.isPassable(world, pos) : type.getPassable();
 	}
 
 }

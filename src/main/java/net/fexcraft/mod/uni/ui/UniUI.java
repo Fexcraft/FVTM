@@ -126,6 +126,7 @@ public class UniUI extends GuiContainer {
 
 	protected void postdraw(float ticks, int mx, int my){
 		tooltip.clear();
+		ui.getTooltip(mx, my, tooltip);
 		for(UITab tab : tabs.values()){
 			if(!tab.visible()) continue;
 			for(UIButton button : tab.buttons.values()){

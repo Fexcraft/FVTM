@@ -36,6 +36,7 @@ interact.fvtm.vehicle.engine_on=Please turn the engine off first!
 
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.
+ui.fvtm.vehicle_fuel.accepts=Accepts:
 ui.fvtm.vehicle_attributes.toggle=Toggle Attribute Value
 ui.fvtm.vehicle_attributes.edit=Edit Attribute
 ui.fvtm.vehicle_attributes.filter_all=Filter (Show All)
@@ -44,6 +45,8 @@ ui.fvtm.vehicle_attributes.filter_external=Filter (External-Only)
 ui.fvtm.vehicle_attributes.filter_seat=Filter (Current-Seat-Only)
 ui.fvtm.vehicle_attributes.scroll_up=Scroll Up
 ui.fvtm.vehicle_attributes.scroll_down=Scroll Down
+ui.fvtm.vehicle_attributes.scroll=Viewing:
+ui.fvtm.vehicle_attributes.not_editable=Not Editable
 
 # GUIs
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.
@@ -223,7 +226,6 @@ gui.fvtm.vehicle.main.inventories=Inventories
 gui.fvtm.vehicle.main.containers=Containers
 gui.fvtm.vehicle.main.connectors=Connectors
 gui.fvtm.vehicle.main.exit=Exit
-gui.fvtm.vehicle.fuel.accepts=Accepts: 
 gui.fvtm.vehicle.attribute.scroll_value=Scroll:
 gui.fvtm.vehicle.attribute.open_editor=Open Attribute Editor
 gui.fvtm.vehicle.attribute.toggle_value=Toggle Attribute Value

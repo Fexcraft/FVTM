@@ -44,10 +44,7 @@ import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
 import net.fexcraft.mod.fvtm.ui.*;
-import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuel;
-import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
-import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMain;
-import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMainCon;
+import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
@@ -141,7 +138,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_VEHICLE_FUEL:
 				return new UniCon(new VehicleFuelConImpl(gJ("vehicle_fuel"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_ATTRIBUTES:
-				return new UniCon(new ContainerInterface(gJ("vehicle_attributes"), entity, pos), player);
+				return new UniCon(new VehicleAttributesCon(gJ("vehicle_attributes"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_INVENTORIES:
 			case UIKey.ID12_VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
@@ -216,7 +213,7 @@ public class GuiHandler implements IGuiHandler {
 				}
 				case UIKey.ID12_VEHICLE_ATTRIBUTES:{
 					JsonMap map = gJC("vehicle_attributes");
-					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+					return new UniUI(new VehicleAttributes(map, new VehicleAttributesCon(map, entity, pos)), player);
 				}
 				case UIKey.ID12_VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);

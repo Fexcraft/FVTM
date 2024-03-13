@@ -108,7 +108,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
 			case "retn":{
-				openGui(UIKey.ID12_VEHICLE_TOGGABLES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
+				openGui(UIKey.ID12_VEHICLE_ATTRIBUTES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
 				return true;
 			}
 			case "help":{

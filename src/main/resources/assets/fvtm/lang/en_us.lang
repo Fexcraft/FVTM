@@ -36,6 +36,14 @@ interact.fvtm.vehicle.engine_on=Please turn the engine off first!
 
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.
+ui.fvtm.vehicle_attributes.toggle=Toggle Attribute Value
+ui.fvtm.vehicle_attributes.edit=Edit Attribute
+ui.fvtm.vehicle_attributes.filter_all=Filter (Show All)
+ui.fvtm.vehicle_attributes.filter_editable=Filter (Editable-Only)
+ui.fvtm.vehicle_attributes.filter_external=Filter (External-Only)
+ui.fvtm.vehicle_attributes.filter_seat=Filter (Current-Seat-Only)
+ui.fvtm.vehicle_attributes.scroll_up=Scroll Up
+ui.fvtm.vehicle_attributes.scroll_down=Scroll Down
 
 # GUIs
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.

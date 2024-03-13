@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 
 public class VehicleToggables extends GenericGui<VehicleContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_toggables.png");
+	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_attributes.png");
 	private static String SCROLL, OPEN_EDITOR, NOT_EDITABLE, TOGGLE_VALUE, TOGGLE_INFO;
 	private ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	private ArrayList<String> ttip = new ArrayList<String>();

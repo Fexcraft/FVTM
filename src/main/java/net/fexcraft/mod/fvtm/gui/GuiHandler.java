@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
+import static net.fexcraft.mod.fvtm.FvtmResources.*;
 
 import java.util.HashMap;
 
@@ -47,8 +48,10 @@ import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuel;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMain;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMainCon;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
+import net.fexcraft.mod.uni.ui.UserInterface;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -114,7 +117,7 @@ public class GuiHandler implements IGuiHandler {
 		V3I pos = new V3I(x, y, z);
 		switch(ID){
 			case UIKey.ID12_TOOLBOX_COLORS:{
-				return new UniCon(new ToolboxPaintContainer(FvtmResources.getJson("assets/fvtm/uis/toolbox_colors.json"), player, x), player);
+				return new UniCon(new ToolboxPaintContainer(gJ("toolbox_colors"), player, x), player);
 			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
@@ -125,7 +128,7 @@ public class GuiHandler implements IGuiHandler {
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
 			case CONSTRUCTOR_MAIN:
-				return new UniCon(new ConstructorContainer(FvtmResources.getJson("assets/fvtm/uis/constructor_main.json"), player, x, y, z), player);
+				return new UniCon(new ConstructorContainer(gJ("constructor_main"), player, x, y, z), player);
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_CONTENTINFO:
 			case CONSTRUCTOR_PARTINFO:
@@ -134,10 +137,11 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstContainerTex(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstContainer(player, world, x, y, z);
 			case UIKey.ID12_VEHICLE_MAIN:
-				return new UniCon(new VehicleMainCon(FvtmResources.getJson("assets/fvtm/uis/vehicle_main.json"), entity, pos), player);
+				return new UniCon(new VehicleMainCon(gJ("vehicle_main"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_FUEL:
-				return new UniCon(new VehicleFuelConImpl(FvtmResources.getJson("assets/fvtm/uis/vehicle_fuel.json"), entity, pos), player);
-			case UIKey.ID12_VEHICLE_TOGGABLES:
+				return new UniCon(new VehicleFuelConImpl(gJ("vehicle_fuel"), entity, pos), player);
+			case UIKey.ID12_VEHICLE_ATTRIBUTES:
+				return new UniCon(new ContainerInterface(gJ("vehicle_attributes"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_INVENTORIES:
 			case UIKey.ID12_VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
@@ -151,7 +155,7 @@ public class GuiHandler implements IGuiHandler {
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
 			case UIKey.ID12_DECORATION_EDITOR:{
 				if(DECORATION_CATEGORIES.isEmpty()) return null;
-				return new UniCon(new DecoContainer(FvtmResources.getJson("assets/fvtm/uis/deco_editor.json"), player, x), player);
+				return new UniCon(new DecoContainer(gJ("deco_editor"), player, x), player);
 			}
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
@@ -179,7 +183,7 @@ public class GuiHandler implements IGuiHandler {
 			V3I pos = new V3I(x, y, z);
 			switch(ID){
 				case UIKey.ID12_TOOLBOX_COLORS: {
-					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/toolbox_colors.json");
+					JsonMap map = gJC("toolbox_colors");
 					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), player);
 				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
@@ -192,7 +196,7 @@ public class GuiHandler implements IGuiHandler {
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
 				case CONSTRUCTOR_MAIN:{
-					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/constructor_main.json");
+					JsonMap map = gJC("constructor_main");
 					return new UniUI(new ConstructorMain(map, new ConstructorContainer(map, player, x, y, z)), player);
 				}
 				//case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
@@ -203,14 +207,17 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstTextureManager(player, world, x, y, z);
 				case CONSTRUCTOR_PAINTER: return new ConstPainter(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_MAIN:{
-					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_main.json");
+					JsonMap map = gJC("vehicle_main");
 					return new UniUI(new VehicleMain(map, new VehicleMainCon(map, entity, pos)), player);
 				}
 				case UIKey.ID12_VEHICLE_FUEL: {
-					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/vehicle_fuel.json");
+					JsonMap map = gJC("vehicle_fuel");
 					return new UniUI(new VehicleFuel(map, new VehicleFuelConImpl(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_ATTRIBUTES:{
+					JsonMap map = gJC("vehicle_attributes");
+					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+				}
 				case UIKey.ID12_VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
 				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
@@ -224,7 +231,7 @@ public class GuiHandler implements IGuiHandler {
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
 				case UIKey.ID12_DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;
-					JsonMap map = FvtmResources.INSTANCE.getJsonC("fvtm:uis/deco_editor.json");
+					JsonMap map = gJC("deco_editor");
 					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), player);
 				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
@@ -261,6 +268,14 @@ public class GuiHandler implements IGuiHandler {
 			if(Static.dev()) Print.log("Getting server compound " + SERVER_GUIDATA_CACHE.get(player.getGameProfile().getId().toString()));
 			return SERVER_GUIDATA_CACHE.remove(player.getGameProfile().getId().toString());
 		}
+	}
+
+	public JsonMap gJ(String uiid){
+		return getJson("assets/fvtm/uis/" + uiid + ".json");
+	}
+
+	public JsonMap gJC(String uiid){
+		return INSTANCE.getJsonC("fvtm:uis/" + uiid + ".json");
 	}
 
 }

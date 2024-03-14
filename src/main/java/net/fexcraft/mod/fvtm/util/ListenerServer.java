@@ -81,7 +81,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 			case "vehicle":{
 				RootVehicle vehicle = (RootVehicle)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(vehicle == null) return;
-				vehicle.vehicle.packet(TagCW.wrap(packet.nbt), false);
+				vehicle.vehicle.packet(TagCW.wrap(packet.nbt), player.getCapability(Capabilities.PASSENGER, null).asWrapper());
 				return;
 			}
 			default: return;

@@ -68,7 +68,7 @@ public class UniVarInvContainer extends GenericContainer {
 			invhandler = (InvHandlerVar)((InventoryBlockFunction)blk_tile.getBlockData().getFunctionInventory()).inventory();
 			title = blk_tile.getBlockData().getType().getName();
 		}
-		else if(ID == GuiHandler.VEHICLE_INVENTORY_FLUID){
+		else if(ID == UIKey.VEHICLE_INVENTORY_FLUID.id){
 			entity = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			SeatCache seat = entity.getSeatOf(player);
 			int invid = 0;

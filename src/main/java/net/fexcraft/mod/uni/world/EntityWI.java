@@ -159,6 +159,11 @@ public class EntityWI extends Passenger {
 	}
 
 	@Override
+	public void send(String str, Object... args){
+		entity.sendMessage(new TextComponentString(Formatter.format(I18n.format(str, args))));
+	}
+
+	@Override
 	public void bar(String s){
 		if(entity instanceof EntityPlayer){
 			((EntityPlayer)entity.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(I18n.format(s))), true);

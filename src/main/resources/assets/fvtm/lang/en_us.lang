@@ -52,6 +52,9 @@ ui.fvtm.vehicle_attributes.scroll_up=Scroll Up
 ui.fvtm.vehicle_attributes.scroll_down=Scroll Down
 ui.fvtm.vehicle_attributes.scroll=Viewing:
 ui.fvtm.vehicle_attributes.not_editable=Not Editable
+ui.fvtm.vehicle_inventories.title=Vehicle Inventories
+ui.fvtm.vehicle_inventories.page_next=Next Page
+ui.fvtm.vehicle_inventories.page_prev=Previous Page
 
 # GUIs
 gui.fvtm.constructor.help=Need Help? | Click to open Wiki Page.

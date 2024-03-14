@@ -33,9 +33,7 @@ public class VehicleContainer extends GenericContainer {
 	protected RootVehicle vehent;
 	protected PartData invpart;
 	protected String inv_id;
-	protected GenericIInventory fuel;
 	protected int slots;
-	protected long fuel_date = 0;
 	/** When things have to be fixed by force. */
 	protected EntityPlayerMP mpp;
 	//
@@ -46,25 +44,6 @@ public class VehicleContainer extends GenericContainer {
 
 	public VehicleContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
-		if(x == UIKey.VEHICLE_FUEL.id){
-			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			vehent = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-			this.inventoryItemStacks.clear();
-			this.inventorySlots.clear();
-			invmode = true;
-			fuel = new GenericIInventory(null, 1, 1);
-			slots = 1;
-			addSlotToContainer(new Slot(fuel, 0, 116, 50));
-			//
-			for(int row = 0; row < 3; row++){
-				for(int col = 0; col < 9; col++){
-					addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 74 + row * 18));
-				}
-			}
-			for(int col = 0; col < 9; col++){
-				addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
-			}
-		}
 		if(x == VEHICLE_CONTAINER){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 			entity = player.world.getEntityByID(y);
@@ -99,15 +78,6 @@ public class VehicleContainer extends GenericContainer {
 				//
 			}
 			else{
-				if(packet.getString("cargo").equals("update_fuel_tank")){
-					vehent.vehicle.data.getAttribute("fuel_stored").set(packet.getInteger("state"));
-					if(packet.hasKey("stack")) fuel.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack")));
-				}
-				if(packet.getString("cargo").equals("update_fuel_data")){
-					vehent.vehicle.data.getAttribute("fuel_primary").set(packet.getString("primary"));
-					vehent.vehicle.data.getAttribute("fuel_secondary").set(packet.getString("secondary"));
-					vehent.vehicle.data.getAttribute("fuel_quality").set(packet.getFloat("quality"));
-				}
 				if(packet.getString("cargo").equals("update_stack")){
 					inventorySlots.get(packet.getInteger("index")).putStack(new ItemStack(packet.getCompoundTag("stack")));
 					inventoryItemStacks.set(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
@@ -145,9 +115,6 @@ public class VehicleContainer extends GenericContainer {
 	@Override
 	public void onContainerClosed(EntityPlayer player){
 		super.onContainerClosed(player);
-		if(fuel != null){
-			fuel.closeInventory(player);
-		}
 		if(slotInv != null){
 			slotInv.closeInventory(player);
 		}

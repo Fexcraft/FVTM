@@ -33,6 +33,11 @@ interact.fvtm.constructor.no_block=No Block in Constructor.
 interact.fvtm.vehicle.locked=Vehicle is locked.
 interact.fvtm.vehicle.remove_locked=Vehicle is locked. Unlock if you want to remove it.
 interact.fvtm.vehicle.engine_on=Please turn the engine off first!
+//
+interact.fvtm.vehicle.attribute.not_found=&eAttribute '%s' not found.
+interact.fvtm.vehicle.attribute.not_editable=&eAttribute is not editable.
+interact.fvtm.vehicle.attribute.not_external=&eAttribute is not externally accessible.
+interact.fvtm.vehicle.attribute.not_supported=&eToggling this attribute type is not supported yet.
 
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.

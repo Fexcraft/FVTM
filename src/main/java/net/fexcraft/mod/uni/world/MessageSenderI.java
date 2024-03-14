@@ -22,6 +22,11 @@ public class MessageSenderI implements MessageSender {
 	}
 
 	@Override
+	public void send(String str, Object... args){
+		sender.sendMessage(new TextComponentString(Formatter.format(str, args)));
+	}
+
+	@Override
 	public void bar(String s){
 		if(sender instanceof EntityPlayer){
 			((EntityPlayer)sender.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(s)), true);

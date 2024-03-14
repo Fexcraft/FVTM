@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -44,6 +45,11 @@ public class UniUI extends GuiContainer {
 			@Override
 			public void bind(IDL texture){
 				TexUtil.bindTexture(texture);
+			}
+
+			@Override
+			public void apply(RGB color){
+				color.glColorApply();
 			}
 		};
 	}

@@ -94,9 +94,9 @@ public class GuiHandler implements IGuiHandler {
 	//public static final int VEHICLE_FUEL = 933;
 	//public static final int VEHICLE_TOGGABLES = 934;
 	//public static final int VEHICLE_INVENTORIES = 935;
-	public static final int VEHICLE_INVENTORY_ITEM = 9361;
-	public static final int VEHICLE_INVENTORY_FLUID = 9362;
-	public static final int VEHICLE_INVENTORY_VAR = 9363;
+	//public static final int VEHICLE_INVENTORY_ITEM = 9361;
+	//public static final int VEHICLE_INVENTORY_FLUID = 9362;
+	//public static final int VEHICLE_INVENTORY_VAR = 9363;
 	//public static final int VEHICLE_CONTAINERS = 937;
 	public static final int VEHICLE_CONTAINER = 938;
 	//public static final int VEHICLE_CONNECTORS = 939;
@@ -140,6 +140,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_VEHICLE_ATTRIBUTES:
 				return new UniCon(new VehicleAttributesCon(gJ("vehicle_attributes"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_INVENTORIES:
+				return new UniCon(new VehicleInventoriesCon(gJC("vehicle_inventories"), entity, pos), player);
 			case UIKey.ID12_VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
 			case UIKey.ID12_VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
@@ -157,15 +158,15 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
 			case UIKey.ID12_BLOCK_INVENTORY_ITEM:
-			case VEHICLE_INVENTORY_ITEM:
+			case UIKey.ID12_VEHICLE_INVENTORY_ITEM:
 			case CONTAINER_INVENTORY_ITEM:
 			case UIKey.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvContainer(player, world, ID, x, y, z);
 			case UIKey.ID12_BLOCK_INVENTORY_FLUID:
-			case VEHICLE_INVENTORY_FLUID:
+			case UIKey.ID12_VEHICLE_INVENTORY_FLUID:
 			case CONTAINER_INVENTORY_FLUID:
 			case UIKey.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
 			case UIKey.ID12_BLOCK_INVENTORY_VAR:
-			case VEHICLE_INVENTORY_VAR:
+			case UIKey.ID12_VEHICLE_INVENTORY_VAR:
 			case CONTAINER_INVENTORY_VAR:
 			case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
 			
@@ -215,7 +216,10 @@ public class GuiHandler implements IGuiHandler {
 					JsonMap map = gJC("vehicle_attributes");
 					return new UniUI(new VehicleAttributes(map, new VehicleAttributesCon(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
+				case UIKey.ID12_VEHICLE_INVENTORIES:{
+					JsonMap map = gJC("vehicle_inventories");
+					return new UniUI(new VehicleInventories(map, new VehicleInventoriesCon(map, entity, pos)), player);
+				}
 				case UIKey.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
 				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
 				case UIKey.ID12_VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
@@ -234,15 +238,15 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//
 				case UIKey.ID12_BLOCK_INVENTORY_ITEM:
-				case VEHICLE_INVENTORY_ITEM:
+				case UIKey.ID12_VEHICLE_INVENTORY_ITEM:
 				case CONTAINER_INVENTORY_ITEM:
 				case UIKey.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvUi(player, world, ID, x, y, z);
 				case UIKey.ID12_BLOCK_INVENTORY_FLUID:
-				case VEHICLE_INVENTORY_FLUID:
+				case UIKey.ID12_VEHICLE_INVENTORY_FLUID:
 				case CONTAINER_INVENTORY_FLUID:
 				case UIKey.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);
 				case UIKey.ID12_BLOCK_INVENTORY_VAR:
-				case VEHICLE_INVENTORY_VAR:
+				case UIKey.ID12_VEHICLE_INVENTORY_VAR:
 				case CONTAINER_INVENTORY_VAR:
 				case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
 			}

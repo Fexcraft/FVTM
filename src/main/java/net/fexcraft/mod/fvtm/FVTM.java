@@ -182,7 +182,8 @@ public class FVTM {
 			ConditionRegistry.BUILDER = CondBuilder.run();
 		}
 		//
-		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
+		FMLCommonHandler.instance().registerCrashCallable(new CrashCallablePacks());
+		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
 		EntitySystem.add(new LegacySpawnSystem());
 		EntitySystem.add(new RailSpawnSystem());

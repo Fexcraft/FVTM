@@ -503,11 +503,6 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public boolean handleClick(KeyPress key, EntityW vehicle, SeatInstance seat, EntityW player, StackWrapper stack){
-		return ToggableHandler.handleClick(key, vehicle.local(), seat, player.local(), stack == null ? ItemStack.EMPTY : stack.local());
-	}
-
-	@Override
 	public boolean sendToggle(Attribute<?> attr, EntityW vehicle, KeyPress key, Float val, EntityW player){
 		return ToggableHandler.sendToggle(attr, vehicle.local(), key, val, player.local());
 	}

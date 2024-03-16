@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.BlockPos;
@@ -110,6 +111,11 @@ public class WorldWI extends FvtmWorld {
 		Entity ent = world.getEntityByID(entid);
 		if(ent instanceof RootVehicle == false) return null;
 		return ((RootVehicle)ent).vehicle;
+	}
+
+	@Override
+	public boolean noViewEntity(){
+		return Minecraft.getMinecraft().getRenderViewEntity() == null || Minecraft.getMinecraft().getRenderViewEntity().world == null;
 	}
 
 }

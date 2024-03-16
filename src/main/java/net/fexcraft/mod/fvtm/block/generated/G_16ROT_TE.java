@@ -34,7 +34,7 @@ public class G_16ROT_TE extends BlockBase {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "rotation=" + state.getValue(ROTATION)).offset(0, pos.getX(), pos.getY(), pos.getZ());
+        return type.getAABB("selection", "rotation=" + state.getValue(ROTATION)).offset(0, pos.getX(), pos.getY(), pos.getZ()).local();
     }
     
     @Nullable @Override

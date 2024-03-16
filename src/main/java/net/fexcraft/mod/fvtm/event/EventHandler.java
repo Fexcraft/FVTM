@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
 import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -170,6 +171,7 @@ public class EventHandler {
 	public void onWorldUnload(WorldEvent.Unload event){
 		if(!event.getWorld().isRemote) return;
 		SystemManager.onWorldUnload(event.getWorld());
+		WrapperHolder.INSTANCE.reset();
 	}
 
 	@SubscribeEvent

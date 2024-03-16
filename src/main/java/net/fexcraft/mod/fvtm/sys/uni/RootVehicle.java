@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
@@ -344,7 +345,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
 				return true;
 			}
-			ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle, null, pass, new SWI(stack));
 			return true;
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){

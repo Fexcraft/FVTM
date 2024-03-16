@@ -12,6 +12,8 @@ import net.minecraft.world.World;
  */
 public class WrapperHolderImpl extends WrapperHolder {
 
+	private static WorldW client;
+
 	@Override
 	public EntityW getEntity0(Object o){
 		return ((Entity)o).getCapability(Capabilities.PASSENGER, null).asWrapper();
@@ -24,6 +26,14 @@ public class WrapperHolderImpl extends WrapperHolder {
 			WORLDS.put(o, new WorldWI((World)o));
 		}
 		return WORLDS.get(o);
+	}
+
+	@Override
+	public <W extends WorldW> W getClientWorld0(){
+		if(client == null){
+			client = getWorld0(net.minecraft.client.Minecraft.getMinecraft().world);
+		}
+		return (W)client;
 	}
 
 	@Override
@@ -57,6 +67,11 @@ public class WrapperHolderImpl extends WrapperHolder {
 			case WEST: return (S)EnumFacing.WEST;
 		}
 		return (S)EnumFacing.NORTH;
+	}
+
+	@Override
+	public void reset(){
+		client = null;
 	}
 
 }

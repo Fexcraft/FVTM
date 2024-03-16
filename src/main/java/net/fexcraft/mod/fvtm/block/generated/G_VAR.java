@@ -34,7 +34,7 @@ public abstract class G_VAR extends PlainBase {
 
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-		return type.getAABB("selection", "variant=" + state.getValue(var_property())).offset(0, pos.getX(), pos.getY(), pos.getZ());
+		return type.getAABB("selection", "variant=" + state.getValue(var_property())).offset(0, pos.getX(), pos.getY(), pos.getZ()).local();
 	}
 
 	@Nullable

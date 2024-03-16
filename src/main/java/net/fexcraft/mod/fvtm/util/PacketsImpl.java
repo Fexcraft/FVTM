@@ -4,17 +4,21 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlots;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.Packets12;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
@@ -22,6 +26,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,7 +44,7 @@ import java.util.LinkedHashMap;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class PacketsImpl extends Packets {
-	
+
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final HashMap<Class<? extends PacketBase>, Class<? extends PacketBase>> PACKETS = new LinkedHashMap<>();
@@ -71,8 +76,11 @@ public class PacketsImpl extends Packets {
 		LIS_SERVER.put("ui", (tag, player) -> {
 			((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, false);
 		});
-		LIS_SERVER.put("vehicle", (com, player) -> {
-			//
+		LIS_CLIENT.put("vehicle", (com, player) -> {
+			EntityPlayer entity = player.local();
+			RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(com.getInteger("entity"));
+			if(vehicle == null) return;
+			vehicle.vehicle.packet(com, player);
 		});
 		LIS_SERVER.put("mount_seat", (com, player) -> {
 			World world = player.getWorld().local();
@@ -81,9 +89,38 @@ public class PacketsImpl extends Packets {
 			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
 			vehicle.processSeatInteract(index, player.local(), EnumHand.MAIN_HAND);
 		});
+		LIS_SERVER.put("install_part", (com, player) -> {
+			EntityPlayer entity = player.local();
+			PartData data = FvtmResources.getPartData(entity.getHeldItemMainhand().getTagCompound());
+			RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(com.getInteger("entity"));
+			PartSlots source = vehicle.vehicle.data.getPartSlotsProvider(com.getString("source"));
+			String category = com.getString("category");
+			if(vehicle.vehicle.data.getPart(category) != null){
+				PartData oldpart = vehicle.vehicle.data.getPart(category);
+				boolean valid = oldpart.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData && ((DefaultPartInstallHandler.DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
+				if(valid && vehicle.vehicle.data.deinstallPart(player, category, true)){
+					entity.addItemStackToInventory(oldpart.getNewStack().local());
+				}
+				else return;
+			}
+			data = vehicle.vehicle.data.installPart(player, data, com.getString("source") + ":" + category, true);
+			if(data == null){
+				entity.getHeldItemMainhand().shrink(1);
+				vehicle.vehicle.sendVehicleData();
+				NBTTagCompound compound = vehicle.vehicle.data.write(TagCW.create()).local();
+				compound.setString("task", "update_vehicledata");
+				PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, compound), PacketsImpl.getTargetPoint(entity));
+			}
+		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("ui", (tag, player) -> {
 				((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, true);
+			});
+			LIS_CLIENT.put("vehicle", (tag, player) -> {
+				EntityPlayer entity = player.local();
+				RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(tag.getInteger("entity"));
+				if(vehicle == null) return;
+				vehicle.vehicle.packet(tag, player);
 			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
@@ -100,7 +137,7 @@ public class PacketsImpl extends Packets {
 	}
 
 	@Override
-	public void send(BlockData blockdata, V3I vec, int dim) {
+	public void send(BlockData blockdata, V3I vec, int dim){
 		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
 		TagCW com = getBlockFuncData(blockdata, pos);
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(dim, pos));
@@ -128,10 +165,13 @@ public class PacketsImpl extends Packets {
 
 	@Override
 	public void send(VehicleInstance vehicle, TagCW com){
-		com.set("target_listener", UTIL_LISTENER);
-		com.set("task", "vehicle");
 		com.set("entity", vehicle.entity.getId());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(vehicle.entity.local()));
+		if(vehicle.entity.isOnClient()){
+			send0(Packet_TagListener.class, "vehicle", com);
+		}
+		else{
+			sendInRange0(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle", com);
+		}
 	}
 
 	@Override

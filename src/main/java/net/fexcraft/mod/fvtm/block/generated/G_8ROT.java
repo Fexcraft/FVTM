@@ -33,7 +33,7 @@ public class G_8ROT extends PlainBase {
 
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-		return type.getAABB("selection", "rotation=" + state.getValue(ROTATION8)).offset(0, pos.getX(), pos.getY(), pos.getZ());
+		return type.getAABB("selection", "rotation=" + state.getValue(ROTATION8)).offset(0, pos.getX(), pos.getY(), pos.getZ()).local();
 	}
 
 	@Nullable

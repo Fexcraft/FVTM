@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Packets12;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -21,6 +22,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -71,6 +73,13 @@ public class PacketsImpl extends Packets {
 		});
 		LIS_SERVER.put("vehicle", (com, player) -> {
 			//
+		});
+		LIS_SERVER.put("mount_seat", (com, player) -> {
+			World world = player.getWorld().local();
+			RootVehicle vehicle = (RootVehicle)world.getEntityByID(com.getInteger("entity"));
+			int index = com.getInteger("seat");
+			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
+			vehicle.processSeatInteract(index, player.local(), EnumHand.MAIN_HAND);
 		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("ui", (tag, player) -> {

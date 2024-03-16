@@ -62,14 +62,6 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				player.openGui(FVTM.getInstance(), gui, player.world, args[0], args[1], args[2]);
 				return;
 			}
-			// TODO validation
-			case "toggle_seat":{
-				RootVehicle entity = (RootVehicle)world.getEntityByID(packet.nbt.getInteger("entity"));
-				int seatindex = packet.nbt.getInteger("seat");
-				if(seatindex < 0 || seatindex >= entity.vehicle.seats.size()) return;
-				entity.processSeatInteract(packet.nbt.getInteger("seat"), player, packet.nbt.getBoolean("main") ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
-				return;
-			}
 			default:
 				return;
 		}

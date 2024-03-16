@@ -48,7 +48,7 @@ public class G_POSTLIKE extends PlainBase {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos){
-        return type.getAABB("selection", stateToStr(getActualState(state, world, pos))).offset(0, pos.getX(), pos.getY(), pos.getZ());
+        return type.getAABB("selection", stateToStr(getActualState(state, world, pos))).offset(0, pos.getX(), pos.getY(), pos.getZ()).local();
     }
 
     @Nullable @Override

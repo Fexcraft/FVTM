@@ -15,6 +15,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -116,6 +118,20 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public boolean noViewEntity(){
 		return Minecraft.getMinecraft().getRenderViewEntity() == null || Minecraft.getMinecraft().getRenderViewEntity().world == null;
+	}
+
+	@Override
+	public ArrayList<VehicleInstance> getVehicles(){
+		ArrayList<VehicleInstance> list = new ArrayList<>();
+		for(Entity entity : world.loadedEntityList){
+			if(entity instanceof RootVehicle) list.add(((RootVehicle)entity).vehicle);
+		}
+		return list;
+	}
+
+	@Override
+	public Passenger getClientPassenger(){
+		return net.minecraft.client.Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper();
 	}
 
 }

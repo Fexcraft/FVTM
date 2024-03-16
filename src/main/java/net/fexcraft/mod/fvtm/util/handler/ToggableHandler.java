@@ -5,20 +5,11 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
-import net.fexcraft.mod.fvtm.handler.InteractionHandler;
-import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.uni.impl.SWI;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemLead;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -110,21 +101,6 @@ public class ToggableHandler {
 			Static.stop();
 		}
 		return true;
-	}
-
-	public static boolean handleClick(KeyPress press, ItemStack stack){
-		if(!stack.isEmpty() && !(stack.getItem() instanceof PartItem || stack.getItem() instanceof ItemLead)) return false;
-		RootVehicle rentity;
-		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
-			if(entity instanceof RootVehicle == false) continue;
-			rentity = (RootVehicle)entity;
-			if(rentity.vehicle.data.getAttribute("collision_range").asFloat() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
-				continue;
-			}
-			Passenger pass = Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper();
-			if(InteractionHandler.handle(press, rentity.vehicle, null, pass, new SWI(stack))) return true;
-		}
-		return false;
 	}
 
 }

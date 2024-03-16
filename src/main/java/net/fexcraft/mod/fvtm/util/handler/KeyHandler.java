@@ -1,27 +1,20 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.input.Keyboard;
-
-import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.*;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 public class KeyHandler {
@@ -67,7 +60,7 @@ public class KeyHandler {
     	TOGGABLE {
     		@Override
     		public boolean isActive(){
-    			return ToggableHandler.handleClick(KeyPress.RESET, ItemStack.EMPTY);
+    			return InteractionHandler.handle(KeyPress.RESET, StackWrapper.EMPTY);
     		}
     		@Override
     		public boolean conflicts(IKeyConflictContext other){
@@ -184,13 +177,17 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickEmpty(RightClickEmpty event){
     	//if(!event.getItemStack().isEmpty()) return;
-        if(event.getHand() == EnumHand.MAIN_HAND) ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack());
+        if(event.getHand() == EnumHand.MAIN_HAND){
+            InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWI(event.getItemStack()));
+        }
     }
 
     @SubscribeEvent
     public void clickEmpty(LeftClickEmpty event){
     	//if(!event.getItemStack().isEmpty()) return;
-    	if(event.getHand() == EnumHand.MAIN_HAND) ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getItemStack());
+        if(event.getHand() == EnumHand.MAIN_HAND){
+            InteractionHandler.handle(KeyPress.MOUSE_MAIN, new SWI(event.getItemStack()));
+        }
     }
     
     //unsure if those 3 bellow won't be processing intensive
@@ -198,7 +195,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickItem(RightClickItem event){
-        if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack())){
+        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWI(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }
@@ -207,7 +204,7 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickBlock(RightClickBlock event){
     	//if(!event.getItemStack().isEmpty()) return;
-        if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack())){
+        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWI(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }
@@ -216,7 +213,7 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickBlock(LeftClickBlock event){
     	//if(!event.getItemStack().isEmpty()) return;
-        if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getItemStack())){
+        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, new SWI(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }

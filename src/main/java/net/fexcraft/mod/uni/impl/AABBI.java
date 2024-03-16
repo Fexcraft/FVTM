@@ -12,6 +12,13 @@ public class AABBI extends AABB {
 
     private AxisAlignedBB aabb;
 
+    public AABBI(){}
+
+    public AABBI(AxisAlignedBB albb){
+        aabb = albb;
+    }
+
+
     @Override
     public AABB set(float sx, float sy, float sz, float ex, float ey, float ez){
         aabb = new AxisAlignedBB(sx, sy, sz, ex, ey, ez);
@@ -29,8 +36,13 @@ public class AABBI extends AABB {
     }
 
     @Override
-    public <AB> AB offset(int x, int y, int z){
-        return (AB)aabb.offset(x, y, z);
+    public AABB offset(int x, int y, int z){
+        return new AABBI(aabb.offset(x, y, z));
+    }
+
+    @Override
+    public AABB offset(V3D vec){
+        return new AABBI(aabb.offset(vec.x, vec.y, vec.z));
     }
 
     @Override

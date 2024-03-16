@@ -4,17 +4,15 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
@@ -26,7 +24,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -91,9 +89,10 @@ public class PacketsImpl extends Packets {
 		});
 		LIS_SERVER.put("install_part", (com, player) -> {
 			EntityPlayer entity = player.local();
-			PartData data = FvtmResources.getPartData(entity.getHeldItemMainhand().getTagCompound());
+			ItemStack stack = entity.getHeldItemMainhand();
+			PartData data = ((PartItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
 			RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(com.getInteger("entity"));
-			PartSlots source = vehicle.vehicle.data.getPartSlotsProvider(com.getString("source"));
+			//PartSlots source = vehicle.vehicle.data.getPartSlotsProvider(com.getString("source"));
 			String category = com.getString("category");
 			if(vehicle.vehicle.data.getPart(category) != null){
 				PartData oldpart = vehicle.vehicle.data.getPart(category);
@@ -107,9 +106,6 @@ public class PacketsImpl extends Packets {
 			if(data == null){
 				entity.getHeldItemMainhand().shrink(1);
 				vehicle.vehicle.sendVehicleData();
-				NBTTagCompound compound = vehicle.vehicle.data.write(TagCW.create()).local();
-				compound.setString("task", "update_vehicledata");
-				PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(entity, compound), PacketsImpl.getTargetPoint(entity));
 			}
 		});
 		if(EnvInfo.CLIENT){

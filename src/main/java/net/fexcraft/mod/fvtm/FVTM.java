@@ -79,6 +79,8 @@ import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
+import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.*;
@@ -91,6 +93,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -145,6 +148,11 @@ public class FVTM {
 		TagCW.SUPPLIER[0] = () -> new TagCWI();
 		TagCW.WRAPPER[0] = obj -> new TagCWI(obj);
 		TagLW.SUPPLIER[0] = () -> new TagLWI();
+		StackWrapper.SUPPLIER = obj -> {
+			if(obj instanceof ItemWrapper) return new SWI((ItemWrapper)obj);
+			if(obj instanceof ItemStack) return new SWI((ItemStack)obj);
+			return null;
+		};
 		AABB.SUPPLIER = () -> new AABBI();
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;

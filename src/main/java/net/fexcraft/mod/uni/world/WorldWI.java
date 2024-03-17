@@ -121,10 +121,15 @@ public class WorldWI extends FvtmWorld {
 	}
 
 	@Override
-	public ArrayList<VehicleInstance> getVehicles(){
+	public ArrayList<VehicleInstance> getVehicles(V3D pos){
 		ArrayList<VehicleInstance> list = new ArrayList<>();
+		float cr;
 		for(Entity entity : world.loadedEntityList){
-			if(entity instanceof RootVehicle) list.add(((RootVehicle)entity).vehicle);
+			if(entity instanceof RootVehicle){
+				cr = ((RootVehicle)entity).vehicle.data.getAttribute("collision_range").asFloat() + 1;
+				if(cr < ((RootVehicle)entity).vehicle.entity.getPos().dis(pos)) continue;
+				list.add(((RootVehicle)entity).vehicle);
+			}
 		}
 		return list;
 	}

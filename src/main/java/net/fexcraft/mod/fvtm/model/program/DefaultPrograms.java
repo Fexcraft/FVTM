@@ -286,17 +286,6 @@ public class DefaultPrograms {
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
 			}
 		});
-		ModelGroup.PROGRAMS.add(new Program(){
-			public String id(){
-				return "fvtm:no_cullface";
-			}
-			public void pre(ModelGroup list, ModelRenderData data){
-				GL11.glDisable(GL11.GL_CULL_FACE);
-			}
-			public void post(ModelGroup list, ModelRenderData data){
-				GL11.glEnable(GL11.GL_CULL_FACE);
-			}
-		});
 		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 0));
 		ModelGroup.PROGRAMS.add(new SteeringWheelCentered(0, 0));
 		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f));
@@ -436,6 +425,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new TranslateTo());
 		//
 		AnimationPrograms.init();
+		OpenGlPrograms.init();
 		BlockPrograms.init();
 		BakedPrograms.init();
 		//

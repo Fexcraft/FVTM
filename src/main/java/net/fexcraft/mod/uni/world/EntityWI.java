@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class EntityWI extends Passenger {
+public class EntityWI implements Passenger {
 
 	protected Entity entity;
 	protected WorldW world;

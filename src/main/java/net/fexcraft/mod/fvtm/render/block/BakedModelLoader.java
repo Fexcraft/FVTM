@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render.block;
 
+import net.fexcraft.lib.common.math.AxisRotator;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -46,10 +47,10 @@ public class BakedModelLoader {
         }
         if(model.transforms.hasRotate()){
             ArrayList<Transforms.TF_Rotate> list = model.transforms.getBakedRotate();
-            model.bk.rot_tf = new Axis3DL[list.size()];
+            model.bk.rot_tf = new AxisRotator[list.size()];
             for(int i = 0; i < list.size(); i++){
                 Transforms.TF_Rotate rot = list.get(i);
-                model.bk.rot_tf[i] = new Axis3DL();
+                model.bk.rot_tf[i] = AxisRotator.newDefInstance();
                 model.bk.rot_tf[i].setAngles(rot.y * rot.angle, rot.z * rot.angle, rot.x * rot.angle);
             }
         }

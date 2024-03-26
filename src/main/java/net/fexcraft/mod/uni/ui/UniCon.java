@@ -2,9 +2,9 @@ package net.fexcraft.mod.uni.ui;
 
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -30,8 +30,8 @@ public class UniCon extends Container {
 	public UniCon(ContainerInterface con, EntityPlayer player){
 		this.con = con;
 		this.player = player;
-		con.SEND_TO_CLIENT = com -> {
-			Packets.sendTo(Packet_TagListener.class, player.getCapability(Capabilities.PASSENGER, null).asWrapper(), "ui", com);
+		con.SEND_TO_CLIENT = (com, pass) -> {
+			Packets.sendTo(Packet_TagListener.class, (Passenger)pass, "ui", com);
 		};
 		con.SEND_TO_SERVER = com -> {
 			Packets.send(Packet_TagListener.class, "ui", com);

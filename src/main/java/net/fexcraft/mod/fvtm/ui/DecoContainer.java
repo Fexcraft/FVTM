@@ -50,7 +50,7 @@ public class DecoContainer extends ContainerInterface {
 				DecorationData deco = DECORATIONS.get(com.getString("key"));
 				entity.decos.add(deco.copy());
 				if(!client){
-					SEND_TO_CLIENT.accept(com);
+					SEND_TO_CLIENT.accept(com, player);
 				}
 				else{
 					entity.decos.get(entity.decos.size() - 1).copy(deco);
@@ -61,7 +61,7 @@ public class DecoContainer extends ContainerInterface {
 			case "rem":{
 				entity.decos.remove(com.getInteger("idx"));
 				if(!client){
-					SEND_TO_CLIENT.accept(com);
+					SEND_TO_CLIENT.accept(com, player);
 				}
 				else{
 					((DecoEditor)ui).updateEntries();
@@ -79,7 +79,7 @@ public class DecoContainer extends ContainerInterface {
 					default: return;
 				}
 				deco.offset = pos;
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
 			case "rot":{
@@ -90,7 +90,7 @@ public class DecoContainer extends ContainerInterface {
 					case 2: deco.rotz = com.getFloat("value"); break;
 					default: return;
 				}
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
 			case "scale":{
@@ -101,7 +101,7 @@ public class DecoContainer extends ContainerInterface {
 					case 2: deco.sclz = com.getFloat("value"); break;
 					default: return;
 				}
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
 			case "tex":{
@@ -109,7 +109,7 @@ public class DecoContainer extends ContainerInterface {
 				int sel = com.getInteger("sel");
 				if(sel >= 0 && sel < deco.textures.size()){
 					deco.seltex = sel;
-					if(!client) SEND_TO_CLIENT.accept(com);
+					if(!client) SEND_TO_CLIENT.accept(com, player);
 					else{
 						DecoEditor editor = (DecoEditor)ui;
 						editor.select(editor.selected, editor.selcol);
@@ -120,7 +120,7 @@ public class DecoContainer extends ContainerInterface {
 			case "color":{
 				DecorationData deco = entity.decos.get(com.getInteger("idx"));
 				deco.getColorChannel(com.getString("channel")).packed = com.getInteger("rgb");
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				else{
 					DecoEditor editor = (DecoEditor)ui;
 					editor.select(editor.selected, editor.selcol);

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render.block;
 
+import net.fexcraft.lib.common.math.AxisRotator;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
@@ -131,7 +132,7 @@ public class BakedModelImpl implements IBakedModel {
                     Vec3f vec2 = vec1.cross(vec0).normalize();
                     vec2 = model.bk.rot_poly.getRelativeVector(vec2);
                     if(!model.nodefrot) vec2 = model.bk.rot_meta.getRelativeVector(vec2);
-                    if(model.bk.rot_tf != null) for(Axis3DL rot : model.bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
+                    if(model.bk.rot_tf != null) for(AxisRotator rot : model.bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
                     UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                     builder.setContractUVs(true);
                     builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
@@ -185,7 +186,7 @@ public class BakedModelImpl implements IBakedModel {
                 case POSITION:
                     Vec3f vec = model.bk.rot_poly.getRelativeVector(vert.vector);
                     vec = model.bk.rot_meta.getRelativeVector(vec.add(poly.posX, poly.posY, poly.posZ));
-                    if(model.bk.rot_tf != null) for(Axis3DL rot : model.bk.rot_tf) vec = rot.getRelativeVector(vec);
+                    if(model.bk.rot_tf != null) for(AxisRotator rot : model.bk.rot_tf) vec = rot.getRelativeVector(vec);
                     builder.put(e,
                             vec.x * model.bk.scale.x + model.bk.translate.x + 0.5f,
                             vec.y * model.bk.scale.y + model.bk.translate.y,

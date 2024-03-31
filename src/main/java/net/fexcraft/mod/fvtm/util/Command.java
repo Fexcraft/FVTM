@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.Block;
@@ -86,7 +87,7 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&7- /fvtm debug <args>");
         		Print.chat(sender, "&7- /fvtm spawn-sys");
         		Print.chat(sender, "&7- /fvtm undo road");
-        		Print.chat(sender, "&7- /fvtm vpinfo");
+        		Print.chat(sender, "&7- /fvtm catalog");
         		Print.chat(sender, "&8- - - - - -");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
         		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
@@ -125,8 +126,8 @@ public class Command extends CommandBase {
             	Print.chat(sender, "&6Type: &7" + addon.getLocation().name().toLowerCase());
             	break;
             }
-            case "vpinfo":{
-            	((EntityPlayer)sender.getCommandSenderEntity()).openGui(FVTM.getInstance(), GuiHandler.VEHICLE_AND_PART_INFO, sender.getEntityWorld(), 0, 0, 0);
+            case "catalog":{
+            	((EntityPlayer)sender.getCommandSenderEntity()).openGui(FVTM.getInstance(), UIKey.ID12_VEHICLE_CATALOG, sender.getEntityWorld(), 0, 0, 0);
             	break;
             }
             case "get-key": {

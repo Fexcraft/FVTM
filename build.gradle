@@ -21,9 +21,18 @@ def getDateSuffix(){
     return new Date().format('ddMMyyHHmm')
 }
 
-sourceSets.main.java.srcDirs += [
-    new File(file('..'), "/FVTM-Core/src")
-]
+sourceSets {
+    main {
+        java {
+            srcDirs += 'src/main/java'
+            srcDirs += new File(file('..'), "/FVTM-Core/src")
+        }
+        resources {
+            srcDirs += 'src/main/resources'
+            srcDirs += new File(file('..'), "/FVTM-Core/res")
+        }
+    }
+}
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 

@@ -9,6 +9,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
@@ -52,6 +53,7 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -169,7 +171,13 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_VEHICLE_INVENTORY_VAR:
 			case CONTAINER_INVENTORY_VAR:
 			case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
-			
+			case UIKey.ID12_VEHICLE_CATALOG:{
+				if(FvtmRegistry.VEHICLES.isEmpty()){
+					Print.chat(player, I18n.translateToLocalFormatted("ui.fvtm.vehicle.catalog.no_vehicles"));
+					return null;
+				}
+				return new UniCon(new ContainerInterface(gJ("vehicle_catalog"), entity, pos), player);
+			}
 		}
 		return null;
 	}
@@ -249,6 +257,11 @@ public class GuiHandler implements IGuiHandler {
 				case UIKey.ID12_VEHICLE_INVENTORY_VAR:
 				case CONTAINER_INVENTORY_VAR:
 				case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
+				case UIKey.ID12_VEHICLE_CATALOG:{
+					if(FvtmRegistry.VEHICLES.isEmpty()) return null;
+					JsonMap map = gJC("vehicle_catalog");
+					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+				}
 			}
 		}
 		catch(Exception e){

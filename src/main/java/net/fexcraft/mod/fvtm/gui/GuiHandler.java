@@ -176,7 +176,7 @@ public class GuiHandler implements IGuiHandler {
 					Print.chat(player, I18n.translateToLocalFormatted("ui.fvtm.vehicle.catalog.no_vehicles"));
 					return null;
 				}
-				return new UniCon(new ContainerInterface(gJ("vehicle_catalog"), entity, pos), player);
+				return new UniCon(new VehicleCatalogCon(gJ("vehicle_catalog"), entity, pos), player);
 			}
 		}
 		return null;
@@ -260,7 +260,7 @@ public class GuiHandler implements IGuiHandler {
 				case UIKey.ID12_VEHICLE_CATALOG:{
 					if(FvtmRegistry.VEHICLES.isEmpty()) return null;
 					JsonMap map = gJC("vehicle_catalog");
-					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+					return new UniUI(new VehicleCatalog(map, new VehicleCatalogCon(map, entity, pos)), player);
 				}
 			}
 		}

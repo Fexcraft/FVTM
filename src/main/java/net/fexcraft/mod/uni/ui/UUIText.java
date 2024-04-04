@@ -1,6 +1,7 @@
 package net.fexcraft.mod.uni.ui;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 
@@ -20,7 +21,7 @@ public class UUIText extends UIText {
 
 	@Override
 	public void translate(Object... objects){
-		value = I18n.format(value, objects);
+		value = Formatter.format(I18n.format(value, objects));
 	}
 
 	@Override

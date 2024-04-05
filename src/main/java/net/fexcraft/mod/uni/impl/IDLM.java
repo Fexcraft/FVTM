@@ -14,6 +14,7 @@ public class IDLM implements IDLManager {
         IDL idl = CACHE.get(str);
         if(idl != null) return idl;
         if(cache) CACHE.put(str, idl = named ? new NaResLoc(str) : new ResLoc(str));
+        else return named ? new NaResLoc(str) : new ResLoc(str);
         return idl;
     }
 

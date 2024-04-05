@@ -8,8 +8,10 @@ import java.util.Map.Entry;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -40,6 +42,12 @@ public class UniUI extends GuiContainer {
 			@Override
 			public void draw(int x, int y, int u, int v, int w, int h){
 				drawTexturedModalRect(x, y, u, v, w, h);
+			}
+
+			@Override
+			public void draw(int x, int y, StackWrapper stack){
+				RenderHelper.enableGUIStandardItemLighting();
+				itemRender.renderItemIntoGUI(stack.local(), x, y);
 			}
 
 			@Override

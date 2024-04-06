@@ -260,7 +260,7 @@ public class GuiHandler implements IGuiHandler {
 				case UIKey.ID12_VEHICLE_CATALOG:{
 					if(FvtmRegistry.VEHICLES.isEmpty()) return null;
 					JsonMap map = gJC("vehicle_catalog");
-					return new UniUI(new VehicleCatalog(map, new VehicleCatalogCon(map, entity, pos)), player);
+					return new UniUI(new VehicleCatalogImpl(map, new VehicleCatalogCon(map, entity, pos)), player);
 				}
 			}
 		}

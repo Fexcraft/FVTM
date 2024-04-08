@@ -28,7 +28,6 @@ import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;

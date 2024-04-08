@@ -36,7 +36,7 @@ public class UniCon extends Container {
 		con.SEND_TO_SERVER = com -> {
 			Packets.send(Packet_TagListener.class, "ui", com);
 		};
-		if(!con.ui_map.has("slots")) return;
+		if(!con.ui_map.has("slots") || con instanceof InventoryInterface == false) return;
 		ArrayList<UISlot> uislots = new ArrayList<>();
 		if(con.ui_map.has("slots")){
 			for(Map.Entry<String, JsonValue<?>> entry : con.ui_map.getMap("slots").entries()){

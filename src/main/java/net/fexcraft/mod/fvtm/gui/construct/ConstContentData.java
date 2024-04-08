@@ -5,6 +5,7 @@ import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.GENERIC_SEG;
 import static net.fexcraft.mod.fvtm.gui.construct.ConstGuiElement.INPUT_2B_SEG;
 
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -14,7 +15,7 @@ public class ConstContentData extends ConstGui {
 
 	public ConstContentData(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
-		root = GuiHandler.CONSTRUCTOR_MAIN;
+		root = UIKey.CONSTRUCTOR.id;
 		help_url += "#contentinfo";
 	}
 	

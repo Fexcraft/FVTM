@@ -78,7 +78,7 @@ public class GuiHandler implements IGuiHandler {
 	//public static final int DECORATION_EDITOR = 713;
 	public static final int VEHICLE_AND_PART_INFO = 714;
 	/* 90x - constructor main */
-	public static final int CONSTRUCTOR_MAIN = 900;
+	//public static final int CONSTRUCTOR_MAIN = 900;
 	public static final int CONSTRUCTOR_STATUS = 901;
 	public static final int CONSTRUCTOR_CONTENTINFO = 902;
 	public static final int CONSTRUCTOR_PARTINFO = 904;
@@ -126,8 +126,8 @@ public class GuiHandler implements IGuiHandler {
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
-			case CONSTRUCTOR_MAIN:
-				return new UniCon(new ConstructorContainer(gJ("constructor_main"), player, x, y, z), player);
+			case UIKey.ID12_CONSTRUCTOR:
+				return new UniCon(new VehicleConstructorCon(gJ("vehicle_constructor"), entity, pos), player);
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_CONTENTINFO:
 			case CONSTRUCTOR_PARTINFO:
@@ -201,9 +201,9 @@ public class GuiHandler implements IGuiHandler {
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
-				case CONSTRUCTOR_MAIN:{
-					JsonMap map = gJC("constructor_main");
-					return new UniUI(new ConstructorMain(map, new ConstructorContainer(map, player, x, y, z)), player);
+				case UIKey.ID12_CONSTRUCTOR:{
+					JsonMap map = gJC("vehicle_constructor");
+					return new UniUI(new VehicleConstructor(map, new VehicleConstructorCon(map, entity, pos)), player);
 				}
 				//case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
 				case CONSTRUCTOR_CONTENTINFO: return new ConstContentData(player, world, x, y, z);

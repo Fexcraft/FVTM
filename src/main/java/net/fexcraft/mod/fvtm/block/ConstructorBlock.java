@@ -1,13 +1,16 @@
 package net.fexcraft.mod.fvtm.block;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -117,7 +120,8 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
 		}
         ItemStack held = player.getHeldItem(hand);
         if(held.isEmpty()){
-        	player.openGui(FVTM.getInstance(), CONSTRUCTOR_MAIN, world, pos.getX(), pos.getY(), pos.getZ());
+			Passenger pass = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+			pass.openUI(UIKey.CONSTRUCTOR, new V3I(pos.getX(), pos.getY(), pos.getZ()));
             return true;
         }
         else if(held.getItem() instanceof VehicleItem){

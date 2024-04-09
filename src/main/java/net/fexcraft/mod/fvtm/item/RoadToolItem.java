@@ -18,8 +18,11 @@ import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.fvtm.util.UniRoadTool;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,7 +46,7 @@ import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
 
-public class RoadToolItem extends Item implements JunctionGridItem {
+public class RoadToolItem extends Item implements JunctionGridItem, UniRoadTool {
 	
 	public static RoadToolItem INSTANCE;
 
@@ -58,59 +61,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-        tooltip.add(Formatter.format("&aRoad Placing Toolbox"));
-        if(stack.getTagCompound() == null){
-        	tooltip.add("No Compound Data.");
-        }
-        else{
-        	int[] layers = stack.getTagCompound().getIntArray("RoadLayers");
-        	if(layers.length < 6){
-        		int[] n = new int[6];
-        		for(int i = 0; i < 6; i++){
-        			n[i] = i >= layers.length ? 0 : layers[i];
-        		}
-        		stack.getTagCompound().setIntArray("RoadLayers", layers = n);
-        	}
-        	ItemStack stack0 = null;
-        	if(stack.getTagCompound().hasKey("CustomRoadFill")){
-                tooltip.add(Formatter.format("&6Road Fill: &bCUSTOM &7x" + layers[0]));
-        	}
-        	else{
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("RoadFill"));
-                tooltip.add(Formatter.format("&6Road Fill: &b" + stack0.getDisplayName().toUpperCase() + " &7x" + stack.getCount()));
-        	}
-        	if(stack.getTagCompound().hasKey("BottomFill") && layers[1] > 0){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
-                tooltip.add(Formatter.format("&9Ground Fill: &7" + stack0.getDisplayName()));
-        	}
-        	if(stack.getTagCompound().hasKey("SideLeftFill") && layers[2] > 0){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
-                tooltip.add(Formatter.format("&9L Wall Fill: &7" + stack0.getDisplayName() + " &ex" + layers[2]));
-        	}
-        	if(stack.getTagCompound().hasKey("SideRightFill") && layers[3] > 0){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRightFill"));
-                tooltip.add(Formatter.format("&9R Wall Fill: &7" + stack0.getDisplayName() + " &ex" + layers[3]));
-        	}
-        	//
-        	if(stack.getTagCompound().hasKey("CustomTopFill") && layers[4] > 0){
-                tooltip.add(Formatter.format("&9Roof Fill: &7CUSTOM &ex" + layers[0]));
-        	}
-        	else if(stack.getTagCompound().hasKey("TopFill") && layers[4] > 0){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
-                tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
-        	}
-        	//
-        	if(layers.length > 5){
-            	if(stack.getTagCompound().hasKey("CustomLinesFill") && layers[5] > 0){
-                    tooltip.add(Formatter.format("&9Lines Fill: &7CUSTOM &ex" + layers[0]));
-            	}
-            	else if(stack.getTagCompound().hasKey("LinesFill") && layers[5] > 0){
-            		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("LinesFill"));
-                    tooltip.add(Formatter.format("&9Lines Fill: &7" + stack0.getDisplayName()));
-            	}
-        	}
-            tooltip.add(Formatter.format("&7Use &6/fvtm undo road &7to undo last road."));
-        }
+        addTooltip(TagCW.wrap(stack.getTagCompound()), tooltip, (str, objs) -> I18n.format(str, objs));
     }
 	
 	@Override

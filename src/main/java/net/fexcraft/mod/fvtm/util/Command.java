@@ -394,7 +394,7 @@ public class Command extends CommandBase {
             case "undo":{
             	EntityPlayer player = (EntityPlayer)sender;
             	if(args.length > 1 || args[1].equals("road") || player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
-            		JsonMap map = RoadPlacingCache.getLastEntry(player);
+            		JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.dimension);
             		if(map == null || map.empty()){
                 		Print.chatbar(sender, "No last road data in item.");
             			return;
@@ -413,7 +413,7 @@ public class Command extends CommandBase {
             			IBlockState state = block.getStateFromMeta(array.get(1).integer_value());
             			player.world.setBlockState(pos, state);
             		}
-            		RoadPlacingCache.remLastEntry(player);
+            		RoadPlacingCache.remLastEntry(player.getGameProfile().getId(), player.dimension);
             		Print.chat(sender, "&7Last road undone.");
             	}
             	return;

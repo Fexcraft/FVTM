@@ -4,10 +4,12 @@ import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -140,9 +142,9 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         	NewRoad road = RoadPlacingUtil.QUEUE.get(current);
         	if(road == null) return true;
         	if(player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
-        		road.create(player, position, player.getHeldItemMainhand());
+        		road.create(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), position, StackWrapper.wrap(player.getHeldItemMainhand()));
         	}
-        	else road.select(player, position);
+        	else road.select(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), position);
     		return true;
         }
         return true;
@@ -157,7 +159,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
             if(queueid != null && queueid.equals(queueid)){
             	EntityPlayer player = (EntityPlayer)damagesource.getTrueSource();
             	NewRoad road = RoadPlacingUtil.QUEUE.get(queueid);
-            	if(road != null) road.remove(player, position);
+            	if(road != null) road.remove(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), position);
                 setDead();
             }
         }

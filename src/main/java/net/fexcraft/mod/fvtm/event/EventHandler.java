@@ -213,7 +213,7 @@ public class EventHandler {
 			cfgsync.setString("target_listener", UTIL_LISTENER);
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
 		}
-		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player);
+		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player.getGameProfile().getId());
 		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = true;
 	}
@@ -222,7 +222,7 @@ public class EventHandler {
 	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
 		if(!event.player.world.isRemote){
 			RailPlacingUtil.CURRENT.remove(event.player.getGameProfile().getId());
-			RoadPlacingCache.onLogOut(event.player);
+			RoadPlacingCache.onLogOut(event.player.getGameProfile().getId());
 		}
 		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof GenericVehicle){
 			event.player.dismountRidingEntity();

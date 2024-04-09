@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -117,7 +118,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         if(world.isRemote){ return EnumActionResult.PASS; }
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking() && hand != EnumHand.OFF_HAND){
-        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOLFILL, world, 0, 0, 0);
+        	player.openGui(FVTM.getInstance(), UIKey.ID12_ROAD_TOOL, world, 0, 0, 0);
         	return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){

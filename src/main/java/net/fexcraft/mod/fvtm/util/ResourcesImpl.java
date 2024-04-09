@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
@@ -35,6 +36,7 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.*;
@@ -59,6 +61,7 @@ import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -66,6 +69,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -515,6 +519,14 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public Object getBlockMaterial(String key, boolean allownull){
 		return BlockUtil.getMaterial(key, allownull);
+	}
+
+	@Override
+	public void spawnRoadMarker(WorldW world, QV3D vector, UUID nid){
+		RoadMarker marker = new RoadMarker(world.local(), nid);
+		marker.position = vector;
+		marker.setPosition(vector.vec.x, vector.vec.y + 1, vector.vec.z);
+		((World)world.direct()).spawnEntity(marker);
 	}
 
 	@SideOnly(Side.CLIENT)

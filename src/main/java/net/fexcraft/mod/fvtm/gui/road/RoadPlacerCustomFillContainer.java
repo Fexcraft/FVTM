@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLFILL;
-
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
+import net.fexcraft.mod.fvtm.ui.RoadInventory;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +36,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 		}
 		else size = stack.getTagCompound().getIntArray("RoadLayers");
 		if(size.length < 6) size = new int[]{ size[0], size[1], size[2], size[3], size[4], 0 };
-		roadinv = new RoadInventory(slots = size[0]);
+		roadinv = new RoadInventory();
 		off = (size[0] * 9);
 		idx = x;
         for(int i = 0; i < slots; i++){
@@ -104,7 +104,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 					e.printStackTrace();
 				}
 				player.closeScreen();
-				player.openGui(FVTM.getInstance(), ROADTOOLFILL, player.world, 0, 0, 0);
+				player.openGui(FVTM.getInstance(), UIKey.ID12_ROAD_TOOL, player.world, 0, 0, 0);
 				break;
 			}
 		}

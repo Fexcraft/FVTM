@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.gui.road;
+package net.fexcraft.mod.fvtm.ui;
 
 import static net.fexcraft.mod.fvtm.util.Compat.isFVTMRoad;
 import static net.fexcraft.mod.fvtm.util.Compat.isValidFlenix;
@@ -18,13 +18,13 @@ public class RoadInventory implements IInventory {
 	
 	private NonNullList<ItemStack> stacks;
 
-    public RoadInventory(int size){
-    	stacks = NonNullList.<ItemStack>withSize(size, ItemStack.EMPTY);
+    public RoadInventory(){
+    	stacks = NonNullList.<ItemStack>withSize(6, ItemStack.EMPTY);
     }
 
     @Override
     public String getName(){
-        return "RoadFill Inventory";
+        return "Road Fill Inventory";
     }
 
     @Override

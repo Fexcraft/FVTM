@@ -1,11 +1,17 @@
 package net.fexcraft.mod.uni.world;
 
+import com.mojang.authlib.GameProfile;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -67,6 +73,15 @@ public class WrapperHolderImpl extends WrapperHolder {
 			case WEST: return (S)EnumFacing.WEST;
 		}
 		return (S)EnumFacing.NORTH;
+	}
+
+	@Override
+	public List<UUID> getOnlinePlayerIDs0(){
+		List<UUID> list = new ArrayList<>();
+		for(GameProfile prof : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerProfiles()){
+			list.add(prof.getId());
+		}
+		return list;
 	}
 
 	@Override

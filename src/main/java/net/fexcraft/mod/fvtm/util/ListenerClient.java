@@ -125,39 +125,6 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				}
 				return;
 			}
-			case "road_place_util":{
-				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
-				switch(packet.nbt.getString("subtask")){
-					case "new":{
-						RoadPlacingUtil.CL_CURRENT = new NewRoad(uuid, new QV3D(TagCW.wrap(packet.nbt), "vector"), packet.nbt.getInteger("width"));
-						RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
-						break;
-					}
-					case "reset":{
-						if(RoadPlacingUtil.CL_CURRENT.id.equals(uuid)) RoadPlacingUtil.CL_CURRENT = null;
-						RoadPlacingUtil.QUEUE.remove(uuid);
-						break;
-					}
-					case "add":{
-						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-						if(road == null) return;
-						road.add(new QV3D(TagCW.wrap(packet.nbt), "vector"), packet.nbt.getInteger("width"));
-						break;
-					}
-					case "remove":{
-						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-						if(road == null) return;
-						road.remove(player, new QV3D(TagCW.wrap(packet.nbt), "vector"));
-						break;
-					}
-					case "selected":{
-						NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-						if(road == null) return;
-						road.selected = packet.nbt.getInteger("selected");
-					}
-				}
-				return;
-			}
 			case "block_func_sync":{
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				BlockTileEntity tile = (BlockTileEntity)player.world.getTileEntity(pos);

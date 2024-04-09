@@ -120,6 +120,11 @@ public class EntityWI implements Passenger {
 	}
 
 	@Override
+	public boolean isCreative(){
+		return entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode;
+	}
+
+	@Override
 	public SeatInstance getSeatOn(){
 		if(entity.getRidingEntity() instanceof RootVehicle == false) return null;
 		return ((RootVehicle)entity.getRidingEntity()).getSeatOf(entity);
@@ -150,6 +155,11 @@ public class EntityWI implements Passenger {
 	public V3D getLookVec(){
 		Vec3d vec = Minecraft.getMinecraft().getRenderViewEntity().getLook(Minecraft.getMinecraft().getRenderPartialTicks());
 		return new V3D(vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public boolean isShiftDown(){
+		return entity.isSneaking();
 	}
 
 	@Override

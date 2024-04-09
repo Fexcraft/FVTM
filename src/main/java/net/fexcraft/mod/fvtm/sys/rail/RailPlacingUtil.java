@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
+import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
@@ -258,8 +259,8 @@ public class RailPlacingUtil {
 				last = vec;
 				vec = track.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Static.rad90;
-				preview.get(0).add(vec.add(RoadToolItem.grv(angle, new V3D(-half, 0, 0))));
-				preview.get(1).add(vec.add(RoadToolItem.grv(angle, new V3D(half, 0, 0))));
+				preview.get(0).add(vec.add(grv(angle, new V3D(-half, 0, 0))));
+				preview.get(1).add(vec.add(grv(angle, new V3D(half, 0, 0))));
 			}
 		}
 		

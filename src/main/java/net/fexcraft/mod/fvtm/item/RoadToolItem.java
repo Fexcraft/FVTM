@@ -10,13 +10,12 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
-import net.fexcraft.mod.fvtm.sys.uni.Path;
-import net.fexcraft.mod.fvtm.sys.uni.PathType;
+import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -42,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
+import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 
 public class RoadToolItem extends Item implements JunctionGridItem {
 	
@@ -73,8 +73,10 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					return EnumActionResult.FAIL;
 				}
 				pos = pos.down();
-				QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
-				RoadPlacingUtil.place(world, player, player.getHeldItem(hand), vector);
+				RoadPlacingUtil.place(WrapperHolder.getWorld(world),
+					player.getCapability(Capabilities.PASSENGER, null).asWrapper(),
+					TagCW.wrap(player.getHeldItem(hand).getTagCompound()),
+					new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16));
 				return EnumActionResult.SUCCESS;
 			}
 			case 0:
@@ -83,7 +85,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     }
 
 	@SuppressWarnings("deprecation")
-	public boolean placeRoad(EntityPlayer player, World world, ItemStack stack, QV3D vector, Road _road, ICommandSender sender){
+	public static boolean placeRoad(EntityPlayer player, World world, ItemStack stack, QV3D vector, UniRoadTool.Road _road, ICommandSender sender){
 		if(_road.length > MAX_ROAD_LENGTH){
 			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
 			return false;
@@ -321,7 +323,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	
 	}
 	
-	private void insert(JsonMap map, BlockPos pos, IBlockState state){
+	private static void insert(JsonMap map, BlockPos pos, IBlockState state){
 		if(map.has(pos.toLong() + "")) return;
 		JsonArray array = new JsonArray();
 		array.add(state.getBlock().getRegistryName().toString());
@@ -330,7 +332,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void loadFill(ArrayList<ArrayList<QV3D>> fill, ArrayList<IBlockState> fillB, int layers, NBTTagCompound compound){
+	private static void loadFill(ArrayList<ArrayList<QV3D>> fill, ArrayList<IBlockState> fillB, int layers, NBTTagCompound compound){
 		for(int i = 0; i < layers; i++){
 			fill.add(new ArrayList<>());
 			IBlockState state = Blocks.AIR.getDefaultState();
@@ -344,7 +346,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void roadFill(World world, ArrayList<QV3D> fill, IBlockState block, int topheight, boolean flenix, JsonMap map){
+	private static void roadFill(World world, ArrayList<QV3D> fill, IBlockState block, int topheight, boolean flenix, JsonMap map){
 		int height = 0;
 		BlockPos.MutableBlockPos blk = new BlockPos.MutableBlockPos();
 		boolean bool;
@@ -371,22 +373,17 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		}
 	}
 
-	private boolean isRoad(IBlockState state){
+	private static boolean isRoad(IBlockState state){
 		return Compat.isFVTMRoad(state.getBlock()) || Compat.isValidFlenix(state.getBlock());
 	}
 
-	private boolean isRoad(IBlockState state, IBlockState roadB){
+	private static boolean isRoad(IBlockState state, IBlockState roadB){
 		return isRoad(state) && state.getBlock() == roadB.getBlock();
 	}
 
-	private boolean isLower(IBlockState state, int height){
+	private static boolean isLower(IBlockState state, int height){
 		int h = Compat.isFVTMRoad(state.getBlock()) ? state.getValue(Asphalt.HEIGHT) : state.getBlock().getMetaFromState(state);
 		return h > height;
-	}
-
-	public static V3D grv(double rad, V3D vec){
-        double co = Math.cos(rad), si = Math.sin(rad);
-        return new V3D(co * vec.x, vec.y, si * vec.x);
 	}
 
 	private String getSuffix(int tagCount){
@@ -396,28 +393,6 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	@Override
 	public boolean hasVectors(){
 		return true;
-	}
-	
-	public static class Road extends Path {
-
-		public Road(QV3D[] gridvecs){
-			super(gridvecs);
-		}
-		
-		public Road(QV3D[] gridvecs, QV3D vector){
-			super(gridvecs, vector);
-		}
-
-		@Override
-		public V3D getVectorPosition(double distance, boolean reverse){
-			return super.getVectorPosition0(distance, reverse);
-		}
-
-		@Override
-		public PathType getType(){
-			return PathType.ROAD;
-		}
-		
 	}
 
 }

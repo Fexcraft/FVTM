@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui.road;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
+import net.fexcraft.mod.fvtm.ui.RoadInventory;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -29,7 +30,7 @@ public class RoadPlacerFillContainer extends GenericContainer {
 		cr = stack.getTagCompound().hasKey("CustomRoadFill");
 		ct = stack.getTagCompound().hasKey("CustomTopFill");
 		cl = stack.getTagCompound().hasKey("CustomLinesFill");
-		roadinv = new RoadInventory(slots = 6);
+		roadinv = new RoadInventory();
         for(int i = 0; i < slots; i++){
         	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, false, false));
         }

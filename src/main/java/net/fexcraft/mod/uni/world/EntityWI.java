@@ -23,6 +23,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
+import java.util.UUID;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -122,6 +124,11 @@ public class EntityWI implements Passenger {
 	@Override
 	public boolean isCreative(){
 		return entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode;
+	}
+
+	@Override
+	public UUID getUUID(){
+		return entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile().getId() : entity.getUniqueID();
 	}
 
 	@Override

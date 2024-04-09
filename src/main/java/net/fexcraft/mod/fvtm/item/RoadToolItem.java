@@ -3,23 +3,19 @@ package net.fexcraft.mod.fvtm.item;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
-import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.fvtm.util.UniRoadTool;
+import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -319,7 +315,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		}
 		//
 		Print.chatbar(player, "&bRoad placed!");
-		RoadPlacingCache.addEntry(player, map);
+		RoadPlacingCache.addEntry(player.getGameProfile().getId(), player.dimension, map);
 		stack.getTagCompound().setInteger("LastRoadDim", world.provider.getDimension());
 		return true;
 	

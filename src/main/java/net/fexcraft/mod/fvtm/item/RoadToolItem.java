@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
@@ -46,7 +47,7 @@ import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
 
-public class RoadToolItem extends Item implements JunctionGridItem, UniRoadTool {
+public class RoadToolItem extends Item implements JunctionGridItem {
 	
 	public static RoadToolItem INSTANCE;
 
@@ -61,29 +62,28 @@ public class RoadToolItem extends Item implements JunctionGridItem, UniRoadTool 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-        addTooltip(TagCW.wrap(stack.getTagCompound()), tooltip, (str, objs) -> I18n.format(str, objs));
+        UniRoadTool.addTooltip(TagCW.wrap(stack.getTagCompound()), tooltip, (str, objs) -> I18n.format(str, objs));
     }
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote){ return EnumActionResult.PASS; }
-        ItemStack stack = player.getHeldItem(hand);
-        if(player.isSneaking() && hand != EnumHand.OFF_HAND){
-        	player.openGui(FVTM.getInstance(), UIKey.ID12_ROAD_TOOL, world, 0, 0, 0);
-        	return EnumActionResult.SUCCESS;
-        }
-        if(!player.capabilities.isCreativeMode){
-        	Print.chat(player, "&9This is a &6CREATIVE &9mode tool.");
-        	return EnumActionResult.FAIL;
-        }
-        if(!Static.getServer().isSinglePlayer() && !Perms.ROAD_PLACER_ITEM.has(player)){
-        	Print.chat(player, "&cNo permission to use this item.");
-        	return EnumActionResult.FAIL;
-        }
-		pos = pos.down();
-        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
-    	RoadPlacingUtil.place(world, player, stack, vector);
-		return EnumActionResult.SUCCESS;
+        int result = UniRoadTool.onUse(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), hand == EnumHand.MAIN_HAND);
+		switch(result){
+			case 1: return EnumActionResult.FAIL;
+			case 2: return EnumActionResult.SUCCESS;
+			case 3:{
+				if(!Static.getServer().isSinglePlayer() && !Perms.ROAD_PLACER_ITEM.has(player)){
+					Print.chat(player, "&cNo permission to use this item.");
+					return EnumActionResult.FAIL;
+				}
+				pos = pos.down();
+				QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
+				RoadPlacingUtil.place(world, player, player.getHeldItem(hand), vector);
+				return EnumActionResult.SUCCESS;
+			}
+			case 0:
+			default: return EnumActionResult.PASS;
+		}
     }
 
 	@SuppressWarnings("deprecation")

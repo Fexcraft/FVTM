@@ -2,12 +2,12 @@ package net.fexcraft.mod.fvtm.gui.road;
 
 import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLCUSTOMFILL;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -101,15 +101,15 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("road")){
-			openGui(ROADTOOLCUSTOMFILL, new int[]{ 0, 0, 0 }, LISTENERID);
+			openGui(UIKey.ID12_ROAD_TOOL_CUSTOM, new int[]{ 0, 0, 0 }, LISTENERID);
 			return true;
 		}
 		else if(button.name.equals("roof")){
-			openGui(ROADTOOLCUSTOMFILL, new int[]{ 4, 0, 0 }, LISTENERID);
+			openGui(UIKey.ID12_ROAD_TOOL_CUSTOM, new int[]{ 4, 0, 0 }, LISTENERID);
 			return true;
 		}
 		else if(button.name.equals("line")){
-			openGui(ROADTOOLCUSTOMFILL, new int[]{ 5, 0, 0 }, LISTENERID);
+			openGui(UIKey.ID12_ROAD_TOOL_CUSTOM, new int[]{ 5, 0, 0 }, LISTENERID);
 			return true;
 		}
 		else if(button.name.startsWith("a")){

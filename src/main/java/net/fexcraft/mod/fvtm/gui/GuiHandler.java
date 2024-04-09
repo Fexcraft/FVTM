@@ -33,8 +33,6 @@ import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacerContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacerCustomFill;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacerCustomFillContainer;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFill;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFillContainer;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.tsign.TrafficSignEditor;
@@ -45,6 +43,7 @@ import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
 import net.fexcraft.mod.fvtm.ui.*;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UniCon;
@@ -66,9 +65,7 @@ public class GuiHandler implements IGuiHandler {
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	public static final int JUNCTION_ADJUSTER = 701;
-	//public static final int ROADTOOL = 702;
-	public static final int ROADTOOLFILL = 703;
-	public static final int ROADTOOLCUSTOMFILL = 704;
+	//public static final int ROADTOOL = 702-704;
 	public static final int SPAWNSYS = 705;
 	public static final int RAILPLACER = 706;
 	public static final int TSEDITOR = 709;
@@ -120,11 +117,10 @@ public class GuiHandler implements IGuiHandler {
 			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
-			//case ROADTOOL: return new RoadPlacerContainer(player, x, y, z);
-			case ROADTOOLFILL:
-				return new UniCon(new ContainerInterface(gJ("road_tool"), entity, pos), player);
-				//return new RoadPlacerFillContainer(player, x, y, z);
-			case ROADTOOLCUSTOMFILL: return new RoadPlacerCustomFillContainer(player, x, y, z);
+			case UIKey.ID12_ROAD_TOOL:
+				return new UniCon(new RoadToolConImpl(gJ("road_tool"), entity, pos), player);
+			case UIKey.ID12_ROAD_TOOL_CUSTOM:
+				return new RoadPlacerCustomFillContainer(player, x, y, z);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
@@ -196,13 +192,12 @@ public class GuiHandler implements IGuiHandler {
 				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
-				//case ROADTOOL: return new RoadPlacer(player, x, y, z);
-				case ROADTOOLFILL:{
+				case UIKey.ID12_ROAD_TOOL:{
 					JsonMap map = gJC("road_tool");
-					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
-					//return new RoadPlacerFill(player, x, y, z);
+					return new UniUI(new RoadToolUI(map, new RoadToolConImpl(map, entity, pos)), player);
 				}
-				case ROADTOOLCUSTOMFILL: return new RoadPlacerCustomFill(player, x, y, z);
+				case UIKey.ID12_ROAD_TOOL_CUSTOM:
+					return new RoadPlacerCustomFill(player, x, y, z);
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);

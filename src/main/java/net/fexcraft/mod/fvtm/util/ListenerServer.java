@@ -48,20 +48,6 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(packet.nbt), player);
 				return;
 			}
-			case "attr_toggle":{
-				AttrReqHandler.processToggleRequest(player.world, player, packet.nbt);
-				return;
-			}
-			case "attr_update":{
-				AttrReqHandler.processUpdateRequest(player.world, player, packet.nbt);
-				return;
-			}
-			case "vehicle":{
-				RootVehicle vehicle = (RootVehicle)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				if(vehicle == null) return;
-				vehicle.vehicle.packet(TagCW.wrap(packet.nbt), player.getCapability(Capabilities.PASSENGER, null).asWrapper());
-				return;
-			}
 			default: return;
 		}
 	}

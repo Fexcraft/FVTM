@@ -162,6 +162,11 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public TagCW copy(){
+		return new TagCWI(compound.copy());
+	}
+
+	@Override
 	public String toString(){
 		return compound == null ? "null" : compound.toString();
 	}

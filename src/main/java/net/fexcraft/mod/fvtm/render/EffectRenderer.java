@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.*;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -250,9 +251,8 @@ public class EffectRenderer {
 			if(!attr.hasBoxes()) continue;
 			for(AttrBox box : attr.actboxes.values()){
 				SwivelPoint point = data.getRotationPoint(box.swivel_point);
-				V3D temp = point.getRelativeVector(box.pos.x, -box.pos.y, -box.pos.z);
-	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
-				boolean depth = temp.add(vehicle.posX, vehicle.posY, vehicle.posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
+				PartData part = data.getAttributeOrigin(attr);
+				V3D temp = point.getRelativeVector(part == null ? box.pos : box.pos.add(part.getInstalledPos()));
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
             	scal = box.size;
             	GL11.glPushMatrix();
@@ -260,6 +260,7 @@ public class EffectRenderer {
 				DebugModels.ATTRBOXCUBE.render(2f);
             	GL11.glPopMatrix();
 				if(Command.TOGG_LABEL){
+					boolean depth = temp.add(vehicle.posX, vehicle.posY, vehicle.posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
 					postMeshCalls();
 					float by = (consim(temp) * (scal * .5f));
 		        	GL11.glTranslatef(0, by, 0);

@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.ui.RoadInventory;
 import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,7 +53,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
             addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 100));
         }
         //
-		String tagname = "Custom" + RoadPlacerFillContainer.fills[x];
+		String tagname = "Custom" + RoadToolCon.fills[x];
         if(stack.getTagCompound().hasKey(tagname)){
         	NBTTagCompound compound = stack.getTagCompound().getCompoundTag(tagname);
         	int size = compound.getInteger("Size");
@@ -83,7 +84,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 							break;
 						}
 					}
-					String tagname = "Custom" + RoadPlacerFillContainer.fills[idx];
+					String tagname = "Custom" + RoadToolCon.fills[idx];
 					if(empty){
 						if(stack.getTagCompound().hasKey(tagname)) stack.getTagCompound().removeTag(tagname);
 					}

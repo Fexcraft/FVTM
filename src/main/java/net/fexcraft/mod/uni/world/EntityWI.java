@@ -203,6 +203,14 @@ public class EntityWI implements Passenger {
 	}
 
 	@Override
+	public void bar(String s, Object... objs){
+		if(entity instanceof EntityPlayer){
+			((EntityPlayer)entity.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(I18n.format(s, objs))), true);
+		}
+		else entity.sendMessage(new TextComponentString(Formatter.format(s)));
+	}
+
+	@Override
 	public void dismount(){
 		entity.dismountRidingEntity();
 	}

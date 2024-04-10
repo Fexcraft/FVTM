@@ -828,35 +828,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
 	}
 
-	public void sendAttributeUpdate(Attribute<?> attr){
-		if(attr == null) return;
-		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("target_listener", "fvtm:gui");
-		packet.setString("task", "attr_update");
-		packet.setString("attr", attr.id);
-		packet.setInteger("entity", getEntityId());
-		if(attr.valuetype.isTristate()){
-			if(attr.asTristate() == null){
-				packet.setBoolean("value", false);
-				packet.setBoolean("reset", true);
-			}
-			else{
-				packet.setBoolean("value", attr.asBoolean());
-			}
-		}
-		else if(attr.valuetype.isFloat()){
-			packet.setFloat("value", attr.asFloat());
-		}
-		else if(attr.valuetype.isInteger()){
-			packet.setInteger("value", attr.asInteger());
-		}
-		else if(attr.valuetype.isString()){
-			packet.setString("value", attr.asString());
-		}
-		else packet.setString("value", attr.asString());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(this));
-	}
-
 	@Override
 	public void processServerPacket(PacketEntityUpdate packet){
 		if(!packet.nbt.hasKey("task")) return;

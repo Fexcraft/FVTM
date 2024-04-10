@@ -167,6 +167,11 @@ public class TagCWI implements TagCW {
 	}
 
 	@Override
+	public void rem(String key){
+		compound.removeTag(key);
+	}
+
+	@Override
 	public String toString(){
 		return compound == null ? "null" : compound.toString();
 	}

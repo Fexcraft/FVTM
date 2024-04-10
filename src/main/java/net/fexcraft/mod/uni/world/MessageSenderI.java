@@ -35,6 +35,14 @@ public class MessageSenderI implements MessageSender {
 	}
 
 	@Override
+	public void bar(String s, Object... objs){
+		if(sender instanceof EntityPlayer){
+			((EntityPlayer)sender.getCommandSenderEntity()).sendStatusMessage(new TextComponentString(Formatter.format(s, objs)), true);
+		}
+		else send(s);
+	}
+
+	@Override
 	public void dismount(){
 		if(sender.getCommandSenderEntity() != null){
 			sender.getCommandSenderEntity().dismountRidingEntity();

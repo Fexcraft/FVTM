@@ -38,6 +38,7 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
@@ -51,7 +52,6 @@ import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.render.block.BlockItemModel;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
-import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -503,11 +503,6 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public void registerFvtmItems(){
 		DecorationItem.INSTANCE = new DecorationItem();
-	}
-
-	@Override
-	public boolean sendToggle(Attribute<?> attr, EntityW vehicle, KeyPress key, Float val, EntityW player){
-		return ToggableHandler.sendToggle(attr, vehicle.local(), key, val, player.local());
 	}
 
 	@SideOnly(Side.CLIENT)

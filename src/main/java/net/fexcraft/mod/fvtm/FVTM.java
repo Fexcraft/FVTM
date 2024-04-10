@@ -88,6 +88,7 @@ import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
@@ -164,6 +165,8 @@ public class FVTM {
 			UIButton.IMPLEMENTATION = UUIButton.class;
 			UIText.IMPLEMENTATION = UUIText.class;
 			UIField.IMPLEMENTATION = UUIField.class;
+			ContainerInterface.TRANSLATOR = str -> I18n.format(str);
+			ContainerInterface.TRANSFORMAT = (str, objs) -> I18n.format(str, objs);
 			GLO.SUPPLIER = () -> new GLObject();
 		}
 		UISlot.SLOT_GETTER = (type, args) -> {

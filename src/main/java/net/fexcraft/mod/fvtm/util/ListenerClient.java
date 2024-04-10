@@ -134,14 +134,6 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				}
 				return;
 			}
-			case "attr_toggle":{
-				AttrReqHandler.processToggleResponse(player.world, player, packet.nbt);
-				return;
-			}
-			case "attr_update":{
-				AttrReqHandler.processUpdateResponse(player.world, player, packet.nbt);
-				return;
-			}
 			default: return;
 		}
 	}

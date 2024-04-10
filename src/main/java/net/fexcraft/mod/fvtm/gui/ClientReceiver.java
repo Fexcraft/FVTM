@@ -8,7 +8,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
-import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -26,14 +25,6 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 		String task = packet.nbt.getString("task");
 		EntityPlayer player = (EntityPlayer)objs[0];
 		switch(task){
-			case "attr_toggle":{
-				AttrReqHandler.processToggleResponse(player.world, player, packet.nbt);
-				break;
-			}
-			case "attr_update":{
-				AttrReqHandler.processUpdateResponse(player.world, player, packet.nbt);
-				break;
-			}
 			case "update_container_holder":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null){

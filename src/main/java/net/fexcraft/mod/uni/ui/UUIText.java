@@ -16,7 +16,7 @@ public class UUIText extends UIText {
 
 	@Override
 	public void translate(){
-		value = I18n.format(value);
+		value = Formatter.format(I18n.format(value));
 	}
 
 	@Override

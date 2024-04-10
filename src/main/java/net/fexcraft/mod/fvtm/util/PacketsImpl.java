@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
@@ -76,7 +77,7 @@ public class PacketsImpl extends Packets {
 		LIS_SERVER.put("ui", (tag, player) -> {
 			((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, false);
 		});
-		LIS_CLIENT.put("vehicle", (com, player) -> {
+		LIS_SERVER.put("vehicle", (com, player) -> {
 			EntityPlayer entity = player.local();
 			RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(com.getInteger("entity"));
 			if(vehicle == null) return;
@@ -109,6 +110,12 @@ public class PacketsImpl extends Packets {
 				entity.getHeldItemMainhand().shrink(1);
 				vehicle.vehicle.sendVehicleData();
 			}
+		});
+		LIS_SERVER.put("attr_toggle", (com, player) -> {
+			AttrReqHandler.processToggleRequest(player.getWorld().local(), player.local(), com.local());
+		});
+		LIS_SERVER.put("attr_update", (com, player) -> {
+			AttrReqHandler.processUpdateRequest(player.getWorld().local(), player.local(), com.local());
 		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("ui", (tag, player) -> {
@@ -147,6 +154,12 @@ public class PacketsImpl extends Packets {
 				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
 				if(RoadPlacingUtil.CL_CURRENT.id.equals(uuid)) RoadPlacingUtil.CL_CURRENT = null;
 				RoadPlacingUtil.QUEUE.remove(uuid);
+			});
+			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
+				AttrReqHandler.processToggleResponse(player.getWorld().local(), player.local(), tag.local());
+			});
+			LIS_CLIENT.put("attr_update", (tag, player) -> {
+				AttrReqHandler.processUpdateResponse(player.getWorld().local(), player.local(), tag.local());
 			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");

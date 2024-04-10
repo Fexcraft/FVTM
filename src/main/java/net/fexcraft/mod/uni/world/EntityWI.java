@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -18,6 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -129,6 +131,16 @@ public class EntityWI implements Passenger {
 	@Override
 	public UUID getUUID(){
 		return entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile().getId() : entity.getUniqueID();
+	}
+
+	@Override
+	public StackWrapper getHeldItem(boolean main){
+		return entity instanceof EntityPlayer ? FvtmResources.wrapStack(((EntityPlayer)entity).getHeldItem(main ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND)) : StackWrapper.EMPTY;
+	}
+
+	@Override
+	public void closeUI(){
+		((EntityPlayer)entity).closeScreen();
 	}
 
 	@Override

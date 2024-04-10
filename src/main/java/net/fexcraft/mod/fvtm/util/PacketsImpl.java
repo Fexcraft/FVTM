@@ -18,7 +18,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.handler.AttrReqHandler;
+import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
@@ -51,6 +51,7 @@ public class PacketsImpl extends Packets {
 	public static final HashMap<Class<? extends PacketBase>, Class<? extends PacketBase>> PACKETS = new LinkedHashMap<>();
 
 	public void init(){
+		super.init();
 		FvtmLogger.LOGGER.log("Starting Packet Handler initialization.");
 		//
 		PACKETS.put(Packet_VehKeyPress.class, Packets12.PI_VehKeyPress.class);
@@ -111,12 +112,6 @@ public class PacketsImpl extends Packets {
 				vehicle.vehicle.sendVehicleData();
 			}
 		});
-		LIS_SERVER.put("attr_toggle", (com, player) -> {
-			AttrReqHandler.processToggleRequest(player.getWorld().local(), player.local(), com.local());
-		});
-		LIS_SERVER.put("attr_update", (com, player) -> {
-			AttrReqHandler.processUpdateRequest(player.getWorld().local(), player.local(), com.local());
-		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("ui", (tag, player) -> {
 				((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, true);
@@ -126,40 +121,6 @@ public class PacketsImpl extends Packets {
 				RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(tag.getInteger("entity"));
 				if(vehicle == null) return;
 				vehicle.vehicle.packet(tag, player);
-			});
-			LIS_CLIENT.put("road_tool_new", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.CL_CURRENT = new RoadPlacingUtil.NewRoad(uuid, new QV3D(tag, "vector"), tag.getInteger("width"));
-				RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
-			});
-			LIS_CLIENT.put("road_tool_add", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-				if(road == null) return;
-				road.add(new QV3D(tag, "vector"), tag.getInteger("width"));
-			});
-			LIS_CLIENT.put("road_tool_selected", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-				if(road == null) return;
-				road.selected = tag.getInteger("selected");
-			});
-			LIS_CLIENT.put("road_tool_remove", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-				if(road == null) return;
-				road.remove(player, new QV3D(tag, "vector"));
-			});
-			LIS_CLIENT.put("road_tool_reset", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				if(RoadPlacingUtil.CL_CURRENT.id.equals(uuid)) RoadPlacingUtil.CL_CURRENT = null;
-				RoadPlacingUtil.QUEUE.remove(uuid);
-			});
-			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
-				AttrReqHandler.processToggleResponse(player.getWorld().local(), player.local(), tag.local());
-			});
-			LIS_CLIENT.put("attr_update", (tag, player) -> {
-				AttrReqHandler.processUpdateResponse(player.getWorld().local(), player.local(), tag.local());
 			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");

@@ -45,10 +45,7 @@ import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
 import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
-import net.fexcraft.mod.uni.ui.UniCon;
-import net.fexcraft.mod.uni.ui.UniUI;
-import net.fexcraft.mod.uni.ui.UserInterface;
+import net.fexcraft.mod.uni.ui.*;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -120,7 +117,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_ROAD_TOOL:
 				return new UniCon(new RoadToolConImpl(gJ("road_tool"), entity, pos), player);
 			case UIKey.ID12_ROAD_TOOL_CUSTOM:
-				return new RoadPlacerCustomFillContainer(player, x, y, z);
+				return new UniCon(new ContainerInterface(gJ("road_tool_custom"), entity, pos), player);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
@@ -196,8 +193,10 @@ public class GuiHandler implements IGuiHandler {
 					JsonMap map = gJC("road_tool");
 					return new UniUI(new RoadToolUI(map, new RoadToolConImpl(map, entity, pos)), player);
 				}
-				case UIKey.ID12_ROAD_TOOL_CUSTOM:
-					return new RoadPlacerCustomFill(player, x, y, z);
+				case UIKey.ID12_ROAD_TOOL_CUSTOM:{
+					JsonMap map = gJC("road_tool_custom");
+					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+				}
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);

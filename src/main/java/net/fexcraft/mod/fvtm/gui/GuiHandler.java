@@ -1,28 +1,17 @@
 package net.fexcraft.mod.fvtm.gui;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
-import static net.fexcraft.mod.fvtm.FvtmResources.*;
-
-import java.util.HashMap;
-
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.construct.*;
-import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvContainer;
-import net.fexcraft.mod.fvtm.gui.inv.UniFluidInvUi;
-import net.fexcraft.mod.fvtm.gui.inv.UniItemInvContainer;
-import net.fexcraft.mod.fvtm.gui.inv.UniItemInvUi;
-import net.fexcraft.mod.fvtm.gui.inv.UniVarInvContainer;
-import net.fexcraft.mod.fvtm.gui.inv.UniVarInvUi;
+import net.fexcraft.mod.fvtm.gui.inv.*;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemChooser;
@@ -31,8 +20,6 @@ import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfo;
 import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfoContainer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacerContainer;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacerCustomFill;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacerCustomFillContainer;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.tsign.TrafficSignEditor;
@@ -43,15 +30,23 @@ import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
 import net.fexcraft.mod.fvtm.ui.*;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
-import net.fexcraft.mod.uni.ui.*;
+import net.fexcraft.mod.uni.ui.UniCon;
+import net.fexcraft.mod.uni.ui.UniUI;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+
+import java.util.HashMap;
+
+import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
+import static net.fexcraft.mod.fvtm.FvtmResources.INSTANCE;
+import static net.fexcraft.mod.fvtm.FvtmResources.getJson;
 
 public class GuiHandler implements IGuiHandler {
 	
@@ -117,7 +112,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKey.ID12_ROAD_TOOL:
 				return new UniCon(new RoadToolConImpl(gJ("road_tool"), entity, pos), player);
 			case UIKey.ID12_ROAD_TOOL_CUSTOM:
-				return new UniCon(new ContainerInterface(gJ("road_tool_custom"), entity, pos), player);
+				return new UniCon(new RoadToolCustomConImpl(gJ("road_tool_custom"), entity, pos), player);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
@@ -195,7 +190,7 @@ public class GuiHandler implements IGuiHandler {
 				}
 				case UIKey.ID12_ROAD_TOOL_CUSTOM:{
 					JsonMap map = gJC("road_tool_custom");
-					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+					return new UniUI(new RoadToolCustomUI(map, new RoadToolCustomConImpl(map, entity, pos)), player);
 				}
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);

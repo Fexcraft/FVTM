@@ -6,6 +6,8 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -135,6 +137,16 @@ public class SWI extends StackWrapper {
 			case WIRE: return (C)((WireItem)stack.getItem()).getContent();
 		}
 		return null;
+	}
+
+	@Override
+	public IDL getIDL(){
+		return IDLManager.getIDL(stack.getItem().getRegistryName().toString());
+	}
+
+	@Override
+	public String getID(){
+		return stack.getItem().getRegistryName().toString();
 	}
 
 }

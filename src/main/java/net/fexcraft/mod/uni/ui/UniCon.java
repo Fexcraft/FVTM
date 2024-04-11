@@ -67,6 +67,8 @@ public class UniCon extends Container {
 				}
 			}
 		}
+		con.root = this;
+		con.init();
 	}
 
 	@Override
@@ -109,6 +111,10 @@ public class UniCon extends Container {
 	public void detectAndSendChanges(){
 		super.detectAndSendChanges();
 		con.update(this);
+	}
+
+	public void addSlot(Slot slot){
+		addSlotToContainer(slot);
 	}
 
 }

@@ -22,6 +22,10 @@ public class RoadInventory implements IInventory {
     	stacks = NonNullList.<ItemStack>withSize(6, ItemStack.EMPTY);
     }
 
+    public RoadInventory(int size){
+    	stacks = NonNullList.<ItemStack>withSize(size, ItemStack.EMPTY);
+    }
+
     @Override
     public String getName(){
         return "Road Fill Inventory";

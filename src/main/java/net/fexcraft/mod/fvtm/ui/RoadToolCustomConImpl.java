@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class RoadToolCustomConImpl extends RoadToolCustomCon {
 
-	protected RoadInventory inv = new RoadInventory();
+	protected RoadInventory inv;
 	protected SWI wrapper = new SWI(ItemStack.EMPTY);
 
 	public RoadToolCustomConImpl(JsonMap map, EntityW player, V3I pos){
@@ -41,8 +41,11 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 		TagCW compound = stack.getTag().getCompound(tagname);
 		for(int i = 0; i < 9; i++){
 			int j = i + scroll;
-			if(!compound.has("Block" + j)) continue;
-			if(j >= size[idx]) break;
+			if(!compound.has("Block" + j)){
+				inv.setInventorySlotContents(i, ItemStack.EMPTY);
+				continue;
+			}
+			if(j >= size[0]) break;
 			Block block = Block.REGISTRY.getObject(new ResourceLocation(compound.getString("Block" + j)));
 			int meta = compound.has("Meta" + j) ? compound.getInteger("Meta" + j) : 0;
 			inv.setInventorySlotContents(i, new ItemStack(block, 1, meta));

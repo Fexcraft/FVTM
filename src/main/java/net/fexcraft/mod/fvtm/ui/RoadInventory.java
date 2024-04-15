@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.ui;
 
-import static net.fexcraft.mod.fvtm.util.Compat.isFVTMRoad;
-import static net.fexcraft.mod.fvtm.util.Compat.isValidFlenix;
+import static net.fexcraft.mod.fvtm.util.CompatUtil.isFVTMRoad;
+import static net.fexcraft.mod.fvtm.util.CompatUtil.isValidFlenix;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

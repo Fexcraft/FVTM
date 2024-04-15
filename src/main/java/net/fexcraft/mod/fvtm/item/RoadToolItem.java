@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
-import net.fexcraft.mod.fvtm.util.Compat;
+import net.fexcraft.mod.fvtm.util.CompatUtil;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -99,8 +99,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     	boolean flnx = false, hlines = layers.length > 5 && layers[5] > 0;
     	if(stack.getTagCompound().hasKey("RoadFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("RoadFill"));
-    		flnx = Compat.isValidFlenix(stack0.getItem());
-            roadB = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(Compat.getRoadHeight(0, flnx));
+    		flnx = CompatUtil.isValidFlenix(stack0.getItem());
+            roadB = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(CompatUtil.getRoadHeight(0, flnx));
     	}
     	if(layers[1] > 0 && stack.getTagCompound().hasKey("BottomFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
@@ -225,7 +225,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
 				block = roadfillB.get(i);
-				flnx = Compat.isValidFlenix(block.getBlock());
+				flnx = CompatUtil.isValidFlenix(block.getBlock());
 				roadFill(world, roadfill.get(i), block, topheight, flnx, map);
 			}
 		}
@@ -286,7 +286,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				height = v.y;
 				blk.setPos(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 				state = world.getBlockState(blk);
-				if(!Compat.isFVTMRoad(state.getBlock()) && !Compat.isValidFlenix(state.getBlock())){
+				if(!CompatUtil.isFVTMRoad(state.getBlock()) && !CompatUtil.isValidFlenix(state.getBlock())){
 					insert(map, blk, world.getBlockState(blk));
 					world.setBlockState(blk, bot);
 				}
@@ -357,11 +357,11 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			if(!isRoad(state, block) || isLower(state, height)){
 				if(bool = isRoad(world.getBlockState(blk.up()))) height = 0;
 				insert(map, blk, state);
-				world.setBlockState(blk, block.getBlock().getStateFromMeta(Compat.getRoadHeight(bool ? 0 : height, flenix)));
+				world.setBlockState(blk, block.getBlock().getStateFromMeta(CompatUtil.getRoadHeight(bool ? 0 : height, flenix)));
 			}
 			if((height < 9 && height != 0) || isRoad(world.getBlockState(blk.down()))){
 				insert(map, blk.down(), world.getBlockState(blk.down()));
-				world.setBlockState(blk.down(), block.getBlock().getStateFromMeta(Compat.getRoadHeight(0, flenix)));
+				world.setBlockState(blk.down(), block.getBlock().getStateFromMeta(CompatUtil.getRoadHeight(0, flenix)));
 			}
 			int checkheight = topheight == 0 ? 4 : topheight;
 			for(int i = 1; i < checkheight; i++){
@@ -374,7 +374,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	private static boolean isRoad(IBlockState state){
-		return Compat.isFVTMRoad(state.getBlock()) || Compat.isValidFlenix(state.getBlock());
+		return CompatUtil.isFVTMRoad(state.getBlock()) || CompatUtil.isValidFlenix(state.getBlock());
 	}
 
 	private static boolean isRoad(IBlockState state, IBlockState roadB){
@@ -382,7 +382,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	private static boolean isLower(IBlockState state, int height){
-		int h = Compat.isFVTMRoad(state.getBlock()) ? state.getValue(Asphalt.HEIGHT) : state.getBlock().getMetaFromState(state);
+		int h = CompatUtil.isFVTMRoad(state.getBlock()) ? state.getValue(Asphalt.HEIGHT) : state.getBlock().getMetaFromState(state);
 		return h > height;
 	}
 

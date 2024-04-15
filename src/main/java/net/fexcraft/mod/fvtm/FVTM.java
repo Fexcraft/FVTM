@@ -141,8 +141,8 @@ public class FVTM {
 		InvHandlerFluid.IMPL = InvHandlerFluidImpl.class;
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		StateWrapper.DEFAULT = new StateWrapperI(Blocks.AIR.getDefaultState());
-		StateWrapper.GETTER = state -> new StateWrapperI((IBlockState)state);
-		StateWrapper.STACK_GETTER = stack -> new StateWrapperI(((ItemBlock)stack.getItem().local()).getBlock().getStateFromMeta(stack.damage()));
+		StateWrapper.STATE_WRAPPER = state -> new StateWrapperI((IBlockState)state);
+		StateWrapper.STACK_WRAPPER = stack -> StateWrapper.of(((ItemBlock)stack.getItem().local()).getBlock().getStateFromMeta(stack.damage()));
 		if(EnvInfo.CLIENT){
 			UITab.IMPLEMENTATION = UUITab.class;
 			UIButton.IMPLEMENTATION = UUIButton.class;

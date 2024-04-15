@@ -178,7 +178,8 @@ public class UniUI extends GuiContainer {
 			}
 			else keytyped = true;
 		}
-		if(code == 1 || (invbutton && !keytyped)) mc.player.closeScreen();
+		if(!keytyped) keytyped = ui.keytyped(c, code);
+		if(!keytyped && (code == 1 || invbutton)) mc.player.closeScreen();
 	}
 
 	@Override

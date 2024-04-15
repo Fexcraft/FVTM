@@ -2,6 +2,8 @@ package net.fexcraft.mod.uni.world;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
@@ -9,6 +11,7 @@ import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -80,6 +83,11 @@ public class WorldWI extends FvtmWorld {
 	}
 
 	@Override
+	public StateWrapper getStateAt(V3I pos){
+		return StateWrapper.of(world.getBlockState(new BlockPos(pos.x, pos.y, pos.z)));
+	}
+
+	@Override
 	public SeatInstance getSeat(int entid, int seatid){
 		Entity ent = world.getEntityByID(entid);
 		if(ent == null) return null;
@@ -137,6 +145,21 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public Passenger getClientPassenger(){
 		return net.minecraft.client.Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+	}
+
+	@Override
+	public boolean isFvtmRoad(StateWrapper state){
+		return state.getBlock() == Asphalt.INSTANCE || state.getBlock() instanceof G_ROAD;
+	}
+
+	@Override
+	public int getRoadHeight(StateWrapper state){
+		return isFvtmRoad(state) ? ((IBlockState)state.direct()).getValue(Asphalt.HEIGHT) : ((IBlockState)state.direct()).getBlock().getMetaFromState(state.local());
+	}
+
+	@Override
+	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
+		return StateWrapper.of(((IBlockState)block).getBlock().getStateFromMeta(height));
 	}
 
 }

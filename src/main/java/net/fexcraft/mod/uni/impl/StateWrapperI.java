@@ -1,6 +1,9 @@
 package net.fexcraft.mod.uni.impl;
 
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.world.StateWrapper;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 
@@ -17,7 +20,7 @@ public class StateWrapperI extends StateWrapper {
 
     @Override
     public Object getBlock(){
-        return null;
+        return state.getBlock();
     }
 
     @Override
@@ -33,6 +36,16 @@ public class StateWrapperI extends StateWrapper {
     @Override
     public <V> V getValue(Object prop){
         return (V)state.getValue((IProperty<?>)prop);
+    }
+
+    @Override
+    public IDL getIDL(){
+        return IDLManager.getIDL(state.getBlock().getRegistryName().toString());
+    }
+
+    @Override
+    public int get12Meta(){
+        return state.getBlock().getMetaFromState(state);
     }
 
 }

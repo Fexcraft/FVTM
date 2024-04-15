@@ -71,6 +71,7 @@ import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -139,6 +140,7 @@ public class FVTM {
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;
 		InvHandlerFluid.IMPL = InvHandlerFluidImpl.class;
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
+		StateWrapper.DEFAULT = new StateWrapperI(Blocks.AIR.getDefaultState());
 		StateWrapper.GETTER = state -> new StateWrapperI((IBlockState)state);
 		StateWrapper.STACK_GETTER = stack -> new StateWrapperI(((ItemBlock)stack.getItem().local()).getBlock().getStateFromMeta(stack.damage()));
 		if(EnvInfo.CLIENT){

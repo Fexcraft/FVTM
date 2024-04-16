@@ -144,6 +144,16 @@ public class EntityWI implements Passenger {
 	}
 
 	@Override
+	public String dimid(){
+		return entity.dimension + "";
+	}
+
+	@Override
+	public int dim12(){
+		return entity.dimension;
+	}
+
+	@Override
 	public SeatInstance getSeatOn(){
 		if(entity.getRidingEntity() instanceof RootVehicle == false) return null;
 		return ((RootVehicle)entity.getRidingEntity()).getSeatOf(entity);

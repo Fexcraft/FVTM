@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -399,16 +400,18 @@ public class Command extends CommandBase {
                 		Print.chatbar(sender, "No last road data in item.");
             			return;
             		}
-            		if(map.getInteger("dimension", player.dimension) != player.dimension){
+					int dim = Integer.parseInt(map.getString("LastRoadDim", "0"));
+            		if(dim != player.dimension){
                 		Print.chatbar(sender, "Last road was placed in &6DIM" + map.getInteger("dimension", -99999));
                 		Print.chatbar(sender, "You are currenctly in &6DIM" + player.world.provider.getDimension());
             			return;
             		}
-            		map.rem("dimension");
+            		map.rem("LastRoadDim");
             		Print.chatbar(sender, "&oUndo-ing last placed road...");
             		for(String str : map.value.keySet()){
             			JsonArray array = map.getArray(str);
-            			BlockPos pos = BlockPos.fromLong(Long.parseLong(str));
+						V3I vec = V3I.fromString(str);
+            			BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
             			Block block = Block.REGISTRY.getObject(new ResourceLocation(array.get(0).string_value()));
             			IBlockState state = block.getStateFromMeta(array.get(1).integer_value());
             			player.world.setBlockState(pos, state);

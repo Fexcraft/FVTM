@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
+import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,7 +22,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.fexcraft.mod.uni.world.StateWrapper.GETTER;
 import static net.fexcraft.mod.uni.world.WrapperHolder.*;
 
 public abstract class PlainBase extends net.minecraft.block.Block {
@@ -102,7 +102,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 		if(world.isRemote) return false;
 		if(!player.isSneaking() && type.getFunctions().size() > 0){
 			for(BlockFunction func : type.getFunctions()){
-				if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), GETTER.apply(state), getSide(side), player.getCapability(Capabilities.PASSENGER, null).asWrapper(), hand == EnumHand.MAIN_HAND)) return true;
+				if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), StateWrapper.of(state), getSide(side), player.getCapability(Capabilities.PASSENGER, null).asWrapper(), hand == EnumHand.MAIN_HAND)) return true;
 			}
 		}
 		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);

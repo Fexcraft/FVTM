@@ -76,7 +76,7 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 					e.printStackTrace();
 				}
 			}
-			world.setBlockState(pos, StateWrapper.GETTER.apply(stato), 2);
+			world.setBlockState(pos, StateWrapper.of(stato), 2);
 			return true;
 		}
 		return false;

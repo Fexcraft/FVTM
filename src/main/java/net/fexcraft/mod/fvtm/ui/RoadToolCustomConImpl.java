@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -30,7 +31,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 	public void init(){
 		int is = size[0] > 9 ? 9 : size[0];
 		for(int i = 0; i < is; i++){
-			((UniCon)root).addSlot(new RoadInventory.RoadSlot(inv, i, 88 - offset + 1 + i * 18, 8, true, idx > 0));
+			((UniCon)root).addSlot(new RoadInventory.RoadSlot((FvtmWorld)player.getWorld(), inv, i, 88 - offset + 1 + i * 18, 8, true, idx > 0));
 		}
 		fillStacks();
 	}

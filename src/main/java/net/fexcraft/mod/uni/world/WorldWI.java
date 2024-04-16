@@ -159,7 +159,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
-		return StateWrapper.of(((IBlockState)block).getBlock().getStateFromMeta(height));
+		return StateWrapper.of(((IBlockState)block.direct()).getBlock().getStateFromMeta(height));
 	}
 
 }

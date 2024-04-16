@@ -47,9 +47,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 				inv.setInventorySlotContents(i, ItemStack.EMPTY);
 				continue;
 			}
-			Block block = Block.REGISTRY.getObject(new ResourceLocation(compound.getString("Block" + j)));
-			int meta = compound.has("Meta" + j) ? compound.getInteger("Meta" + j) : 0;
-			inv.setInventorySlotContents(i, new ItemStack(block, 1, meta));
+			inv.setInventorySlotContents(i, new ItemStack((NBTTagCompound)compound.direct()));
 		}
 	}
 

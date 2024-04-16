@@ -75,6 +75,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -142,7 +143,11 @@ public class FVTM {
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		StateWrapper.DEFAULT = new StateWrapperI(Blocks.AIR.getDefaultState());
 		StateWrapper.STATE_WRAPPER = state -> new StateWrapperI((IBlockState)state);
-		StateWrapper.STACK_WRAPPER = stack -> StateWrapper.of(((ItemBlock)stack.getItem().local()).getBlock().getStateFromMeta(stack.damage()));
+		StateWrapper.STACK_WRAPPER = stack ->{
+			Item item = stack.getItem().local();
+			if(item instanceof ItemBlock) return StateWrapper.of(((ItemBlock)stack.getItem().local()).getBlock().getStateFromMeta(stack.damage()));
+			else return StateWrapper.DEFAULT;
+		};
 		if(EnvInfo.CLIENT){
 			UITab.IMPLEMENTATION = UUITab.class;
 			UIButton.IMPLEMENTATION = UUIButton.class;

@@ -77,6 +77,11 @@ public class SWI extends StackWrapper {
 	}
 
 	@Override
+	public void damage(int val){
+		stack.setItemDamage(val);
+	}
+
+	@Override
 	public int count(){
 		return stack.getCount();
 	}

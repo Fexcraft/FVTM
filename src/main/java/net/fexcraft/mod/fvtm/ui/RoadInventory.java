@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.ui;
 
-import static net.fexcraft.mod.fvtm.util.CompatUtil.isFVTMRoad;
-import static net.fexcraft.mod.fvtm.util.CompatUtil.isValidFlenix;
-
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
+import net.fexcraft.mod.fvtm.util.CompatUtil;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -15,7 +15,7 @@ import net.minecraft.util.text.TextComponentString;
 
 /** @author Ferdinand Calo' (FEX___96) */
 public class RoadInventory implements IInventory {
-	
+
 	private NonNullList<ItemStack> stacks;
 
     public RoadInventory(){
@@ -124,11 +124,13 @@ public class RoadInventory implements IInventory {
     }
     
     public static class RoadSlot extends Slot {
-    	
+
+        private FvtmWorld world;
     	private boolean road, any;
 
-        public RoadSlot(IInventory inventory, int index, int xPosition, int yPosition, boolean road, boolean any){
+        public RoadSlot(FvtmWorld world, IInventory inventory, int index, int xPosition, int yPosition, boolean road, boolean any){
             super(inventory, index, xPosition, yPosition);
+            this.world = world;
             this.road = road;
             this.any = any;
         }
@@ -138,7 +140,7 @@ public class RoadInventory implements IInventory {
         	if(stack.getItem() instanceof ItemBlock == false) return false;
         	if(!any && (road || this.getSlotIndex() == 0)){
         		ItemBlock iblock = (ItemBlock)stack.getItem();
-        		return isFVTMRoad(iblock.getBlock()) || isValidFlenix(iblock.getBlock().getRegistryName());
+        		return world.isFvtmRoad(iblock.getBlock().getDefaultState()) || CompatUtil.isValidFurenikus(iblock.getBlock().getRegistryName().toString());
         	}
         	else return true;
         	//if(stack.getItem() instanceof ItemBlock == false) return false;

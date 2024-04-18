@@ -9,10 +9,8 @@ import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -31,7 +29,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 	public void init(){
 		int is = size[0] > 9 ? 9 : size[0];
 		for(int i = 0; i < is; i++){
-			((UniCon)root).addSlot(new RoadInventory.RoadSlot((FvtmWorld)player.getWorld(), inv, i, 88 - offset + 1 + i * 18, 8, true, idx > 0));
+			((UniCon)root).addSlot(new RoadInventory.RoadSlot((FvtmWorld)player.getWorld(), inv, i, 88 - offset + 1 + i * 18, 8, true, pos.x > 0));
 		}
 		fillStacks();
 	}
@@ -47,7 +45,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 				inv.setInventorySlotContents(i, ItemStack.EMPTY);
 				continue;
 			}
-			inv.setInventorySlotContents(i, new ItemStack((NBTTagCompound)compound.direct()));
+			inv.setInventorySlotContents(i, new ItemStack((NBTTagCompound)compound.getCompound("Block" + j).direct()));
 		}
 	}
 

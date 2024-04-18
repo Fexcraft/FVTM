@@ -43,7 +43,7 @@ import java.util.List;
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 
-public class RoadToolItem extends Item implements JunctionGridItem {
+public class RoadToolItem extends Item {
 	
 	public static RoadToolItem INSTANCE;
 
@@ -83,10 +83,5 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			default: return EnumActionResult.PASS;
 		}
     }
-
-	@Override
-	public boolean hasVectors(){
-		return true;
-	}
 
 }

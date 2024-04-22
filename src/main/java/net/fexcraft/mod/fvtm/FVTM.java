@@ -36,6 +36,7 @@ import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.model.program.BlockPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.render.*;
@@ -81,6 +82,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.EnumHelper;
@@ -143,9 +145,13 @@ public class FVTM {
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		StateWrapper.DEFAULT = new StateWrapperI(Blocks.AIR.getDefaultState());
 		StateWrapper.STATE_WRAPPER = state -> new StateWrapperI((IBlockState)state);
-		StateWrapper.STACK_WRAPPER = stack ->{
+		StateWrapper.STACK_WRAPPER = (stack, ctx) ->{
 			Item item = stack.getItem().local();
-			if(item instanceof ItemBlock) return StateWrapper.of(((ItemBlock)item).getBlock().getStateFromMeta(stack.damage()));
+			if(item instanceof ItemBlock){
+				net.minecraft.block.Block block = ((ItemBlock)item).getBlock();
+				net.minecraft.util.math.BlockPos pos = new net.minecraft.util.math.BlockPos(ctx.pos.x, ctx.pos.y, ctx.pos.z);
+				return StateWrapper.of(block.getStateForPlacement(ctx.world.local(), pos, ctx.side.local(), (float)ctx.off.x, (float)ctx.off.y, (float)ctx.off.z, stack.damage(), ctx.placer == null ? null : ctx.placer.local()));
+			}
 			else return StateWrapper.DEFAULT;
 		};
 		if(EnvInfo.CLIENT){

@@ -150,7 +150,7 @@ public class FVTM {
 			if(item instanceof ItemBlock){
 				net.minecraft.block.Block block = ((ItemBlock)item).getBlock();
 				net.minecraft.util.math.BlockPos pos = new net.minecraft.util.math.BlockPos(ctx.pos.x, ctx.pos.y, ctx.pos.z);
-				return StateWrapper.of(block.getStateForPlacement(ctx.world.local(), pos, ctx.side.local(), (float)ctx.off.x, (float)ctx.off.y, (float)ctx.off.z, stack.damage(), ctx.placer == null ? null : ctx.placer.local()));
+				return StateWrapper.of(block.getStateForPlacement(ctx.world.local(), pos, ctx.side == null ? null : ctx.side.local(), (float)ctx.off.x, (float)ctx.off.y, (float)ctx.off.z, stack.damage(), ctx.placer.local()));
 			}
 			else return StateWrapper.DEFAULT;
 		};

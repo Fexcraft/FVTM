@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.*;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -18,7 +17,6 @@ import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
@@ -26,7 +24,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
-import net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12.LightBeam;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
@@ -86,18 +84,18 @@ public class EffectRenderer {
             GL11.glTranslated(-cx, -cy, -cz);
             for(int i = 0; i < SORTED_VEH_QUEUE.size(); i++){
             	SeparateSortedModelGroup sroup = SORTED_VEH_QUEUE.get(i);
-            	VehicleEntity veh = SORTED_VEH_ENTITY.get(i);
-            	double[] vehpos = SORTED_VEH_POS.get(veh.getEntity().getEntityId());
+            	RootVehicle veh = SORTED_VEH_ENTITY.get(i);
+            	double[] vehpos = SORTED_VEH_POS.get(veh.getEntityId());
             	if(vehpos == null) continue;
                 GL11.glPushMatrix();
                 GL11.glTranslated(vehpos[0], vehpos[1], vehpos[2]);
                 //
-                V3D vehrot = SORTED_VEH_ROT.get(veh.getEntity().getEntityId());
+                V3D vehrot = SORTED_VEH_ROT.get(veh.getEntityId());
                 GL11.glRotated(vehrot.x, 0, 1, 0);
                 GL11.glRotated(vehrot.y, 0, 0, 1);
                 GL11.glRotated(vehrot.z, 1, 0, 0);
                 GL11.glRotatef(180f, 0f, 0f, 1f);
-				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.getEntity(), veh.getEntity().getCapability(RENDERCACHE, null), null, null, false, event.getPartialTicks()).sep());
+				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.vehicle, veh.getCapability(RENDERCACHE, null), null, null, false, event.getPartialTicks()).sep());
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -27,7 +26,7 @@ public class AnimationPrograms {
 
 	}
 
-	public static abstract class AttrAnimation extends DefaultPrograms.AttributeBased implements AnimationRoot {
+	public static abstract class AttrAnimation extends DefaultPrograms12.AttributeBased implements AnimationRoot {
 
 		protected HashMap<V3I, Program> progs = new HashMap<>();
 		protected ArrayList<Program> active = new ArrayList<>();

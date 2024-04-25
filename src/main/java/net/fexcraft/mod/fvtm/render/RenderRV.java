@@ -56,7 +56,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		if(vehmod != null){
 			GL11.glPushMatrix();
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
-			vehmod.render(RENDERDATA.set(rv.vehicle.data, rv, cache, false, ticks));
+			vehmod.render(RENDERDATA.set(rv.vehicle, cache, false, ticks));
 			GL11.glPopMatrix();
 		}
 		else{

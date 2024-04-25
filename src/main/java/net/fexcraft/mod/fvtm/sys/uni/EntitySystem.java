@@ -122,9 +122,9 @@ public class EntitySystem extends DetachedSystem {
 		update();
 	}
 
-	public void add(GenericVehicle vehicle){
+	public void add(RootVehicle vehicle){
 		if(DISABLE_PARTICLES) return;
-		for(Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
+		for(Entry<String, PartData> entry : vehicle.vehicle.data.getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:particle_emitter")) continue;
 			ParticleEmitterFunction func = entry.getValue().getFunction("fvtm:particle_emitter");
 			for(EmitterData data : func.emitters){
@@ -135,7 +135,7 @@ public class EntitySystem extends DetachedSystem {
 	
 	public static class Emitter {
 		
-		private GenericVehicle vehicle;
+		private RootVehicle vehicle;
 		private EmitterData edata;
 		private PartData data;
 		private String part;
@@ -145,7 +145,7 @@ public class EntitySystem extends DetachedSystem {
 		private int freq, cool;
 		private double speed;
 
-		public Emitter(GenericVehicle vehicle, String key, PartData data, EmitterData edata){
+		public Emitter(RootVehicle vehicle, String key, PartData data, EmitterData edata){
 			this.vehicle = vehicle;
 			this.part = key;
 			this.data = data;
@@ -157,10 +157,10 @@ public class EntitySystem extends DetachedSystem {
 		}
 
 		public boolean invalid(Collection<ParticleEntity> particles, int mul){
-			if(edata.getConditional() == null || edata.getConditional().isMet(DefaultModel.RENDERDATA.set(vehicle.getVehicleData(), vehicle, null, data, part, false, 0))){
+			if(edata.getConditional() == null || edata.getConditional().isMet(DefaultModel.RENDERDATA.set(vehicle.vehicle.data, vehicle.vehicle, null, data, part, false, 0))){
 				cool++;
 				if(cool >= freq * mul){
-					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
+					SwivelPoint point = vehicle.vehicle.data.getRotationPoint(data.getSwivelPointInstalledOn());
 					V3D pos = point.getRelativeVector(off).add(vehicle.posX, vehicle.posY, vehicle.posZ);
 					V3D vdr = point.getRelativeVector(dir.x, dir.y, dir.z);
 					particles.add(new ParticleEntity(edata.particle, new V3D(pos.x, pos.y, pos.z), new V3D(vdr.x, vdr.y, vdr.z), speed));

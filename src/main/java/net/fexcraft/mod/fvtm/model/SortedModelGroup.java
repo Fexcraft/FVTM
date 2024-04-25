@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class SortedModelGroup extends ArrayList<ModelGroup> {
@@ -48,7 +49,7 @@ public abstract class SortedModelGroup extends ArrayList<ModelGroup> {
 			else{
 				SeparateRenderCache.SORTED_VEH_QUEUE.add(this);
 				SeparateRenderCache.SORTED_VEH_DATA.add(data.vehicle);
-				SeparateRenderCache.SORTED_VEH_ENTITY.add((VehicleEntity)data.entity);
+				SeparateRenderCache.SORTED_VEH_ENTITY.add((RootVehicle)data.entity);
 			}
 		}
 

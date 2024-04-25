@@ -53,7 +53,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 					GL11.glPushMatrix();
 					GL11.glRotatef(180f, 0f, 0f, 1f);
 					TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
-					modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), vehicle, cache, false, ticks));
+					modVehicle.render(RENDERDATA.set(vehicle.getVehicleData(), null/*vehicle*/, cache, false, ticks));
 					GL11.glPopMatrix();
 				}
 				else {
@@ -61,7 +61,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 					DebugModels.CENTERSPHERE.render(1);
 				}
 				if(vehicle.getVehicleData().getParts().size() > 0){
-					VehicleRenderer.renderPoint(vehicle.getRotPoint(), vehicle, vehicle.getVehicleData(), cache, ticks);
+					VehicleRenderer.renderPoint(vehicle.getRotPoint(), null/*vehicle*/, vehicle.getVehicleData(), cache, ticks);
 				}
 			}
             //EffectRenderer.renderHotInstallInfo(vehicle);

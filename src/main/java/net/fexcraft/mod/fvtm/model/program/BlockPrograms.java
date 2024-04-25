@@ -7,14 +7,11 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
-import net.fexcraft.mod.uni.Pos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
-
-import java.util.TreeMap;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 
@@ -32,7 +29,7 @@ public class BlockPrograms {
         ModelGroup.PROGRAMS.add(new Block4x4RotVisible(0));
         ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
         ModelGroup.PROGRAMS.add(new BlockFacePlayer(0, 0, 0));
-        ModelGroup.PROGRAMS.add(new DefaultPrograms.AlwaysGlow(){
+        ModelGroup.PROGRAMS.add(new DefaultPrograms12.AlwaysGlow(){
             public boolean shouldGlow(ModelGroup list, ModelRenderData data){
                 return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() == 1;
             }
@@ -40,7 +37,7 @@ public class BlockPrograms {
                 return "fvtm:basic_signal_clear";
             }
         });
-        ModelGroup.PROGRAMS.add(new DefaultPrograms.AlwaysGlow(){
+        ModelGroup.PROGRAMS.add(new DefaultPrograms12.AlwaysGlow(){
             public boolean shouldGlow(ModelGroup list, ModelRenderData data){
                 return data.tile == null || ((SignalTileEntity)data.tile).getSignalState() == 0;
             }

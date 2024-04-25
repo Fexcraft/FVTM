@@ -167,7 +167,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	float c = vehicle.getAttributeFloat("collision_range", 2f);
         	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
     		EntitySystem system = SystemManager.get(Systems.ENTITY, world);
-    		if(system != null) system.add(this);
+    		//TODO if(system != null) system.add(this);
         }
 	}
 

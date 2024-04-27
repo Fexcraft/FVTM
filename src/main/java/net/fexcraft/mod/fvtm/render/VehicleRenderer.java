@@ -135,7 +135,7 @@ public class VehicleRenderer {
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 			translate(entry.getValue().getInstalledPos());
 			entry.getValue().getInstalledRot().rotate112();
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
+			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
 			entry.getValue().getInstalledRot().rotate112R();
 			translateR(entry.getValue().getInstalledPos());
 		}

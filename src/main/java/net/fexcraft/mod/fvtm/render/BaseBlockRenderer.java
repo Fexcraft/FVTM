@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.block.properties.IProperty;
@@ -23,9 +24,16 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
     @Override
     public void render(BlockTileEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         if((data = tile.getBlockData()) == null) return;
+        model = (BlockModel)data.getType().getModel();
+        if(model == null){
+            GL11.glPushMatrix();
+            GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
+            DebugModels.CENTERSPHERE.render(0.5f);
+            GL11.glPopMatrix();
+            return;
+        }
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-        model = (BlockModel)data.getType().getModel();
         TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
         GL11.glPushMatrix();
         GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0, 1, 0);

@@ -233,7 +233,7 @@ public class EffectRenderer {
 	public static void renderToggableInfo(Entity vehicle, VehicleData data){
 		if(!Command.TOGGABLE) return;
     	GL11.glPushMatrix();
-    	float scal = data.getAttribute("collision_range").asFloat() * 16;
+    	float scal = data.getAttribute("collision_range").asFloat();
     	GL11.glScalef(scal, scal, scal);
     	GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glLineWidth(2f);

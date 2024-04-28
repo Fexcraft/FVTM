@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 import net.fexcraft.lib.common.math.V3D;
@@ -28,7 +29,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 
     @Override
     public void doRender(RootVehicle rv, double x, double y, double z, float entity_yaw, float ticks){
-        if(/*RENDER_VEHICLES_SEPARATELY ||*/ rv.vehicle.data == null || rv.vehicle.point == null) return;
+        if(RENDER_VEHICLES_SEPARATELY || rv.vehicle.data == null || rv.vehicle.point == null) return;
         GL11.glPushMatrix();
 		SeparateRenderCache.SORTED_VEH_POS.put(rv.getEntityId(), new double[]{ x, y, z });
 		GL11.glTranslated(x, y, z);

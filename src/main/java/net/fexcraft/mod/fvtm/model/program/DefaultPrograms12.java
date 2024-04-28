@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
@@ -215,7 +216,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_all";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering){
 					attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
 					am = attr.initial + Minecraft.getMinecraft().getRenderPartialTicks() * (attr.value - attr.initial);
@@ -237,7 +238,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_steering";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 				if(slot != null && slot.steering)
 					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
@@ -255,7 +256,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_all_opposite";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering)
 					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				GL11.glRotatef(data.vehicle.getAttribute("wheel_angle").asFloat(), 0, 0, 1);
@@ -275,7 +276,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_steering_opposite";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 				if(slot != null && slot.steering)
 					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);

@@ -35,6 +35,7 @@ import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
+import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.*;
@@ -205,7 +206,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			case PART:{
 				Part part = (Part)content;
-				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction).count() > 0){
+				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction || pre instanceof TireFunction).count() > 0){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), PartItemModel.INSTANCE);
 					return;
 				}

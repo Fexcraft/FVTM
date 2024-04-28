@@ -60,10 +60,10 @@ public class VehicleRenderer {
 				}
 			}
             GL11.glPushMatrix();
-			V3D rot = EffectRenderer.getRotations(vehicle.vehicle.point, ticks);
-			GL11.glRotated(rot.x, 0.0F, 1.0F, 0.0F);
-			GL11.glRotated(rot.y, 0.0F, 0.0F, 1.0F);
-			GL11.glRotated(rot.z, 1.0F, 0.0F, 0.0F);
+			V3D rot = EffectRenderer.getRotations(vehicle, ticks);
+			GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
+			GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
+			GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
             SeparateRenderCache.SORTED_VEH_ROT.put(vehicle.getEntityId(), rot);
             //
 	        int i = getBrightness(x, y, z), j = i % 65536, k = i / 65536;
@@ -75,7 +75,6 @@ public class VehicleRenderer {
 	            Model modVehicle = vehicle.vehicle.data.getType().getModel();
 	            if(modVehicle != null){
 					GL11.glPushMatrix();
-					GL11.glRotatef(180f, 0f, 0f, 1f);
 	                TexUtil.bindTexture(vehicle.vehicle.data.getCurrentTexture());
 	                modVehicle.render(RENDERDATA.set(vehicle.vehicle.data, null/*vehicle*/, cache, false, ticks));
 					GL11.glPopMatrix();
@@ -108,8 +107,8 @@ public class VehicleRenderer {
             GL11.glPopMatrix();
             //
             GL11.glPopMatrix();
-            //EffectRenderer.renderToggableInfo(vehicle);
-            EffectRenderer.renderContainerInfo(vehicle, rot);
+            EffectRenderer.renderToggableInfo(vehicle, vehicle.vehicle.data);
+            //EffectRenderer.renderContainerInfo(vehicle, rot);
             EffectRenderer.renderSeats(vehicle.vehicle);
             GL11.glTranslated(-x + cx, -y + cy, -z + cz);
         }
@@ -127,9 +126,9 @@ public class VehicleRenderer {
 			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 			V3D rot = EffectRenderer.getRotations(point, ticks);
 			GL11.glTranslated(temp2.x, temp2.y, temp2.z);
-			GL11.glRotated(rot.x, 0, 1, 0);
-			GL11.glRotated(rot.y, 1, 0, 0);
-			GL11.glRotated(rot.z, 0, 0, 1);
+			GL11.glRotated(-rot.x, 0, 1, 0);
+			GL11.glRotated(-rot.y, 1, 0, 0);
+			GL11.glRotated(-rot.z, 0, 0, 1);
 		}
 		for(Entry<String, PartData> entry : parts){
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());

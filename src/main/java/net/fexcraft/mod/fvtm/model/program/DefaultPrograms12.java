@@ -124,7 +124,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState() || (data.entity != null && ((RootVehicle)data.entity).isBraking());
+				return data.vehicle.getLightsState() || (data.vehent != null && data.vehent.isBraking());
 			}
 			public String id(){
 				return "fvtm:back_lights";

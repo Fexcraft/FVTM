@@ -5,10 +5,7 @@ import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
-import net.fexcraft.mod.fvtm.block.ContainerBlock;
+import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.PassCap;
@@ -279,7 +276,7 @@ public class FVTM {
 		if(event.getSide().isClient()){
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
 			ConstructorBlock.INSTANCE.setCreativeTab(tab);
-			ConstCenterBlock.INSTANCE.setCreativeTab(tab);
+			VehicleLiftBlock.INSTANCE.setCreativeTab(tab);
 			/*DisplayBlock.INSTANCE.setCreativeTab(tab);
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
 			StreetSignItem.INSTANCE.setCreativeTab(tab);

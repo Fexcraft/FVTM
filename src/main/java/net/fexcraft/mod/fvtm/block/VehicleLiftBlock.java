@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
+import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -92,7 +94,13 @@ public class VehicleLiftBlock extends Block implements ITileEntityProvider {
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if(world.isRemote || hand == EnumHand.OFF_HAND) return false;
 		if(player.isSneaking()) return true;
-		//
+		if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
+			VehicleLiftEntity tile = (VehicleLiftEntity)world.getTileEntity(pos);
+			if(tile != null){
+				tile.setVehicle(player.getHeldItemMainhand());
+				return true;
+			}
+		}
 		return true;
 	}
 

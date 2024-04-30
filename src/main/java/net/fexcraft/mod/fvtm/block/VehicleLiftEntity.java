@@ -5,7 +5,13 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.packet.PacketListener;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -16,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleLiftEntity extends TileEntity {
+public class VehicleLiftEntity extends TileEntity implements PacketListener {
 
 	public static final AxisAlignedBB RENDER_AABB = new AxisAlignedBB(-16, -16, -16, 16, 16, 16);
 	private VehicleData data;
@@ -103,6 +109,42 @@ public class VehicleLiftEntity extends TileEntity {
 
 	public double getState(){
 		return liftstate + -lowest;
+	}
+
+	public void setVehicle(ItemStack stack){
+		if(data != null){
+			EntityItem item = new EntityItem(world);
+			item.setItem(data.newItemStack().local());
+			item.setPosition(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+			world.spawnEntity(item);
+			data = null;
+		}
+		data = FvtmResources.getVehicleData(stack.getTagCompound());
+		sendUpdate();
+	}
+
+	private void sendUpdate(){
+		TagCW com = TagCW.create();
+		com.set("pos", pos.toLong());
+		com.set("data", data.write(TagCW.create()));
+		com.set("task", "update");
+		Packets.sendToAll(Packet_TagListener.class, "blockentity", com);
+	}
+
+	@Override
+	public void handle(TagCW packet, Passenger player){
+		if(world.isRemote){
+			switch(packet.getString("task")){
+				case "update":{
+					data = FvtmResources.getVehicleData(packet.getCompound("data"));
+					updateState();
+					return;
+				}
+			}
+		}
+		else{
+
+		}
 	}
 
 }

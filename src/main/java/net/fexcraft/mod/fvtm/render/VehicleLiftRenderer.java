@@ -23,6 +23,10 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 		TexUtil.bindTexture(TEXTURE);
 		Lift2024Model.control.render();
 		Lift2024Model.struct.render();
+		if(tile.getVehicleData() != null && tile.getVehicleData().getType().getModel() != null){
+			TexUtil.bindTexture(tile.getVehicleData().getCurrentTexture() );
+			tile.getVehicleData().getType().getModel().render(Lift2024Model.RENDERDATA);
+		}
 		GL11.glPopMatrix();
 	}
 

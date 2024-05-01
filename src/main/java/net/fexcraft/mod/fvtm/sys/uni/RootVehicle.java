@@ -703,6 +703,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		return should_sit;
 	}
 
+	public void updateSittingState(Entity pass){
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) should_sit = seat.seat.sitting;
+	}
+
 	public SeatInstance getSeatOf(Entity entity){
 		PassCap pass = entity.getCapability(Capabilities.PASSENGER, null);
 		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;

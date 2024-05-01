@@ -1,9 +1,6 @@
 package net.fexcraft.mod.fvtm.event;
 
-import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
-import net.fexcraft.mod.fvtm.block.ContainerBlock;
+import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
@@ -21,7 +18,7 @@ public class Registerer12 {
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
 		event.getRegistry().register(ConstructorBlock.INSTANCE);
-		event.getRegistry().register(ConstCenterBlock.INSTANCE);
+		event.getRegistry().register(VehicleLiftBlock.INSTANCE);
 		event.getRegistry().register(Asphalt.INSTANCE);
 		event.getRegistry().register(ContainerBlock.INSTANCE);
 	}
@@ -29,7 +26,7 @@ public class Registerer12 {
 	@SubscribeEvent
 	public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
 		event.getRegistry().register(ConstructorBlock.ITEM);
-		event.getRegistry().register(ConstCenterBlock.ITEM);
+		event.getRegistry().register(VehicleLiftBlock.ITEM);
 		event.getRegistry().register(Asphalt.ITEM);
 		//
 		event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
@@ -37,7 +34,7 @@ public class Registerer12 {
 		event.getRegistry().register(DecorationItem.INSTANCE);
 		if(EnvInfo.CLIENT){
 			regModel(ConstructorBlock.ITEM);
-			regModel(ConstCenterBlock.ITEM);
+			regModel(VehicleLiftBlock.ITEM);
 			regModel(Asphalt.ITEM, 16);
 			//
 			regModel(DecorationItem.INSTANCE);

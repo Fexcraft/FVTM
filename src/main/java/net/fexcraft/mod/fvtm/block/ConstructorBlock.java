@@ -99,14 +99,14 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
 					if(found) break;
 					for(int z = -7; z < 8; z++){
 						TileEntity tile = world.getTileEntity(mpos.setPos(te.getPos().getX() + x, te.getPos().getY() + y, te.getPos().getZ() + z));
-						if(tile == null || tile instanceof ConstCenterEntity == false) continue;
+						/*if(tile == null || tile instanceof ConstCenterEntity == false) continue;
 						ConstCenterEntity lte = (ConstCenterEntity)tile;
 						if(lte.getConstPos() == null || lte.getConstTile() == null){
 							lte.setConst(te);
 							te.setLiftPos(lte.getPos());
 							found = true;
 							break;
-						}
+						}*/
 					}
 				}
 			}

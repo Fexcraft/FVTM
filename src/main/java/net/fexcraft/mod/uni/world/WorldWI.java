@@ -2,19 +2,23 @@ package net.fexcraft.mod.uni.world;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
+import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -160,6 +164,18 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
 		return StateWrapper.of(((IBlockState)block.direct()).getBlock().getStateFromMeta(height));
+	}
+
+	@Override
+	public void handleBlockEntityPacket(TagCW com, Passenger player){
+		BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof PacketListener){
+			((PacketListener)tile).handle(com, player);
+		}
+		else{
+			FvtmLogger.debug("No receiver for packet '" + com + "' found. Dest: " + pos);
+		}
 	}
 
 }

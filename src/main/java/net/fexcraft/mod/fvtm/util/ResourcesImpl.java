@@ -284,7 +284,7 @@ public class ResourcesImpl extends FvtmResources {
 			new ItemStack(Blocks.LEVER, 8)
 		);
 		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(ConstCenterBlock.INSTANCE),
+			new ItemStack(VehicleLiftBlock.INSTANCE),
 			new ItemStack(Blocks.IRON_BLOCK, 2),
 			new ItemStack(Items.IRON_INGOT, 8),
 			new ItemStack(Items.COMPARATOR, 2),
@@ -475,11 +475,11 @@ public class ResourcesImpl extends FvtmResources {
 		ConstructorBlock.ITEM.setTranslationKey(ConstructorBlock.INSTANCE.getTranslationKey());
 		GameRegistry.registerTileEntity(ConstructorEntity.class, new ResourceLocation("fvtm:constructor"));
 		//
-		ConstCenterBlock.INSTANCE = new ConstCenterBlock();
-		ConstCenterBlock.ITEM = new ItemBlock16(ConstCenterBlock.INSTANCE);
-		ConstCenterBlock.ITEM.setRegistryName(ConstCenterBlock.INSTANCE.getRegistryName());
-		ConstCenterBlock.ITEM.setTranslationKey(ConstCenterBlock.INSTANCE.getTranslationKey());
-		GameRegistry.registerTileEntity(ConstCenterEntity.class, new ResourceLocation("fvtm:constructor_lift"));
+		VehicleLiftBlock.INSTANCE = new VehicleLiftBlock();
+		VehicleLiftBlock.ITEM = new ItemBlock16(VehicleLiftBlock.INSTANCE);
+		VehicleLiftBlock.ITEM.setRegistryName(VehicleLiftBlock.INSTANCE.getRegistryName());
+		VehicleLiftBlock.ITEM.setTranslationKey(VehicleLiftBlock.INSTANCE.getTranslationKey());
+		GameRegistry.registerTileEntity(VehicleLiftEntity.class, VehicleLiftBlock.INSTANCE.getRegistryName());
 		//
 		Asphalt.INSTANCE = new Asphalt();
 		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
@@ -492,7 +492,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@SideOnly(Side.CLIENT)
 	private void registerTESR(){
-		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstCenterEntity.class, new net.fexcraft.mod.fvtm.render.ConstructorCenterRenderer());
+		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(VehicleLiftEntity.class, new net.fexcraft.mod.fvtm.render.VehicleLiftRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
 	}
 

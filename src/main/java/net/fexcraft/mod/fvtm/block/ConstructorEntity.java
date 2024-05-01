@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.construct.ConstConInterface;
 import net.fexcraft.mod.fvtm.gui.construct.ConstContainer;
-import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -246,7 +245,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		if(center == null) return;
 		TileEntity center = world.getTileEntity(this.center);
 		if(center == null) return;
-		if(center instanceof ConstCenterEntity == false) return;
+		/*if(center instanceof ConstCenterEntity == false) return;
 		ConstCenterEntity cent = (ConstCenterEntity)center;
 		if(cent.track != null){
 			if(cent.track.railmodel != null) cent.track.railmodel.clearDisplayLists();
@@ -259,7 +258,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				model.clearGLData();
 			}
 			cent.models = null;
-		}
+		}*/
 	}
 
 	public void updateClient(String type){

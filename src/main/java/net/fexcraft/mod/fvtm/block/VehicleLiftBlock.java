@@ -93,11 +93,19 @@ public class VehicleLiftBlock extends Block implements ITileEntityProvider {
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if(world.isRemote || hand == EnumHand.OFF_HAND) return false;
-		if(player.isSneaking()) return true;
+		if(player.isSneaking()){
+			VehicleLiftEntity tile = (VehicleLiftEntity)world.getTileEntity(pos);
+			if(tile != null){
+				tile.setVehicle(ItemStack.EMPTY);
+				return true;
+			}
+			return true;
+		}
 		if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
 			VehicleLiftEntity tile = (VehicleLiftEntity)world.getTileEntity(pos);
 			if(tile != null){
 				tile.setVehicle(player.getHeldItemMainhand());
+				if(!player.capabilities.isCreativeMode) player.getHeldItemMainhand().shrink(1);
 				return true;
 			}
 		}

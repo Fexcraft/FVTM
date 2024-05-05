@@ -126,7 +126,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 	private void sendUpdate(){
 		TagCW com = TagCW.create();
 		com.set("pos", pos.toLong());
-		com.set("data", data.write(TagCW.create()));
+		if(data != null) com.set("data", data.write(TagCW.create()));
 		com.set("task", "update");
 		Packets.sendToAll(Packet_TagListener.class, "blockentity", com);
 	}
@@ -136,7 +136,10 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		if(world.isRemote){
 			switch(packet.getString("task")){
 				case "update":{
-					data = FvtmResources.getVehicleData(packet.getCompound("data"));
+					if(packet.has("data")){
+						data = FvtmResources.getVehicleData(packet.getCompound("data"));
+					}
+					else data = null;
 					updateState();
 					return;
 				}

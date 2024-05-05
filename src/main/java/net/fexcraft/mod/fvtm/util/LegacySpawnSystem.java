@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -65,7 +66,7 @@ public class LegacySpawnSystem extends EntitySystem {
 		if(!data.getType().isTrailer() && !data.hasPart("engine")){
 			Print.chat(player, "&9Vehicle does not have an Engine installed!"); // failed = true;
 		}
-		if(!data.getType().isTrailer() && data.getSeats().size() < 1){
+		if(!EnvInfo.DEV && !data.getType().isTrailer() && data.getSeats().size() < 1){
 			Print.chat(player, "&9Vehicle does not have any Seats!");
 			failed = true;
 		}

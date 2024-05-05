@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -26,7 +27,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 
 	public static final AxisAlignedBB RENDER_AABB = new AxisAlignedBB(-16, -16, -16, 16, 16, 16);
 	private VehicleData data;
-	private double liftstate;
+	public double liftstate;
 	private double lowest;
 	private double highest;
 	private double lslot;
@@ -64,6 +65,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 			data = FvtmResources.getVehicleData(compound.getCompoundTag("VehicleData"));
 		}
 		liftstate = compound.getDouble("LiftState");
+		updateState();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -84,15 +86,19 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 			return;
 		}
 		double ls = liftstate;
-		lowest = lslot = lwheel = -16;
-		highest = 16;
+		lowest = lslot = lwheel = 16;
+		highest = -16;
 		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
 			if(highest < point.pos.y) highest = point.pos.y;
 			if(lowest > point.pos.y) lowest = point.pos.y;
 		}
+		if(data.getType().getLiftingPoints().isEmpty()){
+			highest = lowest = 0;
+		}
 		for(WheelSlot slot : data.getWheelSlots().values()){
 			if(lslot > slot.position.y) lslot = slot.position.y;
 		}
+		if(data.getWheelSlots().isEmpty()) lslot = 0;
 		if(data.getWheelSlots().size() > 0 && data.getWheelPositions().size() > 0){
 			for(V3D vec : data.getWheelPositions().values()){
 				if(lwheel > vec.y) lwheel = vec.y;
@@ -100,11 +106,11 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		}
 		else lwheel = lslot;
 		onwheels = data.getWheelPositions().size() >= data.getType().getVehicleType().minWheels();
-		liftstate = (ls > -1.125 && !onwheels ? -1.25 : ls);
-		double low = lslot < lowest ? lowest : lslot;
-		if(onwheels || lwheel > low) low = lwheel;
-		liftstate += lowest - low;
-		while((liftstate + -lowest < -3)) liftstate += 0.5;
+		liftstate = (ls < 1.125 && !onwheels ? 1.25 : ls);
+		double low = lslot > lowest ? lowest : lslot;
+		if(onwheels || lwheel < low) low = lwheel;
+		liftstate -= low;
+		while((liftstate - lowest > 3)) liftstate -= 0.5;
 	}
 
 	public double getState(){

@@ -131,7 +131,9 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 			world.spawnEntity(item);
 			data = null;
 		}
-		data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
+		if(stack.getItem() instanceof VehicleItem){
+			data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
+		}
 		sendUpdate();
 	}
 

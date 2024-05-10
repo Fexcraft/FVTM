@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -131,7 +132,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand){
     	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
-    	if(world.getBlockState(pos).getBlock() instanceof ConstructorBlock) return EnumActionResult.PASS;
+    	if(world.getBlockState(pos).getBlock() instanceof VehicleLiftBlock) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
     	EntitySystem.spawnVehicle(player, new Vec3d(pos).add(hitX, hitY, hitZ), stack, data, SpawnMode.PLAYER);
     	return EnumActionResult.SUCCESS;

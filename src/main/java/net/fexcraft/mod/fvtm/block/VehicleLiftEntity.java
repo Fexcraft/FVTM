@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -125,7 +126,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 			world.spawnEntity(item);
 			data = null;
 		}
-		data = FvtmResources.getVehicleData(stack.getTagCompound());
+		data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
 		sendUpdate();
 	}
 
@@ -134,6 +135,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		com.set("pos", pos.toLong());
 		if(data != null) com.set("data", data.write(TagCW.create()));
 		com.set("task", "update");
+		FvtmLogger.marker(com);
 		Packets.sendToAll(Packet_TagListener.class, "blockentity", com);
 	}
 
@@ -146,6 +148,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 						data = FvtmResources.getVehicleData(packet.getCompound("data"));
 					}
 					else data = null;
+					liftstate = 0;
 					updateState();
 					return;
 				}

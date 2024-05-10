@@ -27,10 +27,10 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 		GL11.glRotated(BlockType.GENERIC_4ROT.getRotationFor(tile.getBlockMetadata()), 0, 1, 0);
 		TexUtil.bindTexture(TEXTURE);
 		Lift2024Model.control.render();
-		Lift2024Model.struct.render();
 		data = tile.getVehicleData();
 		if(data != null){
-			GL11.glTranslated(0.75 + tile.mleft, tile.liftstate, 0);
+			GL11.glPushMatrix();
+			GL11.glTranslated(0.75 + tile.mleft, tile.liftstate + 0.3125, 0);
 			if(data.getType().getModel() != null){
 				TexUtil.bindTexture(data.getCurrentTexture());
 				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, null, false, ticks));
@@ -38,10 +38,24 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 			if(data.getParts().size() > 0){
 				VehicleRenderer.renderPoint(data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);
 			}
-			GL11.glTranslated(0.75 - tile.mrigh, -tile.liftstate, 0);
-			GL11.glRotatef(180, 0, 1, 0);
-			TexUtil.bindTexture(TEXTURE);
+			GL11.glPopMatrix();
+		}
+		else{
 			Lift2024Model.struct.render();
+			Lift2024Model.motor.render();
+			Lift2024Model.lift.render();
+			Lift2024Model.arm_n.render();
+			Lift2024Model.arm_n_e.render();
+			Lift2024Model.arm_s.render();
+			Lift2024Model.arm_s_e.render();
+			GL11.glTranslated(4, 0, 0);
+			GL11.glRotatef(180, 0, 1, 0);
+			Lift2024Model.struct.render();
+			Lift2024Model.lift.render();
+			Lift2024Model.arm_n.render();
+			Lift2024Model.arm_n_e.render();
+			Lift2024Model.arm_s.render();
+			Lift2024Model.arm_s_e.render();
 		}
 		GL11.glPopMatrix();
 	}

@@ -110,7 +110,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		double low = lslot > lowest ? lowest : lslot;
 		if(onwheels || lwheel < low) low = lwheel;
 		liftstate -= low;
-		while((liftstate - lowest > 3)) liftstate -= 0.5;
+		while((liftstate - low > 3)) liftstate -= 0.5;
 	}
 
 	public double getState(){

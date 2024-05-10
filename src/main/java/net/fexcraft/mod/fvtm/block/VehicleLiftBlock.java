@@ -16,7 +16,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -28,6 +30,7 @@ import static net.fexcraft.mod.fvtm.util.Properties.FACING;
  */
 public class VehicleLiftBlock extends Block implements ITileEntityProvider {
 
+	public static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.125, 1);
     public static VehicleLiftBlock INSTANCE;
     public static ItemBlock ITEM;
 
@@ -115,6 +118,11 @@ public class VehicleLiftBlock extends Block implements ITileEntityProvider {
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state){
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+        return AABB;
     }
 
 }

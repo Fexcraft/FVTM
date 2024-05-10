@@ -30,7 +30,7 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 		Lift2024Model.struct.render();
 		data = tile.getVehicleData();
 		if(data != null){
-			GL11.glTranslated(0, tile.liftstate, 0);
+			GL11.glTranslated(0.75 + tile.mleft, tile.liftstate, 0);
 			if(data.getType().getModel() != null){
 				TexUtil.bindTexture(data.getCurrentTexture());
 				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, null, false, ticks));
@@ -38,6 +38,10 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 			if(data.getParts().size() > 0){
 				VehicleRenderer.renderPoint(data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);
 			}
+			GL11.glTranslated(0.75 - tile.mrigh, -tile.liftstate, 0);
+			GL11.glRotatef(180, 0, 1, 0);
+			TexUtil.bindTexture(TEXTURE);
+			Lift2024Model.struct.render();
 		}
 		GL11.glPopMatrix();
 	}

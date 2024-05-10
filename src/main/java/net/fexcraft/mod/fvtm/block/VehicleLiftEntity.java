@@ -34,8 +34,6 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 	private double lslot;
 	private double lwheel;
 	private boolean onwheels;
-	public double mleft;
-	public double mrigh;
 
 	public VehicleLiftEntity(){}
 
@@ -91,12 +89,9 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		double ls = liftstate;
 		lowest = lslot = lwheel = 16;
 		highest = -16;
-		mleft = mrigh = 0;
 		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
 			if(highest < point.pos.y) highest = point.pos.y;
 			if(lowest > point.pos.y) lowest = point.pos.y;
-			if(mleft < point.pos.x) mleft = point.pos.x;
-			if(mrigh > point.pos.x) mrigh = point.pos.x;
 		}
 		if(data.getType().getLiftingPoints().isEmpty()){
 			highest = lowest = 0;

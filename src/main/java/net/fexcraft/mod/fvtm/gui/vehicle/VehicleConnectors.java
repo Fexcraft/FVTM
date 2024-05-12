@@ -68,13 +68,13 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 			LandVehicle land = (LandVehicle)vehicle;
 			if(front && land.truck != null){ land.truck.tryDetach(player); }
 			if(!front){
-        		if(land.getVehicleData().getRearConnector() == null){
+        		/*if(land.getVehicleData().getRearConnector() == null){
         			Print.chat(player, I18n.format("gui.fvtm.vehicle.connector.no_rear_connector"));
         		}
         		else{
         			if(land.trailer != null) land.tryDetach(player);
         			else land.tryAttach(player);
-        		}
+        		}*///TODO
 			}
 		}
 		else if(vehicle instanceof RailVehicle){

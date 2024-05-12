@@ -75,8 +75,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey()); vehdata = vdata;
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vdata.getWheelPositions().get("bogie_rear").x;
-		frconndis = (float)vdata.getFrontConnector().x;
-		rrconndis = (float)-vdata.getRearConnector().x;
+		frconndis = 1;//TODO (float)vdata.getFrontConnector().x;
+		rrconndis = -1;//TODO (float)-vdata.getRearConnector().x;
 		com = new Compound.Singular(this); 
 		//
 		//this.passed = passed + rrconndis + frbogiedis;
@@ -569,8 +569,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		//
 		frbogiedis = (float)vehdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vehdata.getWheelPositions().get("bogie_rear").x;
-		frconndis = (float)vehdata.getFrontConnector().x;
-		rrconndis = (float)-vehdata.getRearConnector().x;
+		frconndis = 1;//TODO (float)vehdata.getFrontConnector().x;
+		rrconndis = -1;//TODO (float)-vehdata.getRearConnector().x;
 		//
 		this.updatePosition(); return this;
 	}

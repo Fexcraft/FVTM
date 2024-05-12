@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
@@ -25,6 +26,7 @@ import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -370,8 +372,21 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				}
 				return true;
 			}
-			else if(stack.getItem() instanceof VehicleItem){
-				//TODO check if trailer and connect
+			else if(stack.getItem() instanceof VehicleItem && vehicle.type.isLandVehicle()){
+				VehicleData data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
+				if(data.getType().isTrailer()){
+					if(vehicle.data.getRearConnector() == null){
+						pass.send("interact.fvtm.vehicle.no_rear_connector");
+						FvtmLogger.debug(vehicle.data.getRearConnector() + " " + vehicle.data.getType().getDefaultConnectorRear());
+						return true;
+					}
+                	if(!LegacySpawnSystem.validToSpawn(player, stack, data)) return true;
+					if(vehicle.rear != null){
+						pass.send("interact.fvtm.vehicle.disconnect_trailer");
+						return true;
+					}
+					world.spawnEntity(new NLandVehicle((NLandVehicle)this, data, player));
+				}
 				return true;
 			}
 			else if(stack.getItem() instanceof ContainerItem){

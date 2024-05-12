@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.block.Block;
@@ -23,8 +22,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	public RootVehicle root;
 	private boolean found;
 	private int vehid;
-	public WheelSlot wheel;
-	public V3D position;
+	public WheelTireData wheel;
 	public String wheelid;
 
 	public NWheelEntity(World world){
@@ -38,12 +36,12 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 		this.root = root;
 		vehid = this.root.getEntityId();
 		wheelid = wid;
-		wheel = this.root.vehicle.data.getWheelSlots().get(wid);
+		wheel = this.root.vehicle.wheeldata.get(wid);
 		init();
 	}
 
 	private void init(){
-		if(root.vehicle.data.getWheelPositions().isEmpty()){
+		if(root.vehicle.wheeldata.isEmpty()){
 			if(!root.isDead){
 				EntityItem itemstack = new EntityItem(world, root.posX, root.posY, root.posZ);
 				itemstack.setItem(root.vehicle.data.newItemStack().local());
@@ -51,12 +49,11 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 			}
 			return;
 		}
-		if(!root.vehicle.data.getWheelPositions().containsKey(wheelid)){
+		if(!root.vehicle.wheeldata.containsKey(wheelid)){
 			setDead();
 			return;
 		}
-		position = root.vehicle.data.getWheelPositions().get(wheelid);
-		V3D vec = root.vehicle.pivot().get_vector(position);
+		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPosition(root.posX + vec.x, root.posY + vec.y, root.posZ + vec.z);
 		setStepHeight();
 		prevPosX = posX;
@@ -93,7 +90,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 		root = (RootVehicle)world.getEntityByID(vehid);
 		if(root == null) return;
 		setPosition(root.posX, root.posY, root.posZ);
-		wheel = root.vehicle.data.getWheelSlots().get(wheelid);
+		wheel = root.vehicle.wheeldata.get(wheelid);
 		setStepHeight();
 	}
 

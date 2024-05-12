@@ -351,10 +351,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         			Print.chat(player, "Please stop the vehicle first!");
         			return true;
         		}
-        		if(this.vehicle.getRearConnector() == null){
+        		/*if(this.vehicle.getRearConnector() == null){
         			Print.chat(player, "This vehicle does not have a rear connector installed.");
         			return true;
-        		}
+        		}*///TODO
                 if(doorToggleTimer <= 0){
                 	if(this.getCoupledEntity(false) == null){
                 		this.tryAttach(player);
@@ -371,7 +371,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     }
 
 	public void tryAttach(EntityPlayer player){
-		V3D vec = this.getRotPoint().getPivot().get_vector(this.getVehicleData().getRearConnector()).add(posX, posY, posZ);
+		/*V3D vec = this.getRotPoint().getPivot().get_vector(this.getVehicleData().getRearConnector()).add(posX, posY, posZ);
 		AxisAlignedBB aabb = new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
 		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, (ent) -> ent instanceof LandVehicle);
 		for(Entity ent : list){
@@ -383,7 +383,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 			} else continue;
 		}
 		Print.chat(player, "&c&oNo Trailer found at coupler position.");
-		Print.debugChat(vec.toString());
+		Print.debugChat(vec.toString());*///TODO
 	}
 
 	private void sendConnectionUpdate(){
@@ -583,11 +583,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             else if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
                 if(data.getType().isTrailer()){
-                	if(vehicle.getRearConnector() == null){
+                	/*if(vehicle.getRearConnector() == null){
                 		Print.chat(player, "&cThis vehicle has no rear connector installed.");
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultConnectorRear());
                 		return true;
-                	}
+                	}*///TODO
                 	if(!LegacySpawnSystem.validToSpawn(player, stack, data)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
@@ -901,7 +901,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	public void alignTrailer(){
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ; if(wheelnull() || truck == null){ return; }
-		V3D conn = truck.rotpoint.getPivot().get_vector(truck.getVehicleData().getRearConnector());
+		V3D conn = truck.rotpoint.getPivot().get_vector(V3D.NULL);//TODO truck.getVehicleData().getRearConnector());
         this.setPosition(truck.posX + conn.x, truck.posY + conn.y, truck.posZ + conn.z);
         //
         this.throttle = truck.throttle;

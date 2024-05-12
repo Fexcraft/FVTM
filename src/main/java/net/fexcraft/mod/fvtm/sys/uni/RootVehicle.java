@@ -117,6 +117,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				wheel_radius += ((WheelData)part.getType().getInstallHandlerData()).getRadius();
 			}
 			wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
+			wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
+			wheel.mirror = vehicle.data.getWheelSlots().get(entry.getKey()).mirror;
 			vehicle.wheeldata.put(entry.getKey(), wheel);
 		}
 		vehicle.assignWheels();
@@ -492,7 +494,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				wheel.motionZ *= 0.9;
 				wheel.motionY = -GRAVITY_20th;
 				wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-				V3D dest = vehicle.pivot().get_vector(wheel.position);
+				V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 				dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
 				dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
 				dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
@@ -543,7 +545,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 						}
 					}
 					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-					V3D dest = vehicle.pivot().get_vector(wheel.position);
+					V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 					dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
 					dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
 					dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
@@ -562,7 +564,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	protected void align_wheels(){
 		for(NWheelEntity wheel : wheels.values()){
-			V3D dest = vehicle.prev_pivot().get_vector(wheel.position);
+			V3D dest = vehicle.prev_pivot().get_vector(wheel.wheel.pos);
 			dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
 			dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
 			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
@@ -595,7 +597,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		for(NWheelEntity wheel : wheels.values()){
 			wheel.onGround = true;
 			wheel.rotationYaw = vehicle.pivot().deg_yaw();
-			V3D dest = vehicle.pivot().get_vector(wheel.position);
+			V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 			dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
 			dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
 			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
@@ -603,7 +605,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 			}
 			if(wheel.getPositionVector().distanceTo(getPositionVector()) > wheel.getHorSpeed() * 2){
-				dest = vehicle.pivot().get_vector(wheel.position);
+				dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 				wheel.posX = dest.x + posX;
 				wheel.posY = dest.y + posY;
 				wheel.posZ = dest.z + posZ;

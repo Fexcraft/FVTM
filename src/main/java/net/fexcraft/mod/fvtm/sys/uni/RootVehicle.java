@@ -558,6 +558,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 					}
 				}
 				move(MoverType.SELF, move.x, move.y, move.z);
+				vehicle.speed = Math.sqrt(move.x * move.x + move.z * move.z);
 			}
 		}
 	}
@@ -581,12 +582,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevPosZ = posZ;
 		if(wheels.isEmpty() || vehicle.front == null) return;
 		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getConnectorFor(vehicle.data.getType().getCategories()));
-		conn.add(vehicle.front.getV3D());
+		conn = conn.add(vehicle.front.getV3D());
 		setPosition(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
-		double thr = Math.abs(vehicle.throttle);
 		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
-		double diff = rawy * thr * 0.2;
+		double diff = rawy * vehicle.front.speed * 0.2;
 		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
 		vehicle.pivot().set_rotation(vehicle.pivot().yaw() + Math.toRadians(diff), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
 		alignWheels();

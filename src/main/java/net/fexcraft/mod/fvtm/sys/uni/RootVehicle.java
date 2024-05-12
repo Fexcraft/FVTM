@@ -375,9 +375,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			else if(stack.getItem() instanceof VehicleItem && vehicle.type.isLandVehicle()){
 				VehicleData data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
 				if(data.getType().isTrailer()){
-					if(vehicle.data.getRearConnector() == null){
-						pass.send("interact.fvtm.vehicle.no_rear_connector");
-						FvtmLogger.debug(vehicle.data.getRearConnector() + " " + vehicle.data.getType().getDefaultConnectorRear());
+					if(!vehicle.data.hasCompatibleConnector(data.getType().getCategories(), false)){
+						pass.send("interact.fvtm.vehicle.no_compatible_connector");
+						FvtmLogger.debug(vehicle.data.getConnectors() + " " + vehicle.data.getConnectorDirections());
 						return true;
 					}
                 	if(!LegacySpawnSystem.validToSpawn(player, stack, data)) return true;
@@ -608,7 +608,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevPosY = posY;
 		prevPosZ = posZ;
 		if(wheels.isEmpty() || vehicle.front == null) return;
-		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getRearConnector());
+		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getConnectorFor(vehicle.data.getType().getCategories()));
 		conn.add(vehicle.front.getV3D());
 		setPosition(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;

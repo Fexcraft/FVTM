@@ -563,18 +563,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 	}
 
-	protected void align_wheels(){
-		for(NWheelEntity wheel : wheels.values()){
-			V3D dest = vehicle.prev_pivot().get_vector(wheel.wheel.pos);
-			dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
-			dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
-			dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
-			if(dest.length() > 0.001){
-				wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
-			}
-		}
-	}
-
 	/** for trailers */
 	protected void align(){
 		prevPosX = posX;
@@ -585,11 +573,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		conn = conn.add(vehicle.front.getV3D());
 		setPosition(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
-		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
-		double diff = rawy * vehicle.front.speed * 0.2;
-		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
-		vehicle.pivot().set_rotation(vehicle.pivot().yaw() + Math.toRadians(diff), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
-		alignWheels();
+		NWheelEntity wl = wheels.get(vehicle.w_rear_l.id);
+		NWheelEntity wr = wheels.get(vehicle.w_rear_r.id);
+		vehicle.pivot().set_rotation(-Math.atan2((wl.posX + wr.posX) * 0.5 - conn.x, (wl.posZ + wr.posZ) * 0.5 - conn.z), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
+		//alignWheels();
+		if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity).align();
 	}
 
 	protected void alignWheels(){

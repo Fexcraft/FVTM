@@ -1047,8 +1047,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 			V3D opos = new V3D(trailer.posX, trailer.posY, trailer.posZ);
             V3D conn = trailer.truck.rotpoint.getPivot().get_vector(V3D.NULL);//trailer.truck.getVehicleData().getRearConnector());
             val = opos.dis(conn = conn.add(trailer.truck.posX, trailer.truck.posY, trailer.truck.posZ));
-        	cos = Math.cos(trailer.rotpoint.getPivot().deg_yaw() * 3.14159265F / 180F);
-        	sin = Math.sin(trailer.rotpoint.getPivot().deg_yaw() * 3.14159265F / 180F);
+        	cos = Math.cos(trailer.rotpoint.getPivot().yaw());
+        	sin = Math.sin(trailer.rotpoint.getPivot().yaw());
             //
             V3D trax = trailer.rotpoint.getPivot().get_vector(trailer.rear.pos).add(trailer.posX, trailer.posY, trailer.posZ);
             trailer.rotpoint.getPivot().set_yaw((float)Math.atan2(conn.z - trax.z, conn.x - trax.x), false);

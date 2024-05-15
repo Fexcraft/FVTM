@@ -44,11 +44,10 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 			TexUtil.bindTexture(TEXTURE);
 			for(LiftingPoint[] point : data.getType().getGroupedLiftingPoints().values()){
 				GL11.glPushMatrix();
-				V3D vec = point.length == 1 ? point[0].pos : V3D.NULL;
-				if(point.length == 1 || Math.abs(point[0].pos.z) + Math.abs(point[1].pos.z) <= 0.75){
-					if(point.length > 1){
-						vec = point[0].pos.add(point[1].pos).multiply(0.5);
-					}
+				V3D vec = point.length == 1 ? point[0].pos : point[0].pos.add(point[1].pos).multiply(0.5);
+				double dis = point.length > 1 ? Math.abs(point[0].pos.z) + Math.abs(point[1].pos.z) : 0;
+				float m = 0;
+				if(point.length == 1 || dis <= 0.75){
 					if(vec.x > 0){
 						GL11.glTranslated(1.75 + vec.x, 0, vec.z);
 						GL11.glRotatef(180, 0, 1, 0);
@@ -70,7 +69,40 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 					Lift2024Model.arm_s_e.render();
 				}
 				else{
-
+					float r = (float)(2 - dis - 0.75) * 0.5f;
+					if(vec.x > 0){
+						GL11.glTranslated((dis < 2.75 ? -r : 0) + 0.75 + vec.x, 0, vec.z);
+						GL11.glRotatef(180, 0, 1, 0);
+					}
+					else{
+						GL11.glTranslated((dis < 2.75 ? r : 0) - 0.75 + vec.x, 0, vec.z);
+						Lift2024Model.motor.render();
+					}
+					Lift2024Model.struct.render();
+					GL11.glTranslated(0, tile.liftstate + vec.y, 0);
+					Lift2024Model.lift.render();
+					//
+					if(dis < 2.75){
+						r *= 90;
+						Lift2024Model.arm_n.rotate(0, r, 0, true);
+						Lift2024Model.arm_n_e.rotate(0, r, 0, true);
+						Lift2024Model.arm_s.rotate(0, -r, 0, true);
+						Lift2024Model.arm_s_e.rotate(0, -r, 0, true);
+					}
+					else{
+						m = dis > 4.75 ? 1 : (float)((dis - 2.75) * 0.5);
+						Lift2024Model.arm_n_e.translate(0, 0, -m, false);
+						Lift2024Model.arm_s_e.translate(0, 0, m, false);
+					}
+					//
+					Lift2024Model.arm_n.render();
+					Lift2024Model.arm_n_e.render();
+					Lift2024Model.arm_s.render();
+					Lift2024Model.arm_s_e.render();
+					if(m != 0f){
+						Lift2024Model.arm_n_e.translate(0, 0, m, false);
+						Lift2024Model.arm_s_e.translate(0, 0, -m, false);
+					}
 				}
 				GL11.glPopMatrix();
 			}

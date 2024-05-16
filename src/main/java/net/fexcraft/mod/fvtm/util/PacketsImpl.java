@@ -100,7 +100,7 @@ public class PacketsImpl extends Packets {
 			data = vehicle.vehicle.data.installPart(player, data, com.getString("source") + ":" + category, true);
 			if(data == null){
 				entity.getHeldItemMainhand().shrink(1);
-				vehicle.vehicle.sendVehicleData();
+				vehicle.vehicle.sendUpdate(VehicleInstance.PKT_UPD_VEHICLEDATA);
 			}
 		});
 		if(EnvInfo.CLIENT){

@@ -66,8 +66,7 @@ import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.*;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
 import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
@@ -130,7 +129,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		setSize(vehicle.data.getAttribute("hitbox_width").asFloat(), vehicle.data.getAttribute("hitbox_height").asFloat());
 		//TODO spawn script/event
 		if(!world.isRemote && vehicle.front != null){
-			//TODO send connection state update
+			vehicle.sendUpdate(PKT_UPD_CONNECTOR);
 		}
 		if(world.isRemote){
 			float cr = vehicle.data.getAttributeFloat("collision_range", 2f);
@@ -328,7 +327,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(player.getCapability(PASSENGER, null).asSender(), wrapper);
-			vehicle.sendLockUpdate();
+			vehicle.sendUpdate(PKT_UPD_LOCK);
 			return true;
 		}
 		if(!stack.isEmpty()){

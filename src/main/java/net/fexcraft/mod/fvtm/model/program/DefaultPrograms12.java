@@ -59,10 +59,10 @@ import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 public class DefaultPrograms12 extends DefaultPrograms {
 
 	public static boolean DIDLOAD = false;
-	public static Program GLOW;
 	
 	public static void init(){
 		DefaultPrograms.init();
+		GLOW = new Transparent(189f, 4f);
 		ModelGroup.PROGRAMS.add(new Program(){
 			public String id(){
 				return "fvtm:rgb_primary";
@@ -97,112 +97,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
 				list.visible = true;
-			}
-		});
-		ModelGroup.PROGRAMS.add(GLOW = new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return true;
-			}
-			public String id(){
-				return "fvtm:glow";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState();
-			}
-			public String id(){
-				return "fvtm:lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState();
-			}
-			public String id(){
-				return "fvtm:front_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState() || (data.vehent != null && data.vehent.isBraking());
-			}
-			public String id(){
-				return "fvtm:back_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getFogLightsState();
-			}
-			public String id(){
-				return "fvtm:fog_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLongLightsState();
-			}
-			public String id(){
-				return "fvtm:long_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return (data.entity != null && ((RootVehicle)data.entity).isBraking());
-			}
-			public String id(){
-				return "fvtm:brake_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getThrottle() < -0.01;
-			}
-			public String id(){
-				return "fvtm:reverse_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
-			}
-			public String id(){
-				return "fvtm:turn_signal_left";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
-			}
-			public String id(){
-				return "fvtm:turn_signal_right";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return BLINKER_TOGGLE && data.vehicle.getWarningLights();
-			}
-			public String id(){
-				return "fvtm:warning_lights";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
-				else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
-			}
-			public String id(){
-				return "fvtm:back_lights_signal_left";
-			}
-		});
-		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
-			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
-				else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
-			}
-			public String id(){
-				return "fvtm:back_lights_signal_right";
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Window());
@@ -881,27 +775,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 	}
 	
-	public static abstract class AlwaysGlow extends Transparent implements Program {
 
-		private boolean didglow;
-		
-		public AlwaysGlow(){ super(189f, 4f); }
-		
-		public abstract boolean shouldGlow(ModelGroup list, ModelRenderData data);
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if(!(didglow = shouldGlow(list, data))) return;
-			super.pre(list, data);
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(!didglow) return;
-			super.post(list, data);
-		}
-		
-	}
 	
 	public static class Transparent implements Program {
 		

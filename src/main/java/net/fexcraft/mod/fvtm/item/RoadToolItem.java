@@ -37,11 +37,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
-
-import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
-import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 
 public class RoadToolItem extends Item {
 	

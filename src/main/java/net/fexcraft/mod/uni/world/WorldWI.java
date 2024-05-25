@@ -6,6 +6,8 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.InteractData;
+import net.fexcraft.mod.fvtm.data.InteractType;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
@@ -142,6 +144,17 @@ public class WorldWI extends FvtmWorld {
 				if(cr < ((RootVehicle)entity).vehicle.entity.getPos().dis(pos)) continue;
 				list.add(((RootVehicle)entity).vehicle);
 			}
+		}
+		return list;
+	}
+
+		@Override
+	public ArrayList<InteractData> getInteractables(InteractType type, V3D pos){
+		ArrayList<InteractData> list = new ArrayList<>();
+		for(Entity entity : world.loadedEntityList){
+			if(!(entity instanceof RootVehicle)) continue;
+			VehicleInstance inst = ((RootVehicle)entity).vehicle;
+			//TODO
 		}
 		return list;
 	}

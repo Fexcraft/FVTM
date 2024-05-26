@@ -195,6 +195,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickItem(RightClickItem event){
+        if(!event.getWorld().isRemote) return;
         if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWI(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
@@ -203,6 +204,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickBlock(RightClickBlock event){
+        if(!event.getWorld().isRemote) return;
     	//if(!event.getItemStack().isEmpty()) return;
         if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWI(event.getItemStack()))){
         	event.setCanceled(true);
@@ -212,6 +214,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickBlock(LeftClickBlock event){
+        if(!event.getWorld().isRemote) return;
     	//if(!event.getItemStack().isEmpty()) return;
         if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, new SWI(event.getItemStack()))){
         	event.setCanceled(true);

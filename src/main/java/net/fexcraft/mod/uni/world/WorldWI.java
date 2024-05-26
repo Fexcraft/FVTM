@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InteractData;
@@ -151,10 +152,24 @@ public class WorldWI extends FvtmWorld {
 		@Override
 	public ArrayList<InteractData> getInteractables(InteractType type, V3D pos){
 		ArrayList<InteractData> list = new ArrayList<>();
-		for(Entity entity : world.loadedEntityList){
-			if(!(entity instanceof RootVehicle)) continue;
-			VehicleInstance inst = ((RootVehicle)entity).vehicle;
-			//TODO
+		VehicleInstance inst;
+		float cr;
+		switch(type){
+			case GENERIC:{
+				for(Entity entity : world.loadedEntityList){
+					if(!(entity instanceof RootVehicle)) continue;
+					inst = ((RootVehicle)entity).vehicle;
+					cr = inst.data.getAttribute("collision_range").asFloat() + 1;
+					if(cr < inst.entity.getPos().dis(pos)) continue;
+					list.add(new InteractData(inst, null, null));
+				}
+				break;
+			}
+			case IMPACT:{
+				for(TileEntity tile : world.loadedTileEntityList){
+					if(!(tile instanceof VehicleLiftEntity)) continue;
+				}
+			}
 		}
 		return list;
 	}

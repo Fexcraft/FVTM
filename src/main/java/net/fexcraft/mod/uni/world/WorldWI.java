@@ -7,10 +7,10 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.InteractData;
-import net.fexcraft.mod.fvtm.data.InteractType;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
@@ -138,37 +138,41 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public ArrayList<VehicleInstance> getVehicles(V3D pos){
 		ArrayList<VehicleInstance> list = new ArrayList<>();
+		VehicleInstance inst = null;
 		float cr;
 		for(Entity entity : world.loadedEntityList){
 			if(entity instanceof RootVehicle){
-				cr = ((RootVehicle)entity).vehicle.data.getAttribute("collision_range").asFloat() + 1;
-				if(cr < ((RootVehicle)entity).vehicle.entity.getPos().dis(pos)) continue;
-				list.add(((RootVehicle)entity).vehicle);
+				inst = ((RootVehicle)entity).vehicle;
+				for(InteractZone zone : inst.data.getInteractZones().values()){
+					if(list.contains(inst)) break;
+					if(zone.inRange(inst, pos)) list.add(inst);
+				}
 			}
 		}
 		return list;
 	}
 
-		@Override
-	public ArrayList<InteractData> getInteractables(InteractType type, V3D pos){
-		ArrayList<InteractData> list = new ArrayList<>();
-		VehicleInstance inst;
+	@Override
+	public ArrayList<VehicleData> getVehicleDatas(V3D pos){
+		ArrayList<VehicleData> list = new ArrayList<>();
+		VehicleInstance inst = null;
+		VehicleLiftEntity lift;
 		float cr;
-		switch(type){
-			case GENERIC:{
-				for(Entity entity : world.loadedEntityList){
-					if(!(entity instanceof RootVehicle)) continue;
-					inst = ((RootVehicle)entity).vehicle;
-					cr = inst.data.getAttribute("collision_range").asFloat() + 1;
-					if(cr < inst.entity.getPos().dis(pos)) continue;
-					list.add(new InteractData(inst, null, null));
+		for(Entity entity : world.loadedEntityList){
+			if(entity instanceof RootVehicle){
+				inst = ((RootVehicle)entity).vehicle;
+				for(InteractZone zone : inst.data.getInteractZones().values()){
+					if(list.contains(inst)) break;
+					if(zone.inRange(inst, pos)) list.add(inst.data);
 				}
-				break;
 			}
-			case IMPACT:{
-				for(TileEntity tile : world.loadedTileEntityList){
-					if(!(tile instanceof VehicleLiftEntity)) continue;
-				}
+		}
+		for(TileEntity tile : world.loadedTileEntityList){
+			if(!(tile instanceof VehicleLiftEntity)) continue;
+			if((lift = (VehicleLiftEntity)tile).getVehicleData() == null) continue;
+			for(InteractZone zone : lift.getVehicleData().getInteractZones().values()){
+				if(list.contains(lift.getVehicleData())) break;
+				if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos)) list.add(inst.data);
 			}
 		}
 		return list;

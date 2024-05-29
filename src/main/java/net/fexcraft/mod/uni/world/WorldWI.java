@@ -12,6 +12,8 @@ import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.*;
@@ -25,7 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -131,6 +133,19 @@ public class WorldWI extends FvtmWorld {
 	}
 
 	@Override
+	public Map.Entry<VehicleData, InteractRef> getInteractRef(TagCW packet){
+		if(packet.has("entity")){
+			VehicleInstance inst = getVehicle(packet.getInteger("entity"));
+			return inst == null ? null : new AbstractMap.SimpleEntry<>(inst.data, inst.iref());
+		}
+		else{
+			V3I pos = new V3I(packet.getIntArray("lift"), 0);
+			VehicleLiftEntity tile = (VehicleLiftEntity)world.getTileEntity(new BlockPos(pos.x, pos.y, pos.z));
+			return tile == null ? null : new AbstractMap.SimpleEntry<>(tile.getVehicleData(), new InteractRef(pos, tile.getVehicleDataPos()));
+		}
+	}
+
+	@Override
 	public boolean noViewEntity(){
 		return Minecraft.getMinecraft().getRenderViewEntity() == null || Minecraft.getMinecraft().getRenderViewEntity().world == null;
 	}
@@ -153,17 +168,16 @@ public class WorldWI extends FvtmWorld {
 	}
 
 	@Override
-	public ArrayList<VehicleData> getVehicleDatas(V3D pos){
-		ArrayList<VehicleData> list = new ArrayList<>();
+	public Map<VehicleData, InteractRef> getVehicleDatas(V3D pos){
+		LinkedHashMap<VehicleData, InteractRef> map = new LinkedHashMap<>();
 		VehicleInstance inst = null;
 		VehicleLiftEntity lift;
-		float cr;
 		for(Entity entity : world.loadedEntityList){
 			if(entity instanceof RootVehicle){
 				inst = ((RootVehicle)entity).vehicle;
 				for(InteractZone zone : inst.data.getInteractZones().values()){
-					if(list.contains(inst)) break;
-					if(zone.inRange(inst, pos)) list.add(inst.data);
+					if(map.containsKey(inst.data)) break;
+					if(zone.inRange(inst, pos)) map.put(inst.data, new InteractRef(inst));
 				}
 			}
 		}
@@ -171,11 +185,11 @@ public class WorldWI extends FvtmWorld {
 			if(!(tile instanceof VehicleLiftEntity)) continue;
 			if((lift = (VehicleLiftEntity)tile).getVehicleData() == null) continue;
 			for(InteractZone zone : lift.getVehicleData().getInteractZones().values()){
-				if(list.contains(lift.getVehicleData())) break;
-				if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos)) list.add(inst.data);
+				if(map.containsKey(lift.getVehicleData())) break;
+				if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos)) map.put(lift.getVehicleData(), new InteractRef(lift.getV3I(), lift.getVehicleDataPos()));
 			}
 		}
-		return list;
+		return map;
 	}
 
 	@Override

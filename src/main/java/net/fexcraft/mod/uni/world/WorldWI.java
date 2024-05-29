@@ -141,7 +141,7 @@ public class WorldWI extends FvtmWorld {
 		else{
 			V3I pos = new V3I(packet.getIntArray("lift"), 0);
 			VehicleLiftEntity tile = (VehicleLiftEntity)world.getTileEntity(new BlockPos(pos.x, pos.y, pos.z));
-			return tile == null ? null : new AbstractMap.SimpleEntry<>(tile.getVehicleData(), new InteractRef(pos, tile.getVehicleDataPos()));
+			return tile == null ? null : new AbstractMap.SimpleEntry<>(tile.getVehicleData(), tile.iref());
 		}
 	}
 
@@ -186,7 +186,7 @@ public class WorldWI extends FvtmWorld {
 			if((lift = (VehicleLiftEntity)tile).getVehicleData() == null) continue;
 			for(InteractZone zone : lift.getVehicleData().getInteractZones().values()){
 				if(map.containsKey(lift.getVehicleData())) break;
-				if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos)) map.put(lift.getVehicleData(), new InteractRef(lift.getV3I(), lift.getVehicleDataPos()));
+				if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos)) map.put(lift.getVehicleData(), lift.iref());
 			}
 		}
 		return map;

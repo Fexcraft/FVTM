@@ -127,6 +127,14 @@ public class SWI extends StackWrapper {
 	}
 
 	@Override
+	public boolean isItemOfAny(ItemType... types){
+		for(ItemType type : types){
+			if(isItemOf(type)) return true;
+		}
+		return false;
+	}
+
+	@Override
 	public <C> C getContent(Object contenttype){
 		ContentType type = (ContentType)contenttype;
 		switch(type){

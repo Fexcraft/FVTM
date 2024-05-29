@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.*;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -120,12 +121,20 @@ public class EffectRenderer {
         LightBeam.last = null;
     }
 
-	public static void renderHotInstallInfo(Entity vehicle, VehicleData data){
+	public static void renderHotInstallInfo(V3D vehpos, VehicleData data){
 		//Vec3d temp = null;
 		SwivelPoint point;
 		if(!Command.HOTSWAP){
 			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
-			if(data.getAttribute("collision_range").asFloat() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
+			V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
+			boolean inrange = false;
+			for(InteractZone zone : data.getInteractZones().values()){
+				if(zone.inRange(data, vehpos, ply)){
+					inrange = true;
+					break;
+				}
+			}
+			if(!inrange) return;
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallHandlerData() instanceof DPIHData == false) return;
@@ -216,6 +225,7 @@ public class EffectRenderer {
 				}
 			}
 		}
+		RGB.glColorReset();
 	}
 
 	private static void preMeshCalls(){

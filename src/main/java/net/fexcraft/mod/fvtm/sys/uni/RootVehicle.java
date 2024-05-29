@@ -322,7 +322,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
 				return true;
 			}
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle, null, pass, new SWI(stack));
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, new SWI(stack));
 			return true;
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){

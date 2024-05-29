@@ -4,9 +4,12 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -28,6 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class VehicleLiftEntity extends TileEntity implements PacketListener {
 
 	public static final AxisAlignedBB RENDER_AABB = new AxisAlignedBB(-16, -16, -16, 16, 16, 16);
+	private InteractRef ref = new InteractRef();
 	private VehicleData data;
 	public double liftstate;
 	private double lowest;
@@ -57,14 +61,17 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		super.writeToNBT(compound);
 		if(data != null) compound.setTag("VehicleData", data.write(TagCW.create()).local());
 		compound.setDouble("LiftState", liftstate);
+		compound.setFloat("Meta", getBlockMetadata());
 		return compound;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
+		int meta = compound.getInteger("Meta");
 		if(compound.hasKey("VehicleData")){
 			data = FvtmResources.getVehicleData(compound.getCompoundTag("VehicleData"));
+			data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(meta), true);
 		}
 		liftstate = compound.getDouble("LiftState");
 		updateState();
@@ -149,6 +156,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 				case "update":{
 					if(packet.has("data")){
 						data = FvtmResources.getVehicleData(packet.getCompound("data"));
+						data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw((float)BlockType.GENERIC_4ROT.getRotationFor(getBlockMetadata()), true);
 					}
 					else data = null;
 					liftstate = 0;
@@ -168,6 +176,10 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 
 	public V3I getV3I(){
 		return new V3I(pos.getX(), pos.getY(), pos.getZ());
+	}
+
+	public InteractRef iref(){
+		return ref.set(getV3I(), pos.toLong(), getVehicleDataPos());
 	}
 
 }

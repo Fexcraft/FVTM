@@ -74,6 +74,9 @@ public class MaterialItem extends Item implements ContentItem<Material>, Lockabl
         	tooltip.add(Formatter.format("&9Fuel Stored: &7" + this.getStoredFuelName(wrapper)));
         	tooltip.add(Formatter.format("&9Fuel Amount: &7" + this.getStoredFuelAmount(wrapper) + "mB"));
         }
+        if(material.getImpactLevel() > -1){
+        	tooltip.add(Formatter.format("&9Impact Wrench Level: &7" + material.getImpactLevel()));
+        }
     }
 	
     @Override

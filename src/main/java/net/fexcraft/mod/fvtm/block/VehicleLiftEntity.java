@@ -161,4 +161,8 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 		}
 	}
 
+	public V3D getVehicleDataPos(){
+		return new V3D(pos.getX() + 0.5, pos.getY() + liftstate + 0.3125, pos.getZ() + 0.5);
+	}
+
 }

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
@@ -163,6 +164,10 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 
 	public V3D getVehicleDataPos(){
 		return new V3D(pos.getX() + 0.5, pos.getY() + liftstate + 0.3125, pos.getZ() + 0.5);
+	}
+
+	public V3I getV3I(){
+		return new V3I(pos.getX(), pos.getY(), pos.getZ());
 	}
 
 }

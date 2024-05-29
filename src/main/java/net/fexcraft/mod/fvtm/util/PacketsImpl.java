@@ -82,27 +82,6 @@ public class PacketsImpl extends Packets {
 			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
 			vehicle.processSeatInteract(index, player.local(), EnumHand.MAIN_HAND);
 		});
-		LIS_SERVER.put("install_part", (com, player) -> {
-			EntityPlayer entity = player.local();
-			ItemStack stack = entity.getHeldItemMainhand();
-			PartData data = ((PartItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
-			RootVehicle vehicle = (RootVehicle)entity.world.getEntityByID(com.getInteger("entity"));
-			//PartSlots source = vehicle.vehicle.data.getPartSlotsProvider(com.getString("source"));
-			String category = com.getString("category");
-			if(vehicle.vehicle.data.getPart(category) != null){
-				PartData oldpart = vehicle.vehicle.data.getPart(category);
-				boolean valid = oldpart.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData && ((DefaultPartInstallHandler.DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
-				if(valid && vehicle.vehicle.data.deinstallPart(player, category, true)){
-					entity.addItemStackToInventory(oldpart.getNewStack().local());
-				}
-				else return;
-			}
-			data = vehicle.vehicle.data.installPart(player, data, com.getString("source") + ":" + category, true);
-			if(data == null){
-				entity.getHeldItemMainhand().shrink(1);
-				vehicle.vehicle.sendUpdate(VehicleInstance.PKT_UPD_VEHICLEDATA);
-			}
-		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("ui", (tag, player) -> {
 				((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, true);

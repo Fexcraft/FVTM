@@ -19,6 +19,7 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -55,6 +56,12 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 	public NBTTagCompound getUpdateTag(){
 		return writeToNBT(new NBTTagCompound());
 	}
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
+        super.readFromNBT(pkt.getNbtCompound());
+        this.readFromNBT(pkt.getNbtCompound());
+    }
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -158,8 +165,10 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 						data = FvtmResources.getVehicleData(packet.getCompound("data"));
 						data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw((float)BlockType.GENERIC_4ROT.getRotationFor(getBlockMetadata()), true);
 					}
-					else data = null;
-					liftstate = 0;
+					else{
+						data = null;
+						liftstate = 0;
+					}
 					updateState();
 					return;
 				}

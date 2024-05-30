@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.*;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InteractZone;
@@ -18,8 +19,10 @@ import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.item.ClothItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.MultiBlockItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
@@ -62,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
+import static net.fexcraft.mod.fvtm.model.DebugModels.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
@@ -164,7 +168,7 @@ public class EffectRenderer {
 							}
 							GL11.glPushMatrix();
 							GL11.glScalef(value.radius, value.radius, value.radius);
-							DebugModels.HOTINSTALLCUBE.render(1f);
+							HOTINSTALLCUBE.render(1f);
 							GL11.glPopMatrix();
 							if(!point.isVehicle()) GL11.glPopMatrix();
 							else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
@@ -194,7 +198,7 @@ public class EffectRenderer {
 					}
 					GL11.glPushMatrix();
 					GL11.glScalef(value.radius, value.radius, value.radius);
-					DebugModels.HOTINSTALLCUBE.render(1f);
+					HOTINSTALLCUBE.render(1f);
 					GL11.glPopMatrix();
 					if(!point.isVehicle()) GL11.glPopMatrix();
 					else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
@@ -226,6 +230,67 @@ public class EffectRenderer {
 			}
 		}
 		RGB.glColorReset();
+	}
+
+	public static void renderWheelInstallInfo(V3D vehpos, VehicleData data){
+		if(!Command.HOTSWAP){
+			int impact = isImpact();
+			PartData wt = isWheelOrTire();
+			if(impact < 0 && wt == null) return;
+			V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
+			boolean inrange = false;
+			for(InteractZone zone : data.getInteractZones().values()){
+				if(zone.inRange(data, vehpos, ply)){
+					inrange = true;
+					break;
+				}
+			}
+			if(!inrange) return;
+			//
+			preMeshCalls();
+			boolean red;
+			if(impact > -1){
+				red = impact > data.getType().getImpactWrenchLevel();
+				for(WheelSlot slot : data.getWheelSlots().values()){
+					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
+					GL11.glPushMatrix();
+					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
+					(red ? REDINSTALLCUBE : HOTINSTALLCUBE).render(1f);
+					GL11.glPopMatrix();
+					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
+				}
+			}
+			if(wt != null){
+				WheelSlot slot;
+				boolean wheel = wt.hasFunction("fvtm:wheel");
+				boolean tire = wt.hasFunction("fvtm:tire");
+				boolean green;
+				for(Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
+					green = wt.getType().getInstallHandler().validInstall(FvtmLogger.NONE, wt, entry.getKey(), data, true);
+					red = wheel ? data.hasPart(entry.getKey()) : data.hasPart(entry.getKey() + ":tire");
+					slot = entry.getValue();
+					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
+					GL11.glPushMatrix();
+					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
+					(red ? REDINSTALLCUBE : green ? GRNINSTALLCUBE : HOTINSTALLCUBE).render(1f);
+					GL11.glPopMatrix();
+					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
+				}
+			}
+			postMeshCalls();
+		}
+		RGB.glColorReset();
+	}
+
+	private static int isImpact(){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof MaterialItem == false) return -1;
+		return ((MaterialItem)Minecraft.getMinecraft().player.getHeldItemMainhand().getItem()).getContent().getImpactLevel();
+	}
+
+	private static PartData isWheelOrTire(){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return null;
+		PartData data = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
+		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
 	}
 
 	private static void preMeshCalls(){

@@ -250,7 +250,7 @@ public class EffectRenderer {
 			preMeshCalls();
 			boolean red;
 			if(impact > -1){
-				red = impact > data.getType().getImpactWrenchLevel();
+				red = data.getType().getImpactWrenchLevel() > impact ;
 				for(WheelSlot slot : data.getWheelSlots().values()){
 					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
 					GL11.glPushMatrix();

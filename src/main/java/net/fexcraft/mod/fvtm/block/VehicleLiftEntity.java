@@ -163,7 +163,7 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 				case "update":{
 					if(packet.has("data")){
 						data = FvtmResources.getVehicleData(packet.getCompound("data"));
-						data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw((float)BlockType.GENERIC_4ROT.getRotationFor(getBlockMetadata()), true);
+						data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(getBlockMetadata()), true);
 					}
 					else{
 						data = null;

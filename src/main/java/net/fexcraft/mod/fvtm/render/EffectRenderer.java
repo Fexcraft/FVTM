@@ -301,8 +301,18 @@ public class EffectRenderer {
 			if(entry.getValue().getType().getInstallHandlerData() instanceof DPIHData == false) continue;
 			rem = ((DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
 			point = data.getRotationPointOfPart(entry.getKey());
-			pos = point.getRelativeVector(entry.getValue().getInstalledPos());
-			GL11.glTranslated(pos.x, pos.y, pos.z);
+			pos = entry.getValue().getInstalledPos();
+			if(point.isVehicle()){
+				GL11.glTranslated(pos.x, pos.y, pos.z);
+			}
+			else{
+				GL11.glPushMatrix();
+				pos = point.getRelativeVector(pos);
+				GL11.glTranslated(pos.x, pos.y, pos.z);
+				GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+				GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+				GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
+			}
 			GL11.glPushMatrix();
 			if(rem){
 				GL11.glScalef(.25f, .25f, .25f);
@@ -313,7 +323,8 @@ public class EffectRenderer {
 				REDINSTALLCUBE.render(1f);
 			}
 			GL11.glPopMatrix();
-			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
+			if(!point.isVehicle()) GL11.glPopMatrix();
+			else GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 		}
 		postMeshCalls();
 		RGB.glColorReset();

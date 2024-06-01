@@ -122,6 +122,7 @@ public class SWI extends StackWrapper {
 			case VEHICLE: return stack.getItem() instanceof VehicleItem;
 			case FVTM_BLOCK: return stack.getItem() instanceof BlockItem;
 			case CONTAINER: return stack.getItem() instanceof ContainerItem;
+			case FVTM_TOOLBOX: return stack.getItem() instanceof ToolboxItem;
 		}
 		return false;
 	}

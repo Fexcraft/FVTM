@@ -21,10 +21,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
-import net.fexcraft.mod.fvtm.item.ClothItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.MultiBlockItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
@@ -125,7 +122,7 @@ public class EffectRenderer {
         LightBeam.last = null;
     }
 
-	public static void renderHotInstallInfo(V3D vehpos, VehicleData data){
+	public static void renderInstallInfo(V3D vehpos, VehicleData data){
 		//Vec3d temp = null;
 		SwivelPoint point;
 		if(!Command.HOTSWAP){
@@ -279,6 +276,46 @@ public class EffectRenderer {
 			}
 			postMeshCalls();
 		}
+		RGB.glColorReset();
+	}
+
+	public static void renderRemovalInfo(V3D vehpos, VehicleData data){
+		if(Command.HOTSWAP) return;
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ToolboxItem == false) return;
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItemDamage() > 0) return;
+		V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
+		boolean inrange = false;
+		for(InteractZone zone : data.getInteractZones().values()){
+			if(zone.inRange(data, vehpos, ply)){
+				inrange = true;
+				break;
+			}
+		}
+		if(!inrange) return;
+		//
+		preMeshCalls();
+		boolean rem;
+		SwivelPoint point;
+		V3D pos;
+		for(Entry<String, PartData> entry : data.getParts().entrySet()){
+			if(entry.getValue().getType().getInstallHandlerData() instanceof DPIHData == false) continue;
+			rem = ((DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
+			point = data.getRotationPointOfPart(entry.getKey());
+			pos = point.getRelativeVector(entry.getValue().getInstalledPos());
+			GL11.glTranslated(pos.x, pos.y, pos.z);
+			GL11.glPushMatrix();
+			if(rem){
+				GL11.glScalef(.25f, .25f, .25f);
+				YLWINSTALLCUBE.render(1f);
+			}
+			else{
+				GL11.glScalef(.125f, .125f, .125f);
+				REDINSTALLCUBE.render(1f);
+			}
+			GL11.glPopMatrix();
+			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
+		}
+		postMeshCalls();
 		RGB.glColorReset();
 	}
 

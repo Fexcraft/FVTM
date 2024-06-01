@@ -67,8 +67,9 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		if(rv.vehicle.data.getParts().size() > 0){
 			VehicleRenderer.renderPoint(rv.vehicle.point, rv, rv.vehicle.data, cache, ticks);
 		}
-		EffectRenderer.renderHotInstallInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
+		EffectRenderer.renderInstallInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
 		EffectRenderer.renderWheelInstallInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
+		EffectRenderer.renderRemovalInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
 		GL11.glPopMatrix();
 		//
 		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);

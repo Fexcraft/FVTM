@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -89,8 +90,17 @@ public class VehicleLiftBlock extends Block implements ITileEntityProvider {
 	}
 
 	@Override
-	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity tile, ItemStack stack){
-		super.harvestBlock(world, player, pos, state, tile, stack);
+	public void breakBlock(World world, BlockPos pos, IBlockState state){
+		if(!world.isRemote){
+			VehicleLiftEntity lift = (VehicleLiftEntity)world.getTileEntity(pos);
+			if(lift.getVehicleData() != null){
+				EntityItem item = new EntityItem(world);
+				item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+				item.setItem(lift.getVehicleData().newItemStack().local());
+				world.spawnEntity(item);
+			}
+		}
+		super.breakBlock(world, pos, state);
 	}
 
 	@Override

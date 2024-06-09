@@ -12,7 +12,6 @@ import net.fexcraft.mod.fvtm.data.block.BlockEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
-import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
@@ -154,7 +153,6 @@ public class WorldWI extends FvtmWorld {
 	public ArrayList<VehicleInstance> getVehicles(V3D pos){
 		ArrayList<VehicleInstance> list = new ArrayList<>();
 		VehicleInstance inst = null;
-		float cr;
 		for(Entity entity : world.loadedEntityList){
 			if(entity instanceof RootVehicle){
 				inst = ((RootVehicle)entity).vehicle;

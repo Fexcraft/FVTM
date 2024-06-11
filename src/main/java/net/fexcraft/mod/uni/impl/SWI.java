@@ -30,6 +30,11 @@ public class SWI extends StackWrapper {
 		stack = new ItemStack((Item)item.direct());
 	}
 
+	@Override
+	public void set(Object obj){
+		stack = (ItemStack)obj;
+	}
+
 	public SWI(ItemStack is){
 		super(FvtmResources.INSTANCE.getItemWrapper(is.getItem().getRegistryName().toString()));
 		stack = is;

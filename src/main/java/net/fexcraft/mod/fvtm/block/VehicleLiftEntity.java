@@ -9,7 +9,9 @@ import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRefHolder;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -29,10 +31,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleLiftEntity extends TileEntity implements PacketListener {
+public class VehicleLiftEntity extends TileEntity implements PacketListener, InteractRefHolder {
 
 	public static final AxisAlignedBB RENDER_AABB = new AxisAlignedBB(-16, -16, -16, 16, 16, 16);
-	private InteractRef ref = new InteractRef();
+	private InteractRef ref = new InteractRef(this);
 	private VehicleData data;
 	public double liftstate;
 	private double lowest;
@@ -189,6 +191,11 @@ public class VehicleLiftEntity extends TileEntity implements PacketListener {
 
 	public InteractRef iref(){
 		return ref.set(getV3I(), pos.toLong(), getVehicleDataPos());
+	}
+
+	@Override
+	public void markChanged(){
+		markDirty();
 	}
 
 }

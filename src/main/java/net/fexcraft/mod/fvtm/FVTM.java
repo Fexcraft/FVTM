@@ -115,8 +115,6 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
-		EnvInfo.CLIENT = event.getSide().isClient();
-		EnvInfo.DEV = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 		Logger logger = event.getModLog();
 		FvtmLogger.LOGGER = new FvtmLogger(){
 			@Override
@@ -124,10 +122,6 @@ public class FVTM {
 				logger.info(obj);
 			}
 		};
-		IDLManager.INSTANCE[0] = new IDLM();
-		TagCW.SUPPLIER[0] = () -> new TagCWI();
-		TagCW.WRAPPER[0] = obj -> new TagCWI(obj);
-		TagLW.SUPPLIER[0] = () -> new TagLWI();
 		StackWrapper.SUPPLIER = obj -> {
 			if(obj instanceof ItemWrapper) return new SWI((ItemWrapper)obj);
 			if(obj instanceof ItemStack) return new SWI((ItemStack)obj);

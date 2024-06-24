@@ -115,7 +115,7 @@ public class EntityWI implements Passenger {
 
 	@Override
 	public String getName() {
-		return entity.getName();
+		return entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile().getName() : entity.getName();
 	}
 
 	@Override

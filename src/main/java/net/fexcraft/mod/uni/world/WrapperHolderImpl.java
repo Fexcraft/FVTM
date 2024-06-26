@@ -2,6 +2,7 @@ package net.fexcraft.mod.uni.world;
 
 import com.mojang.authlib.GameProfile;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.lib.mc.capabilities.FCLCapabilities;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -22,7 +23,7 @@ public class WrapperHolderImpl extends WrapperHolder {
 
 	@Override
 	public EntityW getEntity0(Object o){
-		return ((Entity)o).getCapability(Capabilities.PASSENGER, null).asWrapper();
+		return ((Entity)o).getCapability(FCLCapabilities.PLAYER, null).entity;
 	}
 
 	@Override

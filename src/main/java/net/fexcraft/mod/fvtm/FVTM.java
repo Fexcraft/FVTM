@@ -55,6 +55,7 @@ import net.fexcraft.mod.fvtm.util.cap.pass.PassengerStorage;
 import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.UniPlayer;
 import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -62,12 +63,14 @@ import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.*;
+import net.fexcraft.mod.uni.world.EntityWI;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.fexcraft.mod.uni.world.WrapperHolderImpl;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
@@ -265,6 +268,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		UniPlayer.ENTITY_GETTER = ent -> new EntityWI((Entity)ent);
 		EventHandler.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){

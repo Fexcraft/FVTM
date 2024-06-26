@@ -22,11 +22,6 @@ public class WrapperHolderImpl extends WrapperHolder {
 	private static WorldW client;
 
 	@Override
-	public EntityW getEntity0(Object o){
-		return ((Entity)o).getCapability(FCLCapabilities.PLAYER, null).entity;
-	}
-
-	@Override
 	public WorldW getWorld0(Object o){
 		if(o == null) return null;
 		if(!WORLDS.containsKey(o)){

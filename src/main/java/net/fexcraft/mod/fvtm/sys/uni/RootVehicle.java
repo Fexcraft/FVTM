@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.PassCap;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -34,7 +33,7 @@ import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.EntityWI;
+import net.fexcraft.mod.uni.world.EntityWIE;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.MoverType;
@@ -65,7 +64,6 @@ import static net.fexcraft.lib.common.Static.rad180;
 import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.*;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
 import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
@@ -97,7 +95,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public RootVehicle(World world){
 		super(world);
-		vehicle = new VehicleInstance(new EntityWI(this), null);
+		vehicle = new VehicleInstance(new EntityWIE(this), null);
 	}
 
 	protected void init(){

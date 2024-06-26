@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.event.EventHandler;
-import net.fexcraft.mod.uni.world.EntityWI;
+import net.fexcraft.mod.uni.world.EntityWIE;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.minecraft.entity.Entity;
@@ -96,7 +96,7 @@ public class SeatCache {
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
-                	if(!seatdata.allow(new EntityWI(entity))){
+                	if(!seatdata.allow(new EntityWIE(entity))){
                 		Print.bar(player, "&eSeat does not accept this entity kind. (" + entity.getName() + ")");
                 		continue;
                 	}
@@ -111,7 +111,7 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
-        	if(!seatdata.allow(new EntityWI(player))){
+        	if(!seatdata.allow(new EntityWIE(player))){
         		Print.bar(player, "&eSeat does not accept players as passengers.");
         		return false;
         	}

@@ -8,7 +8,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.I19U;
-import net.fexcraft.mod.uni.world.EntityWI;
+import net.fexcraft.mod.uni.world.EntityWIE;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,7 +58,7 @@ public class PassengerImplementation implements PassCap {
 			packet.setInteger("entity", entity.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));*/
 		}
-		wrapper = new EntityWI(entity);
+		wrapper = new EntityWIE(entity);
 	}
 
 	@Override

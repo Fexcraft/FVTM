@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.ui.DecoEditor;
 import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -27,7 +28,7 @@ public class ToolboxPaintContainer extends ContainerInterface {
 	protected RootVehicle vehicle;
 
 	public ToolboxPaintContainer(JsonMap map, EntityPlayer player, int entid){
-		super(map, WrapperHolder.getEntity(player), new V3I(entid, 0, 0));
+		super(map, UniEntity.get(player).entity, new V3I(entid, 0, 0));
 		vehicle = (RootVehicle)player.world.getEntityByID(entid);
 		colorable = vehicle.vehicle.data;
 	}

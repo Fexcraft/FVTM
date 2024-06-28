@@ -23,7 +23,7 @@ public class DecoContainer extends ContainerInterface {
 	protected DecorationData selected;
 
 	public DecoContainer(JsonMap map, EntityPlayer player, int entid){
-		super(map, UniEntity.get(player).entity, new V3I(entid, 0, 0));
+		super(map, UniEntity.get(player), new V3I(entid, 0, 0));
 		entity = (Decoration)player.world.getEntityByID(entid);
 	}
 

@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -101,7 +102,7 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-		EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+		UniEntity entity = UniEntity.get(player);
 		V3I pos = new V3I(x, y, z);
 		switch(ID){
 			case UIKey.ID12_TOOLBOX_COLORS:{
@@ -175,7 +176,7 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		try{
-			EntityW entity = player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+			UniEntity entity = UniEntity.get(player);
 			V3I pos = new V3I(x, y, z);
 			switch(ID){
 				case UIKey.ID12_TOOLBOX_COLORS: {

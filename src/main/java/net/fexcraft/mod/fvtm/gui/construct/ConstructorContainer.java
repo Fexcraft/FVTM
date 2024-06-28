@@ -18,7 +18,7 @@ public class ConstructorContainer extends ContainerInterface {
 	private ConstructorEntity tile;
 
 	public ConstructorContainer(JsonMap map, EntityPlayer player, int x, int y, int z){
-		super(map, UniEntity.get(player).entity, new V3I(x, y, z));
+		super(map, UniEntity.get(player), new V3I(x, y, z));
 		tile = (ConstructorEntity)player.world.getTileEntity(new BlockPos(x, y, z));
 	}
 
@@ -33,7 +33,7 @@ public class ConstructorContainer extends ContainerInterface {
 		String task = com.getString("task");
 		switch(task){
 			case "lift":{
-				if(tile.noveh(player)) return;
+				if(tile.noveh(player.entity)) return;
 				tile.liftstate += com.getInteger("lift") * 0.5f;
 				if(tile.liftstate < -3) tile.liftstate = -3;
 				if(tile.liftstate > 0) tile.liftstate = 0;

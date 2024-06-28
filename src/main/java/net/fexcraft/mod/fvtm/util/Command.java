@@ -15,7 +15,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -27,7 +26,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.block.Block;
@@ -128,7 +127,7 @@ public class Command extends CommandBase {
             	break;
             }
             case "catalog":{
-            	((EntityPlayer)sender.getCommandSenderEntity()).openGui(FVTM.getInstance(), UIKey.ID12_VEHICLE_CATALOG, sender.getEntityWorld(), 0, 0, 0);
+            	((EntityPlayer)sender.getCommandSenderEntity()).openGui(FVTM.getInstance(), UIKeys.ID12_VEHICLE_CATALOG, sender.getEntityWorld(), 0, 0, 0);
             	break;
             }
             case "get-key": {

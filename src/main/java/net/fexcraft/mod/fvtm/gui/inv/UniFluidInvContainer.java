@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -52,7 +52,7 @@ public class UniFluidInvContainer extends GenericContainer {
 	public UniFluidInvContainer(EntityPlayer player, World world, int ID, int x, int y, int z){
 		super(player);
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-		if(ID == UIKey.MULTIBLOCK_INVENTORY_FLUID.id){
+		if(ID == UIKeys.MULTIBLOCK_INVENTORY_FLUID.id){
 			mb_tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 			NBTTagCompound com = GuiHandler.validate(player, null, player.world.isRemote);
 			if(com == null){
@@ -69,12 +69,12 @@ public class UniFluidInvContainer extends GenericContainer {
 			title = con_tile.getContainerData().getType().getName();
 			//coninv = true;
 		}
-		else if(ID == UIKey.BLOCK_INVENTORY_FLUID.id){
+		else if(ID == UIKeys.BLOCK_INVENTORY_FLUID.id){
 			blk_tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 			invhandler = ((InventoryBlockFunction)blk_tile.getBlockData().getFunctionInventory()).inventory();
 			title = blk_tile.getBlockData().getType().getName();
 		}
-		else if(ID == UIKey.VEHICLE_INVENTORY_FLUID.id){
+		else if(ID == UIKeys.VEHICLE_INVENTORY_FLUID.id){
 			entity = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			SeatCache seat = entity.getSeatOf(player);
 			int invid = 0;

@@ -28,7 +28,7 @@ public class ToolboxPaintContainer extends ContainerInterface {
 	protected RootVehicle vehicle;
 
 	public ToolboxPaintContainer(JsonMap map, EntityPlayer player, int entid){
-		super(map, UniEntity.get(player).entity, new V3I(entid, 0, 0));
+		super(map, UniEntity.get(player), new V3I(entid, 0, 0));
 		vehicle = (RootVehicle)player.world.getEntityByID(entid);
 		colorable = vehicle.vehicle.data;
 	}
@@ -43,7 +43,7 @@ public class ToolboxPaintContainer extends ContainerInterface {
 				return colorable.getColorChannel(objs[0].toString());
 			}
 			case "open_wiki":{
-				if(player.getWorld().isClient()){
+				if(player.entity.getWorld().isClient()){
 					net.minecraft.client.Minecraft.getMinecraft().displayGuiScreen(
 						new GuiConfirmOpenLink((GuiContainer)ui.root, "https://fexcraft.net/wiki/mod/fvtm/toolbox#painter", 31102009, true));
 				}

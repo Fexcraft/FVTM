@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail.vis;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_OUT_OF_VIEW;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_DROP_CONTENTS;
-import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_MAIN;
 
 import java.util.UUID;
 
@@ -26,7 +26,6 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.function.part.ContainerFunction;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
@@ -40,13 +39,12 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
-import net.fexcraft.mod.fvtm.util.PacketsImpl;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -463,7 +461,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-            	pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
+            	pass.openUI(UIKeys.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
             	return true;
             }
             else if(stack.getItem() instanceof ContainerItem){

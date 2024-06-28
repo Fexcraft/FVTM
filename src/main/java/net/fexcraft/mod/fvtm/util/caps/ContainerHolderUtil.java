@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
-import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_CONTAINERS;
+import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_CONTAINERS;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import net.fexcraft.lib.common.math.Time;

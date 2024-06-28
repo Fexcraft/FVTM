@@ -5,7 +5,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
@@ -108,7 +108,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
 			case "retn":{
-				openGui(UIKey.ID12_VEHICLE_ATTRIBUTES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
+				openGui(UIKeys.ID12_VEHICLE_ATTRIBUTES, new int[] { 0, vehent.getEntityId(), 0 }, LISTENERID);
 				return true;
 			}
 			case "help":{

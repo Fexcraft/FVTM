@@ -9,7 +9,7 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,7 +58,7 @@ public class DecorationItem extends Item implements JunctionGridItem {
 		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
-    	player.openGui(FVTM.getInstance(), UIKey.ID12_DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
+    	player.openGui(FVTM.getInstance(), UIKeys.ID12_DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
 		return EnumActionResult.SUCCESS;
 	}
 

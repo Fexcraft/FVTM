@@ -5,7 +5,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
@@ -36,7 +35,6 @@ import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.translation.I18n;
@@ -105,19 +103,19 @@ public class GuiHandler implements IGuiHandler {
 		UniEntity entity = UniEntity.get(player);
 		V3I pos = new V3I(x, y, z);
 		switch(ID){
-			case UIKey.ID12_TOOLBOX_COLORS:{
+			case UIKeys.ID12_TOOLBOX_COLORS:{
 				return new UniCon(new ToolboxPaintContainer(gJ("toolbox_colors"), player, x), player);
 			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
-			case UIKey.ID12_ROAD_TOOL:
+			case UIKeys.ID12_ROAD_TOOL:
 				return new UniCon(new RoadToolConImpl(gJ("road_tool"), entity, pos), player);
-			case UIKey.ID12_ROAD_TOOL_CUSTOM:
+			case UIKeys.ID12_ROAD_TOOL_CUSTOM:
 				return new UniCon(new RoadToolCustomConImpl(gJ("road_tool_custom"), entity, pos), player);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
-			case UIKey.ID12_CONSTRUCTOR:
+			case UIKeys.ID12_CONSTRUCTOR:
 				return new UniCon(new VehicleConstructorCon(gJ("vehicle_constructor"), entity, pos), player);
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_CONTENTINFO:
@@ -126,43 +124,43 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_PARTINSTALLER: return new ConstContainer(player, world, x, y, z);
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstContainerTex(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstContainer(player, world, x, y, z);
-			case UIKey.ID12_VEHICLE_MAIN:
+			case UIKeys.ID12_VEHICLE_MAIN:
 				return new UniCon(new VehicleMainCon(gJ("vehicle_main"), entity, pos), player);
-			case UIKey.ID12_VEHICLE_FUEL:
+			case UIKeys.ID12_VEHICLE_FUEL:
 				return new UniCon(new VehicleFuelConImpl(gJ("vehicle_fuel"), entity, pos), player);
-			case UIKey.ID12_VEHICLE_ATTRIBUTES:
+			case UIKeys.ID12_VEHICLE_ATTRIBUTES:
 				return new UniCon(new VehicleAttributesCon(gJ("vehicle_attributes"), entity, pos), player);
-			case UIKey.ID12_VEHICLE_INVENTORIES:
+			case UIKeys.ID12_VEHICLE_INVENTORIES:
 				return new UniCon(new VehicleInventoriesCon(gJC("vehicle_inventories"), entity, pos), player);
-			case UIKey.ID12_VEHICLE_CONTAINERS:
+			case UIKeys.ID12_VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
-			case UIKey.ID12_VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
+			case UIKeys.ID12_VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
 			case WIRE_RELAY_MAIN:
 			case WIRE_RELAY_EDIT:
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
-			case UIKey.ID12_VEHICLE_ATTR_EDITOR: return new VehicleContainer(player, world, x, y, z);
+			case UIKeys.ID12_VEHICLE_ATTR_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
-			case UIKey.ID12_DECORATION_EDITOR:{
+			case UIKeys.ID12_DECORATION_EDITOR:{
 				if(DECORATION_CATEGORIES.isEmpty()) return null;
 				return new UniCon(new DecoContainer(gJ("deco_editor"), player, x), player);
 			}
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
 			//
-			case UIKey.ID12_BLOCK_INVENTORY_ITEM:
-			case UIKey.ID12_VEHICLE_INVENTORY_ITEM:
+			case UIKeys.ID12_BLOCK_INVENTORY_ITEM:
+			case UIKeys.ID12_VEHICLE_INVENTORY_ITEM:
 			case CONTAINER_INVENTORY_ITEM:
-			case UIKey.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvContainer(player, world, ID, x, y, z);
-			case UIKey.ID12_BLOCK_INVENTORY_FLUID:
-			case UIKey.ID12_VEHICLE_INVENTORY_FLUID:
+			case UIKeys.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvContainer(player, world, ID, x, y, z);
+			case UIKeys.ID12_BLOCK_INVENTORY_FLUID:
+			case UIKeys.ID12_VEHICLE_INVENTORY_FLUID:
 			case CONTAINER_INVENTORY_FLUID:
-			case UIKey.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
-			case UIKey.ID12_BLOCK_INVENTORY_VAR:
-			case UIKey.ID12_VEHICLE_INVENTORY_VAR:
+			case UIKeys.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvContainer(player, world, ID, x, y, z);
+			case UIKeys.ID12_BLOCK_INVENTORY_VAR:
+			case UIKeys.ID12_VEHICLE_INVENTORY_VAR:
 			case CONTAINER_INVENTORY_VAR:
-			case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
-			case UIKey.ID12_VEHICLE_CATALOG:{
+			case UIKeys.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvContainer(player, world, ID, x, y, z);
+			case UIKeys.ID12_VEHICLE_CATALOG:{
 				if(FvtmRegistry.VEHICLES.isEmpty()){
 					Print.chat(player, I18n.translateToLocalFormatted("ui.fvtm.vehicle.catalog.no_vehicles"));
 					return null;
@@ -179,17 +177,17 @@ public class GuiHandler implements IGuiHandler {
 			UniEntity entity = UniEntity.get(player);
 			V3I pos = new V3I(x, y, z);
 			switch(ID){
-				case UIKey.ID12_TOOLBOX_COLORS: {
+				case UIKeys.ID12_TOOLBOX_COLORS: {
 					JsonMap map = gJC("toolbox_colors");
 					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), player);
 				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
-				case UIKey.ID12_ROAD_TOOL:{
+				case UIKeys.ID12_ROAD_TOOL:{
 					JsonMap map = gJC("road_tool");
 					return new UniUI(new RoadToolUI(map, new RoadToolConImpl(map, entity, pos)), player);
 				}
-				case UIKey.ID12_ROAD_TOOL_CUSTOM:{
+				case UIKeys.ID12_ROAD_TOOL_CUSTOM:{
 					JsonMap map = gJC("road_tool_custom");
 					return new UniUI(new RoadToolCustomUI(map, new RoadToolCustomConImpl(map, entity, pos)), player);
 				}
@@ -197,7 +195,7 @@ public class GuiHandler implements IGuiHandler {
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
-				case UIKey.ID12_CONSTRUCTOR:{
+				case UIKeys.ID12_CONSTRUCTOR:{
 					JsonMap map = gJC("vehicle_constructor");
 					return new UniUI(new VehicleConstructor(map, new VehicleConstructorCon(map, entity, pos)), player);
 				}
@@ -208,52 +206,52 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_PARTINSTALLER: return new ConstPartInstaller(player, world, x, y, z);
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstTextureManager(player, world, x, y, z);
 				case CONSTRUCTOR_PAINTER: return new ConstPainter(player, world, x, y, z);
-				case UIKey.ID12_VEHICLE_MAIN:{
+				case UIKeys.ID12_VEHICLE_MAIN:{
 					JsonMap map = gJC("vehicle_main");
 					return new UniUI(new VehicleMain(map, new VehicleMainCon(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_FUEL: {
+				case UIKeys.ID12_VEHICLE_FUEL: {
 					JsonMap map = gJC("vehicle_fuel");
 					return new UniUI(new VehicleFuel(map, new VehicleFuelConImpl(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_ATTRIBUTES:{
+				case UIKeys.ID12_VEHICLE_ATTRIBUTES:{
 					JsonMap map = gJC("vehicle_attributes");
 					return new UniUI(new VehicleAttributes(map, new VehicleAttributesCon(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_INVENTORIES:{
+				case UIKeys.ID12_VEHICLE_INVENTORIES:{
 					JsonMap map = gJC("vehicle_inventories");
 					return new UniUI(new VehicleInventories(map, new VehicleInventoriesCon(map, entity, pos)), player);
 				}
-				case UIKey.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
+				case UIKeys.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
 				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
-				case UIKey.ID12_VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
+				case UIKeys.ID12_VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraft(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
 				case WIRE_RELAY_MAIN: return new WireRelayChooser(player, world, x, y, z);
 				case WIRE_RELAY_EDIT: return new WireRelayEditor(player, world, x, y, z);
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
-				case UIKey.ID12_VEHICLE_ATTR_EDITOR: return new AttributeEditor(player, world, x, y, z);
+				case UIKeys.ID12_VEHICLE_ATTR_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
-				case UIKey.ID12_DECORATION_EDITOR: {
+				case UIKeys.ID12_DECORATION_EDITOR: {
 					if(DECORATION_CATEGORIES.isEmpty()) return null;
 					JsonMap map = gJC("deco_editor");
 					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), player);
 				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
 				//
-				case UIKey.ID12_BLOCK_INVENTORY_ITEM:
-				case UIKey.ID12_VEHICLE_INVENTORY_ITEM:
+				case UIKeys.ID12_BLOCK_INVENTORY_ITEM:
+				case UIKeys.ID12_VEHICLE_INVENTORY_ITEM:
 				case CONTAINER_INVENTORY_ITEM:
-				case UIKey.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvUi(player, world, ID, x, y, z);
-				case UIKey.ID12_BLOCK_INVENTORY_FLUID:
-				case UIKey.ID12_VEHICLE_INVENTORY_FLUID:
+				case UIKeys.ID12_MULTIBLOCK_INVENTORY_ITEM: return new UniItemInvUi(player, world, ID, x, y, z);
+				case UIKeys.ID12_BLOCK_INVENTORY_FLUID:
+				case UIKeys.ID12_VEHICLE_INVENTORY_FLUID:
 				case CONTAINER_INVENTORY_FLUID:
-				case UIKey.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);
-				case UIKey.ID12_BLOCK_INVENTORY_VAR:
-				case UIKey.ID12_VEHICLE_INVENTORY_VAR:
+				case UIKeys.ID12_MULTIBLOCK_INVENTORY_FLUID: return new UniFluidInvUi(player, world, ID, x, y, z);
+				case UIKeys.ID12_BLOCK_INVENTORY_VAR:
+				case UIKeys.ID12_VEHICLE_INVENTORY_VAR:
 				case CONTAINER_INVENTORY_VAR:
-				case UIKey.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
-				case UIKey.ID12_VEHICLE_CATALOG:{
+				case UIKeys.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
+				case UIKeys.ID12_VEHICLE_CATALOG:{
 					if(FvtmRegistry.VEHICLES.isEmpty()) return null;
 					JsonMap map = gJC("vehicle_catalog");
 					return new UniUI(new VehicleCatalogImpl(map, new VehicleCatalogCon(map, entity, pos)), player);

@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -155,7 +155,7 @@ public class Decoration extends Entity implements IEntityAdditionalSpawnData {
             return true;
         }
         if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
-        	player.openGui(FVTM.getInstance(), UIKey.ID12_DECORATION_EDITOR, world, getEntityId(), 0, 0);
+        	player.openGui(FVTM.getInstance(), UIKeys.ID12_DECORATION_EDITOR, world, getEntityId(), 0, 0);
         	return true;
         }
         return false;

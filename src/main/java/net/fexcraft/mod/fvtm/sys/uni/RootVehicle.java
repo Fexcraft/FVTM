@@ -24,7 +24,7 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
@@ -65,7 +65,7 @@ import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.data.Capabilities.PASSENGER;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
-import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
@@ -330,7 +330,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
+				pass.openUI(UIKeys.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
 				return true;
 			}
 			else if(stack.getItem() instanceof ToolboxItem){
@@ -341,7 +341,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 				}
 				else if(stack.getMetadata() == 2){
-					pass.openUI(UIKey.TOOLBOX_COLORS, new V3I(getEntityId(), 0, 0));
+					pass.openUI(UIKeys.TOOLBOX_COLORS, new V3I(getEntityId(), 0, 0));
 				}
 				return true;
 			}

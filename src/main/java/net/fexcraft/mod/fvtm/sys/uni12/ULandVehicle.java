@@ -34,11 +34,10 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -67,12 +66,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import static net.fexcraft.mod.fvtm.Config.*;
-import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_MAIN;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -717,7 +715,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
+				pass.openUI(UIKeys.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
             	return true;
             }
             else if(stack.getItem() instanceof VehicleItem){

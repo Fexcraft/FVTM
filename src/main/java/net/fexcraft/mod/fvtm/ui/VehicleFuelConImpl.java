@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -20,7 +21,7 @@ public class VehicleFuelConImpl extends VehicleFuelCon {
 	private GenericIInventory inventory;
 	private SWI wrapper = new SWI(ItemStack.EMPTY);
 
-	public VehicleFuelConImpl(JsonMap map, EntityW player, V3I pos){
+	public VehicleFuelConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		inventory = new GenericIInventory(null, 1, 1);
 	}
@@ -32,7 +33,7 @@ public class VehicleFuelConImpl extends VehicleFuelCon {
 
 	@Override
 	public void onClosed(){
-		inventory.closeInventory(player.local());
+		inventory.closeInventory(player.entity.local());
 	}
 
 	@Override

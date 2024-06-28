@@ -15,8 +15,7 @@ import java.util.function.BiConsumer;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +33,7 @@ public class ConstGui extends GenericGui<ConstContainer> {
 	protected BiConsumer<BasicButton, Integer> NOT_AVAILABLE_YET = (button, mb) -> notAvailableYet();
 	protected ReturnAddList<BasicButton> topbuttons = new ReturnAddList<>();
 	protected ReturnAddList<ConstElement> elements = new ReturnAddList<>();
-	protected int root = UIKey.CONSTRUCTOR.id;
+	protected int root = UIKeys.CONSTRUCTOR.id;
 	protected ConstGui instance = this;
 	protected TitleText titletext;
 	protected BasicText menutitle;

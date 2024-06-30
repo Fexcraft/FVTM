@@ -56,6 +56,7 @@ import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -144,21 +145,9 @@ public class FVTM {
 			else return StateWrapper.DEFAULT;
 		};
 		if(EnvInfo.CLIENT){
-			UITab.IMPLEMENTATION = UUITab.class;
-			UIButton.IMPLEMENTATION = UUIButton.class;
-			UIText.IMPLEMENTATION = UUIText.class;
-			UIField.IMPLEMENTATION = UUIField.class;
-			ContainerInterface.TRANSLATOR = str -> I18n.format(str);
-			ContainerInterface.TRANSFORMAT = (str, objs) -> I18n.format(str, objs);
 			GLO.SUPPLIER = () -> new GLObject();
 		}
-		UISlot.SLOT_GETTER = (type, args) -> {
-			switch(type){
-				case "default":
-				default:
-					return new Slot((IInventory)args[0], (Integer)args[1], (Integer)args[2], (Integer)args[3]);
-			}
-		};
+		UniReg.registerMod(MODID, INSTANCE);
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);

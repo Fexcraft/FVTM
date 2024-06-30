@@ -72,9 +72,6 @@ public class PacketsImpl extends Packets {
 		//
 		FvtmLogger.LOGGER.log("Done initialising Packet Handler.");
 		FvtmLogger.LOGGER.log("Starting Packet Listener registration.");
-		LIS_SERVER.put("ui", (tag, player) -> {
-			((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, false);
-		});
 		LIS_SERVER.put("mount_seat", (com, player) -> {
 			World world = player.getWorld().local();
 			RootVehicle vehicle = (RootVehicle)world.getEntityByID(com.getInteger("entity"));
@@ -83,9 +80,7 @@ public class PacketsImpl extends Packets {
 			vehicle.processSeatInteract(index, player.local(), EnumHand.MAIN_HAND);
 		});
 		if(EnvInfo.CLIENT){
-			LIS_CLIENT.put("ui", (tag, player) -> {
-				((UniCon)((EntityPlayer)player.local()).openContainer).container().packet(tag, true);
-			});
+			//
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
 	}

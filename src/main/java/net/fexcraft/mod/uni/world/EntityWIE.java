@@ -23,16 +23,6 @@ public class EntityWIE extends EntityWI implements Passenger {
 	}
 
 	@Override
-	public void openUI(String id, V3I pos){
-		if(!id.startsWith("fvtm")){
-			super.openUI(id, pos);
-			return;
-		}
-		if(entity instanceof EntityPlayer == false) return;
-		((EntityPlayer)entity).openGui(FVTM.getInstance(), UIKey.get(id), entity.world, pos.x, pos.y, pos.z);
-	}
-
-	@Override
 	public SeatInstance getSeatOn(){
 		if(entity.getRidingEntity() instanceof RootVehicle == false) return null;
 		return ((RootVehicle)entity.getRidingEntity()).getSeatOf(entity);

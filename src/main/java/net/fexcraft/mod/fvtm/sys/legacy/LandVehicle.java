@@ -36,7 +36,7 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.MessageSenderI;
@@ -570,7 +570,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	return true;
         }
 		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
-			vehicle.getLock().toggle(new MessageSenderI(player), new SWI(stack));
+			vehicle.getLock().toggle(new MessageSenderI(player), new SWIE(stack));
         	this.sendLockStateUpdate();
         	return true;
         }

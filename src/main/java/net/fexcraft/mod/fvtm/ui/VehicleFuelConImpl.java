@@ -6,10 +6,9 @@ import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -19,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class VehicleFuelConImpl extends VehicleFuelCon {
 
 	private GenericIInventory inventory;
-	private SWI wrapper = new SWI(ItemStack.EMPTY);
+	private SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
 	public VehicleFuelConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);

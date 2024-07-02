@@ -124,10 +124,11 @@ public class FVTM {
 			}
 		};
 		StackWrapper.SUPPLIER = obj -> {
-			if(obj instanceof ItemWrapper) return new SWI((ItemWrapper)obj);
-			if(obj instanceof ItemStack) return new SWI((ItemStack)obj);
+			if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
+			if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
 			return null;
 		};
+		ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
 		AABB.SUPPLIER = () -> new AABBI();
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;

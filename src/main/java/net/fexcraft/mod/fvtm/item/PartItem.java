@@ -14,11 +14,9 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.impl.SWI;
-import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -27,7 +25,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -70,7 +67,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 			}
         }
         if(!data.getFunctions().isEmpty()){
-			StackWrapper wrapper = new SWI(stack);
+			StackWrapper wrapper = new SWIE(stack);
             for(PartFunction func : data.getFunctions().values()){
 				func.addInformation(wrapper, WrapperHolder.getWorld(world), data, tooltip, flag.isAdvanced());
             }

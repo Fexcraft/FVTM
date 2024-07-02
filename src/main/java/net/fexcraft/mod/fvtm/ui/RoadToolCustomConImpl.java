@@ -5,11 +5,10 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UniCon;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -19,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class RoadToolCustomConImpl extends RoadToolCustomCon {
 
 	protected RoadInventory inv;
-	protected SWI wrapper = new SWI(ItemStack.EMPTY);
+	protected SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
 	public RoadToolCustomConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);

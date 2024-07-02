@@ -53,7 +53,7 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -272,7 +272,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerRecipes(){
-		StackWrapper.EMPTY = new SWI(ItemStack.EMPTY);
+		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
 		String blockcat = "fvtm.recipes.blocks";
 		RecipeRegistry.addBluePrintRecipe(blockcat,
 			new ItemStack(ConstructorBlock.INSTANCE),
@@ -370,22 +370,22 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public StackWrapper newStack0(ItemWrapper item){
-		return new SWI(item);
+		return new SWIE(item);
 	}
 
 	@Override
 	public StackWrapper newStack0(TagCW com){
-		return new SWI(new ItemStack((NBTTagCompound)com.direct()));
+		return new SWIE(new ItemStack((NBTTagCompound)com.direct()));
 	}
 
 	@Override
 	public StackWrapper newStack0(Object item){
-		return new SWI(new IWI((Item)item));
+		return new SWIE(new IWI((Item)item));
 	}
 
 	@Override
 	public StackWrapper wrapStack0(Object stack){
-		return new SWI((ItemStack)stack);
+		return new SWIE((ItemStack)stack);
 	}
 
 	@Override

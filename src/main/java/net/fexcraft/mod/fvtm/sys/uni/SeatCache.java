@@ -16,7 +16,7 @@ import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.uni.world.EntityWIE;
 import net.fexcraft.mod.uni.world.MessageSenderI;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,7 +72,7 @@ public class SeatCache {
         if(vehicle.world.isRemote){ return false; }
         ItemStack stack = player.getHeldItem(hand);
         if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
-			vehicle.getVehicleData().getLock().toggle(new MessageSenderI(player), new SWI(stack));
+			vehicle.getVehicleData().getLock().toggle(new MessageSenderI(player), new SWIE(stack));
         	vehicle.sendLockStateUpdate();
         	return true;
         }

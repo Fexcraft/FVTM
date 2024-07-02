@@ -13,8 +13,7 @@ import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.uni.world.MessageSenderI;
-import net.fexcraft.mod.uni.impl.SWI;
-import net.minecraft.block.Block;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -27,11 +26,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -39,8 +36,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -148,7 +143,7 @@ public class ContainerBlock extends BlockContainer {
             }
             ItemStack stack = player.getHeldItem(hand);
             if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString()))){
-                te.getContainerData().getLock().toggle(new MessageSenderI(player), new SWI(stack));
+                te.getContainerData().getLock().toggle(new MessageSenderI(player), new SWIE(stack));
             	return true;
             }
             if(te.isLocked()){

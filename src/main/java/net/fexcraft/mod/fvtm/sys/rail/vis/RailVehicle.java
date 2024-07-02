@@ -46,7 +46,7 @@ import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.uni.world.MessageSenderI;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -455,7 +455,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
 		ItemWrapper item = FvtmRegistry.getItem(stack.getItem().getRegistryName().toString());
         if(Lockable.isKey(item)){
-			rek.data().getLock().toggle(new MessageSenderI(player), new SWI(stack));
+			rek.data().getLock().toggle(new MessageSenderI(player), new SWIE(stack));
         	this.sendLockStateUpdate();
         	return true;
         }

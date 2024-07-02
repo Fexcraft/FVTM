@@ -29,7 +29,7 @@ import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -320,7 +320,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
 				return true;
 			}
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, new SWI(stack));
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, new SWIE(stack));
 			return true;
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
@@ -722,7 +722,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		SeatInstance seat = vehicle.seats.get(seatidx);
 		PassCap pass = player.getCapability(PASSENGER, null);
 		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString())) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(pass.asSender(), new SWI(stack));
+			vehicle.data.getLock().toggle(pass.asSender(), new SWIE(stack));
 			sendLockStateUpdate();
 			return true;
 		}

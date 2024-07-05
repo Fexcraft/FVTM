@@ -94,6 +94,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.CONFIG;
+
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
  * <br>
@@ -152,7 +154,7 @@ public class FVTM {
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);
-		Config.addListener(() -> {
+		CONFIG.addListener(() -> {
 			TrafficSignLibrary.load(true);
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
 		});
@@ -161,7 +163,7 @@ public class FVTM {
 		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", FvtmRegistry.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
 		if(EnvInfo.CLIENT){
-			Config.addListener(DefaultPrograms::setupBlinkerTimer);
+			CONFIG.addListener(DefaultPrograms::setupBlinkerTimer);
 			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
 			ConditionRegistry.BUILDER = CondBuilder.run();
 		}

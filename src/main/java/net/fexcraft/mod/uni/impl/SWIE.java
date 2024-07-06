@@ -14,8 +14,6 @@ import net.minecraft.item.ItemStack;
  */
 public class SWIE extends SWI {
 
-	public ItemStack stack;
-
 	public SWIE(ItemWrapper item){
 		super(item);
 	}

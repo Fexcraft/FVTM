@@ -43,21 +43,4 @@ public class EntityWIE extends EntityWI implements Passenger {
 		return 0;
 	}
 
-	@Override
-	public V3D getEyeVec(){
-		Vec3d vec = Minecraft.getMinecraft().getRenderViewEntity().getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
-		return new V3D(vec.x, vec.y, vec.z);
-	}
-
-	@Override
-	public V3D getLookVec(){
-		Vec3d vec = Minecraft.getMinecraft().getRenderViewEntity().getLook(Minecraft.getMinecraft().getRenderPartialTicks());
-		return new V3D(vec.x, vec.y, vec.z);
-	}
-
-	@Override
-	public boolean isShiftDown(){
-		return entity.isSneaking();
-	}
-
 }

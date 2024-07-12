@@ -338,7 +338,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 				}
 				else if(stack.getMetadata() == 1){
-
+					pass.openUI(UIKeys.TOOLBOX_TEXTURE, new V3I(getEntityId(), 0, 0));
 				}
 				else if(stack.getMetadata() == 2){
 					pass.openUI(UIKeys.TOOLBOX_COLORS, new V3I(getEntityId(), 0, 0));

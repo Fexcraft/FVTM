@@ -33,8 +33,10 @@ import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UniCon;
 import net.fexcraft.mod.uni.ui.UniUI;
+import net.fexcraft.mod.uni.ui.UserInterface;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.translation.I18n;
@@ -105,6 +107,9 @@ public class GuiHandler implements IGuiHandler {
 		switch(ID){
 			case UIKeys.ID12_TOOLBOX_COLORS:{
 				return new UniCon(new ToolboxPaintContainer(gJ("toolbox_colors"), player, x), player);
+			}
+			case UIKeys.ID12_TOOLBOX_TEXTURE:{
+				return new UniCon(new ContainerInterface(gJ("toolbox_texture"), entity, pos), player);
 			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
@@ -180,6 +185,10 @@ public class GuiHandler implements IGuiHandler {
 				case UIKeys.ID12_TOOLBOX_COLORS: {
 					JsonMap map = gJC("toolbox_colors");
 					return new UniUI(new ToolboxPainter(map, new ToolboxPaintContainer(map, player, x)), player);
+				}
+				case UIKeys.ID12_TOOLBOX_TEXTURE: {
+					JsonMap map = gJC("toolbox_texture");
+					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
 				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);

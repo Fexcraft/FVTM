@@ -49,6 +49,9 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
+import net.fexcraft.mod.fvtm.ui.ToolboxPaintContainer;
+import net.fexcraft.mod.fvtm.ui.ToolboxPainter;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerCallable;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerStorage;
@@ -150,7 +153,6 @@ public class FVTM {
 		if(EnvInfo.CLIENT){
 			GLO.SUPPLIER = () -> new GLObject();
 		}
-		UniReg.registerMod(MODID, INSTANCE);
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);
@@ -253,6 +255,10 @@ public class FVTM {
 			FvtmResources.initModelSystem();
 			AddonSteeringOverlay.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
+		//
+		UniReg.registerMod(MODID, INSTANCE);
+		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
 	}
 
 	@Mod.EventHandler

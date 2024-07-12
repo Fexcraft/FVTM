@@ -2,18 +2,13 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
-import net.fexcraft.mod.fvtm.ui.DecoEditor;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
-import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -27,9 +22,9 @@ public class ToolboxPaintContainer extends ContainerInterface {
 	protected Colorable colorable;
 	protected RootVehicle vehicle;
 
-	public ToolboxPaintContainer(JsonMap map, EntityPlayer player, int entid){
-		super(map, UniEntity.get(player), new V3I(entid, 0, 0));
-		vehicle = (RootVehicle)player.world.getEntityByID(entid);
+	public ToolboxPaintContainer(JsonMap map, UniEntity player, V3I pos){
+		super(map, player, pos);
+		vehicle = ((FvtmWorld)player.entity.getWorld()).getVehicle(pos.x).entity.local();
 		colorable = vehicle.vehicle.data;
 	}
 

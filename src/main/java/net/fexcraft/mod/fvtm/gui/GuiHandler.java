@@ -102,9 +102,6 @@ public class GuiHandler implements IGuiHandler {
 		UniEntity entity = UniEntity.get(player);
 		V3I pos = new V3I(x, y, z);
 		switch(ID){
-			case UIKeys.ID12_TOOLBOX_TEXTURE:{
-				return new UniCon(new ContainerInterface(gJ("toolbox_texture"), entity, pos), player);
-			}
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
 			case UIKeys.ID12_ROAD_TOOL:
@@ -176,10 +173,6 @@ public class GuiHandler implements IGuiHandler {
 			UniEntity entity = UniEntity.get(player);
 			V3I pos = new V3I(x, y, z);
 			switch(ID){
-				case UIKeys.ID12_TOOLBOX_TEXTURE: {
-					JsonMap map = gJC("toolbox_texture");
-					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
-				}
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
 				case UIKeys.ID12_ROAD_TOOL:{

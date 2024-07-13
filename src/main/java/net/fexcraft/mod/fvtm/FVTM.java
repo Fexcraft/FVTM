@@ -49,9 +49,7 @@ import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
-import net.fexcraft.mod.fvtm.ui.ToolboxPaintContainer;
-import net.fexcraft.mod.fvtm.ui.ToolboxPainter;
-import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerCallable;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerStorage;
@@ -259,6 +257,8 @@ public class FVTM {
 		UniReg.registerMod(MODID, INSTANCE);
 		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
 		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
+		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "assets/fvtm/uis/toolbox_texture", ToolboxTextureContainer.class);
 	}
 
 	@Mod.EventHandler

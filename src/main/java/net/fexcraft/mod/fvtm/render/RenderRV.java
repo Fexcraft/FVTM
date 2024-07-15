@@ -62,19 +62,20 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		}
 		else{
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
-			DebugModels.CENTERSPHERE.render(1);
+			DebugModels.SPHERE_RED.render(1);
 		}
 		if(rv.vehicle.data.getParts().size() > 0){
 			VehicleRenderer.renderPoint(rv.vehicle.point, rv, rv.vehicle.data, cache, ticks);
 		}
-		EffectRenderer.renderInstallInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
+		EffectRenderer.renderVehicleInfo(rv.vehicle, rv.vehicle.entity.getPos(), rv.vehicle.data);
+		/*EffectRenderer.renderInstallInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
 		EffectRenderer.renderWheelInstallInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
-		EffectRenderer.renderRemovalInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);
+		EffectRenderer.renderRemovalInfo(rv.vehicle.entity.getPos(), rv.vehicle.data);*/
 		GL11.glPopMatrix();
 		//
-		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
+		//EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
 		//EffectRenderer.renderContainerInfo(rv, rot);
-		EffectRenderer.renderSeats(rv.vehicle);
+		//EffectRenderer.renderSeats(rv.vehicle);
         GL11.glPopMatrix();
     }
     

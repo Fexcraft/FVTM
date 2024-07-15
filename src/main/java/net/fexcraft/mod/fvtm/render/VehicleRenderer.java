@@ -55,7 +55,7 @@ public class VehicleRenderer {
 				for(SwivelPoint point : vehicle.vehicle.data.getRotationPoints().values()){
 					V3D vec = point.getRelativeVector(0, 0.1f, 0);
 					GL11.glTranslated(vec.x, vec.y, vec.z);
-					DebugModels.CENTERSPHERE.render(1f);
+					DebugModels.SPHERE_GRY.render(1f);
 					GL11.glTranslated(-vec.x, -vec.y, -vec.z);
 				}
 			}
@@ -81,7 +81,7 @@ public class VehicleRenderer {
 	            }
 				else {
 					TexUtil.bindTexture(vehicle.vehicle.data.getCurrentTexture());
-					DebugModels.CENTERSPHERE.render(1);
+					DebugModels.SPHERE_GRY.render(1);
 				}
 				if(vehicle.vehicle.data.getParts().size() > 0){
 					renderPoint(vehicle.vehicle.point, vehicle, vehicle.vehicle.data, cache, ticks);

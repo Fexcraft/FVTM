@@ -59,7 +59,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 				}
 				else {
 					TexUtil.bindTexture(vehicle.getVehicleData().getCurrentTexture());
-					DebugModels.CENTERSPHERE.render(1);
+					DebugModels.SPHERE_GRY.render(1);
 				}
 				if(vehicle.getVehicleData().getParts().size() > 0){
 					VehicleRenderer.renderPoint(vehicle.getRotPoint(), null/*vehicle*/, vehicle.getVehicleData(), cache, ticks);

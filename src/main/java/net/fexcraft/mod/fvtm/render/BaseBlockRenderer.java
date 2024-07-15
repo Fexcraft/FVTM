@@ -28,7 +28,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
         if(model == null){
             GL11.glPushMatrix();
             GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-            DebugModels.CENTERSPHERE.render(0.5f);
+            DebugModels.SPHERE_RED.render(0.5f);
             GL11.glPopMatrix();
             return;
         }

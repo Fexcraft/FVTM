@@ -40,9 +40,7 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 			if(data.getParts().size() > 0){
 				VehicleRenderer.renderPoint(data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);
 			}
-			EffectRenderer.renderInstallInfo(tile.getVehicleDataPos(), data);
-			EffectRenderer.renderWheelInstallInfo(tile.getVehicleDataPos(), data);
-			EffectRenderer.renderRemovalInfo(tile.getVehicleDataPos(), data);
+			EffectRenderer.renderVehicleInfo(null, tile.getVehicleDataPos(), data);
 			GL11.glPopMatrix();
 			TexUtil.bindTexture(TEXTURE);
 			for(LiftingPoint[] point : data.getType().getGroupedLiftingPoints().values()){

@@ -36,7 +36,7 @@ public class TrafficSignRenderer {
             	GL11.glTranslated(entry.getKey().getX() + 0.5 - cx, entry.getKey().getY() + 0.5 - cy, entry.getKey().getZ() + 0.5 - cz);
                 GlStateManager.rotate(180, 0, 1, 0);
                 GlStateManager.rotate(180, 0, 0, 1);
-                if(entry.getValue().isEmpty()) DebugModels.TRAFFICSIGNCUBE.render(0.5f);
+                if(entry.getValue().isEmpty()) DebugModels.CUBE_GRN.render(0.5f);
                 else entry.getValue().render(world, true, partialticks);
             	GL11.glPopMatrix();
         	}

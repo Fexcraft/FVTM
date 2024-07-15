@@ -29,14 +29,14 @@ public class DecorationRenderer {
 			GL11.glPushMatrix();
 			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
 			if(deco.decos.size() == 0){
-				DebugModels.TRAFFICSIGNCUBE.render(0.5f);
+				DebugModels.CUBE_GRN.render(0.5f);
 				RGB.glColorReset();
 			}
 			else{
 				RenderCache cache = ent.getCapability(Capabilities.RENDERCACHE, null);
 				for(DecorationData data : deco.decos){
 					if(data.model == null){
-						DebugModels.HOTINSTALLCUBE.render(0.25f);
+						DebugModels.CUBE_CYN.render(0.25f);
 						RGB.glColorReset();
 					}
 					else{

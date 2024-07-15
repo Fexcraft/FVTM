@@ -27,7 +27,10 @@ public class VehicleItemModel implements FCLItemModel {
 		VehicleData data = item.getCapability(Capabilities.VAPDATA, null).getVehicleData();
 		if(data == null){ return; }
 		VehicleModel model = (VehicleModel)data.getType().getModel();
-		if(model == null) { return; }
+		if(model == null){
+			DebugModels.SPHERE_RED.render(1);
+			return;
+		}
 		//
 		Vec3f translate = model.item_translate.get(type.name());
 		GL11.glTranslatef(translate.x, translate.y, translate.z);
@@ -64,7 +67,7 @@ public class VehicleItemModel implements FCLItemModel {
 			}
 			else {
 				TexUtil.bindTexture(data.getCurrentTexture());
-				DebugModels.CENTERSPHERE.render(1);
+				DebugModels.SPHERE_RED.render(1);
 			}
 			if(data.getParts().size() > 0){
 				VehicleRenderer.renderPoint(data.getRotationPoint("vehicle"), null, data, null, Minecraft.getMinecraft().getRenderPartialTicks());

@@ -103,7 +103,7 @@ public class VehicleRenderer {
 					}*/
 				}
             }
-            //EffectRenderer.renderHotInstallInfo(vehicle);
+			EffectRenderer.renderVehicleInfo(vehicle.vehicle, vehicle.vehicle.entity.getPos(), vehicle.vehicle.data);
             GL11.glPopMatrix();
             //
             GL11.glPopMatrix();

@@ -21,6 +21,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
+import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
@@ -49,6 +51,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -113,125 +116,35 @@ public class EffectRenderer {
                 GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);
                 GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);
                 //GL11.glRotatef(180f, 0f, 0f, 1f);
-                sgroup.render(RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false).sep());
+                sgroup.render(RENDERDATA.set(data, tile, tile.getCapability(RENDERCACHE, null), null, false).sep());
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();
         }
-		SeparateRenderCache.clear();
+		clear();
         LightBeam.last = null;
     }
-
-	public static void renderWheelInstallInfo(V3D vehpos, VehicleData data){
-		if(!Command.HOTSWAP){
-			int impact = isImpact();
-			PartData wt = isWheelOrTire();
-			if(impact < 0 && wt == null) return;
-			V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
-			boolean inrange = false;
-			for(InteractZone zone : data.getInteractZones().values()){
-				if(zone.inRange(data, vehpos, ply)){
-					inrange = true;
-					break;
-				}
-			}
-			if(!inrange) return;
-			//
-			preMeshCalls();
-			boolean red;
-			if(impact > -1){
-				red = data.getType().getImpactWrenchLevel() > impact ;
-				for(WheelSlot slot : data.getWheelSlots().values()){
-					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
-					GL11.glPushMatrix();
-					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
-					(red ? CUBE_RED : CUBE_CYN).render(1f);
-					GL11.glPopMatrix();
-					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
-				}
-			}
-			if(wt != null){
-				WheelSlot slot;
-				boolean wheel = wt.hasFunction("fvtm:wheel");
-				boolean tire = wt.hasFunction("fvtm:tire");
-				boolean green;
-				for(Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
-					green = wt.getType().getInstallHandler().validInstall(FvtmLogger.NONE, wt, entry.getKey(), data, true);
-					red = wheel ? data.hasPart(entry.getKey()) : data.hasPart(entry.getKey() + ":tire");
-					slot = entry.getValue();
-					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
-					GL11.glPushMatrix();
-					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
-					(red ? CUBE_RED : green ? CUBE_GRN : CUBE_CYN).render(1f);
-					GL11.glPopMatrix();
-					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
-				}
-			}
-			postMeshCalls();
-		}
-		RGB.glColorReset();
-	}
-
-	public static void renderRemovalInfo(V3D vehpos, VehicleData data){
-		if(Command.HOTSWAP) return;
-		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ToolboxItem == false) return;
-		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItemDamage() > 0) return;
-		V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
-		boolean inrange = false;
-		for(InteractZone zone : data.getInteractZones().values()){
-			if(zone.inRange(data, vehpos, ply)){
-				inrange = true;
-				break;
-			}
-		}
-		if(!inrange) return;
-		//
-		preMeshCalls();
-		boolean rem;
-		SwivelPoint point;
-		V3D pos;
-		for(Entry<String, PartData> entry : data.getParts().entrySet()){
-			if(entry.getValue().getType().getInstallHandlerData() instanceof DPIHData == false) continue;
-			rem = ((DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
-			point = data.getRotationPointOfPart(entry.getKey());
-			pos = entry.getValue().getInstalledPos();
-			if(point.isVehicle()){
-				GL11.glTranslated(pos.x, pos.y, pos.z);
-			}
-			else{
-				GL11.glPushMatrix();
-				pos = point.getRelativeVector(pos);
-				GL11.glTranslated(pos.x, pos.y, pos.z);
-				GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
-				GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
-				GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
-			}
-			GL11.glPushMatrix();
-			if(rem){
-				GL11.glScalef(.25f, .25f, .25f);
-				CUBE_YLW.render(1f);
-			}
-			else{
-				GL11.glScalef(.125f, .125f, .125f);
-				CUBE_RED.render(1f);
-			}
-			GL11.glPopMatrix();
-			if(!point.isVehicle()) GL11.glPopMatrix();
-			else GL11.glTranslated(-pos.x, -pos.y, -pos.z);
-		}
-		postMeshCalls();
-		RGB.glColorReset();
-	}
 
 	private static int isImpact(){
 		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof MaterialItem == false) return -1;
 		return ((MaterialItem)Minecraft.getMinecraft().player.getHeldItemMainhand().getItem()).getContent().getImpactLevel();
 	}
 
+	public static int isToolbox(){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ToolboxItem == false) return -1;
+		return Minecraft.getMinecraft().player.getHeldItemMainhand().getItemDamage();
+	}
+
 	private static PartData isWheelOrTire(){
 		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return null;
 		PartData data = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
+	}
+
+	private static PartData isNormalPart(){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return null;
+		PartData data = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
+		return data.getType().getInstallHandlerData() instanceof DPIHData ? data : null;
 	}
 
 	public static void preMeshCalls(){
@@ -251,6 +164,7 @@ public class EffectRenderer {
 		V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
 		SwivelPoint point;
 		boolean inrange;
+		boolean red = false;
 		for(InteractZone zone : data.getInteractZones().values()){
 			inrange = zone.inRange(data, vehpos, ply);
 			if(Command.TOGGABLE){
@@ -288,42 +202,113 @@ public class EffectRenderer {
 			}
 		}
 		else{
-			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem){
-				PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
-				if(part.getType().getInstallHandlerData() instanceof DPIHData){
-					for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
-						V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
-						point = data.getRotationPointOfPart(ps.getKey());
-						for(PartSlot value : ps.getValue().values()){
-							if(data.hasPart(value.type)){
-								Part epart = data.getPart(value.type).getType();
-								if(!(epart.getInstallHandlerData() instanceof DPIHData) || !((DPIHData)epart.getInstallHandlerData()).swappable) continue;
-							}
-							String type = value.type;
-							for(String str : part.getType().getCategories()){
-								if(str.equals(type)){
-									V3D pes = pos.add(value.pos);
-									if(point.isVehicle()){
-										GL11.glTranslated(pes.x, pes.y, pes.z);
-									}
-									else{
-										GL11.glPushMatrix();
-										V3D vec = point.getRelativeVector(pes);
-										GL11.glTranslated(vec.x, vec.y, vec.z);
-										GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
-										GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
-										GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
-									}
-									GL11.glPushMatrix();
-									GL11.glScalef(value.radius, value.radius, value.radius);
-									CUBE_CYN.render(1f);
-									GL11.glPopMatrix();
-									if(!point.isVehicle()) GL11.glPopMatrix();
-									else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
+			PartData part = isNormalPart();
+			if(part != null){
+				for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
+					V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+					point = data.getRotationPointOfPart(ps.getKey());
+					for(PartSlot value : ps.getValue().values()){
+						if(data.hasPart(value.type)){
+							Part epart = data.getPart(value.type).getType();
+							if(!(epart.getInstallHandlerData() instanceof DPIHData)) continue;
+							red = !((DPIHData)epart.getInstallHandlerData()).swappable;
+						}
+						String type = value.type;
+						for(String str : part.getType().getCategories()){
+							if(str.equals(type)){
+								V3D pes = pos.add(value.pos);
+								if(point.isVehicle()){
+									GL11.glTranslated(pes.x, pes.y, pes.z);
 								}
+								else{
+									GL11.glPushMatrix();
+									V3D vec = point.getRelativeVector(pes);
+									GL11.glTranslated(vec.x, vec.y, vec.z);
+									GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+									GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+									GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
+								}
+								GL11.glPushMatrix();
+								GL11.glScalef(value.radius, value.radius, value.radius);
+								(red ? CUBE_RED : CUBE_CYN).render(1f);
+								GL11.glPopMatrix();
+								if(!point.isVehicle()) GL11.glPopMatrix();
+								else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 							}
 						}
 					}
+				}
+			}
+			//
+			int tool = isImpact();
+			if(tool > -1){
+				red = data.getType().getImpactWrenchLevel() > tool ;
+				for(WheelSlot slot : data.getWheelSlots().values()){
+					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
+					GL11.glPushMatrix();
+					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
+					(red ? CUBE_RED : CUBE_CYN).render(1f);
+					GL11.glPopMatrix();
+					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
+				}
+			}
+			part = isWheelOrTire();
+			if(part != null){
+				WheelSlot slot;
+				boolean wheel = part.hasFunction("fvtm:wheel");
+				//boolean tire = part.hasFunction("fvtm:tire");
+				boolean green;
+				for(Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
+					green = part.getType().getInstallHandler().validInstall(FvtmLogger.NONE, part, entry.getKey(), data, true);
+					if(wheel){
+						red = data.hasPart(entry.getKey());
+					}
+					else{
+						red = data.hasPart(entry.getKey()) && ((WheelData)data.getPart(entry.getKey()).getType().getInstallHandlerData()).hasTire();
+						if(!red) red = data.hasPart(entry.getKey() + ":tire");
+					}
+					slot = entry.getValue();
+					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
+					GL11.glPushMatrix();
+					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
+					(red ? CUBE_RED : green ? CUBE_GRN : CUBE_CYN).render(1f);
+					GL11.glPopMatrix();
+					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
+				}
+			}
+			//
+			tool = isToolbox();
+			if(tool > 0) CUBE_ORG.render(1f);
+			if(tool > -1 && tool < 2){
+				V3D pos;
+				for(Entry<String, PartData> entry : data.getParts().entrySet()){
+					if(tool == 0 && entry.getValue().getType().getInstallHandlerData() instanceof DPIHData == false) continue;
+					red = tool != 0 || !((DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
+					point = data.getRotationPointOfPart(entry.getKey());
+					pos = entry.getValue().getInstalledPos();
+					if(point.isVehicle()){
+						GL11.glTranslated(pos.x, pos.y, pos.z);
+					}
+					else{
+						GL11.glPushMatrix();
+						pos = point.getRelativeVector(pos);
+						GL11.glTranslated(pos.x, pos.y, pos.z);
+						GL11.glRotatef(point.getPivot().deg_yaw(), 0, 1, 0);
+						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
+						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
+					}
+					GL11.glPushMatrix();
+					if(red){
+						GL11.glScalef(.25f, .25f, .25f);
+						CUBE_YLW.render(1f);
+					}
+					else{
+						GL11.glScalef(.125f, .125f, .125f);
+						CUBE_RED.render(1f);
+					}
+					GL11.glPopMatrix();
+					if(!point.isVehicle()) GL11.glPopMatrix();
+					else GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 				}
 			}
 		}
@@ -372,7 +357,7 @@ public class EffectRenderer {
             	scal = box.size;
             	GL11.glPushMatrix();
             	GL11.glScalef(scal, scal, scal);
-				CUBE_ORG.render(2f);
+				CUBE_ATTR.render(2f);
             	GL11.glPopMatrix();
 				if(Command.TOGG_LABEL){
 					boolean depth = temp.add(vehicle.posX, vehicle.posY, vehicle.posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
@@ -443,7 +428,7 @@ public class EffectRenderer {
 		for(SeatCache seat : vehicle.seats){
 			V3D pos = seat.getFreshPosition().sub(vehicle.posX, vehicle.posY, vehicle.posZ);
 			GL11.glTranslated(pos.x, pos.y, pos.z);
-			(seat.passenger() != null ? DebugModels.SEAT_CUBE_OCCUPIED : seat.seatdata.sitting ? DebugModels.SEAT_CUBE_SITTING : DebugModels.SEAT_CUBE_STANDING).render(0.5f * seat.seatdata.scale());
+			(seat.passenger() != null ? SEAT_CUBE_OCCUPIED : seat.seatdata.sitting ? SEAT_CUBE_SITTING : SEAT_CUBE_STANDING).render(0.5f * seat.seatdata.scale());
 			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 		}
     	GL11.glPopMatrix();
@@ -466,7 +451,7 @@ public class EffectRenderer {
 				GL11.glRotatef(seat.point.getPivot().deg_pitch(), 1, 0, 0);
 				GL11.glRotatef(seat.point.getPivot().deg_roll(), 0, 0, 1);
 			}
-			(seat.passenger() != null ? DebugModels.SEAT_CUBE_OCCUPIED : seat.seat.sitting ? DebugModels.SEAT_CUBE_SITTING : DebugModels.SEAT_CUBE_STANDING).render(0.5f * seat.seat.scale());
+			(seat.passenger() != null ? SEAT_CUBE_OCCUPIED : seat.seat.sitting ? SEAT_CUBE_SITTING : SEAT_CUBE_STANDING).render(0.5f * seat.seat.scale());
 			if(!seat.point.isVehicle()) GL11.glPopMatrix();
 			else GLUtils112.translateR(seat.seat.pos);
 		}
@@ -639,7 +624,7 @@ public class EffectRenderer {
     public void preview(DrawBlockHighlightEvent event){
 		if(!Command.OTHER) return;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty() || stack.getItem() instanceof MultiBlockItem == false) return;
-    	if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
+    	if(event.getTarget() == null || event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return;
 		if(event.getTarget().sideHit != EnumFacing.UP) return;
     	MultiBlockItem item = (MultiBlockItem)stack.getItem();
     	BlockPos pos = event.getTarget().getBlockPos().add(0, 1, 0);

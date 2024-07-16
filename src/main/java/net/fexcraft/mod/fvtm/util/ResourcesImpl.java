@@ -5,6 +5,7 @@ import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,6 +76,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -446,7 +448,15 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public InputStream getAssetInputStream(IDL loc, boolean log){
 		try{
-			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource((ResourceLocation)loc).getInputStream();
+			InputStream stream = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource((ResourceLocation)loc).getInputStream();
+			if(stream != null){
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				byte[] buffer = new byte[1024];
+				int read;
+				while((read = stream.read(buffer)) != -1) out.write(buffer, 0, read);
+				stream = new ByteArrayInputStream(out.toByteArray());
+			}
+			return stream;
 		}
 		catch(Throwable e){
 			if(log) e.printStackTrace();

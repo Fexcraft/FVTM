@@ -81,7 +81,7 @@ public class VehicleRenderer {
 	            }
 				else {
 					TexUtil.bindTexture(vehicle.vehicle.data.getCurrentTexture());
-					DebugModels.SPHERE_GRY.render(1);
+					DebugModels.SPHERE_RED.render(0.5f);
 				}
 				if(vehicle.vehicle.data.getParts().size() > 0){
 					renderPoint(vehicle.vehicle.point, vehicle, vehicle.vehicle.data, cache, ticks);

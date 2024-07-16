@@ -21,6 +21,7 @@ public class DebugModels {
 		}
 	}
 
+	public static final ModelRendererTurbo SPHERE = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8);
 	public static final ModelRendererTurbo SPHERE_GRY = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xcdcdcd));
 	public static final ModelRendererTurbo SPHERE_RED = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xff0000));
 	public static final ModelRendererTurbo SPHERE_GRN = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0x00ff00));

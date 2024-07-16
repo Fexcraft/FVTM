@@ -234,13 +234,13 @@ public class EffectRenderer {
 		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
 	}
 
-	private static void preMeshCalls(){
+	public static void preMeshCalls(){
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		TexturedPolygon.TRIANGULATED_QUADS = false;
 		GL11.glLineWidth(4f);
 	}
 
-	private static void postMeshCalls(){
+	public static void postMeshCalls(){
 		GL11.glLineWidth(1f);
 		TexturedPolygon.TRIANGULATED_QUADS = true;
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -254,9 +254,10 @@ public class EffectRenderer {
 		for(InteractZone zone : data.getInteractZones().values()){
 			inrange = zone.inRange(data, vehpos, ply);
 			if(Command.TOGGABLE){
-				GLUtils112.translate(zone.pos(data));
+				V3D pos = zone.pos(data);
+				GLUtils112.translate(pos);
 				(inrange ? SPHERE_GRN : SPHERE_GRY).render(zone.range);
-				GLUtils112.translateR(zone.pos(data));
+				GLUtils112.translateR(pos);
 				RGB.glColorReset();
 			}
 		}

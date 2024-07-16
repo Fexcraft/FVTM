@@ -62,7 +62,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		}
 		else{
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
-			DebugModels.SPHERE_RED.render(1);
+			DebugModels.SPHERE_RED.render(0.5f);
 		}
 		if(rv.vehicle.data.getParts().size() > 0){
 			VehicleRenderer.renderPoint(rv.vehicle.point, rv, rv.vehicle.data, cache, ticks);

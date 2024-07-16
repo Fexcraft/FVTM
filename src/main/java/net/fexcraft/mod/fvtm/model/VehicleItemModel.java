@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.model;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.content.VehicleModel;
+import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.render.VehicleRenderer;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
@@ -28,7 +30,10 @@ public class VehicleItemModel implements FCLItemModel {
 		if(data == null){ return; }
 		VehicleModel model = (VehicleModel)data.getType().getModel();
 		if(model == null){
-			DebugModels.SPHERE_RED.render(1);
+			EffectRenderer.preMeshCalls();
+			DebugModels.SPHERE_RED.render(0.5f);
+			RGB.glColorReset();
+			EffectRenderer.postMeshCalls();
 			return;
 		}
 		//
@@ -67,7 +72,7 @@ public class VehicleItemModel implements FCLItemModel {
 			}
 			else {
 				TexUtil.bindTexture(data.getCurrentTexture());
-				DebugModels.SPHERE_RED.render(1);
+				DebugModels.SPHERE.render(0.5f);
 			}
 			if(data.getParts().size() > 0){
 				VehicleRenderer.renderPoint(data.getRotationPoint("vehicle"), null, data, null, Minecraft.getMinecraft().getRenderPartialTicks());

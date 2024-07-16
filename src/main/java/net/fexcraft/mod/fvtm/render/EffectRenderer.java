@@ -170,7 +170,7 @@ public class EffectRenderer {
 			if(Command.TOGGABLE){
 				V3D pos = zone.pos(data);
 				GLUtils112.translate(pos);
-				(inrange ? SPHERE_GRN : SPHERE_GRY).render(zone.range);
+				(zone.inRange(data, vehpos, ply) ? SPHERE_GRN : SPHERE_GRY).render(zone.range);
 				GLUtils112.translateR(pos);
 				RGB.glColorReset();
 			}

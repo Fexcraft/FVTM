@@ -207,6 +207,7 @@ public class EffectRenderer {
 				for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 					V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 					point = data.getRotationPointOfPart(ps.getKey());
+					red = false;
 					for(PartSlot value : ps.getValue().values()){
 						if(data.hasPart(value.type)){
 							Part epart = data.getPart(value.type).getType();

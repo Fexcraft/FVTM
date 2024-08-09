@@ -6,6 +6,7 @@ import java.util.function.Function;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.event.ConditionEvent;
+import net.fexcraft.mod.fvtm.sys.condition.CondBuilderRoot;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;
@@ -14,186 +15,52 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
+
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class CondBuilder {
 
 	public static Function<Condition, Conditional> run(){
+		Function<Condition, Conditional> con = CondBuilderRoot.run();
+		if(con != null) return con;
 		return (cond) -> {
 			switch(cond.type){
-				case "attribute":{
-					switch(cond.mode){
-						case "bequal":
-						case "b=":{
-							boolean bool = Boolean.parseBoolean(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeBoolean(cond.target, false) == bool;
-							};
-						}
-						case "n=":{
-							Float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) == val;
-							};
-						}
-						case "!n=":{
-							Float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) != val;
-							};
-						}
-						case "equal":
-						case "=":{
-							return data -> {
-								return data.vehicle.getAttributeString(cond.target, "null").equals(cond.condi);
-							};
-						}
-						case "nequal":
-						case "!=":{
-							return data -> {
-								return !data.vehicle.getAttributeString(cond.target, "null").equals(cond.condi);
-							};
-						}
-						case "lequal":
-						case "<=":{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) <= val;
-							};
-						}
-						case "gequal":
-						case ">=":{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) >= val;
-							};
-						}
-						case "less":
-						case "<":{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) < val;
-							};
-						}
-						case "greater":
-						case ">":{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) > val;
-							};
-						}
-					}
-					break;
-				}
-				case "metadata":{
-					int meta = Integer.parseInt(cond.condi);
-					switch(cond.mode){
-						case "equal":
-						case "=":{
-							return data -> {
-								return ((TileEntity)data.tile).getBlockMetadata() == meta;
-							};
-						}
-						case "nequal":
-						case "!=":{
-							return data -> {
-								return ((TileEntity)data.tile).getBlockMetadata() != meta;
-							};
-						}
-						case "lequal":
-						case "<=":{
-							return data -> {
-								return ((TileEntity)data.tile).getBlockMetadata() <= meta;
-							};
-						}
-						case "gequal":
-						case ">=":{
-							return data -> {
-								return ((TileEntity)data.tile).getBlockMetadata() >= meta;
-							};
-						}
-						case "less":
-						case "<":{
-							return data -> {
-								return ((TileEntity)data.tile).getBlockMetadata() < meta;
-							};
-						}
-						case "greater":
-						case ">":{
-							return data -> {
-								return ((TileEntity)data.tile).getBlockMetadata() > meta;
-							};
-						}
-					}
-					break;
-				}
-				case "part_function":
-				case "part_func":
-				case "partfunc":{
-					return mrdata -> {
-						PartData data = mrdata.part_category.equals(cond.target) ? mrdata.part : mrdata.vehicle.getPart(cond.target);
-						PartFunction func = data == null ? null : data.getFunction(cond.targets[1]);
-						return func == null ? false : func.onCondition(cond.targets, cond.mode, cond.condi);
-					};
-				}
-				case "multiple":
-				case "multi":
-				case "group":{
-					int m = cond.mode.equals("any") ? 1 : cond.mode.equals("none") ? 2 : 0;
-					ArrayList<Conditional> cons = new ArrayList<>();
-					for(String str : cond.targets){
-						Conditional con = ConditionRegistry.get(str);
-						if(con != null) cons.add(con);
-					}
-					return data -> {
-						for(Conditional con : cons){
-							if(con.isMet(data)){
-								if(m == 1) return true;
-								else if(m == 2) return false;
-							}
-							else if(m == 0) return false;
-						}
-						return true;
-					};
-				}
-				case "world_time":{
+				case WORLDTIME:{
 					int value = Integer.parseInt(cond.condi);
 					switch(cond.mode){
-						case "equal":
-						case "=":{
+						case EQUAL:{
 							return data -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() == value;
 							};
 						}
-						case "nequal":
-						case "!=":{
+						case NEQUAL:{
 							return data -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() != value;
 							};
 						}
-						case "lequal":
-						case "<=":{
+						case LEQUAL:{
 							return data -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() <= value;
 							};
 						}
-						case "gequal":
-						case ">=":{
+						case GEQUAL:{
 							return data -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() >= value;
 							};
 						}
-						case "less":
-						case "<":{
+						case LESS:{
 							return data -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() < value;
 							};
 						}
-						case "greater":
-						case ">":{
+						case GREATER:{
 							return data -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
 								return world == null ? false : world.getWorldTime() > value;
@@ -202,13 +69,13 @@ public class CondBuilder {
 					}
 					break;
 				}
-				default:{
+				case CUSTOM:{
 					ConditionEvent.ConditionalCreate event = new ConditionEvent.ConditionalCreate(cond);
 					MinecraftForge.EVENT_BUS.post(event);
 					return event.getConditional();
 				}
 			}
-			return null;
+			return COND_FALSE;
 		};
 	};
 }

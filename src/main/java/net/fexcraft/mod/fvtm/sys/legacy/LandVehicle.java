@@ -1116,7 +1116,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 						}
                     }
                     throttle = 0;
-                    if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
+                    /*if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
                         SoundEvent event = (SoundEvent)vehicle.getSound("engine_running").event;
                         if(event != null){
                             this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
@@ -1126,7 +1126,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         else{
                             Print.debug("engine_running -> Not found.");
                         }
-                    }
+                    }*/
                     break;
                 }
                 case "resync":

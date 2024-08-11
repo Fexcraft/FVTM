@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.data.impl.InvHandlerFluidImpl;
 import net.fexcraft.mod.fvtm.data.impl.InvHandlerItemImpl;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerFluid;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem;
+import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.event.EventHandler;
@@ -62,24 +63,20 @@ import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.ui.*;
-import net.fexcraft.mod.uni.world.EntityWI;
-import net.fexcraft.mod.uni.world.StateWrapper;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.fexcraft.mod.uni.world.WrapperHolderImpl;
+import net.fexcraft.mod.uni.world.*;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.EnumHelper;
@@ -147,6 +144,10 @@ public class FVTM {
 				return StateWrapper.of(block.getStateForPlacement(ctx.world.local(), pos, ctx.side == null ? null : ctx.side.local(), (float)ctx.off.x, (float)ctx.off.y, (float)ctx.off.z, stack.damage(), ctx.placer.local()));
 			}
 			else return StateWrapper.DEFAULT;
+		};
+		LoopedSound.ACTIVATE = sound -> {
+			sound.localsound = new LoopSound(SoundCategory.NEUTRAL, sound);
+			net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound((ISound)sound.localsound);
 		};
 		if(EnvInfo.CLIENT){
 			GLO.SUPPLIER = () -> new GLObject();
@@ -263,7 +264,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
-		UniEntity.ENTITY_GETTER = ent -> new EntityWI((Entity)ent);
+		UniEntity.ENTITY_GETTER = ent -> new EntityWIE((Entity)ent);
 		EventHandler.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){

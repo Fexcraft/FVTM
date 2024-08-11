@@ -715,8 +715,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     if(rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
                         SoundEvent event = (SoundEvent)rek.data().getSound("engine_running").event;
                         if(event != null){
-                            this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
-                            net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
+                            //TODO this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
+                            //TODO net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
                             Print.debug("engine_running -> Playing! (LOOP)");
                         }
                         else{

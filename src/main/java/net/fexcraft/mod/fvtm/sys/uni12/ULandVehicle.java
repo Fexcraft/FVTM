@@ -881,8 +881,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	if(engine.isOn() && engineloop == null){
             SoundEvent event = (SoundEvent)vehicle.getSound("engine_running").event;
             if(event != null){
-                this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
-                net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
+                //TODO this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
+                //TODO net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
                 Print.debug("engine_running -> Playing! (LOOP)");
             }
             else{

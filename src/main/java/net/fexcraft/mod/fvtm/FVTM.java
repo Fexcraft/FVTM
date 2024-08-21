@@ -77,6 +77,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.EnumHelper;
@@ -130,7 +131,6 @@ public class FVTM {
 		};
 		ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
 		AABB.SUPPLIER = () -> new AABBI();
-		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;
 		InvHandlerFluid.IMPL = InvHandlerFluidImpl.class;
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
@@ -265,6 +265,7 @@ public class FVTM {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
 		UniEntity.ENTITY_GETTER = ent -> new EntityWIE((Entity)ent);
+		WrapperHolder.LEVEL_PROVIDER = lvl -> new WorldWIE((World)lvl);
 		EventHandler.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){

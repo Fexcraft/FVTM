@@ -13,8 +13,10 @@ import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -242,6 +244,24 @@ public class Command extends CommandBase {
             	}
             	break;
             }
+			case "set-blk-color":{
+				if(!server.isSinglePlayer() && sender.getCommandSenderEntity() instanceof EntityPlayer){
+					if(server.getPlayerList().getOppedPlayers().getPermissionLevel(((EntityPlayer)sender.getCommandSenderEntity()).getGameProfile()) < 2) return;
+				}
+				try{
+					BlockPos pos = new BlockPos(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.getInteger(args[3]));
+					String channel = args[4];
+					int color = Integer.parseInt(args[5], 16);
+					BlockTileEntity ent = (BlockTileEntity)sender.getEntityWorld().getTileEntity(pos);
+					BlockData data = ent.getBlockData();
+					data.getColorChannel(channel).packed = color;
+					ent.sendUpdate();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				break;
+			}
             /*case "preset":{
             	if(args.length < 2){
             		Print.chat(sender, "&9Preset commands:");

@@ -8,7 +8,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
@@ -85,7 +85,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			case "deco_update":{
-				Decoration ent = (Decoration)player.world.getEntityByID(packet.nbt.getInteger("entid"));
+				DecorationEntity ent = (DecorationEntity)player.world.getEntityByID(packet.nbt.getInteger("entid"));
 				if(ent != null) ent.readEntityFromNBT(packet.nbt);
 				return;
 			}

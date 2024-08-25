@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -105,9 +106,9 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         return Formatter.format(cache.getVehicleData().getType().getName());
     }
 
-	private String getTexTitle(VehicleData data){
+	public static String getTexTitle(Textureable.TextureUser data){
 		if(data.getSelectedTexture() >= 0){
-			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).name();
+			return "[" + data.getSelectedTexture() + "] " + data.getTexHolder().getDefaultTextures().get(data.getSelectedTexture()).name();
 		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 

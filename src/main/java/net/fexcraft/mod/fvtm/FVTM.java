@@ -76,7 +76,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -198,7 +197,7 @@ public class FVTM {
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trafficsign"), TrafficSignEntity.class, "fvtm.trafficsign", 7001, this, 256, 600, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:decoration"), Decoration.class, "fvtm.decoration", 7002, this, 256, 600, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:decoration"), DecorationEntity.class, "fvtm.decoration", 7002, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railmarker"), RailMarker.class, "fvtm.railmarker", 7003, this, 256, 5, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadmarker"), RoadMarker.class, "fvtm.roadmarker", 7004, this, 256, 5, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicle.class, "fvtm.railvehicle", 9001, this, 256, 1, true);
@@ -216,7 +215,7 @@ public class FVTM {
 			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(TrafficSignEntity.class, RenderTrafficSign::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(Decoration.class, RenderDecoration::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailMarker.class, RenderRailMarker::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadMarker.class, RenderRoadMarker::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRailVehicle::new);
@@ -282,7 +281,6 @@ public class FVTM {
 			RoadToolItem.INSTANCE.setCreativeTab(tab);
 			ToolboxItem.INSTANCE.setCreativeTab(tab);
 			Asphalt.INSTANCE.setCreativeTab(tab);
-			DecorationItem.INSTANCE.setCreativeTab(tab);
 			//VPInfo.INSTANCE.setCreativeTab(tab);
 			//
 			if(DefaultPrograms.BLINKER_TIMER == null){

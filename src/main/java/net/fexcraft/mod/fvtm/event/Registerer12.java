@@ -1,13 +1,31 @@
 package net.fexcraft.mod.fvtm.event;
 
+import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.*;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLModContainer;
+import net.minecraftforge.fml.common.MetadataCollection;
+import net.minecraftforge.fml.common.discovery.ContainerType;
+import net.minecraftforge.fml.common.discovery.ModCandidate;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -48,6 +66,44 @@ public class Registerer12 {
 		for(int v = 0; v < vars; v++){
 			net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName().toString() + "_" + v), "inventory"));
 		}
+	}
+
+	/** Similar forced pack as resourcepack loading as in https://github.com/FlansMods/FlansMod/ */
+	@SideOnly(Side.CLIENT)
+	public static void regPacks(){
+		URLClassLoader cl = (URLClassLoader)Minecraft.class.getClassLoader();
+		Method method = null;
+		try{
+			method = cl.getClass().getDeclaredMethod("addURL", URL.class);
+			method.setAccessible(true);
+		}
+		catch(Exception e){
+			FvtmLogger.log(e, "force registration of packs as resourcepacks");
+		}
+		if(method == null) return;
+		for(Addon addon : FvtmRegistry.ADDONS){
+			if(addon.getFile() == null || !addon.getFile().exists()) continue;
+			try{
+				method.invoke(cl, addon.getFile().toURI().toURL());
+				HashMap<String, Object> map = new LinkedHashMap<>();
+				map.put("modid", addon.getID().path());
+				map.put("name", addon.getName());
+				map.put("version", addon.getVersion());
+				ModCandidate can = new ModCandidate(addon.getFile(), addon.getFile(), addon.getFile().isDirectory() ? ContainerType.DIR : ContainerType.JAR);
+				FMLModContainer con = new FMLModContainer("net.fexcraft.mod.fvtm.FVTM", can, map);
+				con.bindMetadata(MetadataCollection.from(null, "FVTM"));
+				FMLClientHandler.instance().addModAsResource(con);
+			}
+			catch(Exception e){
+				FvtmLogger.log(e, "force registration '" + addon.getID() + "' as resourcepack");
+			}
+		}
+		Registerer12.refresh();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static void refresh(){
+		FMLClientHandler.instance().refreshResources(VanillaResourceType.values());
 	}
 
 }

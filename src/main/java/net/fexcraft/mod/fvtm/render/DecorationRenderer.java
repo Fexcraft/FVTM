@@ -1,10 +1,9 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -23,9 +22,9 @@ public class DecorationRenderer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		//GL11.glTranslated(-cx, -cy, -cz);
 		for(Entity ent : world.loadedEntityList){
-			if(ent instanceof Decoration == false) continue;
+			if(ent instanceof DecorationEntity == false) continue;
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;
-			Decoration deco = (Decoration)ent;
+			DecorationEntity deco = (DecorationEntity)ent;
 			GL11.glPushMatrix();
 			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
 			if(deco.decos.size() == 0){
@@ -35,7 +34,7 @@ public class DecorationRenderer {
 			else{
 				RenderCache cache = ent.getCapability(Capabilities.RENDERCACHE, null);
 				for(DecorationData data : deco.decos){
-					if(data.model == null){
+					if(data.getType().getModel() == null){
 						DebugModels.CUBE_CYN.render(0.25f);
 						RGB.glColorReset();
 					}
@@ -48,8 +47,8 @@ public class DecorationRenderer {
 			            if(data.rotz != 0f) GL11.glRotatef(data.rotz, 0, 0, 1);
 			            if(data.rotx != 0f) GL11.glRotatef(data.rotx, 1, 0, 0);
 			            if(data.sclx != 1f || data.scly != 1f || data.sclz != 1f) GL11.glScalef(data.sclx, data.scly, data.sclz);
-						TexUtil.bindTexture((ResourceLocation)data.textures.get(data.seltex));
-						data.model.render(RENDERDATA.set(data, ent, cache));
+						TexUtil.bindTexture(data.getTexture().getTexture());
+						data.getType().getModel().render(RENDERDATA.set(data, ent, cache));
 						GL11.glPopMatrix();
 					}
 				}

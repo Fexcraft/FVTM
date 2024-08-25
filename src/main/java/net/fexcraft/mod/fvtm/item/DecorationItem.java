@@ -7,11 +7,18 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,29 +30,50 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static net.fexcraft.mod.fvtm.item.VehicleItem.getTexTitle;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DecorationItem extends Item implements JunctionGridItem {
+public class DecorationItem extends Item implements ContentItem.ContentDataItem<Decoration, DecorationData>, ItemTextureable.TextureableItem<Decoration>, JunctionGridItem {
 
-	public static DecorationItem INSTANCE;
 	private static float[][] gridcolour;
 	static{
 		RGB cyan = new RGB(java.awt.Color.ORANGE.getRGB());
 		gridcolour = new float[][] { cyan.toFloatArray(), cyan.toFloatArray() };
 	}
+	private Decoration deco;
 
-	public DecorationItem(){
-		setRegistryName("fvtm:decoration");
-		setTranslationKey(getRegistryName().toString());
+	public DecorationItem(Decoration type){
+		super();
+		deco = type;
 		setHasSubtypes(true);
-		setMaxStackSize(64);
+		setMaxStackSize(deco.getMaxStack());
+		setRegistryName(deco.getID().colon());
+		setTranslationKey(deco.getID().colon());
+		if(!EnvInfo.CLIENT) return;
+		setCreativeTab((CreativeTabs) FvtmResources.INSTANCE.getCreativeTab(deco));
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-		tooltip.add(Formatter.format("&9Rightclick on a block to place a decoration."));
+		VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+		if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + deco.getName()));
+		for(String s : deco.getDescription()){
+			tooltip.add(Formatter.format(I18n.format(s)));
+		}
+		DecorationData data = getData(TagCW.wrap(stack.getTagCompound()));//TODO temp
+		if(data != null){
+			tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+			if(deco.getModel() != null && deco.getModel().getCreators().size() > 0){
+				tooltip.add(Formatter.format("&9Model by:"));
+				for(String str : deco.getModel().getCreators()){
+					tooltip.add(Formatter.format("&7- " + str));
+				}
+			}
+		}
+		tooltip.add(Formatter.format("&9Right-click on a block to place a decoration."));
 	}
 
 	@Override
@@ -53,7 +81,7 @@ public class DecorationItem extends Item implements JunctionGridItem {
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
 		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
-		Decoration decoen = new Decoration(world);
+		DecorationEntity decoen = new DecorationEntity(world);
 		decoen.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
@@ -70,6 +98,16 @@ public class DecorationItem extends Item implements JunctionGridItem {
 	@Override
 	public int getPlacingGrid(){
 		return 16;
+	}
+
+	@Override
+	public Decoration getContent(){
+		return deco;
+	}
+
+	@Override
+	public ContentType getType(){
+		return ContentType.DECORATION;
 	}
 
 }

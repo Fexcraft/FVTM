@@ -1,17 +1,13 @@
 package net.fexcraft.mod.fvtm.ui;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
-
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.ui.DecoEditor;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -19,12 +15,12 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class DecoContainer extends ContainerInterface {
 
-	protected Decoration entity;
+	protected DecorationEntity entity;
 	protected DecorationData selected;
 
 	public DecoContainer(JsonMap map, EntityPlayer player, int entid){
 		super(map, UniEntity.get(player), new V3I(entid, 0, 0));
-		entity = (Decoration)player.world.getEntityByID(entid);
+		entity = (DecorationEntity)player.world.getEntityByID(entid);
 	}
 
 	@Override
@@ -34,7 +30,7 @@ public class DecoContainer extends ContainerInterface {
 				return entity.decos.size();
 			}
 			case "decos.key":{
-				return entity.decos.get((int)objs[0]).key();
+				return entity.decos.get((int)objs[0]).getType().getIDS();
 			}
 			case "decos.at":{
 				return entity.decos.get((int)objs[0]);
@@ -48,7 +44,7 @@ public class DecoContainer extends ContainerInterface {
 		String task = com.getString("task");
 		switch(task){
 			case "add":{
-				DecorationData deco = DECORATIONS.get(com.getString("key"));
+				/*DecorationData deco = DECORATIONS.get(com.getString("key"));
 				entity.decos.add(deco.copy());
 				if(!client){
 					SEND_TO_CLIENT.accept(com, player);
@@ -56,7 +52,7 @@ public class DecoContainer extends ContainerInterface {
 				else{
 					entity.decos.get(entity.decos.size() - 1).copy(deco);
 					((DecoEditor)ui).updateEntries();
-				}
+				}*///TODO
 				return;
 			}
 			case "rem":{
@@ -108,8 +104,8 @@ public class DecoContainer extends ContainerInterface {
 			case "tex":{
 				DecorationData deco = entity.decos.get(com.getInteger("idx"));
 				int sel = com.getInteger("sel");
-				if(sel >= 0 && sel < deco.textures.size()){
-					deco.seltex = sel;
+				if(sel >= 0 && sel < deco.getType().getDefaultTextures().size()){
+					deco.getTexture().setSelectedTexture(sel, null, false);
 					if(!client) SEND_TO_CLIENT.accept(com, player);
 					else{
 						DecoEditor editor = (DecoEditor)ui;

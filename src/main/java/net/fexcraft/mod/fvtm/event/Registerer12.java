@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.event;
 
 import net.fexcraft.mod.fvtm.block.*;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -31,13 +30,11 @@ public class Registerer12 {
 		//
 		event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
 		event.getRegistry().register(ToolboxItem.INSTANCE = new ToolboxItem());
-		event.getRegistry().register(DecorationItem.INSTANCE);
 		if(EnvInfo.CLIENT){
 			regModel(ConstructorBlock.ITEM);
 			regModel(VehicleLiftBlock.ITEM);
 			regModel(Asphalt.ITEM, 16);
 			//
-			regModel(DecorationItem.INSTANCE);
 			regModel(RoadToolItem.INSTANCE);
 			regModel(ToolboxItem.INSTANCE, 3);
 		}

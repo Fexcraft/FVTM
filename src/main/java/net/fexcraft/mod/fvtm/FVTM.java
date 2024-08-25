@@ -237,6 +237,7 @@ public class FVTM {
 		}*/
 		//
 		FvtmResources.INSTANCE.init();
+		if(event.getSide().isClient()) Registerer12.regPacks();
 		FvtmResources.INSTANCE.registerFvtmBlocks();
 		FvtmResources.INSTANCE.registerFvtmItems();
 		FvtmResources.INSTANCE.registerAttributes();

@@ -270,6 +270,7 @@ public class ResourcesImpl extends FvtmResources {
 				wrapwrapper(IDLManager.getIDLCached(rail.getIDS() + "." + preset.name.toLowerCase()), new RailPresetItem(rail, preset));
 			}
 		});
+		DECORATIONS.forEach(deco -> deco.setItemWrapper(wrapwrapper(deco.getID(), new DecorationItem(deco))));
 	}
 
 	@Override
@@ -508,7 +509,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmItems(){
-		DecorationItem.INSTANCE = new DecorationItem();
+		//
 	}
 
 	@SideOnly(Side.CLIENT)

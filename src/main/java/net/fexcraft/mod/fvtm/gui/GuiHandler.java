@@ -42,7 +42,6 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import java.util.HashMap;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATION_CATEGORIES;
 import static net.fexcraft.mod.fvtm.FvtmResources.INSTANCE;
 import static net.fexcraft.mod.fvtm.FvtmResources.getJson;
 
@@ -139,7 +138,6 @@ public class GuiHandler implements IGuiHandler {
 			case UIKeys.ID12_VEHICLE_ATTR_EDITOR: return new VehicleContainer(player, world, x, y, z);
 			//case DECORATION_EDITOR: return new DecoEditorContainer(player, world, x);
 			case UIKeys.ID12_DECORATION_EDITOR:{
-				if(DECORATION_CATEGORIES.isEmpty()) return null;
 				return new UniCon(new DecoContainer(gJ("deco_editor"), player, x), player);
 			}
 			case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfoContainer(player);
@@ -225,7 +223,6 @@ public class GuiHandler implements IGuiHandler {
 				case UIKeys.ID12_VEHICLE_ATTR_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
 				case UIKeys.ID12_DECORATION_EDITOR: {
-					if(DECORATION_CATEGORIES.isEmpty()) return null;
 					JsonMap map = gJC("deco_editor");
 					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), player);
 				}

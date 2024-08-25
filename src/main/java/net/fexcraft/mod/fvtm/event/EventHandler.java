@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -118,7 +118,7 @@ public class EventHandler {
 		if(event.getObject() instanceof EntityLivingBase){
 			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerSerializer(event.getObject()));
 		}
-		if(event.getObject().world.isRemote && event.getObject() instanceof Decoration){
+		if(event.getObject().world.isRemote && event.getObject() instanceof DecorationEntity){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 	}

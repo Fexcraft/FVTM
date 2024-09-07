@@ -13,5 +13,4 @@ http://fexcraft.net/license?id=mods
 https://discord.gg/AkMAzaA
 
 ### Wiki
-**New, incomplete**: https://fexcraft.net/wiki/mod/fvtm   
-**Old, more complete**: https://github.com/Fexcraft/FVTM/wiki
+https://fexcraft.net/wiki/mod/fvtm   

@@ -25,11 +25,11 @@ sourceSets {
     main {
         java {
             srcDirs += 'src/main/java'
-            srcDirs += new File(file('..'), "/FVTMN/src")
+            srcDirs += new File(file('..'), "/neutral/src")
         }
         resources {
             srcDirs += 'src/main/resources'
-            srcDirs += new File(file('..'), "/FVTMN/res")
+            srcDirs += new File(file('..'), "/neutral/res")
         }
     }
 }

@@ -13,4 +13,4 @@ plugins {
 }
 
 include ':FCL'
-project(':FCL').projectDir = new File('/home/ferdinand/Documents/GitHub/FCL20/forge20')
+project(':FCL').projectDir = new File('/home/ferdinand/Documents/GitHub/FCL/forge20')

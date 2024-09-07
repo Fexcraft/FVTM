@@ -1,0 +1,137 @@
+{
+	"_info_": "Vehicle Attributes UI",
+	"background": false,
+	"size": [ 194, 134 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/vehicle_inventories.png",
+			"size": [ 194, 134 ],
+			"pos": [ 0, 0 ],
+			"texts": [
+				"inv_0",
+				"inv_1",
+				"inv_2",
+				"inv_3",
+				"inv_4",
+				"inv_5",
+				"inv_6",
+				"inv_7",
+				"title"
+			],
+			"buttons": [
+				"inv_0",
+				"inv_1",
+				"inv_2",
+				"inv_3",
+				"inv_4",
+				"inv_5",
+				"inv_6",
+				"inv_7",
+				"next",
+				"prev"
+			]
+		}
+	},
+	"texts": {
+		"inv_0": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 19 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_1": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 33 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_2": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 47 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_3": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 61 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_4": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 75 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_5": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 89 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_6": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 103 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"inv_7": {
+			"size": [ 162, 8 ],
+			"pos": [ 9, 117 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"title": {
+			"size": [ 162, 8 ],
+			"pos": [ 7, 6 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "ui.fvtm.vehicle_inventories.title",
+			"translate": true
+		}
+	},
+	"buttons": {
+		"inv_0": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 17 ]
+		},
+		"inv_1": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 31 ]
+		},
+		"inv_2": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 45 ]
+		},
+		"inv_3": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 59 ]
+		},
+		"inv_4": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 73 ]
+		},
+		"inv_5": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 87 ]
+		},
+		"inv_6": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 101 ]
+		},
+		"inv_7": {
+			"size": [ 166, 12 ],
+			"pos": [ 7, 115 ]
+		},
+		"next": {
+			"size": [ 8, 8 ],
+			"pos": [ 180, 6 ],
+			"tooltip": "ui.fvtm.vehicle_inventories.page_next"
+		},
+		"prev": {
+			"size": [ 8, 8 ],
+			"pos": [ 171, 6 ],
+			"tooltip": "ui.fvtm.vehicle_inventories.page_prev"
+		}
+	}
+}

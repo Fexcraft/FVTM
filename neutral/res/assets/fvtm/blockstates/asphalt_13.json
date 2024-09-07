@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+            { "model": "fvtm:block/asphalt_13" },
+            { "model": "fvtm:block/asphalt_13", "y": 90 },
+            { "model": "fvtm:block/asphalt_13", "y": 180 },
+            { "model": "fvtm:block/asphalt_13", "y": 270 }
+        ]
+    }
+}

@@ -1,0 +1,78 @@
+{
+	"_info_": "Road Tool Custom Layer UI",
+	"background": true,
+	"size": [ 176, 128 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 176, 92 ],
+			"pos": [ 0, 36 ],
+			"buttons": [
+				"scroll_left",
+				"scroll_right"
+			]
+		},
+		"left": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 15, 32 ],
+			"pos": [ -8, 0 ],
+			"uv": [ 70, 0 ]
+		},
+		"right": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 15, 32 ],
+			"pos": [ 168, 0 ],
+			"uv": [ 87, 0 ]
+		},
+		"full0": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 54, 32 ],
+			"pos": [ 7, 0 ],
+			"uv": [ 7, 0 ]
+		},
+		"full1": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 54, 32 ],
+			"pos": [ 61, 0 ],
+			"uv": [ 7, 0 ]
+		},
+		"full2": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 53, 32 ],
+			"pos": [ 115, 0 ],
+			"uv": [ 7, 0 ]
+		},
+		"scroll": {
+			"texture": "fvtm:textures/gui/road_tool_custom.png",
+			"size": [ 176, 20 ],
+			"pos": [ 0, -25 ],
+			"uv": [ 0, 131 ]
+		}
+	},
+	"buttons": {
+		"scroll_left": {
+			"pos": [ -2, 12 ],
+			"size": [ 8, 8 ],
+			"uv": [ 76, 12 ],
+			"tooltip": "ui.fvtm.road_tool_custom.scroll_left"
+		},
+		"scroll_right": {
+			"pos": [ 169, 12 ],
+			"size": [ 8, 8 ],
+			"uv": [ 88, 12 ],
+			"tooltip": "ui.fvtm.road_tool_custom.scroll_right"
+		}
+	},
+	"slots": {
+		"player3x9": {
+			"pos": [ 8, 44 ],
+			"index": 9,
+			"repeat": [ 9, 3 ]
+		},
+		"player1x9": {
+			"pos": [ 8, 100 ],
+			"index": 0,
+			"repeat": [ 9, 1 ]
+		}
+	}
+}

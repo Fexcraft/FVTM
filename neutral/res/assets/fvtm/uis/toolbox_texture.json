@@ -1,0 +1,97 @@
+{
+	"_info_": "Texture Toolbox UI",
+	"background": false,
+	"size": [ 256, 256 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/toolbox_texture.png",
+			"size": [ 141, 86 ],
+			"pos": [ 0, 0 ],
+			"absolute": true,
+			"buttons": [
+				"help", "info",
+				"prev", "next",
+				"pack", "url"
+			],
+			"texts": [
+				"title", "selected"
+			],
+			"fields": [
+				"pack", "url"
+			]
+		}
+	},
+	"buttons": {
+		"help": {
+			"absolute": true,
+			"size": [ 9, 9 ],
+			"pos": [ 1, 1 ],
+			"uv": [ 1, 1 ]
+		},
+		"info": {
+			"absolute": true,
+			"size": [ 9, 9 ],
+			"pos": [ 12, 1 ],
+			"uv": [ 12, 1 ],
+			"tooltip": "ui.fvtm.toolbox.texture.info"
+		},
+		"prev": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 112, 20 ],
+			"uv": [ 112, 20 ]
+		},
+		"next": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 20 ],
+			"uv": [ 123, 20 ]
+		},
+		"pack": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 42 ],
+			"uv": [ 123, 42 ]
+		},
+		"url": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 64 ],
+			"uv": [ 123, 64 ]
+		}
+	},
+	"texts": {
+		"title": {
+			"absolute": true,
+			"size": [ 109, 7 ],
+			"pos": [ 25, 2 ],
+			"autoscale": true,
+			"color": "242424",
+			"value": "Texture Toolbox"
+		},
+		"selected": {
+			"absolute": true,
+			"size": [ 106, 8 ],
+			"pos": [ 4, 21 ],
+			"autoscale": true,
+			"color": "cfcfcf",
+			"value": "-"
+		}
+	},
+	"fields": {
+		"pack": {
+			"absolute": true,
+			"size": [ 117, 8 ],
+			"pos": [ 4, 43 ],
+			"background": false,
+			"max-length": 512
+		},
+		"url": {
+			"absolute": true,
+			"size": [ 117, 8 ],
+			"pos": [ 4, 65 ],
+			"background": false,
+			"max-length": 512
+		}
+	}
+}

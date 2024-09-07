@@ -1,0 +1,251 @@
+{
+	"_info_": "Road Tool UI",
+	"background": true,
+	"size": [ 176, 212 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/road_tool.png",
+			"size": [ 191, 212 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"add_width", "sub_width",
+				"enable_ground", "disable_ground",
+				"add_left", "sub_left",
+				"add_right", "sub_right",
+				"enable_top", "disable_top",
+				"enable_lines", "disable_lines",
+				"edit_road", "rem_road",
+				"edit_top", "rem_top",
+				"edit_lines", "rem_lines"
+			],
+			"texts": [
+				"road_fill", "road_width",
+				"ground_fill", "ground_status",
+				"left_fill", "left_size",
+				"right_fill", "right_size",
+				"top_fill", "top_status",
+				"lines_fill", "lines_status"
+			]
+		}
+	},
+	"buttons": {
+		"add_width": {
+			"pos": [ 27, 7 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.add_width"
+		},
+		"sub_width": {
+			"pos": [ 27, 17 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.sub_width"
+		},
+		"enable_ground": {
+			"pos": [ 27, 27 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.enable_ground"
+		},
+		"disable_ground": {
+			"pos": [ 27, 37 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.disable_ground"
+		},
+		"add_left": {
+			"pos": [ 27, 47 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.add_left"
+		},
+		"sub_left": {
+			"pos": [ 27, 57 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.sub_left"
+		},
+		"add_right": {
+			"pos": [ 27, 67 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.add_right"
+		},
+		"sub_right": {
+			"pos": [ 27, 77 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.sub_right"
+		},
+		"enable_top": {
+			"pos": [ 27, 87 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.enable_top"
+		},
+		"disable_top": {
+			"pos": [ 27, 97 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.disable_top"
+		},
+		"enable_lines": {
+			"pos": [ 27, 107 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.enable_lines"
+		},
+		"disable_lines": {
+			"pos": [ 27, 117 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.disable_lines"
+		},
+		"edit_road": {
+			"pos": [ 168, 12 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.edit_road"
+		},
+		"edit_top": {
+			"pos": [ 168, 92 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.edit_top"
+		},
+		"edit_lines": {
+			"pos": [ 168, 112 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.edit_lines"
+		},
+		"rem_road": {
+			"pos": [ 177, 12 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.remove_custom_road"
+		},
+		"rem_top": {
+			"pos": [ 177, 92 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.remove_custom_top"
+		},
+		"rem_lines": {
+			"pos": [ 177, 112 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.remove_custom_lines"
+		}
+	},
+	"texts": {
+		"road_fill": {
+			"pos": [ 39, 8 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"road_width": {
+			"pos": [ 39, 16 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"ground_fill": {
+			"pos": [ 39, 28 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"ground_status": {
+			"pos": [ 39, 36 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"left_fill": {
+			"pos": [ 39, 48 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"left_size": {
+			"pos": [ 39, 56 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"right_fill": {
+			"pos": [ 39, 68 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"right_size": {
+			"pos": [ 39, 76 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"top_fill": {
+			"pos": [ 39, 88 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"top_status": {
+			"pos": [ 39, 96 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"lines_fill": {
+			"pos": [ 39, 108 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"lines_status": {
+			"pos": [ 39, 116 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		}
+	},
+	"slots": {
+		"road": {
+			"pos": [ 8, 8 ],
+			"player": false,
+			"index": 0
+		},
+		"ground": {
+			"pos": [ 8, 28 ],
+			"player": false,
+			"index": 1
+		},
+		"left": {
+			"pos": [ 8, 48 ],
+			"player": false,
+			"index": 2
+		},
+		"right": {
+			"pos": [ 8, 68 ],
+			"player": false,
+			"index": 3
+		},
+		"top": {
+			"pos": [ 8, 88 ],
+			"player": false,
+			"index": 4
+		},
+		"lines": {
+			"pos": [ 8, 108 ],
+			"player": false,
+			"index": 5
+		},
+		"player3x9": {
+			"pos": [ 8, 132 ],
+			"index": 9,
+			"repeat": [ 9, 3 ]
+		},
+		"player1x9": {
+			"pos": [ 8, 188 ],
+			"index": 0,
+			"repeat": [ 9, 1 ]
+		}
+	}
+}

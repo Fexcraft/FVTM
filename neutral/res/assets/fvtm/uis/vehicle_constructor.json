@@ -1,0 +1,12 @@
+{
+	"_info_": "Vehicle Constructor UI",
+	"background": true,
+	"size": [ 256, 246 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/vehicle_constructor.png",
+			"size": [ 256, 246 ],
+			"pos": [ 0, 0 ]
+		}
+	}
+}

@@ -1,0 +1,106 @@
+{
+	"_info_": "Vehicle Catalog UI",
+	"background": true,
+	"size": [ 256, 162 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/vehicle_catalog.png",
+			"size": [ 256, 162 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"pack_prev", "pack_next",
+				"var_prev", "var_next",
+				"veh_prev", "veh_next",
+				"confirm", "info"
+			],
+			"texts": [
+				"pack", "desc0",
+				"desc1", "desc2",
+				"vehicle", "variant"
+			]
+		}
+	},
+	"buttons": {
+		"pack_prev": {
+			"pos": [ 6, 6 ],
+			"size": [ 14, 14 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.prev_pack"
+		},
+		"pack_next": {
+			"pos": [ 236, 6 ],
+			"size": [ 14, 14 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.next_pack"
+		},
+		"var_prev": {
+			"pos": [ 132, 55 ],
+			"size": [ 10, 16 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.prev_variant"
+		},
+		"var_next": {
+			"pos": [ 238, 55 ],
+			"size": [ 10, 16 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.next_variant"
+		},
+		"info": {
+			"pos": [ 7, 141 ],
+			"size": [ 38, 14 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.info"
+		},
+		"veh_prev": {
+			"pos": [ 47, 141 ],
+			"size": [ 14, 14 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.prev_vehicle"
+		},
+		"veh_next": {
+			"pos": [ 219, 141 ],
+			"size": [ 14, 14 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.next_vehicle"
+		},
+		"confirm": {
+			"pos": [ 235, 141 ],
+			"size": [ 14, 14 ],
+			"tooltip": "ui.fvtm.vehicle_catalog.confirm"
+		}
+	},
+	"texts": {
+		"pack": {
+			"pos": [ 22, 9 ],
+			"size": [ 212, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "cfcfcf"
+		},
+		"desc0": {
+			"pos": [ 9, 106 ],
+			"size": [ 238, 8 ],
+			"color": "545454",
+			"autoscale": true
+		},
+		"desc1": {
+			"pos": [ 9, 118 ],
+			"size": [ 238, 8 ],
+			"color": "545454",
+			"autoscale": true
+		},
+		"desc2": {
+			"pos": [ 9, 130 ],
+			"size": [ 238, 8 ],
+			"color": "545454",
+			"autoscale": true
+		},
+		"vehicle": {
+			"pos": [ 65, 144 ],
+			"size": [ 150, 8 ],
+			"autoscale": true,
+			"color": "545454",
+			"centered": true
+		},
+		"variant": {
+			"pos": [ 146, 97 ],
+			"size": [ 88, 7 ],
+			"autoscale": true,
+			"color": "545454",
+			"centered": true
+		}
+	}
+}

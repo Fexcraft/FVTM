@@ -1,0 +1,356 @@
+{
+	"_info_": "Vehicle Attributes UI",
+	"background": false,
+	"size": [ 256, 218 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/vehicle_attributes.png",
+			"size": [ 256, 218 ],
+			"pos": [ 0, 0 ],
+			"texts": [
+				"attr_0",
+				"attr_1",
+				"attr_2",
+				"attr_3",
+				"attr_4",
+				"attr_5",
+				"attr_6",
+				"attr_7",
+				"attr_8",
+				"attr_9",
+				"attr_10",
+				"attr_11",
+				"attr_12",
+				"attr_13",
+				"scroll"
+			],
+			"buttons": [
+				"toggle_0",
+				"toggle_1",
+				"toggle_2",
+				"toggle_3",
+				"toggle_4",
+				"toggle_5",
+				"toggle_6",
+				"toggle_7",
+				"toggle_8",
+				"toggle_9",
+				"toggle_10",
+				"toggle_11",
+				"toggle_12",
+				"toggle_13",
+				"edit_0",
+				"edit_1",
+				"edit_2",
+				"edit_3",
+				"edit_4",
+				"edit_5",
+				"edit_6",
+				"edit_7",
+				"edit_8",
+				"edit_9",
+				"edit_10",
+				"edit_11",
+				"edit_12",
+				"edit_13",
+				"filter_all",
+				"filter_editable",
+				"filter_external",
+				"filter_seat",
+				"up", "down"
+			]
+		}
+	},
+	"texts": {
+		"attr_0": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 9 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_1": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 23 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_2": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 37 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_3": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 51 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_4": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 65 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_5": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 79 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_6": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 93 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_7": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 107 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_8": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 121 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_9": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 135 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_10": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 149 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_11": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 163 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_12": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 177 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"attr_13": {
+			"size": [ 210, 8 ],
+			"pos": [ 9, 191 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"scroll": {
+			"size": [ 167, 7 ],
+			"pos": [ 57, 204 ],
+			"autoscale": true,
+			"color": "242424"
+		}
+	},
+	"buttons": {
+		"toggle_0": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 7 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_1": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 21 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_2": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 35 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_3": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 49 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_4": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 63 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_5": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 77 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_6": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 91 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_7": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 105 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_8": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 119 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_9": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 133 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_10": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 147 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_11": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 161 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_12": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 175 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"toggle_13": {
+			"size": [ 12, 12 ],
+			"pos": [ 223, 189 ],
+			"uv": [ 0, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"edit_0": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 7 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_1": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 21 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_2": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 35 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_3": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 49 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_4": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 63 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_5": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 77 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_6": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 91 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_7": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 105 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_8": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 119 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_9": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 133 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_10": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 147 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_11": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 161 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_12": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 175 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"edit_13": {
+			"size": [ 12, 12 ],
+			"pos": [ 237, 189 ],
+			"uv": [ 12, 244 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.edit"
+		},
+		"filter_all": {
+			"size": [ 8, 8 ],
+			"pos": [ 9, 203 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.filter_all"
+		},
+		"filter_editable": {
+			"size": [ 8, 8 ],
+			"pos": [ 21, 203 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.filter_editable"
+		},
+		"filter_external": {
+			"size": [ 8, 8 ],
+			"pos": [ 33, 203 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.filter_external"
+		},
+		"filter_seat": {
+			"size": [ 8, 8 ],
+			"pos": [ 45, 203 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.filter_seat"
+		},
+		"up": {
+			"size": [ 8, 8 ],
+			"pos": [ 228, 203 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.scroll_up"
+		},
+		"down": {
+			"size": [ 8, 8 ],
+			"pos": [ 240, 203 ],
+			"tooltip": "ui.fvtm.vehicle_attributes.scroll_down"
+		}
+	}
+}

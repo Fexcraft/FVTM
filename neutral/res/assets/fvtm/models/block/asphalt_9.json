@@ -1,0 +1,23 @@
+{
+	"__comment": "Designed by Ferdinand (FEX___96) with Cubik Studio",
+	"parent": "block/cube_all",
+	"textures": {
+		"particle": "fvtm:block/asphalt",
+		"texture": "fvtm:block/asphalt"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box1",
+			"from": [ 0, 0, 0 ],
+			"to": [ 16, 9, 16 ],
+			"faces": {
+				"down": { "uv": [ 0, 0, 16, 16 ], "texture": "#texture" },
+				"up": { "uv": [ 0, 0, 16, 16 ], "texture": "#texture" },
+				"north": { "uv": [ 0, 7, 16, 16 ], "texture": "#texture" },
+				"south": { "uv": [ 0, 7, 16, 16 ], "texture": "#texture" },
+				"west": { "uv": [ 0, 7, 16, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 0, 7, 16, 16 ], "texture": "#texture" }
+			}
+		}
+	]
+}

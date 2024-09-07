@@ -1,0 +1,236 @@
+## FVTM Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+# Commands
+commands.fvtm.main_usage=Try: /fvtm help
+
+# Blocks
+tile.fvtm:constructor.name=Constructor Block
+tile.fvtm:constructor_lift.name=Constructor Center/Lift
+tile.fvtm:display_block.name=Display Block (Vehicles)
+tile.fvtm:streetpost.name=Streetpost
+tile.fvtm:asphalt.name=FVTM Asphalt
+
+# Interact
+interact.fvtm.constructor.nolift=No Lift connected. Starting scan...
+interact.fvtm.constructor.liftfound=Connected to Lift at %s, %s, %s
+interact.fvtm.constructor.noliftfound=No free Lift found in range.
+interact.fvtm.constructor_lift.nolink=Lift not connected to a Constructor.
+interact.fvtm.constructor_lift.linked=Connected to Constructor at %s, %s, %s
+interact.fvtm.constructor.vehicle=Vehicle put into Constructor.
+interact.fvtm.constructor.container=Container put into Constructor.
+interact.fvtm.constructor.block=Block put into Constructor.
+interact.fvtm.constructor.no_container=No Container in Constructor.
+interact.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
+interact.fvtm.constructor.no_block=No Block in Constructor.
+//
+interact.fvtm.attribute.toggle_bool=&7Toggling: &6%s &a> %s
+interact.fvtm.attribute.reset_bool=&7Resetting: &6%s
+interact.fvtm.attribute.increase_number=&7Increasing: &6%s &a> %s
+interact.fvtm.attribute.decrease_number=&7Decreasing: &6%s &a> %s
+interact.fvtm.attribute.reset_number=&7Resetting: &6%s &a> %s
+//
+interact.fvtm.vehicle.locked=Vehicle is locked.
+interact.fvtm.vehicle.remove_locked=Vehicle is locked. Unlock if you want to remove it.
+interact.fvtm.vehicle.engine_on=Please turn the engine off first!
+interact.fvtm.vehicle.no_compatible_connector=This vehicle has no compatible connectors installed.
+interact.fvtm.vehicle.disconnect_trailer=Please disconnect the currently connected trailer first.
+interact.fvtm.vehicle.wheel_install=Wheels/Tires can only by installed on lifted vehicles.
+interact.fvtm.vehicle.wheel_remove=Wheels/Tires can only be removed from lifted vehicles.
+//
+interact.fvtm.vehicle.attribute.not_found=&eAttribute '%s' not found.
+interact.fvtm.vehicle.attribute.not_editable=&eAttribute is not editable.
+interact.fvtm.vehicle.attribute.not_external=&eAttribute is not externally accessible.
+interact.fvtm.vehicle.attribute.not_supported=&eToggling this attribute type is not supported yet.
+//
+interact.fvtm.road_tool.empty=Please setup the tool first!
+interact.fvtm.road_tool.too_long=&cRoad vector length exceeds the configured max length.
+interact.fvtm.road_tool.complete=&bRoad placed!
+
+# UI
+ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.
+ui.fvtm.toolbox.texture.info=Here you can select your vehicle/block/container's texture.
+ui.fvtm.vehicle_fuel.accepts=Accepts:
+ui.fvtm.vehicle_attributes.toggle=Toggle Attribute Value
+ui.fvtm.vehicle_attributes.edit=Edit Attribute
+ui.fvtm.vehicle_attributes.filter_all=Filter (Show All)
+ui.fvtm.vehicle_attributes.filter_editable=Filter (Editable-Only)
+ui.fvtm.vehicle_attributes.filter_external=Filter (External-Only)
+ui.fvtm.vehicle_attributes.filter_seat=Filter (Current-Seat-Only)
+ui.fvtm.vehicle_attributes.scroll_up=Scroll Up
+ui.fvtm.vehicle_attributes.scroll_down=Scroll Down
+ui.fvtm.vehicle_attributes.scroll=Viewing:
+ui.fvtm.vehicle_attributes.not_editable=Not Editable
+ui.fvtm.vehicle_inventories.title=Vehicle Inventories
+ui.fvtm.vehicle_inventories.page_next=Next Page
+ui.fvtm.vehicle_inventories.page_prev=Previous Page
+//
+ui.fvtm.vehicle.catalog.no_vehicles=You have no Packs with Vehicles installed.
+ui.fvtm.vehicle_catalog.info=You can use this Catalog to create Blueprints.
+ui.fvtm.vehicle_catalog.prev_pack=Previous Pack
+ui.fvtm.vehicle_catalog.next_pack=Next Pack
+ui.fvtm.vehicle_catalog.prev_variant=Previous Variant
+ui.fvtm.vehicle_catalog.next_variant=Next Variant
+ui.fvtm.vehicle_catalog.prev_vehicle=Previous Vehicle
+ui.fvtm.vehicle_catalog.next_vehicle=Next Vehicle
+ui.fvtm.vehicle_catalog.confirm=Confirm Selection
+ui.fvtm.vehicle_catalog.variant=Variant %s of %s
+ui.fvtm.vehicle_catalog.no_desc=no variant description was provided
+//
+ui.fvtm.road_tool.add_width=Increase Road Width
+ui.fvtm.road_tool.sub_width=Decrease Road Width
+ui.fvtm.road_tool.enable_ground=Enable Road Underground
+ui.fvtm.road_tool.disable_ground=Disable Road Underground
+ui.fvtm.road_tool.add_left=Increase Left Wall Height
+ui.fvtm.road_tool.sub_left=Decrease Left Wall Height
+ui.fvtm.road_tool.add_right=Increase Right Wall Height
+ui.fvtm.road_tool.sub_right=Decrease Right Wall Height
+ui.fvtm.road_tool.enable_top=Enable Tunnel Top/Ceiling
+ui.fvtm.road_tool.disable_top=Disable Tunnel Top/Ceiling
+ui.fvtm.road_tool.enable_lines=Enable Road Lines Layer
+ui.fvtm.road_tool.disable_lines=Disable Road Lines Layer
+ui.fvtm.road_tool.edit_road=Customize Road Layer
+ui.fvtm.road_tool.edit_top=Customize Top/Ceiling Layer
+ui.fvtm.road_tool.edit_lines=Customize Lines Layer
+ui.fvtm.road_tool.remove_custom_road=Remove Custom Road Layer
+ui.fvtm.road_tool.remove_custom_top=Remove Custom Top/Ceiling Layer
+ui.fvtm.road_tool.remove_custom_lines=Remove Custom Lines Layer
+ui.fvtm.road_tool.no_fill_block=No Fill Block
+ui.fvtm.road_tool.road_fill_custom=Custom Road Fill
+ui.fvtm.road_tool.road_fill_width=%s block width
+ui.fvtm.road_tool.ground_fill_enabled=ground fill enabled
+ui.fvtm.road_tool.ground_fill_disabled=ground fill disabled
+ui.fvtm.road_tool.left_fill_size=L side %s blocks high
+ui.fvtm.road_tool.left_fill_disabled=left side wall disabled
+ui.fvtm.road_tool.right_fill_size=R side %s blocks high
+ui.fvtm.road_tool.right_fill_disabled=right side wall disabled
+ui.fvtm.road_tool.top_fill_custom=Custom Top/Roof Fill
+ui.fvtm.road_tool.top_fill_enabled=top fill enabled
+ui.fvtm.road_tool.top_fill_disabled=top fill disabled
+ui.fvtm.road_tool.lines_fill_custom=Custom Lines Layer
+ui.fvtm.road_tool.lines_fill_enabled=lines layer enabled
+ui.fvtm.road_tool.lines_fill_disabled=lines layer disabled
+ui.fvtm.road_tool.road_slot_info0=&6Valid blocks are:
+ui.fvtm.road_tool.road_slot_info1=&b- FVTM
+ui.fvtm.road_tool.road_slot_info2=&7-> Asphalt Blocks
+ui.fvtm.road_tool.road_slot_info3=&7-> Addon Blocks of the ROAD type
+ui.fvtm.road_tool.road_slot_info4=&b- Fureniku's Roads
+ui.fvtm.road_tool.road_slot_info5=&7-> road and sidewalk blocks with varying height (1-16mb)
+//
+ui.fvtm.road_tool_custom.scroll_left=Scroll Left
+ui.fvtm.road_tool_custom.scroll_right=Scroll Right
+ui.fvtm.road_tool_custom.scroll_status=&7Currently viewing &a%s-%s &7of &e%s
+//
+ui.fvtm.decoration_editor.position=Position Offset
+ui.fvtm.decoration_editor.rotation=Rotation (Degrees)
+ui.fvtm.decoration_editor.scale=Scale
+ui.fvtm.decoration_editor.texture=Texture
+ui.fvtm.decoration_editor.no_color_channels=No Color Channels
+
+# Handlers
+handler.install.fvtm.default.category_occupied=There is already another part on that spot with that category.
+handler.install.fvtm.default.part_incompatible_vehicle=Part is incompatible with this vehicle.
+handler.install.fvtm.default.vehicle_contains_incompatible=Vehicle contains parts incompatible with this part.
+handler.install.fvtm.default.vehicle_missing_required_parts=Vehicle does not contain all required parts.
+handler.install.fvtm.default.vehicle_swivelpoint_missing=Vehicle is missing a required SwivelPoint.
+handler.install.fvtm.default.check_passed=Installation check passed.
+handler.install.fvtm.default.success=Part installed into selected spot.
+handler.deinstall.fvtm.default.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.default.remove_linked_wheels=Please remove all linked wheels first.
+handler.deinstall.fvtm.default.remove_sub_parts=Please remove parts installed on this part first.
+handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
+//
+handler.install.fvtm.wheel.rail_vehicle=Not compatible with rail vehicles.
+handler.install.fvtm.wheel.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.wheel.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
+handler.install.fvtm.wheel.wheelslot_null=Error, slot not found.
+handler.install.fvtm.wheel.radius_too_large=Wheel radius too large. [%s>%s]
+handler.install.fvtm.wheel.radius_too_small=Wheel radius too small. [%s<%s]
+handler.install.fvtm.wheel.width_too_wide=Wheel too wide. [%s>%s]
+handler.install.fvtm.wheel.width_too_thin=Wheel too thin. [%s<%s]
+handler.install.fvtm.wheel.incompatible_connector=Incompatible connector.
+handler.install.fvtm.wheel.check_passed=Installation check passed.
+handler.install.fvtm.wheel.success=Part installed into selected category.
+handler.deinstall.fvtm.wheel.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.wheel.remove_tire_first=Please remove the tire first.
+handler.deinstall.fvtm.wheel.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.wheel.success=Part uninstalled and position reset.
+//
+handler.install.fvtm.tire.rail_vehicle=Not compatible with rail vehicles.
+handler.install.fvtm.tire.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.tire.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
+handler.install.fvtm.tire.no_wheel_at_slot=There is no wheel/rim to install this tire on, at that slot!
+handler.install.fvtm.tire.wheelslot_null=Error, slot not found.
+handler.install.fvtm.tire.radius_too_large=Tire radius too large. [%s>%s]
+handler.install.fvtm.tire.radius_too_small=Tire radius too small. [%s<%s]
+handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius=Wheel too large for Tire inner radius. [%s>%s]
+handler.install.fvtm.tire.tire_inner_radius_larger_than_wheel=Tire inner radius too large for this Wheel. [%s>%s]
+handler.install.fvtm.tire.width_too_wide=Tire is too wide. [%s>%s]
+handler.install.fvtm.tire.width_too_thin=Tire is too thin. [%s<%s]
+handler.install.fvtm.tire.check_passed=Installation check passed.
+handler.install.fvtm.tire.success=Part installed into selected category.
+handler.deinstall.fvtm.tire.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.tire.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.tire.success=Part uninstalled and position reset.
+//
+handler.install.fvtm.bogie.not_rail_vehicle=This is not a rail vehicle.
+handler.install.fvtm.bogie.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.bogie.bogieslot_missing=This Vehicle does not have the required BogieSlot configured.
+handler.install.fvtm.bogie.check_passed=Installation check passed.
+handler.install.fvtm.bogie.success=Part installed into selected category.
+handler.deinstall.fvtm.bogie.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.bogie.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.bogie.success=Part uninstalled and position reset.
+
+
+# Entities
+fvtm.seat.controls_info=&3Vehicle controls and instructions can be found in the &nwiki.
+
+# Items
+item.fvtm:road_tool.name=Road Tool
+item.fvtm:decoration.name=Decoration (Editor)
+item.fvtm:toolbox.name=FVTM Toolbox
+
+# Tooltips
+tooltip.fvtm.road_tool.toolbox=&aRoad Placing Toolbox
+tooltip.fvtm.road_tool.empty=No compound data.
+tooltip.fvtm.road_tool.road_fill=&6Road Fill: &b%s &7x%s
+tooltip.fvtm.road_tool.road_fill_custom=&6Road Fill: &bCUSTOM &7x%s
+tooltip.fvtm.road_tool.ground_fill=&9Ground Fill: &7%s
+tooltip.fvtm.road_tool.left_fill=&9Left Wall: &7%s &ex%s
+tooltip.fvtm.road_tool.right_fill=&9Right Wall: &7%s &ex%s
+tooltip.fvtm.road_tool.top_fill=&6Top/Roof Fill: &b%s &7x%s
+tooltip.fvtm.road_tool.top_fill_custom=&6Top/Roof Fill: &bCUSTOM &7x%s
+tooltip.fvtm.road_tool.lines_fill=&6Line Layer Fill: &b%s &7x%s
+tooltip.fvtm.road_tool.lines_fill_custom=&6Line Layer Fill: &bCUSTOM &7x%s
+tooltip.fvtm.road_tool.undo=&7Use &6/fvtm undo road &7to undo last road.
+tooltip.fvtm.road_tool.creative=&9This is a &6CREATIVE &9mode tool.
+tooltip.fvtm.road_tool.created=&o> Road Created.
+
+# Other
+itemGroup.fvtm=FVTM [Internal-Addon]
+fvtm.recipes.blocks=FVTM Blocks
+
+
+# Keys
+keycompound.fvtm.controls=FVTM Controls
+key.fvtm.engine=Engine Toggle
+key.fvtm.vehicle_inventory=Vehicle Inventory Toggle
+key.fvtm.vehicle_doors=Door/Attribute Toggle
+key.fvtm.vehicle_scripts=Scripts Toggle
+key.fvtm.vehicle_lights=Lights Toggle
+key.fvtm.vehicle_trailer=A/D Trailer or Wagon Rear
+key.fvtm.vehicle_wagon=A/D Wagon Front
+key.fvtm.arrow_up=Arrow Up (Gear Up)
+key.fvtm.arrow_down=Arrow Down (Gear Down)
+key.fvtm.arrow_left=Arrow Left
+key.fvtm.arrow_right=Arrow Right
+key.fvtm.reset=Reset Attribute (Toggables)
+key.fvtm.brake=Brake
+key.fvtm.pbrake=(Hand/Parking) Brake

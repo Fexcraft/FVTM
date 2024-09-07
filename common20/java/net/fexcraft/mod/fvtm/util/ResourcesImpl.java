@@ -83,6 +83,9 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
+		if(FvtmRegistry.CONTENT_ITEMS.containsKey(id)){
+			return FvtmRegistry.CONTENT_ITEMS.get(id);
+		}
 		IWR iwr = new IWR(FVTM4.ITEM_REGISTRY.get(id.space()).register(id.id(), item));
 		FvtmRegistry.CONTENT_ITEMS.put(id, iwr);
 		FvtmRegistry.ITEMS.put(id.colon(), iwr);

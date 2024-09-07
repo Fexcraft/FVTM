@@ -1,2 +1,2 @@
 include ':FCL'
-project(':FCL').projectDir = new File(settingsDir, '../FCL/forge12')
+project(':FCL').projectDir = new File(settingsDir, '../../FCL/forge12')

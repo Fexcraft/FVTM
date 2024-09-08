@@ -555,6 +555,7 @@ public abstract class FvtmResources {
 
 	public static DecorationData getDecorationData(TagCW com){
 		Decoration deco = DECORATIONS.get(com.getString("Decoration"));
+		if(deco == null && com.has("key")) deco = DECORATIONS.get(com.getString("key"));
 		if(deco == null) return null;
 		return new DecorationData(deco).read(com);
 	}

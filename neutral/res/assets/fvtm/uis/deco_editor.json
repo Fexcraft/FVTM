@@ -6,7 +6,7 @@
 		"left": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
 			"size": [ 144, 184 ],
-			"pos": [ 0, 15 ],
+			"pos": [ 0, 14 ],
 			"absolute": true,
 			"buttons": [
 				"list_up",

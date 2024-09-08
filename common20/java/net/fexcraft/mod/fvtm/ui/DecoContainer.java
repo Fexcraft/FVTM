@@ -28,7 +28,7 @@ public class DecoContainer extends ContainerInterface {
 	public Object get(String key, Object... objs){
 		switch(key){
 			case "decos.size": return Integer.valueOf(entity.decos.size());
-			//TODO case "decos.key": return entity.decos.get(((Integer)objs[0]).intValue()).key();
+			case "decos.key": return entity.decos.get(((Integer)objs[0]).intValue()).getType().getIDS();
 			case "decos.at": return entity.decos.get(((Integer)objs[0]).intValue());
 		}
 		return null;
@@ -41,17 +41,6 @@ public class DecoContainer extends ContainerInterface {
 		DecoEditor editor;
 		String task = com.getString("task");
 		switch(task){
-			case "add":
-				/*deco = FvtmRegistry.DECORATIONS.get(com.getString("key"));
-				entity.decos.add(deco.copy());
-				if(!client){
-					SEND_TO_CLIENT.accept(com, player);
-				}
-				else{
-					entity.decos.get(entity.decos.size() - 1).copy(deco);
-					((DecoEditor)ui).updateEntries();
-				}*///TODO
-				return;
 			case "rem":
 				entity.decos.remove(com.getInteger("idx"));
 				if(!client){
@@ -64,7 +53,6 @@ public class DecoContainer extends ContainerInterface {
 				return;
 			case "pos":
 				deco = entity.decos.get(com.getInteger("idx"));
-				pos = null;
 				switch(com.getInteger("axis")){
 					case 0:
 						pos = new Pos(com.getFloat("value"), deco.offset.y, deco.offset.z);

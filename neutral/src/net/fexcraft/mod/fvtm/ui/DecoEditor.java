@@ -19,14 +19,10 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 public class DecoEditor extends UserInterface {
 
 	private static final int rows = 12;
-	private static ArrayList<DecorationData> results = new ArrayList<>();
 	private static ArrayList<String> colors = new ArrayList<>();
-	private static boolean listmode = true, search;
-	private int scroll0, scroll1;
+	private int scroll;
 	public int selected = -1;
 	public int selcol;
-	private int category = 0;
-	private String searchstr = "";
 
 	public DecoEditor(JsonMap map, ContainerInterface con) throws Exception {
 		super(map, con);
@@ -34,7 +30,7 @@ public class DecoEditor extends UserInterface {
 
 	@Override
 	public void init(){
-		updateCategorySearch();
+		updateEntries();
 		select(-1, -1);
 	}
 
@@ -42,44 +38,14 @@ public class DecoEditor extends UserInterface {
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
 		boolean found = true;
 		switch(id){
-			case "cat_prev":{
-				category--;
-				if(category < 0) category = 0;//DECORATION_CATEGORIES.size() - 1;
-				updateCategorySearch();
-				break;
-			}
-			case "cat_next":{
-				category++;
-				if(category >= /*DECORATION_CATEGORIES.size()*/0) category = 0;
-				updateCategorySearch();
-				break;
-			}
-			case "search":{
-				search = !search;
-				updateCategorySearch();
-				break;
-			}
-			case "mode_add":{
-				listmode = false;
-				updateResults();
-				break;
-			}
-			case "mode_list":{
-				listmode = true;
-				updateEntries();
-				break;
-			}
 			case "list_up":{
-				if(listmode) scroll0--;
-				else scroll1--;
-				if(scroll0 < 0) scroll0 = 0;
-				if(scroll1 < 1) scroll1 = 0;
+				scroll--;
+				if(scroll < 0) scroll = 0;
 				updateEntries();
 				break;
 			}
 			case "list_down":{
-				if(listmode) scroll0++;
-				else scroll1++;
+				scroll++;
 				updateEntries();
 				break;
 			}
@@ -181,25 +147,16 @@ public class DecoEditor extends UserInterface {
 		}
 		if(!found){
 			if(id.startsWith("entry_")){
-				if(fields.get("search").visible()) return true;
 				int idx = Integer.parseInt(id.substring(6));
-				select(selected = scroll0 + idx, selcol);
+				select(selected = scroll + idx, selcol);
 				updateEntries();
-				return true;
-			}
-			else if(id.startsWith("add_")){
-				/*int idx = Integer.parseInt(id.substring(4));
-				TagCW com = TagCW.create();
-				com.set("task", "add");
-				com.set("key", results.get(scroll1 + idx).key());
-				container.SEND_TO_SERVER.accept(com);*///TODO
 				return true;
 			}
 			else if(id.startsWith("rem_")){
 				int idx = Integer.parseInt(id.substring(4));
 				TagCW com = TagCW.create();
 				com.set("task", "rem");
-				com.set("idx", scroll1 + idx);
+				com.set("idx", scroll + idx);
 				container.SEND_TO_SERVER.accept(com);
 				return true;
 			}
@@ -289,63 +246,22 @@ public class DecoEditor extends UserInterface {
 		fields.get("hex").text("#" + Integer.toHexString(color.packed));
 	}
 
-	protected void updateCategorySearch(){
-		texts.get("cat").value("category");
-		texts.get("cat").visible(!search);
-		fields.get("search").visible(search);
-		updateResults();
-	}
-
-	protected void updateResults(){
-		results.clear();
-		/*if(search){
-			for(DecorationData deco : DECORATIONS.values()){
-				if(deco.key().contains(searchstr) || ("fvtm.decoration." + deco.key()).contains(searchstr)) results.add(deco);
-			}
-		}
-		else{
-			String cat = DECORATION_CATEGORIES.get(category);
-			for(DecorationData deco : DECORATIONS.values()){
-				if(deco.category().equals(cat)) results.add(deco);
-			}
-		}*///TODO
-		updateEntries();
-	}
-
 	public void updateEntries(){
 		int j = 0;
 		boolean over;
-		if(listmode){
-			for(int i = 0; i < rows; i++){
-				j = scroll0 + i;
-				over = j >= (int)container.get("decos.size");
-				buttons.get("entry_" + i).text.value(over ? "" : "fvtm.decoration." + (String)container.get("decos.key", j));
-				buttons.get("entry_" + i).text.translate();
-				buttons.get("rem_" + i).visible(true);
-				buttons.get("add_" + i).visible(false);
-				buttons.get("entry_" + i).enabled(selected != j);
-			}
-		}
-		else{
-			for(int i = 0; i < rows; i++){
-				j = scroll1 + i;
-				over = j >= results.size();
-				buttons.get("entry_" + i).text.value(over ? "" : "fvtm.decoration." + results.get(j).getType().getIDS());
-				buttons.get("entry_" + i).text.translate();
-				buttons.get("rem_" + i).visible(false);
-				buttons.get("add_" + i).visible(true);
-				buttons.get("entry_" + i).enabled(true);
-			}
+		for(int i = 0; i < rows; i++){
+			j = scroll + i;
+			over = j >= (int)container.get("decos.size");
+			buttons.get("entry_" + i).text.value(over ? "" : "fvtm.decoration." + (String)container.get("decos.key", j));
+			buttons.get("entry_" + i).text.translate();
+			buttons.get("rem_" + i).visible(true);
+			buttons.get("entry_" + i).enabled(selected != j);
 		}
 	}
 
 	@Override
 	public void predraw(float ticks, int mx, int my){
-		if(!fields.get("search").visible()) return;
-		if(!fields.get("search").text().equals(searchstr)){
-			searchstr = fields.get("search").text();
-			updateResults();
-		}
+		//
 	}
 
 	@Override
@@ -356,14 +272,8 @@ public class DecoEditor extends UserInterface {
 	@Override
 	public void scrollwheel(int a, int x, int y){
 		if(x > 1 && x < 139 && y > 20 && y < 188){
-			if(listmode){
-				scroll0 += a > 0 ? 1 : -1;
-				if(scroll0 < 0) scroll0 = 0;
-			}
-			else{
-				scroll1 += a > 0 ? 1 : -1;
-				if(scroll1 < 0) scroll1 = 0;
-			}
+			scroll += a > 0 ? 1 : -1;
+			if(scroll < 0) scroll = 0;
 			updateEntries();
 		}
 	}

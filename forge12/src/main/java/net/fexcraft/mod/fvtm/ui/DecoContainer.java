@@ -43,18 +43,6 @@ public class DecoContainer extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		String task = com.getString("task");
 		switch(task){
-			case "add":{
-				/*DecorationData deco = DECORATIONS.get(com.getString("key"));
-				entity.decos.add(deco.copy());
-				if(!client){
-					SEND_TO_CLIENT.accept(com, player);
-				}
-				else{
-					entity.decos.get(entity.decos.size() - 1).copy(deco);
-					((DecoEditor)ui).updateEntries();
-				}*///TODO
-				return;
-			}
 			case "rem":{
 				entity.decos.remove(com.getInteger("idx"));
 				if(!client){

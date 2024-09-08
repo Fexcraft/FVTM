@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -149,16 +150,23 @@ public class DecorationEntity extends Entity implements IEntityAdditionalSpawnDa
             return false;
         }
         ItemStack stack = player.getHeldItem(hand);
-        if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem ){//TODO && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
+        if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isVehicleKey()){
             locked = !locked;
-            Print.chat(player, "Toggled sign status.");
+            Print.chat(player, "Toggled lock status.");
             return true;
         }
         if(locked){
-            Print.chat(player, "Sign is locked.");
+            Print.chat(player, "Decoration is locked.");
             return true;
         }
         if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
+			if(stack.getItem() instanceof DecorationItem){
+				DecorationData data = ((DecorationItem)stack.getItem()).getData(StackWrapper.wrap(stack));
+				if(data != null){
+					decos.add(data);
+					updateClient();
+				}
+			}
         	player.openGui(FVTM.getInstance(), UIKeys.ID12_DECORATION_EDITOR, world, getEntityId(), 0, 0);
         	return true;
         }

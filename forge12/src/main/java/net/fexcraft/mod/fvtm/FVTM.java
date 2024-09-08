@@ -109,7 +109,7 @@ public class FVTM {
 
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
-	public static final String VERSION = "4.12.75";
+	public static final String VERSION = "4.12.76";
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;

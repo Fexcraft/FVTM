@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.*;
@@ -15,6 +16,7 @@ import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -58,12 +60,11 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-		VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
-		if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + deco.getName()));
+		tooltip.add(Formatter.format("&9Name: &7" + deco.getName()));
 		for(String s : deco.getDescription()){
 			tooltip.add(Formatter.format(I18n.format(s)));
 		}
-		DecorationData data = getData(TagCW.wrap(stack.getTagCompound()));//TODO temp
+		DecorationData data = getData(StackWrapper.wrap(stack));
 		if(data != null){
 			tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
 			if(deco.getModel() != null && deco.getModel().getCreators().size() > 0){
@@ -80,9 +81,11 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
+		DecorationData data = getData(StackWrapper.wrap(stack));
 		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
 		DecorationEntity decoen = new DecorationEntity(world);
 		decoen.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
+		decoen.decos.add(data);
 		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
@@ -108,6 +111,17 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	@Override
 	public ContentType getType(){
 		return ContentType.DECORATION;
+	}
+
+	@Override
+	public DecorationData getData(StackWrapper stack){
+		if(!stack.hasTag()) stack.setTag(TagCW.create());
+		return getData(stack.getTag());
+	}
+
+	@Override
+	public DecorationData getData(TagCW compound){
+		return new DecorationData(deco).read(compound);
 	}
 
 }

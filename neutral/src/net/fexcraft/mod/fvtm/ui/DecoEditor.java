@@ -252,7 +252,7 @@ public class DecoEditor extends UserInterface {
 		for(int i = 0; i < rows; i++){
 			j = scroll + i;
 			over = j >= (int)container.get("decos.size");
-			buttons.get("entry_" + i).text.value(over ? "" : "fvtm.decoration." + (String)container.get("decos.key", j));
+			buttons.get("entry_" + i).text.value(over ? "" : container.get("decos.key", j).toString());
 			buttons.get("entry_" + i).text.translate();
 			buttons.get("rem_" + i).visible(true);
 			buttons.get("entry_" + i).enabled(selected != j);

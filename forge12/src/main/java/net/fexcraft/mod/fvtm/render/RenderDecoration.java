@@ -26,7 +26,7 @@ public class RenderDecoration extends Render<DecorationEntity> implements IRende
 
     @Override
     protected ResourceLocation getEntityTexture(DecorationEntity entity){
-        return FvtmRegistry.WHITE_TEXTURE.local();//TODO entity.sign.getTexture();
+        return FvtmRegistry.WHITE_TEXTURE.local();
     }
     
     @Override

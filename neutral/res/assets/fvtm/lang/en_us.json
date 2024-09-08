@@ -1,9 +1,9 @@
 {
-	"gui.fvtm.decoration_editor.position": "Position Offset",
-	"gui.fvtm.decoration_editor.rotation": "Rotation (Degrees)",
-	"gui.fvtm.decoration_editor.scale": "Scale",
-	"gui.fvtm.decoration_editor.texture": "Texture",
-	"gui.fvtm.decoration_editor.no_color_channels": "No Color Channels",
+	"ui.fvtm.decoration_editor.position": "Position Offset",
+	"ui.fvtm.decoration_editor.rotation": "Rotation (Degrees)",
+	"ui.fvtm.decoration_editor.scale": "Scale",
+	"ui.fvtm.decoration_editor.texture": "Texture",
+	"ui.fvtm.decoration_editor.no_color_channels": "No Color Channels",
 
 	"item.fvtm.toolbox_0": "FVTM Maintenance Toolbox",
 	"item.fvtm.toolbox_1": "FVTM Livery Toolbox",

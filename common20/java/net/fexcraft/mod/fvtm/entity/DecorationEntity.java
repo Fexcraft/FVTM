@@ -6,9 +6,11 @@ import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -107,7 +109,7 @@ public class DecorationEntity extends Entity {
 			return InteractionResult.PASS;
 		}
 		ItemStack stack = player.getItemInHand(hand);
-		if(!stack.isEmpty() && stack.getItem() instanceof net.fexcraft.mod.fvtm.item.MaterialItem){
+		if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isVehicleKey()){
 			this.locked = !this.locked;
 			player.sendSystemMessage(Component.literal("Toggled Deco Lock status."));
 			return InteractionResult.SUCCESS;
@@ -117,6 +119,13 @@ public class DecorationEntity extends Entity {
 			return InteractionResult.SUCCESS;
 		}
 		if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
+			if(stack.getItem() instanceof DecorationItem){
+				DecorationData data = ((DecorationItem)stack.getItem()).getData(StackWrapper.wrap(stack));
+				if(data != null){
+					decos.add(data);
+					updateClient();
+				}
+			}
 			EntityUtil.get(player).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
 			return InteractionResult.SUCCESS;
 		}

@@ -15,7 +15,6 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -176,8 +175,7 @@ public class DecorationEntity extends Entity implements IEntityAdditionalSpawnDa
                 Print.chat(damagesource.getImmediateSource(), "Deco is locked.");
                 return true;
             }
-        	ItemStack stack = this.getPickedResult(null);
-            entityDropItem(stack, 0.5F);
+			for(DecorationData deco : decos) entityDropItem(deco.getNewStack().local(), 0.5F);
             setDead();
         }
         return true;

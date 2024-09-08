@@ -30,13 +30,11 @@ public class DecorationRenderer {
 			GL11.glPushMatrix();
 			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
 			if(deco.decos.size() == 0){
-				DebugModels.CUBE_GRN.render(0.5f);
-				RGB.glColorReset();
+				rencube();
 			}
 			else{
 				if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof DecorationItem){
-					DebugModels.CUBE_GRN.render(0.5f);
-					RGB.glColorReset();
+					rencube();
 				}
 				RenderCache cache = ent.getCapability(Capabilities.RENDERCACHE, null);
 				for(DecorationData data : deco.decos){
@@ -62,6 +60,13 @@ public class DecorationRenderer {
 			GL11.glPopMatrix();
 		}
 		GL11.glPopMatrix();
+	}
+
+	private static void rencube(){
+		GL11.glTranslatef(0, 0.25f, 0);
+		DebugModels.CUBE_CYN.render(0.5f);
+		GL11.glTranslatef(0, -0.25f, 0);
+		RGB.glColorReset();
 	}
 
 }

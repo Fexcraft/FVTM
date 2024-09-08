@@ -5,7 +5,10 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,6 +17,7 @@ import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fvtm.FvtmGetters.getRenderCache;
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -28,7 +32,6 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity> {
 	@Override
 	public void render(DecorationEntity deco, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		pose.pushPose();
-		pose.translate(0.0F, 0.5F, 0.0F);
 		Renderer120.set(pose, buffer, light);
 		for(DecorationData data : deco.decos){
 			if(data.getType().getModel() == null){
@@ -48,6 +51,14 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity> {
 			pose.scale(data.sclx, data.scly, data.sclz);
 			data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, deco, getRenderCache(deco)));
 			pose.popPose();
+		}
+		if(deco.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
+			FvtmRenderTypes.setLines();
+			Renderer120.setColor(CYNCOLOR);
+			pose.translate(0, 0.125f, 0.);
+			pose.scale(0.25f, 0.25f, 0.25f);
+			CUBE.render();
+			Renderer120.resetColor();
 		}
 		pose.popPose();
 	}

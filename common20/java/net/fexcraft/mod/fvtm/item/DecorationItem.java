@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.render.ItemRenderers;
@@ -66,12 +67,14 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	@Override
 	public InteractionResult useOn(UseOnContext context){
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
-		/*ItemStack stack = context.getItemInHand();
-		final Decoration decoen = FvtmGetters.getNewDecoration(context.getLevel());
+		ItemStack stack = context.getItemInHand();
+		DecorationEntity decoen = FvtmGetters.getNewDecoration(context.getLevel());
+		DecorationData data = getDataFromTag(stack.getTag());
+		if(data != null) decoen.decos.add(data);
 		decoen.setPos(context.getClickLocation());
 		context.getLevel().addFreshEntity(decoen);
 		if(!context.getPlayer().isCreative()) stack.shrink(1);
-		EntityUtil.get(context.getPlayer()).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));*///TODO
+		//EntityUtil.get(context.getPlayer()).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));*///TODO
 		return InteractionResult.SUCCESS;
 	}
 

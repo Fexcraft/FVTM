@@ -89,7 +89,7 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 		//decoen.decos.add(Resources.DECORATIONS.get("test:metronome").copy());
 		world.spawnEntity(decoen);
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
-    	player.openGui(FVTM.getInstance(), UIKeys.ID12_DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
+    	//player.openGui(FVTM.getInstance(), UIKeys.ID12_DECORATION_EDITOR, world, decoen.getEntityId(), 0, 0);
 		return EnumActionResult.SUCCESS;
 	}
 

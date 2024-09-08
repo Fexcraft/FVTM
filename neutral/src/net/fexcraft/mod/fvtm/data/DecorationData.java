@@ -59,6 +59,7 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 
 	@Override
 	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
 		compound.set("Decoration", type.getID().toString());
 		compound.set("offx", offset.x);
 		compound.set("offy", offset.y);

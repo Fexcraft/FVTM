@@ -4,9 +4,11 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +34,10 @@ public class DecorationRenderer {
 				RGB.glColorReset();
 			}
 			else{
+				if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof DecorationItem){
+					DebugModels.CUBE_GRN.render(0.5f);
+					RGB.glColorReset();
+				}
 				RenderCache cache = ent.getCapability(Capabilities.RENDERCACHE, null);
 				for(DecorationData data : deco.decos){
 					if(data.getType().getModel() == null){

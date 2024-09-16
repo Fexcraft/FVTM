@@ -17,6 +17,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IPlantable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -116,6 +117,11 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	@Override
 	public boolean isPassable(IBlockAccess world, BlockPos pos){
 		return type.getPassable() == null ? super.isPassable(world, pos) : type.getPassable();
+	}
+
+	@Override
+	public boolean canSustainPlant(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing facing, IPlantable plant){
+		return type.isPlantableOn();
 	}
 
 }

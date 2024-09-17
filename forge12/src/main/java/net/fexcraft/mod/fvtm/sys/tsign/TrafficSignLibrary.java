@@ -21,7 +21,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TrafficSignLibrary extends DetachedSystem {
+public class TrafficSignLibrary {//extends DetachedSystem {
 
 	public static HashMap<String, Object> PRESETS = new LinkedHashMap<>();
 	public static HashMap<String, String> BACKGROUNDS = new LinkedHashMap<>();
@@ -126,20 +126,20 @@ public class TrafficSignLibrary extends DetachedSystem {
 	public static ConcurrentLinkedQueue<Chunk> CHUNKS = new ConcurrentLinkedQueue<>();
 	
 	public TrafficSignLibrary(World world){
-		super(world);
+		//super(world);
 	}
 
-	@Override
+	//@Override
 	public boolean hasTimer(){
 		return false;
 	}
 
-	@Override
+	//@Override
 	public void unload(){
 		CHUNKS.clear();
 	}
 
-	@Override
+	//@Override
 	public void onChunkLoad(Chunk chunk){
 		CHUNKS.add(chunk);
 		if(side.isClient()){
@@ -152,17 +152,17 @@ public class TrafficSignLibrary extends DetachedSystem {
 		}
 	}
 
-	@Override
+	//@Override
 	public void onChunkUnload(Chunk chunk){
 		CHUNKS.remove(chunk);
 	}
 
-	@Override
+	//@Override
 	public void onServerTick(World world){
 		//
 	}
 
-	@Override
+	//@Override
 	public void onClientTick(World world){
 		//
 	}

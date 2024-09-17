@@ -336,12 +336,12 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void onStart(FMLServerStartingEvent event){
-		SystemManager.onServerStarting(event);
+		SystemManager.onServerStarting();
 	}
 
 	@Mod.EventHandler
 	public void onStop(FMLServerStoppingEvent event){
-		SystemManager.onServerStopping(event);
+		SystemManager.onServerStopping();
 	}
 
 	public static FVTM getInstance(){

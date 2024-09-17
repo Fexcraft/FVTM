@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +21,7 @@ public class RecServer implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
-		WireSystem system = SystemManager.get(Systems.WIRE, player.world, WireSystem.class);
+		WireSystem system = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(player.world), WireSystem.class);
 		if(system == null){
 			Print.log("Received packet but no wire system found, aborting!\n" + packet.nbt);
 			return;

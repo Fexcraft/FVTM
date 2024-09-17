@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +26,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayer player = (EntityPlayer)objs[0];
-		RailSystem system = SystemManager.get(Systems.RAIL, player.world);
+		RailSystem system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world));
 		try{
 			switch(task){
 				case "update_region":{

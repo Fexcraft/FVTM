@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -82,7 +83,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || player.isSneaking() || DISABLE_RAILS){ return EnumActionResult.PASS; }
-        RailSystem syscap =SystemManager.get(Systems.RAIL, world);
+        RailSystem syscap =SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);
         QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);

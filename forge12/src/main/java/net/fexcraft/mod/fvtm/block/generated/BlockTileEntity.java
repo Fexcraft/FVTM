@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -83,7 +84,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         IBlockState state = world.getBlockState(pos);
         meta = (byte)state.getBlock().getMetaFromState(state);
         if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
-        	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
+        	SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world), WireSystem.class).register(this);
         }
     }
 
@@ -138,7 +139,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 	public void invalidate(){
 		super.invalidate();
         if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
-        	SystemManager.get(Systems.WIRE, world, WireSystem.class).unregister(this);
+        	SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world), WireSystem.class).unregister(this);
         }
 	}
 

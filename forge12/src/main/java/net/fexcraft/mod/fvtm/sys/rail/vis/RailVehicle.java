@@ -50,6 +50,7 @@ import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -93,7 +94,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public RailVehicle(RailEntity ent){
-		this(ent.getRegion().getWorld().getWorld()); ent.entity = this;
+		this((World)ent.getRegion().getWorld().getWorld().direct()); ent.entity = this;
 		(rek = new Reltrs(ent.getRegion().getWorld(), ent, null)).ent().alignEntity(true);
 		initializeVehicle(false, null); Print.debug(this +  " " + rek.uid + " " + this.getPositionVector());
 	}
@@ -104,7 +105,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
-		if(compound != null) rek = new Reltrs(SystemManager.get(Systems.RAIL, world, RailSystem.class), compound);
+		if(compound != null) rek = new Reltrs(SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
         this.setSize(rek.data().getAttribute("hitbox_width").asFloat(), rek.data().getAttribute("hitbox_height").asFloat());
         if(seats == null) seats = new SeatCache[rek.data().getSeats().size()];
@@ -116,7 +117,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(remote){
         	float c = rek.data().getAttributeFloat("collision_range", 2f);
         	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
-    		EntitySystem system = SystemManager.get(Systems.ENTITY, world);
+    		EntitySystem system = SystemManager.get(Systems.ENTITY, WrapperHolder.getWorld(world));
     		//TODO if(system != null) system.add(this);
         }
 	}

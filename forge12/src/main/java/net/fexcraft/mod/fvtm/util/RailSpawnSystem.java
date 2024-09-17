@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public class RailSpawnSystem extends EntitySystem {
 	private boolean validate(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, boolean spawn){
 		World world = placer.getEntityWorld();
 		EntityPlayer player = (EntityPlayer)placer;
-		RailSystem syscap = SystemManager.get(Systems.RAIL, world);
+		RailSystem syscap = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){
         	Print.chat(placer, "&cWorld Capability not found.");
         	return false;

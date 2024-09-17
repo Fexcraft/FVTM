@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -17,7 +18,7 @@ public class ParticleRenderer {
 	private static final ArrayList<ParticleEntity> ents = new ArrayList<>();
 
 	public static void renderParticles(World world, double cx, double cy, double cz, float ticks){
-        EntitySystem sys = SystemManager.get(Systems.ENTITY, world);
+        EntitySystem sys = SystemManager.get(Systems.ENTITY, WrapperHolder.getWorld(world));
         if(sys == null) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

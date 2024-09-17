@@ -16,12 +16,9 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WorldW;
 
 /**
  * 
@@ -35,43 +32,43 @@ public class SystemManager {
 	private static ConcurrentHashMap<Integer, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
 	private static ConcurrentHashMap<Integer, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
 	
-	public static void onServerTick(World world){
-		if(world == null || !SYSTEMS_DIM.containsKey(world.provider.getDimension())) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
-			sys.onServerTick(world);
+	public static void onServerTick(WorldW world){
+		if(world == null || !SYSTEMS_DIM.containsKey(world.dim())) return;
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
+			sys.onServerTick();
 		}
 	}
 
-	public static void onClientTick(World world){
-		if(world == null || !SYSTEMS_DIM.containsKey(world.provider.getDimension())) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
-			sys.onClientTick(world);
+	public static void onClientTick(WorldW world){
+		if(world == null || !SYSTEMS_DIM.containsKey(world.dim())) return;
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
+			sys.onClientTick();
 		}
 	}
 
-	public static void onChunkLoad(World world, Chunk chunk){
-		if(!loaded(world.provider.getDimension())) onAttachWorldCapabilities(world);
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
+	public static void onChunkLoad(WorldW world, ChunkW chunk){
+		if(!loaded(world.dim())) onAttachWorldCapabilities(world);
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
 			sys.onChunkLoad(chunk);
 		}
 	}
 
-	public static void onChunkUnload(World world, Chunk chunk){
-		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_DIM.get(world.provider.getDimension());
+	public static void onChunkUnload(WorldW world, ChunkW chunk){
+		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_DIM.get(world.dim());
 		if(systems == null) return;
 		for(DetachedSystem sys : systems.values()){
 			sys.onChunkUnload(chunk);
 		}
 	}
 
-	public static <T extends DetachedSystem> T get(Systems sysid, World world){
+	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world){
 		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(world.provider.getDimension());
+		return (T)SYSTEMS.get(sysid).get(world.dim());
 	}
 
-	public static <T extends DetachedSystem> T get(Systems sysid, World world, Class<T> clazz){
+	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world, Class<T> clazz){
 		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(world.provider.getDimension());
+		return (T)SYSTEMS.get(sysid).get(world.dim());
 	}
 
 	private static boolean loaded(int dimension){
@@ -79,13 +76,13 @@ public class SystemManager {
 		return bool != null && bool;
 	}
 
-	public static void onAttachWorldCapabilities(World world){
-		if(loaded(world.provider.getDimension())) return;
+	public static void onAttachWorldCapabilities(WorldW world){
+		if(loaded(world.dim())) return;
 		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
-		int dim = world.provider.getDimension();
+		int dim = world.dim();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
-		Print.debug("dimension remote = " + world.isRemote + "/" + SINGLEPLAYER);
-		if(world.isRemote || SINGLEPLAYER){
+		Print.debug("dimension remote = " + world.isClient() + "/" + SINGLEPLAYER);
+		if(world.isClient() || SINGLEPLAYER){
 			if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new ConcurrentHashMap<>());
 			EntitySystem ensys = new EntitySystem(world);
 			SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
@@ -106,10 +103,6 @@ public class SystemManager {
 			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
 		}
 		//
-		if(!SYSTEMS.containsKey(Systems.TRAFFICSIGN)) SYSTEMS.put(Systems.TRAFFICSIGN, new ConcurrentHashMap<>());
-		TrafficSignLibrary tsys = new TrafficSignLibrary(world);
-		SYSTEMS.get(Systems.TRAFFICSIGN).put(dim, tsys);
-		SYSTEMS_DIM.get(dim).put(Systems.TRAFFICSIGN, tsys);
 		LOADED_DIM.put(dim, true);
 	}
 	
@@ -120,7 +113,7 @@ public class SystemManager {
 		return mid;
 	}
 
-	public static void onServerStarting(FMLServerStartingEvent event){
+	public static void onServerStarting(){
 		long mid = getDate();
 		for(Map<Integer, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
@@ -129,14 +122,14 @@ public class SystemManager {
 		}
 	}
 
-	public static void onWorldLoad(World world){
+	public static void onWorldLoad(WorldW world){
 		long mid = getDate();
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
 			sys.setupTimer(mid);
 		}
 	}
 
-	public static void onServerStopping(FMLServerStoppingEvent event){
+	public static void onServerStopping(){
 		for(Map<Integer, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.stopTimer();
@@ -149,8 +142,8 @@ public class SystemManager {
 	}
 
 	/** Called client side. */
-	public static void onWorldUnload(World world){
-		int dim = world.provider.getDimension();
+	public static void onWorldUnload(WorldW world){
+		int dim = world.dim();
 		ConcurrentHashMap<Systems, DetachedSystem> map = SYSTEMS_DIM.get(dim);
 		if(map != null){
 			for(Entry<Systems, DetachedSystem> sys : map.entrySet()){
@@ -165,7 +158,7 @@ public class SystemManager {
 	
 	public static enum Systems {
 		
-		RAIL, ROAD, WIRE, ENTITY, TRAFFICSIGN
+		RAIL, ROAD, WIRE, ENTITY
 		
 	}
 

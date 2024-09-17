@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +22,7 @@ public class RecServer implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
-		RailSystem system = SystemManager.get(Systems.RAIL, player.world, RailSystem.class);
+		RailSystem system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world), RailSystem.class);
 		if(system == null){
 			Print.log("Received packet but no capability found, aborting!\n" + packet.nbt);
 			return;

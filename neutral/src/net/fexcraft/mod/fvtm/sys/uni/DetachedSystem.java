@@ -1,30 +1,32 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WorldW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
+
 import java.io.File;
 import java.util.Timer;
 
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public abstract class DetachedSystem {
 	
-	protected World world;
-	protected int dimension;
+	protected WorldW world;
 	protected Timer timer;
 	protected File root;
 	
-	public DetachedSystem(World world){
+	public DetachedSystem(WorldW world){
 		this.world = world;
-		dimension = world.provider.getDimension();
-		root = new File(world.getSaveHandler().getWorldDirectory(), (dimension == 0 ? "" : world.provider.getSaveFolder()) + "/fvtm");
+		root = new File(WrapperHolder.getWorldFolder(world), "/fvtm");
 	}
 	
-	public World getWorld(){
+	public WorldW getWorld(){
 		return world;
 	}
 	
 	public int getDimension(){
-		return dimension;
+		return world.dim();
 	}
 	
 	public void setupTimer(long time){
@@ -47,13 +49,13 @@ public abstract class DetachedSystem {
 	
 	public abstract void unload();
 	
-	public abstract void onChunkLoad(Chunk chunk);
+	public abstract void onChunkLoad(ChunkW chunk);
 	
-	public abstract void onChunkUnload(Chunk chunk);
+	public abstract void onChunkUnload(ChunkW chunk);
 
-	public abstract void onServerTick(World world);
+	public abstract void onServerTick();
 
-	public abstract void onClientTick(World world);
+	public abstract void onClientTick();
 	
 	public void onTimerTick(){
 		//

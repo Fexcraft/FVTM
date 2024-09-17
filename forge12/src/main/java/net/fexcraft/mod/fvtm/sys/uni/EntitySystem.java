@@ -15,9 +15,9 @@ import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.function.part.ParticleEmitterFunction;
 import net.fexcraft.mod.fvtm.function.part.ParticleEmitterFunction.EmitterData;
+import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 
 public class EntitySystem extends DetachedSystem {
 	
@@ -32,7 +32,7 @@ public class EntitySystem extends DetachedSystem {
 	public ConcurrentLinkedQueue<ParticleEntity> particles = new ConcurrentLinkedQueue<>();
 	public ConcurrentLinkedQueue<ParticleEntity> expired = new ConcurrentLinkedQueue<>();
 
-	public EntitySystem(World world){
+	public EntitySystem(WorldW world){
 		super(world);
 	}
 
@@ -103,22 +103,22 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onChunkLoad(Chunk chunk){
+	public void onChunkLoad(ChunkW chunk){
 		//
 	}
 
 	@Override
-	public void onChunkUnload(Chunk chunk){
+	public void onChunkUnload(ChunkW chunk){
 		//
 	}
 
 	@Override
-	public void onServerTick(World world){
+	public void onServerTick(){
 		//
 	}
 
 	@Override
-	public void onClientTick(World world){
+	public void onClientTick(){
 		update();
 	}
 

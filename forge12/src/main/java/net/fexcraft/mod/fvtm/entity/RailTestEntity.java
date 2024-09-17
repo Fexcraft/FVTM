@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.entity;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -14,6 +13,7 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,7 +49,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     public void readSpawnData(ByteBuf buffer){
     	setPosition(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     	if(buffer.isReadable()){
-    		current = SystemManager.get(Systems.RAIL, world, RailSystem.class).getTrack(new PathKey(TagCW.wrap(ByteBufUtils.readTag(buffer))));
+    		current = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class).getTrack(new PathKey(TagCW.wrap(ByteBufUtils.readTag(buffer))));
     	}
     	Print.debug(current, posX, posY, posZ);
     }
@@ -97,7 +97,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
         	if(world.isRemote) return;
     		passed += speed;
     		if(passed >= current.length){
-    			Junction junc = SystemManager.get(Systems.RAIL, world, RailSystem.class).getJunction(current.end);
+    			Junction junc = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class).getJunction(current.end);
     			if(junc == null){
     				current = current.createOppositeCopy(); Print.debug(this, "No junction, returning.");
     			}

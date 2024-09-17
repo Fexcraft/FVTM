@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -178,7 +179,7 @@ public class RailPlacingUtil {
 		}
 
 		public void create(EntityPlayer player, QV3D vector){
-			RailSystem sys = SystemManager.get(Systems.RAIL, player.world);
+			RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world));
 			Junction junc = sys.getJunction(vector, true);
 			UUID current = CURRENT.get(player.getGameProfile().getId());
 			if(current == null){

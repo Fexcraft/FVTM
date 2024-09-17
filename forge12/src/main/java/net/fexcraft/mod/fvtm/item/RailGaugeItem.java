@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.ICommandSender;
@@ -96,7 +97,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || DISABLE_RAILS){ return EnumActionResult.PASS; }
-        RailSystem syscap = SystemManager.get(Systems.RAIL, world);
+        RailSystem syscap = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;

@@ -24,16 +24,13 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 
 /**
  * "Rail System Data"
@@ -50,9 +47,9 @@ public class RailSystem extends DetachedSystem {
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
 	
-	public RailSystem(World world){
+	public RailSystem(WorldW world){
 		super(world);
-		if(!world.isRemote) load();
+		if(!world.isClient()) load();
 	}
 
 	public void load(){
@@ -228,7 +225,7 @@ public class RailSystem extends DetachedSystem {
 		Region region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
-		if(world.isRemote){
+		if(world.isClient()){
 			return junc != null;
 		}
 		else{
@@ -271,7 +268,7 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onServerTick(World world){
+	public void onServerTick(){
 		/*if(remote && !Region.clientqueue.isEmpty()){
 			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
@@ -330,7 +327,7 @@ public class RailSystem extends DetachedSystem {
 
 	@Override
 	public void unload(){
-		if(!world.isRemote){
+		if(!world.isClient()){
 			regions.values().forEach(reg -> reg.save());
 			save();
 		}
@@ -339,7 +336,7 @@ public class RailSystem extends DetachedSystem {
 
 	public void updateRegion(TagCW compound, @Nullable EntityPlayerMP player){
 		int[] xz = compound.getIntArray("XZ");
-		if(world.isRemote){
+		if(world.isClient()){
 			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false));
 			region.read(compound);
 		}
@@ -349,13 +346,13 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onChunkLoad(Chunk chunk){
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.put(new RegionKey(chunk.x, chunk.z), chunk);
+	public void onChunkLoad(ChunkW chunk){
+		regions.get(RegionKey.getRegionXZ(chunk.x(), chunk.z()), true).chucks.put(new RegionKey(chunk.x(), chunk.z()), chunk);
 	}
 
 	@Override
-	public void onChunkUnload(Chunk chunk){
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.values().removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
+	public void onChunkUnload(ChunkW chunk){
+		regions.get(RegionKey.getRegionXZ(chunk.x(), chunk.z()), true).chucks.values().removeIf(pre -> pre.x() == chunk.x() && pre.z() == chunk.z());
 	}
 
 	//@Deprecated
@@ -429,7 +426,7 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	public boolean isRemote(){
-		return world.isRemote;
+		return world.isClient();
 	}
 
 	public TreeMap<Long, RegionKey> getEntityIndex(){
@@ -470,7 +467,7 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onClientTick(World world){
+	public void onClientTick(){
 		//unused
 	}
 

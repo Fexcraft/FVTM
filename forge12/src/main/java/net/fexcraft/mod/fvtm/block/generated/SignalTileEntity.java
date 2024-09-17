@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SignalTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
@@ -60,7 +61,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
 	public Junction getJunction(){
 		if(junction == null && juncpos != null && this.pos != null){
-        	RailSystem sys = SystemManager.get(Systems.RAIL, world);
+        	RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         	if(sys != null) junction = sys.getJunction(juncpos, false);
         	if(junction == null){
         		juncpos = null;//TODO control

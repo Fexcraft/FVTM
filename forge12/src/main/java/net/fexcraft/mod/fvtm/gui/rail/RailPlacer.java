@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.MapColor;
@@ -88,7 +89,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				STATEGRID[i][j] = state;
 			}
 		}
-		system = SystemManager.get(Systems.RAIL, player.world, RailSystem.class);
+		system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world), RailSystem.class);
 		int d = zoom.co * 2 + 1;
 		for(int i = 0; i < d; i++){
 			for(int j = 0; j < d; j++){

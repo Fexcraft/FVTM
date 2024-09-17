@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,7 +30,7 @@ public interface JunctionTrackingTileEntity {
     	if(held.hasTagCompound() && held.getTagCompound().hasKey("fvtm:junction")){
     		QV3D vector = new QV3D(TagCW.wrap(held.getTagCompound()), "fvtm:junction");
     		Junction junc = null;
-        	RailSystem sys = SystemManager.get(Systems.RAIL, tile_entity.getWorld());
+        	RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(tile_entity.getWorld()));
         	if(sys != null) junc = sys.getJunction(vector, false);
         	if(junc == null){
             	Print.bar(player, "&eJunction at cached location in Item not found.");
@@ -68,7 +69,7 @@ public interface JunctionTrackingTileEntity {
 	
 	public default void linkJunction(World world, BlockPos pos, QV3D vec){
 		if(world == null) return;
-		RailSystem system = SystemManager.get(Systems.RAIL, world);
+		RailSystem system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
 		if(system == null) return;
 		Junction junc = system.getJunction(vec);
 		if(junc != null) junc.addLinkedTileEntity(pos);

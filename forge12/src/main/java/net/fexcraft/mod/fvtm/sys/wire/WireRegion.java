@@ -12,6 +12,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.uni.world.ChunkW;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -30,7 +31,7 @@ import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 public class WireRegion {
 	
 	private ConcurrentHashMap<BlockPos, RelayHolder> holders = new ConcurrentHashMap<>();
-	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<RegionKey, ChunkW> chucks = new ConcurrentHashMap<>();
 	public long lastaccess;
 	private int timer = 0;
 	public boolean loaded;
@@ -50,7 +51,7 @@ public class WireRegion {
 	}
 
 	public WireRegion load(){
-		if(system.getWorld().isRemote){
+		if(system.getWorld().isClient()){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("target_listener", "fvtm:wiresys");
 			compound.setString("task", "update_region");
@@ -161,7 +162,7 @@ public class WireRegion {
 	}
 	
 	public void updateClient(String kind, String key, BlockPos pos, Object obj){
-		if(system.getWorld().isRemote) return;
+		if(system.getWorld().isClient()) return;
 		NBTTagCompound compound = null;
 		switch(kind){
 			case "all":{
@@ -222,7 +223,7 @@ public class WireRegion {
 	}
 
 	public void updateClient(EntityPlayerMP player){
-		if(system.getWorld().isRemote || player == null) return;
+		if(system.getWorld().isClient() || player == null) return;
 		NBTTagCompound compound = this.write(true);
 		compound.setString("target_listener", "fvtm:wiresys");
 		compound.setString("task", "update_region");

@@ -47,6 +47,7 @@ import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.MessageSenderI;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -164,7 +165,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(remote){
         	float c = vehicle.getAttributeFloat("collision_range", 2f);
         	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
-    		EntitySystem system = SystemManager.get(Systems.ENTITY, world);
+    		EntitySystem system = SystemManager.get(Systems.ENTITY, WrapperHolder.getWorld(world));
     		//TODO if(system != null) system.add(this);
         }
 	}

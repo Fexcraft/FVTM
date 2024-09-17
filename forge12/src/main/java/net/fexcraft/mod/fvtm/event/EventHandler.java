@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
 import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -88,7 +89,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
-		SystemManager.onAttachWorldCapabilities(event.getObject());
+		SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(event.getObject()));
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	
@@ -135,7 +136,7 @@ public class EventHandler {
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
 		for(World world : Static.getServer().worlds){
-			SystemManager.onServerTick(world);
+			SystemManager.onServerTick(WrapperHolder.getWorld(world));
 		}
 	}
 	
@@ -143,12 +144,12 @@ public class EventHandler {
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event){
 		if(event.phase != Phase.START) return;
-		SystemManager.onClientTick(net.minecraft.client.Minecraft.getMinecraft().world);
+		SystemManager.onClientTick(WrapperHolder.getClientWorld());
 	}
 	
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){
-		SystemManager.onChunkLoad(event.getWorld(), event.getChunk());
+		SystemManager.onChunkLoad(WrapperHolder.getWorld(event.getWorld()), UniChunk.getChunk(event.getChunk()));
 		event.getChunk().getTileEntityMap().values().forEach(tile -> {
 			if(tile instanceof MultiblockTileEntity){
 				((MultiblockTileEntity)tile).setup();
@@ -158,19 +159,19 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event){
-		SystemManager.onChunkUnload(event.getWorld(), event.getChunk());
+		SystemManager.onChunkUnload(WrapperHolder.getWorld(event.getWorld()), UniChunk.getChunk(event.getChunk()));
 	}
 	
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event){
 		if(!event.getWorld().isRemote) return;
-		SystemManager.onWorldLoad(event.getWorld());
+		SystemManager.onWorldLoad(WrapperHolder.getWorld(event.getWorld()));
 	}
 	
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event){
 		if(!event.getWorld().isRemote) return;
-		SystemManager.onWorldUnload(event.getWorld());
+		SystemManager.onWorldUnload(WrapperHolder.getWorld(event.getWorld()));
 		WrapperHolder.INSTANCE.reset();
 	}
 

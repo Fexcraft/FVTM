@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -84,7 +86,7 @@ public class Junction {
 		//this.crossing = compound.getBoolean("Crossing");
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
-			if(root.getWorld().isRemote){
+			if(root.getWorld().isClient()){
 				for(Track track : tracks){
 					if(track.railmodel != null) track.railmodel.clearDisplayLists();
 					if(track.restmodel != null) track.restmodel.clearDisplayLists();
@@ -400,8 +402,8 @@ public class Junction {
 
 	@SuppressWarnings("unused")
 	private boolean isInPlayerRange(){
-		for(EntityPlayer pl : root.getWorld().playerEntities){
-			if(vecpos.vec.dis(new V3D(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
+		for(EntityW pl : root.getWorld().getPlayers()){
+			if(vecpos.vec.dis(pl.getPos()) < 1024) return true;
 		}
 		return false;
 	}
@@ -436,8 +438,9 @@ public class Junction {
 
 	private void updateLinkedTileEntities(boolean signal){
 		entities.removeIf(pos -> {
-			if(!root.getWorld().isBlockLoaded(pos)) return false;
-			TileEntity tile = root.getWorld().getTileEntity(pos);
+			World world = root.getWorld().local();
+			if(!world.isBlockLoaded(pos)) return false;
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
 				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
 				if(ent.getJuncPos() == null || !ent.getJuncPos().equals(this.vecpos)) return true;
@@ -451,8 +454,9 @@ public class Junction {
 	
 	public void unlinkLinkedTileEntities(){
 		for(BlockPos pos : entities){
-			if(!root.getWorld().isBlockLoaded(pos)) continue;
-			TileEntity tile = root.getWorld().getTileEntity(pos);
+			World world = root.getWorld().local();
+			if(!world.isBlockLoaded(pos)) continue;
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
 				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
 				if(!ent.getJuncPos().equals(this.vecpos)) continue;

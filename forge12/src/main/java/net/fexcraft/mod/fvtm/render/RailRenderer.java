@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -171,7 +172,7 @@ public class RailRenderer {
     //@SubscribeEvent
     public static void renderRails(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
     	if(DISABLE_RAILS) return;
-	    raildata = SystemManager.get(Systems.RAIL, world, RailSystem.class);
+	    raildata = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class);
 	    if(raildata == null || raildata.getRegions() == null) return;
         //if(raildata.isLoading()) return;
         GL11.glPushMatrix();

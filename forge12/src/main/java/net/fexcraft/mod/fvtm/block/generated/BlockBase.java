@@ -91,7 +91,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
     	if(type.hasRelay() && SystemManager.active(Systems.WIRE)){
-    		SystemManager.get(Systems.WIRE, world, WireSystem.class).deregister(world.getTileEntity(pos));
+    		SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world), WireSystem.class).deregister(world.getTileEntity(pos));
         }
         super.breakBlock(world, pos, state);
     }

@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,7 +58,7 @@ public class WireRelayContainer extends GenericContainer {
 
 	public WireRelayContainer(EntityPlayer player, World world, int x, int y, int z, boolean reset){
 		super(player);
-		system = SystemManager.get(Systems.WIRE, world);
+		system = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		data = tile.getBlockData().getType().getRelayData();
 		holder = system.getHolder(tile.getPos());
@@ -119,7 +120,7 @@ public class WireRelayContainer extends GenericContainer {
 							player.closeScreen();
 							return;
 						}
-						BlockTileEntity tile0 = (BlockTileEntity)system.getWorld().getTileEntity(BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint")));
+						BlockTileEntity tile0 = (BlockTileEntity)((World)system.getWorld().direct()).getTileEntity(BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint")));
 						RelayData data0 = tile0.getBlockData().getType().getRelayData();
 						V3D r0 = data0.getVec(stack.getTagCompound().getString("fvtm:wirepoint_slot"), tile0.getV3I(), tile0.meta, tile0.data.getType().getBlockType());
 						V3D r1 = data.getVec(relid, tile.getV3I(), tile.meta, tile.data.getType().getBlockType());

@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -80,7 +81,7 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || DISABLE_WIRES || hand != EnumHand.MAIN_HAND) return EnumActionResult.PASS;
-        WireSystem system = SystemManager.get(Systems.WIRE, world);
+        WireSystem system = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
         if(system == null){
 			Print.chat(player, "&cWire System not found. Is it enabled?");
 	        return EnumActionResult.FAIL;

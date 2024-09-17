@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.impl.TagLWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.world.ChunkW;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -38,7 +39,7 @@ public class Region {
 	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<QV3D, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
-	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<RegionKey, ChunkW> chucks = new ConcurrentHashMap<>();
 	public long lastaccess; private int timer = 0;
 	public boolean loaded;
 	private final RailSystem world;
@@ -57,7 +58,7 @@ public class Region {
 	}
 
 	public Region load(){
-		if(world.getWorld().isRemote){
+		if(world.getWorld().isClient()){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("target_listener", "fvtm:railsys");
 			compound.setString("task", "update_region");
@@ -200,7 +201,7 @@ public class Region {
 	}
 	
 	public void updateClient(String kind, QV3D vector){
-		if(world.getWorld().isRemote) return;
+		if(world.getWorld().isClient()) return;
 		TagCW compound = null;
 		switch(kind){
 			case "all":{
@@ -282,7 +283,7 @@ public class Region {
 	}
 
 	public void updateClient(String kind, RailEntity entity){
-		if(world.getWorld().isRemote) return;
+		if(world.getWorld().isClient()) return;
 		NBTTagCompound compound = null;
 		switch(kind){
 			case "removed":{
@@ -297,7 +298,7 @@ public class Region {
 	}
 
 	public void updateClient(EntityPlayerMP player){
-		if(world.getWorld().isRemote) return;
+		if(world.getWorld().isClient()) return;
 		TagCW compound = this.write(true);
 		compound.set("target_listener", "fvtm:railsys");
 		compound.set("task", "update_region");
@@ -312,7 +313,7 @@ public class Region {
 	public void spawnEntity(RailEntity ent){
 		Print.debug("Spawning Entity " + ent.uid + "!");
 		entities.put(ent.getUID(), ent);
-		if(world.getWorld().isRemote) return;
+		if(world.getWorld().isClient()) return;
 		/*NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),

@@ -18,6 +18,8 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -41,9 +43,9 @@ public class WireSystem extends DetachedSystem {
 	private WireMap wireunits = new WireMap(this);
 	private SectionMap sections = new SectionMap(this);
 	
-	public WireSystem(World world){
+	public WireSystem(WorldW world){
 		super(world);
-		if(!world.isRemote) load();
+		if(!world.isClient()) load();
 	}
 
 	public void load(){
@@ -191,13 +193,13 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onServerTick(World world){
+	public void onServerTick(){
 		for(WireRegion region : regions.values()) region.updateTick();
 	}
 
 	@Override
 	public void unload(){
-		if(!world.isRemote){
+		if(!world.isClient()){
 			regions.values().forEach(reg -> reg.save());
 			save();
 		}
@@ -206,7 +208,7 @@ public class WireSystem extends DetachedSystem {
 
 	public void updateRegion(NBTTagCompound compound, @Nullable EntityPlayerMP player){
 		int[] xz = compound.getIntArray("XZ");
-		if(world.isRemote){
+		if(world.isClient()){
 			WireRegion region = regions.get(xz);
 			if(region == null) regions.put(new RegionKey(xz), region = new WireRegion(xz[0], xz[1], this, false));
 			region.read(compound);
@@ -218,13 +220,13 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onChunkLoad(Chunk chunk){
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.put(new RegionKey(chunk.x, chunk.z), chunk);
+	public void onChunkLoad(ChunkW chunk){
+		regions.get(RegionKey.getRegionXZ(chunk.x(), chunk.z()), true).chucks.put(new RegionKey(chunk.x(), chunk.z()), chunk);
 	}
 
 	@Override
-	public void onChunkUnload(Chunk chunk){
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.values().removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
+	public void onChunkUnload(ChunkW chunk){
+		regions.get(RegionKey.getRegionXZ(chunk.x(), chunk.z()), true).chucks.values().removeIf(pre -> pre.x() == chunk.x() && pre.z() == chunk.z());
 	}
 
 	public long getNewSectionId(){
@@ -254,7 +256,7 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public boolean isRemote(){
-		return world.isRemote;
+		return world.isClient();
 	}
 	
 	//
@@ -335,7 +337,7 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onClientTick(World world){
+	public void onClientTick(){
 		//unused
 	}
 

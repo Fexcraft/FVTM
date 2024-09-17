@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -42,7 +43,7 @@ public class RailItemTest extends Item implements JunctionGridItem {
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || player.isSneaking()){ return EnumActionResult.PASS; }
-        RailSystem syscap = SystemManager.get(Systems.RAIL, world);
+        RailSystem syscap = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;

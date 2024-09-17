@@ -27,12 +27,14 @@ import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -485,13 +487,13 @@ public class RailEntity implements Comparable<RailEntity>{
 				lastcheck = interval;
 				return;
 			}
-			region.getWorld().getWorld().spawnEntity(new RailVehicle(this));
+			((World)region.getWorld().getWorld().direct()).spawnEntity(new RailVehicle(this));
 		}
 	}
 
 	private boolean isInPlayerRange(){
-		for(EntityPlayer pl : region.getWorld().getWorld().playerEntities){
-			if(pos.dis(pl.posX, pl.posY, pl.posZ) < 256) return true;
+		for(EntityW pl : region.getWorld().getWorld().getPlayers()){
+			if(pos.dis(pl.getPos()) < 256) return true;
 		}
 		return false;
 	}
@@ -678,7 +680,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	private void sendForwardUpdate(){
-		if(entity == null || region.getWorld().getWorld().isRemote) return;
+		if(entity == null || region.getWorld().getWorld().isClient()) return;
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", GuiHandler.LISTENERID);
 		packet.setString("task", "attr_update");
@@ -698,7 +700,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setActive(boolean bool){
 		vehdata.getAttribute("active").set(bool);
-		if(entity != null && !region.getWorld().getWorld().isRemote){
+		if(entity != null && !region.getWorld().getWorld().isClient()){
 			NBTTagCompound packet = new NBTTagCompound();
 			packet.setString("target_listener", GuiHandler.LISTENERID);
 			packet.setString("task", "attr_update");
@@ -724,7 +726,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setPaused(boolean bool){
 		vehdata.getAttribute("paused").set(com.paused = bool);
-		if(entity != null && !region.getWorld().getWorld().isRemote){
+		if(entity != null && !region.getWorld().getWorld().isClient()){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "paused");
 			packet.setString("value", vehdata.getAttribute("paused").asBoolean() + "");

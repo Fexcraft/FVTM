@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +30,7 @@ public class RailPlacerContainer extends GenericContainer {
 	public RailPlacerContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
 		itemslot = x; zoom = y;
-		system = SystemManager.get(Systems.RAIL, player.world, RailSystem.class);
+		system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world), RailSystem.class);
 		sender = new GuiCommandSender(player);
 		if(!player.world.isRemote && !Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
 	}

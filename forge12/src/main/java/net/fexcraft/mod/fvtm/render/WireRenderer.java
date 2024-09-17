@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -61,7 +62,7 @@ public class WireRenderer {
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(DISABLE_RAILS) return;
-	    wiredata = SystemManager.get(Systems.WIRE, world);
+	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
         //
         GL11.glPushMatrix();

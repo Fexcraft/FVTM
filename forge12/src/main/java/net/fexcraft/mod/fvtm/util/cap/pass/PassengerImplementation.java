@@ -35,9 +35,9 @@ public class PassengerImplementation implements PassCap {
 		}
 		vehicle = veh;
 		seatindex = seatid;
-		if (!entity.world.isRemote) {
+		if(!entity.world.isRemote){
 			update_packet();
-			if (entity instanceof EntityPlayer && !notified) {
+			if(entity instanceof EntityPlayer && !notified) {
 				try {
 					Print.link(entity, I19U.trss("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
 					notified = true;

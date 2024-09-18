@@ -100,11 +100,6 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					//RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
 					return;
 				}
-				case "update_unit_section":{
-					TrackUnit unit = system.getTrackUnits().get(packet.nbt.getString("unit"));
-					if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")), false);
-					return;
-				}
 				default: Print.debug(packet.nbt); return;
 			}
 		}

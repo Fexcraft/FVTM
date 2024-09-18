@@ -12,8 +12,11 @@ import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.rail.TrackUnit;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -23,6 +26,7 @@ import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.world.WorldW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -233,7 +237,9 @@ public abstract class Packets {
 				player.getFvtmWorld().handleBlockEntityPacket(tag, player);
 			});
 			LIS_CLIENT.put("rail_upd_unit_section", (tag, player) -> {
-
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				TrackUnit unit = system.getTrackUnits().get(tag.getString("unit"));
+				if(unit != null) unit.setSection(system.getSection(tag.getLong("section")), false);
 			});
 		}
 	}

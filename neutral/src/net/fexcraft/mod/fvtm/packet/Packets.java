@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.packet;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -24,6 +25,7 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -240,6 +242,18 @@ public abstract class Packets {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
 				TrackUnit unit = system.getTrackUnits().get(tag.getString("unit"));
 				if(unit != null) unit.setSection(system.getSection(tag.getLong("section")), false);
+			});
+			LIS_CLIENT.put("rail_upd_sections", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				TagLW list = tag.getList("units");
+				TrackUnit unit;
+				for(TagCW com : list){
+					unit = system.getTrackUnits().get(com.getString("unit"));
+					if(unit != null){
+						unit.setSection(system.getSection(com.getLong("section")), false);
+					}
+				}
+				FvtmLogger.debug(tag);
 			});
 		}
 	}

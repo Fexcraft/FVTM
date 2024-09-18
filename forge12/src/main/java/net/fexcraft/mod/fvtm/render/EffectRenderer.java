@@ -423,7 +423,7 @@ public class EffectRenderer {
 	}
 	
 	public static void renderSeats(GenericVehicle vehicle){
-		if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
+		/*if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
 		preMeshCalls();
     	GL11.glPushMatrix();
 		for(SeatCache seat : vehicle.seats){
@@ -434,7 +434,7 @@ public class EffectRenderer {
 		}
     	GL11.glPopMatrix();
 		postMeshCalls();
-		RGB.glColorReset();
+		RGB.glColorReset();*/
 	}
 
 	public static void renderSeats(VehicleInstance vehicle){

@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -334,7 +335,7 @@ public class RailSystem extends DetachedSystem {
 		regions.clear();
 	}
 
-	public void updateRegion(TagCW compound, @Nullable EntityPlayerMP player){
+	public void updateRegion(TagCW compound, @Nullable EntityW player){
 		int[] xz = compound.getIntArray("XZ");
 		if(world.isClient()){
 			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false));

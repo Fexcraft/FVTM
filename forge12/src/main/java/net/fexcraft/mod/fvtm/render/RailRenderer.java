@@ -294,10 +294,10 @@ public class RailRenderer {
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		TexUtil.bindTexture(track.gauge.getRailTexture());
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.disableCull();
-        		track.railmodel.render();
+				((TurboArrayPositioned)track.railmodel).render();
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.enableCull();
         		TexUtil.bindTexture(track.gauge.getTiesTexture());
-        		track.restmodel.render();
+				((TurboArrayPositioned)track.restmodel).render();
 				GL11.glPopMatrix();
         	}
         	if(Command.OTHER){

@@ -11,6 +11,8 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.nbt.NBTTagCompound;
 
+import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
+
 public class SignalTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
 	
 	protected QV3D juncpos;
@@ -67,7 +69,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
         		juncpos = null;//TODO control
         		Static.stop();
         	}
-        	else junction.addLinkedTileEntity(this.pos);
+        	else junction.addLinkedTileEntity(mutPos(pos));
 		}
 		return junction;
 	}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.uni.ConfigBase;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
@@ -23,7 +24,6 @@ public class Config extends ConfigBase {
 	public static boolean VEHICLES_DROP_CONTENTS;
 	public static boolean UNBREAKABLE_CONTAINERS;
 	public static boolean ROADTOOL_FOR_ALL;
-	public static boolean LOAD_PACKS_FROM_MODS;
 	public static boolean DISMOUNT_ON_LOGOUT;
 	public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 	//client
@@ -53,7 +53,6 @@ public class Config extends ConfigBase {
 	public static int WIRE_SEGMENTATOR;
 	public static int MAX_WIRE_LENGTH;
 	//deprecated
-	public static int VEHICLE_UPDATE_RANGE;
 	public static boolean OVERLAY_ON_BOTTOM;
 
 	public Config(File file){
@@ -81,9 +80,6 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catg, "dev_mode", new JsonValue(EnvInfo.DEV))
 			.info("If the FVTM Dev Mode (generally more logging) should be enabled.")
 			.cons((con, map) -> EnvInfo.DEV = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catg, "vehicle_update_range", new JsonValue(256))
-			.info("Range in which Vehicle Update Packets will be sent.").rang(64, 4096)
-			.cons((con, map) -> VEHICLE_UPDATE_RANGE = con.getInteger(map)));
 		entries.add(new ConfigEntry(this, catg, "vehicles_need_fuel", new JsonValue(true))
 			.info("If vehicles need Fuel (in survival mode) to function.")
 			.cons((con, map) -> VEHICLES_NEED_FUEL = con.getBoolean(map)));
@@ -96,15 +92,15 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catg, "road_tool_for_all", new JsonValue(false))
 			.info("When not using a Forge PermissionsAPI compatible permission manager, to allow any player to use the Road Placing Tool.")
 			.cons((con, map) -> ROADTOOL_FOR_ALL = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catg, "load_packs_from_mods", new JsonValue(true))
-			.info("If true, FVTM will search for packs in the /mods/ folder.")
-			.cons((con, map) -> LOAD_PACKS_FROM_MODS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catg, "dismount_on_logout", new JsonValue(true))
 			.info("If players should automatically dismount vehicles on log out (leaving server).")
 			.cons((con, map) -> DISMOUNT_ON_LOGOUT = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catg, "traffic_sign_libraries", new JsonArray("default_fexcraft;http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json"))
 			.info("List of External Traffic Sign Libraries. Separate the ID from the URL using a semicolon.")
 			.cons((con, map) -> DEFAULT_TRAFFIC_SIGN_LIBRARIES = con.getJson(map).asArray().toStringArray()));
+		entries.add(new ConfigEntry(this, catg, "update_packet_range", new JsonValue(256)).rang(64, 4096)
+			.info("Range in which ranged update packets are sent.")
+			.cons((con, map) -> Packets.RANGE = con.getInteger(map)));
 
 		//client
 		entries.add(new ConfigEntry(this, catc, "render_out_of_view", new JsonValue(false))

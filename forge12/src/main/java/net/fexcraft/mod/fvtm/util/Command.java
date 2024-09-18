@@ -146,7 +146,7 @@ public class Command extends CommandBase {
             			if(data.getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Vehicle first.");
             			}
-            			else if(!ent.getSeatOf(player).seatdata.driver){
+            			else if(!ent.getSeatOf(player).seat.driver){
                     		Print.chat(sender, "&eYou need to be the driver to get a key.");
             			}
             			else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){

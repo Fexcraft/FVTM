@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,10 +16,12 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -136,10 +139,10 @@ public class WireSystem extends DetachedSystem {
 		}
 		
 		public WireRegion get(BlockPos pos, boolean load){
-			WireRegion region = get(RegionKey.getRegionXZ(pos));
+			WireRegion region = get(RegionKey.getRegionXZ(mutPos(pos)));
 			if(region != null || !load) return region;
-			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new WireRegion(pos, root, false));
-			region.load().updateClient(pos);
+			put(new RegionKey(RegionKey.getRegionXZ(mutPos(pos))), region = new WireRegion(pos, root, false));
+			region.load().updateClient(mutPos(pos));
 			return region;
 		}
 
@@ -234,7 +237,7 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public Wire getWire(WireKey key){
-		WireRegion region = regions.get(RegionKey.getRegionXZ(key.start_pos), true);
+		WireRegion region = regions.get(RegionKey.getRegionXZ(mutPos(key.start_pos)), true);
 		return region == null ? null : region.getWire(key);
 	}
 	
@@ -250,9 +253,9 @@ public class WireSystem extends DetachedSystem {
 		return sections.get(sid, true);
 	}
 
-	public void sendReload(String string, ICommandSender sender){
-		WireRegion region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
-		if(region != null) region.updateClient(string, null, sender.getPosition(), null);
+	public void sendReload(String string, EntityW sender){
+		WireRegion region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
+		if(region != null) region.updateClient(string, null, new V3I(sender.getPos()), null);
 	}
 
 	public boolean isRemote(){
@@ -318,12 +321,12 @@ public class WireSystem extends DetachedSystem {
 
 	public RelayHolder getHolder(BlockPos pos){
 		WireRegion region = regions.get(pos, false);
-		return region == null ? null : region.getHolder(pos);
+		return region == null ? null : region.getHolder(mutPos(pos));
 	}
 
 	public RelayHolder getHolder(BlockPos pos, boolean load){
 		WireRegion region = regions.get(pos, load);
-		return region.getHolder(pos);
+		return region.getHolder(mutPos(pos));
 	}
 
 	private RelayHolder addHolder(BlockPos pos){

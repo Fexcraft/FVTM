@@ -2,11 +2,10 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import java.nio.ByteBuffer;
 
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 
 public class RegionKey implements Comparable<RegionKey> {
 	
@@ -69,12 +68,12 @@ public class RegionKey implements Comparable<RegionKey> {
 		return getRegionXZ((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
-	public static int[] getRegionXZ(Vec3d vec){
+	public static int[] getRegionXZ(V3D vec){
 		return getRegionXZ((int)vec.x >> 4, (int)vec.z >> 4);
 	}
 
-	public static int[] getRegionXZ(Vec3i vec){
-		return getRegionXZ((int)vec.getX() >> 4, (int)vec.getZ() >> 4);
+	public static int[] getRegionXZ(V3I vec){
+		return getRegionXZ(vec.x >> 4, vec.z >> 4);
 	}
 
 	public static int[] getRegionXZ(PathKey key){
@@ -86,7 +85,7 @@ public class RegionKey implements Comparable<RegionKey> {
 		return id[0] == x && id[1] == z;
 	}
 
-	public boolean isInRegion(BlockPos pos){
+	public boolean isInRegion(V3I pos){
 		int[] id = getRegionXZ(pos);
 		return id[0] == x && id[1] == z;
 	}

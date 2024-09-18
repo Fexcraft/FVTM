@@ -33,6 +33,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -78,7 +79,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		rrbogiedis  = (float)-vdata.getWheelPositions().get("bogie_rear").x;
 		frconndis = 1;//TODO (float)vdata.getFrontConnector().x;
 		rrconndis = -1;//TODO (float)-vdata.getRearConnector().x;
-		com = new Compound.Singular(this); 
+		com = new Compound.Singular(this);
 		//
 		//this.passed = passed + rrconndis + frbogiedis;
 		bfront = move(rrconndis + frbogiedis, TrainPoint.BOGIE_FRONT);

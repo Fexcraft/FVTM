@@ -13,8 +13,8 @@ import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
-import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.TrackUnit;
+import net.fexcraft.mod.fvtm.sys.rail.*;
+import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -28,7 +28,6 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -186,6 +185,10 @@ public abstract class Packets {
 				player.openUI(UIKeys.TOOLBOX_TEXTURE, new V3I(ref.getValue().vehicle().entity.getId(), ref.getKey().getPartIndex(part), 1));
 			}
 		});
+		LIS_SERVER.put("rail_upd_region", (com, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			system.updateRegion(com, player);
+		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
 				AttrReqHandler.processToggleResponse(player, tag);
@@ -254,6 +257,71 @@ public abstract class Packets {
 					}
 				}
 				FvtmLogger.debug(tag);
+			});
+			LIS_CLIENT.put("rail_upd_region", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				system.updateRegion(tag, null);
+			});
+			LIS_CLIENT.put("rail_spawn_ent", (tag, player) -> {
+				FvtmLogger.debug("Receiving entity spawn request.");
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				Region region = system.getRegions().get(tag.getIntArray("XZ"), true);
+				if(region != null && region.loaded){
+					//TODO region.spawnEntity(new RailEntity(region, tag.getLong("uid")).read(tag));
+				}
+				else Region.clientqueue.put(tag.getLong("uid"), tag.copy());
+			});
+			LIS_CLIENT.put("rail_rem_ent", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				//TODO RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false);
+				//TODO if(ent != null) ent.remove();
+			});
+			LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				QV3D vec = new QV3D(tag, "Pos");
+				Junction junction = system.getJunction(vec);
+				if(junction != null) junction.read(tag);
+				else{
+					Region region = system.getRegions().get(vec, false);
+					if(region != null){
+						region.getJunctions().put(vec, new Junction(region, vec).read(tag));
+					}
+				}
+			});
+			LIS_CLIENT.put("rail_rem_junc", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				system.delJunction(new QV3D(tag, null));
+			});
+			LIS_CLIENT.put("rail_upd_junc_state", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				Junction junction = system.getJunction(new QV3D(tag, "pos"));
+				if(junction != null){
+					junction.switch0 = tag.getBoolean("switch0");
+					junction.switch1 = tag.getBoolean("switch1");
+				}
+			});
+			LIS_CLIENT.put("rail_upd_junc_signal", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				Junction junction = system.getJunction(new QV3D(tag, "pos"));
+				if(junction != null){
+					if(tag.has("nosignal") && tag.getBoolean("nosignal")){
+						junction.signal = null;
+						junction.signal_dir = EntryDirection.FORWARD;
+					}
+					else{
+						junction.signal = SignalType.values()[tag.getInteger("signal")];
+						junction.signal_dir = EntryDirection.values()[tag.getInteger("signal_dir")];
+					}
+					junction.signalpos0 = junction.signalpos1 = null;
+				}
+			});
+			LIS_CLIENT.put("rail_upd_junc_signal_state", (tag, player) -> {
+				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+				Junction junction = system.getJunction(new QV3D(tag, "pos"));
+				if(junction != null){
+					junction.signal0 = tag.getBoolean("signal0");
+					junction.signal1 = tag.getBoolean("signal1");
+				}
 			});
 		}
 	}

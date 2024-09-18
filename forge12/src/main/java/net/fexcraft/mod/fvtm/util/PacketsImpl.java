@@ -129,7 +129,7 @@ public class PacketsImpl extends Packets {
 			send0(Packet_TagListener.class, "vehicle", com);
 		}
 		else{
-			sendInRange0(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle", com);
+			sendInRange0(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), RANGE, "vehicle", com);
 		}
 	}
 
@@ -206,15 +206,15 @@ public class PacketsImpl extends Packets {
 	}
 
 	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
-		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
+		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, RANGE);
 	}
 
 	public static TargetPoint getTargetPoint(int dim, BlockPos pos){
-		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.VEHICLE_UPDATE_RANGE);
+		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), RANGE);
 	}
 
 	public static TargetPoint getTargetPoint(int dim, V3I pos){
-		return new NetworkRegistry.TargetPoint(dim, pos.x, pos.y, pos.z, Config.VEHICLE_UPDATE_RANGE);
+		return new NetworkRegistry.TargetPoint(dim, pos.x, pos.y, pos.z, RANGE);
 	}
 
 }

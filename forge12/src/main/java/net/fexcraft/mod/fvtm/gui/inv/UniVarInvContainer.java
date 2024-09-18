@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -70,12 +71,12 @@ public class UniVarInvContainer extends GenericContainer {
 		}
 		else if(ID == UIKeys.VEHICLE_INVENTORY_FLUID.id){
 			entity = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-			SeatCache seat = entity.getSeatOf(player);
+			SeatInstance seat = entity.getSeatOf(player);
 			int invid = 0;
 			for(Map.Entry<String, PartData> entry : entity.getVehicleData().getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 				if(inv == null || inv.inventory().type.isContainer()) continue;
-				if(seat == null ? inv.getSeats().contains(entity.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
+				if(seat == null ? inv.getSeats().contains(entity.isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.getSeats().contains(seat.seat.name)))){
 					if(invid == z){
 						inv_id = entry.getKey();
 						func = inv;

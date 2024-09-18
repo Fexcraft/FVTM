@@ -183,7 +183,7 @@ public class RailRenderer {
         	//if(reg.READING) continue;
         	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
         	for(int i = 0; i < junctions.length; i++){
-        		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
+        		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB().local())) continue;
             	GL11.glPushMatrix();
             	TexUtil.bindTexture(WOOLTEX);
             	GL11.glTranslated(junctions[i].getVec().x - cx, junctions[i].getVec().y - cy, junctions[i].getVec().z - cz);

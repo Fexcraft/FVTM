@@ -5,7 +5,6 @@ import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.PLAYERON;
 import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.SINGLEPLAYER;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map.Entry;
@@ -16,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
@@ -24,14 +24,7 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.ChunkW;
-import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.WorldW;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
+import net.fexcraft.mod.uni.world.*;
 
 /**
  * "Rail System Data"
@@ -54,49 +47,39 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	public void load(){
-		try{
-			File file = new File(getSaveRoot(), "/railsystem.dat");
-			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			TagCW compound = TagCW.wrap(CompressedStreamTools.read(file));
-			if(compound == null || compound.empty()) return;
-			gc_entities = compound.getLong("GlobalCounterEntities");
-			gc_sections = compound.getLong("GlobalCounterSections");
-			gc_compounds = compound.getLong("GlobalCounterCompounds");
-			if(compound.has("Entities")){
-				TagCW enty = compound.getCompound("Entities");
-				for(String str : enty.keys()){
-					try{
-						entities.put(Long.parseLong(str, 16), new RegionKey(enty.getLong(str)));
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
+		File file = new File(getSaveRoot(), "/railsystem.dat");
+		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+		TagCW compound = WrapperHolder.read(file);
+		if(compound == null || compound.empty()) return;
+		gc_entities = compound.getLong("GlobalCounterEntities");
+		gc_sections = compound.getLong("GlobalCounterSections");
+		gc_compounds = compound.getLong("GlobalCounterCompounds");
+		if(compound.has("Entities")){
+			TagCW enty = compound.getCompound("Entities");
+			for(String str : enty.keys()){
+				try{
+					entities.put(Long.parseLong(str, 16), new RegionKey(enty.getLong(str)));
+				}
+				catch(Exception e){
+					e.printStackTrace();
 				}
 			}
-		}
-		catch(IOException e){
-			e.printStackTrace();
 		}
 	}
 
 	public void save(){
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("GlobalCounterEntities", gc_entities);
-		compound.setLong("GlobalCounterSections", gc_sections);
-		compound.setLong("GlobalCounterCompounds", gc_compounds);
+		TagCW compound = TagCW.create();
+		compound.set("GlobalCounterEntities", gc_entities);
+		compound.set("GlobalCounterSections", gc_sections);
+		compound.set("GlobalCounterCompounds", gc_compounds);
 		if(!entities.isEmpty()){
-			NBTTagCompound enty = new NBTTagCompound();
-			entities.forEach((key, value) -> { enty.setLong(Long.toHexString(key), value.toLong()); });
-			compound.setTag("Entities", enty);
+			TagCW enty = TagCW.create();
+			entities.forEach((key, value) -> { enty.set(Long.toHexString(key), value.toLong()); });
+			compound.set("Entities", enty);
 		}
-		try{
-			File file = new File(getSaveRoot(), "/railsystem.dat");
-			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			CompressedStreamTools.write(compound, file);
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
+		File file = new File(getSaveRoot(), "/railsystem.dat");
+		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+		WrapperHolder.write(compound, file);
 	}
 	
 	public static class TrackMap extends TreeMap<String, TrackUnit> {
@@ -210,7 +193,11 @@ public class RailSystem extends DetachedSystem {
 		return arr;
 	}
 
-	public ArrayList<Junction> getJunctionsAt(BlockPos pos){
+	public ArrayList<Junction> getJunctionsAt(int x, int y, int z){
+		return getJunctionsAt(new V3I(x, y, z));//TODO
+	}
+
+	public ArrayList<Junction> getJunctionsAt(V3I pos){
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(pos));
 		if(region == null) return arr;
@@ -274,7 +261,7 @@ public class RailSystem extends DetachedSystem {
 			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
 			for(Long uid : Region.clientqueue.keySet()){
-				NBTTagCompound compound = Region.clientqueue.get(uid);
+				TagCW compound = Region.clientqueue.get(uid);
 				Print.debug("Checking " + compound.getLong("uid"));
 				Region region = getRegions().get(compound.getIntArray("XZ"));
 				if(region == null || !region.loaded) continue;
@@ -419,10 +406,10 @@ public class RailSystem extends DetachedSystem {
 		return sections.get(sid, true);
 	}
 
-	public void sendReload(String string, ICommandSender sender){
-		Region region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
+	public void sendReload(String string, EntityW sender){
+		Region region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
 		if(region != null){
-			region.updateClient(string, new QV3D(sender.getPositionVector().x, sender.getPositionVector().y, sender.getPositionVector().z, 0));
+			region.updateClient(string, new QV3D(sender.getPos(), 0));
 		}
 	}
 

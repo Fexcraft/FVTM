@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.render.RailRenderer;
@@ -108,9 +109,9 @@ public class RailGaugeModel extends DefaultModel {
 		groups.get("buffer").render();
 		GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(-90, 0, 1, 0);
 		TexUtil.bindTexture(buffer_track.gauge.getTiesTexture());
-		buffer_track.restmodel.renderPlain();
+		((TurboArrayPositioned)buffer_track.restmodel).renderPlain();
 		TexUtil.bindTexture(buffer_track.gauge.getRailTexture());
-		buffer_track.railmodel.renderPlain();
+		((TurboArrayPositioned)buffer_track.railmodel).renderPlain();
 	}
 	
 }

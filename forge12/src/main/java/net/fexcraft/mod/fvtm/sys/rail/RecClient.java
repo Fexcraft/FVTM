@@ -84,18 +84,6 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					else Region.clientqueue.put(packet.nbt.getLong("uid"), packet.nbt.copy());*/
 					Static.stop(); return;
 				}
-				case "update_sections":{
-					NBTTagList list = (NBTTagList)packet.nbt.getTag("units"); TrackUnit unit; NBTTagCompound com;
-					for(NBTBase base : list){
-						com = (NBTTagCompound)base;
-						unit = system.getTrackUnits().get(com.getString("unit"));
-						if(unit != null){
-							unit.setSection(system.getSection(com.getLong("section")), false);
-						}
-					}
-					Print.debug(list);
-					return;
-				}
 				case "remove_entity":{
 					//RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
 					return;

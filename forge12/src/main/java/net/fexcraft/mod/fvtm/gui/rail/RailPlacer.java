@@ -237,7 +237,8 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			ttip.add(PARAGRAPH_SIGN + "7Pos: " + POSGRID[x][y].getX() + "x, " + POSGRID[x][y].getY() + "y, " + POSGRID[x][y].getZ() + "z, ");
         	ttip.add(PARAGRAPH_SIGN + "7Block: " + STATEGRID[x][y].getBlock().getLocalizedName());
         	//Junction junc = system.getJunction(new Vec316f(POSGRID[x][y].up(), orient.x, 0, orient.z));
-        	ArrayList<Junction> juncs = system.getJunctionsAt(POSGRID[x][y].up());
+			BlockPos pos = POSGRID[x][y].up();
+        	ArrayList<Junction> juncs = system.getJunctionsAt(pos.getX(), pos.getY(), pos.getZ());
         	if(juncs.size() > 0){
         		if(juncs.size() == 1){
         			ttip.add(PARAGRAPH_SIGN + "9Junction: " + PARAGRAPH_SIGN + "b" + (juncs.get(0).tracks.isEmpty() ? "empty" : juncs.get(0).tracks.size() + " tracks"));

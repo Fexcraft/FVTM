@@ -72,7 +72,7 @@ public interface JunctionTrackingTileEntity {
 		RailSystem system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
 		if(system == null) return;
 		Junction junc = system.getJunction(vec);
-		if(junc != null) junc.addLinkedTileEntity(pos);
+		if(junc != null) junc.addLinkedTileEntity(WrapperHolder.mutPos(pos));
 	}
 
 	public QV3D getJuncPos();

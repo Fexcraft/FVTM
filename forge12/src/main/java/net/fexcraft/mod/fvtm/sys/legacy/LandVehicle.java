@@ -128,8 +128,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getSphData();
         wheels = new WheelEntity[WHEELINDEX.length];
-        if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
-        for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
+        if(seats == null) seats = new SeatInstance[vehicle.getSeats().size()];
+        for(int i = 0; i < seats.length; i++) seats[i] = null;//TODO new SeatInstance(this, i);
         stepHeight = lata.wheel_step_height;
         rotpoint = vehicle.getRotationPoint("vehicle");
         this.setSize(vehicle.getAttribute("hitbox_width").asFloat(), vehicle.getAttribute("hitbox_height").asFloat());
@@ -722,7 +722,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
         //TODO for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
-        for(SeatCache seat : seats) seat.updatePosition();
+        //TODO for(SeatCache seat : seats) seat.updatePosition();
         //TODO vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
         /*if(drivenByPlayer){

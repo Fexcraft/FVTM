@@ -5,7 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
+
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 /**
  * 
@@ -22,7 +27,7 @@ public class Section {
 	
 	public Section(RailSystem data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
-		Print.log("Created Section [" + (sid == null ? "new/" + uid : sid) + "]");
+		FvtmLogger.log("Created Section [" + (sid == null ? "new/" + uid : sid) + "]");
 	}
 	
 	public Section fill(TrackUnit... tracks){
@@ -44,7 +49,7 @@ public class Section {
 	}
 
 	public void fuseAtTrack(Track zero){
-		Print.log("Fusing sections at track: " + zero);
+		FvtmLogger.log("Fusing sections at track: " + zero);
 		Section old = null;
 		ArrayList<TrackUnit> list = new ArrayList<>();
 		list.add(zero.unit);
@@ -56,10 +61,10 @@ public class Section {
 				old = unit.section();
 				old.units.remove(unit);
 				unit.setSection(this, true);
-				Print.log("Added into section '" + uid + "': " + unit);
+				FvtmLogger.log("Added into section '" + uid + "': " + unit);
 				if(old.units.size() == 0){
 					data.getSections().remove(old.getUID());
-					Print.log("Removing section '" + old.getUID() + "'!");
+					FvtmLogger.log("Removing section '" + old.getUID() + "'!");
 				}
 			}
 		}
@@ -70,7 +75,7 @@ public class Section {
 
 	/** Called after a track was removed from a junction.*/
 	public void splitAtTrack(Track track){
-		Print.log("Splitting section at track: " + track);
+		FvtmLogger.log("Splitting section at track: " + track);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0 = explore(data.getJunction(track.start), list0);
 		list1 = explore(data.getJunction(track.end), list1);
@@ -85,12 +90,12 @@ public class Section {
 		}
 		this.units.removeAll(less);
 		section.units.addAll(less);
-		Print.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");
+		FvtmLogger.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		//this.updateClientSections(track.junction, this, section);
 	}
 
 	public void splitAtSignal(Junction junction){
-		Print.log("Splitting section at junction: " + junction);
+		FvtmLogger.log("Splitting section at junction: " + junction);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0.add(junction.tracks.get(0).unit);
 		list1.add(junction.tracks.get(1).unit);
@@ -105,7 +110,7 @@ public class Section {
 		for(TrackUnit unit : less){ unit.setSection(section, true); }
 		this.units.removeAll(less);
 		section.units.addAll(less);
-		Print.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");
+		FvtmLogger.log("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		//this.updateClientSections(junction, this, section);
 	}
 
@@ -145,29 +150,29 @@ public class Section {
 		return units.remove(unit);
 	}
 
-	/*private void updateClientSections(Junction junction, Section sec0, Section sec1){
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", "fvtm:railsys");
-		compound.setString("task", "update_sections");
-		NBTTagList list = new NBTTagList();
+	private void updateClientSections(Junction junction, Section sec0, Section sec1){
+		TagCW compound = TagCW.create();
+		compound.set("target_listener", "fvtm:railsys");
+		compound.set("task", "update_sections");
+		TagLW list = TagLW.create();
 		if(sec0 != null){
 			for(TrackUnit unit : sec0.units){
-				NBTTagCompound com = new NBTTagCompound();
-				com.setString("unit", unit.getUID());
-				com.setLong("section", unit.getSectionId());
-				list.appendTag(com);
+				TagCW com = TagCW.create();
+				com.set("unit", unit.getUID());
+				com.set("section", unit.getSectionId());
+				list.add(com);
 			}
 		}
 		if(sec1 != null){
 			for(TrackUnit unit : sec1.units){
-				NBTTagCompound com = new NBTTagCompound();
-				com.setString("unit", unit.getUID());
-				com.setLong("section", unit.getSectionId());
-				list.appendTag(com);
+				TagCW com = TagCW.create();
+				com.set("unit", unit.getUID());
+				com.set("section", unit.getSectionId());
+				list.add(com);
 			}
 		}
-		compound.setTag("units", list);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(junction.region.getWorld().getDimension(), junction.getVec316f().pos));
-	}*/
+		compound.set("units", list);
+		Packets.sendInRange(PKT_TAG, junction.region.getWorld().getWorld(), junction.getVec316f().vec, "rail_upd_sections", compound);
+	}
 
 }

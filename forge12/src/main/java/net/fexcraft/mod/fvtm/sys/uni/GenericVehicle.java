@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +49,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public double throttle;
 	//@SideOnly(Side.CLIENT)
 	public double speed;
-	public SeatCache[] seats;
+	public SeatInstance[] seats;
 	public WheelEntity[] wheels;
 	public LoopSound engineloop;
     public float prevRotationYaw;
@@ -77,8 +78,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	/** Returns first found (driver) seat's controlling passenger that is a player. */
 	public Entity getDriver(){
-		for(SeatCache ent : seats){
-			if(ent.seatdata.driver && ent.passenger() instanceof EntityPlayer) return ent.passenger();
+		for(SeatInstance ent : seats){
+			if(ent.seat.driver && ent.passenger() instanceof EntityPlayer) return ent.passenger().local();
 		}
 		return null;
 	}
@@ -90,8 +91,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@Override
 	public void updatePassenger(Entity pass){
-		SeatCache seat = getSeatOf(pass);
-		if(seat != null) seat.updatePassenger(pass);
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) seat.update();
 		else{
 			if(world.isRemote) pass.getCapability(Capabilities.PASSENGER, null).reconn(true);
 			pass.setPosition(posX, posY, posZ);
@@ -107,16 +108,16 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	@Override
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
-		SeatCache cache = getSeatOf(pass);
+		SeatInstance cache = getSeatOf(pass);
 		if(cache != null){
-			cache.passenger(pass);
+			cache.passenger(UniEntity.getEntity(pass));
 		}
 	}
 	
 	@Override
 	public void removePassenger(Entity pass){
 		if(seats != null){
-			for(SeatCache seat : seats){
+			for(SeatInstance seat : seats){
 				if(pass.equals(seat.passenger())){
 					seat.passenger(null);
 				}
@@ -148,11 +149,11 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	}
 
 	public void updateSittingState(Entity pass){
-		SeatCache seat = getSeatOf(pass);
-		if(seat != null) should_sit = seat.seatdata.sitting;
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) should_sit = seat.seat.sitting;
 	}
 
-	public SeatCache getSeatOf(Entity entity){
+	public SeatInstance getSeatOf(Entity entity){
 		PassCap pass = entity.getCapability(Capabilities.PASSENGER, null);
 		if(pass == null || pass.seat() < 0 || seats == null || pass.seat() >= seats.length) return null;
 		return seats[pass.seat()];

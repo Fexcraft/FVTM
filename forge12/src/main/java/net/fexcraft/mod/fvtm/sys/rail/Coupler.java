@@ -2,10 +2,10 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.Collections;
 
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 
 
@@ -65,7 +65,7 @@ public class Coupler {
 		if(root.com.isSingular() && entity.com.isSingular()){
 			root.com.dispose(); entity.com.dispose();
 			root.com = entity.com = new Multiple(root, entity);//solid ? root : entity, solid ? entity : root);
-			Print.debug("REC: created new");
+			FvtmLogger.debug("REC: created new");
 			notifyDriver("Coupled at " + (frontal ? "front." : "rear."));
 		}
 		else if(!root.com.isSingular() && !entity.com.isSingular()){
@@ -87,7 +87,7 @@ public class Coupler {
 				root.com.entities.forEach(e -> e.com = root.com);
 				notifyDriver("Coupled a compound to begin.");
 			}
-			Print.debug("REC: fused");
+			FvtmLogger.debug("REC: fused");
 		}
 		else if(root.com.isSingular()){
 			if(entity.com.isHead(entity)){
@@ -97,7 +97,7 @@ public class Coupler {
 				entity.com.entities.add(root);
 			}
 			root.com.dispose(); root.com = entity.com;
-			Print.debug("REC: attached root");
+			FvtmLogger.debug("REC: attached root");
 			notifyDriver("Coupled to another compound.");
 		}
 		else if(entity.com.isSingular()){
@@ -108,7 +108,7 @@ public class Coupler {
 				root.com.entities.add(entity);
 			}
 			entity.com.dispose(); entity.com = root.com;
-			Print.debug("REC: attached entity");
+			FvtmLogger.debug("REC: attached entity");
 			notifyDriver("RollingStock coupled to compound.");
 		}
 	}
@@ -116,10 +116,10 @@ public class Coupler {
 	private void notifyDriver(String string){
 		for(RailEntity ent : root.com.entities){
 			if(ent.entity == null) continue;
-			for(SeatCache seat : ent.entity.seats){
-				if(!seat.seatdata.driver) continue;
+			for(SeatInstance seat : ent.entity.seats){
+				if(!seat.seat.driver) continue;
 				if(seat.passenger() == null) continue;
-				Print.chat(seat.passenger(), "&e&7" + string);
+				seat.passenger().send("&e&7" + string);
 			}
 		}
 	}

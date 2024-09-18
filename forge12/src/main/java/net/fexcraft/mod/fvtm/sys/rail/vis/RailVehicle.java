@@ -108,8 +108,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		if(compound != null) rek = new Reltrs(SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
         this.setSize(rek.data().getAttribute("hitbox_width").asFloat(), rek.data().getAttribute("hitbox_height").asFloat());
-        if(seats == null) seats = new SeatCache[rek.data().getSeats().size()];
-        for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
+        if(seats == null) seats = new SeatInstance[rek.data().getSeats().size()];
+        for(int i = 0; i < seats.length; i++) seats[i] = null;//TODO new SeatInstance(this, i);
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCapability Implementation Found!");}
@@ -578,7 +578,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	rek.data().getAttribute("section_on").set(rek.current.getUnit().section().getUID());
         }
         //TODO for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
-        for(SeatCache seat : seats) seat.updatePosition();
+        for(SeatInstance seat : seats) seat.update();
         //TODO rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         if(!world.isRemote && ticksExisted % servtick == 0){

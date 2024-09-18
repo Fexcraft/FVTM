@@ -1,12 +1,11 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.uni.tag.TagCW;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.minecraft.nbt.NBTTagCompound;
-
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 /**
  * 
@@ -75,19 +74,17 @@ public class TrackUnit {
 
 	private void updateClient(){
 		if(data.isRemote()) return;
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", "fvtm:railsys");
-		compound.setString("task", "update_unit_section");
-		compound.setString("unit", getUID());
-		compound.setLong("section", getSectionId());
+		TagCW compound = TagCW.create();
+		compound.set("unit", getUID());
+		compound.set("section", getSectionId());
 		if(orig == null && copy == null){
-			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+			Packets.sendToAll(PKT_TAG, "rail_upd_unit_section", compound);
 		}
 		else{
 			Track track = orig == null ? copy : orig;
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(track.junction.root.getDimension(), track.start.pos));
+			Packets.sendInRange(PKT_TAG, track.junction.root.getWorld(), track.start.vec, "rail_upd_unit_section", compound);
 			if(track.length > 16){
-				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(track.junction.root.getDimension(), track.end.pos));
+				Packets.sendInRange(PKT_TAG, track.junction.root.getWorld(), track.end.vec, "rail_upd_unit_section", compound);
 			}
 		}
 	}

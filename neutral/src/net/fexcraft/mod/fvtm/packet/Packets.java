@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.fexcraft.mod.fvtm.Config.VEHICLE_UPDATE_RANGE;
-
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -37,7 +35,10 @@ public abstract class Packets {
 
 	public static HashMap<String, PacketListener> LIS_CLIENT = new HashMap<>();
 	public static HashMap<String, PacketListener> LIS_SERVER = new HashMap<>();
+	public static int RANGE = 256;
 	public static Packets INSTANCE = null;
+	//
+	public static Class<? extends PacketBase> PKT_TAG = Packet_TagListener.class;
 
 	public void init(){
 		LIS_SERVER.put("attr_toggle", (com, player) -> {
@@ -231,6 +232,9 @@ public abstract class Packets {
 			LIS_CLIENT.put("blockentity", (tag, player) -> {
 				player.getFvtmWorld().handleBlockEntityPacket(tag, player);
 			});
+			LIS_CLIENT.put("rail_upd_unit_section", (tag, player) -> {
+
+			});
 		}
 	}
 
@@ -261,13 +265,13 @@ public abstract class Packets {
 	public abstract void sendInRange0(Class<? extends PacketBase> packet, WorldW world, V3D pos, int range, Object... data);
 
 	/** Sends a Packet to all in range. */
-	public static void sendInRange(Class<? extends PacketBase> packet, WorldW world, V3D pos, int range, Object... data){
-		INSTANCE.sendInRange0(packet, world, pos, range, data);
+	public static void sendInRange(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
+		INSTANCE.sendInRange0(packet, world, pos, RANGE, data);
 	}
 
 	/** Sends a Packet to all in range. */
 	public static void sendInRange(Class<? extends PacketBase> packet, Passenger pass, Object... data){
-		sendInRange(packet, pass.getWorld(), pass.getPos(), VEHICLE_UPDATE_RANGE, data);
+		sendInRange(packet, pass.getWorld(), pass.getPos(), data);
 	}
 
 	/** Sends a Packet to all. */

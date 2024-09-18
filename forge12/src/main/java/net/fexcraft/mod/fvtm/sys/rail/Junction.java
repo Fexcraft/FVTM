@@ -8,6 +8,8 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.JunctionTrackingTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
+import net.fexcraft.mod.fvtm.render.RailRenderer;
+import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
@@ -88,8 +90,8 @@ public class Junction {
 		if(trackam > 0){
 			if(root.getWorld().isClient()){
 				for(Track track : tracks){
-					if(track.railmodel != null) track.railmodel.clearDisplayLists();
-					if(track.restmodel != null) track.restmodel.clearDisplayLists();
+					if(track.railmodel != null) ((TurboArrayPositioned)track.railmodel).clearDisplayLists();
+					if(track.restmodel != null) ((TurboArrayPositioned)track.restmodel).clearDisplayLists();
 					track.railmodel = track.restmodel = null;
 				}
 				signalpos0 = signalpos1 = null; bufferrot = null;

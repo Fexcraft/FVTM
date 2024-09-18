@@ -96,9 +96,7 @@ public abstract class FvtmResources {
 			searchPacksInFolder(new File(FvtmRegistry.CONFIG_DIR.getParentFile(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
 		}
 		searchPacksInFolder(new File(FVTM_CONFIG_DIR, "packs/"), AddonLocation.CONFIGPACK, true);
-		if(Config.LOAD_PACKS_FROM_MODS){
-			searchPacksInFolder(new File(FvtmRegistry.CONFIG_DIR.getParentFile(), "/mods/"), AddonLocation.CONFIGPACK, false);
-		}
+		searchPacksInFolder(new File(FvtmRegistry.CONFIG_DIR.getParentFile(), "/mods/"), AddonLocation.CONFIGPACK, false);
 		for(File file : Config.PACK_FOLDERS){
 			searchPacksInFolder(file, AddonLocation.CONFIGPACK, true);
 		}

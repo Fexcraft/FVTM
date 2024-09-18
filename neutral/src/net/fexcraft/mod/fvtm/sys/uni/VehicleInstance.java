@@ -26,7 +26,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 
-import static net.fexcraft.mod.fvtm.Config.VEHICLE_UPDATE_RANGE;
+import static net.fexcraft.mod.fvtm.packet.Packets.RANGE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -271,7 +271,7 @@ public class VehicleInstance {
 
 	public void sendUpdatePacket(){
 		data.getAttribute("throttle").set(throttle);
-		Packets.sendInRange(Packet_VehMove.class, entity.getWorld(), entity.getPos(), VEHICLE_UPDATE_RANGE, entity, this);
+		Packets.sendInRange(Packet_VehMove.class, entity.getWorld(), entity.getPos(), entity, this);
 		for(SwivelPoint point : data.getRotationPoints().values()){
 			point.sendUpdatePacket(entity);
 		}

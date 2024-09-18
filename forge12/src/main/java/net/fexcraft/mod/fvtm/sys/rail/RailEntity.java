@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
@@ -30,9 +31,7 @@ import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -468,7 +467,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(lastcheck == null) return; if(lastcheck > 0){ lastcheck--; return; }
 		if(entity != null){
 			if(entity.seats != null)
-				for(SeatCache seat : entity.seats)
+				for(SeatInstance seat : entity.seats)
 					if(seat.passenger() != null){
 						lastcheck = interval;
 						return;

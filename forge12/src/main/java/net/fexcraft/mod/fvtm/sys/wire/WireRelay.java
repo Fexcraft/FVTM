@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -85,7 +87,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		holder.getRegion().updateClient("relay", null, holder.pos, this);
+		holder.getRegion().updateClient("relay", null, mutPos(holder.pos), this);
 	}
 
 	public void remove(int index, boolean firstcall){

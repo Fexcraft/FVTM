@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
 /**
  * 
@@ -45,7 +47,7 @@ public class WireRegion {
 	}
 
 	public WireRegion(BlockPos pos, WireSystem root, boolean load){
-		key = new RegionKey(RegionKey.getRegionXZ(pos));
+		key = new RegionKey(RegionKey.getRegionXZ(mutPos(pos)));
 		system = root;
 		if(load) load();
 	}
@@ -133,8 +135,8 @@ public class WireRegion {
 	}
 
 	public WireRelay getRelay(WireKey wkey){
-		if(!key.isInRegion(wkey.start_pos)) return system.getRelay(wkey);
-		RelayHolder holder = getHolder(wkey.start_pos);
+		if(!key.isInRegion(mutPos(wkey.start_pos))) return system.getRelay(wkey);
+		RelayHolder holder = getHolder(mutPos(wkey.start_pos));
 		return holder == null ? null : holder.get(wkey.start_relay);
 	}
 
@@ -157,18 +159,18 @@ public class WireRegion {
 		return key;
 	}
 	
-	public void updateClient(BlockPos pos){
+	public void updateClient(V3I pos){
 		updateClient("all", null, pos, null);
 	}
 	
-	public void updateClient(String kind, String key, BlockPos pos, Object obj){
+	public void updateClient(String kind, String key, V3I pos, Object obj){
 		if(system.getWorld().isClient()) return;
 		NBTTagCompound compound = null;
 		switch(kind){
 			case "all":{
 				compound = this.write(true);
 				compound.setString("task", "update_region");
-				compound.setLong("pos", pos.toLong());
+				compound.setLong("pos", pos.asLong());
 				compound.setIntArray("XZ", RegionKey.getRegionXZ(pos));
 				break;
 			}
@@ -182,7 +184,7 @@ public class WireRegion {
 			case "no_relay":{
 				compound = new NBTTagCompound();
 				compound.setString("task", "remove_relay");
-				compound.setLong("pos", pos.toLong());
+				compound.setLong("pos", pos.asLong());
 				compound.setString("key", key);
 				break;
 			}
@@ -195,7 +197,7 @@ public class WireRegion {
 			}
 			case "no_holder":{
 				compound = new NBTTagCompound();
-				compound.setLong("pos", pos.toLong());
+				compound.setLong("pos", pos.asLong());
 				compound.setString("task", "rem_holder");
 				break;
 			}
@@ -240,7 +242,7 @@ public class WireRegion {
 		return relay == null ? null : relay.getWire(key);
 	}
 
-	public RelayHolder getHolder(BlockPos pos){
+	public RelayHolder getHolder(V3I pos){
 		return holders.get(pos);
 	}
 
@@ -254,7 +256,7 @@ public class WireRegion {
 	}
 
 	public void delHolder(BlockPos pos){
-		RelayHolder holder = getHolder(pos);
+		RelayHolder holder = getHolder(mutPos(pos));
 		if(holder == null) return;
 		holder.delete();
 		holders.remove(pos);

@@ -5,11 +5,10 @@ import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * "Rail Entities Compound"
@@ -116,8 +115,8 @@ public abstract class Compound {
 				if(compound == null) continue;
 				if(!compound.has("region")) return;
 				if(FvtmRegistry.VEHICLES.get(compound.getString("Vehicle")) == null){
-					Print.log("COMPOUND(" + id + ") Rail Vehicle with id '" + compound.getString("Vehicle") + "' not found, removing.");
-					Print.log("NBT:" + compound);
+					FvtmLogger.log("COMPOUND(" + id + ") Rail Vehicle with id '" + compound.getString("Vehicle") + "' not found, removing.");
+					FvtmLogger.log("NBT:" + compound);
 					continue;
 				}
 				curr = new RailEntity(region == null ? system.getRegions().get(compound.getIntArray("region")) : region, this).read(compound);
@@ -214,7 +213,7 @@ public abstract class Compound {
 
 	public static Compound getNewClientCompound(RailEntity entity){
 		long id = COMPOUNDS.size(); while(COMPOUNDS.containsKey(id)) id++;
-		Print.debug("Creating new placeholder client compound for '" + entity.uid + "'/" + id + "!");
+		FvtmLogger.debug("Creating new placeholder client compound for '" + entity.uid + "'/" + id + "!");
 		return new Singular(entity, id);
 	}
 	

@@ -2,34 +2,25 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * 
  * @author Ferdinand Calo' (FEX___96)
- *
  */
 public class Track extends Path {
-	
+
 	public RailGauge gauge;
 	protected TrackUnit unit;
 	protected Junction junction;
-	@SideOnly(Side.CLIENT)
-	public TurboArrayPositioned railmodel;
-	@SideOnly(Side.CLIENT)
-	public TurboArrayPositioned restmodel;
+	public Object railmodel;
+	public Object restmodel;
 	public String preset;
 	public int items;
-	
+
 	public Track(Junction junction, QV3D[] gridvecs, QV3D vector, RailGauge gauge){
 		super(gridvecs, vector);
 		this.junction = junction;
@@ -43,7 +34,7 @@ public class Track extends Path {
 		this.gauge = gauge;
 		setunit();
 	}
-	
+
 	private void setunit(){
 		if(junction == null) return;
 		Long id = null;
@@ -54,9 +45,12 @@ public class Track extends Path {
 		else id = junction.tracks.get(0).unit.getSectionId();
 		unit = getUnit(id);
 	}
-	
-	/** Only for the READ process. @param junc just to make sure it's not used elsewhere */
-	public Track(Junction junc){ super(); this.junction = junc; }
+
+	/** Only for the READ or similar purposes. */
+	public Track(Junction junc){
+		super();
+		junction = junc;
+	}
 
 	@Override
 	public Track read(TagCW compound){
@@ -69,7 +63,8 @@ public class Track extends Path {
 			gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
 		}
 		if(junction == null || junction.root.getWorld().isClient()){
-			railmodel = null; restmodel = null;
+			railmodel = null;
+			restmodel = null;
 		}
 		if(compound.has("preset")) preset = compound.getString("preset");
 		//if(compound.hasKey("blockless")) blockless = compound.getBoolean("blockless");
@@ -79,7 +74,9 @@ public class Track extends Path {
 
 	public TrackUnit getUnit(Long knownid){
 		TrackUnit unit = junction.root.getTrackUnits().get(id.toUnitId(copy), knownid, true);
-		if(copy) unit.copy = this; else unit.orig = this; return unit;
+		if(copy) unit.copy = this;
+		else unit.orig = this;
+		return unit;
 	}
 
 	@Override
@@ -92,7 +89,7 @@ public class Track extends Path {
 		if(items > 0) compound.set("items", items);
 		return compound;
 	}
-	
+
 	public Track createOppositeCopy(){
 		Track track = super.createOppositeCopy(new Track(junction));
 		track.unit = unit;
@@ -117,12 +114,12 @@ public class Track extends Path {
 		vec.y += gauge.height16();
 		return vec;
 	}
-	
+
 	@Override
 	public String toString(){
 		return String.format("Track[%s-%s, %s, %s, %s, %s]", start, end, vecpath.length, unit == null ? "n/u" : unit.getSectionId() + "/s", copy ? "copy" : "original", items);
 	}
-	
+
 	public TrackUnit getUnit(){
 		return unit;
 	}
@@ -131,7 +128,7 @@ public class Track extends Path {
 	public PathType getType(){
 		return PathType.RAIL;
 	}
-	
+
 	public Junction getJunction(){
 		return junction;
 	}
@@ -147,7 +144,7 @@ public class Track extends Path {
 		}
 		return at;
 	}
-	
+
 	public double getPassedOnTrack(V3D ext){
 		float passed = 0;
 		V3D at = getVectorOnTrack(ext), last = at;

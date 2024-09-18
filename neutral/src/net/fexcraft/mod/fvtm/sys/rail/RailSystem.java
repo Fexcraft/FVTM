@@ -194,7 +194,7 @@ public class RailSystem extends DetachedSystem {
 	}
 
 	public ArrayList<Junction> getJunctionsAt(int x, int y, int z){
-		return getJunctionsAt(new V3I(x, y, z));//TODO
+		return getJunctionsAt(WrapperHolder.mutPos(x, y, z));
 	}
 
 	public ArrayList<Junction> getJunctionsAt(V3I pos){

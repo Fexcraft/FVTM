@@ -116,7 +116,7 @@ public class SeatCache {
         		return false;
         	}
         	if(player.isRiding() && player.getRidingEntity().equals(vehicle)){
-        		SeatCache seat = vehicle.getSeatOf(player);
+        		SeatCache seat = null;//TODO vehicle.getSeatOf(player);
         		seat.passenger(null);
             	player.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
             	this.passenger(player);
@@ -311,7 +311,7 @@ public class SeatCache {
 
 	public void passenger(Entity pass){
 		if(pass != null){
-			SeatCache old = vehicle.getSeatOf(pass);
+			SeatCache old = null;//TODO vehicle.getSeatOf(pass);
 			if(old != null && old != this) old.passenger(null);
 		}
 		passenger = pass;

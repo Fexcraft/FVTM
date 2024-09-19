@@ -1,26 +1,20 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_ENGINE_TOGGLE;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
-import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
@@ -29,11 +23,7 @@ import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -49,7 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RailEntity implements Comparable<RailEntity>{
 	
 	public Track current, last;
-	public RailVehicle entity;
+	public VehicleInstance vehicle;
 	public long uid;
 	public Region region;
 	//protected boolean forward = true;
@@ -122,7 +112,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		if(current == null || vehdata == null){
-			this.dispose();
+			this.remove();
 			return;
 		}
 		checkIfShouldHaveEntity();
@@ -198,9 +188,9 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private boolean CMODE(){
 		if(!VEHICLES_NEED_FUEL) return true;
-		if(entity != null){
-	    	Entity con = entity.getDriver();
-	    	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;
+		EntityW driver = vehicle.driver();
+		if(driver != null){
+	    	return driver.isCreative();
 		}
 		else return false;
 	}
@@ -230,14 +220,13 @@ public class RailEntity implements Comparable<RailEntity>{
     			vehdata.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
     			bool = true;
     		}
-    		if(entity != null && engine.isOn() && vehdata.getAttribute("fuel_stored").asFloat() <= 0){
-    			NBTTagCompound compound  = new NBTTagCompound();
-    			compound.setString("task", "engine_toggle");
-    			compound.setBoolean("engine_toggle_result", false);
-            	compound.setBoolean("no_fuel", true);
-            	throttle = 0;
-            	engine.setState(false);
-                ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
+    		if(vehicle.entity != null && engine.isOn() && vehdata.getAttribute("fuel_stored").asFloat() <= 0){
+				throttle = 0;
+				engine.setState(false);
+				TagCW compound = TagCW.create();
+    			compound.set("engine_toggle_result", false);
+            	compound.set("no_fuel", true);
+				vehicle.sendUpdate(PKT_UPD_ENGINE_TOGGLE, compound);
     		}
     		fuel_accu = 0;
     		consumed = 0;
@@ -246,11 +235,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void checkIfShouldStop(){
-		if(entity == null) return;
+		if(vehicle.entity == null) return;
 		boolean decrease = false;
-		Entity con = entity.getDriver();
+		EntityW con = vehicle.driver();
 		if(!isActive() && con != null){
-			if(!((EntityPlayer)con).capabilities.isCreativeMode && vehdata.getAttribute("fuel_stored").asInteger() <= 0) decrease = true;
+			if(!con.isCreative() && vehdata.getAttribute("fuel_stored").asInteger() <= 0) decrease = true;
 		}
 		if(decrease) throttle *= 0.98F;
 	}
@@ -345,7 +334,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	protected void updateClient(String string){
-		if(entity == null) return;
+		if(vehicle.entity == null) return;
 		TagCW compound = TagCW.create();
 		switch(string){
 			case "track":{
@@ -379,7 +368,7 @@ public class RailEntity implements Comparable<RailEntity>{
 				break;
 			}
 		}
-		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound.local());
+		//TODO ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound.local());
 	}
 
 	public void updateRegion(QV3D start){
@@ -466,19 +455,21 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private void checkIfShouldHaveEntity(){
 		if(lastcheck == null) return; if(lastcheck > 0){ lastcheck--; return; }
-		if(entity != null){
-			if(entity.seats != null)
-				for(SeatInstance seat : entity.seats)
+		if(vehicle.entity != null){
+			if(vehicle.seats != null){
+				for(SeatInstance seat : vehicle.seats){
 					if(seat.passenger() != null){
 						lastcheck = interval;
 						return;
 					}
+				}
+			}
 			if(isInPlayerRange()){
 				lastcheck = interval;
 				return;
 			}
-			entity.setDead();
-			entity = null;
+			vehicle.entity.remove();
+			vehicle.entity = null;
 			lastcheck = interval;
 			return;
 		}
@@ -539,7 +530,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(region == null) Print.debug("region is NULL");
 		current = region.getTrack(new PathKey(compound));
 		if(current == null) Print.log("track not found! " + new PathKey(compound).toString());
-		if(current == null){ this.dispose(); return this; }
+		if(current == null){ this.remove(); return this; }
 		pos = DataUtil.readVec(compound.getList("pos"));
 		prev = DataUtil.readVec(compound.getList("prev"));
 		cfront = DataUtil.readVec(compound.getList("cfront"));
@@ -563,7 +554,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehdata == null) vehdata = null;//TODO Resources.getVehicleData(compound);
 		else vehdata.read(new TagCWI(compound));
-		if(vehdata == null){ this.dispose(); return null; }
+		if(vehdata == null){ this.remove(); return null; }
 		//if(compound.has("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
 		//if(compound.has("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
 		//TODO try coupling later, to prevent overflow
@@ -584,24 +575,24 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void alignEntity(boolean initial){
-		if(entity == null) return;
-		if(initial){
+		if(vehicle.entity == null) return;
+		/*if(initial){
 			entity.prevPosX = entity.lastTickPosX = entity.posX = pos.x;
 			entity.prevPosY = entity.lastTickPosY = entity.posY = pos.y;
 			entity.prevPosZ = entity.lastTickPosZ = entity.posZ = pos.z;
 	        entity.setEntityBoundingBox(new AxisAlignedBB(pos.x - 0.25, pos.y, pos.z - 0.25,
 	        	pos.x + 0.25, pos.y + 0.25, pos.z + 0.25));
 		}
-		else{ entity.setPosition(pos.x, pos.y, pos.z); }
+		else{ entity.setPosition(pos.x, pos.y, pos.z); }*///TODO
 	}
 
-	public void dispose(){
-		Print.debug("Disposing of TrackEntity " + uid + "!");
+	public void remove(){
+		Print.debug("Removing TrackEntity " + uid + "!");
 		front.decouple();
 		rear.decouple();
 		lastcheck = null;
 		region.getWorld().delEntity(this);
-		if(entity != null && !entity.isDead) entity.setDead();
+		if(vehicle.entity != null && !vehicle.entity.isRemoved()) vehicle.entity.remove();
 		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(this);
 	}
 
@@ -680,14 +671,14 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	private void sendForwardUpdate(){
-		if(entity == null || region.getWorld().getWorld().isClient()) return;
-		NBTTagCompound packet = new NBTTagCompound();
-		packet.setString("target_listener", GuiHandler.LISTENERID);
-		packet.setString("task", "attr_update");
-		packet.setString("attr", "forward");
-		packet.setString("value", vehdata.getAttribute("forward").asString());
-		packet.setInteger("entity", entity.getEntityId());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), getTargetPoint(entity));
+		if(vehicle.entity == null || region.getWorld().getWorld().isClient()) return;
+		TagCW packet = TagCW.create();
+		packet.set("target_listener", GuiHandler.LISTENERID);
+		packet.set("task", "attr_update");
+		packet.set("attr", "forward");
+		packet.set("value", vehdata.getAttribute("forward").asString());
+		packet.set("entity", vehicle.entity.getId());
+		//TODO send in range
 	}
 
 	private void updateOrientationAttr(){
@@ -700,14 +691,14 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setActive(boolean bool){
 		vehdata.getAttribute("active").set(bool);
-		if(entity != null && !region.getWorld().getWorld().isClient()){
-			NBTTagCompound packet = new NBTTagCompound();
-			packet.setString("target_listener", GuiHandler.LISTENERID);
-			packet.setString("task", "attr_update");
-			packet.setString("attr", "active");
-			packet.setString("value", vehdata.getAttribute("active").asString());
-			packet.setInteger("entity", entity.getEntityId());
-			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		if(vehicle.entity != null && !region.getWorld().getWorld().isClient()){
+			TagCW packet = TagCW.create();
+			packet.set("target_listener", GuiHandler.LISTENERID);
+			packet.set("task", "attr_update");
+			packet.set("attr", "active");
+			packet.set("value", vehdata.getAttribute("active").asString());
+			packet.set("entity", vehicle.entity.getId());
+			//TODO send to server
 		}
 	}
 	
@@ -726,12 +717,14 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setPaused(boolean bool){
 		vehdata.getAttribute("paused").set(com.paused = bool);
-		if(entity != null && !region.getWorld().getWorld().isClient()){
-			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
-			packet.setString("task", "attr_update"); packet.setString("attr", "paused");
-			packet.setString("value", vehdata.getAttribute("paused").asBoolean() + "");
-			packet.setInteger("entity", entity.getEntityId());
-			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		if(vehicle.entity != null && !region.getWorld().getWorld().isClient()){
+			TagCW packet = TagCW.create();
+			packet.set("target_listener", "fvtm:railsys");
+			packet.set("task", "attr_update");
+			packet.set("attr", "paused");
+			packet.set("value", vehdata.getAttribute("paused").asBoolean() + "");
+			packet.set("entity", vehicle.entity.getId());
+			//TODO send to server
 		}
 	}
 	

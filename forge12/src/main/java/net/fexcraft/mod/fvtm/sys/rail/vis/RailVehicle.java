@@ -44,6 +44,7 @@ import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
@@ -93,7 +94,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public RailVehicle(RailEntity ent){
-		this((World)ent.getRegion().getWorld().getWorld().direct()); ent.entity = this;
+		this((World)ent.getRegion().getWorld().getWorld().direct());
+		ent.vehicle.entity = UniEntity.getEntity(this);
 		(rek = new Reltrs(ent.getRegion().getWorld(), ent, null)).ent().alignEntity(true);
 		initializeVehicle(false, null); Print.debug(this +  " " + rek.uid + " " + this.getPositionVector());
 	}
@@ -172,7 +174,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         this.getCapability(Capabilities.CONTAINER, null).dropContents();
         //
-        super.setDead(); if(!world.isRemote) rek.ent().entity = null;
+        super.setDead(); if(!world.isRemote) rek.ent().vehicle.entity = null;
         //if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         //
         //TODO rek.data().getScripts().forEach((script) -> script.onRemove(this, rek.data()));
@@ -278,11 +280,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     //
                     if(rek.ent().getCompound().isMultiple()){
                     	for(RailEntity ent : rek.ent().getCompound().getEntitites()){
-                    		ent.vehdata.getAttribute("lights").set(bool);
-                    		if(ent.entity != null){
+                    		ent.vehicle.data.getAttribute("lights").set(bool);
+                    		if(ent.vehicle.entity != null){
     	                        NBTTagCompound com = new NBTTagCompound(); com.setString("task", "toggle_lights");
     	                        com.setBoolean("lights", rek.data().getAttribute("lights").asBoolean());
-    	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.entity, com);
+    	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.vehicle.entity.local(), com);
                     		}
                     	}
                     }
@@ -400,7 +402,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public String getName(){
-        return world.isRemote && rek.ent() == null ? "noent" : rek.data() == null ? "novehdata" : rek.data().getName();
+        return world.isRemote && rek.ent() == null ? "noent" : rek.data() == null ? "novehicle.data" : rek.data().getName();
     }
 
     @SideOnly(Side.CLIENT) @Override
@@ -415,18 +417,18 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	public VehicleEntity getCoupledEntity(boolean front){
-		return world.isRemote ? null : front ? rek.ent().front.hasEntity() ? rek.ent().front.entity.entity : null
-			: rek.ent().rear.hasEntity() ? rek.ent().rear.entity.entity : null;
+		return null;/*world.isRemote ? null : front ? rek.ent().front.hasEntity() ? rek.ent().front.entity.vehicle.entity : null
+			: rek.ent().rear.hasEntity() ? rek.ent().rear.entity.vehicle.entity : null;*///TODO
 	}
 	
 	@Override
 	public VehicleEntity getFrontCoupledEntity(){
-		return world.isRemote ? null : rek.ent().front.hasEntity() ? rek.ent().front.entity.entity : null;
+		return null;//TODO world.isRemote ? null : rek.ent().front.hasEntity() ? rek.ent().front.entity.vehicle.entity : null;
 	}
 	
 	@Override
 	public VehicleEntity getRearCoupledEntity(){
-		return world.isRemote ? null : rek.ent().rear.hasEntity() ? rek.ent().rear.entity.entity : null;
+		return null;//TODO world.isRemote ? null : rek.ent().rear.hasEntity() ? rek.ent().rear.entity.vehicle.entity : null;
 	}
 
     @Override

@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.minecraft.entity.player.EntityPlayer;
 
 import static net.fexcraft.mod.fvtm.packet.Packets.RANGE;
 
@@ -67,6 +68,7 @@ public class VehicleInstance {
 	public static final String PKT_UPD_CONNECTOR = "vehicle_front";
 	public static final String PKT_UPD_START_SOUND = "start_sound";
 	public static final String PKT_UPD_STOP_SOUND = "stop_sound";
+	public static final String PKT_UPD_ENGINE_TOGGLE = "engine_toggle";
 
 	public VehicleInstance(EntityW wrapper, VehicleData vdata){
 		entity = wrapper;
@@ -308,7 +310,7 @@ public class VehicleInstance {
 				data.read(packet);
 				return;
 			}
-			case "engine_toggle":{
+			case PKT_UPD_ENGINE_TOGGLE:{
 				if(passenger.getSeatOn() != null && passenger.getSeatOn().root == this){
 					boolean state = packet.getBoolean("engine_toggle_result");
 					if(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state)){
@@ -457,6 +459,18 @@ public class VehicleInstance {
 			return;
 		}
 		if(activesounds.containsKey(key)) activesounds.get(key).stop();
+	}
+
+	/**
+	 * @return first found Player passenger in a driver's seat
+	 */
+	public EntityW driver(){
+		for(SeatInstance seat : seats){
+			if(seat.seat.driver && seat.passengerIsPlayer()){
+				return seat.passenger();
+			}
+		}
+		return null;
 	}
 
 }

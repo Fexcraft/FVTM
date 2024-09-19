@@ -115,8 +115,8 @@ public class Coupler {
 
 	private void notifyDriver(String string){
 		for(RailEntity ent : root.com.entities){
-			if(ent.entity == null) continue;
-			for(SeatInstance seat : ent.entity.seats){
+			if(ent.vehicle.entity == null) continue;
+			for(SeatInstance seat : ent.vehicle.seats){
 				if(!seat.seat.driver) continue;
 				if(seat.passenger() == null) continue;
 				seat.passenger().send("&e&7" + string);

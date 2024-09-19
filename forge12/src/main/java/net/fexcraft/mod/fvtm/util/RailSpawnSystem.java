@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -112,7 +113,7 @@ public class RailSpawnSystem extends EntitySystem {
 			}
 			if(spawn){
 				Print.bar(player, "&a&oSpawning vehicle...");
-				syscap.registerEntity(new RailEntity(syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
+				syscap.registerEntity(new RailEntity(syscap, new VehicleInstance(null, data), junk.tracks.get(0), player.getGameProfile().getId()));
 			}
 			return true;
 		}

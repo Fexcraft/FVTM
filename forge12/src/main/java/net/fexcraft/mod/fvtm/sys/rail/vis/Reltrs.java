@@ -43,7 +43,7 @@ public class Reltrs {
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
-		compound = entity.vehdata.write(new TagCWI(compound)).local();
+		compound = entity.vehicle.data.write(new TagCWI(compound)).local();
 		compound.setLong("UID", entity.uid);
 		compound.setDouble("fr_bogie", frbogiedis);
 		compound.setDouble("rr_bogie", frbogiedis);
@@ -57,7 +57,7 @@ public class Reltrs {
 	}
 	
 	public VehicleData data(){
-		return entity == null ? data : entity.vehdata;
+		return entity == null ? data : entity.vehicle.data;
 	}
 
 	public V3D moveOnly(double passed){

@@ -40,7 +40,6 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -605,7 +604,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             else{
             	EntityPlayer player = (EntityPlayer)source.getTrueSource();
             	if(player.isSneaking()){
-            		Print.bar(player, "&4&oRemoving entity without dropping item...."); rek.ent().dispose(); return true;
+            		Print.bar(player, "&4&oRemoving entity without dropping item...."); rek.ent().remove(); return true;
             	}
                 if(rek.data().hasPart("engine") && rek.data().getPart("engine").hasFunction("fvtm:engine")){
                 	rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
@@ -628,7 +627,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         ent.dismountRidingEntity();
                     }*///TODO
                     //
-                    entityDropItem(stack, 0.5F); setDead(); rek.ent().dispose();
+                    entityDropItem(stack, 0.5F); setDead(); rek.ent().remove();
                     Print.debug(stack.toString());
                     return true;
                 /*}

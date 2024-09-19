@@ -33,6 +33,7 @@ import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWIE;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -441,9 +442,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			wheel.prevPosY = wheel.posY;
 			wheel.prevPosZ = wheel.posZ;
 		}
-		EntityPlayer driver = getDriver();
+		EntityW driver = vehicle.driver();
 		if(!world.isRemote){
-			boolean creative = driver != null && driver.capabilities.isCreativeMode;
+			boolean creative = driver != null && driver.isCreative();
 			if(driver == null || (!creative && vehicle.data.outoffuel())){
 				vehicle.throttle *= 0.98;
 			}
@@ -598,18 +599,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 	}
 
-	/**
-	 * @return first found Player passenger in a driver's seat
-	 */
-	public EntityPlayer getDriver(){
-		for(SeatInstance seat : vehicle.seats){
-			if(seat.seat.driver && seat.passengerIsPlayer()){
-				return seat.passenger().local();
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public Entity getControllingPassenger(){
 		return null;
@@ -689,7 +678,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount){
 		if(world.isRemote || isDead) return true;
-		if(source.damageType.equals("player") && getDriver() == null){
+		if(source.damageType.equals("player") && vehicle.driver() == null){
 			EntityPlayer player = (EntityPlayer)source.getImmediateSource();
 			if(vehicle.data.getLock().isLocked()){
 				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.remove_locked"), true);

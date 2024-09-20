@@ -417,7 +417,7 @@ public class Junction {
 	}
 
 	private boolean isDecorational(){
-		return tracks.size() == 0 || tracks.get(0).gauge.width() < 0;
+		return tracks.size() == 0 || tracks.get(0).gauge.getWidth() < 0;
 	}
 
 	public void pollSignal(RailEntity ent){

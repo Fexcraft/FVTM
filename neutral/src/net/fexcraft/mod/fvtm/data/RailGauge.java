@@ -23,13 +23,13 @@ import java.util.List;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextureable {
-	
-	/** In "micro blocks" (1 = 1/16th of a block). */
-	protected int width;
-	/** In "micro blocks" (1 = 1/16th of a block).
-	 * Height between the placed track point and the actual position of the wheels on the rail. */
-	protected float height, height16;
-	protected float blockwidth, blockheight;
+
+	public static final float DEFWIDTH = 1.875f;
+	//
+	protected float width;
+	protected float height;
+	protected float blockwidth;
+	protected float blockheight;
 	protected List<String> compatible;
 	protected IDL rail_texture;
 	protected IDL ties_texture;
@@ -50,13 +50,10 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		//
 		name = map.getString("Name", "Unnamed Material");
 		description = ContentConfigUtil.getStringList(map, "Description");
-		width = map.getInteger("Width", 30);
-		height = map.getFloat("Height", 4);
-		height16 = blockheight = height * Static.sixteenth;
-		if(map.has("BlockHeight")){
-			blockheight = map.get("BlockHeight").float_value() * Static.sixteenth;
-		}
+		width = map.getFloat("Width", DEFWIDTH);
+		height = map.getFloat("Height", 0.25f);
 		blockwidth = map.getFloat("BlockSpace", 2);
+		blockheight = map.getFloat("BlockHeight", 0);
 		rail_texture = IDLManager.getIDLNamed(map.getString("RailTexture", "minecraft:textures/blocks/iron_block.png"));
 		ties_texture = IDLManager.getIDLNamed(map.getString("TiesTexture", "minecraft:textures/blocks/anvil_base.png"));
 		model_texture = IDLManager.getIDLNamed(map.getString("ModelTexture", "fvtm:textures/entity/null.png"));
@@ -118,16 +115,12 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return null;
 	}
 
-	public int width(){
+	public float getWidth(){
 		return width;
 	}
 	
-	public float height(){
+	public float getHeight(){
 		return height;
-	}
-	
-	public float height16(){
-		return height16;
 	}
 
 	public List<String> getCompatible(){

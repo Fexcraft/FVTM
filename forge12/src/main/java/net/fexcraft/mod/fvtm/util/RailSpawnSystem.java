@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
@@ -106,9 +107,9 @@ public class RailSpawnSystem extends EntitySystem {
     			Print.bar(player, "&c&oFirst Track of Junction too short to spawn this vehicle.");
     			return false;
 			}
-			else if(junk.tracks.get(0).gauge.width() != data.getAttributeInteger("gauge", 30)){
+			else if(junk.tracks.get(0).gauge.getWidth() != data.getAttributeFloat("gauge", RailGauge.DEFWIDTH)){
     			Print.bar(player, "&c&oWrong rail gauge width for this vehicle.");
-    			Print.chat(player, "&eTrack: &7" + junk.tracks.get(0).gauge.width() + " &8!= &eVehicle: &7" + data.getAttributeInteger("gauge", 30));
+    			Print.chat(player, "&eTrack: &7" + junk.tracks.get(0).gauge.getWidth() + " &8!= &eVehicle: &7" + data.getAttributeFloat("gauge", RailGauge.DEFWIDTH));
     			return false;
 			}
 			if(spawn){

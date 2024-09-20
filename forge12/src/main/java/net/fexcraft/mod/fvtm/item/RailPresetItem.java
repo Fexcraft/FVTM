@@ -67,7 +67,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         for(String s : gauge.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
-        tooltip.add(Formatter.format("&9Width: &7" + gauge.width() + "mb"));
+        tooltip.add(Formatter.format("&9Width: &7" + gauge.getWidth()));
         if(gauge.getCompatible().size() > 0){
             tooltip.add(Formatter.format("&9Compatible with:"));
             for(String str : gauge.getCompatible()){

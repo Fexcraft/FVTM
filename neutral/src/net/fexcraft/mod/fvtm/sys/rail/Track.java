@@ -101,7 +101,7 @@ public class Track extends Path {
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){
-		return this.gauge.width() == gauge.width() || this.gauge.getCompatible().contains(gauge.getIDS().toString());
+		return this.gauge.getWidth() == gauge.getWidth() || this.gauge.getCompatible().contains(gauge.getIDS().toString());
 	}
 
 	public RailGauge getGauge(){
@@ -111,7 +111,7 @@ public class Track extends Path {
 	@Override
 	public V3D getVectorPosition(double distance, boolean reverse){
 		V3D vec = this.getVectorPosition0(distance, reverse);
-		vec.y += gauge.height16();
+		vec.y += gauge.getHeight();
 		return vec;
 	}
 

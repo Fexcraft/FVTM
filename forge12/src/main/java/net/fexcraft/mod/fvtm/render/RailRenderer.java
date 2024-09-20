@@ -227,8 +227,8 @@ public class RailRenderer {
 			for(ArrayList<V3D> l : conn.preview){
 				for(int j = 0; j < l.size() - 1; j++){
 					bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-					bufferbuilder.pos((vec0 = l.get(j).sub(cx, cy, cz)).x, vec0.y + conn.gauge.height16() + .05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
-					bufferbuilder.pos((vec1 = l.get(j + 1).sub(cx, cy, cz)).x, vec1.y + conn.gauge.height16() + .05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec0 = l.get(j).sub(cx, cy, cz)).x, vec0.y + conn.gauge.getHeight() + .05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
+					bufferbuilder.pos((vec1 = l.get(j + 1).sub(cx, cy, cz)).x, vec1.y + conn.gauge.getHeight() + .05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
 					tessellator.draw();
 				}
 			}

@@ -250,7 +250,7 @@ public class RailPlacingUtil {
 		}
 
 		public void genpreview(){
-			double angle, half = gauge.width() * 0.03125f;
+			double angle, half = gauge.getWidth() * .5f;
 			preview = new ArrayList<>();
 			preview.add(new ArrayList<>());
 			preview.add(new ArrayList<>());

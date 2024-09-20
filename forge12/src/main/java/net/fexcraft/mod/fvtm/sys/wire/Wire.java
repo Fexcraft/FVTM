@@ -15,6 +15,8 @@ import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -169,28 +171,28 @@ public class Wire {
 		return unit;
 	}*///TODO
 
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		compound.setDouble("sx", start.x);
-		compound.setDouble("sy", start.y);
-		compound.setDouble("sz", start.z);
-		compound.setDouble("ex", end.x);
-		compound.setDouble("ey", end.y);
-		compound.setDouble("ez", end.z);
-		compound.setFloat("slack", slack);
-		compound.setFloat("length", length);
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		compound.set("sx", start.x);
+		compound.set("sy", start.y);
+		compound.set("sz", start.z);
+		compound.set("ex", end.x);
+		compound.set("ey", end.y);
+		compound.set("ez", end.z);
+		compound.set("slack", slack);
+		compound.set("length", length);
 		key.save(compound);
-		if(copy) compound.setBoolean("copy", copy);
-		if(type != null) compound.setString("wiretype", type.getIDS());
+		if(copy) compound.set("copy", copy);
+		if(type != null) compound.set("wiretype", type.getIDS());
 		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
-		if(deco_start != null) compound.setString("deco_start", deco_start);
-		if(deco_end != null) compound.setString("deco_end", deco_end);
+		if(deco_start != null) compound.set("deco_start", deco_start);
+		if(deco_end != null) compound.set("deco_end", deco_end);
 		if(decos != null && decos.size() > 0){
-			NBTTagList list = new NBTTagList();
+			TagLW list = TagLW.create();
 			for(Entry<String, String> entry : decos.entrySet()){
-				list.appendTag(new NBTTagString(entry.getKey() + ";" + entry.getValue()));
+				list.add(entry.getKey() + ";" + entry.getValue());
 			}
-			compound.setTag("decos", list);
+			compound.set("decos", list);
 		}
 		return compound;
 	}

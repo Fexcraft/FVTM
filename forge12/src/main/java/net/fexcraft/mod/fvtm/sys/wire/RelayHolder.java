@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -66,16 +68,16 @@ public class RelayHolder {
 		relays.clear();
 	}
 
-	public NBTTagCompound write(){
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("Pos", pos.toLong());
-		NBTTagList list = new NBTTagList();
+	public TagCW write(){
+		TagCW compound = TagCW.create();
+		compound.set("Pos", pos.toLong());
+		TagLW list = TagLW.create();
 		for(Entry<String, WireRelay> relay : relays.entrySet()){
-			NBTTagCompound com = relay.getValue().write(null);
-			com.setString("Key", relay.getKey());
-			list.appendTag(com);
+			TagCW com = relay.getValue().write(null);
+			com.set("Key", relay.getKey());
+			list.add(com);
 		}
-		compound.setTag("Relays", list);
+		compound.set("Relays", list);
 		return compound;
 	}
 

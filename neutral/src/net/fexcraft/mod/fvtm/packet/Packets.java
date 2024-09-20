@@ -278,7 +278,7 @@ public abstract class Packets {
 			});
 			LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				QV3D vec = new QV3D(tag, "Pos");
+				QV3D vec = new QV3D(tag, "pos");
 				Junction junction = system.getJunction(vec);
 				if(junction != null) junction.read(tag);
 				else{

@@ -36,6 +36,7 @@ public class Decoration extends Content<Decoration> implements WithItem, ItemTex
 	protected List<IDL> textures;
 	protected Map<String, RGB> channels = new LinkedHashMap<>();
 	protected boolean no3ditem;
+	protected boolean randomtex;
 
 	public Decoration(){}
 
@@ -61,6 +62,7 @@ public class Decoration extends Content<Decoration> implements WithItem, ItemTex
         ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
 		no3ditem = map.getBoolean("Disable3DItemModel", false);
+		randomtex = map.getBoolean("RandomTexture", false);
 		if(EnvInfo.CLIENT){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
@@ -120,4 +122,9 @@ public class Decoration extends Content<Decoration> implements WithItem, ItemTex
 	public List<IDL> getDefaultTextures(){
 		return textures;
 	}
+
+	public boolean useRandomTex(){
+		return randomtex;
+	}
+
 }

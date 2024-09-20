@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
@@ -40,12 +41,12 @@ public class WireKey {
 		start_relay = end_relay = string;
 	}
 
-	public NBTTagCompound save(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		compound.setLong("spos", start_pos.toLong());
-		compound.setLong("epos", end_pos.toLong());
-		compound.setString("skey", start_relay);
-		compound.setString("ekey", end_relay);
+	public TagCW save(TagCW compound){
+		if(compound == null) compound = TagCW.create();
+		compound.set("spos", start_pos.toLong());
+		compound.set("epos", end_pos.toLong());
+		compound.set("skey", start_relay);
+		compound.set("ekey", end_relay);
 		return compound;
 	}
 	

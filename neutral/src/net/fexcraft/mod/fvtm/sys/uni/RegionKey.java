@@ -23,6 +23,10 @@ public class RegionKey implements Comparable<RegionKey> {
 		this(getRegionXZ(vec));
 	}
 
+	public RegionKey(V3I vec){
+		this(getRegionXZ(vec));
+	}
+
 	public RegionKey(long leng){//TODO replace this someday
 		ByteBuffer buffer = ByteBuffer.allocate(8).putLong(leng);
 		x = buffer.getInt(0); z = buffer.getInt(4);
@@ -61,7 +65,7 @@ public class RegionKey implements Comparable<RegionKey> {
 	}
 	
 	public static int[] getRegionXZ(QV3D vec){
-		return getRegionXZ((int)vec.pos.x >> 4, (int)vec.pos.z >> 4);
+		return getRegionXZ(vec.pos.x >> 4, vec.pos.z >> 4);
 	}
 
 	public static int[] getRegionXZ(Vec3f pos){

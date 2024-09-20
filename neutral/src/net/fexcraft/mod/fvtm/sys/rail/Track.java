@@ -39,7 +39,7 @@ public class Track extends Path {
 		if(junction == null) return;
 		Long id = null;
 		if(junction.size() == 0){
-			junction = junction.root.getJunction(end);
+			junction = junction.root.getJunction(end.pos);
 			id = junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId();
 		}
 		else id = junction.tracks.get(0).unit.getSectionId();

@@ -81,7 +81,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 	public Junction getJunction(){
 		if(junction == null && juncpos != null && this.pos != null){
         	RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
-        	if(sys != null) junction = sys.getJunction(juncpos, false);
+        	if(sys != null) junction = sys.getJunction(juncpos.pos, false);
         	if(junction == null){
         		juncpos = null;//TODO control
         		Static.stop();

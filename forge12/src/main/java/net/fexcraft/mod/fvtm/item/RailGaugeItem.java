@@ -109,7 +109,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
     }
 	
 	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, QV3D vector, ICommandSender sender, boolean noblocks){
-		Junction junk = syscap.getJunction(vector, true);
+		Junction junk = syscap.getJunction(vector.pos, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
 			if(list.isEmpty() || !createdJunction(sender, syscap, player, list, vector)){
@@ -138,7 +138,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 				Print.chat(sender, "&cTrack length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
-			Junction second = syscap.getJunction(track.start);
+			Junction second = syscap.getJunction(track.start.pos);
 			//track.blockless = noblocks;
 			if(second != null){
 				if(!TrackPlacer.set(sender, player, world, null, track).place()/*.blocks(!noblocks)*/.consume().result()) return EnumActionResult.SUCCESS;

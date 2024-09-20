@@ -5,13 +5,10 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
+import net.fexcraft.mod.fvtm.sys.rail.JuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_SetSwitch extends JEC {
 	
@@ -68,12 +65,12 @@ public class CMD_SetSwitch extends JEC {
 	public void processSwitch(RailEntity entity, Junction junction, PathKey track, int index, boolean applystate){
 		if(index != entry) return;
 		if(this.junction != null){
-			junction = junction.root.getJunction(this.junction);
+			junction = junction.root.getJunction(this.junction.pos);
 			if(junction == null) return;
 		}
 		if(!junction.type.isStraight() && index == entry){
 			if(junction.type.isSwitch()){
-				if(junction.type == PathJuncType.FORK_2){
+				if(junction.type == JuncType.FORK_2){
 					junction.switch0 = state == 1;
 				}
 				else{

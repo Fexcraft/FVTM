@@ -57,7 +57,7 @@ public class RailSpawnSystem extends EntitySystem {
         	return false;
         }
         QV3D vector = new QV3D(pos.x, pos.y, pos.z, 0);
-		Junction junk = syscap.getJunction(vector, true);
+		Junction junk = syscap.getJunction(vector.pos, true);
 		BlockPos bpos = new BlockPos(pos);
 		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
 		if(!data.getWheelPositions().containsKey("bogie_front")){

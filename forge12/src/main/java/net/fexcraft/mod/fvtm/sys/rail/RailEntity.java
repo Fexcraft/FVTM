@@ -62,7 +62,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public RailEntity(RailSystem data, VehicleInstance veh, Track track, UUID placer){
 		vehicle = veh;
-		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
+		current = track; region = data.getRegions().get(track.start.pos, true); if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey());
 		frbogiedis = (float)veh.data.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-veh.data.getWheelPositions().get("bogie_rear").x;
@@ -104,7 +104,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public void onUpdate(){
-		if(region.getWorld().isRemote()){
+		if(region.getSystem().isRemote()){
 			this.updatePosition();
 			Print.debug(current, current.unit);
 			return;
@@ -182,7 +182,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		//
-		region.getWorld().updateEntityEntry(uid, region.getKey());
+		region.getSystem().updateEntityEntry(uid, region.getKey());
 	}
 
 	private boolean CMODE(){
@@ -321,12 +321,12 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track){
 		railentlist.clear(); railentlist.addAll(track.unit.getEntities());
-		Junction junction = region.getJunction(track.start); Track track0;
+		Junction junction = region.getJunction(track.start.pos); Track track0;
 		//TODO alternative for when a specific path is followed
 		if(junction != null){ track0 = junction.getNext(null, track.getId(), false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		}
-		junction = region.getJunction(track.end);
+		junction = region.getJunction(track.end.pos);
 		if(junction != null){ track0 = junction.getNext(null, track.getOppositeId(), false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		} return railentlist;
@@ -372,7 +372,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void updateRegion(QV3D start){
 		region.getEntities().remove(uid);
-		region = region.getWorld().getRegions().get(RegionKey.getRegionXZ(start), true);
+		region = region.getSystem().getRegions().get(RegionKey.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
 	}
 
@@ -395,7 +395,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private TRO getTrack(Track track, double passed, boolean apply, boolean signal){
 		while(passed > track.length){
-			Junction junk = region.getJunction(track.end);
+			Junction junk = region.getJunction(track.end.pos);
 			if(junk == null){
 				com.stop(track, track.length);
 				new TRO(track, track.length);
@@ -418,7 +418,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		while(passed < 0){
-			Junction junk = region.getJunction(track.start);
+			Junction junk = region.getJunction(track.start.pos);
 			if(junk == null){ com.stop(track, 0); return new TRO(track, 0); }
 			if(signal && junk.hasSignal(track.getId()) && isActiveEnd()){
 				junk.pollSignal(this);
@@ -477,12 +477,12 @@ public class RailEntity implements Comparable<RailEntity>{
 				lastcheck = interval;
 				return;
 			}
-			((World)region.getWorld().getWorld().direct()).spawnEntity(new RailVehicle(this));
+			((World)region.getSystem().getWorld().direct()).spawnEntity(new RailVehicle(this));
 		}
 	}
 
 	private boolean isInPlayerRange(){
-		for(EntityW pl : region.getWorld().getWorld().getPlayers()){
+		for(EntityW pl : region.getSystem().getWorld().getPlayers()){
 			if(pos.dis(pl.getPos()) < 256) return true;
 		}
 		return false;
@@ -568,7 +568,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void loadCouple(boolean frontcoupler, long uid, boolean asfront){
-		RailEntity ent = region.getWorld().getEntity(uid, true); if(ent == null) return;
+		RailEntity ent = region.getSystem().getEntity(uid, true); if(ent == null) return;
 		Coupler coupler = frontcoupler ? front : rear; coupler.entity = ent;
 		coupler = asfront ? ent.front : ent.rear; coupler.entity = this;
 	}
@@ -590,7 +590,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		front.decouple();
 		rear.decouple();
 		lastcheck = null;
-		region.getWorld().delEntity(this);
+		region.getSystem().delEntity(this);
 		if(vehicle.entity != null && !vehicle.entity.isRemoved()) vehicle.entity.remove();
 		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(this);
 	}
@@ -670,7 +670,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	private void sendForwardUpdate(){
-		if(vehicle.entity == null || region.getWorld().getWorld().isClient()) return;
+		if(vehicle.entity == null || region.getSystem().getWorld().isClient()) return;
 		TagCW packet = TagCW.create();
 		packet.set("target_listener", GuiHandler.LISTENERID);
 		packet.set("task", "attr_update");
@@ -690,7 +690,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setActive(boolean bool){
 		vehicle.data.getAttribute("active").set(bool);
-		if(vehicle.entity != null && !region.getWorld().getWorld().isClient()){
+		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
 			TagCW packet = TagCW.create();
 			packet.set("target_listener", GuiHandler.LISTENERID);
 			packet.set("task", "attr_update");
@@ -716,7 +716,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setPaused(boolean bool){
 		vehicle.data.getAttribute("paused").set(com.paused = bool);
-		if(vehicle.entity != null && !region.getWorld().getWorld().isClient()){
+		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
 			TagCW packet = TagCW.create();
 			packet.set("target_listener", "fvtm:railsys");
 			packet.set("task", "attr_update");

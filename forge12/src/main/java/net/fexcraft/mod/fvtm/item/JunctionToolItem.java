@@ -67,7 +67,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0), cached;
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
-        	Junction junc = syscap.getJunction(vector);
+        	Junction junc = syscap.getJunction(vector.pos);
         	if(junc == null){
 				Print.bar(player, "&cNo junction at position.");
         	}
@@ -75,13 +75,13 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 				Print.bar(player, "&cDisconnect all tracks before removing a Junction.");
         	}
         	else{
-            	syscap.delJunction(vector);
+            	syscap.delJunction(vector.pos);
             	Print.bar(player, "&c&oRemoving Junction...");
         	}
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		Junction junk = syscap.getJunction(vector, true);
+		Junction junk = syscap.getJunction(vector.pos, true);
 		if(junk == null){
 			Print.bar(player, "&cNo Junction at this Position.");
 	        return EnumActionResult.SUCCESS;

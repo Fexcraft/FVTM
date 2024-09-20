@@ -13,7 +13,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
+import net.fexcraft.mod.fvtm.sys.rail.JuncType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -56,10 +56,10 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 
 	@Override
 	protected void init(){
-		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 205, MapColor.SNOW.colorValue, "ID: " + container.junction.getVec316f().asIDString()));
+		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 205, MapColor.SNOW.colorValue, "ID: " + container.junction.getPos().asIDString()));
 		buttons.put("help", new BasicButton("help", guiLeft + 216, guiTop + 7, 216, 7, 12, 12, true));
 		buttons.put("copy", new BasicButton("copy", guiLeft + 229, guiTop + 7, 229, 7, 12, 12, true));
-		for(int i = 0; i < PathJuncType.values().length; i ++){
+		for(int i = 0; i < JuncType.values().length; i ++){
 			buttons.put("type" + i, type[i] = new BasicButton("type" + i, guiLeft + 76 + (i * 18), guiTop + 21, 76 + (i * 18), 21, 18, 18,
 				i == 0 ? container.junction.size() <= 2 : i == 1 ? container.junction.size() == 3 : container.junction.size() == 4));
 		}
@@ -85,7 +85,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		GRID = new RGB[GRIDSIZE][GRIDSIZE];
 		POSGRID = new BlockPos[GRIDSIZE][GRIDSIZE];
 		STATEGRID = new IBlockState[GRIDSIZE][GRIDSIZE];
-		V3I junc = container.junction.getVec316f().pos;
+		V3I junc = container.junction.getPos().pos;
 		int half = GRIDSIZE / 2;
 		for(int i = -half; i < half; i++){
 			for(int j = -half; j < half; j++){
@@ -185,7 +185,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glLineWidth(4f);
 		for(int i = 0; i < container.junction.size(); i++){
-			renderTrack(container.junction.tracks.get(i), TRACK_COLOR[i], container.junction.getVec316f().pos);
+			renderTrack(container.junction.tracks.get(i), TRACK_COLOR[i], container.junction.getPos().pos);
 		}
 		GL11.glLineWidth(1f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -227,7 +227,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		tooltip.clear();
 		for(int i = 0; i < type.length; i++){
 			if(!type[i].hovered) continue;
-			tooltip.add(format("&9Junction Type: &7" + PathJuncType.values()[i].name()));
+			tooltip.add(format("&9Junction Type: &7" + JuncType.values()[i].name()));
 			if(i == container.junction.type.ordinal()) tooltip.add(format("&a&oCurrent type of this junction."));
 		}
 		for(int i = 0; i < 4; i++){
@@ -244,7 +244,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("copy")){
 			texts.get("title").string = "Position Copied to clipboard!";
-			StringSelection selection = new StringSelection(container.junction.getVec316f().asIDString());
+			StringSelection selection = new StringSelection(container.junction.getPos().asIDString());
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
 			return true;
 		}

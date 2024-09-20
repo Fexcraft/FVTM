@@ -4,7 +4,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -31,7 +30,7 @@ public interface JunctionTrackingTileEntity {
     		QV3D vector = new QV3D(TagCW.wrap(held.getTagCompound()), "fvtm:junction");
     		Junction junc = null;
         	RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(tile_entity.getWorld()));
-        	if(sys != null) junc = sys.getJunction(vector, false);
+        	if(sys != null) junc = sys.getJunction(vector.pos, false);
         	if(junc == null){
             	Print.bar(player, "&eJunction at cached location in Item not found.");
             	return;
@@ -53,7 +52,7 @@ public interface JunctionTrackingTileEntity {
     			}
     			if(wrong){
     	        	Print.chat(player, "&eInvalid switch type for this junction.");
-    	        	Print.chat(player, "&bJ: &7" + junc.type + " &8 != &aB: &7" + PathJuncType.fromAddonBlock(block));
+    	        	//TODO Print.chat(player, "&bJ: &7" + junc.type + " &8 != &aB: &7" + PathJuncType.fromAddonBlock(block));
     				return;
     			}
     		}
@@ -71,7 +70,7 @@ public interface JunctionTrackingTileEntity {
 		if(world == null) return;
 		RailSystem system = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
 		if(system == null) return;
-		Junction junc = system.getJunction(vec);
+		Junction junc = system.getJunction(vec.pos);
 		if(junc != null) junc.addLinkedTileEntity(WrapperHolder.mutPos(pos));
 	}
 

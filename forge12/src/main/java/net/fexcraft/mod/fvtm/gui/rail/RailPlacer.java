@@ -8,7 +8,6 @@ import java.util.Collections;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
@@ -144,7 +143,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		this.buttons.put("orient", orientbutton = new OrientButton(guiLeft, guiTop));
 		this.buttons.put("field", /*fieldbutton =*/ new FieldButton(guiLeft, guiTop));
 		for(Junction junc : junctions){
-			this.buttons.put("j" + junc.getVec316f().asIDString(), new JunctionButton(junc));
+			this.buttons.put("j" + junc.getPos().asIDString(), new JunctionButton(junc));
 		}
 		for(QV3D point : points){
 			this.buttons.put("p" + point.asIDString(), new PointButton(point));
@@ -246,7 +245,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         		else{
         			ttip.add(PARAGRAPH_SIGN + "6Junctions " + juncs.size());
                 	for(Junction junc : juncs){
-                		ttip.add(PARAGRAPH_SIGN + "9J-" + Orient.get(junc.getVec316f()) +": " + PARAGRAPH_SIGN + "b" + (junc.tracks.isEmpty() ? "empty" : junc.tracks.size() + " tracks"));
+                		ttip.add(PARAGRAPH_SIGN + "9J-" + Orient.get(junc.getPos()) +": " + PARAGRAPH_SIGN + "b" + (junc.tracks.isEmpty() ? "empty" : junc.tracks.size() + " tracks"));
                 	}
         		}
         	}
@@ -285,7 +284,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			if(x < 0 || y < 0 || x >= zoom.gs || y >= zoom.gs) return true;
 			BlockPos blp = POSGRID[x][y].up();
         	QV3D pos = QV3D.exact(blp.getX(), blp.getY(), blp.getZ(), (byte)orient.x, (byte)0, (byte)orient.z);
-        	Junction junc = system.getJunction(pos);
+        	Junction junc = system.getJunction(pos.pos);
         	if(mouseButton > 0){
         		if(junc == null){
     				NBTTagCompound compound = new NBTTagCompound();
@@ -459,11 +458,11 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		private boolean centered;
 
 		public JunctionButton(Junction junc){
-			super("j" + junc.getVec316f().asIDString(), 0, 0, 0, 0, zoom.cs, zoom.cs, true);
+			super("j" + junc.getPos().asIDString(), 0, 0, 0, 0, zoom.cs, zoom.cs, true);
 			junction = junc;
-			x = junc.getVec316f().pos.x - (cx * 16);
-			y = junc.getVec316f().pos.z - (cz * 16);
-			centered = junc.getVec316f().x == 8 && junc.getVec316f().z == 8;
+			x = junc.getPos().pos.x - (cx * 16);
+			y = junc.getPos().pos.z - (cz * 16);
+			centered = junc.getPos().x == 8 && junc.getPos().z == 8;
 			if(zoom.ordinal() == 1){
 				x *= zoom.cs;
 				y *= zoom.cs;
@@ -481,8 +480,8 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		}
 
 		private boolean isRed(){
-			if(begin != null && begin.equals(junction.getVec316f())) return true;
-			if(end != null && end.equals(junction.getVec316f())) return true;
+			if(begin != null && begin.equals(junction.getPos())) return true;
+			if(end != null && end.equals(junction.getPos())) return true;
 			return false;
 		}
 		

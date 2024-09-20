@@ -87,26 +87,26 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);
         QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
-        Junction start = syscap.getJunction(vector);
+        Junction start = syscap.getJunction(vector.pos);
         if(start != null && start.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");
             return EnumActionResult.FAIL;
         }
         QV3D[] vecs = copyAndRotate(vector, preset.path, player.rotationYaw);
-        Junction end = syscap.getJunction(vecs[vecs.length - 1]);
+        Junction end = syscap.getJunction(vecs[vecs.length - 1].pos);
         if(end != null && end.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at End point has reached max allowed connections.");
             return EnumActionResult.FAIL;
         }
         if(start == null){
         	syscap.addJunction(vector.copy());
-        	start = syscap.getJunction(vector);
+        	start = syscap.getJunction(vector.pos);
         }
         Track track = new Track(start, vecs, gauge).withPreset(gauge.getIDS() + "." + preset.name);
 		if(!TrackPlacer.set(player, player, world, null, track).place().result()) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);
-        	end = syscap.getJunction(vecs[vecs.length - 1]);
+        	end = syscap.getJunction(vecs[vecs.length - 1].pos);
         }
         start.addnew(track);
         end.addnew(track.createOppositeCopy());

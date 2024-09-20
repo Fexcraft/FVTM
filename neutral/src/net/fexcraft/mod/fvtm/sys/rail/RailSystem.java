@@ -143,7 +143,7 @@ public class RailSystem extends DetachedSystem {
 			return null;
 		}
 		
-		public Region get(QV3D vec, boolean load){
+		public Region get(V3I vec, boolean load){
 			Region region = get(RegionKey.getRegionXZ(vec));
 			if(region != null || !load) return region;
 			put(new RegionKey(vec), region = new Region(vec, root, false));
@@ -173,11 +173,11 @@ public class RailSystem extends DetachedSystem {
 		return regions;
 	}
 
-	public Junction getJunction(QV3D vec){
+	public Junction getJunction(V3I vec){
 		Region region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
 	}
 
-	public Junction getJunction(QV3D vec, boolean load){
+	public Junction getJunction(V3I vec, boolean load){
 		Region region = regions.get(vec, load); return region.getJunction(vec);
 	}
 
@@ -185,8 +185,8 @@ public class RailSystem extends DetachedSystem {
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<QV3D, Junction> entry : region.getJunctions().entrySet()){
-			if(entry.getKey().pos.x >> 4 == cx && entry.getKey().pos.z >> 4 == cz){
+		for(Entry<V3I, Junction> entry : region.getJunctions().entrySet()){
+			if(entry.getKey().x >> 4 == cx && entry.getKey().z >> 4 == cz){
 				arr.add(entry.getValue());
 			}
 		}
@@ -201,15 +201,15 @@ public class RailSystem extends DetachedSystem {
 		ArrayList<Junction> arr = new ArrayList<>();
 		Region region = regions.get(RegionKey.getRegionXZ(pos));
 		if(region == null) return arr;
-		for(Entry<QV3D, Junction> entry : region.getJunctions().entrySet()){
-			if(entry.getKey().pos.equals(pos)){
+		for(Entry<V3I, Junction> entry : region.getJunctions().entrySet()){
+			if(entry.getKey().equals(pos)){
 				arr.add(entry.getValue());
 			}
 		}
 		return arr;
 	}
 
-	public boolean delJunction(QV3D vector){
+	public boolean delJunction(V3I vector){
 		Region region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
@@ -238,16 +238,16 @@ public class RailSystem extends DetachedSystem {
 	}*/
 
 	public void addJunction(QV3D vector){
-		Region region = regions.get(vector, true);
+		Region region = regions.get(vector.pos, true);
 		if(region == null) /** this rather an error */ return;
 		Junction junction = new Junction(region, vector);
-		region.getJunctions().put(vector, junction);
-		region.setAccessed().updateClient("junction", vector);
+		region.getJunctions().put(vector.pos, junction);
+		region.setAccessed().updateClient("junction", vector.pos);
 		//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionAdded(this, junction));
 		return;
 	}
 
-	public void updateJuncton(QV3D vector){
+	public void updateJuncton(V3I vector){
 		Region region = regions.get(vector, true);
 		if(region == null) /** This is rather bad. */
 			return;
@@ -409,7 +409,7 @@ public class RailSystem extends DetachedSystem {
 	public void sendReload(String string, EntityW sender){
 		Region region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
 		if(region != null){
-			region.updateClient(string, new QV3D(sender.getPos(), 0));
+			region.updateClient(string, sender.getV3I());
 		}
 	}
 

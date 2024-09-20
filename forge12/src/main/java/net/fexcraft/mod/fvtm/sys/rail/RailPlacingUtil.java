@@ -180,7 +180,7 @@ public class RailPlacingUtil {
 
 		public void create(EntityPlayer player, QV3D vector){
 			RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world));
-			Junction junc = sys.getJunction(vector, true);
+			Junction junc = sys.getJunction(vector.pos, true);
 			UUID current = CURRENT.get(player.getGameProfile().getId());
 			if(current == null){
 				Print.chat(player, "no_queue_entry / 0");
@@ -193,7 +193,8 @@ public class RailPlacingUtil {
 			}
 			if(junc == null){
 				sys.addJunction(vector);
-				junc = sys.getJunction(vector, true);
+				junc = sys.getJunction(vector.pos, true);
+				junc.updateVecPos(vector);
 				if(ntrack.points.size() == 1 || ntrack.allsame()){
 					Print.chat(player, "&o> Junction Created.");
 					reset();
@@ -223,10 +224,10 @@ public class RailPlacingUtil {
 					return;
 				}
 				//track.blockless = DISABLE_RAIL_BLOCKS;
-				Junction second = sys.getJunction(track.start);
+				Junction second = sys.getJunction(track.start.pos);
 				if(second == null){
 					sys.addJunction(track.start);
-					second = sys.getJunction(track.start, true);
+					second = sys.getJunction(track.start.pos, true);
 					Print.chat(player, "&o> Start Junction Created.");
 				}
 				if(second != null){

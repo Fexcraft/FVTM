@@ -68,7 +68,7 @@ public class Reltrs {
 	private TRO getTrack(Track track, double passed){
 		if(track == null) return new TRO(track, passed);
 		while(passed > track.length){
-			Junction junk = sys.getJunction(track.end);
+			Junction junk = sys.getJunction(track.end.pos);
 			if(junk == null){ new TRO(track, track.length); }
 			Track newtrack = junk.getNext(null, track.getOppositeId(), false);
 			if(newtrack != null){
@@ -76,7 +76,7 @@ public class Reltrs {
 			} else return new TRO(track, track.length);
 		}
 		while(passed < 0){
-			Junction junk = sys.getJunction(track.start);
+			Junction junk = sys.getJunction(track.start.pos);
 			if(junk == null){ return new TRO(track, 0); }
 			Track newtrack = junk.getNext(null, track.getId(), false);
 			if(newtrack != null){

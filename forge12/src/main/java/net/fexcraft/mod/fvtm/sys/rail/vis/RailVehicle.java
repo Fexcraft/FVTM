@@ -94,9 +94,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public RailVehicle(RailEntity ent){
-		this((World)ent.getRegion().getWorld().getWorld().direct());
+		this((World)ent.getRegion().getSystem().getWorld().direct());
 		ent.vehicle.entity = UniEntity.getEntity(this);
-		(rek = new Reltrs(ent.getRegion().getWorld(), ent, null)).ent().alignEntity(true);
+		(rek = new Reltrs(ent.getRegion().getSystem(), ent, null)).ent().alignEntity(true);
 		initializeVehicle(false, null); Print.debug(this +  " " + rek.uid + " " + this.getPositionVector());
 	}
 

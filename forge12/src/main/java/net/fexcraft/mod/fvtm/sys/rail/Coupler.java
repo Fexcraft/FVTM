@@ -59,7 +59,7 @@ public class Coupler {
 		if(root.com != null && ent.com != null && root.com.equals(ent.com)) return;//abort, we don't want such.
 		//(front ? ent.front : ent.rear).coupled = coupled = solid;
 		entity = ent; (front ? ent.front : ent.rear).entity = root;
-		if(!root.region.getWorld().getWorld().isClient()){
+		if(!root.region.getSystem().getWorld().isClient()){
 			root.updateClient("couplers"); ent.updateClient("couplers");
 		}
 		if(root.com.isSingular() && entity.com.isSingular()){

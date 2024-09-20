@@ -58,7 +58,7 @@ public class RailPlacerContainer extends GenericContainer {
 				break;
 			}
 			case "set_junc":{
-				Junction junc = system.getJunction(vec);
+				Junction junc = system.getJunction(vec.pos);
 				if(junc != null){
 					Print.chat(sender, "&eThere is already a Junction at that position.");
 				}
@@ -70,7 +70,7 @@ public class RailPlacerContainer extends GenericContainer {
 				break;
 			}
 			case "del_junc":{
-				Junction junc = system.getJunction(vec);
+				Junction junc = system.getJunction(vec.pos);
 				if(junc == null){
 					Print.chat(sender, "&eThere is no a Junction at that position.");
 				}
@@ -78,7 +78,7 @@ public class RailPlacerContainer extends GenericContainer {
     				Print.chat(sender, "&bPlease remove all connected tracks first!");
 				}
 				else{
-					system.delJunction(vec);
+					system.delJunction(vec.pos);
 					Print.chat(sender, "&eJunction removed! " + vec.asIDString());
 					reopen();
 				}

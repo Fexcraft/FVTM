@@ -186,7 +186,7 @@ public class RailRenderer {
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB().local())) continue;
             	GL11.glPushMatrix();
             	TexUtil.bindTexture(WOOLTEX);
-            	GL11.glTranslated(junctions[i].getVec().x - cx, junctions[i].getVec().y - cy, junctions[i].getVec().z - cz);
+            	GL11.glTranslated(junctions[i].getV3D().x - cx, junctions[i].getV3D().y - cy, junctions[i].getV3D().z - cz);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
         		renderLines(junctions[i], cx, cy, cz);
@@ -375,7 +375,7 @@ public class RailRenderer {
 					value.bufferrot = Math.toDegrees(-value.bufferrot);
     			}
     			GL11.glPushMatrix();
-    			GL11.glTranslated(value.getVec().x - cx, value.getVec().y - cy, value.getVec().z - cz);
+    			GL11.glTranslated(value.getV3D().x - cx, value.getV3D().y - cy, value.getV3D().z - cz);
     			GL11.glRotated(value.bufferrot, 0, 1, 0);
     			value.tracks.get(0).gauge.getModel().renderBuffer(value);
     			GL11.glPopMatrix();

@@ -7,12 +7,12 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
@@ -28,29 +28,29 @@ public class Region {
 
 	public static final TreeMap<Long, TagCW> fillqueue = new TreeMap<>();
 	public static final TreeMap<Long, TagCW> clientqueue = new TreeMap<>();
-	private TreeMap<QV3D, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, ChunkW> chucks = new ConcurrentHashMap<>();
+	private TreeMap<V3I, Junction> junctions = new TreeMap<>();
+	private final RailSystem system;
+	private final RegionKey key;
+	public boolean loaded;
 	public long lastaccess;
 	private int timer = 0;
-	public boolean loaded;
-	private final RailSystem world;
-	private final RegionKey key;
 
-	public Region(int i, int j, RailSystem root, boolean load){
-		key = new RegionKey(i, j);
-		world = root;
+	public Region(int x, int z, RailSystem root, boolean load){
+		key = new RegionKey(x, z);
+		system = root;
 		if(load) load();
 	}
 
-	public Region(QV3D vec, RailSystem root, boolean load){
+	public Region(V3I vec, RailSystem root, boolean load){
 		key = new RegionKey(vec);
-		world = root;
+		system = root;
 		if(load) load();//.updateClient(vec);
 	}
 
 	public Region load(){
-		if(world.getWorld().isClient()){
+		if(system.getWorld().isClient()){
 			TagCW compound = TagCW.create();
 			compound.set("target_listener", "fvtm:railsys");
 			compound.set("task", "update_region");
@@ -58,7 +58,7 @@ public class Region {
 			Packets.send(PKT_TAG, "rail_upd_region", compound);
 			return this;
 		}
-		File file = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
+		File file = new File(system.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		TagCW compound = null;
 		boolean failed = false;
 		if(file.exists()){
@@ -70,7 +70,7 @@ public class Region {
 				e.printStackTrace();
 				FvtmLogger.log("FAILED TO LOAD RAIL REGION [ " + key.x + ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
 				try{
-					File newfile = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
+					File newfile = new File(system.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
 					Files.copy(file.toPath(), newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					FvtmLogger.log("If things have gone well, a backup copy of the 'broken' file was created!");
 				}
@@ -93,7 +93,7 @@ public class Region {
 			TagLW list = compound.getList("Junctions");
 			list.forEach(tag -> {
 				Junction junk = new Junction(this).read(tag);
-				junctions.put(junk.getVec316f(), junk);
+				junctions.put(junk.getV3I(), junk);
 				//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionLoaded(world, junk));
 			});
 		}
@@ -109,7 +109,7 @@ public class Region {
 	}
 
 	public Region save(){
-		File file = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
+		File file = new File(system.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		TagCW compound = write(false);
 		if(compound.empty()){
@@ -157,8 +157,8 @@ public class Region {
 		return compound;
 	}
 
-	public Junction getJunction(QV3D vec){
-		if(!key.isInRegion(vec)) return world.getJunction(vec);
+	public Junction getJunction(V3I vec){
+		if(!key.isInRegion(vec)) return system.getJunction(vec);
 		return junctions.get(vec);
 	}
 
@@ -181,16 +181,16 @@ public class Region {
 		return key;
 	}
 
-	public TreeMap<QV3D, Junction> getJunctions(){
+	public TreeMap<V3I, Junction> getJunctions(){
 		return junctions;
 	}
 
-	public void updateClient(QV3D vector){
+	public void updateClient(V3I vector){
 		updateClient("all", vector);
 	}
 
-	public void updateClient(String kind, QV3D vector){
-		if(world.getWorld().isClient()) return;
+	public void updateClient(String kind, V3I vector){
+		if(system.getWorld().isClient()) return;
 		TagCW compound = null;
 		String task = null;
 		switch(kind){
@@ -209,7 +209,7 @@ public class Region {
 			}
 			case "no_junction":{
 				task = "rail_rem_junc";
-				vector.write(compound, "vector");
+				compound.set("pos", vector.toLW());
 				break;
 			}
 			case "junction_state":{
@@ -217,7 +217,7 @@ public class Region {
 				if(junction == null) return;
 				task = "rail_upd_junc_state";
 				compound = TagCW.create();
-				junction.getVec316f().write(compound, "pos");
+				compound.set("pos", vector.toLW());
 				compound.set("switch0", junction.switch0);
 				compound.set("switch1", junction.switch1);
 				break;
@@ -227,7 +227,7 @@ public class Region {
 				if(junction == null) return;
 				task = "rail_upd_junc_signal";
 				compound = TagCW.create();
-				junction.getVec316f().write(compound, "pos");
+				compound.set("pos", vector.toLW());
 				if(junction.signal == null){
 					compound.set("nosignal", true);
 				}
@@ -242,7 +242,7 @@ public class Region {
 				if(junction == null) return;
 				task = "rail_upd_junc_signal_state";
 				compound = TagCW.create();
-				junction.getVec316f().write(compound, "pos");
+				compound.set("pos", vector.toLW());
 				compound.set("signal0", junction.signal0);
 				compound.set("signal1", junction.signal1);
 				break;
@@ -251,7 +251,7 @@ public class Region {
 				task = "rail_upd_sections";
 				compound = TagCW.create();
 				TagLW list = TagLW.create();
-				for(TrackUnit unit : world.getTrackUnits().values()){
+				for(TrackUnit unit : system.getTrackUnits().values()){
 					TagCW com = TagCW.create();
 					com.set("unit", unit.getUID());
 					com.set("section", unit.getSectionId());
@@ -262,11 +262,11 @@ public class Region {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendInRange(PKT_TAG, world.getWorld(), vector.vec, task, compound);
+		Packets.sendInRange(PKT_TAG, system.getWorld(), vector, task, compound);
 	}
 
 	public void updateClient(String kind, RailEntity entity){
-		if(world.getWorld().isClient()) return;
+		if(system.getWorld().isClient()) return;
 		TagCW compound = null;
 		String task = null;
 		switch(kind){
@@ -277,11 +277,11 @@ public class Region {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendInRange(PKT_TAG, world.getWorld(), entity.pos, task, compound);
+		Packets.sendInRange(PKT_TAG, system.getWorld(), entity.pos, task, compound);
 	}
 
 	public void updateClient(EntityW player){
-		if(world.getWorld().isClient()) return;
+		if(system.getWorld().isClient()) return;
 		TagCW compound = this.write(true);
 		compound.set("XZ", key.toArray());
 		Packets.sendTo(PKT_TAG, (Passenger)player, "rail_upd_region", compound);
@@ -294,18 +294,18 @@ public class Region {
 	public void spawnEntity(RailEntity ent){
 		FvtmLogger.debug("Spawning Entity " + ent.uid + "!");
 		entities.put(ent.getUID(), ent);
-		if(world.getWorld().isClient()) return;
+		if(system.getWorld().isClient()) return;
 		TagCW compound = ent.write(null);
 		compound.set("XZ", key.toArray());
-		Packets.sendInRange(PKT_TAG, world.getWorld(), ent.pos, "rail_spawn_ent", compound);
+		Packets.sendInRange(PKT_TAG, system.getWorld(), ent.pos, "rail_spawn_ent", compound);
 	}
 
-	public RailSystem getWorld(){
-		return world;
+	public RailSystem getSystem(){
+		return system;
 	}
 
 	public Track getTrack(PathKey key){
-		Junction junction = getJunction(key.toQV3D(0));
+		Junction junction = getJunction(key.toPos(0));
 		return junction == null ? null : junction.getTrack(key);
 	}
 

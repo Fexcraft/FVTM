@@ -97,7 +97,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
         	if(world.isRemote) return;
     		passed += speed;
     		if(passed >= current.length){
-    			Junction junc = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class).getJunction(current.end);
+    			Junction junc = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class).getJunction(current.end.pos);
     			if(junc == null){
     				current = current.createOppositeCopy(); Print.debug(this, "No junction, returning.");
     			}

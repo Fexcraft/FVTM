@@ -11,7 +11,6 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
-import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -34,7 +33,7 @@ public class Junction {
 	public SignalType signal;
 	public boolean signal0, signal1;
 	public EntryDirection signal_dir = EntryDirection.FORWARD;
-	public PathJuncType type;
+	public JuncType type;
 	public String station;
 	//
 	public ArrayList<V3I> entities = new ArrayList<>();
@@ -50,20 +49,18 @@ public class Junction {
 	public Double bufferrot;
 
 	/** General Constructor */
-	public Junction(Region region, QV3D pos){
+	public Junction(Region reg, QV3D pos){
+		this(reg);
 		vecpos = pos;
-		tracks = new ArrayList<Track>();
-		this.root = region.getWorld();
-		this.region = region;
-		this.switch0 = this.switch1 = false;
-		type = PathJuncType.STRAIGHT;
 	}
 
 	/** Only to be used from RailRegion.class */
-	protected Junction(Region region){
-		this.root = region.getWorld();
+	public Junction(Region region){
+		this.root = region.getSystem();
 		this.region = region;
 		tracks = new ArrayList<>();
+		switch0 = switch1 = false;
+		type = JuncType.STRAIGHT;
 	}
 
 	public Junction setRoot(RailSystem data){
@@ -104,8 +101,8 @@ public class Junction {
 		if(compound.has("SignalDir"))
 			signal_dir = EntryDirection.getFromSaveByte((byte)compound.getInteger("SignalDir"));
 		if(tracks.size() > 2)
-			type = compound.has("Type") ? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
-		else type = PathJuncType.STRAIGHT;
+			type = compound.has("Type") ? JuncType.valueOf(compound.getString("Type")) : JuncType.byTracksAmount(size());
+		else type = JuncType.STRAIGHT;
 		station = compound.has("Station") ? compound.getString("Station") : null;
 		if(compound.has("JunctionCommands")){
 			forswitch.clear();
@@ -173,17 +170,21 @@ public class Junction {
 		return compound;
 	}
 
-	public QV3D getVec316f(){
+	public QV3D getPos(){
 		return vecpos;
 	}
 
-	public V3D getVec(){
+	public V3I getV3I(){
+		return vecpos.pos;
+	}
+
+	public V3D getV3D(){
 		return vecpos.vec;
 	}
 
 	public void addnew(Track track){
 		tracks.add(track);
-		type = PathJuncType.byTracksAmount(size());
+		type = JuncType.byTracksAmount(size());
 		if(signal != null){
 			this.setSignal(null, null);
 		}
@@ -214,7 +215,7 @@ public class Junction {
 	}
 
 	public void updateClient(){
-		region.updateClient("junction", vecpos);
+		region.updateClient("junction", vecpos.pos);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -228,11 +229,11 @@ public class Junction {
 			track.unit.section().splitAtTrack(track);
 			track.unit.section().remove(track);
 		}
-		type = PathJuncType.byTracksAmount(size());
+		type = JuncType.byTracksAmount(size());
 		this.updateClient();
 		//
 		if(firstcall){
-			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
+			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end.pos : track.start.pos);
 			if(junk != null) junk.remove(track.getOppositeId(), false);
 			//this.checkTrackSectionConsistency();
 		}
@@ -275,7 +276,7 @@ public class Junction {
 	@Nullable
 	public Track getNext0(@Nullable RailEntity entity, PathKey track, boolean applystate){
 		if(type == null)
-			type = size() <= 2 ? PathJuncType.STRAIGHT : size() == 3 ? PathJuncType.FORK_2 : PathJuncType.CROSSING;
+			type = size() <= 2 ? JuncType.STRAIGHT : size() == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
 		}
@@ -298,7 +299,7 @@ public class Junction {
 						boolean bool = eqTrack(track, 1);
 						if(switch0 != bool){
 							switch0 = bool;
-							region.updateClient("junction_state", vecpos);
+							region.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 					}
@@ -313,19 +314,19 @@ public class Junction {
 						if(bool0 && !switch0){
 							switch0 = true;
 							switch1 = false;
-							region.updateClient("junction_state", vecpos);
+							region.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 						else if(bool1 && (switch0 || switch1)){
 							switch0 = false;
 							switch1 = false;
-							region.updateClient("junction_state", vecpos);
+							region.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 						else if(!bool1 && !switch1){
 							switch0 = false;
 							switch1 = true;
-							region.updateClient("junction_state", vecpos);
+							region.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 					}
@@ -351,7 +352,7 @@ public class Junction {
 				if(eqTrack(track, 0)){
 					if(applystate && !switch1){
 						switch1 = true;
-						region.updateClient("junction_state", vecpos);
+						region.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
@@ -359,7 +360,7 @@ public class Junction {
 				if(eqTrack(track, 1)){
 					if(applystate && !switch0){
 						switch0 = true;
-						region.updateClient("junction_state", vecpos);
+						region.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
@@ -367,7 +368,7 @@ public class Junction {
 				if(eqTrack(track, 2)){
 					if(applystate && switch0){
 						switch0 = false;
-						region.updateClient("junction_state", vecpos);
+						region.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
@@ -375,7 +376,7 @@ public class Junction {
 				if(eqTrack(track, 3)){
 					if(applystate && switch1){
 						switch1 = false;
-						region.updateClient("junction_state", vecpos);
+						region.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
@@ -434,7 +435,7 @@ public class Junction {
 		}
 		//
 		if(oldsig0 != signal0 || oldsig1 != signal1){
-			this.region.updateClient("junction_signal_state", vecpos);
+			this.region.updateClient("junction_signal_state", vecpos.pos);
 			updateLinkedTileEntities(true);
 		}
 	}
@@ -448,7 +449,7 @@ public class Junction {
 	}
 
 	public boolean onSwitchInteract(EntityW player, SwitchTileEntity tile, boolean left){
-		if(type == PathJuncType.STRAIGHT){
+		if(type == JuncType.STRAIGHT){
 			player.send("&cThis Junction has only 2 tracks! It cannot be switched.");
 			return true;
 		}
@@ -457,7 +458,7 @@ public class Junction {
 			return true;
 		}
 		if(type.isSwitch()){
-			if(type == PathJuncType.FORK_2){
+			if(type == JuncType.FORK_2){
 				switch0 = !switch0;
 				player.bar("&aChanged Junction State. [" + (switch0 ? 0 : 1) + "]");
 			}
@@ -482,7 +483,7 @@ public class Junction {
 			else switch0 = !switch0;
 			player.bar("&aChanged Junction State. [" + (switch0 ? 0 : 1) + "-" + (switch1 ? 0 : 1) + "]");
 		}
-		region.updateClient("junction_state", vecpos);
+		region.updateClient("junction_state", vecpos.pos);
 		updateLinkedTileEntities(false);
 		return true;
 	}
@@ -561,7 +562,7 @@ public class Junction {
 			this.signal = signal;
 			this.signal_dir = entrydir;
 		}
-		region.updateClient("junction_signal", vecpos);
+		region.updateClient("junction_signal", vecpos.pos);
 	}
 
 	/** @return true, if entry dir differs junction signal dir */
@@ -583,6 +584,11 @@ public class Junction {
 	@Override
 	public String toString(){
 		return "Junction{ " + vecpos + ", " + tracks.size() + ", " + signal_dir + " }";
+	}
+
+	public Junction updateVecPos(QV3D vector){
+		vecpos = vector;
+		return this;
 	}
 
 }

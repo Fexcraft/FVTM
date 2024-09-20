@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
-import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
+import net.fexcraft.mod.fvtm.sys.rail.JuncType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -34,7 +34,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 	@Override
 	public void initPacket(NBTTagCompound compound){
 		if((compound = GuiHandler.validate(player, compound, player.world.isRemote)) == null) return;
-		junction = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world), RailSystem.class).getJunction(new QV3D(TagCW.wrap(compound), null));
+		junction = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world), RailSystem.class).getJunction(new QV3D(TagCW.wrap(compound), null).pos);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			if(junction.size() != 4){
 				Print.chat(player, "Type `" + type + "` not applicable to a junction bellow 4 tracks."); return;
 			}
-			junction.type = PathJuncType.values()[type];
+			junction.type = JuncType.values()[type];
 			junction.updateClient(); Print.chat(player, "&a&lJunction Type Updated.");
 		}
 		else if(packet.hasKey("del")){

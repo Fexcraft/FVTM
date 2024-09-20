@@ -33,7 +33,7 @@ public abstract class Compound {
 	public static class Singular extends Compound {
 		
 		public Singular(RailEntity root){
-			super(root.region.getWorld().getNewCompoundId());
+			super(root.region.getSystem().getNewCompoundId());
 			entities.add(root); root.com = this; COMPOUNDS.put(uid, this);
 		}
 
@@ -98,12 +98,12 @@ public abstract class Compound {
 	public static class Multiple extends Compound {
 
 		public Multiple(RailEntity root, RailEntity entity){
-			super(root.region.getWorld().getNewCompoundId());
+			super(root.region.getSystem().getNewCompoundId());
 			entities.add(root); entities.add(entity); COMPOUNDS.put(uid, this);
 		}
 
 		public Multiple(Compound recom, int start, int end){
-			super(recom.entities.get(start).region.getWorld().getNewCompoundId());
+			super(recom.entities.get(start).region.getSystem().getNewCompoundId());
 			for(int i = start; i < end; i++){ entities.add(recom.entities.get(i)); }
 			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}

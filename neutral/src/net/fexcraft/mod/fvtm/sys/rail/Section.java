@@ -53,8 +53,8 @@ public class Section {
 		Section old = null;
 		ArrayList<TrackUnit> list = new ArrayList<>();
 		list.add(zero.unit);
-		list = explore(data.getJunction(zero.start), list);
-		list = explore(data.getJunction(zero.end), list);
+		list = explore(data.getJunction(zero.start.pos), list);
+		list = explore(data.getJunction(zero.end.pos), list);
 		//TODO check which section is the largest, and fuse with that one instead
 		for(TrackUnit unit : list){
 			if(unit.getSectionId() != uid){
@@ -77,8 +77,8 @@ public class Section {
 	public void splitAtTrack(Track track){
 		FvtmLogger.log("Splitting section at track: " + track);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
-		list0 = explore(data.getJunction(track.start), list0);
-		list1 = explore(data.getJunction(track.end), list1);
+		list0 = explore(data.getJunction(track.start.pos), list0);
+		list1 = explore(data.getJunction(track.end.pos), list1);
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
@@ -99,8 +99,8 @@ public class Section {
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0.add(junction.tracks.get(0).unit);
 		list1.add(junction.tracks.get(1).unit);
-		list0 = explore(data.getJunction(junction.tracks.get(0).end), list0);
-		list1 = explore(data.getJunction(junction.tracks.get(1).end), list1);
+		list0 = explore(data.getJunction(junction.tracks.get(0).end.pos), list0);
+		list1 = explore(data.getJunction(junction.tracks.get(1).end.pos), list1);
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
@@ -122,7 +122,7 @@ public class Section {
 		for(Track track : tracks){
 			if(list.contains(track.unit)) continue;
 			list.add(track.unit);
-			list = explore(data.getJunction(track.end), list);
+			list = explore(data.getJunction(track.end.pos), list);
 		}
 		return list;
 	}
@@ -172,7 +172,7 @@ public class Section {
 			}
 		}
 		compound.set("units", list);
-		Packets.sendInRange(PKT_TAG, junction.region.getWorld().getWorld(), junction.getVec316f().vec, "rail_upd_sections", compound);
+		Packets.sendInRange(PKT_TAG, junction.region.getSystem().getWorld(), junction.getPos().vec, "rail_upd_sections", compound);
 	}
 
 }

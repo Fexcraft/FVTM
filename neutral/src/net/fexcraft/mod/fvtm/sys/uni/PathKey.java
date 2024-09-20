@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 
@@ -95,6 +96,10 @@ public class PathKey implements Comparable<PathKey> {
 
 	public QV3D toQV3D(int i){
 		return QV3D.exact(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
+	}
+
+	public V3I toPos(int i){
+		return new V3I(pos[0 + i], pos[1 + i], pos[2 + i]);
 	}
 	
 	@Override

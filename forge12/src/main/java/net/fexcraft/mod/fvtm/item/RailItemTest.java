@@ -49,7 +49,7 @@ public class RailItemTest extends Item implements JunctionGridItem {
 	        return EnumActionResult.FAIL;
         }
         QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
-		Junction junk = syscap.getJunction(vector, true);
+		Junction junk = syscap.getJunction(vector.pos, true);
 		if(junk == null){
 			Print.bar(player, "&c&oNo Junction found at this position.");
 		}

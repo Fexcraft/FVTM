@@ -65,7 +65,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 		ItemStack stack = player.getHeldItem(hand);
 		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		Junction junction = syscap.getJunction(vector, true);
+		Junction junction = syscap.getJunction(vector.pos, true);
 		if(junction == null){ return EnumActionResult.PASS; }
 		EnumActionResult result = onSignalUse(junction, player, player.isSneaking());
 		if(result == EnumActionResult.SUCCESS && !player.capabilities.isCreativeMode) stack.shrink(1);

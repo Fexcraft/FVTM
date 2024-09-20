@@ -278,23 +278,23 @@ public abstract class Packets {
 			});
 			LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				QV3D vec = new QV3D(tag, "pos");
+				V3I vec = new V3I(tag.getList("pos"));
 				Junction junction = system.getJunction(vec);
 				if(junction != null) junction.read(tag);
 				else{
 					Region region = system.getRegions().get(vec, false);
 					if(region != null){
-						region.getJunctions().put(vec, new Junction(region, vec).read(tag));
+						region.getJunctions().put(vec, new Junction(region).read(tag));
 					}
 				}
 			});
 			LIS_CLIENT.put("rail_rem_junc", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				system.delJunction(new QV3D(tag, null));
+				system.delJunction(new V3I(tag.getList("pos")));
 			});
 			LIS_CLIENT.put("rail_upd_junc_state", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Junction junction = system.getJunction(new QV3D(tag, "pos"));
+				Junction junction = system.getJunction(new V3I(tag.getList("pos")));
 				if(junction != null){
 					junction.switch0 = tag.getBoolean("switch0");
 					junction.switch1 = tag.getBoolean("switch1");
@@ -302,7 +302,7 @@ public abstract class Packets {
 			});
 			LIS_CLIENT.put("rail_upd_junc_signal", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Junction junction = system.getJunction(new QV3D(tag, "pos"));
+				Junction junction = system.getJunction(new V3I(tag.getList("pos")));
 				if(junction != null){
 					if(tag.has("nosignal") && tag.getBoolean("nosignal")){
 						junction.signal = null;
@@ -317,7 +317,7 @@ public abstract class Packets {
 			});
 			LIS_CLIENT.put("rail_upd_junc_signal_state", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Junction junction = system.getJunction(new QV3D(tag, "pos"));
+				Junction junction = system.getJunction(new V3I(tag.getList("pos")));
 				if(junction != null){
 					junction.signal0 = tag.getBoolean("signal0");
 					junction.signal1 = tag.getBoolean("signal1");
@@ -355,6 +355,11 @@ public abstract class Packets {
 	/** Sends a Packet to all in range. */
 	public static void sendInRange(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
 		INSTANCE.sendInRange0(packet, world, pos, RANGE, data);
+	}
+
+	/** Sends a Packet to all in range. */
+	public static void sendInRange(Class<? extends PacketBase> packet, WorldW world, V3I pos, Object... data){
+		INSTANCE.sendInRange0(packet, world, new V3D(pos), RANGE, data);
 	}
 
 	/** Sends a Packet to all in range. */

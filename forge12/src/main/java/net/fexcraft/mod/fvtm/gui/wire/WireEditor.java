@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
@@ -124,7 +125,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "reset_deco");
 			compound.setString("type", WireRelayContainer.CURRDECO);
-			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
+			compound.setTag("wire", container.wire.key.save(TagCW.create()).local());
 			compound.setBoolean("opp", container.opp);
 			this.container.send(Side.SERVER, compound);
 			return true;
@@ -136,7 +137,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			compound.setString("cargo", "select_deco");
 			compound.setString("type", WireRelayContainer.CURRDECO);
 			compound.setString("selected", container.models.get(WireRelayContainer.CURRDECO).get(index + scroll).getIDS());
-			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
+			compound.setTag("wire", container.wire.key.save(TagCW.create()).local());
 			compound.setBoolean("opp", container.opp);
 			this.container.send(Side.SERVER, compound);
 			return true;
@@ -148,7 +149,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "set_slack");
 			compound.setFloat("slack", value);
-			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
+			compound.setTag("wire", container.wire.key.save(TagCW.create()).local());
 			this.container.send(Side.SERVER, compound);
 		}
 		//

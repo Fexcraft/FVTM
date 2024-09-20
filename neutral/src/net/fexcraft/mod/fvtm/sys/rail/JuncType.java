@@ -1,18 +1,13 @@
-package net.fexcraft.mod.fvtm.sys.uni;
-
-import net.fexcraft.mod.fvtm.block.generated.DBSW_4ROT_TE;
-import net.fexcraft.mod.fvtm.block.generated.F2SW_4ROT_TE;
-import net.fexcraft.mod.fvtm.block.generated.F3SW_4ROT_TE;
-import net.minecraft.block.Block;
+package net.fexcraft.mod.fvtm.sys.rail;
 
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public enum PathJuncType {
+public enum JuncType {
 	
-	/** Junctions with 2 tracks or less. */
+	/** Junctions with 2 tracks or fewer. */
 	STRAIGHT,
 	/** Junctions with 3 tracks, 1st is IN, 2nd and 3d is OUT. */
 	FORK_2,
@@ -44,20 +39,20 @@ public enum PathJuncType {
 	}
 
 	/** Default method in case the type is missing in a Junction. */
-	public static PathJuncType byTracksAmount(int size){
-		return size <= 2 ? PathJuncType.STRAIGHT : size == 3 ? PathJuncType.FORK_2 : PathJuncType.CROSSING;
+	public static JuncType byTracksAmount(int size){
+		return size <= 2 ? JuncType.STRAIGHT : size == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
 	}
 
 	public boolean isStraight(){
 		return this == STRAIGHT;
 	}
 
-	public static PathJuncType fromAddonBlock(Block block){
+	/*public static JuncType fromAddonBlock(Block block){
 		if(block instanceof DBSW_4ROT_TE) return DOUBLE;
 		if(block instanceof F2SW_4ROT_TE) return FORK_2;
 		if(block instanceof F3SW_4ROT_TE) return FORK_3;
 		return STRAIGHT;
-	}
+	}*/
 
 	public boolean is4Track(){
 		return this == CROSSING || this == DOUBLE || this == FORK_3;

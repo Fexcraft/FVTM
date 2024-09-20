@@ -79,7 +79,12 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 
 	@Override
 	public DecorationData read(TagCW compound){
-		if(compound == null) return this;
+		if(compound == null || compound.empty()){
+			if(type.randomtex){
+				texture.setSelectedTexture(type.getDefaultTextures().size(), null, false);
+			}
+			return this;
+		}
 		offset = new Pos(compound.getFloat("offx"), compound.getFloat("offy"), compound.getFloat("offz"));
 		if(compound.has("rotx")) rotx = compound.getFloat("rotx");
 		if(compound.has("roty")) roty = compound.getFloat("roty");

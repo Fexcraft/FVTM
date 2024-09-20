@@ -129,7 +129,7 @@ public class Junction {
 		if(compound.has("LinkedBlocks")){
 			TagLW list = compound.getList("LinkedBlocks").local();
 			for(int i = 0; i < list.size(); i++){
-				entities.add(new V3I(list.getLong(i)));
+				entities.add(new V3I(list.getList(i)));
 			}
 		}
 		return this;
@@ -166,7 +166,7 @@ public class Junction {
 		if(!entities.isEmpty()){
 			TagLW list = TagLW.create();
 			for(V3I pos : entities){
-				list.add(pos.asLong());
+				list.add(pos.toLW());
 			}
 			compound.set("LinkedBlocks", list);
 		}

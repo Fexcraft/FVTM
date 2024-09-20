@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -58,16 +59,16 @@ public class WireRelay {
 		return this;
 	}
 
-	public NBTTagCompound write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
+	public TagCW write(TagCW compound){
+		if(compound == null) compound = TagCW.create();
 		for(int i = 0; i < wires.size(); i++){
-			compound.setTag("Wire" + i, wires.get(i).write(null));
+			compound.set("Wire" + i, wires.get(i).write(null));
 		}
-		compound.setInteger("Wires", wires.size());
-		compound.setString("Key", key);
-		compound.setDouble("PosX", pos.x);
-		compound.setDouble("PosY", pos.y);
-		compound.setDouble("PosZ", pos.z);
+		compound.set("Wires", wires.size());
+		compound.set("Key", key);
+		compound.set("PosX", pos.x);
+		compound.set("PosY", pos.y);
+		compound.set("PosZ", pos.z);
 		return compound;
 	}
 	

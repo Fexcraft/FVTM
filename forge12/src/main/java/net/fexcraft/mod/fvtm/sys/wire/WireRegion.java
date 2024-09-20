@@ -13,7 +13,10 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -105,30 +108,25 @@ public class WireRegion {
 	public WireRegion save(){
 		File file = new File(system.getSaveRoot(), "/wireregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		NBTTagCompound compound = write(false);
-		if(compound.isEmpty()){
+		TagCW compound = write(false);
+		if(compound.empty()){
 			Print.debug("WireRegion [" + key.toString() + "] has no data to save, skipping.");
 			return this;
 		}
-		compound.setLong("Saved", Time.getDate());
-		try{
-			CompressedStreamTools.write(compound, file);
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
+		compound.set("Saved", Time.getDate());
+		WrapperHolder.write(compound, file);
 		Print.debug("Saved WireRegion [" + key.toString() + "].");
 		return this;
 	}
 
-	private NBTTagCompound write(boolean clientpacket){
-		NBTTagCompound compound = new NBTTagCompound();
+	private TagCW write(boolean clientpacket){
+		TagCW compound = TagCW.create();
 		if(!holders.isEmpty()){
-			NBTTagList list = new NBTTagList();
+			TagLW list = TagLW.create();
 			for(RelayHolder holder : holders.values()){
-				list.appendTag(holder.write());
+				list.add(holder.write());
 			}
-			compound.setTag("RelayHolders", list);
+			compound.set("RelayHolders", list);
 		}
 		if(clientpacket) return compound;
 		return compound;
@@ -165,53 +163,53 @@ public class WireRegion {
 	
 	public void updateClient(String kind, String key, V3I pos, Object obj){
 		if(system.getWorld().isClient()) return;
-		NBTTagCompound compound = null;
+		TagCW compound = null;
 		switch(kind){
 			case "all":{
-				compound = this.write(true);
-				compound.setString("task", "update_region");
-				compound.setLong("pos", pos.asLong());
-				compound.setIntArray("XZ", RegionKey.getRegionXZ(pos));
+				compound = write(true);
+				compound.set("task", "update_region");
+				compound.set("pos", pos.toLW());
+				compound.set("XZ", RegionKey.getRegionXZ(pos));
 				break;
 			}
 			case "relay":{
-				compound = new NBTTagCompound();
-				compound.setString("task", "update_relay");
-				compound.setLong("pos", ((WireRelay)obj).holder.pos.toLong());
+				compound = TagCW.create();
+				compound.set("task", "update_relay");
+				compound.set("pos", ((WireRelay)obj).holder.pos.toLong());
 				((WireRelay)obj).write(compound);
 				break;
 			}
 			case "no_relay":{
-				compound = new NBTTagCompound();
-				compound.setString("task", "remove_relay");
-				compound.setLong("pos", pos.asLong());
-				compound.setString("key", key);
+				compound = TagCW.create();
+				compound.set("task", "remove_relay");
+				compound.set("pos", pos.toLW());
+				compound.set("key", key);
 				break;
 			}
 			case "holder":{
 				RelayHolder holder = getHolder(pos);
 				if(holder == null) return;
 				compound = holder.write();
-				compound.setString("task", "update_holder");
+				compound.set("task", "update_holder");
 				break;
 			}
 			case "no_holder":{
-				compound = new NBTTagCompound();
-				compound.setLong("pos", pos.asLong());
-				compound.setString("task", "rem_holder");
+				compound = TagCW.create();
+				compound.set("pos", pos.toLW());
+				compound.set("task", "rem_holder");
 				break;
 			}
 			case "sections":{
-				compound = new NBTTagCompound();
-				compound.setString("task", "update_sections");
-				NBTTagList list = new NBTTagList();
+				compound = TagCW.create();
+				compound.set("task", "update_sections");
+				TagLW list = TagLW.create();
 				for(WireUnit unit : system.getWireUnits().values()){
-					NBTTagCompound com = new NBTTagCompound();
-					com.setString("unit", unit.getUID());
-					com.setLong("section", unit.getSectionId());
-					list.appendTag(com);
+					TagCW com = TagCW.create();
+					com.set("unit", unit.getUID());
+					com.set("section", unit.getSectionId());
+					list.add(com);
 				}
-				compound.setTag("units", list);
+				compound.set("units", list);
 				break;
 			}
 			default:{
@@ -220,17 +218,17 @@ public class WireRegion {
 			}
 		}
 		if(compound == null) return;
-		compound.setString("target_listener", "fvtm:wiresys");
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(system.getDimension(), pos));
+		compound.set("target_listener", "fvtm:wiresys");
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(system.getDimension(), pos));
 	}
 
 	public void updateClient(EntityPlayerMP player){
 		if(system.getWorld().isClient() || player == null) return;
-		NBTTagCompound compound = this.write(true);
-		compound.setString("target_listener", "fvtm:wiresys");
-		compound.setString("task", "update_region");
-		compound.setIntArray("XZ", key.toArray());
-		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound), player);
+		TagCW compound = this.write(true);
+		compound.set("target_listener", "fvtm:wiresys");
+		compound.set("task", "update_region");
+		compound.set("XZ", key.toArray());
+		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound.local()), player);
 	}
 	
 	public WireSystem getSystem(){

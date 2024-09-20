@@ -34,7 +34,9 @@ public class ClothModel extends DefaultModel {
 			}
 			for(String string : list){
 				String[] args = string.trim().split(" ");
-				if(!groups.contains(args[0])) continue;
+				if(!groups.contains(args[0])){
+					continue;
+				}
 				try{
 					String group = args[0];
 					String model = args[1];
@@ -57,14 +59,10 @@ public class ClothModel extends DefaultModel {
 	}
 	
 	public void setGroupAs(ModelGroup group, String playermodelpart, float x, float y, float z){
-		if(cloth_groups.containsKey(playermodelpart)){
-			cloth_groups.get(playermodelpart).add(group.name);
+		if(!cloth_groups.containsKey(playermodelpart)){
+			cloth_groups.put(playermodelpart, new ArrayList<>());
 		}
-		else{
-			ArrayList<String> arrlist = new ArrayList<>();
-			arrlist.add(group.name);
-			cloth_groups.put(playermodelpart, arrlist);
-		}
+		cloth_groups.get(playermodelpart).add(group.name);
 		if(x == 0f && y == 0f && z == 0f) return;
 		group.translate(x, y, z, false);
 	}

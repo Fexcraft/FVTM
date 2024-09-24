@@ -60,7 +60,7 @@ public class LegacySpawnSystem extends EntitySystem {
 			if(!data.getWheelPositions().containsKey(str)){
 				String trailer = data.getType().isTrailer() ? "&9Trailer" : "&9Vehicle";
 				Print.chat(player, trailer + " is missing a wheel! &7&o" + str);
-				failed = true;
+				//failed = true;
 			}
 		}
 		if(!data.getType().isTrailer() && !data.hasPart("engine")){

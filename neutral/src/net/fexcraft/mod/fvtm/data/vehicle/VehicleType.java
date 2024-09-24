@@ -80,16 +80,16 @@ public enum VehicleType {
 		attrs.add(new AttrInteger("generated_keys", 0).limit(0, 8).editable(false));
 		switch(this){
 			case LAND:{
-				attrs.add(new AttrBoolean("lights_fog", false).addAccess("driver").sync(true)
+				attrs.add(new AttrBoolean("lights_fog", false).editable(true).addAccess("driver").sync(true)
 					.addIcons("true", "fvtm:textures/gui/icons/lights_fog_on.png", "false", "fvtm:textures/gui/icons/lights_fog_off.png"));
-				attrs.add(new AttrBoolean("lights_long", false).addAccess("driver").sync(true)
+				attrs.add(new AttrBoolean("lights_long", false).editable(true).addAccess("driver").sync(true)
 					.addIcons("true", "fvtm:textures/gui/icons/lights_high_on.png", "false", "fvtm:textures/gui/icons/lights_high_off.png"));
-				attrs.add(new AttrBoolean("lights_other", false).addAccess("driver").sync(true));
+				attrs.add(new AttrBoolean("lights_other", false).editable(true).addAccess("driver").sync(true));
 				//attrs.add(new AttrBoolean("turn_light_left", false).setSeat("driver"));
 				//attrs.add(new AttrBoolean("turn_light_right", false).setSeat("driver"));
-				attrs.add(new AttrTristate("turn_lights", (Boolean)null).addAccess("driver").sync(true)
+				attrs.add(new AttrTristate("turn_lights", (Boolean)null).editable(true).addAccess("driver").sync(true)
 					.addIcons("true", "fvtm:textures/gui/icons/turn_indicator_right.png", "false", "fvtm:textures/gui/icons/turn_indicator_left.png", "null", "fvtm:textures/gui/icons/turn_indicator.png"));
-				attrs.add(new AttrBoolean("warning_lights", false).addAccess("driver").sync(true)
+				attrs.add(new AttrBoolean("warning_lights", false).editable(true).addAccess("driver").sync(true)
 					.addIcons("true", "fvtm:textures/gui/icons/warning_lights_on.png", "false", "fvtm:textures/gui/icons/warning_lights_off.png"));
 				//
 				attrs.add(new AttrFloat("steering_angle", 0f).limit(-90f, 90f));

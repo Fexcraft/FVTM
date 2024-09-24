@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.sys.rail.*;
-import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -309,7 +308,7 @@ public abstract class Packets {
 						junction.signal_dir = EntryDirection.FORWARD;
 					}
 					else{
-						junction.signal = SignalType.values()[tag.getInteger("signal")];
+						junction.signal = null;//TODOSignalType.values()[tag.getInteger("signal")];
 						junction.signal_dir = EntryDirection.values()[tag.getInteger("signal_dir")];
 					}
 					junction.signalpos0 = junction.signalpos1 = null;

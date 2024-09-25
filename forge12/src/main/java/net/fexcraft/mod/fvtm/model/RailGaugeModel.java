@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
+import net.fexcraft.mod.fvtm.render.TurboArrayPositioned;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.render.RailRenderer;

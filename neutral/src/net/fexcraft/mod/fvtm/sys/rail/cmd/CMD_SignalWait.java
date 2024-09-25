@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail.cmds;
+package net.fexcraft.mod.fvtm.sys.rail.cmd;
 
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;

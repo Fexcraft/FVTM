@@ -9,8 +9,8 @@ import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
+import net.fexcraft.mod.fvtm.sys.rail.cmd.CMD_SignalWait;
+import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail.cmds;
+package net.fexcraft.mod.fvtm.sys.rail.cmd;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

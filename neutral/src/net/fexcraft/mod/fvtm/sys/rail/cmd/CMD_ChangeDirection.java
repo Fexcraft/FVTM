@@ -1,12 +1,10 @@
-package net.fexcraft.mod.fvtm.sys.rail.cmds;
+package net.fexcraft.mod.fvtm.sys.rail.cmd;
 
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_ChangeDirection extends JEC {
 

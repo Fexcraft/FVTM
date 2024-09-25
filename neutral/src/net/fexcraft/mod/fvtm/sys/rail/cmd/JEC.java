@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail.cmds;
+package net.fexcraft.mod.fvtm.sys.rail.cmd;
 
 import java.util.ArrayList;
 
@@ -8,10 +8,6 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 
 /**
  * First Prototype of Junction Commands.
@@ -52,8 +48,10 @@ public abstract class JEC {
 	
 	public JEC(TagCW compound){
 		type = JECType.valueOf(compound.getString("Type"));
-		NBTTagList list = compound.getList("Targets").local();
-		for(NBTBase base : list){ targets.add(((NBTTagString)base).getString()); }
+		TagLW list = compound.getList("Targets").local();
+		for(int i = 0; i < list.size(); i++){
+			targets.add(list.getString(i));
+		}
 		readData(compound.getCompound("Data"));
 		diron = EntryDirection.values()[compound.getInteger("EntryDir")];
 		interval = compound.getInteger("Interval");
@@ -65,7 +63,7 @@ public abstract class JEC {
 		JECType type = JECType.valueOf(compound.getString("Type"));
 		if(type == null) return null;
 		try{
-			return type.getJCClass().getConstructor(NBTTagCompound.class).newInstance(compound);
+			return type.getJCClass().getConstructor(TagCW.class).newInstance(compound);
 		}
 		catch(Exception e){ e.printStackTrace(); return null; }
 	}

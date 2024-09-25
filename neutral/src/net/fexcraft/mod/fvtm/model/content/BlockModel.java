@@ -10,10 +10,7 @@ import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.AxisRotator;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.ModelData;
-import net.fexcraft.mod.fvtm.model.Transforms;
+import net.fexcraft.mod.fvtm.model.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -74,6 +71,20 @@ public class BlockModel extends DefaultModel {
 					}
 					if(list.size() > 0) state_models.put(entry.getKey(), list);
 				}
+				else if(entry.getValue().isArray()){
+					for(JsonValue<?> val : entry.getValue().asArray().value){
+						JsonMap mep = val.asMap();
+						Model model = null;
+						if(mep.has("model")){
+							model = FvtmResources.getModel(mep.get("model").string_value(), new ModelData(mep), BlockModel.class);
+						}
+						else model = copy();
+						if(model != null){
+							if(!state_models.containsKey(entry.getKey())) state_models.put(entry.getKey(), new ArrayList<>());
+							state_models.get(entry.getKey()).add((BlockModel)model);
+						}
+					}
+				}
 				else{
 					Model model = FvtmResources.getModel(entry.getValue().string_value(), new ModelData(), BlockModel.class);
 					if(model != null){
@@ -126,6 +137,14 @@ public class BlockModel extends DefaultModel {
 		public Vec3f translate;
 		public Vec3f scale;
 
+	}
+
+	protected BlockModel copy(){
+		BlockModel model = new BlockModel();
+		for(ModelGroup group : groups){
+			model.groups.add(group.copyWithoutPrograms());
+		}
+		return model;
 	}
 
 }

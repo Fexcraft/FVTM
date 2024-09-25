@@ -95,7 +95,7 @@ public abstract class Packets20 extends Packets {
 			send(Packet_TagListener.class, "vehicle", com);
 		}
 		else{
-			sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle", com);
+			sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), "vehicle", com);
 		}
 	}
 

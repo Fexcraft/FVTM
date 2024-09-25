@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -48,5 +49,7 @@ public interface FvtmWorld {
 	public StateWrapper getRoadWithHeight(StateWrapper block, int height);
 
 	public void handleBlockEntityPacket(TagCW com, Passenger player);
+
+	public void spawnRailEntity(RailEntity ent);
 
 }

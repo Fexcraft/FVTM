@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_SetSignal extends JEC {
 	
@@ -36,10 +35,10 @@ public class CMD_SetSignal extends JEC {
 	}
 
 	@Override
-	public void readData(TagCW base){
-		NBTTagCompound compound = (NBTTagCompound)base;
-		if(compound.hasKey("vec_pos")) signal = new QV3D(TagCW.wrap(compound), "vec_pos");
-		state = compound.getByte("state"); timed = compound.hasKey("timed") ? compound.getInteger("timed") : 0;
+	public void readData(TagCW com){
+		if(com.has("vec_pos")) signal = new QV3D(com, "vec_pos");
+		state = com.getByte("state");
+		timed = com.has("timed") ? com.getInteger("timed") : 0;
 	}
 
 	@Override

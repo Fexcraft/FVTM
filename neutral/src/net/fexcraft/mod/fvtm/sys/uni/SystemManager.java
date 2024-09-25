@@ -13,12 +13,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WorldW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 /**
  * 
@@ -78,15 +77,15 @@ public class SystemManager {
 
 	public static void onAttachWorldCapabilities(WorldW world){
 		if(loaded(world.dim())) return;
-		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
+		SINGLEPLAYER = WrapperHolder.isSinglePlayer();
 		int dim = world.dim();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
-		Print.debug("dimension remote = " + world.isClient() + "/" + SINGLEPLAYER);
+		FvtmLogger.debug("dimension remote = " + world.isClient() + "/" + SINGLEPLAYER);
 		if(world.isClient() || SINGLEPLAYER){
-			if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new ConcurrentHashMap<>());
+			/*if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new ConcurrentHashMap<>());
 			EntitySystem ensys = new EntitySystem(world);
 			SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
-			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);
+			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);*///TODO
 		}
 		//
 		if(!DISABLE_RAILS){
@@ -98,9 +97,9 @@ public class SystemManager {
 		//
 		if(!DISABLE_WIRES){
 			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
-			WireSystem sys = new WireSystem(world);
+			/*WireSystem sys = new WireSystem(world);
 			SYSTEMS.get(Systems.WIRE).put(dim, sys);
-			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
+			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);*///TODO
 		}
 		//
 		LOADED_DIM.put(dim, true);

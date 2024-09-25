@@ -12,11 +12,10 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
-import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.fvtm.util.SaveUtils;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -487,12 +486,12 @@ public class RailEntity implements Comparable<RailEntity>{
 		compound.set("uid", uid);
 		compound.set("region", region.getKey().toArray());
 		current.getId().write(compound);
-		compound.set("pos", DataUtil.writeVec(pos));
-		compound.set("prev", DataUtil.writeVec(prev));
-		compound.set("cfront", DataUtil.writeVec(cfront));
-		compound.set("bfront", DataUtil.writeVec(bfront));
-		compound.set("crear", DataUtil.writeVec(crear));
-		compound.set("brear", DataUtil.writeVec(brear));
+		compound.set("pos", SaveUtils.saveV3D(pos));
+		compound.set("prev", SaveUtils.saveV3D(prev));
+		compound.set("cfront", SaveUtils.saveV3D(cfront));
+		compound.set("bfront", SaveUtils.saveV3D(bfront));
+		compound.set("crear", SaveUtils.saveV3D(crear));
+		compound.set("brear", SaveUtils.saveV3D(brear));
 		compound.set("forward", com.getOrient(this));
 		compound.set("passed", passed);
 		compound.set("Placer0", placer.getMostSignificantBits());
@@ -515,7 +514,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		compound.set("Compound", com.getUID());
 		compound.set("Singular", com.isSingular());
 		compound.set("throttle", throttle);
-		return vehicle.data.write(new TagCWI(compound)).local();
+		return vehicle.data.write(compound).local();
 	}
 	
 	public RailEntity read(TagCW compound){
@@ -524,12 +523,12 @@ public class RailEntity implements Comparable<RailEntity>{
 		current = region.getTrack(new PathKey(compound));
 		if(current == null) FvtmLogger.log("track not found! " + new PathKey(compound).toString());
 		if(current == null){ this.remove(); return this; }
-		pos = DataUtil.readVec(compound.getList("pos"));
-		prev = DataUtil.readVec(compound.getList("prev"));
-		cfront = DataUtil.readVec(compound.getList("cfront"));
-		bfront = DataUtil.readVec(compound.getList("bfront"));
-		crear = DataUtil.readVec(compound.getList("crear"));
-		brear = DataUtil.readVec(compound.getList("brear"));
+		pos = SaveUtils.loadV3D(compound.getList("pos"));
+		prev = SaveUtils.loadV3D(compound.getList("prev"));
+		cfront = SaveUtils.loadV3D(compound.getList("cfront"));
+		bfront = SaveUtils.loadV3D(compound.getList("bfront"));
+		crear = SaveUtils.loadV3D(compound.getList("crear"));
+		brear = SaveUtils.loadV3D(compound.getList("brear"));
 		//forward = compound.has("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
 		throttle = compound.getFloat("throttle");
@@ -546,7 +545,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehicle.data == null) vehicle.data = null;//TODO Resources.getVehicleData(compound);
-		else vehicle.data.read(new TagCWI(compound));
+		else vehicle.data.read(compound);
 		if(vehicle.data == null){ this.remove(); return null; }
 		//if(compound.has("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
 		//if(compound.has("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));

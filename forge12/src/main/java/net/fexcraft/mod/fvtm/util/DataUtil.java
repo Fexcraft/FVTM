@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 
@@ -15,27 +14,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 
 public class DataUtil {
 
@@ -129,56 +116,6 @@ public class DataUtil {
 			else {};
 		}
 		return result == null ? nell ? null : new RGB() : result;
-	}
-
-	public static NBTBase writeVec3d(Vec3d vec){
-		NBTTagList list = new NBTTagList();
-		list.appendTag(new NBTTagDouble(vec.x));
-		list.appendTag(new NBTTagDouble(vec.y));
-		list.appendTag(new NBTTagDouble(vec.z));
-		return list;
-	}
-
-	public static Vec3d readVec3d(NBTBase base){
-		if(base instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)base;
-		if(list.isEmpty() || list.tagCount() < 3) return null;
-		return new Vec3d(list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2));
-	}
-
-	public static TagLW writeVec(V3D vec){
-		TagLW list = TagLW.create();
-		list.add(vec.x);
-		list.add(vec.y);
-		list.add(vec.z);
-		return list;
-	}
-
-	public static V3D readVec(NBTBase tag){
-		if(tag instanceof NBTTagList == false) return null;
-		NBTTagList list = (NBTTagList)tag;
-		if(list.isEmpty() || list.tagCount() < 3) return null;
-		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
-	}
-
-	public static V3D readVec(TagLW tag){
-		NBTTagList list = tag.local();
-		if(list.isEmpty() || list.tagCount() < 3) return null;
-		return new V3D(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
-	}
-
-	public static JsonElement writeVecJSON(V3D vec){
-		JsonArray array = new JsonArray();
-		array.add(vec.x);
-		array.add(vec.y);
-		array.add(vec.z);
-		return array;
-	}
-
-	public static V3D readVec(JsonElement elm){
-		if(elm == null || !elm.isJsonArray()) return null;
-		JsonArray array = elm.getAsJsonArray();
-		if(array.size() == 0) return null;
-		return new V3D(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble());
 	}
 	
 	public static BufferedImage tryDownload(String url){

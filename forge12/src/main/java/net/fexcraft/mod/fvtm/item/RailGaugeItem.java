@@ -23,7 +23,9 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -133,7 +135,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 				Print.chat(sender, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
-			Track track = new Track(junk, getVectors(list), vector, gauge);
+			Track track = new Track(junk, getVectors(TagLW.wrap(list)), vector, gauge);
 			if(track.length > MAX_RAIL_TRACK_LENGTH){
 				Print.chat(sender, "&cTrack length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
@@ -157,7 +159,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	}
 
 	private boolean createdJunction(ICommandSender sender, RailSystem syscap, EntityPlayer player, NBTTagList list, QV3D vector){
-		if(list.tagCount() != 1) return false; QV3D vec = getFirstVector(list); if(!vec.equals(vector)) return false;
+		if(list.tagCount() != 1) return false; QV3D vec = getFirstVector(TagLW.wrap(list)); if(!vec.equals(vector)) return false;
 		syscap.addJunction(vector); Print.chat(sender, "Junction Created!"); return true;
 	}
 
@@ -166,20 +168,20 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	}
 	
 	@Override
-	public QV3D[] getVectors(ItemStack stack){
-		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:railpoints")) return new QV3D[0];
-		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints"));
+	public QV3D[] getVectors(StackWrapper stack){
+		if(!stack.hasTag() || !stack.getTag().has("fvtm:railpoints")) return new QV3D[0];
+		return getVectors(stack.getTag().getList("fvtm:railpoints"));
 	}
 
-	public QV3D[] getVectors(NBTTagList list){
-		QV3D[] arr = new QV3D[list.tagCount()];
+	public QV3D[] getVectors(TagLW list){
+		QV3D[] arr = new QV3D[list.size()];
 		for(int i = 0; i < arr.length; i++){
-			arr[i] = new QV3D(TagCW.wrap(list.getCompoundTagAt(i)), null);
+			arr[i] = new QV3D(list.getCompound(i), null);
 		} return arr;
 	}
 
-	private QV3D getFirstVector(NBTTagList list){
-		return new QV3D(TagCW.wrap(list.getCompoundTagAt(0)), null);
+	private QV3D getFirstVector(TagLW list){
+		return new QV3D(list.getCompound(0), null);
 	}
 
 	@Override

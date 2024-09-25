@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
@@ -271,7 +271,7 @@ public class RailSystem extends DetachedSystem {
 			} torem.forEach(rem -> Region.clientqueue.remove(rem)); torem.clear();
 		}*/
 		if(!Region.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
-			Print.debug("Processing Entities in Queue " + Region.fillqueue.size());
+			FvtmLogger.debug("Processing Entities in Queue " + Region.fillqueue.size());
 			ArrayList<Long> torem = new ArrayList<>(); Region region;
 			for(Long uid : Region.fillqueue.keySet()){
 				TagCW com = Region.fillqueue.get(uid);
@@ -280,8 +280,8 @@ public class RailSystem extends DetachedSystem {
 					region = getRegions().get(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
 					if(FvtmRegistry.VEHICLES.get(com.getString("Vehicle")) == null){
-						Print.log("SINGULAR Rail Vehicle with id '" + com.getString("Vehicle") + "' not found, removing.");
-						Print.log("NBT:" + com);
+						FvtmLogger.log("SINGULAR Rail Vehicle with id '" + com.getString("Vehicle") + "' not found, removing.");
+						FvtmLogger.log("NBT:" + com);
 						torem.add(uid);
 						continue;
 					}

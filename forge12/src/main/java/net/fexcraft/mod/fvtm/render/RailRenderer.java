@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -61,21 +62,22 @@ public class RailRenderer {
     public void preview(DrawBlockHighlightEvent event){ HOLDING = false;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
+		StackWrapper wrapper = StackWrapper.wrap(stack);
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
     		QV3D vec = new QV3D(event.getTarget().hitVec.x, event.getTarget().hitVec.y, event.getTarget().hitVec.z, jitem.getPlacingGrid());
     		if(jitem.offsetVectors()){
-        		vecs = new QV3D[jitem.getVectors(stack).length];
+        		vecs = new QV3D[jitem.getVectors(wrapper).length];
     			double seg = 360f / jitem.getSegments();
     			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			if(con % seg > seg / 2) con++;
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vec).add(vec.vec), jitem.getPlacingGrid());
+    				vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(wrapper)[i].vec).add(vec.vec), jitem.getPlacingGrid());
     			}
 				if(Static.dev()) Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}
     		else{
-    			vecs = jitem.getVectors(stack);
+    			vecs = jitem.getVectors(wrapper);
     		}
         	//
     		EntityPlayer player = event.getPlayer();

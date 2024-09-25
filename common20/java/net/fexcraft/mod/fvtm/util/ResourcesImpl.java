@@ -75,6 +75,7 @@ public class ResourcesImpl extends FvtmResources {
 			return new net.fexcraft.mod.fvtm.item.BlockItem(blk);
 		})));
 		FvtmRegistry.DECORATIONS.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new DecorationItem(veh))));
+		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), () -> new RailGaugeItem(rg))));
 	}
 
 	@Override

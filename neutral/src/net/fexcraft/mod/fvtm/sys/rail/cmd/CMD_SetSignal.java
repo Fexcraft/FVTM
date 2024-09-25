@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cmd;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
+import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;

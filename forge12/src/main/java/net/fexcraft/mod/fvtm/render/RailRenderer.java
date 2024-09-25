@@ -26,10 +26,8 @@ import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -38,7 +36,6 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
@@ -455,55 +452,6 @@ public class RailRenderer {
 			}
 		}
 		track.restmodel = tarp;
-	}
-
-	public static class TurboArrayPositioned {
-		
-		protected ModelRendererTurbo[] turbos;
-		protected V3D[] positions;
-		
-		public TurboArrayPositioned(Path path, RGB colour){
-			int i = (int)path.getLength(null);
-			if(path.length % 1f > 0) i++;
-			if(i == 0) i = 1;
-			turbos = new ModelRendererTurbo[i];
-			positions = new V3D[i];
-			for(int k = 0; k < i; k++){
-				turbos[k] = new ModelRendererTurbo(path, 0, 0, 16, 16);
-				if(colour != null) turbos[k].setColor(colour);
-				positions[k] = path.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? path.length - 0.125f : k, false);
-			}
-		}
-		
-		public TurboArrayPositioned(Wire wire, RGB colour){
-			int i = (int)wire.getLength(null);
-			if(wire.length % 1f > 0) i++;
-			if(i == 0) i = 1;
-			turbos = new ModelRendererTurbo[i];
-			positions = new V3D[i];
-			for(int k = 0; k < i; k++){
-				turbos[k] = new ModelRendererTurbo(wire, 0, 0, 16, 16);
-				if(colour != null) turbos[k].setColor(colour);
-				positions[k] = wire.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? wire.length - 0.125f : k, false);
-			}
-		}
-
-		public void clearDisplayLists(){
-			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
-		}
-		
-		public void render(){
-			for(int m = 0; m < turbos.length; m++){
-		        int i = getBrightness(positions[m]), j = i % 65536, k = i / 65536;
-		        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
-		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F); turbos[m].render(1f);
-			}
-		}
-		
-		public void renderPlain(){
-			for(int m = 0; m < turbos.length; m++){ turbos[m].render(1f); }
-		}
-		
 	}
 
 	//@Deprecated

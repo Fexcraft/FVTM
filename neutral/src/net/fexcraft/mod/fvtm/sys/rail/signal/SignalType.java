@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail.signals;
+package net.fexcraft.mod.fvtm.sys.rail.signal;
 
 /**
  * For "OpenTTD"-styled signals.

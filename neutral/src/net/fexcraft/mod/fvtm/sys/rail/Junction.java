@@ -6,9 +6,8 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.block.AABB;
-import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
+import net.fexcraft.mod.fvtm.render.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -448,7 +447,7 @@ public class Junction {
 		return false;
 	}
 
-	public boolean onSwitchInteract(EntityW player, SwitchTileEntity tile, boolean left){
+	public boolean onSwitchInteract(EntityW player, Object tile, boolean left){
 		if(type == JuncType.STRAIGHT){
 			player.send("&cThis Junction has only 2 tracks! It cannot be switched.");
 			return true;

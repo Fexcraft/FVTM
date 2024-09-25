@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.minecraft.item.ItemStack;
+import net.fexcraft.mod.uni.item.StackWrapper;
 
 public interface JunctionGridItem {
 	
@@ -18,7 +18,7 @@ public interface JunctionGridItem {
 	
 	public default boolean hasVectors(){ return false; }
 	
-	public default QV3D[] getVectors(ItemStack stack){ return EMPTY; }
+	public default QV3D[] getVectors(StackWrapper stack){ return EMPTY; }
 	
 	public default boolean offsetVectors(){ return false; }
 	

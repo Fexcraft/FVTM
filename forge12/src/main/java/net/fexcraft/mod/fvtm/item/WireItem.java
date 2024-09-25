@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
@@ -109,9 +110,9 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
     }
 	
 	@Override
-	public QV3D[] getVectors(ItemStack stack){
-		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:wirepoints")) return new QV3D[0];
-		return new QV3D[]{ new QV3D(TagCW.wrap(stack.getTagCompound()), "fvtm:wirepoint_vec") };
+	public QV3D[] getVectors(StackWrapper stack){
+		if(!stack.hasTag() || !stack.getTag().has("fvtm:wirepoints")) return new QV3D[0];
+		return new QV3D[]{ new QV3D(stack.getTag(), "fvtm:wirepoint_vec") };
 	}
 
 	@Override

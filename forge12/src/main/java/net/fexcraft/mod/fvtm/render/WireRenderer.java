@@ -222,7 +222,7 @@ public class WireRenderer {
 	}
 
 	private static void generateWireModel(Wire wire){
-		WireModel model = wire.getWireType().getModel();
+		/*WireModel model = wire.getWireType().getModel();
 		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
 		double angle, passed = 0;
 		V3D last, vec;
@@ -285,7 +285,7 @@ public class WireRenderer {
 	        double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_end_angle_down = Static.toDegrees(wire.model_end_angle_down);
-		}
+		}*///TODO
 	}
 
 	private static void genWireDeco(WireRelay relay, Wire wire){

@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -131,7 +132,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 	}
 
 	@Override
-	public QV3D[] getVectors(ItemStack stack){
+	public QV3D[] getVectors(StackWrapper stack){
 		return preset.path;
 	}
 

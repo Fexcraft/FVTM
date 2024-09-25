@@ -36,6 +36,12 @@ public abstract class FvtmLogger {
 		if(EnvInfo.DEV) LOGGER.log0(o);
 	}
 
+	public static void debug(Object... os){
+		LOGGER.log0("DEBUG:[");
+		for(Object o : os) LOGGER.log0(o);
+		LOGGER.log0("]");
+	}
+
 	public static void marker(Object o){
 		if(EnvInfo.DEV) LOGGER.log0("MARKER " + o);
 	}

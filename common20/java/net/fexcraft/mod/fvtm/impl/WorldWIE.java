@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -188,6 +189,11 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		else{
 			FvtmLogger.debug("No receiver for packet '" + com + "' found. Dest: " + pos);
 		}
+	}
+
+	@Override
+	public void spawnRailEntity(RailEntity ent){
+		//TODO
 	}
 
 }

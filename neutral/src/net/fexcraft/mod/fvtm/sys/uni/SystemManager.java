@@ -27,33 +27,33 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
 public class SystemManager {
 
 	public static boolean SINGLEPLAYER, PLAYERON;
-	private static ConcurrentHashMap<Systems, ConcurrentHashMap<Integer, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
-	private static ConcurrentHashMap<Integer, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
-	private static ConcurrentHashMap<Integer, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Systems, ConcurrentHashMap<Object, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Object, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Object, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
 	
 	public static void onServerTick(WorldW world){
-		if(world == null || !SYSTEMS_DIM.containsKey(world.dim())) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
+		if(world == null || !SYSTEMS_DIM.containsKey(world.dimkey())) return;
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
 			sys.onServerTick();
 		}
 	}
 
 	public static void onClientTick(WorldW world){
-		if(world == null || !SYSTEMS_DIM.containsKey(world.dim())) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
+		if(world == null || !SYSTEMS_DIM.containsKey(world.dimkey())) return;
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
 			sys.onClientTick();
 		}
 	}
 
 	public static void onChunkLoad(WorldW world, ChunkW chunk){
-		if(!loaded(world.dim())) onAttachWorldCapabilities(world);
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
+		if(!loaded(world.dimkey())) onAttachWorldCapabilities(world);
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
 			sys.onChunkLoad(chunk);
 		}
 	}
 
 	public static void onChunkUnload(WorldW world, ChunkW chunk){
-		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_DIM.get(world.dim());
+		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_DIM.get(world.dimkey());
 		if(systems == null) return;
 		for(DetachedSystem sys : systems.values()){
 			sys.onChunkUnload(chunk);
@@ -62,23 +62,23 @@ public class SystemManager {
 
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world){
 		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(world.dim());
+		return (T)SYSTEMS.get(sysid).get(world.dimkey());
 	}
 
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world, Class<T> clazz){
 		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(world.dim());
+		return (T)SYSTEMS.get(sysid).get(world.dimkey());
 	}
 
-	private static boolean loaded(int dimension){
+	private static boolean loaded(Object dimension){
 		Boolean bool = LOADED_DIM.get(dimension);
 		return bool != null && bool;
 	}
 
 	public static void onAttachWorldCapabilities(WorldW world){
-		if(loaded(world.dim())) return;
+		if(loaded(world.dimkey())) return;
 		SINGLEPLAYER = WrapperHolder.isSinglePlayer();
-		int dim = world.dim();
+		Object dim = world.dimkey();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
 		FvtmLogger.debug("dimension remote = " + world.isClient() + "/" + SINGLEPLAYER);
 		if(world.isClient() || SINGLEPLAYER){
@@ -114,7 +114,7 @@ public class SystemManager {
 
 	public static void onServerStarting(){
 		long mid = getDate();
-		for(Map<Integer, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<Object, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.setupTimer(mid);
 			}
@@ -123,13 +123,13 @@ public class SystemManager {
 
 	public static void onWorldLoad(WorldW world){
 		long mid = getDate();
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dim()).values()){
+		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
 			sys.setupTimer(mid);
 		}
 	}
 
 	public static void onServerStopping(){
-		for(Map<Integer, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<Object, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.stopTimer();
 				sys.unload();
@@ -142,7 +142,7 @@ public class SystemManager {
 
 	/** Called client side. */
 	public static void onWorldUnload(WorldW world){
-		int dim = world.dim();
+		Object dim = world.dimkey();
 		ConcurrentHashMap<Systems, DetachedSystem> map = SYSTEMS_DIM.get(dim);
 		if(map != null){
 			for(Entry<Systems, DetachedSystem> sys : map.entrySet()){

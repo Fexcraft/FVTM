@@ -211,6 +211,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 			Packets.send(Packet_VehKeyPress.class, key);
 			return true;
         }
+		Passenger pass = (Passenger)UniEntity.getEntity(player);
         switch(key){
             case ACCELERATE:{
                 rek.ent().throttle += rek.ent().throttle < 0 ? 0.02f : 0.01F;
@@ -224,12 +225,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case TURN_LEFT:{
             	if(throttle > 0.05f) Print.bar(player, "&cDecrease the throttle before switching direction.");
-            	else rek.ent().setForward(player, false);
+            	else rek.ent().setForward(pass, false);
                 return true;
             }
             case TURN_RIGHT:{
             	if(throttle > 0.05f) Print.bar(player, "&cDecrease the throttle before switching direction.");
-            	else rek.ent().setForward(player, true);
+            	else rek.ent().setForward(pass, true);
                 return true;
             }
             case BRAKE:{
@@ -293,12 +294,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case COUPLER_FRONT: {
             	if(toggletimer > 0) return true;
-    			rek.ent().tryCoupling(player, true);
+    			rek.ent().tryCoupling(pass, true);
     			toggletimer = 10; return true;
             }
             case COUPLER_REAR: {
             	if(toggletimer > 0) return true;
-    			rek.ent().tryCoupling(player, false);
+    			rek.ent().tryCoupling(pass, false);
             	toggletimer = 10; return true;
             }
             case MOUSE_MAIN: case MOUSE_RIGHT: return false;

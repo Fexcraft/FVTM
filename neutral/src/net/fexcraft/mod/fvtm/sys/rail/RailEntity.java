@@ -8,11 +8,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
-import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -22,10 +20,6 @@ import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * First prototype of RailEntity system.
@@ -89,7 +83,6 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	/** only to use with read() afterwards || CLIENT SIDE METHOD */
-	@SideOnly(Side.CLIENT)
 	public RailEntity(Region railregion, long uid){
 		region = railregion; this.uid = uid;
 		com = Compound.getNewClientCompound(this);
@@ -106,7 +99,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void onUpdate(){
 		if(region.getSystem().isRemote()){
 			this.updatePosition();
-			Print.debug(current, current.unit);
+			FvtmLogger.debug(current, current.unit);
 			return;
 		}
 		//
@@ -276,7 +269,7 @@ public class RailEntity implements Comparable<RailEntity>{
 					//if(entpos < coupos) continue;//we're probably inside the other entity, abort!
 					hascoupled = true; couplers[i].couple(ent, false); am = coucen.dis(ent.crear); 
 					if(ent.brear.dis(coucen) < ent.crear.dis(coucen)) am = -am;
-					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
+					FvtmLogger.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
 				}
 				if(ent.front.mbb.contains(coucen)){
 					//float entpos = ent.pos.distanceTo(pos);
@@ -284,7 +277,7 @@ public class RailEntity implements Comparable<RailEntity>{
 					//if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
 					hascoupled = true; couplers[i].couple(ent, true); am = coucen.dis(ent.cfront);
 					if(ent.bfront.dis(coucen) < ent.cfront.dis(coucen)) am = -am;
-					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
+					FvtmLogger.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
 				}
 			}//TODO align the freshly connected entities
 		}
@@ -477,7 +470,8 @@ public class RailEntity implements Comparable<RailEntity>{
 				lastcheck = interval;
 				return;
 			}
-			((World)region.getSystem().getWorld().direct()).spawnEntity(new RailVehicle(this));
+			FvtmWorld world = (FvtmWorld)region.getSystem().getWorld();
+			world.spawnRailEntity(this);
 		}
 	}
 
@@ -526,9 +520,9 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public RailEntity read(TagCW compound){
 		uid = compound.getLong("uid");
-		if(region == null) Print.debug("region is NULL");
+		if(region == null) FvtmLogger.debug("region is NULL");
 		current = region.getTrack(new PathKey(compound));
-		if(current == null) Print.log("track not found! " + new PathKey(compound).toString());
+		if(current == null) FvtmLogger.log("track not found! " + new PathKey(compound).toString());
 		if(current == null){ this.remove(); return this; }
 		pos = DataUtil.readVec(compound.getList("pos"));
 		prev = DataUtil.readVec(compound.getList("prev"));
@@ -586,7 +580,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void remove(){
-		Print.debug("Removing TrackEntity " + uid + "!");
+		FvtmLogger.debug("Removing TrackEntity " + uid + "!");
 		front.decouple();
 		rear.decouple();
 		lastcheck = null;
@@ -620,17 +614,18 @@ public class RailEntity implements Comparable<RailEntity>{
 		
 	}
 
-	public void tryCoupling(EntityPlayer player, boolean thefront){
+	public void tryCoupling(EntityW player, boolean thefront){
 		Coupler coupler = thefront ? front : rear;
 		V3D vec = thefront ? cfront : crear;
 		if(coupler.hasEntity()){
-			coupler.decouple(); Print.chat(player, (thefront ? "Front" : "Rear") + " disconnected.");
+			coupler.decouple();
+			player.send((thefront ? "Front" : "Rear") + " disconnected.");
 		}
 		else{
 			Collection<RailEntity> ents = getEntitiesOnTrackAndNext(current);
 			RailEntity found = null;
 			for(RailEntity ent : ents){
-				Print.debug(ent.vehicle.data.getName());
+				FvtmLogger.debug(ent.vehicle.data.getName());
 				if(ent.uid == this.uid) continue;
 				if(ent.rear.mbb.contains(vec)){
 					found = ent; coupler.couple(ent, false); break;
@@ -642,15 +637,16 @@ public class RailEntity implements Comparable<RailEntity>{
 				}
 			}
 			if(found != null){
-				Print.chat(player, (thefront ? "Front" : "Rear") + " connected.");
-				Print.chat(player, "&7&o" + found.vehicle.data.getName());
+				player.send((thefront ? "Front" : "Rear") + " connected.");
+				player.send("&7&o" + found.vehicle.data.getName());
 			}
 			else{
 				if(coupler.hasEntity()){
-					coupler.decouple(); Print.chat(player, (thefront ? "Front" : "Rear") + " disconnected.");
+					coupler.decouple();
+					player.send((thefront ? "Front" : "Rear") + " disconnected.");
 				}
 				else{
-					Print.chat(player, "Nothing found to connect to.");
+					player.send("Nothing found to connect to.");
 				}
 			}
 		}
@@ -660,9 +656,9 @@ public class RailEntity implements Comparable<RailEntity>{
 		return new MiniBB[]{ front.mbb, rear.mbb };
 	}
 
-	public void setForward(EntityPlayer player, boolean bool){
+	public void setForward(EntityW player, boolean bool){
 		com.forward = bool;
-		if(player != null) Print.bar(player, "&e&oDirection set to " + (bool ? "FORWARD" : "REVERSE"));
+		if(player != null) player.bar("&e&oDirection set to " + (bool ? "FORWARD" : "REVERSE"));
 		for(RailEntity ent : com.entities){
 			ent.vehicle.data.getAttribute("forward").set(com.getOrient(ent));
 			ent.sendForwardUpdate();
@@ -672,7 +668,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private void sendForwardUpdate(){
 		if(vehicle.entity == null || region.getSystem().getWorld().isClient()) return;
 		TagCW packet = TagCW.create();
-		packet.set("target_listener", GuiHandler.LISTENERID);
+		packet.set("target_listener", "");
 		packet.set("task", "attr_update");
 		packet.set("attr", "forward");
 		packet.set("value", vehicle.data.getAttribute("forward").asString());
@@ -692,7 +688,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		vehicle.data.getAttribute("active").set(bool);
 		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
 			TagCW packet = TagCW.create();
-			packet.set("target_listener", GuiHandler.LISTENERID);
+			packet.set("target_listener", "");
 			packet.set("task", "attr_update");
 			packet.set("attr", "active");
 			packet.set("value", vehicle.data.getAttribute("active").asString());

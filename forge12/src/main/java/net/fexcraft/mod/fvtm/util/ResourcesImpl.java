@@ -35,6 +35,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockUtil;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
@@ -528,6 +529,14 @@ public class ResourcesImpl extends FvtmResources {
 		RoadMarker marker = new RoadMarker(world.local(), nid);
 		marker.position = vector;
 		marker.setPosition(vector.vec.x, vector.vec.y + 1, vector.vec.z);
+		((World)world.direct()).spawnEntity(marker);
+	}
+
+	@Override
+	public void spawnRailMarker(WorldW world, QV3D vector, UUID nid){
+		RailMarker marker = new RailMarker(world.local(), nid);
+		marker.position = vector;
+		marker.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 		((World)world.direct()).spawnEntity(marker);
 	}
 

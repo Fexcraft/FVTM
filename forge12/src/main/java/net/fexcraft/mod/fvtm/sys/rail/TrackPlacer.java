@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
@@ -37,11 +38,11 @@ public class TrackPlacer {
 	private boolean useitems;
 	//private boolean blocks;
 	
-	public static TrackPlacer set(ICommandSender sender, EntityPlayer player, World world, BlockPos pos, Track track){
+	public static TrackPlacer set(EntityW pass, BlockPos pos, Track track){
 		TrackPlacer placer = new TrackPlacer();
-		placer.sender = sender;
-		placer.player = player;
-		placer.world = world;
+		placer.sender = pass.local();
+		placer.player = pass.local();
+		placer.world = pass.getWorld().local();
 		placer.pos = pos;
 		placer.track = track;
 		return placer;

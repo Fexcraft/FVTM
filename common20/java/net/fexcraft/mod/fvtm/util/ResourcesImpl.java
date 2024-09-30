@@ -224,4 +224,9 @@ public class ResourcesImpl extends FvtmResources {
 		((Level)world.direct()).addFreshEntity(marker);
 	}
 
+	@Override
+	public void spawnRailMarker(WorldW world, QV3D vector, UUID nid){
+
+	}
+
 }

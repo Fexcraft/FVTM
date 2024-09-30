@@ -18,7 +18,6 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -40,7 +39,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -142,7 +140,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			Junction second = syscap.getJunction(track.start.pos);
 			//track.blockless = noblocks;
 			if(second != null){
-				if(!TrackPlacer.set(UniEntity.getEntity(player), null, track).place()/*.blocks(!noblocks)*/.consume().result()) return EnumActionResult.SUCCESS;
+				//if(!TrackPlacer.set(UniEntity.getEntity(player), null, track).place()/*.blocks(!noblocks)*/.consume().result()) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();

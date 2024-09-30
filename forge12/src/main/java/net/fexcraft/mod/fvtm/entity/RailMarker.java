@@ -3,12 +3,13 @@ package net.fexcraft.mod.fvtm.entity;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -139,10 +140,11 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
         if(queueid.equals(current)){
         	NewTrack track = RailPlacingUtil.QUEUE.get(current);
         	if(track == null) return true;
+			EntityW pass = UniEntity.getEntity(player);
         	if(player.getHeldItemMainhand().getItem() instanceof RailGaugeItem){
-        		track.create(player, position);
+        		track.create(pass, position);
         	}
-        	else track.select(player, position);
+        	else track.select(pass, position);
     		return true;
         }
         return true;
@@ -157,7 +159,7 @@ public class RailMarker extends Entity implements IEntityAdditionalSpawnData {
             if(queueid != null && queueid.equals(queueid)){
             	EntityPlayer player = (EntityPlayer)damagesource.getTrueSource();
             	NewTrack track = RailPlacingUtil.QUEUE.get(queueid);
-            	if(track != null) track.remove(player, position);
+            	if(track != null) track.remove(UniEntity.getEntity(player), position);
                 setDead();
             }
         }

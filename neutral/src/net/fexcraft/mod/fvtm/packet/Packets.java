@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -320,6 +321,38 @@ public abstract class Packets {
 				if(junction != null){
 					junction.signal0 = tag.getBoolean("signal0");
 					junction.signal1 = tag.getBoolean("signal1");
+				}
+			});
+			LIS_CLIENT.put("rail_place_util", (tag, player) -> {
+				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+				switch(tag.getString("subtask")){
+					case "new":{
+						RailPlacingUtil.CL_CURRENT = new RailPlacingUtil.NewTrack(uuid, new QV3D(tag, "vector"), FvtmRegistry.RAILGAUGES.get(tag.getString("gauge")));
+						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
+						break;
+					}
+					case "reset":{
+						if(RailPlacingUtil.CL_CURRENT.id.equals(uuid)) RailPlacingUtil.CL_CURRENT = null;
+						RailPlacingUtil.QUEUE.remove(uuid);
+						break;
+					}
+					case "add":{
+						RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+						if(track == null) return;
+						track.add(new QV3D(tag, "vector"));
+						break;
+					}
+					case "remove":{
+						RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+						if(track == null) return;
+						track.remove(player, new QV3D(tag, "vector"));
+						break;
+					}
+					case "selected":{
+						RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+						if(track == null) return;
+						track.selected = tag.getInteger("selected");
+					}
 				}
 			});
 		}

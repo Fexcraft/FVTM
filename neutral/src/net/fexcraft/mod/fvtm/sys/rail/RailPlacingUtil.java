@@ -1,79 +1,65 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.entity.RailMarker;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.fexcraft.mod.uni.world.EntityW;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class RailPlacingUtil {
-	
+
 	public static final ConcurrentHashMap<UUID, NewTrack> QUEUE = new ConcurrentHashMap<>();
 	public static final ConcurrentHashMap<UUID, UUID> CURRENT = new ConcurrentHashMap<>();
 	public static NewTrack CL_CURRENT = null;
 
-	public static void place(World world, EntityPlayer player, ItemStack stack, RailGauge gauge, RailSystem syscap, QV3D vector){
-		UUID trackid = CURRENT.get(player.getGameProfile().getId());
+	public static void place(RailSystem system, EntityW pass, RailGauge gauge, QV3D vector){
+		UUID trackid = CURRENT.get(pass.getUUID());
 		if(trackid == null){
 			UUID newid = genId();
 			QUEUE.put(newid, new NewTrack(newid, vector, gauge));
-			CURRENT.put(player.getGameProfile().getId(), newid);
+			CURRENT.put(pass.getUUID(), newid);
 			//
 			TagCW compound = TagCW.create();
-			compound.set("target_listener", UTIL_LISTENER);
-			compound.set("task", "rail_place_util");
 			compound.set("subtask", "new");
 			compound.set("uuid_l", newid.getMostSignificantBits());
 			compound.set("uuid_m", newid.getLeastSignificantBits());
 			compound.set("new", true);
 			compound.set("gauge", gauge.getIDS());
 			vector.write(compound, "vector");
-			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound.local()));
+			Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 			//
-			RailMarker marker = new RailMarker(world, newid);
-			marker.position = vector;
-			marker.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
-			world.spawnEntity(marker);
+			FvtmResources.INSTANCE.spawnRailMarker(system.getWorld(), vector, newid);
 			return;
 		}
 		NewTrack track = QUEUE.get(trackid);
-		if(track == null) CURRENT.remove(player.getGameProfile().getId());
+		if(track == null) CURRENT.remove(pass.getUUID());
 		track.add(vector);
 		//
 		TagCW compound = TagCW.create();
-		compound.set("target_listener", UTIL_LISTENER);
-		compound.set("task", "rail_place_util");
 		compound.set("subtask", "add");
 		compound.set("uuid_l", trackid.getMostSignificantBits());
 		compound.set("uuid_m", trackid.getLeastSignificantBits());
 		vector.write(compound, "vector");
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(player.dimension, new BlockPos(vector.pos.x, vector.pos.y, vector.pos.z)));
+		Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 		//
-		RailMarker marker = new RailMarker(world, trackid);
-		marker.position = vector;
-		marker.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
-		world.spawnEntity(marker);
+		FvtmResources.INSTANCE.spawnRailMarker(system.getWorld(), vector, trackid);
 	}
 	
 	private static UUID genId(){
@@ -83,7 +69,7 @@ public class RailPlacingUtil {
 	}
 
 	public static class NewTrack {
-		
+
 		public ArrayList<QV3D> points = new ArrayList<>();
 		public ArrayList<ArrayList<V3D>> preview;
 		public RailGauge gauge;
@@ -107,7 +93,7 @@ public class RailPlacingUtil {
 			track = points.size() > 1 ? new Track(null, points.toArray(new QV3D[0]), gauge) : null;
 		}
 
-		public void select(EntityPlayer player, QV3D vector){
+		public void select(EntityW player, QV3D vector){
 			int sel = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -116,17 +102,15 @@ public class RailPlacingUtil {
 				}
 			}
 			selected = sel;
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", UTIL_LISTENER);
-			compound.setString("task", "rail_place_util");
-			compound.setInteger("selected", selected);
-			compound.setString("subtask", "selected");
-			compound.setLong("uuid_l", id.getMostSignificantBits());
-			compound.setLong("uuid_m", id.getLeastSignificantBits());
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(player.dimension, new BlockPos(vector.pos.x, vector.pos.y, vector.pos.z)));
+			TagCW compound = TagCW.create();
+			compound.set("selected", selected);
+			compound.set("subtask", "selected");
+			compound.set("uuid_l", id.getMostSignificantBits());
+			compound.set("uuid_m", id.getLeastSignificantBits());
+			Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 		}
 
-		public void remove(EntityPlayer player, QV3D vector){
+		public void remove(EntityW player, QV3D vector){
 			int rem = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -147,26 +131,22 @@ public class RailPlacingUtil {
 			}
 			//
 			TagCW compound = TagCW.create();
-			compound.set("target_listener", UTIL_LISTENER);
-			compound.set("task", "rail_place_util");
 			compound.set("remove", rem);
 			compound.set("subtask", "remove");
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
 			vector.write(compound, "vector");
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(player.dimension, new BlockPos(vector.pos.x, vector.pos.y, vector.pos.z)));
+			Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 		}
-		
+
 		public void reset(){
 			QUEUE.remove(id);
 			CURRENT.entrySet().removeIf(entry -> entry.getValue().equals(id));
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", UTIL_LISTENER);
-			compound.setString("task", "rail_place_util");
-			compound.setString("subtask", "reset");
-			compound.setLong("uuid_l", id.getMostSignificantBits());
-			compound.setLong("uuid_m", id.getLeastSignificantBits());
-			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+			TagCW compound = TagCW.create();
+			compound.set("subtask", "reset");
+			compound.set("uuid_l", id.getMostSignificantBits());
+			compound.set("uuid_m", id.getLeastSignificantBits());
+			Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 		}
 
 		public int indexOf(QV3D vector){
@@ -178,17 +158,17 @@ public class RailPlacingUtil {
 			return -2;
 		}
 
-		public void create(EntityPlayer player, QV3D vector){
-			RailSystem sys = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(player.world));
+		public void create(EntityW player, QV3D vector){
+			RailSystem sys = SystemManager.get(Systems.RAIL, player.getWorld());
 			Junction junc = sys.getJunction(vector.pos, true);
-			UUID current = CURRENT.get(player.getGameProfile().getId());
+			UUID current = CURRENT.get(player.getUUID());
 			if(current == null){
-				Print.chat(player, "no_queue_entry / 0");
+				player.send("no_queue_entry / 0");
 				return;
 			}
 			NewTrack ntrack = QUEUE.get(current);
 			if(ntrack == null){
-				Print.chat(player, "no_queue_entry / 1");
+				player.send("no_queue_entry / 1");
 				return;
 			}
 			if(junc == null){
@@ -196,31 +176,31 @@ public class RailPlacingUtil {
 				junc = sys.getJunction(vector.pos, true);
 				junc.updateVecPos(vector);
 				if(ntrack.points.size() == 1 || ntrack.allsame()){
-					Print.chat(player, "&o> Junction Created.");
+					player.send("&o> Junction Created.");
 					reset();
 					return;
 				}
 				else{
-					Print.chat(player, "&o> End Junction Created.");
+					player.send("&o> End Junction Created.");
 				}
 			}
 			if(!junc.tracks.isEmpty() && junc.tracks.size() < 2 && !junc.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
-				Print.chat(player, "&9Item/Track Gauge not compatible with the &7Junction's Gauge&9.");
+				player.send("&9Item/Track Gauge not compatible with the &7Junction's Gauge&9.");
 				return;
 			}
 			if(junc.signal != null){
-				Print.chat(player, "&9Please remove the signal first.");
+				player.send("&9Please remove the signal first.");
 				return;
 			}
 			if(junc.tracks.size() >= 4){
-				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
+				player.send("&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				ntrack.reset();
 				return;
 			}
 			else{
 				Track track = new Track(junc, ntrack.points.toArray(new QV3D[0]), gauge);
 				if(track.length > MAX_RAIL_TRACK_LENGTH){
-					Print.chat(player, "&cTrack length exceeds the configured max length.");
+					player.send("&cTrack length exceeds the configured max length.");
 					return;
 				}
 				//track.blockless = DISABLE_RAIL_BLOCKS;
@@ -228,17 +208,17 @@ public class RailPlacingUtil {
 				if(second == null){
 					sys.addJunction(track.start);
 					second = sys.getJunction(track.start.pos, true);
-					Print.chat(player, "&o> Start Junction Created.");
+					player.send("&o> Start Junction Created.");
 				}
 				if(second != null){
-					if(!TrackPlacer.set(player, player, player.world, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
+					if(!TrackPlacer.set(player, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
 					second.addnew(track);
 					junc.addnew(track.createOppositeCopy());
 					second.checkTrackSectionConsistency();
-					Print.chat(player, "&o> Track Created.");
+					player.send("&o> Track Created.");
 					ntrack.reset();
 				}
-				else Print.chat(player, "&cNo Junction at starting point found!");
+				else player.send("&cNo Junction at starting point found!");
 			}
 		}
 
@@ -264,7 +244,7 @@ public class RailPlacingUtil {
 				preview.get(1).add(vec.add(grv(angle, new V3D(half, 0, 0))));
 			}
 		}
-		
+
 	}
 
 }

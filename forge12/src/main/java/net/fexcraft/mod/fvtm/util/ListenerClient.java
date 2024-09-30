@@ -89,39 +89,6 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				if(ent != null) ent.readEntityFromNBT(packet.nbt);
 				return;
 			}
-			case "rail_place_util":{
-				UUID uuid = new UUID(packet.nbt.getLong("uuid_m"), packet.nbt.getLong("uuid_l"));
-				switch(packet.nbt.getString("subtask")){
-					case "new":{
-						RailPlacingUtil.CL_CURRENT = new NewTrack(uuid, new QV3D(TagCW.wrap(packet.nbt), "vector"), FvtmRegistry.RAILGAUGES.get(packet.nbt.getString("gauge")));
-						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
-						break;
-					}
-					case "reset":{
-						if(RailPlacingUtil.CL_CURRENT.id.equals(uuid)) RailPlacingUtil.CL_CURRENT = null;
-						RailPlacingUtil.QUEUE.remove(uuid);
-						break;
-					}
-					case "add":{
-						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
-						if(track == null) return;
-						track.add(new QV3D(TagCW.wrap(packet.nbt), "vector"));
-						break;
-					}
-					case "remove":{
-						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
-						if(track == null) return;
-						track.remove(player, new QV3D(TagCW.wrap(packet.nbt), "vector"));
-						break;
-					}
-					case "selected":{
-						NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
-						if(track == null) return;
-						track.selected = packet.nbt.getInteger("selected");
-					}
-				}
-				return;
-			}
 			case "block_func_sync":{
 				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 				BlockTileEntity tile = (BlockTileEntity)player.world.getTileEntity(pos);

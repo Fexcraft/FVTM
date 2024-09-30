@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.render;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
+import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -36,8 +38,10 @@ public class RenderRailMarker extends Render<RailMarker> implements IRenderFacto
         GL11.glTranslated(x, y, z);
         GL11.glPushMatrix();
 	    TexUtil.bindTexture(texture);
-	    GL11.glRotatef(180, 0, 0, 1);
-	    RailMarkerModel.INST.marker.render();
+	    RailMarkerModel.INST.base.render();
+		DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+		RailMarkerModel.INST.glow.render();
+		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
 	    NewTrack track = RailPlacingUtil.QUEUE.get(entity.queueid);
 	    if(track != null){
 	    	int index = track.indexOf(entity.position);

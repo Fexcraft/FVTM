@@ -87,7 +87,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			return InteractionResult.FAIL;
 		}
 		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z, 0);
-		RailPlacer.place(world, UniEntity.getEntity(context.getPlayer()), gauge, railsys, vector);
+		RailPlacingUtil.place(railsys, UniEntity.getEntity(context.getPlayer()), gauge, vector);
 		return InteractionResult.SUCCESS;
 	}
 

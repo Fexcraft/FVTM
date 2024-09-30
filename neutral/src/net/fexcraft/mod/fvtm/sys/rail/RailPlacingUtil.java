@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -211,7 +210,7 @@ public class RailPlacingUtil {
 					player.send("&o> Start Junction Created.");
 				}
 				if(second != null){
-					if(!TrackPlacer.set(player, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
+					//if(!TrackPlacer.set(player, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
 					second.addnew(track);
 					junc.addnew(track.createOppositeCopy());
 					second.checkTrackSectionConsistency();

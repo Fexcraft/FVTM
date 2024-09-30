@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.rail.JuncType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -57,7 +56,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			Print.debug("delpack: " + packet);
 			Track track = junction.tracks.get(del);
 			junction.remove(del, true);
-			if(track != null) TrackPlacer.set(player, player, player.world, null, track).remove()/*.blocks()*/.process();
+			//if(track != null) TrackPlacer.set(player, player, player.world, null, track).remove()/*.blocks()*/.process();
 			return;
 		}
 		else if(packet.hasKey("dw")){

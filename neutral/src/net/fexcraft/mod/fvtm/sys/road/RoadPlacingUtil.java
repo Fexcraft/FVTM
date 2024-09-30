@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.road;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -15,6 +14,8 @@ import net.fexcraft.mod.uni.world.WorldW;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -42,7 +43,7 @@ public class RoadPlacingUtil {
 			compound.set("uuid_m", newid.getLeastSignificantBits());
 			compound.set("width", width);
 			vector.write(compound, "vector");
-			Packets.sendToAll(Packet_TagListener.class, "road_tool_new", compound);
+			Packets.sendToAll(PKT_TAG, "road_tool_new", compound);
 			//
 			FvtmResources.INSTANCE.spawnRoadMarker(world, vector, newid);
 			return;
@@ -56,7 +57,7 @@ public class RoadPlacingUtil {
 		compound.set("uuid_m", roadid.getLeastSignificantBits());
 		compound.set("width", width);
 		vector.write(compound, "vector");
-		Packets.sendToAll(Packet_TagListener.class, "road_tool_add", compound);
+		Packets.sendToAll(PKT_TAG, "road_tool_add", compound);
 		//
 		FvtmResources.INSTANCE.spawnRoadMarker(world, vector, roadid);
 	}
@@ -105,7 +106,7 @@ public class RoadPlacingUtil {
 			compound.set("selected", selected);
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
-			Packets.sendToAll(Packet_TagListener.class, "road_tool_selected", compound);
+			Packets.sendToAll(PKT_TAG, "road_tool_selected", compound);
 		}
 
 		public void remove(Passenger pass, QV3D vector){
@@ -133,7 +134,7 @@ public class RoadPlacingUtil {
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
 			vector.write(TagCW.wrap(compound), "vector");
-			Packets.sendToAll(Packet_TagListener.class, "road_tool_remove", compound);
+			Packets.sendToAll(PKT_TAG, "road_tool_remove", compound);
 		}
 		
 		public void reset(){
@@ -142,7 +143,7 @@ public class RoadPlacingUtil {
 			TagCW compound = TagCW.create();
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
-			Packets.sendToAll(Packet_TagListener.class, "road_tool_reset", compound);
+			Packets.sendToAll(PKT_TAG, "road_tool_reset", compound);
 		}
 
 		public int indexOf(QV3D vector){

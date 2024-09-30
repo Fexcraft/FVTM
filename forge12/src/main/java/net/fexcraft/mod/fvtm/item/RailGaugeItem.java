@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -78,8 +79,6 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
             tooltip.add(Formatter.format("&b- Rightclick twice in the same position to create a Junction."));
             tooltip.add(Formatter.format("&b- Rightclick in sequence between 2 Junctions to create a track."));
             tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
-            tooltip.add(Formatter.format("&b- Rightclick + Sneak (on empty cache) to open GUI."));
-            tooltip.add(Formatter.format("&o&bNote that without zoom (in GUI) only &o&7corner or centered &o&bJunction positions are available."));
         }
         else{
             tooltip.add(Formatter.format("&6Enable advanced tooltips for item usage info."));
@@ -106,7 +105,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
         }
         ItemStack stack = player.getHeldItem(hand);
         QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
-		RailPlacingUtil.place(world, player, stack, gauge, syscap, vector);
+		RailPlacingUtil.place(syscap, UniEntity.getEntity(player), gauge, vector);
 		return EnumActionResult.SUCCESS;
     }
 	
@@ -143,7 +142,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			Junction second = syscap.getJunction(track.start.pos);
 			//track.blockless = noblocks;
 			if(second != null){
-				if(!TrackPlacer.set(sender, player, world, null, track).place()/*.blocks(!noblocks)*/.consume().result()) return EnumActionResult.SUCCESS;
+				if(!TrackPlacer.set(UniEntity.getEntity(player), null, track).place()/*.blocks(!noblocks)*/.consume().result()) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();

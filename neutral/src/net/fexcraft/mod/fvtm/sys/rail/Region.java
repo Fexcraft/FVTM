@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,7 +32,7 @@ public class Region {
 	public static final TreeMap<Long, TagCW> clientqueue = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, ChunkW> chucks = new ConcurrentHashMap<>();
-	private TreeMap<V3I, Junction> junctions = new TreeMap<>();
+	private Map<V3I, Junction> junctions = new LinkedHashMap<>();
 	private final RailSystem system;
 	private final RegionKey key;
 	public boolean loaded;
@@ -181,7 +183,7 @@ public class Region {
 		return key;
 	}
 
-	public TreeMap<V3I, Junction> getJunctions(){
+	public Map<V3I, Junction> getJunctions(){
 		return junctions;
 	}
 

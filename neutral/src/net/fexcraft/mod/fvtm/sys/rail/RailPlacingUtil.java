@@ -238,7 +238,7 @@ public class RailPlacingUtil {
 			for(float pass = 0; pass < track.length + 0.125f; pass += 0.125f){
 				last = vec;
 				vec = track.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
-				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x) + Static.rad90;
+				angle = (float)Math.atan2(last.x - vec.x, last.z - vec.z);
 				preview.get(0).add(vec.add(grv(angle, new V3D(-half, 0, 0))));
 				preview.get(1).add(vec.add(grv(angle, new V3D(half, 0, 0))));
 			}

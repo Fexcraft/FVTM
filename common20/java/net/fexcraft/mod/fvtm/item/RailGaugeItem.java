@@ -86,32 +86,9 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			context.getPlayer().sendSystemMessage(GenericUtils.format("RailSystem not found on this Level."));
 			return InteractionResult.FAIL;
 		}
-		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
+		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z);
 		RailPlacingUtil.place(railsys, UniEntity.getEntity(context.getPlayer()), gauge, vector);
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	public QV3D[] getVectors(StackWrapper stack){
-		if(!stack.hasTag() || !stack.getTag().has("fvtm:railpoints")) return new QV3D[0];
-		return getVectors(stack.getTag().getList("fvtm:railpoints"));
-	}
-
-	public QV3D[] getVectors(TagLW list){
-		QV3D[] arr = new QV3D[list.size()];
-		for(int i = 0; i < arr.length; i++){
-			arr[i] = new QV3D(list.getCompound(i), null);
-		}
-		return arr;
-	}
-
-	private QV3D getFirstVector(TagLW list){
-		return new QV3D(list.getCompound(0), null);
-	}
-
-	@Override
-	public boolean hasVectors(){
-		return true;
 	}
 
 	@Override

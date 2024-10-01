@@ -37,7 +37,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			@Override
 			public void pre(ModelGroup list, ModelRenderData data){
 				old = rentype();
-				FvtmRenderTypes.setDef(RenderType.eyes(data.vehicle.getCurrentTexture().local()));
+				FvtmRenderTypes.setDef(RenderType.eyes(data.texture.getCurrentTexture().local()));
 			}
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){

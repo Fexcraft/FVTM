@@ -230,7 +230,7 @@ public class ResourcesImpl extends FvtmResources {
 		RailMarker marker = FvtmGetters.getNewRailMarker(world.local());
 		marker.queueid = nid;
 		marker.position = vector;
-		marker.setPos(vector.vec.x, vector.vec.y, vector.vec.z);
+		marker.setPos(vector.vec.x, vector.vec.y + 1, vector.vec.z);
 		((Level)world.direct()).addFreshEntity(marker);
 	}
 

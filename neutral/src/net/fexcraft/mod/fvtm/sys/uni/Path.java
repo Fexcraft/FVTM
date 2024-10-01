@@ -114,7 +114,7 @@ public abstract class Path {
 	}
 	
 	public Path read(TagCW compound){
-		id = new PathKey(compound.local());
+		id = new PathKey(compound);
 		op = new PathKey(id, true);
 		copy = compound.getBoolean("copy");
 		start = new QV3D(compound, "start");
@@ -130,7 +130,7 @@ public abstract class Path {
 
 	public TagCW write(TagCW compound){
 		if(compound == null) compound = TagCW.create();
-		id.write(compound.local());
+		id.write(compound);
 		compound.set("copy", copy);
 		start.write(compound, "start");
 		end.write(compound, "end");

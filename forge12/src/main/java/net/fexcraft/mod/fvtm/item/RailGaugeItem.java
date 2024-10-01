@@ -101,8 +101,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        ItemStack stack = player.getHeldItem(hand);
-        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
 		RailPlacingUtil.place(syscap, UniEntity.getEntity(player), gauge, vector);
 		return EnumActionResult.SUCCESS;
     }

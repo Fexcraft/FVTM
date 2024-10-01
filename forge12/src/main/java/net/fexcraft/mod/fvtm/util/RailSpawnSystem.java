@@ -56,7 +56,7 @@ public class RailSpawnSystem extends EntitySystem {
         	Print.chat(placer, "&cWorld Capability not found.");
         	return false;
         }
-        QV3D vector = new QV3D(pos.x, pos.y, pos.z, 0);
+        QV3D vector = new QV3D(pos.x, pos.y, pos.z);
 		Junction junk = syscap.getJunction(vector.pos, true);
 		BlockPos bpos = new BlockPos(pos);
 		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;

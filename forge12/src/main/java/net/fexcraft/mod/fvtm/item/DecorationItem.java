@@ -6,14 +6,10 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.*;
-import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
-import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -82,7 +78,7 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
 		DecorationData data = getData(StackWrapper.wrap(stack));
-		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16);
+		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
 		DecorationEntity decoen = new DecorationEntity(world);
 		decoen.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 		decoen.decos.add(data);

@@ -51,7 +51,7 @@ public class RoadToolItem extends Item {
 				RoadPlacingUtil.place(WrapperHolder.getWorld(context.getLevel()),
 					EntityUtil.get(context.getPlayer()),
 					TagCW.wrap(stack.getTag()),
-					new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z, 16));
+					new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z));
 				return InteractionResult.SUCCESS;
 			}
 			case 0:

@@ -23,27 +23,19 @@ public class QV3D implements Comparable<QV3D> {
 		x = y = z = 0;
 	}
 
-	public QV3D(double px, double py, double pz, int div){
+	public QV3D(double px, double py, double pz){
 		pos = new V3I((int)px, (int)py, (int)pz);
 		byte bx = (byte)((px - pos.x) / 0.0625);
 		byte by = (byte)((py - pos.y) / 0.0625);
 		byte bz = (byte)((pz - pos.z) / 0.0625);
-		if(div != 16){
-			if(bx < 8) bx = 0;
-			if(bx > 8) bx = 8;
-			if(by < 8) by = 0;
-			if(by > 8) by = 8;
-			if(bz < 8) bz = 0;
-			if(bz > 8) bz = 8;
-		}
 		x = bx;
 		y = by;
 		z = bz;
 		vec = toVec();
 	}
 
-	public QV3D(V3D pos, int div){
-		this(pos.x, pos.y, pos.z, div);
+	public QV3D(V3D pos){
+		this(pos.x, pos.y, pos.z);
 	}
 
 	public QV3D(QV3D other){

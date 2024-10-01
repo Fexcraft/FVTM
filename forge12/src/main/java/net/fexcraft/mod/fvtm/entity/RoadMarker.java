@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.entity;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -64,7 +63,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
     		long m = buffer.readLong(), l = buffer.readLong();
     		if(m == 0 && l == 0) queueid = null;
     		else queueid = new UUID(m, l);
-    		position = new QV3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble(), 0);
+    		position = new QV3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     	}
     	catch(Exception e){
 			e.printStackTrace();

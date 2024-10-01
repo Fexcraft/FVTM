@@ -80,7 +80,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 						double x = temp.get(0).float_value();
 						double y = temp.get(1).float_value();
 						double z = temp.get(2).float_value();
-						pre.path[i] = new QV3D(x, y, z, 0);
+						pre.path[i] = new QV3D(x, y, z);
 					}
 					pre.name = mep.get("name").string_value().toLowerCase();
 					pre.segmentation = mep.getInteger("segmentation", pre.segmentation);

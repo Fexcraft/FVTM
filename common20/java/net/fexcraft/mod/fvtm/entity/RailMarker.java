@@ -82,7 +82,7 @@ public class RailMarker extends Entity {
 			long m = buffer.readLong(), l = buffer.readLong();
 			if(m == 0 && l == 0) queueid = null;
 			else queueid = new UUID(m, l);
-			position = new QV3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble(), 0);
+			position = new QV3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
 		}
 		catch(Exception e){
 			e.printStackTrace();

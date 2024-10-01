@@ -95,11 +95,22 @@ public class Packets20F extends Packets20 {
 
 	private <PKT extends PacketBase> Runnable getRunnable(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){
 		if(context.get().getDirection().getOriginationSide().isClient()){
-			return handler.handleServer(packet, EntityUtil.get(context.get().getSender()));
+			try{
+				return handler.handleServer(packet, EntityUtil.get(context.get().getSender()));
+			}
+			catch(Throwable e){
+				e.printStackTrace();
+			}
 		}
 		else{
-			return handler.handleClient(packet, EntityUtil.get(ClientPacketPlayer.get()));
+			try{
+				return handler.handleClient(packet, EntityUtil.get(ClientPacketPlayer.get()));
+			}
+			catch(Throwable e){
+				e.printStackTrace();
+			}
 		}
+		return () -> {};
 	}
 
 	private <PKT extends PacketBase> Runnable getRunnableWhenPlayerPresent(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){

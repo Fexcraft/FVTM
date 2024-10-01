@@ -34,7 +34,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -86,7 +85,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
         RailSystem syscap =SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);
-        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 0);
+        QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
         Junction start = syscap.getJunction(vector.pos);
         if(start != null && start.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");
@@ -124,8 +123,8 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 		int con = (int)((((int)yaw + 90f) * rotations) / 360f);
 		if(con % seg > seg / 2) con++;
 		for(int i = 0; i < vecs.length; i++){
-			if(i != 0 && i != vecs.length - 1) vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec), 0);
-			else vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec), 0);
+			if(i != 0 && i != vecs.length - 1) vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec));
+			else vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec));
 		}
 		return vecs;
 	}

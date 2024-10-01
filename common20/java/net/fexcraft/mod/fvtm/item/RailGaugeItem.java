@@ -86,7 +86,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			context.getPlayer().sendSystemMessage(GenericUtils.format("RailSystem not found on this Level."));
 			return InteractionResult.FAIL;
 		}
-		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z, 0);
+		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
 		RailPlacingUtil.place(railsys, UniEntity.getEntity(context.getPlayer()), gauge, vector);
 		return InteractionResult.SUCCESS;
 	}

@@ -1,36 +1,22 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.app.json.JsonArray;
-import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
-import net.fexcraft.mod.fvtm.util.CompatUtil;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -72,7 +58,7 @@ public class RoadToolItem extends Item {
 				RoadPlacingUtil.place(WrapperHolder.getWorld(world),
 					player.getCapability(Capabilities.PASSENGER, null).asWrapper(),
 					TagCW.wrap(player.getHeldItem(hand).getTagCompound()),
-					new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ, 16));
+					new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ));
 				return EnumActionResult.SUCCESS;
 			}
 			case 0:

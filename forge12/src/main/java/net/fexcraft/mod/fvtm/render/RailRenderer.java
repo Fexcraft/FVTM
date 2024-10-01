@@ -65,14 +65,14 @@ public class RailRenderer {
 		StackWrapper wrapper = StackWrapper.wrap(stack);
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
-    		QV3D vec = new QV3D(event.getTarget().hitVec.x, event.getTarget().hitVec.y, event.getTarget().hitVec.z, jitem.getPlacingGrid());
+    		QV3D vec = new QV3D(event.getTarget().hitVec.x, event.getTarget().hitVec.y, event.getTarget().hitVec.z);
     		if(jitem.offsetVectors()){
         		vecs = new QV3D[jitem.getVectors(wrapper).length];
     			double seg = 360f / jitem.getSegments();
     			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			if(con % seg > seg / 2) con++;
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(wrapper)[i].vec).add(vec.vec), jitem.getPlacingGrid());
+    				vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(wrapper)[i].vec).add(vec.vec));
     			}
 				if(Static.dev()) Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}

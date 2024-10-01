@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
@@ -127,6 +129,13 @@ public class ForgeClientEvents {
 
 	private static double round(double var){
 		return (int)(var * 100) / 100D;
+	}
+
+
+	@SubscribeEvent
+	public static void clientTick(TickEvent.ClientTickEvent event){
+		if(event.phase != TickEvent.Phase.START) return;
+		SystemManager.onClientTick();
 	}
 
 }

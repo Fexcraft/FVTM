@@ -135,16 +135,14 @@ public class EventHandler {
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
-		for(World world : Static.getServer().worlds){
-			SystemManager.onServerTick(WrapperHolder.getWorld(world));
-		}
+		SystemManager.onServerTick();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event){
 		if(event.phase != Phase.START) return;
-		SystemManager.onClientTick(WrapperHolder.getClientWorld());
+		SystemManager.onClientTick();
 	}
 	
 	@SubscribeEvent

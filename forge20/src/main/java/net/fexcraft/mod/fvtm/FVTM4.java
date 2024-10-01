@@ -8,9 +8,11 @@ import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
 import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -26,7 +28,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -218,7 +219,7 @@ public class FVTM4 {
 	public static class Events {
 
 		@SubscribeEvent
-		public static void onAttackEntityCaps(AttachCapabilitiesEvent<Entity> event){
+		public static void onAttachEntityCaps(AttachCapabilitiesEvent<Entity> event){
 			if(!EnvInfo.CLIENT) return;
 			if(event.getObject() instanceof DecorationEntity || event.getObject() instanceof RootVehicle){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheProvider(event.getObject()));
@@ -226,8 +227,8 @@ public class FVTM4 {
 		}
 
 		@SubscribeEvent
-		public static void onAttackStackCaps(AttachCapabilitiesEvent<ItemStack> event){
-			//
+		public static void onAttachWorldCaps(AttachCapabilitiesEvent<Level> event){
+			SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(event.getObject()));
 		}
 
 		@SubscribeEvent

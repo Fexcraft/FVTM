@@ -75,6 +75,13 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("road_marker")
 	);
+	public static final RegistryObject<EntityType<RailMarkerF>> RAIL_MARKER_ENTITY = ENTITIES.register("rail_marker", () ->
+		EntityType.Builder.of(RailMarkerF::new, MobCategory.MISC)
+			.sized(0.24F, 1F)
+			.setUpdateInterval(10)
+			.setTrackingRange(256)
+			.build("rail_marker")
+	);
 	public static final RegistryObject<EntityType<WheelEntityF>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
 		EntityType.Builder.of((EntityType.EntityFactory<WheelEntityF>)(type, level) -> new WheelEntityF(type, level), MobCategory.MISC)
 			.sized(0.25F, 0.25F)
@@ -114,6 +121,7 @@ public class FVTM4 {
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
 		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
 		FvtmGetters.ROAD_MARKER_ENTITY = () -> ROAD_MARKER_ENTITY.get();
+		FvtmGetters.RAIL_MARKER_ENTITY = () -> RAIL_MARKER_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY_CLASS = WheelEntityF.class;

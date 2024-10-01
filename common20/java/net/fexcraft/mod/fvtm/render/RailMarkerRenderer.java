@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -36,8 +37,10 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 		Renderer120.set(pose, buffer, light);
 		FvtmRenderTypes.setCutout(texture);
 		RailMarkerModel.INST.base.render();
-		DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+		DefaultModel.RENDERDATA.texture = null;
+		FvtmRenderTypes.setDef(RenderType.eyes(texture.local()));
 		RailMarkerModel.INST.glow.render();
+		FvtmRenderTypes.setCutout(texture);
 		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
 		if(marker.queueid == null){
 			Renderer120.setColor(RGB.BLACK);
@@ -50,9 +53,9 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer120.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+					FvtmRenderTypes.setDef(RenderType.eyes(texture.local()));
 					RailMarkerModel.INST.arrow.render();
-					DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+					FvtmRenderTypes.setCutout(texture);
 				}
 			}
 		}

@@ -31,17 +31,19 @@ public class SystemManager {
 	private static ConcurrentHashMap<Object, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
 	private static ConcurrentHashMap<Object, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
 	
-	public static void onServerTick(WorldW world){
-		if(world == null || !SYSTEMS_DIM.containsKey(world.dimkey())) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
-			sys.onServerTick();
+	public static void onServerTick(){
+		for(ConcurrentHashMap<Object, DetachedSystem> sys : SYSTEMS.values()){
+			for(DetachedSystem det : sys.values()){
+				det.onServerTick();
+			}
 		}
 	}
 
-	public static void onClientTick(WorldW world){
-		if(world == null || !SYSTEMS_DIM.containsKey(world.dimkey())) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
-			sys.onClientTick();
+	public static void onClientTick(){
+		for(ConcurrentHashMap<Object, DetachedSystem> sys : SYSTEMS.values()){
+			for(DetachedSystem det : sys.values()){
+				det.onClientTick();
+			}
 		}
 	}
 

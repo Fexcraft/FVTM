@@ -25,6 +25,7 @@ public class FvtmGetters {
 
 	public static Supplier<EntityType<? extends DecorationEntity>> DECORATION_ENTITY;
 	public static Supplier<EntityType<? extends RoadMarker>> ROAD_MARKER_ENTITY;
+	public static Supplier<EntityType<? extends RailMarker>> RAIL_MARKER_ENTITY;
 	public static Supplier<EntityType<? extends RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
 	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
@@ -48,6 +49,10 @@ public class FvtmGetters {
 
 	public static RoadMarker getNewRoadMarker(Level level){
 		return ROAD_MARKER_ENTITY.get().create(level);
+	}
+
+	public static RailMarker getNewRailMarker(Level level){
+		return RAIL_MARKER_ENTITY.get().create(level);
 	}
 
 	public static RenderCache getRenderCache(Entity entity){

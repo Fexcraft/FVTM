@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
+import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
@@ -226,7 +227,11 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void spawnRailMarker(WorldW world, QV3D vector, UUID nid){
-
+		RailMarker marker = FvtmGetters.getNewRailMarker(world.local());
+		marker.queueid = nid;
+		marker.position = vector;
+		marker.setPos(vector.vec.x, vector.vec.y + 1, vector.vec.z);
+		((Level)world.direct()).addFreshEntity(marker);
 	}
 
 }

@@ -436,18 +436,20 @@ public class RailRenderer {
 				vec = track.getVectorPosition0(accu + 0.1, false);
 				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
 				vec = track.getVectorPosition0(accu, false);
-				for(Polyhedron<GLObject> hedron : model.get("ties")){
-					for(Polygon poly : hedron.polygons){
-						TexturedVertex[] verts = new TexturedVertex[poly.vertices.length];
-						for(int m = 0; m < verts.length; m++){
-							Vertex org = poly.vertices[m];
-							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
-							double dx = (verts[m].vector.x * Static.sixteenth) + vec.x - cen.x;
-							double dy = (verts[m].vector.y * Static.sixteenth) + vec.y - cen.y;
-							double dz = (verts[m].vector.z * Static.sixteenth) + vec.z - cen.z;
-							verts[m].vector = new Vec3f(dx, dy, dz);
+				if(model.get("ties") != null){
+					for(Polyhedron<GLObject> hedron : model.get("ties")){
+						for(Polygon poly : hedron.polygons){
+							TexturedVertex[] verts = new TexturedVertex[poly.vertices.length];
+							for(int m = 0; m < verts.length; m++){
+								Vertex org = poly.vertices[m];
+								verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
+								double dx = (verts[m].vector.x * Static.sixteenth) + vec.x - cen.x;
+								double dy = (verts[m].vector.y * Static.sixteenth) + vec.y - cen.y;
+								double dz = (verts[m].vector.z * Static.sixteenth) + vec.z - cen.z;
+								verts[m].vector = new Vec3f(dx, dy, dz);
+							}
+							tarp.turbos[(int)accu].copyTo(new TexturedPolygon(verts));
 						}
-						tarp.turbos[(int)accu].copyTo(new TexturedPolygon(verts));
 					}
 				}
 				accu += model.ties_distance;

@@ -95,11 +95,6 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	}
 
 	@Override
-	public int getPlacingGrid(){
-		return 16;
-	}
-
-	@Override
 	public Decoration getContent(){
 		return deco;
 	}

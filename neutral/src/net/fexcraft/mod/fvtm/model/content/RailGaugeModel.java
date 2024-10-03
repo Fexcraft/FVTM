@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
-import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 
@@ -91,7 +90,7 @@ public class RailGaugeModel extends DefaultModel {
 	}
 
 	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
-		RailRenderer.junction_signal.render();
+		//TODO
 	}
 	
 }

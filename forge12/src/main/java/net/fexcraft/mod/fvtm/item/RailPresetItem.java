@@ -22,7 +22,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -127,26 +126,6 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 			else vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vec).add(pos.vec));
 		}
 		return vecs;
-	}
-
-	@Override
-	public QV3D[] getVectors(StackWrapper stack){
-		return preset.path;
-	}
-
-	@Override
-	public boolean hasVectors(){
-		return true;
-	}
-
-	@Override
-	public boolean offsetVectors(){
-		return true;
-	}
-
-	@Override
-	public int getSegments(){
-		return rotations;
 	}
 
 	@Override

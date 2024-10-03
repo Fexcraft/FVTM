@@ -20,10 +20,7 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -108,22 +105,6 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
         }
         return EnumActionResult.SUCCESS;
     }
-	
-	@Override
-	public QV3D[] getVectors(StackWrapper stack){
-		if(!stack.hasTag() || !stack.getTag().has("fvtm:wirepoints")) return new QV3D[0];
-		return new QV3D[]{ new QV3D(stack.getTag(), "fvtm:wirepoint_vec") };
-	}
-
-	@Override
-	public boolean hasVectors(){
-		return true;
-	}
-
-	@Override
-	public int getPlacingGrid(){
-		return 16;
-	}
 
 	@Override
 	public WireType getContent(){

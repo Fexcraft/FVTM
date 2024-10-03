@@ -23,7 +23,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -162,12 +161,6 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	private String getSuffix(int tagCount){
 		if(tagCount < 4) return tagCount == 1 ? "st" : tagCount == 2 ? "nd" : "rd"; else return "th";
 	}
-	
-	@Override
-	public QV3D[] getVectors(StackWrapper stack){
-		if(!stack.hasTag() || !stack.getTag().has("fvtm:railpoints")) return new QV3D[0];
-		return getVectors(stack.getTag().getList("fvtm:railpoints"));
-	}
 
 	public QV3D[] getVectors(TagLW list){
 		QV3D[] arr = new QV3D[list.size()];
@@ -178,11 +171,6 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 
 	private QV3D getFirstVector(TagLW list){
 		return new QV3D(list.getCompound(0), null);
-	}
-
-	@Override
-	public boolean hasVectors(){
-		return true;
 	}
 
 	@Override

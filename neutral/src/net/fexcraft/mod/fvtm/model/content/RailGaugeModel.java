@@ -58,10 +58,10 @@ public class RailGaugeModel extends DefaultModel {
 	}
 	
 	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror){
-		rail_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
+		rail_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
 		if(height > 0){
-			rail_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
-			rail_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x, start_y - height, 0).scale(scale) });
+			rail_model.add(new V3D[]{ new V3D(start_x + width, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
 			rail_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
 		}
 		else{

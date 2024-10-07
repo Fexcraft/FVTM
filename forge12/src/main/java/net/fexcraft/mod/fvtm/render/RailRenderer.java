@@ -395,12 +395,12 @@ public class RailRenderer {
 			path.clear();
 			passed = 0;
 			vec = track.getVectorPosition0(0.001f, false);
-			angle = Math.atan2(track.vecpath[0].x - vec.x, track.vecpath[0].z - vec.z);
+			angle = -Math.atan2(track.vecpath[0].x - vec.x, track.vecpath[0].z - vec.z);
 			path.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0]));
 			path.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1]));
 			for(int v = 0; v < track.vecpath.length - 1; v++){
 				last = track.vecpath[v]; vec = track.vecpath[v + 1];
-				angle = Math.atan2(last.x - vec.x, last.z - vec.z);
+				angle = -Math.atan2(last.x - vec.x, last.z - vec.z);
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])).sub(cen));
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])).sub(cen));
 			}
@@ -428,7 +428,7 @@ public class RailRenderer {
 			while(accu < track.length){
 				last = track.getVectorPosition0(accu - 0.1, false);
 				vec = track.getVectorPosition0(accu + 0.1, false);
-				angle = Math.atan2(last.z - vec.z, last.x - vec.x);
+				angle = -Math.atan2(last.x - vec.x, last.z - vec.z);
 				vec = track.getVectorPosition0(accu, false);
 				if(model.get("ties") != null){
 					for(Polyhedron<GLObject> hedron : model.get("ties")){

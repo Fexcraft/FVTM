@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+
+import static net.fexcraft.lib.common.Static.sixteenth;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -39,5 +42,8 @@ public class DebugUtils {
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 1), new Vertex(1, 1, 1) }));
 		CUBE.pos(-.5f, -.5f, -.5f);
 	}
+	public static Polyhedron JUNC_CORE = new Polyhedron()
+		.importMRT(new ModelRendererTurbo(null, 0, 0, 32, 32)
+			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(120, 120, 120)), false, sixteenth);
 
 }

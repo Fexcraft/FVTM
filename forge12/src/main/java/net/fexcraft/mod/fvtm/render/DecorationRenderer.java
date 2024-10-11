@@ -12,6 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -43,7 +45,7 @@ public class DecorationRenderer {
 						RGB.glColorReset();
 					}
 					else{
-						int i = RailRenderer.getBrightness(ent.posX, ent.posY, ent.posZ), j = i % 65536, k = i / 65536;
+						int i = getBrightness(ent.posX, ent.posY, ent.posZ), j = i % 65536, k = i / 65536;
 						OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0F, k / 1.0F);
 						GL11.glPushMatrix();
 						data.offset.translate();
@@ -67,6 +69,16 @@ public class DecorationRenderer {
 		DebugModels.CUBE_CYN.render(0.5f);
 		GL11.glTranslatef(0, -0.25f, 0);
 		RGB.glColorReset();
+	}
+
+	//@Deprecated
+	public static int getBrightness(double x, double y, double z){
+		BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
+		if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
+			mutblk.setY(MathHelper.floor(y));
+			return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
+		}
+		return 0;
 	}
 
 }

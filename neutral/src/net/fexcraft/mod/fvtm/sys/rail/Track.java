@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.render.PathModelPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -16,8 +17,8 @@ public class Track extends Path {
 	public RailGauge gauge;
 	protected TrackUnit unit;
 	protected Junction junction;
-	public Object railmodel;
-	public Object restmodel;
+	public PathModelPositioned railmodel;
+	public PathModelPositioned restmodel;
 	public String preset;
 	public int items;
 

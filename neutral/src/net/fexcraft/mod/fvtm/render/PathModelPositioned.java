@@ -2,24 +2,27 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
-import org.lwjgl.opengl.GL11;
 
-public class TurboArrayPositioned {
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
+public class PathModelPositioned {
 
-	protected ModelRendererTurbo[] turbos;
+	public Polyhedron[] hedrons;
 	protected V3D[] positions;
 
-	public TurboArrayPositioned(Path path, RGB colour){
+	public PathModelPositioned(Path path, RGB colour){
 		int i = (int)path.getLength(null);
 		if(path.length % 1f > 0) i++;
 		if(i == 0) i = 1;
-		turbos = new ModelRendererTurbo[i];
+		hedrons = new Polyhedron[i];
 		positions = new V3D[i];
 		for(int k = 0; k < i; k++){
-			turbos[k] = new ModelRendererTurbo(path, 0, 0, 16, 16);
-			if(colour != null) turbos[k].setColor(colour);
+			hedrons[k] = new Polyhedron();
+			//if(colour != null) turbos[k].setColor(colour);
 			positions[k] = path.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? path.length - 0.125f : k, false);
 		}
 	}
@@ -37,23 +40,24 @@ public class TurboArrayPositioned {
 		}
 	}*///TODO
 
-	public void clearDisplayLists(){
-		for(ModelRendererTurbo turbo : turbos)
-			if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
+	public void clearGL(){
+		for(Polyhedron hedron : hedrons){
+			if(hedron != null && hedron.glId != null) Renderer.RENDERER.delete(hedron);
+		}
 	}
 
 	public void render(){
-		for(int m = 0; m < turbos.length; m++){
+		for(int m = 0; m < hedrons.length; m++){
 			//TODO int i = RailRenderer.getBrightness(positions[m]), j = i % 65536, k = i / 65536;
 			//TODO setLightmapTextureCoords(lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
 			//TODO color(1.0F, 1.0F, 1.0F, 1.0F);
-			turbos[m].render(1f);
+			hedrons[m].render();
 		}
 	}
 
 	public void renderPlain(){
-		for(int m = 0; m < turbos.length; m++){
-			turbos[m].render(1f);
+		for(int m = 0; m < hedrons.length; m++){
+			hedrons[m].render();
 		}
 	}
 

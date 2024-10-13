@@ -37,8 +37,8 @@ public class Renderer120 extends Renderer<GLObject> {
 	private static MultiBufferSource buffer;
 	private static VertexConsumer cons;
 	protected static RenderType rentype;
-	private static int overlay = OverlayTexture.NO_OVERLAY;
-	private static int light;
+	protected static int overlay = OverlayTexture.NO_OVERLAY;
+	public static int light;
 
 	public static void setColor(RGB col){
 		float[] arr = col.toFloatArray();

@@ -2,19 +2,17 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.*;
 import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
+import net.fexcraft.mod.fvtm.render.PathModelGenerator;
 import net.fexcraft.mod.fvtm.render.Renderer120;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
-import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.Region;
+import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.uni.IDL;
@@ -198,10 +196,31 @@ public class ForgeClientEvents {
 			for(Junction junc : reg.getJunctions().values()){
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y - 0.5, junc.getV3D().z);
-				Renderer120.light = LevelRenderer.getLightColor(camera.level(), pos.set(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z));
+				Renderer120.light = LevelRenderer.getLightColor(camera.level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));
 				JUNC_CORE.render();
 				pose.popPose();
+				renderRails(pose, junc, cx, cy, cz);
 			}
+		}
+		pose.popPose();
+	}
+
+	private static void renderRails(PoseStack pose, Junction junc, double cx, double cy, double cz){
+		pose.pushPose();
+		Renderer120.resetColor();
+		for(int i = 0; i < junc.size(); i++){
+			if(i > 2) pose.translate(0, -0.02, 0);
+			if(junc.tracks.get(i).isOppositeCopy()) continue;
+			pose.pushPose();
+			Track track = junc.tracks.get(i);
+			pose.translate(track.vecpath[0].x, track.vecpath[0].y, track.vecpath[0].z);
+			RailGaugeModel model = track.gauge.getModel();
+			if(track.railmodel == null) PathModelGenerator.generateTrackModel(track, model);
+			FvtmRenderTypes.setCutout(track.gauge.getRailTexture());
+			track.railmodel.render();
+			FvtmRenderTypes.setCutout(track.gauge.getTiesTexture());
+			track.restmodel.render();
+			pose.popPose();
 		}
 		pose.popPose();
 	}

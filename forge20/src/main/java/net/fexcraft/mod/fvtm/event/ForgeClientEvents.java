@@ -2,14 +2,12 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.Renderer120;
@@ -19,26 +17,27 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.JUNC_CORE;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.SPHERE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -62,7 +61,7 @@ public class ForgeClientEvents {
 				public void render(PoseStack pose, VertexConsumer cons, int i, int j, float k, float l, float m, float n){
 					Renderer120.set(pose, cons, i, j);
 					FvtmRenderTypes.setLines();
-					DebugUtils.SPHERE.render();
+					SPHERE.render();
 				}
 			});
 		}
@@ -182,12 +181,13 @@ public class ForgeClientEvents {
 		if(DISABLE_RAILS) return;
 		railsys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.getCamera().getEntity().level()), RailSystem.class);
 		if(railsys == null || railsys.getRegions() == null) return;
-		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
+		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
 		Entity camera = event.getCamera().getEntity();
 		float ticks = event.getPartialTick();
 		double cx = camera.xOld + (camera.getX() - camera.xOld) * ticks;
 		double cy = camera.yOld + (camera.getY() - camera.yOld) * ticks;
 		double cz = camera.zOld + (camera.getZ() - camera.zOld) * ticks;
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		PoseStack pose = event.getPoseStack();
 		//VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
 		FvtmRenderTypes.setCutout(JUNCTEX);
@@ -198,6 +198,7 @@ public class ForgeClientEvents {
 			for(Junction junc : reg.getJunctions().values()){
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y - 0.5, junc.getV3D().z);
+				Renderer120.light = LevelRenderer.getLightColor(camera.level(), pos.set(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z));
 				JUNC_CORE.render();
 				pose.popPose();
 			}

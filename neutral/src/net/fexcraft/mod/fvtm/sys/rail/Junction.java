@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.AABB;
-import net.fexcraft.mod.fvtm.render.TurboArrayPositioned;
+import net.fexcraft.mod.fvtm.render.PathModelPositioned;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -76,8 +76,8 @@ public class Junction {
 		if(trackam > 0){
 			if(root.getWorld().isClient()){
 				for(Track track : tracks){
-					if(track.railmodel != null) ((TurboArrayPositioned)track.railmodel).clearDisplayLists();
-					if(track.restmodel != null) ((TurboArrayPositioned)track.restmodel).clearDisplayLists();
+					if(track.railmodel != null) track.railmodel.clearGL();
+					if(track.restmodel != null) track.restmodel.clearGL();
 					track.railmodel = track.restmodel = null;
 				}
 				signalpos0 = signalpos1 = null;

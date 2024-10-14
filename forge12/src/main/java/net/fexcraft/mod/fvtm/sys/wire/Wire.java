@@ -11,7 +11,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
-import net.fexcraft.mod.fvtm.render.TurboArrayPositioned;
+import net.fexcraft.mod.fvtm.render.PathModelPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -40,7 +40,7 @@ public class Wire {
 	public boolean copy;
 	//
 	@SideOnly(Side.CLIENT)
-	public TurboArrayPositioned wiremodel;
+	public PathModelPositioned wiremodel;
 	public double model_start_angle, model_end_angle;
 	public double model_start_angle_down, model_end_angle_down;
 	@SideOnly(Side.CLIENT)

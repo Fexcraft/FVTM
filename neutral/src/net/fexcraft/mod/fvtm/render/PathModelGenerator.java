@@ -40,9 +40,9 @@ public class PathModelGenerator {
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])).sub(cen));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
-				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
-				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
-				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
+				vert0 = new TexturedVertex(path.get(k * 2), 0, 1);
+				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 0);
+				vert2 = new TexturedVertex(path.get((k + 1) * 2), 1, 1);
 				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
 				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.hedrons.length) pess = tarp.hedrons.length - 1;

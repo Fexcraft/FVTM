@@ -54,9 +54,10 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		height = map.getFloat("Height", 0.25f);
 		blockwidth = map.getFloat("BlockSpace", 2);
 		blockheight = map.getFloat("BlockHeight", 0);
-		rail_texture = IDLManager.getIDLNamed(map.getString("RailTexture", "minecraft:textures/blocks/iron_block.png"));
-		ties_texture = IDLManager.getIDLNamed(map.getString("TiesTexture", "minecraft:textures/blocks/anvil_base.png"));
-		model_texture = IDLManager.getIDLNamed(map.getString("ModelTexture", "fvtm:textures/entity/null.png"));
+		String blks = EnvInfo.is112() ? "blocks" : "block";
+		rail_texture = IDLManager.getIDLNamed(map.getString("RailTexture", "minecraft:textures/" + blks + "/iron_block.png"));
+		ties_texture = IDLManager.getIDLNamed(map.getString("TiesTexture", "minecraft:textures/" + blks + "/anvil_base.png"));
+		model_texture = IDLManager.getIDLNamed(map.getString("ModelTexture", "fvtm:textures/" + blks + "/null.png"));
 		compatible = ContentConfigUtil.getStringList(map, "Compatible");
 		if(EnvInfo.CLIENT){
 			modelid = map.getString("Model", null);

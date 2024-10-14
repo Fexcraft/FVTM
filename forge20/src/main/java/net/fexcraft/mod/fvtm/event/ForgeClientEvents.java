@@ -199,13 +199,13 @@ public class ForgeClientEvents {
 				Renderer120.light = LevelRenderer.getLightColor(camera.level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));
 				JUNC_CORE.render();
 				pose.popPose();
-				renderRails(pose, junc, cx, cy, cz);
+				renderRails(pose, junc);
 			}
 		}
 		pose.popPose();
 	}
 
-	private static void renderRails(PoseStack pose, Junction junc, double cx, double cy, double cz){
+	private static void renderRails(PoseStack pose, Junction junc){
 		pose.pushPose();
 		Renderer120.resetColor();
 		for(int i = 0; i < junc.size(); i++){

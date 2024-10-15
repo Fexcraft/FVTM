@@ -2,7 +2,11 @@ package net.fexcraft.mod.fvtm.model.content;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 
 import net.fexcraft.mod.fvtm.model.DefaultModel;
@@ -30,23 +34,37 @@ public class RailGaugeModel extends DefaultModel {
 		ties_distance = data.getFloat("TiesDistance", ties_distance);
 		signal_offset = data.getFloat("SignalOffset", signal_offset);
 		//buffer_length = data.getFloat("BufferLength", buffer_length);
-		List<String> rails = data.getArray("Rail").toStringList();
-		if(rails.isEmpty()) return this;
-		for(String rail : rails){
-			String[] args = rail.trim().split(" ");
-			boolean rect = args[0].equals("rect") || args[0].equals("flat");
-			float scale = Float.parseFloat(args[1]);
-			float sx = Float.parseFloat(args[2]);
-			float sy = Float.parseFloat(args[3]);
-			float w = Float.parseFloat(args[4]);
-			float h = Float.parseFloat(args[5]);
-			boolean m = Boolean.parseBoolean(args[6]);
-			if(rect){
-				this.addRailRect(scale, sx, sy, w, h, m);
+		if(data.has("Rail")){
+			List<String> rails = data.getArray("Rail").toStringList();
+			if(rails.isEmpty()) return this;
+			for(String rail : rails){
+				String[] args = rail.trim().split(" ");
+				boolean rect = args[0].equals("rect") || args[0].equals("flat");
+				float scale = Float.parseFloat(args[1]);
+				float sx = Float.parseFloat(args[2]);
+				float sy = Float.parseFloat(args[3]);
+				float w = Float.parseFloat(args[4]);
+				float h = Float.parseFloat(args[5]);
+				boolean m = Boolean.parseBoolean(args[6]);
+				if(rect){
+					this.addRailRect(scale, sx, sy, w, h, m);
+				}
+				else{
+					V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);
+					this.addRailRectShape(scale, sx, sy, w, h, tl, tr, bl, br, m);
+				}
 			}
-			else{
-				V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);
-				this.addRailRectShape(scale, sx, sy, w, h, tl, tr, bl, br, m);
+		}
+		if(data.has("Rails")){
+			JsonMap rails = data.getMap("Rails");
+			JsonMap map = null;
+			for(Map.Entry<String, JsonValue<?>> entry : rails.entries()){
+				map = entry.getValue().asMap();
+				float scl = map.getFloat("scale", 1f);
+				float[] pos = map.has("pos") ? map.getArray("pos").toFloatArray() : new float[]{ 0.9375f, 0 };
+				float[] siz = map.has("size") ? map.getArray("size").toFloatArray() : new float[]{ 0.125f, 0.125f };
+				boolean mir = map.getBoolean("mirror", true);
+				addRailRect(scl, pos[0], pos[1], siz[0], siz[1], mir);
 			}
 		}
 		return this;

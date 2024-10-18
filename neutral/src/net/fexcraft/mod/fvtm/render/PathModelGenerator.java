@@ -32,6 +32,7 @@ public class PathModelGenerator {
 			path.clear();
 			passed = 0;
 			obuf = 0;
+			nbuf = 0;
 			float[] vv = model.rail_vv.get(p);
 			vec = track.getVectorPosition0(0.001f, false);
 			angle = -Math.atan2(track.vecpath[0].x - vec.x, track.vecpath[0].z - vec.z);
@@ -45,6 +46,10 @@ public class PathModelGenerator {
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
 				nbuf += (float)track.vecpath[k].dis(track.vecpath[k + 1]);
+				if(nbuf > 1f){
+					nbuf = obuf - nbuf;
+					obuf = 0;
+				}
 				vert0 = new TexturedVertex(path.get(k * 2), obuf, vv[1]);
 				vert1 = new TexturedVertex(path.get(k * 2 + 1), obuf, vv[0]);
 				vert2 = new TexturedVertex(path.get((k + 1) * 2), nbuf, vv[1]);

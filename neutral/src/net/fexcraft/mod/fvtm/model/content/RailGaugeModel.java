@@ -63,9 +63,9 @@ public class RailGaugeModel extends DefaultModel {
 				float scl = map.getFloat("scale", 1f);
 				float[] pos = map.has("pos") ? map.getArray("pos").toFloatArray() : new float[]{ 0.9375f, 0 };
 				float[] siz = map.has("size") ? map.getArray("size").toFloatArray() : new float[]{ 0.125f, 0.125f };
-				float[] uv = map.has("v") ? map.getArray("v").toFloatArray() : new float[]{ 0, 0.125f, 0.125f };
+				float[] vv = map.has("v") ? map.getArray("v").toFloatArray() : new float[]{ 0, 0.125f, 0.125f };
 				boolean mir = map.getBoolean("mirror", true);
-				addRailRect(scl, pos[0], pos[1], siz[0], siz[1], mir, uv);
+				addRailRect(scl, pos[0], pos[1], siz[0], siz[1], mir, vv);
 			}
 		}
 		return this;
@@ -76,24 +76,24 @@ public class RailGaugeModel extends DefaultModel {
 		for(ModelGroup list : groups) list.render();
 	}
 	
-	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror, float[] uv){
+	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror, float[] vv){
 		rail_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
 		float buff = 0;
-		rail_vv.add(new float[]{ uv[0], uv[0] + (buff += uv[1])});
+		rail_vv.add(new float[]{ vv[0], vv[0] + (buff += vv[1])});
 		if(height > 0){
 			rail_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x, start_y - height, 0).scale(scale) });
-			rail_vv.add(new float[]{ uv[0] + buff, uv[0] + (buff += uv[2]) });
+			rail_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
 			rail_model.add(new V3D[]{ new V3D(start_x + width, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
-			rail_vv.add(new float[]{ uv[0] + buff, uv[0] + (buff += uv[2]) });
+			rail_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
 			rail_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
-			rail_vv.add(new float[]{  uv[0] + buff, uv[0] + (buff + uv[1])  });
+			rail_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 		}
 		else{
 			float h = 0.01f / scale;
 			rail_model.add(new V3D[]{ new V3D(start_x, start_y - h, 0).scale(scale), new V3D(start_x + width, start_y - h, 0).scale(scale) });
-			rail_vv.add(new float[]{  uv[0] + buff, uv[0] + (buff + uv[1])  });
+			rail_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 		}
-		if(mirror) addRailRect(scale, -start_x - width, start_y, width, height, false, uv);
+		if(mirror) addRailRect(scale, -start_x - width, start_y, width, height, false, vv);
 	}
 	
 	public void addRailRectShape(float scale, float start_x, float start_y, float width, float height, V3D tl, V3D tr, V3D bl, V3D br, boolean mirror){

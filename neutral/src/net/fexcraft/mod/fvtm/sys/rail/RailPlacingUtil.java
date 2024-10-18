@@ -32,6 +32,8 @@ public class RailPlacingUtil {
 		UUID trackid = CURRENT.get(pass.getUUID());
 		if(trackid == null){
 			UUID newid = genId();
+			Junction junc = system.getJunction(vector.pos);
+			if(junc != null) vector = junc.getPos();
 			QUEUE.put(newid, new NewTrack(newid, vector, gauge));
 			CURRENT.put(pass.getUUID(), newid);
 			//
@@ -161,6 +163,7 @@ public class RailPlacingUtil {
 			RailSystem sys = SystemManager.get(Systems.RAIL, player.getWorld());
 			Junction junc = sys.getJunction(vector.pos, true);
 			UUID current = CURRENT.get(player.getUUID());
+			boolean nn = junc != null;
 			if(current == null){
 				player.send("no_queue_entry / 0");
 				return;
@@ -197,7 +200,9 @@ public class RailPlacingUtil {
 				return;
 			}
 			else{
-				Track track = new Track(junc, ntrack.points.toArray(new QV3D[0]), gauge);
+				QV3D[] arr = ntrack.points.toArray(new QV3D[0]);
+				if(nn) arr[arr.length - 1] = junc.getPos();
+				Track track = new Track(junc, arr, gauge);
 				if(track.length > MAX_RAIL_TRACK_LENGTH){
 					player.send("&cTrack length exceeds the configured max length.");
 					return;

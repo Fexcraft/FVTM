@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
@@ -223,7 +224,7 @@ public class VehicleInstance {
 	}
 
 	public void checkSteerAngle(boolean client){
-		if(!client) steer_yaw *= 0.95;
+		if(!client) steer_yaw *= Config.STEER_RESET_RATE;
 		if(steer_yaw > max_steering_yaw) steer_yaw = max_steering_yaw;
 		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
 	}

@@ -30,6 +30,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -136,8 +137,18 @@ public class FVTM20 {
 			.then(Commands.literal("debug").executes(ctx -> {
 				DebugUtils.ACTIVE = !DebugUtils.ACTIVE;
 				return 0;
-			})
-		);
+			}))
+			.then(Commands.literal("reload").executes(ctx -> {
+				if(EnvInfo.DEV){
+					ctx.getSource().sendSystemMessage(Component.literal("Reloading Config..."));
+					FvtmRegistry.CONFIG.reload();
+				}
+				else{
+					ctx.getSource().sendSystemMessage(Component.literal("Runtime reloading only available in dev-mode."));
+				}
+				return 0;
+			}))
+		;
 	}
 
 }

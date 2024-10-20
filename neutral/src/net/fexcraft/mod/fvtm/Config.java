@@ -38,6 +38,7 @@ public class Config extends ConfigBase {
 	public static float U12_MOTION_SCALE;
 	//uni/proto
 	public static byte VEHICLE_SYNC_RATE;
+	public static float STEER_RESET_RATE;
 	//rail
 	public static boolean DISABLE_RAILS;
 	public static int UNLOAD_INTERVAL;
@@ -130,10 +131,13 @@ public class Config extends ConfigBase {
 			.info("Physics Motion Scale Multiplier.").rang(0.001f, 2f)
 			.cons((con, map) -> U12_MOTION_SCALE = con.getFloat(map)));
 
-		//u12/basic
+		//general vehicle
 		entries.add(new ConfigEntry(this, catv, "sync_rate", new JsonValue(5))
 			.info("Entity sync rate in ticks. Lesser value means higher sync AND higher bandwidth. Higher value means slower sync and less bandwidth.").rang(1, 10)
 			.cons((con, map) -> VEHICLE_SYNC_RATE = (byte)con.getInteger(map)));
+		entries.add(new ConfigEntry(this, catv, "steer_reset_rate", new JsonValue(0.90))//0.95
+			.info("Steer multiplier per tick. 1 = no reset, 0 = full reset each tick.").rang(0, 1)
+			.cons((con, map) -> STEER_RESET_RATE = con.getFloat(map)));
 
 		//rail
 		entries.add(new ConfigEntry(this, catr, "disable", new JsonValue(false))

@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -48,6 +49,7 @@ public class Registerer12 {
 		//
 		event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
 		event.getRegistry().register(ToolboxItem.INSTANCE = new ToolboxItem());
+		event.getRegistry().register(JunctionToolItem.INSTANCE = new JunctionToolItem());
 		if(EnvInfo.CLIENT){
 			regModel(ConstructorBlock.ITEM);
 			regModel(VehicleLiftBlock.ITEM);
@@ -55,6 +57,7 @@ public class Registerer12 {
 			//
 			regModel(RoadToolItem.INSTANCE);
 			regModel(ToolboxItem.INSTANCE, 3);
+			regModel(JunctionToolItem.INSTANCE);
 		}
 	}
 

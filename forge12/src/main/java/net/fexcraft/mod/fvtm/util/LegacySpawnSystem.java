@@ -54,15 +54,15 @@ public class LegacySpawnSystem extends EntitySystem {
 	}
     
     public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data){
-		String[] index = data.getType().isTrailer() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX;
+		//String[] index = data.getType().isTrailer() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX;
 		boolean failed = false;
-		for(String str : index){
+		/*for(String str : index){
 			if(!data.getWheelPositions().containsKey(str)){
 				String trailer = data.getType().isTrailer() ? "&9Trailer" : "&9Vehicle";
 				Print.chat(player, trailer + " is missing a wheel! &7&o" + str);
 				//failed = true;
 			}
-		}
+		}*/
 		if(!data.getType().isTrailer() && !data.hasPart("engine")){
 			Print.chat(player, "&9Vehicle does not have an Engine installed!"); // failed = true;
 		}

@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.GLObject;
@@ -276,9 +277,9 @@ public class FVTM {
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
 			StreetSignItem.INSTANCE.setCreativeTab(tab);
 			TrafficSignItem.INSTANCE.setCreativeTab(tab);
-			JunctionToolItem.INSTANCE.setCreativeTab(tab);
 			SignalItem0.INSTANCE.setCreativeTab(tab);
 			TrainAdjuster.INSTANCE.setCreativeTab(tab);*/
+			JunctionToolItem.INSTANCE.setCreativeTab(tab);
 			RoadToolItem.INSTANCE.setCreativeTab(tab);
 			ToolboxItem.INSTANCE.setCreativeTab(tab);
 			Asphalt.INSTANCE.setCreativeTab(tab);

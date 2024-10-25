@@ -126,6 +126,24 @@ ui.fvtm.road_tool_custom.scroll_left=Scroll Left
 ui.fvtm.road_tool_custom.scroll_right=Scroll Right
 ui.fvtm.road_tool_custom.scroll_status=&7Currently viewing &a%s-%s &7of &e%s
 //
+ui.fvtm.rail_junction.info=Here you can adjust the Junction as needed.
+ui.fvtm.rail_junction.copy=Copy Position
+ui.fvtm.rail_junction.type_0=straight (auto)
+ui.fvtm.rail_junction.type_1=2-fork switch (auto)
+ui.fvtm.rail_junction.type_2=3-fork switch
+ui.fvtm.rail_junction.type_3=double switch
+ui.fvtm.rail_junction.type_4=crossing
+ui.fvtm.rail_junction.section=Section: %s
+ui.fvtm.rail_junction.section_edit=Edit Section
+ui.fvtm.rail_junction.signal=Signal: %s
+ui.fvtm.rail_junction.signal_edit=Edit Signal
+ui.fvtm.rail_junction.signal_remove=Remove Signal
+ui.fvtm.rail_junction.switch0=Change Switch(0) State
+ui.fvtm.rail_junction.switch1=Change Switch(1) State
+ui.fvtm.rail_junction.remove=Remove Track
+ui.fvtm.rail_junction.move_down=Move Track Down
+ui.fvtm.rail_junction.move_up=Move Track Up
+//
 ui.fvtm.decoration_editor.position=Position Offset
 ui.fvtm.decoration_editor.rotation=Rotation (Degrees)
 ui.fvtm.decoration_editor.scale=Scale

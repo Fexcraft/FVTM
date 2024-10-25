@@ -102,7 +102,9 @@ public class GuiHandler implements IGuiHandler {
 		V3I pos = new V3I(x, y, z);
 		switch(ID){
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
-			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
+			//case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
+			case UIKeys.ID12_RAIL_JUNCTION:
+				return new UniCon(new ContainerInterface(gJ("rail_junction"), entity, pos), player);
 			case UIKeys.ID12_ROAD_TOOL:
 				return new UniCon(new RoadToolConImpl(gJ("road_tool"), entity, pos), player);
 			case UIKeys.ID12_ROAD_TOOL_CUSTOM:
@@ -172,7 +174,11 @@ public class GuiHandler implements IGuiHandler {
 			V3I pos = new V3I(x, y, z);
 			switch(ID){
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
-				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
+				//case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
+				case UIKeys.ID12_RAIL_JUNCTION: {
+					JsonMap map = gJC("rail_junction");
+					return new UniUI(new UserInterface(map, new ContainerInterface(map, entity, pos)), player);
+				}
 				case UIKeys.ID12_ROAD_TOOL:{
 					JsonMap map = gJC("road_tool");
 					return new UniUI(new RoadToolUI(map, new RoadToolConImpl(map, entity, pos)), player);

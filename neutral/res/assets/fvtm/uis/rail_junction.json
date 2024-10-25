@@ -1,0 +1,167 @@
+{
+	"_info_": "Rail Junction UI",
+	"background": true,
+	"size": [ 248, 152 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/rail_junction.png",
+			"size": [ 248, 152 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"info", "copy",
+				"type_0", "type_1", "type_2", "type_3", "type_4",
+				"section", "section_edit",
+				"signal", "signal_edit", "signal_remove",
+				"switch00", "switch01", "switch10", "switch11",
+				"switch0", "switch1",
+				"rem0", "rem1", "rem2", "rem3",
+				"down0", "down1", "down2",
+				"up1", "up2", "up3"
+			],
+			"texts": [
+
+			]
+		}
+	},
+	"buttons": {
+		"info": {
+			"pos": [ 217, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.info"
+		},
+		"copy": {
+			"pos": [ 229, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.copy"
+		},
+		"type_0": {
+			"pos": [ 74, 22 ],
+			"size": [ 16, 16 ],
+			"tooltip": "ui.fvtm.rail_junction.type_0"
+		},
+		"type_1": {
+			"pos": [ 92, 22 ],
+			"size": [ 16, 16 ],
+			"tooltip": "ui.fvtm.rail_junction.type_1"
+		},
+		"type_2": {
+			"pos": [ 110, 22 ],
+			"size": [ 16, 16 ],
+			"tooltip": "ui.fvtm.rail_junction.type_2"
+		},
+		"type_3": {
+			"pos": [ 128, 22 ],
+			"size": [ 16, 16 ],
+			"tooltip": "ui.fvtm.rail_junction.type_3"
+		},
+		"type_4": {
+			"pos": [ 146, 22 ],
+			"size": [ 16, 16 ],
+			"tooltip": "ui.fvtm.rail_junction.type_4"
+		},
+		"section": {
+			"pos": [ 179, 24 ],
+			"size": [ 16, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.section"
+		},
+		"section_edit": {
+			"pos": [ 197, 24 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.section_edit"
+		},
+		"signal": {
+			"pos": [ 212, 24 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.signal"
+		},
+		"signal_edit": {
+			"pos": [ 222, 24 ],
+			"size": [ 8, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.signal_edit"
+		},
+		"signal_remove": {
+			"pos": [ 231, 24 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.signal_remove"
+		},
+		"switch00": {
+			"pos": [ 204, 48 ],
+			"size": [ 10, 10 ]
+		},
+		"switch01": {
+			"pos": [ 230, 48 ],
+			"size": [ 10, 10 ]
+		},
+		"switch10": {
+			"pos": [ 204, 66 ],
+			"size": [ 10, 10 ]
+		},
+		"switch11": {
+			"pos": [ 230, 66 ],
+			"size": [ 10, 10 ]
+		},
+		"switch0": {
+			"pos": [ 215, 48 ],
+			"size": [ 14, 10 ],
+			"tooltip": "ui.fvtm.rail_junction.switch0"
+		},
+		"switch1": {
+			"pos": [ 215, 66 ],
+			"size": [ 14, 10 ],
+			"tooltip": "ui.fvtm.rail_junction.switch1"
+		},
+		"rem0": {
+			"pos": [ 234, 87 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.remove"
+		},
+		"rem1": {
+			"pos": [ 234, 101 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.remove"
+		},
+		"rem2": {
+			"pos": [ 234, 115 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.remove"
+		},
+		"rem3": {
+			"pos": [ 234, 129 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.remove"
+		},
+		"down0": {
+			"pos": [ 226, 94 ],
+			"size": [ 7, 5 ],
+			"tooltip": "ui.fvtm.rail_junction.move_down"
+		},
+		"down1": {
+			"pos": [ 226, 108 ],
+			"size": [ 7, 5 ],
+			"tooltip": "ui.fvtm.rail_junction.move_down"
+		},
+		"down2": {
+			"pos": [ 226, 122 ],
+			"size": [ 7, 5 ],
+			"tooltip": "ui.fvtm.rail_junction.move_down"
+		},
+		"up1": {
+			"pos": [ 226, 101 ],
+			"size": [ 7, 5 ],
+			"tooltip": "ui.fvtm.rail_junction.move_up"
+		},
+		"up2": {
+			"pos": [ 226, 115 ],
+			"size": [ 7, 5 ],
+			"tooltip": "ui.fvtm.rail_junction.move_up"
+		},
+		"up3": {
+			"pos": [ 226, 129 ],
+			"size": [ 7, 5 ],
+			"tooltip": "ui.fvtm.rail_junction.move_up"
+		}
+	},
+	"texts": {
+
+	}
+}

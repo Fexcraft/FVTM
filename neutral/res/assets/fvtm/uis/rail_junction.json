@@ -19,7 +19,8 @@
 				"up1", "up2", "up3"
 			],
 			"texts": [
-
+				"title", "switch0", "switch1",
+				"track0", "track1", "track2", "track3"
 			]
 		}
 	},
@@ -62,7 +63,6 @@
 		"section": {
 			"pos": [ 179, 24 ],
 			"size": [ 16, 12 ],
-			"tooltip": "ui.fvtm.rail_junction.section"
 		},
 		"section_edit": {
 			"pos": [ 197, 24 ],
@@ -72,7 +72,6 @@
 		"signal": {
 			"pos": [ 212, 24 ],
 			"size": [ 7, 12 ],
-			"tooltip": "ui.fvtm.rail_junction.signal"
 		},
 		"signal_edit": {
 			"pos": [ 222, 24 ],
@@ -162,6 +161,49 @@
 		}
 	},
 	"texts": {
-
+		"title": {
+			"pos": [ 9, 9 ],
+			"size": [ 205, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"switch0": {
+			"pos": [ 75, 49 ],
+			"size": [ 127, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"switch1": {
+			"pos": [ 75, 67 ],
+			"size": [ 127, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"track0": {
+			"pos": [ 12, 89 ],
+			"size": [ 211, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"track1": {
+			"pos": [ 12, 103 ],
+			"size": [ 211, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"track2": {
+			"pos": [ 12, 117 ],
+			"size": [ 211, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"track3": {
+			"pos": [ 12, 131 ],
+			"size": [ 211, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		}
 	}
 }

@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.JUNC_CORE;
@@ -173,6 +174,7 @@ public class ForgeClientEvents {
 
 	public static final IDL JUNCTEX = IDLManager.getIDLCached("minecraft:textures/block/stone.png");
 	private static RailSystem railsys;
+	private static HashSet<Junction> juncset = new HashSet<>();
 
 	@SubscribeEvent
 	public static void renderRail1(RenderLevelStageEvent event){
@@ -193,7 +195,9 @@ public class ForgeClientEvents {
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		for(Region reg : railsys.getRegions().values()){
-			for(Junction junc : reg.getJunctions().values()){
+			juncset.clear();
+			juncset.addAll(reg.getJunctions().values());
+			for(Junction junc : juncset){
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y - 0.5, junc.getV3D().z);
 				Renderer120.light = LevelRenderer.getLightColor(camera.level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));

@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.packet.*;
@@ -80,7 +81,13 @@ public class PacketsImpl extends Packets {
 			vehicle.processSeatInteract(index, player.local(), EnumHand.MAIN_HAND);
 		});
 		if(EnvInfo.CLIENT){
-			//
+			LIS_CLIENT.put("deco", (tag, player) -> {
+				World world = player.getWorld().local();
+				Entity ent = world.getEntityByID(tag.getInteger("entid"));
+				if(ent != null && ent instanceof DecorationEntity){
+					((DecorationEntity)ent).readEntityFromNBT(tag.local());
+				}
+			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
 	}

@@ -14,6 +14,8 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -195,12 +197,10 @@ public class DecorationEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
 	public void updateClient(){
-		NBTTagCompound com = new NBTTagCompound();
-		writeEntityToNBT(com);
-		com.setString("task", "deco_update");
-		com.setInteger("entid", getEntityId());
-		com.setString("target_listener", UTIL_LISTENER);
-		PacketHandler.getInstance().sendToAllTracking(new PacketNBTTagCompound(com), this);
+		TagCW com = TagCW.create();
+		writeEntityToNBT(com.local());
+		com.set("entid", getEntityId());
+		Packets.sendToAll(Packet_TagListener.class, "deco", TagCW.wrap(com));
 	}
 
 }

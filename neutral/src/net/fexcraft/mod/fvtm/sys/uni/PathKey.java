@@ -107,4 +107,8 @@ public class PathKey implements Comparable<PathKey> {
 		return String.format("[ %s,%s - %s,%s - %s,%s / %s,%s - %s,%s - %s,%s ]", pos[0], xyz[0], pos[1], xyz[1], pos[2], xyz[2], pos[3], xyz[3], pos[4], xyz[4], pos[5], xyz[5]);
 	}
 
+	public String toPosString(){
+		return String.format("[ %s, %s, %s / %s, %s, %s ]", pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
+	}
+
 }

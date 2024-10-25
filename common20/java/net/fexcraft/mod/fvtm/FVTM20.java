@@ -73,6 +73,9 @@ public class FVTM20 {
 		UniReg.registerUI(UIKeys.ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
 		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "assets/fvtm/uis/road_tool_custom", RoadToolCustomConImpl.class);
 		//
+		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
+		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "assets/fvtm/uis/rail_junction", RailJunctionContainer.class);
+		//
 		UniReg.registerUI(UIKeys.VEHICLE_MAIN, VehicleMain.class);
 		UniReg.registerMenu(UIKeys.VEHICLE_MAIN, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
 		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);

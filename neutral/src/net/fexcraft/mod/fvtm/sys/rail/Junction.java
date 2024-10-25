@@ -585,6 +585,10 @@ public class Junction {
 		return "Junction{ " + vecpos + ", " + tracks.size() + ", " + signal_dir + " }";
 	}
 
+	public String posString(){
+		return vecpos.pos.x + ", " + vecpos.pos.y + ", " + vecpos.pos.z;
+	}
+
 	public Junction updateVecPos(QV3D vector){
 		vecpos = vector;
 		return this;

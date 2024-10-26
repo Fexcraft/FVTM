@@ -98,7 +98,7 @@ public class SystemManager {
 		}
 		//
 		if(!DISABLE_WIRES){
-			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
+			/*if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
 			/*WireSystem sys = new WireSystem(world);
 			SYSTEMS.get(Systems.WIRE).put(dim, sys);
 			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);*///TODO

@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -82,11 +83,10 @@ public class ForgeClientEvents {
 	public static void renderRoad(RenderLevelStageEvent event){
 		if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return;
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
-		Entity camera = Minecraft.getInstance().getCameraEntity();
-		float ticks = event.getPartialTick();
-		double cx = camera.xOld + (camera.getX() - camera.xOld) * ticks;
-		double cy = camera.yOld + (camera.getY() - camera.yOld) * ticks;
-		double cz = camera.zOld + (camera.getZ() - camera.zOld) * ticks;
+		Camera camera = event.getCamera();
+		double cx = camera.getPosition().x;
+		double cy = camera.getPosition().y;
+		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
 		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
 		Renderer120.set(pose, cons, 0);
@@ -129,11 +129,10 @@ public class ForgeClientEvents {
 	public static void renderRail(RenderLevelStageEvent event){
 		if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return;
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
-		Entity camera = event.getCamera().getEntity();
-		float ticks = event.getPartialTick();
-		double cx = camera.xOld + (camera.getX() - camera.xOld) * ticks;
-		double cy = camera.yOld + (camera.getY() - camera.yOld) * ticks;
-		double cz = camera.zOld + (camera.getZ() - camera.zOld) * ticks;
+		Camera camera = event.getCamera();
+		double cx = camera.getPosition().x;
+		double cy = camera.getPosition().y;
+		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
 		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
 		Renderer120.set(pose, cons, 0);
@@ -182,11 +181,11 @@ public class ForgeClientEvents {
 		railsys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.getCamera().getEntity().level()), RailSystem.class);
 		if(railsys == null || railsys.getRegions() == null) return;
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
-		Entity camera = event.getCamera().getEntity();
-		float ticks = event.getPartialTick();
-		double cx = camera.xOld + (camera.getX() - camera.xOld) * ticks;
-		double cy = camera.yOld + (camera.getY() - camera.yOld) * ticks;
-		double cz = camera.zOld + (camera.getZ() - camera.zOld) * ticks;
+		Camera camera = event.getCamera();
+		//float ticks = event.getPartialTick();
+		double cx = camera.getPosition().x;//.xOld + (camera.getX() - camera.xOld) * ticks;
+		double cy = camera.getPosition().y;//.yOld + (camera.getY() - camera.yOld) * ticks;
+		double cz = camera.getPosition().z;//.zOld + (camera.getZ() - camera.zOld) * ticks;
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		PoseStack pose = event.getPoseStack();
 		//VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
@@ -199,8 +198,8 @@ public class ForgeClientEvents {
 			juncset.addAll(reg.getJunctions().values());
 			for(Junction junc : juncset){
 				pose.pushPose();
-				pose.translate(junc.getV3D().x, junc.getV3D().y - 0.5, junc.getV3D().z);
-				Renderer120.light = LevelRenderer.getLightColor(camera.level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));
+				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);
+				Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));
 				JUNC_CORE.render();
 				pose.popPose();
 				renderRails(pose, junc);

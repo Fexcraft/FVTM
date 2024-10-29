@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '4.12.76' // + getDateSuffix()
+version = '4.12.77' // + getDateSuffix()
 group = 'net.fexcraft.mod.fvtm'
 archivesBaseName = 'FVTM'
 

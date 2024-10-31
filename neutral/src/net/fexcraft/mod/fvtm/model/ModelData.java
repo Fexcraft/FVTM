@@ -5,11 +5,14 @@ import java.util.function.Supplier;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.mod.uni.IDL;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class ModelData extends JsonMap {
+
+	public String location;
 
 	public ModelData(){
 		super();

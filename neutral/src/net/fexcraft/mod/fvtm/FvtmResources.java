@@ -438,6 +438,7 @@ public abstract class FvtmResources {
 			model = (Model)ret[0];
 			if(ret.length > 1) data = (ModelData)ret[1];
 			MODELS.put(location, model.getGroups().copyWithoutPrograms());
+			data.location = location;
 			model.parse(data).lock();
 		}
 		catch(Throwable e){

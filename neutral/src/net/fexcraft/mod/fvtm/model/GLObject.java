@@ -12,6 +12,7 @@ public class GLObject extends GLO<GLObject> {
 
 	@Override
 	public void copy(GLObject from, boolean full){
+		super.copy(from, full);
 		textured = from.textured;
 	}
 

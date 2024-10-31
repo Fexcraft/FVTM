@@ -5,6 +5,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.frl.Material;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
@@ -13,6 +14,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroupList.DefaultModelGroupList;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.program.AnimationPrograms.AnimationRoot;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms.ConditionBased;
+import net.fexcraft.mod.uni.IDLManager;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -246,6 +248,13 @@ public class DefaultModel implements Model {
 				catch(Exception e){
 					e.printStackTrace();
 				}
+			}
+		}
+		if(data.has("MaterialDict")){
+			for(Map.Entry<String, JsonValue<?>> entry : data.get("MaterialDict").asMap().entries()){
+				Material mat = Material.get(data.location + "?" + entry.getKey(), false);
+				if(mat.none()) continue;
+				mat.texture = IDLManager.getIDLCached(entry.getValue().string_value());
 			}
 		}
 		return this;

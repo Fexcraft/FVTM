@@ -118,8 +118,22 @@ public class RailRenderer {
             }*/
             BlockPos pos = event.getTarget().getBlockPos();
             double yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
+			for(int i = 0; i < 4; i++){
+				bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+				bufferbuilder.pos(pos.getX() + (i * 0.25 + 0.125) - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z)
+					.color(0, 1, 1, 1f).endVertex();
+				bufferbuilder.pos(pos.getX() + (i * 0.25 + 0.125) - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z)
+					.color(0, 1, 1, 1f).endVertex();
+				tessellator.draw();
+				bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+				bufferbuilder.pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (i * 0.25 + 0.125) - z)
+					.color(0, 1, 1, 1f).endVertex();
+				bufferbuilder.pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (i * 0.25 + 0.125) - z)
+					.color(0, 1, 1, 1f).endVertex();
+				tessellator.draw();
+			}
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ()- z)
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();

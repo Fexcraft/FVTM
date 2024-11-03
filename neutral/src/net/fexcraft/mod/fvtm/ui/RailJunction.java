@@ -2,11 +2,14 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ public class RailJunction extends UserInterface {
 	public static final RGB RED = new RGB(0xCC1A29);
 	public static final RGB GRE = new RGB(0x00FF21);
 	public static final RGB ORA = new RGB(0xFF6A00);
+	public static final float[][] TRACK_COLOR = { BLU.toFloatArray(), RED.toFloatArray(), GRE.toFloatArray(), ORA.toFloatArray() };
 	private RailJunctionContainer menu;
 
 	public RailJunction(JsonMap map, ContainerInterface con) throws Exception{
@@ -96,6 +100,38 @@ public class RailJunction extends UserInterface {
 		if(menu.junc == null) return;
 		drawer.bindTabTex(this, "main");
 		drawer.draw(gLeft + 73 + menu.junc.type.ordinal() * 18, gTop + 21, 0, 238, 18, 18);
+		//
+		for(int i = 0; i < menu.junc.size(); i++){
+			drawTrack(menu.junc.tracks.get(i), TRACK_COLOR[i], menu.junc.getPos().pos);
+		}
+	}
+
+	private void drawTrack(Track track, float[] color, V3I pos){
+		V3D vec0, vec1;
+		if(track.vecpath.length == 2){
+			vec0 = track.vecpath[00];
+			vec1 = vec0.distance(track.vecpath[1], 15);
+			drawer.drawLine(
+				(vec0.x - pos.x + 16) * 2 + gLeft + 7, (vec0.z - pos.z + 16) * 2 + gTop + 21,
+				(vec1.x - pos.x + 16) * 2 + gLeft + 7, (vec1.z - pos.z + 16) * 2 + gTop + 21,
+				color);
+			return;
+		}
+		double x0, x1, z0, z1;
+		for(int j = 0; j < track.vecpath.length - 1; j++){
+			vec0 = track.vecpath[j];
+			vec1 = track.vecpath[j + 1];
+			x0 = vec0.x - pos.x;
+			z0 = vec0.z - pos.z;
+			if(x0 < -16 || z0 < -16 || x0 > 16 || z0 > 16) continue;
+			x1 = vec1.x - pos.x;
+			z1 = vec1.z - pos.z;
+			if(x1 < -16 || z1 < -16 || x1 > 16 || z1 > 16) continue;
+			drawer.drawLine(
+				(x0 + 16) * 2 + gLeft + 7, (z0 + 16) * 2 + gTop + 21,
+				(x1 + 16) * 2 + gLeft + 7, (z1 + 16) * 2 + gTop + 21,
+				color);
+		}
 	}
 
 	@Override

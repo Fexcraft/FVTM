@@ -9,7 +9,6 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import java.util.List;
 
@@ -109,7 +108,7 @@ public class RailJunction extends UserInterface {
 	private void drawTrack(Track track, float[] color, V3I pos){
 		V3D vec0, vec1;
 		if(track.vecpath.length == 2){
-			vec0 = track.vecpath[00];
+			vec0 = track.vecpath[0];
 			vec1 = vec0.distance(track.vecpath[1], 15);
 			drawer.drawLine(
 				(vec0.x - pos.x + 16) * 2 + gLeft + 7, (vec0.z - pos.z + 16) * 2 + gTop + 21,

@@ -45,6 +45,7 @@ import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -727,7 +728,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultConnectorRear());
                 		return true;
                 	}*///TODO
-                	if(!BasicSpawnSystem.validToSpawn(player, stack, data)) return true;
+                	if(!BasicSpawnSystem.validToSpawn(player, StackWrapper.wrap(stack), data)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
                 		return true;

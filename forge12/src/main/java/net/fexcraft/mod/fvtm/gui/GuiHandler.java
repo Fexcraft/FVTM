@@ -52,7 +52,7 @@ public class GuiHandler implements IGuiHandler {
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	//public static final int ROADTOOL = 702-704;
-	public static final int SPAWNSYS = 705;
+	//public static final int SPAWNSYS = 705;
 	public static final int RAILPLACER = 706;
 	public static final int TSEDITOR = 709;
 	public static final int WIRE_RELAY_MAIN = 710;
@@ -106,7 +106,7 @@ public class GuiHandler implements IGuiHandler {
 				return new UniCon(new RoadToolConImpl(gJ("road_tool"), entity, pos), player);
 			case UIKeys.ID12_ROAD_TOOL_CUSTOM:
 				return new UniCon(new RoadToolCustomConImpl(gJ("road_tool_custom"), entity, pos), player);
-			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
+			case UIKeys.ID12_ENTITY_SYSTEM_CHOOSE: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
 			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
 			case UIKeys.ID12_CONSTRUCTOR:
@@ -184,7 +184,7 @@ public class GuiHandler implements IGuiHandler {
 					JsonMap map = gJC("road_tool_custom");
 					return new UniUI(new RoadToolCustomUI(map, new RoadToolCustomConImpl(map, entity, pos)), player);
 				}
-				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
+				case UIKeys.ID12_ENTITY_SYSTEM_CHOOSE: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);

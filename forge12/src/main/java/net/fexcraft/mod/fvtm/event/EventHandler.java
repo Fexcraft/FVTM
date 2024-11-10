@@ -111,7 +111,6 @@ public class EventHandler {
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 		if(event.getObject() instanceof EntityPlayer){
-			event.addCapability(new ResourceLocation("fvtm:playerdata"), new PlayerDataHandler(event.getObject()));
 			if(event.getObject().world.isRemote){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 			}

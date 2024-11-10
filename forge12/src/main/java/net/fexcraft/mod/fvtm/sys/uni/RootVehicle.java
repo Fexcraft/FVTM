@@ -354,7 +354,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 						FvtmLogger.debug(vehicle.data.getConnectors());
 						return true;
 					}
-                	if(!LegacySpawnSystem.validToSpawn(player, stack, data)) return true;
+                	if(!LegacySpawnSystem.validToSpawn(player, StackWrapper.wrap(stack), data)) return true;
 					if(vehicle.rear != null){
 						pass.send("interact.fvtm.vehicle.disconnect_trailer");
 						return true;

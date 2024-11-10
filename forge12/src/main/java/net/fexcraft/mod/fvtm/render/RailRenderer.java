@@ -94,16 +94,18 @@ public class RailRenderer {
 					.color(1, 1, 1, 1f).endVertex();
 				tessellator.draw();
 			}
+			double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z)
+            bufferbuilder.pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625) - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z)
+            bufferbuilder.pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-            tessellator.draw();
+            tessellator.draw();s
+			v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (vec.z * 0.0625) - z)
+            bufferbuilder.pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-            bufferbuilder.pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (vec.z * 0.0625) - z)
+            bufferbuilder.pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             tessellator.draw();
             GlStateManager.depthMask(true);

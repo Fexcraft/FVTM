@@ -10,10 +10,10 @@ import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class BasicSpawnSystem extends EntitySystem {
@@ -34,22 +34,23 @@ public class BasicSpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
-		World world = placer.getEntityWorld();
-		EntityPlayer player = (EntityPlayer)placer.getCommandSenderEntity();
+	public void spawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
+		EntityW ent = (EntityW)placer;
+		World world = ent.getWorld().local();
+		EntityPlayer player = ent.local();
 		world.spawnEntity(new ULandVehicle(world, data, new V3D(pos.x, pos.y + 2, pos.z), player, -1));
-    	if(!player.capabilities.isCreativeMode) stack.shrink(1);
+    	if(!player.capabilities.isCreativeMode) stack.count(stack.count() - 1);
 	}
 
 	@Override
-	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
+	public boolean canSpawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
 		switch(data.getType().getVehicleType()){
-			case LAND: return validToSpawn((EntityPlayer)placer, stack, data); 
+			case LAND: return validToSpawn(((EntityW)placer).local(), stack, data);
 			default: return false;
 		}
 	}
     
-    public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data){
+    public static boolean validToSpawn(EntityPlayer player, StackWrapper stack, VehicleData data){
 		String[] index = data.getType().isTrailer() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
 		boolean tireinfo = false;
 		for(String str : index){

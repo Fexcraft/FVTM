@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -7,6 +8,9 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,9 +35,10 @@ public class LegacySpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
-		World world = placer.getEntityWorld();
-		EntityPlayer player = (EntityPlayer)placer;
+	public void spawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
+		EntityW ent = (EntityW)placer;
+		World world = ent.getWorld().local();
+		EntityPlayer player = ent.local();
 		switch(data.getType().getVehicleType()){
 			case WATER:
 			case LAND:
@@ -41,19 +46,19 @@ public class LegacySpawnSystem extends EntitySystem {
 				break;
 			default: return;
 		}
-    	if(!player.capabilities.isCreativeMode) stack.shrink(1);
+    	if(!player.capabilities.isCreativeMode) stack.count(stack.count() - 1);
 	}
 
 	@Override
-	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
+	public boolean canSpawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
 		switch(data.getType().getVehicleType()){
 			case WATER:
-			case LAND: return validToSpawn((EntityPlayer)placer, stack, data); 
+			case LAND: return validToSpawn((EntityPlayer)placer, stack, data);
 			default: return false;
 		}
 	}
     
-    public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data){
+    public static boolean validToSpawn(EntityPlayer player, StackWrapper stack, VehicleData data){
 		//String[] index = data.getType().isTrailer() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX;
 		boolean failed = false;
 		/*for(String str : index){

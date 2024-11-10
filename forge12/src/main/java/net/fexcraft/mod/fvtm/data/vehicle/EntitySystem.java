@@ -25,43 +25,37 @@ public abstract class EntitySystem {
 	
 	public abstract String getName();
 	
-	public abstract void spawnEntity(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data, SpawnMode mode);
+	public abstract void spawnEntity(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data);
 	
-	public abstract boolean canSpawn(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data, SpawnMode mode);
+	public abstract boolean canSpawn(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data);
 	
-	public abstract boolean validFor(SpawnMode mode, VehicleType type);
+	public abstract boolean validFor(VehicleType type);
 	
-	public static enum SpawnMode {
-		PLAYER, CONSTRUCTOR, CODE, OTHER
-	}
-	
-	
-	public static final void spawnVehicle(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data, SpawnMode mode){
+	public static final void spawnVehicle(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data){
 		String favorite = placer == null || placer.getCommandSenderEntity().getCapability(Capabilities.PLAYERDATA, null) == null ? null
 			: placer.getCommandSenderEntity().getCapability(Capabilities.PLAYERDATA, null).getFavoriteSpawnSystemFor(data.getType().getVehicleType());
 		EntitySystem sel = REGISTRY.get(favorite);
-		if(sel != null && sel.canSpawn(placer, pos, stack, data, mode)){
-			sel.spawnEntity(placer, pos, stack, data, mode);
+		if(sel != null && sel.canSpawn(placer, pos, stack, data)){
+			sel.spawnEntity(placer, pos, stack, data);
 			return;
 		}
-		ArrayList<String> valid = getValidFor(mode, data.getType().getVehicleType());
+		ArrayList<String> valid = getValidFor(data.getType().getVehicleType());
 		if(valid.isEmpty()){
-			Print.chat(placer, "&cNo Spawn systems for this type and mode available.");
+			Print.chat(placer, "&cNo Spawn systems for this type available.");
 			Print.chat(placer, "&bType: " + data.getType().getVehicleType() + "/" + data.getName());
-			Print.chat(placer, "&bSpawnMode: " + mode);
 			return;
 		}
 		if(valid.size() == 1){
 			sel = REGISTRY.get(valid.get(0));
-			if(sel.canSpawn(placer, pos, stack, data, mode)){
-				sel.spawnEntity(placer, pos, stack, data, mode);
+			if(sel.canSpawn(placer, pos, stack, data)){
+				sel.spawnEntity(placer, pos, stack, data);
 			}
 			return;
 		}
 		else{
 			if(placer.getCommandSenderEntity() instanceof EntityPlayer){
 				placer.getCommandSenderEntity().getCapability(Capabilities.PLAYERDATA, null).setActiveSpawnPoint(pos);
-				((EntityPlayer)placer.getCommandSenderEntity()).openGui(FVTM.getInstance(), GuiHandler.SPAWNSYS, placer.getEntityWorld(), data.getType().getVehicleType().ordinal(), mode.ordinal(), 0);
+				((EntityPlayer)placer.getCommandSenderEntity()).openGui(FVTM.getInstance(), GuiHandler.SPAWNSYS, placer.getEntityWorld(), data.getType().getVehicleType().ordinal(), 0, 0);
 			}
 			else{
 				Print.chat(placer, "&cThere are multiple spawn systems to choose from.");
@@ -70,10 +64,10 @@ public abstract class EntitySystem {
 		}
 	}
 
-	public static ArrayList<String> getValidFor(SpawnMode mode, VehicleType type){
+	public static ArrayList<String> getValidFor(VehicleType type){
 		ArrayList<String> found = new ArrayList<>();
 		for(Entry<String, EntitySystem> sys : EntitySystem.REGISTRY.entrySet()){
-			if(sys.getValue().validFor(mode, type)){
+			if(sys.getValue().validFor(type)){
 				found.add(sys.getKey());
 			}
 		}

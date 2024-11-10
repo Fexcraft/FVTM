@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.FvtmPlayerData;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,7 +23,6 @@ public class SpawnSystemContainer extends GenericContainer {
 
 	public SpawnSystemContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
-		
 	}
 
 	@Override
@@ -46,11 +49,12 @@ public class SpawnSystemContainer extends GenericContainer {
 					ItemStack stack = player.getHeldItemMainhand();
 					VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData().copy();
 					player.closeScreen();
-					if(!demo && sys.canSpawn(player, player.getCapability(Capabilities.PLAYERDATA, null).getActiveSpawnPoint(), stack, data)){
-						sys.spawnEntity(player, player.getCapability(Capabilities.PLAYERDATA, null).getActiveSpawnPoint(), stack, data);
+					FvtmPlayerData pd = UniEntity.get(player).getApp(FvtmPlayerData.class);
+					if(!demo && sys.canSpawn(pd.getPlayer(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack))){
+						sys.spawn(pd.getPlayer(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack));
 					}
 					if(save){
-						player.getCapability(Capabilities.PLAYERDATA, null).setFavoriteSpawnSystemFor(type, sys.getId());
+						pd.setFavoriteSpawnSystemFor(type, sys.getId());
 					}
 					break;
 				}

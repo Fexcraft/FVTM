@@ -4,18 +4,11 @@ import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 
 import java.util.ArrayList;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.frl.Polygon;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -60,23 +53,10 @@ public class RailRenderer {
     public void preview(DrawBlockHighlightEvent event){ HOLDING = false;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
-		StackWrapper wrapper = StackWrapper.wrap(stack);
+		//StackWrapper wrapper = StackWrapper.wrap(stack);
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
     		QV3D vec = new QV3D(event.getTarget().hitVec.x, event.getTarget().hitVec.y, event.getTarget().hitVec.z);
-    		/*if(jitem.offsetVectors()){
-        		vecs = new QV3D[jitem.getVectors(wrapper).length];
-    			double seg = 360f / jitem.getSegments();
-    			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
-    			if(con % seg > seg / 2) con++;
-    			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new QV3D(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(wrapper)[i].vec).add(vec.vec));
-    			}
-				if(Static.dev()) Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
-    		}
-    		else{
-    			vecs = jitem.getVectors(wrapper);
-    		}*/
         	//
     		EntityPlayer player = event.getPlayer();
     		GlStateManager.disableTexture2D();
@@ -90,14 +70,6 @@ public class RailRenderer {
             model1.render();
             GL11.glPopMatrix();
             //
-            /*for(int v = 0; v < vecs.length; v++){
-        		GL11.glPushMatrix();
-                GL11.glTranslated(vecs[v].vec.x - x, vecs[v].vec.y - y, vecs[v].vec.z - z);
-                model0.render();
-                if(jitem.offsetVectors() && (v == 0 || v == vecs.length - 1)) model.render();
-                GL11.glPopMatrix();
-            }*/
-            //
             GL11.glPushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -106,16 +78,6 @@ public class RailRenderer {
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
         	float[][] color =  ((JunctionGridItem)stack.getItem()).getGridColours();
-            /*if(vecs.length > 1){
-                for(int i = 1; i < vecs.length; i++){
-                    bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vecs[i - 1].vec.x - x, vecs[i - 1].vec.y + 0.01 - y, vecs[i - 1].vec.z - z)
-                    	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-                    bufferbuilder.pos(vecs[i].vec.x - x, vecs[i].vec.y + 0.01 - y, vecs[i].vec.z - z)
-                    	.color(color[1][0], color[1][1], color[1][2], color[1][3]).endVertex();
-                    tessellator.draw();
-                }
-            }*/
             BlockPos pos = event.getTarget().getBlockPos();
             double yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
 			for(int i = 0; i < 4; i++){

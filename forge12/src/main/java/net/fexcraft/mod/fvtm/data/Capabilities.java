@@ -26,10 +26,6 @@ public class Capabilities {
 	@CapabilityInject(MultiBlockCache.class)
 	public static final Capability<MultiBlockCache> MULTIBLOCKS = null;
 	
-	/** Player-Specific Data */
-	@CapabilityInject(PlayerData.class)
-	public static final Capability<PlayerData> PLAYERDATA = null;
-	
 	/** Optional Passenger Capability */
 	@CapabilityInject(PassCap.class)
 	public static final Capability<PassCap> PASSENGER = null;

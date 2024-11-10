@@ -100,7 +100,7 @@ public class RailRenderer {
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             bufferbuilder.pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z)
             	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-            tessellator.draw();s
+            tessellator.draw();
 			v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
             bufferbuilder.pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z)

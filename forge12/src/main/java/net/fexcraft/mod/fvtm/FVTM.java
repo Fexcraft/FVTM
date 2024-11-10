@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.PassCap;
-import net.fexcraft.mod.fvtm.data.PlayerData;
+import net.fexcraft.mod.fvtm.data.FvtmPlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
@@ -29,7 +29,6 @@ import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
@@ -185,7 +184,6 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
-		CapabilityManager.INSTANCE.register(PlayerData.class, new PlayerDataHandler.Storage(), new PlayerDataHandler.Callable());
 		CapabilityManager.INSTANCE.register(PassCap.class, new PassengerStorage(), new PassengerCallable());
 		CapabilityManager.INSTANCE.register(TrafficSigns.class, new TrafficSignCapHandler.Storage(), new TrafficSignCapHandler.Callable());
 		//

@@ -13,6 +13,7 @@ public class UIKeys {
 	public static final int ID12_RAIL_JUNCTION = 701;
 	public static final int ID12_ROAD_TOOL = 702;
 	public static final int ID12_ROAD_TOOL_CUSTOM = 703;
+	public static final int ID12_ENTITY_SYSTEM_CHOOSE = 705;
 	public static final int ID12_DECORATION_EDITOR = 713;
 	public static final int ID12_CONSTRUCTOR = 900;
 	public static final int ID12_VEHICLE_MAIN = 930;
@@ -37,6 +38,7 @@ public class UIKeys {
 	public static final UIKey RAIL_JUNCTION = new UIKey(ID12_RAIL_JUNCTION, "fvtm:rail_junction");
 	public static final UIKey ROAD_TOOL = new UIKey(ID12_ROAD_TOOL, "fvtm:road_tool");
 	public static final UIKey ROAD_TOOL_CUSTOM = new UIKey(ID12_ROAD_TOOL_CUSTOM, "fvtm:road_tool_custom");
+	public static final UIKey ENTITY_SYSTEM_CHOOSE = new UIKey(ID12_ENTITY_SYSTEM_CHOOSE, "fvtm:entity_system_choose");
 	public static final UIKey CONSTRUCTOR = new UIKey(ID12_CONSTRUCTOR, "fvtm:constructor");
 	public static final UIKey VEHICLE_CATALOG = new UIKey(ID12_VEHICLE_CATALOG, "fvtm:vehicle_catalog");
 	public static final UIKey VEHICLE_MAIN = new UIKey(ID12_VEHICLE_MAIN, "fvtm:vehicle_main");

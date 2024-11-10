@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
@@ -11,6 +12,9 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,28 +41,29 @@ public class RailSpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
+	public void spawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
 		if(data.getType().getVehicleType() != VehicleType.RAIL) return;
 		validate(placer, pos, stack, data, true);
 	}
 
 	@Override
-	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
+	public boolean canSpawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
 		if(data.getType().getVehicleType() != VehicleType.RAIL) return false;
 		return validate(placer, pos, stack, data, false);
 	}
 
-	private boolean validate(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, boolean spawn){
-		World world = placer.getEntityWorld();
+	private boolean validate(MessageSender placer, V3D pos, StackWrapper stack, VehicleData data, boolean spawn){
+		EntityW ent = (EntityW)placer;
+		World world = ent.getWorld().local();
 		EntityPlayer player = (EntityPlayer)placer;
-		RailSystem syscap = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
+		RailSystem syscap = SystemManager.get(Systems.RAIL, ent.getWorld());
         if(syscap == null){
-        	Print.chat(placer, "&cWorld Capability not found.");
+        	placer.send("&cWorld Capability not found.");
         	return false;
         }
         QV3D vector = new QV3D(pos.x, pos.y, pos.z);
 		Junction junk = syscap.getJunction(vector.pos, true);
-		BlockPos bpos = new BlockPos(pos);
+		BlockPos bpos = new BlockPos(pos.x, pos.y, pos.z);
 		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
 		if(!data.getWheelPositions().containsKey("bogie_front")){
 			Print.chat(player, "Vehicle is missing a front bogie.");

@@ -390,7 +390,7 @@ public class Command extends CommandBase {
             	break;
             }
             case "spawn-sys":{
-            	((EntityPlayer)sender).openGui(FVTM.getInstance(), GuiHandler.SPAWNSYS, sender.getEntityWorld(), 0, 0, 1);
+				UniEntity.getEntity(sender).openUI(UIKeys.ENTITY_SYSTEM_CHOOSE, 0, 0, 1);
             	break;
             }
             case "rrr": case "reload-railregion":{

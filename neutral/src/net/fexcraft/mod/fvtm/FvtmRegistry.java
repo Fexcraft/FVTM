@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -92,6 +93,7 @@ public class FvtmRegistry {
 		//
 		StackWrapper.register(new VehItemApp(null));
 		StackWrapper.register(new PartItemApp(null));
+		UniEntity.register(new FvtmPlayerData(null));
 	}
 
 	public static Addon getAddon(String id){

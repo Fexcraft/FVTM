@@ -1,15 +1,12 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.JUNCTION_ADJUSTER;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -99,7 +96,6 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 			if(stack.getTagCompound().hasKey("fvtm:junction")){
 				cached = new QV3D(TagCW.wrap(stack.getTagCompound()), "fvtm:junction");
 				if(cached.equals(vector)){
-					//GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, cached.write(null, null).local(), player);
 					pass.openUI(UIKeys.RAIL_JUNCTION, cached.pos.x, cached.pos.y, cached.pos.z);
 					return EnumActionResult.SUCCESS;
 				}
@@ -109,7 +105,6 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 				}
 			}
 			if(junk.tracks.size() < 2){
-				//GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, vector.write(null, null).local(), player);
 				pass.openUI(UIKeys.RAIL_JUNCTION, vector.pos.x, vector.pos.y, vector.pos.z);
 			}
 			else{

@@ -11,8 +11,6 @@ import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.construct.*;
 import net.fexcraft.mod.fvtm.gui.inv.*;
-import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
-import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemChooser;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemContainer;
 import net.fexcraft.mod.fvtm.gui.other.VehicleAndPartInfo;
@@ -53,7 +51,6 @@ public class GuiHandler implements IGuiHandler {
 
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
-	public static final int JUNCTION_ADJUSTER = 701;
 	//public static final int ROADTOOL = 702-704;
 	public static final int SPAWNSYS = 705;
 	public static final int RAILPLACER = 706;

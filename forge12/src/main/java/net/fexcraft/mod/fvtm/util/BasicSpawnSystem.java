@@ -29,12 +29,12 @@ public class BasicSpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public boolean validFor(SpawnMode mode, VehicleType type){
+	public boolean validFor(VehicleType type){
 		return type == VehicleType.AIR || type == VehicleType.LAND || type == VehicleType.WATER;
 	}
 
 	@Override
-	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
+	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
 		World world = placer.getEntityWorld();
 		EntityPlayer player = (EntityPlayer)placer.getCommandSenderEntity();
 		world.spawnEntity(new ULandVehicle(world, data, new V3D(pos.x, pos.y + 2, pos.z), player, -1));
@@ -42,7 +42,7 @@ public class BasicSpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
+	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
 		switch(data.getType().getVehicleType()){
 			case LAND: return validToSpawn((EntityPlayer)placer, stack, data); 
 			default: return false;

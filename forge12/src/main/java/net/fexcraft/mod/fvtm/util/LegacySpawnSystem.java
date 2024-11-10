@@ -26,12 +26,12 @@ public class LegacySpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public boolean validFor(SpawnMode mode, VehicleType type){
+	public boolean validFor(VehicleType type){
 		return type == VehicleType.AIR || type == VehicleType.LAND || type == VehicleType.WATER;
 	}
 
 	@Override
-	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
+	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
 		World world = placer.getEntityWorld();
 		EntityPlayer player = (EntityPlayer)placer;
 		switch(data.getType().getVehicleType()){
@@ -45,7 +45,7 @@ public class LegacySpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
+	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
 		switch(data.getType().getVehicleType()){
 			case WATER:
 			case LAND: return validToSpawn((EntityPlayer)placer, stack, data); 

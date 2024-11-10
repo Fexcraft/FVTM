@@ -76,16 +76,19 @@ public class RailJunctionContainer extends ContainerInterface {
 				break;
 			}
 			case "type_2":{
+				if(junc.size() < 4) break;
 				junc.type = JuncType.FORK_3;
 				junc.updateClient();
 				break;
 			}
 			case "type_3":{
+				if(junc.size() < 4) break;
 				junc.type = JuncType.DOUBLE;
 				junc.updateClient();
 				break;
 			}
 			case "type_4":{
+				if(junc.size() < 4) break;
 				junc.type = JuncType.CROSSING;
 				junc.updateClient();
 				break;

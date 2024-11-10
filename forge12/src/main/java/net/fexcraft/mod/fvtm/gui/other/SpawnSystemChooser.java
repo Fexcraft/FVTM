@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
-import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +16,6 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/spawn_system.png");
 	private ArrayList<EntitySystem> systems = new ArrayList<>();
 	private static VehicleType type;
-	private static SpawnMode mode;
 	private static int scroll;
 	private boolean save, demo;
 
@@ -29,7 +27,6 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 		this.xSize = 194;
 		this.ySize = 120;
 		type = VehicleType.values()[x];
-		mode = SpawnMode.values()[y];
 		demo = z > 0;
 	}
 
@@ -51,7 +48,6 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("cargo", "init_data");
 		compound.setInteger("type", type.ordinal());
-		compound.setInteger("mode", mode.ordinal());
 		//compound.setInteger("scroll", scroll);
 		this.container.send(Side.SERVER, compound);
 	}
@@ -81,7 +77,6 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "spawn");
 			compound.setInteger("type", type.ordinal());
-			compound.setInteger("mode", mode.ordinal());
 			compound.setString("system", system.getId());
 			compound.setBoolean("save", save);
 			compound.setBoolean("demo", demo);

@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
-import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
@@ -135,7 +134,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
     	if(world.getBlockState(pos).getBlock() instanceof VehicleLiftBlock) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
-    	EntitySystem.spawnVehicle(player, new Vec3d(pos).add(hitX, hitY, hitZ), stack, data, SpawnMode.PLAYER);
+    	EntitySystem.spawnVehicle(player, new Vec3d(pos).add(hitX, hitY, hitZ), stack, data);
     	return EnumActionResult.SUCCESS;
     }
 

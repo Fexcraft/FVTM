@@ -32,18 +32,18 @@ public class RailSpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public boolean validFor(SpawnMode mode, VehicleType type){
+	public boolean validFor(VehicleType type){
 		return type == VehicleType.RAIL;
 	}
 
 	@Override
-	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
+	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
 		if(data.getType().getVehicleType() != VehicleType.RAIL) return;
 		validate(placer, pos, stack, data, true);
 	}
 
 	@Override
-	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
+	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data){
 		if(data.getType().getVehicleType() != VehicleType.RAIL) return false;
 		return validate(placer, pos, stack, data, false);
 	}

@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.PassCap;
-import net.fexcraft.mod.fvtm.data.FvtmPlayerData;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
@@ -171,7 +170,7 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallablePacks());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
-		EntitySystem.add(new LegacySpawnSystem());
+		EntitySystem.add(new SimplePhysSpawnSystem());
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new BasicSpawnSystem());
 		TrafficSignLibrary.initialize(event.getSide(), event.getSuggestedConfigurationFile().getParentFile());

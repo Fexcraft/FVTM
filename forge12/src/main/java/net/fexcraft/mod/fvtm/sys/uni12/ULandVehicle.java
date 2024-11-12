@@ -43,6 +43,7 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -728,7 +729,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultConnectorRear());
                 		return true;
                 	}*///TODO
-                	if(!BasicSpawnSystem.validToSpawn(player, StackWrapper.wrap(stack), data)) return true;
+                	if(!BasicSpawnSystem.validToSpawn(UniEntity.getEntity(player), StackWrapper.wrap(stack), data)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
                 		return true;

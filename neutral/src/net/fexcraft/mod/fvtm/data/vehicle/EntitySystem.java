@@ -7,6 +7,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
+import net.fexcraft.mod.uni.world.WorldW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +26,13 @@ public abstract class EntitySystem {
 	
 	public abstract String getName();
 	
-	public abstract void spawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack);
+	public abstract void spawn(MessageSender placer, WorldW world, V3D pos, VehicleData data, StackWrapper stack);
 	
-	public abstract boolean canSpawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack);
+	public abstract boolean canSpawn(MessageSender placer, WorldW world, V3D pos, VehicleData data, StackWrapper stack);
 	
 	public abstract boolean validFor(VehicleType type);
 	
-	public static final void spawnVehicle(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
+	public static final void spawnVehicle(MessageSender placer, WorldW world, V3D pos, VehicleData data, StackWrapper stack){
 		String pref = null;
 		FvtmPlayerData pd = null;
 		if(placer instanceof EntityW){
@@ -39,8 +40,8 @@ public abstract class EntitySystem {
 			if(pd != null) pref = pd.getFavoriteSpawnSystemFor(data.getType().getVehicleType());
 		}
 		EntitySystem sel = REGISTRY.get(pref);
-		if(sel != null && sel.canSpawn(placer, pos, data, stack)){
-			sel.spawn(placer, pos, data, stack);
+		if(sel != null && sel.canSpawn(placer, world, pos, data, stack)){
+			sel.spawn(placer, world, pos, data, stack);
 			return;
 		}
 		ArrayList<String> valid = getValidFor(data.getType().getVehicleType());
@@ -51,8 +52,8 @@ public abstract class EntitySystem {
 		}
 		if(valid.size() == 1){
 			sel = REGISTRY.get(valid.get(0));
-			if(sel.canSpawn(placer, pos, data, stack)){
-				sel.spawn(placer, pos, data, stack);
+			if(sel.canSpawn(placer, world, pos, data, stack)){
+				sel.spawn(placer, world, pos, data, stack);
 			}
 			return;
 		}

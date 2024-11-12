@@ -3,11 +3,14 @@ package net.fexcraft.mod.fvtm;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.world.MessageSender;
 
+import java.util.UUID;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public abstract class FvtmLogger {
 
+	public static UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	public static FvtmLogger LOGGER = null;
 
 	protected abstract void log0(Object obj);
@@ -85,6 +88,11 @@ public abstract class FvtmLogger {
 			return "LOG";
 		}
 
+		@Override
+		public UUID getUUID(){
+			return uuid;
+		}
+
 	};
 	public static final MessageSender DEVLOG = new MessageSender(){
 
@@ -118,6 +126,11 @@ public abstract class FvtmLogger {
 			return "DEVLOG";
 		}
 
+		@Override
+		public UUID getUUID(){
+			return uuid;
+		}
+
 	};
 	public static final MessageSender NONE = new MessageSender(){
 
@@ -149,6 +162,11 @@ public abstract class FvtmLogger {
 		@Override
 		public String getName(){
 			return "NONE";
+		}
+
+		@Override
+		public UUID getUUID(){
+			return uuid;
 		}
 
 	};

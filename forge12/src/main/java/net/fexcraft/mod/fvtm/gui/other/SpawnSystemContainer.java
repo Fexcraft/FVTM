@@ -50,8 +50,8 @@ public class SpawnSystemContainer extends GenericContainer {
 					VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData().copy();
 					player.closeScreen();
 					FvtmPlayerData pd = UniEntity.get(player).getApp(FvtmPlayerData.class);
-					if(!demo && sys.canSpawn(pd.getPlayer(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack))){
-						sys.spawn(pd.getPlayer(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack));
+					if(!demo && sys.canSpawn(pd.getPlayer(), pd.getPlayer().getWorld(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack))){
+						sys.spawn(pd.getPlayer(), pd.getPlayer().getWorld(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack));
 					}
 					if(save){
 						pd.setFavoriteSpawnSystemFor(type, sys.getId());

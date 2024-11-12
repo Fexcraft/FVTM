@@ -31,11 +31,11 @@ import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
-import net.fexcraft.mod.fvtm.util.LoopSound;
+import net.fexcraft.mod.fvtm.util.SimplePhysSpawnSystem;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -50,7 +50,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -589,7 +588,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultConnectorRear());
                 		return true;
                 	}*///TODO
-                	if(!LegacySpawnSystem.validToSpawn(player, StackWrapper.wrap(stack), data)) return true;
+                	if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), StackWrapper.wrap(stack), data)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
                 		return true;

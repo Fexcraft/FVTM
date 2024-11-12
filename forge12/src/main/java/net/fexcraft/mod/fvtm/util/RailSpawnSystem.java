@@ -15,12 +15,9 @@ import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class RailSpawnSystem extends EntitySystem {
@@ -41,22 +38,19 @@ public class RailSpawnSystem extends EntitySystem {
 	}
 
 	@Override
-	public void spawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
+	public void spawn(MessageSender placer, WorldW world, V3D pos, VehicleData data, StackWrapper stack){
 		if(data.getType().getVehicleType() != VehicleType.RAIL) return;
-		validate(placer, pos, stack, data, true);
+		validate(placer, world, pos, stack, data, true);
 	}
 
 	@Override
-	public boolean canSpawn(MessageSender placer, V3D pos, VehicleData data, StackWrapper stack){
+	public boolean canSpawn(MessageSender placer, WorldW world, V3D pos, VehicleData data, StackWrapper stack){
 		if(data.getType().getVehicleType() != VehicleType.RAIL) return false;
-		return validate(placer, pos, stack, data, false);
+		return validate(placer, world, pos, stack, data, false);
 	}
 
-	private boolean validate(MessageSender placer, V3D pos, StackWrapper stack, VehicleData data, boolean spawn){
-		EntityW ent = (EntityW)placer;
-		World world = ent.getWorld().local();
-		EntityPlayer player = (EntityPlayer)placer;
-		RailSystem syscap = SystemManager.get(Systems.RAIL, ent.getWorld());
+	private boolean validate(MessageSender placer, WorldW world, V3D pos, StackWrapper stack, VehicleData data, boolean spawn){
+		RailSystem syscap = SystemManager.get(Systems.RAIL, world);
         if(syscap == null){
         	placer.send("&cWorld Capability not found.");
         	return false;
@@ -66,33 +60,33 @@ public class RailSpawnSystem extends EntitySystem {
 		BlockPos bpos = new BlockPos(pos.x, pos.y, pos.z);
 		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
 		if(!data.getWheelPositions().containsKey("bogie_front")){
-			Print.chat(player, "Vehicle is missing a front bogie.");
+			placer.send("Vehicle is missing a front bogie.");
 			return false;
 		}
 		if(!data.getWheelPositions().containsKey("bogie_rear")){
-			Print.chat(player, "Vehicle is missing a rear bogie.");
+			placer.send("Vehicle is missing a rear bogie.");
 			return false;
 		}
 		double length = data.getWheelPositions().get("bogie_front").x + -data.getWheelPositions().get("bogie_rear").x;
 		/*if((junk == null || junk.tracks.isEmpty()) && tile != null){
 			if(tile.getTracks().size() > 1){
-    			Print.bar(player, "&c&oPlaceable only on single-track rail blocks.");
+    			placer.bar("&c&oPlaceable only on single-track rail blocks.");
     			return false;
 			}
 			else{
 				Track track = syscap.getTrack(tile.getTracks().keySet().toArray(new PathKey[0])[0]);
     			if(track.length < length){
-        			Print.bar(player, "&c&oTrack too short to spawn this vehicle.");
+        			placer.bar("&c&oTrack too short to spawn this vehicle.");
         			return false;
     			}
     			else if(track.gauge.width() != data.getAttributeInteger("gauge", 30)){
-        			Print.bar(player, "&c&oWrong rail gauge width for this vehicle.");
-        			Print.chat(player, "&eTrack: &7" + track.gauge.width() + " &8!= &eVehicle: &7" + data.getAttributeInteger("gauge", 30));
+        			placer.bar("&c&oWrong rail gauge width for this vehicle.");
+        			placer.send("&eTrack: &7" + track.gauge.width() + " &8!= &eVehicle: &7" + data.getAttributeInteger("gauge", 30));
         			return false;
     			}
     			else{
     				if(spawn){
-            			Print.bar(player, "&b&oSpawning vehicle...");
+            			placer.bar("&b&oSpawning vehicle...");
         				syscap.registerEntity(new RailEntity(syscap, data, track, player.getGameProfile().getId()));
     				}
     				return true;
@@ -100,26 +94,26 @@ public class RailSpawnSystem extends EntitySystem {
 			}
 		}*/
 		if(junk == null){
-			Print.bar(player, "&c&oNo Junction found at this position.");
+			placer.bar("&c&oNo Junction found at this position.");
 			return false;
 		}
 		else if(junk.tracks.isEmpty()){
-			Print.bar(player, "&c&oJunction has no tracks attached.");
+			placer.bar("&c&oJunction has no tracks attached.");
 			return false;
 		}
 		else{
 			if(junk.tracks.get(0).length < length){
-    			Print.bar(player, "&c&oFirst Track of Junction too short to spawn this vehicle.");
+    			placer.bar("&c&oFirst Track of Junction too short to spawn this vehicle.");
     			return false;
 			}
 			else if(junk.tracks.get(0).gauge.getWidth() != data.getAttributeFloat("gauge", RailGauge.DEFWIDTH)){
-    			Print.bar(player, "&c&oWrong rail gauge width for this vehicle.");
-    			Print.chat(player, "&eTrack: &7" + junk.tracks.get(0).gauge.getWidth() + " &8!= &eVehicle: &7" + data.getAttributeFloat("gauge", RailGauge.DEFWIDTH));
+    			placer.bar("&c&oWrong rail gauge width for this vehicle.");
+    			placer.send("&eTrack: &7" + junk.tracks.get(0).gauge.getWidth() + " &8!= &eVehicle: &7" + data.getAttributeFloat("gauge", RailGauge.DEFWIDTH));
     			return false;
 			}
 			if(spawn){
-				Print.bar(player, "&a&oSpawning vehicle...");
-				syscap.registerEntity(new RailEntity(syscap, new VehicleInstance(null, data), junk.tracks.get(0), player.getGameProfile().getId()));
+				placer.bar("&a&oSpawning vehicle...");
+				syscap.registerEntity(new RailEntity(syscap, new VehicleInstance(null, data), junk.tracks.get(0), placer.getUUID()));
 			}
 			return true;
 		}

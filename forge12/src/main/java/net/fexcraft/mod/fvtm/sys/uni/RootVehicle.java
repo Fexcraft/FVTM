@@ -25,16 +25,18 @@ import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
+import net.fexcraft.mod.fvtm.util.SimplePhysSpawnSystem;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWIE;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.MoverType;
@@ -354,7 +356,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 						FvtmLogger.debug(vehicle.data.getConnectors());
 						return true;
 					}
-                	if(!LegacySpawnSystem.validToSpawn(player, StackWrapper.wrap(stack), data)) return true;
+                	if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), StackWrapper.wrap(stack), data)) return true;
 					if(vehicle.rear != null){
 						pass.send("interact.fvtm.vehicle.disconnect_trailer");
 						return true;

@@ -51,7 +51,7 @@ public abstract class RoadToolCon extends InventoryInterface {
 				break;
 			}
 			case "custom":{
-				((Passenger)player).openUI(UIKeys.ROAD_TOOL_CUSTOM, new V3I(com.getInteger("layer"), 0, 0));
+				player.entity.openUI(UIKeys.ROAD_TOOL_CUSTOM, new V3I(com.getInteger("layer"), 0, 0));
 				break;
 			}
 			case "remove":{

@@ -15,7 +15,6 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.minecraft.util.math.BlockPos;
 
 public class RailSpawnSystem extends EntitySystem {
 
@@ -49,67 +48,40 @@ public class RailSpawnSystem extends EntitySystem {
 	private boolean validate(MessageSender placer, WorldW world, V3D pos, StackWrapper stack, VehicleData data, boolean spawn){
 		RailSystem syscap = SystemManager.get(Systems.RAIL, world);
         if(syscap == null){
-        	placer.send("&cWorld Capability not found.");
+        	placer.send("fvtm.spawn.rail.no_system");
         	return false;
         }
         QV3D vector = new QV3D(pos.x, pos.y, pos.z);
 		Junction junk = syscap.getJunction(vector.pos, true);
-		BlockPos bpos = new BlockPos(pos.x, pos.y, pos.z);
-		//net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
 		if(!data.getWheelPositions().containsKey("bogie_front")){
-			placer.send("Vehicle is missing a front bogie.");
+			placer.send("fvtm.spawn.rail.no_front_bogie");
 			return false;
 		}
 		if(!data.getWheelPositions().containsKey("bogie_rear")){
-			placer.send("Vehicle is missing a rear bogie.");
+			placer.send("fvtm.spawn.rail.no_rear_bogie");
 			return false;
 		}
 		double length = data.getWheelPositions().get("bogie_front").x + -data.getWheelPositions().get("bogie_rear").x;
-		/*if((junk == null || junk.tracks.isEmpty()) && tile != null){
-			if(tile.getTracks().size() > 1){
-    			placer.bar("&c&oPlaceable only on single-track rail blocks.");
-    			return false;
-			}
-			else{
-				Track track = syscap.getTrack(tile.getTracks().keySet().toArray(new PathKey[0])[0]);
-    			if(track.length < length){
-        			placer.bar("&c&oTrack too short to spawn this vehicle.");
-        			return false;
-    			}
-    			else if(track.gauge.width() != data.getAttributeInteger("gauge", 30)){
-        			placer.bar("&c&oWrong rail gauge width for this vehicle.");
-        			placer.send("&eTrack: &7" + track.gauge.width() + " &8!= &eVehicle: &7" + data.getAttributeInteger("gauge", 30));
-        			return false;
-    			}
-    			else{
-    				if(spawn){
-            			placer.bar("&b&oSpawning vehicle...");
-        				syscap.registerEntity(new RailEntity(syscap, data, track, player.getGameProfile().getId()));
-    				}
-    				return true;
-    			}
-			}
-		}*/
 		if(junk == null){
-			placer.bar("&c&oNo Junction found at this position.");
+			placer.bar("fvtm.spawn.rail.no_junction");
 			return false;
 		}
 		else if(junk.tracks.isEmpty()){
-			placer.bar("&c&oJunction has no tracks attached.");
+			placer.bar("fvtm.spawn.rail.junction_empty");
 			return false;
 		}
 		else{
 			if(junk.tracks.get(0).length < length){
-    			placer.bar("&c&oFirst Track of Junction too short to spawn this vehicle.");
+    			placer.bar("fvtm.spawn.rail.first_track_short");
     			return false;
 			}
 			else if(junk.tracks.get(0).gauge.getWidth() != data.getAttributeFloat("gauge", RailGauge.DEFWIDTH)){
-    			placer.bar("&c&oWrong rail gauge width for this vehicle.");
+    			placer.bar("fvtm.spawn.rail.wrong_gauge_width");
     			placer.send("&eTrack: &7" + junk.tracks.get(0).gauge.getWidth() + " &8!= &eVehicle: &7" + data.getAttributeFloat("gauge", RailGauge.DEFWIDTH));
     			return false;
 			}
 			if(spawn){
-				placer.bar("&a&oSpawning vehicle...");
+				placer.bar("fvtm.spawn.rail.success");
 				syscap.registerEntity(new RailEntity(syscap, new VehicleInstance(null, data), junk.tracks.get(0), placer.getUUID()));
 			}
 			return true;

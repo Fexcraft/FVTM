@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public abstract class FvtmLogger {
 
-	public static UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	public static UUID NULL_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	public static FvtmLogger LOGGER = null;
 
 	protected abstract void log0(Object obj);
@@ -90,7 +90,7 @@ public abstract class FvtmLogger {
 
 		@Override
 		public UUID getUUID(){
-			return uuid;
+			return NULL_UUID;
 		}
 
 	};
@@ -128,7 +128,7 @@ public abstract class FvtmLogger {
 
 		@Override
 		public UUID getUUID(){
-			return uuid;
+			return NULL_UUID;
 		}
 
 	};
@@ -166,7 +166,7 @@ public abstract class FvtmLogger {
 
 		@Override
 		public UUID getUUID(){
-			return uuid;
+			return NULL_UUID;
 		}
 
 	};

@@ -78,11 +78,11 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").asFloat() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));
     	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLock().getCode()));
-        if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
+        /*if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
         	for(Attribute<?> attr : data.getAttributes().values()){
         		tooltip.add(Formatter.format("&9" + attr.id + ": &7" + attr.asString()));
         	}
-        }
+        }*/
         if(vehicle.getModel() != null && vehicle.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
             for(String str : vehicle.getModel().getCreators()){

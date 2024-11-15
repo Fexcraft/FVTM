@@ -307,6 +307,9 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		sortparts();
 		//
 		conns.clear();
+		for(Entry<String, V3D> entry : type.getDefaultConnectors().entrySet()){
+			conns.put(entry.getKey(), entry.getValue());
+		}
 		for(Entry<String, PartData> entry : parts.entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:connector")) continue;
 			ConnectorFunction func = entry.getValue().getFunction("fvtm:connector");
@@ -775,6 +778,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		for(String str : categories){
 			if(conns.containsKey(str)) return conns.get(str);
 		}
+		return V3D.NULL;
+	}
+
+	public V3D getConnectorFor(String cat){
+		if(conns.containsKey(cat)) return conns.get(cat);
 		return V3D.NULL;
 	}
 

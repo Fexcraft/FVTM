@@ -210,6 +210,16 @@ handler.deinstall.fvtm.bogie.success=Part uninstalled and position reset.
 # Entities
 fvtm.seat.controls_info=&3Vehicle controls and instructions can be found in the &nwiki.
 
+# Entity Spawn
+fvtm.spawn.rail.no_system=&cRailSystem not found on this Level.
+fvtm.spawn.rail.no_front_bogie=Vehicle is missing a front bogie.
+fvtm.spawn.rail.no_rear_bogie=Vehicle is missing a rear bogie.
+fvtm.spawn.rail.no_junction=&c&oNo Junction found at this position.
+fvtm.spawn.rail.junction_empty=&c&oJunction has no tracks attached.
+fvtm.spawn.rail.first_track_short=&c&oFirst Track of Junction too short to spawn this vehicle.
+fvtm.spawn.rail.wrong_gauge_width=&c&oWrong rail gauge width for this vehicle.
+fvtm.spawn.rail.success=&a&oSpawning vehicle...
+
 # Items
 item.fvtm:road_tool.name=Road Tool
 item.fvtm:decoration.name=Decoration (Editor)

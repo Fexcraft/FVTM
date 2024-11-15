@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.*;
@@ -39,9 +40,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	public V3D pos = new V3D(), prev = new V3D(),
 		cfront = new V3D(), crear = new V3D(),
 		bfront = new V3D(), brear = new V3D();
-	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
-	public Coupler front = new Coupler(this, true), rear = new Coupler(this, false);
-	public double frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
+	private UUID placer = FvtmLogger.NULL_UUID;
+	public Coupler front = new Coupler(this, true);
+	public Coupler rear = new Coupler(this, false);
+	public double frbogiedis;
+	public double rrbogiedis;
+	public double frconndis;
+	public double rrconndis;
+	public double length;
+	public double moverq;//push_rq, pull_rq;
 	public TrackUnit[] unitson = new TrackUnit[4];
 	//
 	private Short lastcheck = null;//for entity despawn/spawning;
@@ -55,12 +62,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public RailEntity(RailSystem data, VehicleInstance veh, Track track, UUID placer){
 		vehicle = veh;
-		current = track; region = data.getRegions().get(track.start.pos, true); if(placer != null) this.placer = placer;
-		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey());
-		frbogiedis = (float)veh.data.getWheelPositions().get("bogie_front").x;
-		rrbogiedis  = (float)-veh.data.getWheelPositions().get("bogie_rear").x;
-		frconndis = 1;//TODO (float)vdata.getFrontConnector().x;
-		rrconndis = -1;//TODO (float)-vdata.getRearConnector().x;
+		current = track;
+		region = data.getRegions().get(track.start.pos, true);
+		if(placer != null) this.placer = placer;
+		uid = data.getNewEntityId();
+		data.updateEntityEntry(uid, region.getKey());
+		frbogiedis = veh.data.getWheelPositions().get("bogie_front").x;
+		rrbogiedis  = -veh.data.getWheelPositions().get("bogie_rear").x;
+		frconndis = veh.data.getConnectorFor("front").x;
+		rrconndis = -veh.data.getConnectorFor("rear").x;
 		com = new Compound.Singular(this);
 		//
 		//this.passed = passed + rrconndis + frbogiedis;
@@ -70,18 +80,20 @@ public class RailEntity implements Comparable<RailEntity>{
 		moverq += 0.02f;
 		cfront = move(rrconndis + frconndis, TrainPoint.COUPLER_FRONT);
 		crear = move(0, TrainPoint.COUPLER_REAR);
-		front.mbb.update(cfront, veh.data.getType().getCouplerRange() / 2); rear.mbb.update(crear, veh.data.getType().getCouplerRange() / 2);
+		front.mbb.update(cfront, veh.data.getType().getCouplerRange() / 2);
+		rear.mbb.update(crear, veh.data.getType().getCouplerRange() / 2);
 		//
 		region.spawnEntity(this.start());
 	}
 
-	/** only to use with read() afterwards 
+	/** only to use with read() afterward
 	 * @param compound */
 	public RailEntity(Region railregion, Compound compound){
-		region = railregion; this.com = compound;
+		region = railregion;
+		com = compound;
 	}
 	
-	/** only to use with read() afterwards || CLIENT SIDE METHOD */
+	/** only to use with read() afterward || CLIENT SIDE METHOD */
 	public RailEntity(Region railregion, long uid){
 		region = railregion; this.uid = uid;
 		com = Compound.getNewClientCompound(this);
@@ -544,7 +556,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
-		if(vehicle.data == null) vehicle.data = null;//TODO Resources.getVehicleData(compound);
+		if(vehicle.data == null) vehicle.data = FvtmResources.getVehicleData(compound);
 		else vehicle.data.read(compound);
 		if(vehicle.data == null){ this.remove(); return null; }
 		//if(compound.has("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
@@ -552,10 +564,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		//TODO try coupling later, to prevent overflow
 		//TODO add REC loading instead later
 		//
-		frbogiedis = (float)vehicle.data.getWheelPositions().get("bogie_front").x;
-		rrbogiedis  = (float)-vehicle.data.getWheelPositions().get("bogie_rear").x;
-		frconndis = 1;//TODO (float)vehicle.data.getFrontConnector().x;
-		rrconndis = -1;//TODO (float)-vehicle.data.getRearConnector().x;
+		frbogiedis = vehicle.data.getWheelPositions().get("bogie_front").x;
+		rrbogiedis  = -vehicle.data.getWheelPositions().get("bogie_rear").x;
+		frconndis = vehicle.data.getConnectorFor("front").x;
+		rrconndis = -vehicle.data.getConnectorFor("rear").x;
 		//
 		this.updatePosition(); return this;
 	}

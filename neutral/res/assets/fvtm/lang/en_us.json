@@ -194,5 +194,14 @@
     "key.fvtm.arrow_right": "Arrow Right",
     "key.fvtm.reset": "Reset Attribute (Toggables)",
     "key.fvtm.brake": "Brake",
-    "key.fvtm.pbrake": "(Hand/Parking) Brake"
+    "key.fvtm.pbrake": "(Hand/Parking) Brake",
+
+	"fvtm.spawn.rail.no_system": "&cRailSystem not found on this Level.",
+	"fvtm.spawn.rail.no_front_bogie": "Vehicle is missing a front bogie.",
+	"fvtm.spawn.rail.no_rear_bogie": "Vehicle is missing a rear bogie.",
+	"fvtm.spawn.rail.no_junction": "&c&oNo Junction found at this position.",
+	"fvtm.spawn.rail.junction_empty": "&c&oNo Junction found at this position.",
+	"fvtm.spawn.rail.first_track_short": "&c&oFirst Track of Junction too short to spawn this vehicle.",
+	"fvtm.spawn.rail.wrong_gauge_width": "&c&oWrong rail gauge width for this vehicle.",
+	"fvtm.spawn.rail.success": "&a&oSpawning vehicle..."
 }

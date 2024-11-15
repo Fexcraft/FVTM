@@ -31,7 +31,7 @@ import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.util.SimplePhysSpawnSystem;
+import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;

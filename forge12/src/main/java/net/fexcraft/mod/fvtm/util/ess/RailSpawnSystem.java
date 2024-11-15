@@ -1,7 +1,6 @@
-package net.fexcraft.mod.fvtm.util;
+package net.fexcraft.mod.fvtm.util.ess;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -12,13 +11,11 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class RailSpawnSystem extends EntitySystem {
 

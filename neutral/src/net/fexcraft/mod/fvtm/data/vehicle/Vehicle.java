@@ -42,6 +42,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 
 	protected Map<String, Attribute<?>> attributes = new LinkedHashMap<>();
 	protected Map<String, WheelSlot> wheelpos = new LinkedHashMap<>();
+	protected Map<String, V3D> connectors = new LinkedHashMap<>();
 	protected Model model;
 	protected ModelData modeldata;
 	protected List<IDL> textures;
@@ -214,6 +215,16 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 				defseats.add(new Seat(entry.getKey(), entry.getValue().asMap()));
 			}
 		}
+		if(map.has("Connectors")){
+			for(Entry<String, JsonValue<?>> entry : map.getMap("Connectors").entries()){
+				try{
+					connectors.put(entry.getKey(), ContentConfigUtil.getVector(entry.getValue().asArray(), 0));
+				}
+				catch(Exception e){
+					FvtmLogger.log(e, "vehicle connector parsing");
+				}
+			}
+		}
 		return this;
 	}
 
@@ -367,6 +378,10 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 
 	public List<Seat> getDefaultSeats(){
 		return defseats;
+	}
+
+	public Map<String, V3D> getDefaultConnectors(){
+		return connectors;
 	}
 
 }

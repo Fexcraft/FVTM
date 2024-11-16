@@ -42,7 +42,7 @@ import net.fexcraft.mod.fvtm.util.ZipUtils;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.function.SetBlockFunction;
-import net.fexcraft.mod.fvtm.util.handler.BogieInstallationHandler;
+import net.fexcraft.mod.fvtm.handler.BogieInstallationHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;

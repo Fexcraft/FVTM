@@ -18,8 +18,6 @@ import net.fexcraft.mod.uni.world.MessageSender;
  */
 public class WheelInstallationHandler extends PartInstallHandler {
 
-	public static final WheelInstallationHandler INSTANCE = new WheelInstallationHandler();
-
 	@Override
 	public boolean validInstall(MessageSender sender, PartData part, String cat, VehicleData data, boolean swap){
 		if(data.getType().getVehicleType().isRailVehicle()){

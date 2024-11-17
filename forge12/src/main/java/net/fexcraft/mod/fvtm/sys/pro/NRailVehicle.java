@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -117,6 +118,21 @@ public class NRailVehicle extends RootVehicle {
 			float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - vehicle.point.getPivot().deg_yaw());
 			vehicle.data.getAttribute("bogie_front_angle").set(front);
 			vehicle.data.getAttribute("bogie_rear_angle").set(rear);
+		}
+	}
+
+	@Override
+	public void onPacket(EntityW player, TagCW packet){
+		if(!packet.has("sub")) return;
+		switch(packet.getString("sub")){
+			case "passed":{
+				passed = packet.getDouble("passed");
+				break;
+			}
+			case "track":{
+				current = new Track(null).read(packet);
+				break;
+			}
 		}
 	}
 

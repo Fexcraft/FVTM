@@ -69,6 +69,7 @@ public class VehicleInstance {
 	public static final String PKT_UPD_START_SOUND = "start_sound";
 	public static final String PKT_UPD_STOP_SOUND = "stop_sound";
 	public static final String PKT_UPD_ENGINE_TOGGLE = "engine_toggle";
+	public static final String PKT_UPD_ENTITY = "entity";
 
 	public VehicleInstance(EntityW wrapper, VehicleData vdata){
 		entity = wrapper;
@@ -387,6 +388,10 @@ public class VehicleInstance {
 			}
 			case PKT_UPD_STOP_SOUND:{
 				if(passenger.isOnClient()) stopSound(packet.getString("sound"));
+				return;
+			}
+			case PKT_UPD_ENTITY:{
+				if(entity != null) entity.onPacket(passenger, packet);
 				return;
 			}
 			default:{

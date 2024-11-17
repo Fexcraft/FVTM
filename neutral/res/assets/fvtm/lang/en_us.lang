@@ -209,6 +209,7 @@ handler.deinstall.fvtm.bogie.success=Part uninstalled and position reset.
 
 # Entities
 fvtm.seat.controls_info=&3Vehicle controls and instructions can be found in the &nwiki.
+fvtm.rail.decrease_throttle=&cDecrease the throttle before switching direction.
 
 # Entity Spawn
 fvtm.spawn.rail.no_system=&cRailSystem not found on this Level.

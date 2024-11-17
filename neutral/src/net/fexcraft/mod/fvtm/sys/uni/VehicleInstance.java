@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
@@ -44,6 +45,7 @@ public class VehicleInstance {
 	public WheelTireData w_front_r;
 	public WheelTireData w_rear_l;
 	public WheelTireData w_rear_r;
+	public RailEntity railent;
 	//
 	public double steer_yaw;
 	public double throttle;
@@ -127,10 +129,20 @@ public class VehicleInstance {
 				return true;
 			}
 			case TURN_LEFT:{
+				if(type.isRailVehicle()){
+					if(throttle > 0.05f) player.bar("fvtm.rail.decrease_throttle");
+					else railent.setForward(player, false);
+					return true;
+				}
 				steer_yaw -= 5;
 				return true;
 			}
 			case TURN_RIGHT:{
+				if(type.isRailVehicle()){
+					if(throttle > 0.05f) player.bar("fvtm.rail.decrease_throttle");
+					else railent.setForward(player, true);
+					return true;
+				}
 				steer_yaw += 5;
 				return true;
 			}
@@ -166,7 +178,10 @@ public class VehicleInstance {
 			case LIGHTS:{
 				if(toggable_timer > 0) return true;
 				if(data.getAttribute("lights").asBoolean()){
-					if(data.getAttribute("lights_long").asBoolean()){
+					if(type.isRailVehicle()){
+						data.getAttribute("lights").set(false);
+					}
+					else if(data.getAttribute("lights_long").asBoolean()){
 						data.getAttribute("lights").set(false);
 						data.getAttribute("lights_long").set(false);
 					}
@@ -178,22 +193,43 @@ public class VehicleInstance {
 					data.getAttribute("lights").set(true);
 				}
 				sendUpdate(PKT_UPD_LIGHTS);
-				VehicleInstance trailer = rear;
-				while(trailer != null){
-					trailer.data.getAttribute("lights").set(data.getAttribute("lights").asBoolean());
-					trailer.data.getAttribute("lights_long").set(data.getAttribute("lights_long").asBoolean());
-					trailer.sendUpdate(PKT_UPD_LIGHTS);
-					trailer = trailer.rear;
+				if(type.isRailVehicle()){
+					if(railent.getCompound().isMultiple()){
+						boolean bool = data.getAttributeBoolean("lights", false);
+						for(RailEntity ent : railent.getCompound().getEntitites()){
+							ent.vehicle.data.getAttribute("lights").set(bool);
+							ent.vehicle.sendUpdate(PKT_UPD_LIGHTS);
+						}
+					}
+				}
+				else{
+					VehicleInstance trailer = rear;
+					while(trailer != null){
+						trailer.data.getAttribute("lights").set(data.getAttribute("lights").asBoolean());
+						trailer.data.getAttribute("lights_long").set(data.getAttribute("lights_long").asBoolean());
+						trailer.sendUpdate(PKT_UPD_LIGHTS);
+						trailer = trailer.rear;
+					}
 				}
 				toggable_timer = 10;
 				return true;
 			}
 			case COUPLER_REAR:{
-				//TODO coupling
+				if(toggable_timer > 0) return true;
+				if(type.isRailVehicle()){
+					railent.tryCoupling(player, false);
+					toggable_timer = 10;
+					return true;
+				}
 				return true;
 			}
 			case COUPLER_FRONT:{
-				//TODO coupling
+				if(toggable_timer > 0) return true;
+				if(type.isRailVehicle()){
+					railent.tryCoupling(player, true);
+					toggable_timer = 10;
+					return true;
+				}
 				return true;
 			}
 			default:{
@@ -400,6 +436,7 @@ public class VehicleInstance {
 	}
 
 	public void sendUpdate(String type, TagCW com){
+		if(entity == null) return;
 		if(com == null) com = TagCW.create();
 		com.set("cargo", type);
 		switch(type){

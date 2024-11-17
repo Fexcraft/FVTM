@@ -214,13 +214,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		Passenger pass = (Passenger)UniEntity.getEntity(player);
         switch(key){
             case ACCELERATE:{
-                rek.ent().throttle += rek.ent().throttle < 0 ? 0.02f : 0.01F;
-                if(rek.ent().throttle > 1F){ rek.ent().throttle = 1F; }
+                //rek.ent().throttle += rek.ent().throttle < 0 ? 0.02f : 0.01F;
+                //if(rek.ent().throttle > 1F){ rek.ent().throttle = 1F; }
                 return true;
             }
             case DECELERATE:{
-            	rek.ent().throttle -= rek.ent().throttle > 0 ? 0.02f : 0.01F;
-                if(rek.ent().throttle < 0){ rek.ent().throttle = 0; }
+            	//rek.ent().throttle -= rek.ent().throttle > 0 ? 0.02f : 0.01F;
+                //if(rek.ent().throttle < 0){ rek.ent().throttle = 0; }
                 return true;
             }
             case TURN_LEFT:{
@@ -234,13 +234,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case BRAKE:{
-            	rek.ent().throttle *= 0.8F;
+            	//rek.ent().throttle *= 0.8F;
                 if(onGround){
                     motionX *= 0.8F;
                     motionZ *= 0.8F;
                 }
                 if(throttle < -0.0001){
-                	rek.ent().throttle = 0;
+                	//rek.ent().throttle = 0;
                 }
                 return true;
             }
@@ -584,7 +584,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         //TODO rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         if(!world.isRemote && ticksExisted % servtick == 0){
-        	throttle = rek.ent().throttle;
+        	//throttle = rek.ent().throttle;
         	rek.data().getAttribute("throttle").set((float)throttle);
             //TODO PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
             //TODO for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);

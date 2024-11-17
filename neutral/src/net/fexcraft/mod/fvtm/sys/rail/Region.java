@@ -104,7 +104,7 @@ public class Region {
 		if(compound.has("Entities")){
 			if(!entities.isEmpty()) entities.clear();
 			compound.getList("Entities").forEach(tag -> {
-				fillqueue.put(tag.getLong("Compound"), tag.local());
+				fillqueue.put(tag.getLong("Compound"), tag);
 			});
 		}
 		return this;

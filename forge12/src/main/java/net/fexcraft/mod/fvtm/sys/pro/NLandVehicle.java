@@ -1,9 +1,9 @@
 package net.fexcraft.mod.fvtm.sys.pro;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -34,7 +34,7 @@ public class NLandVehicle extends RootVehicle {
 			vehicle.setPlacer(placer.getGameProfile().getId());
 			vehicle.pivot().set_yaw(placer.rotationYaw, true);
 		}
-		init();
+		init(null);
 	}
 
 	public NLandVehicle(NLandVehicle truck, VehicleData data, EntityPlayer placer){
@@ -46,12 +46,26 @@ public class NLandVehicle extends RootVehicle {
 	}
 
 	@Override
-	protected void init(){
+	protected void init(TagCW com){
 		spdata = vehicle.data.getType().getSphData();
 		stepHeight = spdata.wheel_step_height;
-		super.init();
+		super.init(com);
 	}
 
+	@Override
+	public void writeSpawnData(TagCW com){
+		if(vehicle.front != null){
+			com.set("TruckId", vehicle.front.entity.getId());
+		}
+	}
+
+	@Override
+	public void readSpawnData(TagCW com){
+		if(com.has("TruckId")){
+			vehicle.front = ((NLandVehicle)world.getEntityByID(com.getInteger("TruckId"))).vehicle;
+			vehicle.front.rear = vehicle;
+		}
+	}
 
 	@Override
 	public void onUpdate(){

@@ -472,7 +472,7 @@ public class InteractionHandler {
 		}
 
 		public void update(){
-			pos = inst.entity.getPos();
+			pos = inst.entity == null ? inst.railent == null ? null : inst.railent.pos : inst.entity.getPos();
 		}
 
 		public void setPacket(TagCW com){

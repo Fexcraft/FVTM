@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_ENGINE_TOGGLE;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -348,17 +348,17 @@ public class RailEntity implements Comparable<RailEntity>{
 		TagCW compound = TagCW.create();
 		switch(string){
 			case "track":{
-				compound.set("task", "update_track");
+				compound.set("sub", "update_track");
 				current.getId().write(compound);
 				break;
 			}
 			case "passed":{
-				compound.set("task", "update_passed");
+				compound.set("sub", "update_passed");
 				compound.set("passed", passed);
 				break;
 			}
-			case "couplers":{
-				compound.set("task", "update_coupled");
+			/*case "couplers":{
+				compound.set("sub", "update_coupled");
 				compound.set("front", front.hasEntity() ? front.entity.uid : -1l);
 				//compound.set("front_static", front.coupled);
 				compound.set("rear", rear.hasEntity() ? rear.entity.uid : -1l);
@@ -366,20 +366,19 @@ public class RailEntity implements Comparable<RailEntity>{
 				break;
 			}
 			case "commands":{
-				compound.set("task", "update_commands");
+				compound.set("sub", "update_commands");
 				TagLW list = TagLW.create();
 				for(JEC cmd : commands) list.add(cmd.write(null));
 				compound.set("commands", list);
 				break;
 			}
 			case "forward":{
-				compound.set("task", "update_forward");
+				compound.set("sub", "update_forward");
 				compound.set("forward", vehicle.data.getAttribute("forward").asBoolean());
 				break;
-			}
+			}*/
 		}
-		vehicle.sendUpdate("");
-		//TODO ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound.local());
+		vehicle.sendUpdate(PKT_UPD_ENTITY, compound);
 	}
 
 	public void updateRegion(QV3D start){

@@ -34,11 +34,14 @@ public abstract class Compound {
 		
 		public Singular(RailEntity root){
 			super(root.region.getSystem().getNewCompoundId());
-			entities.add(root); root.com = this; COMPOUNDS.put(uid, this);
+			entities.add(root);
+			root.com = this;
+			COMPOUNDS.put(uid, this);
 		}
 
 		public Singular(Region region, long uid, TagCW compound){
-			super(uid); RailEntity root = new RailEntity(region, this);
+			super(uid);
+			RailEntity root = new RailEntity(region, this);
 			root = root.read(compound);
 			if(root == null) return;
 			entities.add(root);
@@ -46,7 +49,9 @@ public abstract class Compound {
 		}
 
 		public Singular(RailEntity ent, long uid){
-			super(uid); entities.add(ent); COMPOUNDS.put(uid, this);
+			super(uid);
+			entities.add(ent);
+			COMPOUNDS.put(uid, this);
 		}
 
 		@Override
@@ -99,13 +104,16 @@ public abstract class Compound {
 
 		public Multiple(RailEntity root, RailEntity entity){
 			super(root.region.getSystem().getNewCompoundId());
-			entities.add(root); entities.add(entity); COMPOUNDS.put(uid, this);
+			entities.add(root);
+			entities.add(entity);
+			COMPOUNDS.put(uid, this);
 		}
 
 		public Multiple(Compound recom, int start, int end){
 			super(recom.entities.get(start).region.getSystem().getNewCompoundId());
-			for(int i = start; i < end; i++){ entities.add(recom.entities.get(i)); }
-			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
+			for(int i = start; i < end; i++) entities.add(recom.entities.get(i));
+			for(RailEntity ent : entities) ent.com = this;
+			COMPOUNDS.put(uid, this);
 		}
 
 		public Multiple(RailSystem system, Region region, Long id, TagLW list){
@@ -222,7 +230,7 @@ public abstract class Compound {
 	}
 
 	protected void stop(Track track, double pass){
-		if(last_stop == null || last_stop != track) for(RailEntity ent : entities) ent.throttle = 0;
+		if(last_stop == null || last_stop != track) for(RailEntity ent : entities) ent.vehicle.throttle = 0;
 		last_stop = track;
 		last_stop_passed = pass;
 	}

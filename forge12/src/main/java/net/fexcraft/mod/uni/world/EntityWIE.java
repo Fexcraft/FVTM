@@ -3,6 +3,7 @@ package net.fexcraft.mod.uni.world;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 
 /**
@@ -33,6 +34,12 @@ public class EntityWIE extends EntityWI implements Passenger {
 	@Override
 	public int seat(){
 		return 0;
+	}
+
+
+	@Override
+	public void onPacket(EntityW player, TagCW packet){
+		if(entity instanceof RootVehicle) ((RootVehicle)entity).onPacket(player, packet);
 	}
 
 }

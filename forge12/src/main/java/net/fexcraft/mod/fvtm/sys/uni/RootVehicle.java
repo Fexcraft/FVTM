@@ -863,4 +863,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		return false;
     }
 
+	public void onPacket(EntityW player, TagCW packet){
+
+	}
+
 }

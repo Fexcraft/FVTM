@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
+import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.*;
@@ -179,7 +180,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public void spawnRailEntity(RailEntity ent){
-		world.spawnEntity(new RailVehicle(ent));
+		world.spawnEntity(new NRailVehicle(world, ent));
 	}
 
 }

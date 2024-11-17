@@ -36,7 +36,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public long uid;
 	public Region region;
 	//protected boolean forward = true;
-	public double throttle, passed;
+	public double passed;
 	public V3D pos = new V3D(), prev = new V3D(),
 		cfront = new V3D(), crear = new V3D(),
 		bfront = new V3D(), brear = new V3D();
@@ -61,7 +61,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private byte ticks;
 	
 	public RailEntity(RailSystem data, VehicleInstance veh, Track track, UUID placer){
-		vehicle = veh;
+		setveh(veh);
 		current = track;
 		region = data.getRegions().get(track.start.pos, true);
 		if(placer != null) this.placer = placer;
@@ -86,11 +86,18 @@ public class RailEntity implements Comparable<RailEntity>{
 		region.spawnEntity(this.start());
 	}
 
+	private void setveh(VehicleInstance veh){
+		vehicle = veh;
+		vehicle.railent = this;
+		vehicle.iref().update();
+	}
+
 	/** only to use with read() afterward
 	 * @param compound */
 	public RailEntity(Region railregion, Compound compound){
 		region = railregion;
 		com = compound;
+		setveh(new VehicleInstance(null, null));
 	}
 	
 	/** only to use with read() afterward || CLIENT SIDE METHOD */
@@ -123,11 +130,11 @@ public class RailEntity implements Comparable<RailEntity>{
 		for(JEC command : commands) command.processEntity(this);
 		commands.removeIf(cmd -> cmd.isDone());
 		//
-		if(!vehicle.data.getType().isTrailer() && !isPaused() && throttle > 0.001f){
+		if(!vehicle.data.getType().isTrailer() && !isPaused() && vehicle.throttle > 0.001f){
 			if(vehicle.data.hasPart("engine")){
 				EngineFunction engine = vehicle.data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
 				if(CMODE() || processConsumption(engine)){
-					double eng = throttle * engine.getSphEngineSpeed();
+					double eng = vehicle.throttle * engine.getSphEngineSpeed();
 					if(com.isMultiple()) com.accumulator += eng;
 					else moverq = com.forward ? eng : -eng;
 				}
@@ -206,11 +213,11 @@ public class RailEntity implements Comparable<RailEntity>{
     	if(vehicle.data.getAttributeInteger("fuel_stored", 0) <= 0) return false;
     	if(fuel_accu < 20){
     		if(engine.isOn()){
-    			if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){
+    			if(vehicle.throttle == 0f || (vehicle.throttle < 0.05f && vehicle.throttle > -0.05f)){
         			consumed += engine.getIdleFuelConsumption();
         		}
         		else{
-        			consumed += engine.getFuelConsumption(vehicle.data.getAttribute("fuel_secondary").asString()) * throttle;
+        			consumed += engine.getFuelConsumption(vehicle.data.getAttribute("fuel_secondary").asString()) * vehicle.throttle;
         		}
     		}
     		fuel_accu++;
@@ -224,7 +231,7 @@ public class RailEntity implements Comparable<RailEntity>{
     			bool = true;
     		}
     		if(vehicle.entity != null && engine.isOn() && vehicle.data.getAttribute("fuel_stored").asFloat() <= 0){
-				throttle = 0;
+				vehicle.throttle = 0;
 				engine.setState(false);
 				TagCW compound = TagCW.create();
     			compound.set("engine_toggle_result", false);
@@ -244,7 +251,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(!isActive() && con != null){
 			if(!con.isCreative() && vehicle.data.getAttribute("fuel_stored").asInteger() <= 0) decrease = true;
 		}
-		if(decrease) throttle *= 0.98F;
+		if(decrease) vehicle.throttle *= 0.98F;
 	}
 
 	private boolean isCoupled(){
@@ -371,6 +378,7 @@ public class RailEntity implements Comparable<RailEntity>{
 				break;
 			}
 		}
+		vehicle.sendUpdate("");
 		//TODO ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound.local());
 	}
 
@@ -525,8 +533,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		compound.set("Compound", com.getUID());
 		compound.set("Singular", com.isSingular());
-		compound.set("throttle", throttle);
-		return vehicle.data.write(compound).local();
+		compound.set("throttle", vehicle.throttle);
+		return vehicle.data.write(compound);
 	}
 	
 	public RailEntity read(TagCW compound){
@@ -543,7 +551,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		brear = SaveUtils.loadV3D(compound.getList("brear"));
 		//forward = compound.has("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
-		throttle = compound.getFloat("throttle");
+		vehicle.throttle = compound.getFloat("throttle");
 		front.autocoupler = compound.getBoolean("front_auto");
 		rear.autocoupler = compound.getBoolean("rear_auto");
 		//
@@ -556,7 +564,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
-		if(vehicle.data == null) vehicle.data = FvtmResources.getVehicleData(compound);
+		if(vehicle.data == null) vehicle.init(FvtmResources.getVehicleData(compound));
 		else vehicle.data.read(compound);
 		if(vehicle.data == null){ this.remove(); return null; }
 		//if(compound.has("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
@@ -569,11 +577,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		frconndis = vehicle.data.getConnectorFor("front").x;
 		rrconndis = -vehicle.data.getConnectorFor("rear").x;
 		//
-		this.updatePosition(); return this;
+		updatePosition();
+		return this;
 	}
 
 	public void loadCouple(boolean frontcoupler, long uid, boolean asfront){
-		RailEntity ent = region.getSystem().getEntity(uid, true); if(ent == null) return;
+		RailEntity ent = region.getSystem().getEntity(uid, true);
+		if(ent == null) return;
 		Coupler coupler = frontcoupler ? front : rear; coupler.entity = ent;
 		coupler = asfront ? ent.front : ent.rear; coupler.entity = this;
 	}

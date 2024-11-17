@@ -196,6 +196,9 @@
     "key.fvtm.brake": "Brake",
     "key.fvtm.pbrake": "(Hand/Parking) Brake",
 
+	"fvtm.seat.controls_info": "&3Vehicle controls and instructions can be found in the &nwiki.",
+	"fvtm.rail.decrease_throttle": "&cDecrease the throttle before switching direction.",
+
 	"fvtm.spawn.rail.no_system": "&cRailSystem not found on this Level.",
 	"fvtm.spawn.rail.no_front_bogie": "Vehicle is missing a front bogie.",
 	"fvtm.spawn.rail.no_rear_bogie": "Vehicle is missing a rear bogie.",

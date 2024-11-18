@@ -44,8 +44,9 @@ public class NRailVehicle extends RootVehicle {
 	public NRailVehicle(World world, RailEntity ent){
 		this(world);
 		setPosition(ent.pos.x, ent.pos.y, ent.pos.z);
+		ent.vehicle.entity = vehicle.entity;
 		vehicle = ent.vehicle;
-		vehicle.entity = new EntityWIE(this);
+		vehicle.iref().update();
 		ent.alignEntity(true);
 		init(null);
 	}

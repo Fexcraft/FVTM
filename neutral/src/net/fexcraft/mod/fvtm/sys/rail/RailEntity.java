@@ -37,9 +37,12 @@ public class RailEntity implements Comparable<RailEntity>{
 	public Region region;
 	//protected boolean forward = true;
 	public double passed;
-	public V3D pos = new V3D(), prev = new V3D(),
-		cfront = new V3D(), crear = new V3D(),
-		bfront = new V3D(), brear = new V3D();
+	public V3D pos = new V3D();
+	public V3D prev = new V3D();
+	public V3D cfront = new V3D();
+	public V3D crear = new V3D();
+	public V3D bfront = new V3D();
+	public V3D brear = new V3D();
 	private UUID placer = FvtmLogger.NULL_UUID;
 	public Coupler front = new Coupler(this, true);
 	public Coupler rear = new Coupler(this, false);

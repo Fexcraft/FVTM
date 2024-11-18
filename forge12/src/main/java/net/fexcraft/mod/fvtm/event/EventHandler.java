@@ -26,7 +26,6 @@ import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
@@ -222,7 +221,7 @@ public class EventHandler {
 			RailPlacingUtil.CURRENT.remove(event.player.getGameProfile().getId());
 			RoadPlacingCache.onLogOut(event.player.getGameProfile().getId());
 		}
-		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof GenericVehicle){
+		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof RootVehicle){
 			event.player.dismountRidingEntity();
 		}
 		if(!Static.getServer().isSinglePlayer()) return;
@@ -231,7 +230,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onEntityAttack(LivingAttackEvent event){
-		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof GenericVehicle){// && !event.getSource().isProjectile()){
+		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof RootVehicle){// && !event.getSource().isProjectile()){
 			event.setCanceled(true);
 		}
 	}

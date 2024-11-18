@@ -406,20 +406,20 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private TRO getTrack(Track track, double passed, boolean apply, boolean signal){
 		while(passed > track.length){
-			Junction junk = region.getJunction(track.end.pos);
-			if(junk == null){
+			Junction junc = region.getJunction(track.end.pos);
+			if(junc == null){
 				com.stop(track, track.length);
-				new TRO(track, track.length);
+				return new TRO(track, track.length);
 			}
-			if(signal && junk.hasSignal(track.getId()) && isActiveEnd()){
-				junk.pollSignal(this);
-				if(!junk.getSignalState(track.getId()) && !isPaused()){
-					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
+			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
+				junc.pollSignal(this);
+				if(!junc.getSignalState(track.getId()) && !isPaused()){
+					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
 				}
 				return new TRO(track, track.length);
 			}
-			Track newtrack = junk.getNext(this, track.getOppositeId(), apply);
+			Track newtrack = junc.getNext(this, track.getOppositeId(), apply);
 			if(newtrack != null){
 				passed -= track.length; track = newtrack;
 			}
@@ -429,17 +429,17 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		while(passed < 0){
-			Junction junk = region.getJunction(track.start.pos);
-			if(junk == null){ com.stop(track, 0); return new TRO(track, 0); }
-			if(signal && junk.hasSignal(track.getId()) && isActiveEnd()){
-				junk.pollSignal(this);
-				if(!junk.getSignalState(track.getId()) && !isPaused()){
-					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
+			Junction junc = region.getJunction(track.start.pos);
+			if(junc == null){ com.stop(track, 0); return new TRO(track, 0); }
+			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
+				junc.pollSignal(this);
+				if(!junc.getSignalState(track.getId()) && !isPaused()){
+					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
 				}
 				return new TRO(track, 0);
 			}
-			Track newtrack = junk.getNext(this, track.getId(), apply);
+			Track newtrack = junc.getNext(this, track.getId(), apply);
 			if(newtrack != null){
 				passed += newtrack.length; track = newtrack.createOppositeCopy();
 			}
@@ -589,6 +589,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void alignEntity(boolean initial){
 		if(vehicle.entity == null) return;
+		vehicle.entity.setPos(pos);
 		/*if(initial){
 			entity.prevPosX = entity.lastTickPosX = entity.posX = pos.x;
 			entity.prevPosY = entity.lastTickPosY = entity.posY = pos.y;
@@ -596,7 +597,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	        entity.setEntityBoundingBox(new AxisAlignedBB(pos.x - 0.25, pos.y, pos.z - 0.25,
 	        	pos.x + 0.25, pos.y + 0.25, pos.z + 0.25));
 		}
-		else{ entity.setPosition(pos.x, pos.y, pos.z); }*///TODO
+		else{ entity.setPosition(pos.x, pos.y, pos.z); }*/
 	}
 
 	public void remove(){

@@ -462,8 +462,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				//
 				fron = vehicle.railent.bfront;
 				rear = vehicle.railent.brear;
-				left = new V3D((fron.x + rear.x) * 0.5, (fron.y + rear.y) * 0.5, (fron.x + rear.z) * 0.5);
-				righ = new V3D((fron.x + rear.x) * 0.5, (fron.y + rear.y) * 0.5, (fron.x + rear.z) * 0.5);
+				left = righ = new V3D((fron.x + rear.x) * 0.5, (fron.y + rear.y) * 0.5, (fron.z + rear.z) * 0.5);
 			}
 			else{
 				boolean creative = driver != null && driver.isCreative();
@@ -488,7 +487,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			double y = -Math.atan2(dx, dz);
 			double p = -Math.atan2(dy, dxz);
 			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
-			double t = valRad(Math.toRadians(ticksExisted / 10 % 360));
+			//double t = valRad(Math.toRadians(ticksExisted / 10 % 360));
 			//Print.debug(y + " " + Math.toDegrees(y) + " / " + t + " " + Math.toDegrees(t) + " / " + (y - t) + " " + Math.toDegrees(y - t));
 			//y = Command.getValB("rot", false) ? t : y;
 			vehicle.pivot().set_rotation(y, p, r, false);

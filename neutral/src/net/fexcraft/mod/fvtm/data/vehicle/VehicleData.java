@@ -84,11 +84,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 					Part part = PARTS.get(entry.getValue());
 					if(part == null) continue;
 					if(installPart(NONE, new PartData(part), entry.getKey(), false) != null){
-						FvtmLogger.log(new Exception(), "vehicle part pre-install returned non-null for " + entry.getValue().colon() + " as " + entry.getKey());
+						FvtmLogger.log(new Exception(), "vehicle (" + type.getID() + ") part pre-install returned non-null for " + entry.getValue().colon() + " as " + entry.getKey());
 					}
 				}
 				catch(Exception e){
-					FvtmLogger.log(e, "vehicledata part pre-install of " + entry.getValue().colon() + " as " + entry.getKey());
+					FvtmLogger.log(e, "vehicledata (" + type.getID() + ") part pre-install of " + entry.getValue().colon() + " as " + entry.getKey());
 				}
 			}
 		}

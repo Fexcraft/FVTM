@@ -94,6 +94,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
+		conns.putAll(type.getDefaultConnectors());
 		lock = new Lockable();
 	}
 
@@ -307,9 +308,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		sortparts();
 		//
 		conns.clear();
-		for(Entry<String, V3D> entry : type.getDefaultConnectors().entrySet()){
-			conns.put(entry.getKey(), entry.getValue());
-		}
+		conns.putAll(type.getDefaultConnectors());
 		for(Entry<String, PartData> entry : parts.entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:connector")) continue;
 			ConnectorFunction func = entry.getValue().getFunction("fvtm:connector");

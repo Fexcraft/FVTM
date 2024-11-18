@@ -92,22 +92,27 @@ public class NRailVehicle extends RootVehicle {
 	private TRO getTrack(Track track, double passed){
 		if(track == null) return new TRO(track, passed);
 		while(passed > track.length){
-			Junction junk = sys.getJunction(track.end.pos);
-			if(junk == null){ new TRO(track, track.length); }
-			Track newtrack = junk.getNext(null, track.getOppositeId(), false);
+			Junction junc = sys.getJunction(track.end.pos);
+			if(junc == null) return new TRO(track, track.length);
+			Track newtrack = junc.getNext(null, track.getOppositeId(), false);
 			if(newtrack != null){
-				passed -= track.length; track = newtrack;
-			} else return new TRO(track, track.length);
+				passed -= track.length;
+				track = newtrack;
+			}
+			else return new TRO(track, track.length);
 		}
 		while(passed < 0){
-			Junction junk = sys.getJunction(track.start.pos);
-			if(junk == null){ return new TRO(track, 0); }
-			Track newtrack = junk.getNext(null, track.getId(), false);
+			Junction junc = sys.getJunction(track.start.pos);
+			if(junc == null) return new TRO(track, 0);
+			Track newtrack = junc.getNext(null, track.getId(), false);
 			if(newtrack != null){
-				passed += newtrack.length; track = newtrack.createOppositeCopy();
-			} else return new TRO(track, 0);
+				passed += newtrack.length;
+				track = newtrack.createOppositeCopy();
+			}
+			else return new TRO(track, 0);
 
-		} return new TRO(track, passed);
+		}
+		return new TRO(track, passed);
 	}
 
 	@Override

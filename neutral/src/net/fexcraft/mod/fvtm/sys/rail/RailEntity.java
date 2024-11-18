@@ -70,10 +70,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId();
 		data.updateEntityEntry(uid, region.getKey());
-		frbogiedis = veh.data.getWheelPositions().get("bogie_front").x;
-		rrbogiedis  = -veh.data.getWheelPositions().get("bogie_rear").x;
-		frconndis = veh.data.getConnectorFor("front").x;
-		rrconndis = -veh.data.getConnectorFor("rear").x;
+		frbogiedis = -veh.data.getWheelPositions().get("bogie_front").x;
+		rrbogiedis = veh.data.getWheelPositions().get("bogie_rear").x;
+		frconndis = -veh.data.getConnectorFor("front").x;
+		rrconndis = veh.data.getConnectorFor("rear").x;
 		com = new Compound.Singular(this);
 		//
 		//this.passed = passed + rrconndis + frbogiedis;
@@ -326,7 +326,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		brear = move(passed - frbogiedis - rrbogiedis, TrainPoint.BOGIE_REAR);
 		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
 		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
-		prev.copy(pos); pos = bfront.middle(brear);
+		prev.copy(pos);
+		pos = bfront.middle(brear);
 		front.mbb.update(cfront, vehicle.data.getType().getCouplerRange());
 		rear.mbb.update(crear, vehicle.data.getType().getCouplerRange());
 	}
@@ -334,16 +335,21 @@ public class RailEntity implements Comparable<RailEntity>{
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();
 
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track){
-		railentlist.clear(); railentlist.addAll(track.unit.getEntities());
-		Junction junction = region.getJunction(track.start.pos); Track track0;
+		railentlist.clear();
+		railentlist.addAll(track.unit.getEntities());
+		Junction junction = region.getJunction(track.start.pos);
+		Track track0;
 		//TODO alternative for when a specific path is followed
-		if(junction != null){ track0 = junction.getNext(null, track.getId(), false);
+		if(junction != null){
+			track0 = junction.getNext(null, track.getId(), false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		}
 		junction = region.getJunction(track.end.pos);
-		if(junction != null){ track0 = junction.getNext(null, track.getOppositeId(), false);
+		if(junction != null){
+			track0 = junction.getNext(null, track.getOppositeId(), false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
-		} return railentlist;
+		}
+		return railentlist;
 	}
 
 	protected void updateClient(String string){
@@ -574,10 +580,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		//TODO try coupling later, to prevent overflow
 		//TODO add REC loading instead later
 		//
-		frbogiedis = vehicle.data.getWheelPositions().get("bogie_front").x;
-		rrbogiedis  = -vehicle.data.getWheelPositions().get("bogie_rear").x;
-		frconndis = vehicle.data.getConnectorFor("front").x;
-		rrconndis = -vehicle.data.getConnectorFor("rear").x;
+		frbogiedis = -vehicle.data.getWheelPositions().get("bogie_front").x;
+		rrbogiedis  = vehicle.data.getWheelPositions().get("bogie_rear").x;
+		frconndis = -vehicle.data.getConnectorFor("front").x;
+		rrconndis = vehicle.data.getConnectorFor("rear").x;
 		//
 		updatePosition();
 		return this;

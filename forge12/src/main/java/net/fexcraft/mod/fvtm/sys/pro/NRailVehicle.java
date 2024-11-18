@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.pro;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -9,8 +10,10 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.EntityWIE;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -20,7 +23,6 @@ import net.minecraft.world.World;
  */
 public class NRailVehicle extends RootVehicle {
 
-	private VehicleData data;
 	public Track current;
 	public Track last;
 	public double passed;
@@ -30,22 +32,27 @@ public class NRailVehicle extends RootVehicle {
 
 	public NRailVehicle(World world){
 		super(world);
+		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(world));
 		preventEntitySpawning = true;
 		ignoreFrustumCheck = true;
 		setSize(0.5f, 0.5f);
 		if(world.isRemote){
 			setRenderDistanceWeight(1D);
 		}
-		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(world));
 	}
 
 	public NRailVehicle(World world, RailEntity ent){
 		this(world);
-		ent.vehicle.entity = vehicle.entity;
+		setPosition(ent.pos.x, ent.pos.y, ent.pos.z);
 		vehicle = ent.vehicle;
-		//
+		vehicle.entity = new EntityWIE(this);
 		ent.alignEntity(true);
 		init(null);
+	}
+
+	@Override
+	protected void init(TagCW com){
+		super.init(com);
 	}
 
 	@Override

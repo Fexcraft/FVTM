@@ -175,7 +175,6 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
 		EntitySystem.add(new SimplePhysSpawnSystem());
-		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new BasicSpawnSystem());
 		TrafficSignLibrary.initialize(event.getSide(), event.getSuggestedConfigurationFile().getParentFile());
 		GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));

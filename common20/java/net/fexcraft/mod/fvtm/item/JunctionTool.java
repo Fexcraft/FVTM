@@ -58,7 +58,7 @@ public class JunctionTool extends Item {
 			context.getPlayer().sendSystemMessage(GenericUtils.format("RailSystem not found on this Level."));
 			return InteractionResult.FAIL;
 		}
-		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z), cached;
+		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), cached;
 		Player player = context.getPlayer();
 		Passenger pass = (Passenger)UniEntity.getEntity(player);
 		ItemStack stack = player.getItemInHand(context.getHand());

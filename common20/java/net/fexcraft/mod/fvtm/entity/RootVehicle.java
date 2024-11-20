@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.util.EntityWIE;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -706,6 +707,10 @@ public class RootVehicle extends Entity {
 			return true;
 		}
 		return false;
+	}
+
+	public void onPacket(EntityW player, TagCW packet){
+		//
 	}
 
 }

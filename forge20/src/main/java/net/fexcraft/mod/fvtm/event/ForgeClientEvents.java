@@ -7,6 +7,9 @@ import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
@@ -15,6 +18,7 @@ import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -24,7 +28,6 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
@@ -75,6 +78,8 @@ public class ForgeClientEvents {
 		POLY = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f())});
 		LINE.polygons.add(POLY);
 	}
+	private static Polyhedron sphere = new Polyhedron().importMRT(new ModelRendererTurbo(null, 0, 0, 32, 32)
+		.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32), false, 0.0625f);
 	private static Vec3f BLUE = new Vec3f(0, 0, 1);
 	private static Vec3f CYAN = new Vec3f(0, 1, 1);
 	private static Vec3f ORG = new Vec3f(1, 0.75f, 0);
@@ -122,6 +127,45 @@ public class ForgeClientEvents {
 				LINE.render();
 			}
 		}
+		pose.popPose();
+	}
+
+	@SubscribeEvent
+	public static void renderGrid(RenderHighlightEvent event){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return;
+		PoseStack pose = event.getPoseStack();
+		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
+		Renderer120.set(pose, cons, 0);
+		FvtmRenderTypes.setLines();
+		QV3D vec = new QV3D(event.getTarget().getLocation().x, event.getTarget().getLocation().y, event.getTarget().getLocation().z);
+		BlockPos pos = BlockPos.containing(event.getTarget().getLocation());
+		Renderer120.setColor(RGB.WHITE);
+		double x = event.getCamera().getPosition().x;
+		double y = event.getCamera().getPosition().y;
+		double z = event.getCamera().getPosition().z;
+		double yy = vec.y * 0.0625f;
+		pose.pushPose();
+		for(int i = 0; i < 4; i++){
+			POLY.vertices[0].pos(pos.getX() + (i * 0.25 + 0.125) - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z);
+			POLY.vertices[1].pos(pos.getX() + (i * 0.25 + 0.125) - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z);
+			LINE.render();
+			POLY.vertices[0].pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (i * 0.25 + 0.125) - z);
+			POLY.vertices[1].pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (i * 0.25 + 0.125) - z);
+			LINE.render();
+		}
+		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
+		Renderer120.setColor(CYAN);
+		POLY.vertices[0].pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z);
+		POLY.vertices[1].pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z);
+		LINE.render();
+		v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
+		POLY.vertices[0].pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z);
+		POLY.vertices[1].pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z);
+		LINE.render();
+		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
+		Renderer120.setColor(ORG);
+		pose.translate(vec.vec.x - x, vec.vec.y - y, vec.vec.z - z);
+		sphere.render();
 		pose.popPose();
 	}
 

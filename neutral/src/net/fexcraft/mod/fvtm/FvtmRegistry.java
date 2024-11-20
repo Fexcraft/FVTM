@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
 import net.fexcraft.mod.fvtm.model.ModelLoader;
@@ -22,6 +23,7 @@ import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
+import net.fexcraft.mod.fvtm.util.ess.RailSpawnSystem;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
@@ -94,6 +96,7 @@ public class FvtmRegistry {
 		StackWrapper.register(new VehItemApp(null));
 		StackWrapper.register(new PartItemApp(null));
 		UniEntity.register(new FvtmPlayerData(null));
+		EntitySystem.add(new RailSpawnSystem());
 	}
 
 	public static Addon getAddon(String id){

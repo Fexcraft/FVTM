@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -81,6 +82,11 @@ public class EntityWIE extends EntityWI implements Passenger {
 	@Override
 	public void setYawPitch(float oyaw, float opitch, float yaw, float pitch){
 		//
+	}
+
+	@Override
+	public void onPacket(EntityW player, TagCW packet){
+		if(entity instanceof RootVehicle) ((RootVehicle)entity).onPacket(player, packet);
 	}
 
 }

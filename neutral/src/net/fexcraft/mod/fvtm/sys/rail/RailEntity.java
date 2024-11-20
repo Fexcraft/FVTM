@@ -70,10 +70,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId();
 		data.updateEntityEntry(uid, region.getKey());
-		frbogiedis = -veh.data.getWheelPositions().get("bogie_front").x;
-		rrbogiedis = veh.data.getWheelPositions().get("bogie_rear").x;
-		frconndis = -veh.data.getConnectorFor("front").x;
-		rrconndis = veh.data.getConnectorFor("rear").x;
+		frbogiedis = -veh.data.getWheelPositions().get("bogie_front").z;
+		rrbogiedis = veh.data.getWheelPositions().get("bogie_rear").z;
+		frconndis = -veh.data.getConnectorFor("front").z;
+		rrconndis = veh.data.getConnectorFor("rear").z;
 		com = new Compound.Singular(this);
 		//
 		//this.passed = passed + rrconndis + frbogiedis;
@@ -430,16 +430,20 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 			Track newtrack = junc.getNext(this, track.getOppositeId(), apply);
 			if(newtrack != null){
-				passed -= track.length; track = newtrack;
+				passed -= track.length;
+				track = newtrack;
 			}
 			else{
-				if(signal){ com.stop(track, track.length); }
+				if(signal) com.stop(track, track.length);
 				return new TRO(track, track.length);
 			}
 		}
 		while(passed < 0){
 			Junction junc = region.getJunction(track.start.pos);
-			if(junc == null){ com.stop(track, 0); return new TRO(track, 0); }
+			if(junc == null){
+				com.stop(track, 0);
+				return new TRO(track, 0);
+			}
 			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
 				junc.pollSignal(this);
 				if(!junc.getSignalState(track.getId()) && !isPaused()){
@@ -450,14 +454,16 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 			Track newtrack = junc.getNext(this, track.getId(), apply);
 			if(newtrack != null){
-				passed += newtrack.length; track = newtrack.createOppositeCopy();
+				passed += newtrack.length;
+				track = newtrack.createOppositeCopy();
 			}
 			else{
-				if(signal){ com.stop(track, 0); }
+				if(signal) com.stop(track, 0);
 				return new TRO(track, 0);
 			}
 			
-		} return new TRO(track, passed);
+		}
+		return new TRO(track, passed);
 	}
 	
 	public static class TRO {//track return object
@@ -580,10 +586,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		//TODO try coupling later, to prevent overflow
 		//TODO add REC loading instead later
 		//
-		frbogiedis = -vehicle.data.getWheelPositions().get("bogie_front").x;
-		rrbogiedis  = vehicle.data.getWheelPositions().get("bogie_rear").x;
-		frconndis = -vehicle.data.getConnectorFor("front").x;
-		rrconndis = vehicle.data.getConnectorFor("rear").x;
+		frbogiedis = -vehicle.data.getWheelPositions().get("bogie_front").z;
+		rrbogiedis  = vehicle.data.getWheelPositions().get("bogie_rear").z;
+		frconndis = -vehicle.data.getConnectorFor("front").z;
+		rrconndis = vehicle.data.getConnectorFor("rear").z;
 		//
 		updatePosition();
 		return this;

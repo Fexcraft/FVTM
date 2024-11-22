@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.impl.AABBI;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
@@ -112,7 +113,7 @@ public class FVTM20 {
 		return Commands.literal("fvtm")
 			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
 				Player player = ctx.getSource().getPlayerOrException();
-				Passenger pass = EntityUtil.get(player);
+				Passenger pass = UniEntity.getCasted(player);
 				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
 				if(map == null || map.empty()){
 					pass.send("No last road data in item.");

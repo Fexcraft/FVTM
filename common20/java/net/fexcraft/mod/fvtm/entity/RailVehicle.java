@@ -47,6 +47,7 @@ public class RailVehicle extends RootVehicle {
 
 	@Override
 	public void writeSpawnData(TagCW com){
+		if(vehicle.railent == null) return;
 		com.set("fr_bogie", vehicle.railent.frbogiedis);
 		com.set("rr_bogie", vehicle.railent.rrbogiedis);
 		com.set("Track", vehicle.railent.current.write(null));

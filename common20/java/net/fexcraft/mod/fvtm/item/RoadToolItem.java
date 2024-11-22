@@ -1,9 +1,9 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.language.I18n;
@@ -40,7 +40,7 @@ public class RoadToolItem extends Item {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context){
-		int result = UniRoadTool.onUse(EntityUtil.get(context.getPlayer()), context.getHand() == InteractionHand.MAIN_HAND);
+		int result = UniRoadTool.onUse(UniEntity.getCasted(context.getPlayer()), context.getHand() == InteractionHand.MAIN_HAND);
 		switch(result){
 			case 1: return InteractionResult.FAIL;
 			case 2: return InteractionResult.SUCCESS;
@@ -49,7 +49,7 @@ public class RoadToolItem extends Item {
 				ItemStack stack = context.getPlayer().getItemInHand(context.getHand());
 				if(!stack.hasTag()) stack.setTag(new CompoundTag());
 				RoadPlacingUtil.place(WrapperHolder.getWorld(context.getLevel()),
-					EntityUtil.get(context.getPlayer()),
+					UniEntity.getCasted(context.getPlayer()),
 					TagCW.wrap(stack.getTag()),
 					new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z));
 				return InteractionResult.SUCCESS;

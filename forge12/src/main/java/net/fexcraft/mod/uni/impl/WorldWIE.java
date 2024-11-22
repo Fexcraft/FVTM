@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
+import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -27,6 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.AbstractMap;
@@ -181,6 +183,11 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	@Override
 	public void spawnRailEntity(RailEntity ent){
 		world.spawnEntity(new NRailVehicle(world, ent));
+	}
+
+	@Override
+	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer){
+		world.spawnEntity(new NLandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), placer == null ? null : placer.local(), -1));
 	}
 
 }

@@ -111,7 +111,6 @@ public class NRailVehicle extends RootVehicle {
 				track = newtrack.createOppositeCopy();
 			}
 			else return new TRO(track, 0);
-
 		}
 		return new TRO(track, passed);
 	}

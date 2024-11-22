@@ -2,10 +2,10 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -96,7 +96,7 @@ public class Packets20F extends Packets20 {
 	private <PKT extends PacketBase> Runnable getRunnable(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){
 		if(context.get().getDirection().getOriginationSide().isClient()){
 			try{
-				return handler.handleServer(packet, EntityUtil.get(context.get().getSender()));
+				return handler.handleServer(packet, UniEntity.getCasted(context.get().getSender()));
 			}
 			catch(Throwable e){
 				e.printStackTrace();
@@ -104,7 +104,7 @@ public class Packets20F extends Packets20 {
 		}
 		else{
 			try{
-				return handler.handleClient(packet, EntityUtil.get(ClientPacketPlayer.get()));
+				return handler.handleClient(packet, UniEntity.getCasted(ClientPacketPlayer.get()));
 			}
 			catch(Throwable e){
 				e.printStackTrace();
@@ -116,13 +116,13 @@ public class Packets20F extends Packets20 {
 	private <PKT extends PacketBase> Runnable getRunnableWhenPlayerPresent(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){
 		if(context.get().getDirection().getOriginationSide().isClient()){
 			if(context.get().getSender() == null) return () -> {};
-			Passenger pass = EntityUtil.get(context.get().getSender());
+			Passenger pass = UniEntity.getCasted(context.get().getSender());
 			if(pass == null) return () -> {};
 			return handler.handleServer(packet, pass);
 		}
 		else{
 			if(ClientPacketPlayer.get() == null) return () -> {};
-			Passenger pass = EntityUtil.get(ClientPacketPlayer.get());
+			Passenger pass = UniEntity.getCasted(ClientPacketPlayer.get());
 			if(pass == null) return () -> {};
 			return handler.handleClient(packet, pass);
 		}

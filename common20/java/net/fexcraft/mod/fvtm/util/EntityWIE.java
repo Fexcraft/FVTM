@@ -47,6 +47,8 @@ public class EntityWIE extends EntityWI implements Passenger {
 			if(entity instanceof Player && !notified){
 				try{
 					//TODO send controls info/link in chat // "https://fexcraft.net/wiki/mod/fvtm/controls"
+					send("fvtm.seat.controls_info");
+					send("https://fexcraft.net/wiki/mod/fvtm/controls");
 					notified = true;
 				}
 				catch(Exception e){

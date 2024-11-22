@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.entity;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -23,6 +22,7 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.EntityWIE;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -242,7 +242,7 @@ public class RootVehicle extends Entity {
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 		ItemStack stack = player.getItemInHand(hand);
 		StackWrapper wrapper = FvtmResources.wrapStack(stack);
-		Passenger pass = EntityUtil.get(player);
+		Passenger pass = UniEntity.getCasted(player);
 		if(level().isClientSide){
 			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return InteractionResult.SUCCESS;
 			if(Lockable.isKey(wrapper.getItem())) return InteractionResult.SUCCESS;
@@ -581,7 +581,7 @@ public class RootVehicle extends Entity {
 
 	public void updatePassenger(Entity pass, SeatInstance seat){
 		if(seat.passenger_direct() != pass){
-			seat.passenger(EntityUtil.get(pass));
+			seat.passenger(UniEntity.getCasted(pass));
 		}
 		V3D pos = seat.getCurrentGlobalPosition();
 		pass.setPos(pos.x, pos.y - (pass instanceof Player ? 0.7 : 0), pos.z);
@@ -592,7 +592,7 @@ public class RootVehicle extends Entity {
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
 		SeatInstance seat = getSeatOf(pass);
-		if(seat != null) seat.passenger(EntityUtil.get(pass));
+		if(seat != null) seat.passenger(UniEntity.getCasted(pass));
 	}
 
 	@Override
@@ -603,7 +603,7 @@ public class RootVehicle extends Entity {
 			}
 		}
 		if(!level().isClientSide){
-			((Passenger)EntityUtil.get(pass)).set(-1, -1);
+			((Passenger)UniEntity.getCasted(pass)).set(-1, -1);
 		}
 		super.removePassenger(pass);
 	}
@@ -624,7 +624,7 @@ public class RootVehicle extends Entity {
 	}
 
 	public SeatInstance getSeatOf(Entity entity){
-		Passenger pass = EntityUtil.get(entity);
+		Passenger pass = UniEntity.getCasted(entity);
 		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;
 		return vehicle.seats.get(pass.seat());
 	}
@@ -677,7 +677,7 @@ public class RootVehicle extends Entity {
 		if(level().isClientSide || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
 		ItemStack stack = player.getItemInHand(hand);
 		SeatInstance seat = vehicle.seats.get(seatidx);
-		Passenger pass = EntityUtil.get(player);
+		Passenger pass = UniEntity.getCasted(player);
 		if(Lockable.isKey(FvtmRegistry.getItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass, StackWrapper.wrap(stack));
 			vehicle.sendUpdate(PKT_UPD_LOCK);
@@ -703,12 +703,13 @@ public class RootVehicle extends Entity {
 			List<Entity> nearby = level().getEntities(this, aabb, ent -> ent instanceof Mob);
 			for(Entity entity : nearby){
 				Mob mob = (Mob)entity;
+				Passenger ment = UniEntity.getCasted(mob);
 				if(mob.isLeashed() && mob.getLeashHolder() == player){
-					if(!seat.seat.allow(EntityUtil.get(entity))){
+					if(!seat.seat.allow(ment)){
 						player.sendSystemMessage(Component.literal("&eSeat does not accept this entity kind. (" + entity.getName() + ")"));
 						continue;
 					}
-					((Passenger)EntityUtil.get(entity)).set(getId(), seatidx);
+					ment.set(getId(), seatidx);
 					seat.elook.set_rotation(-entity.getYRot(), entity.getXRot(), 0F, true);
 					mob.dropLeash(true, !player.isCreative());
 					entity.startRiding(this);

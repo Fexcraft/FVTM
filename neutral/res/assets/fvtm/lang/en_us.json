@@ -206,5 +206,10 @@
 	"fvtm.spawn.rail.junction_empty": "&c&oNo Junction found at this position.",
 	"fvtm.spawn.rail.first_track_short": "&c&oFirst Track of Junction too short to spawn this vehicle.",
 	"fvtm.spawn.rail.wrong_gauge_width": "&c&oWrong rail gauge width for this vehicle.",
-	"fvtm.spawn.rail.success": "&a&oSpawning vehicle..."
+	"fvtm.spawn.rail.success": "&a&oSpawning vehicle...",
+
+	"fvtm.spawn.simple.no_engine": "&9Vehicle does not have an Engine installed!",
+	"fvtm.spawn.simple.no_seats": "&9Vehicle does not have any Seats!",
+	"fvtm.spawn.simple.no_data": "&9Vehicle does not have simple-physics data configured!"
+
 }

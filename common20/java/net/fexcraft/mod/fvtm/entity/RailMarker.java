@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -116,9 +116,9 @@ public class RailMarker extends Entity {
 			RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(current);
 			if(track == null) return InteractionResult.SUCCESS;
 			if(player.getMainHandItem().getItem() instanceof RailGaugeItem){
-				track.create(EntityUtil.get(player), position);
+				track.create(UniEntity.getEntity(player), position);
 			}
-			else track.select(EntityUtil.get(player), position);
+			else track.select(UniEntity.getEntity(player), position);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.SUCCESS;
@@ -133,7 +133,7 @@ public class RailMarker extends Entity {
 			if(queueid != null && queueid.equals(queueid)){
 				Player player = (Player)source.getDirectEntity();
 				RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(queueid);
-				if(track != null) track.remove(EntityUtil.get(player), position);
+				if(track != null) track.remove(UniEntity.getEntity(player), position);
 				kill();
 			}
 		}

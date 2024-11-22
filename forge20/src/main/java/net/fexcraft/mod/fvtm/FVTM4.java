@@ -97,6 +97,13 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("vehicle")
 	);
+	public static final RegistryObject<EntityType<RailVehicleF>> RAILVEH_ENTITY = ENTITIES.register("railveh", () ->
+		EntityType.Builder.of(RailVehicleF::new, MobCategory.MISC)
+			.sized(1F, 1F)
+			.setUpdateInterval(1)
+			.setTrackingRange(256)
+			.build("railveh")
+	);
 	//
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("fvtm", "channel"))
 		.clientAcceptedVersions(pro -> true)
@@ -124,6 +131,7 @@ public class FVTM4 {
 		FvtmGetters.ROAD_MARKER_ENTITY = () -> ROAD_MARKER_ENTITY.get();
 		FvtmGetters.RAIL_MARKER_ENTITY = () -> RAIL_MARKER_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
+		FvtmGetters.RAILVEHICLE_ENTITY = () -> RAILVEH_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY_CLASS = WheelEntityF.class;
 		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();

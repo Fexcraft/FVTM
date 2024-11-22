@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.impl.WorldWI;
-import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
@@ -29,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -193,7 +191,15 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public void spawnRailEntity(RailEntity ent){
-		//TODO
+		level.addFreshEntity(FvtmGetters.getNewRailVeh(level).assign(ent));
+	}
+
+	@Override
+	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer){
+		RootVehicle veh = FvtmGetters.getNewVehicle(level);
+		veh.setPos(pos.x, pos.y, pos.z);
+		veh.initVD(data);
+		level.addFreshEntity(veh);
 	}
 
 }

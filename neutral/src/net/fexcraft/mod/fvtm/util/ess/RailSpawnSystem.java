@@ -83,6 +83,7 @@ public class RailSpawnSystem extends EntitySystem {
 			if(spawn){
 				placer.bar("fvtm.spawn.rail.success");
 				syscap.registerEntity(new RailEntity(syscap, new VehicleInstance(null, data), junk.tracks.get(0), placer.getUUID()));
+				if(placer != null && placer.asEntity() != null && !placer.asEntity().isCreative()) stack.count(stack.count() - 1);
 			}
 			return true;
 		}

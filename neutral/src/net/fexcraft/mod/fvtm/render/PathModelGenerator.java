@@ -78,9 +78,9 @@ public class PathModelGenerator {
 							for(int m = 0; m < verts.length; m++){
 								Vertex org = poly.vertices[m];
 								verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
-								double dx = (verts[m].vector.x * sixteenth) + vec.x - cen.x;
-								double dy = (verts[m].vector.y * sixteenth) + vec.y - cen.y;
-								double dz = (verts[m].vector.z * sixteenth) + vec.z - cen.z;
+								double dx = (verts[m].vector.x) + vec.x - cen.x;
+								double dy = (verts[m].vector.y) + vec.y - cen.y;
+								double dz = (verts[m].vector.z) + vec.z - cen.z;
 								verts[m].vector = new Vec3f(dx, dy, dz);
 							}
 							tarp.hedrons[(int)accu].importMRT(new TexturedPolygon(verts), 1f);

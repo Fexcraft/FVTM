@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.EntityUtil;
-import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
@@ -10,6 +8,7 @@ import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
@@ -126,7 +125,7 @@ public class DecorationEntity extends Entity {
 					updateClient();
 				}
 			}
-			EntityUtil.get(player).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
+			UniEntity.getEntity(player).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;

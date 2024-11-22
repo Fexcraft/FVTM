@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.event;
 
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,7 +40,7 @@ public class InputEvents {
 	}
 
 	private static void handleKeyboardInput(){
-		Passenger player = EntityUtil.get(minecraft.player);
+		Passenger player = UniEntity.getCasted(minecraft.player);
 		SeatInstance seat = ((RootVehicle)minecraft.player.getVehicle()).getSeatOf(minecraft.player);
 		if(seat == null) return;
 		boolean u12 = false;

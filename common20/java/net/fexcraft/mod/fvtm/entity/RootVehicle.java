@@ -86,39 +86,41 @@ public class RootVehicle extends Entity {
 		vehicle = new VehicleInstance(new EntityWIE(this), null);
 	}
 
-	public void init(VehicleData data){
+	public void initVD(VehicleData data){
 		vehicle.init(data);
-		init();
+		init(null);
 	}
 
-	private void init(){
+	protected void init(TagCW com){
 		spdata = vehicle.data.getType().getSphData();
 		wheels.clear();
 		wheel_radius = 0;
-		for(Map.Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
-			if(entry.getKey().endsWith(":tire")) continue;
-			WheelTireData wheel = new WheelTireData(entry.getKey());
-			wheel.pos = entry.getValue();
-			PartData part = vehicle.data.getPart(entry.getKey());
-			if(!((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).hasTire()){
-				part = vehicle.data.getPart(entry.getKey() + ":tire");
-				wheel_radius += ((TireInstallationHandler.TireData)part.getType().getInstallHandlerData()).getOuterRadius();
+		if(!vehicle.type.isRailVehicle()){
+			for(Map.Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
+				if(entry.getKey().endsWith(":tire")) continue;
+				WheelTireData wheel = new WheelTireData(entry.getKey());
+				wheel.pos = entry.getValue();
+				PartData part = vehicle.data.getPart(entry.getKey());
+				if(!((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).hasTire()){
+					part = vehicle.data.getPart(entry.getKey() + ":tire");
+					wheel_radius += ((TireInstallationHandler.TireData)part.getType().getInstallHandlerData()).getOuterRadius();
+				}
+				else{
+					wheel_radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
+				}
+				wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
+				wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
+				wheel.mirror = vehicle.data.getWheelSlots().get(entry.getKey()).mirror;
+				vehicle.wheeldata.put(entry.getKey(), wheel);
 			}
-			else{
-				wheel_radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
-			}
-			wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
-			wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
-			wheel.mirror = vehicle.data.getWheelSlots().get(entry.getKey()).mirror;
-			vehicle.wheeldata.put(entry.getKey(), wheel);
+			vehicle.assignWheels();
+			wheel_radius /= vehicle.wheeldata.size();
 		}
-		vehicle.assignWheels();
-		wheel_radius /= vehicle.wheeldata.size();
 		vehicle.seats.clear();
 		for(int i = 0; i < vehicle.data.getSeats().size(); i++){
 			vehicle.seats.add(new SeatInstance(vehicle, i));
 		}
-		if(!level().isClientSide && vehicle.front != null){
+		if(!level().isClientSide && vehicle.front != null && !vehicle.type.isRailVehicle()){
 			vehicle.sendUpdate(PKT_UPD_CONNECTOR);
 		}
 		if(level().isClientSide){
@@ -146,7 +148,7 @@ public class RootVehicle extends Entity {
 		protZ = rotZ = com.getFloat("RotationYaw");
 		setOldPosAndRot();
 		vehicle.point.loadPivot(com);
-		init();
+		init(com);
 	}
 
 	@Override
@@ -162,6 +164,7 @@ public class RootVehicle extends Entity {
 		if(vehicle.front != null){
 			com.set("TruckId", vehicle.front.entity.getId());
 		}
+		writeSpawnData(com);
 		vehicle.data.write(com);
 		buffer.writeNbt(com.local());
 	}
@@ -171,6 +174,7 @@ public class RootVehicle extends Entity {
 			TagCW com = TagCW.wrap(buffer.readNbt());
 			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
 			vehicle.point.loadPivot(com);
+			readSpawnData(com);
 			setYRot(vehicle.point.getPivot().deg_yaw());
 			setXRot(vehicle.point.getPivot().deg_pitch());
 			protZ = rotZ = vehicle.point.getPivot().deg_roll();
@@ -179,13 +183,17 @@ public class RootVehicle extends Entity {
 				vehicle.front = ((RootVehicle)level().getEntity(com.getInteger("TruckId"))).vehicle;
 				vehicle.front.rear = vehicle;
 			}
-			init();
+			init(com);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			FvtmLogger.LOGGER.log("Failed to read additional spawn data for vehicle entity with ID " + getId() + "!");
 		}
 	}
+
+	public void writeSpawnData(TagCW com){}
+
+	public void readSpawnData(TagCW com){}
 
 	@Override
 	public void kill(){
@@ -200,8 +208,10 @@ public class RootVehicle extends Entity {
 		if(!wheels.isEmpty()){
 			for(WheelEntity wheel : wheels.values()) wheel.kill();
 		}
-		if(vehicle.front != null) vehicle.front.rear = null;
-		if(vehicle.rear != null) vehicle.rear.front = null;
+		if(!vehicle.type.isRailVehicle()){
+			if(vehicle.front != null) vehicle.front.rear = null;
+			if(vehicle.rear != null) vehicle.rear.front = null;
+		}
 	}
 
 	public void setPosRotMot(V3D pos, double yaw, double pit, double rol, double thr, double steer, int fuel){
@@ -282,7 +292,7 @@ public class RootVehicle extends Entity {
 					RootVehicle veh = FvtmGetters.getNewVehicle(level());
 					veh.vehicle.front = this.vehicle;
 					vehicle.rear = veh.vehicle;
-					veh.init(data);
+					veh.initVD(data);
 					veh.vehicle.point.updatePrevAxe();
 					veh.vehicle.point.getPivot().copy(vehicle.point.getPivot());
 					veh.setPos(position());
@@ -360,15 +370,20 @@ public class RootVehicle extends Entity {
 				setPos(x, y, z);
 				vehicle.pivot().set_rotation(getYRot(), getXRot(), rotZ, true);
 			}
-			AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
-			attr.initial = attr.value;
-			attr.value = (float)vehicle.steer_yaw;
-			double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(xOld - position().x, zOld - position().z) + rad180);
-			dir = dir > rad90 || dir < -rad90 ? -1 : 1;
-			wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * dir * wheel_radius * 100));
-			vehicle.data.setAttribute("wheel_angle", wheel_rotation);
-			vehicle.data.setAttribute("throttle", vehicle.throttle);
-			vehicle.data.setAttribute("speed", vehicle.speed);
+			if(vehicle.type.isRailVehicle()){
+				((RailVehicle)this).updBogieRot();
+			}
+			else{
+				AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
+				attr.initial = attr.value;
+				attr.value = (float)vehicle.steer_yaw;
+				double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(xOld - position().x, zOld - position().z) + rad180);
+				dir = dir > rad90 || dir < -rad90 ? -1 : 1;
+				wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * dir * wheel_radius * 100));
+				vehicle.data.setAttribute("wheel_angle", wheel_rotation);
+				vehicle.data.setAttribute("throttle", vehicle.throttle);
+				vehicle.data.setAttribute("speed", vehicle.speed);
+			}
 		}
 		for(WheelEntity wheel : wheels.values()){
 			if(wheel == null) continue;
@@ -376,29 +391,40 @@ public class RootVehicle extends Entity {
 		}
 		Player driver = getDriver();
 		if(!level().isClientSide){
-			boolean creative = driver != null && driver.isCreative();
-			if(driver == null || (!creative && vehicle.data.outoffuel())){
-				vehicle.throttle *= 0.98;
+			V3D fron, rear, left, righ;
+			if(vehicle.type.isRailVehicle()){
+				vehicle.data.getAttribute("section_on").set(vehicle.railent.current.getUnit().section().getUID());
+				vehicle.railent.alignEntity(false);
+				//
+				fron = vehicle.railent.bfront;
+				rear = vehicle.railent.brear;
+				left = righ = new V3D((fron.x + rear.x) * 0.5, (fron.y + rear.y) * 0.5, (fron.z + rear.z) * 0.5);
 			}
-			move(!VEHICLES_NEED_FUEL || creative);
-			if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
-			//
-			WheelEntity fl = wheels.get(vehicle.w_front_l.id);
-			WheelEntity fr = wheels.get(vehicle.w_front_r.id);
-			WheelEntity rl = wheels.get(vehicle.w_rear_l.id);
-			WheelEntity rr = wheels.get(vehicle.w_rear_r.id);
-			if(fl == null) return;
-			V3D fron = new V3D((fl.position().x + fr.position().x) * 0.5, (fl.position().y + fr.position().y) * 0.5, (fl.position().z + fr.position().z) * 0.5);
-			V3D rear = new V3D((rl.position().x + rr.position().x) * 0.5, (rl.position().y + rr.position().y) * 0.5, (rl.position().z + rr.position().z) * 0.5);
-			V3D left = new V3D((fl.position().x + rl.position().x) * 0.5, (fl.position().y + rl.position().y) * 0.5, (fl.position().z + rl.position().z) * 0.5);
-			V3D righ = new V3D((fr.position().x + rr.position().x) * 0.5, (fr.position().y + rr.position().y) * 0.5, (fr.position().z + rr.position().z) * 0.5);
+			else{
+				boolean creative = driver != null && driver.isCreative();
+				if(driver == null || (!creative && vehicle.data.outoffuel())){
+					vehicle.throttle *= 0.98;
+				}
+				move(!VEHICLES_NEED_FUEL || creative);
+				if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
+				//
+				WheelEntity fl = wheels.get(vehicle.w_front_l.id);
+				WheelEntity fr = wheels.get(vehicle.w_front_r.id);
+				WheelEntity rl = wheels.get(vehicle.w_rear_l.id);
+				WheelEntity rr = wheels.get(vehicle.w_rear_r.id);
+				if(fl == null) return;
+				fron = new V3D((fl.position().x + fr.position().x) * 0.5, (fl.position().y + fr.position().y) * 0.5, (fl.position().z + fr.position().z) * 0.5);
+				rear = new V3D((rl.position().x + rr.position().x) * 0.5, (rl.position().y + rr.position().y) * 0.5, (rl.position().z + rr.position().z) * 0.5);
+				left = new V3D((fl.position().x + rl.position().x) * 0.5, (fl.position().y + rl.position().y) * 0.5, (fl.position().z + rl.position().z) * 0.5);
+				righ = new V3D((fr.position().x + rr.position().x) * 0.5, (fr.position().y + rr.position().y) * 0.5, (fr.position().z + rr.position().z) * 0.5);
+			}
 			double dx = rear.x - fron.x, dy = rear.y - fron.y, dz = rear.z - fron.z;
 			double drx = righ.x - left.x, dry = righ.y - left.y, drz = righ.z - left.z;
 			double dxz = Math.sqrt(dx * dx + dz * dz);
 			double y = -Math.atan2(dx, dz);
 			double p = -Math.atan2(dy, dxz);
 			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
-			double t = valRad(Math.toRadians(tickCount / 10 % 360));
+			//double t = valRad(Math.toRadians(tickCount / 10 % 360));
 			vehicle.pivot().set_rotation(y, p, r, false);
 			//align_wheels();
 		}
@@ -615,11 +641,16 @@ public class RootVehicle extends Entity {
 			EngineFunction engine = vehicle.data.hasPart("engine") ? vehicle.data.getFunctionInPart("engine", "fvtm:engine") : null;
 			if(engine != null) engine.setState(false);
 			//TODO perm check
-			VehicleInstance trailer = vehicle;
-			while((trailer = trailer.rear) != null){
-				Entity rear = trailer.entity.local();
-				rear.spawnAtLocation(trailer.data.newItemStack().local(), 0.5f);
-				rear.kill();
+			if(vehicle.type.isRailVehicle()){
+				vehicle.railent.remove();
+			}
+			else{
+				VehicleInstance trailer = vehicle;
+				while((trailer = trailer.rear) != null){
+					Entity rear = trailer.entity.local();
+					rear.spawnAtLocation(trailer.data.newItemStack().local(), 0.5f);
+					rear.kill();
+				}
 			}
 			spawnAtLocation(vehicle.data.newItemStack().local(), 0.5f);
 			kill();

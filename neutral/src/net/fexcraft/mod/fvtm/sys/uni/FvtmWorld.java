@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 
@@ -51,5 +52,7 @@ public interface FvtmWorld {
 	public void handleBlockEntityPacket(TagCW com, Passenger player);
 
 	public void spawnRailEntity(RailEntity ent);
+
+	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer);
 
 }

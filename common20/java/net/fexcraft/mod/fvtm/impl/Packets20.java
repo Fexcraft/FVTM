@@ -2,8 +2,6 @@ package net.fexcraft.mod.fvtm.impl;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.EntityUtil;
-import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
@@ -11,6 +9,7 @@ import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.network.FriendlyByteBuf;
@@ -63,7 +62,7 @@ public abstract class Packets20 extends Packets {
 				Level level = player.getWorld().local();
 				Entity ent = level.getEntity(tag.getInteger("entity"));
 				if(ent == null) return;
-				((Passenger)EntityUtil.get(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
+				((Passenger)UniEntity.getEntity(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
 			});
 		}
 	}

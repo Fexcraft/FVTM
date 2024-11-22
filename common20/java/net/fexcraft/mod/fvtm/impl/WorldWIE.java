@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.impl;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -20,6 +19,7 @@ import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WorldWI;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -61,7 +61,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public Passenger getPassenger(int source){
-		return EntityUtil.get(level.getEntity(source));
+		return UniEntity.getCasted(level.getEntity(source));
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return EntityUtil.get(ClientPacketPlayer.get());
+		return UniEntity.getCasted(ClientPacketPlayer.get());
 	}
 
 	@Override

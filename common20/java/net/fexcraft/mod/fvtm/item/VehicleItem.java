@@ -1,20 +1,21 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.render.ItemRenderers;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -95,11 +96,8 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
 		VehicleData data = getDataFromTag(stack.getTag());
-		RootVehicle veh = FvtmGetters.getNewVehicle(context.getLevel());
-		veh.setPos(context.getClickLocation().add(0, 2, 0));
-		veh.init(data);
-		context.getLevel().addFreshEntity(veh);
-		if(!context.getPlayer().isCreative()) stack.shrink(1);
+		EntityW ent = UniEntity.getEntity(context.getPlayer());
+		EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), data, StackWrapper.wrap(stack));
 		return InteractionResult.SUCCESS;
 	}
 

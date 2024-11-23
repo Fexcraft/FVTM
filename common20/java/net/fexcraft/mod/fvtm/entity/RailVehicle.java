@@ -24,6 +24,7 @@ public class RailVehicle extends RootVehicle {
 	public RailSystem sys;
 	private double frbogiedis;
 	private double rrbogiedis;
+	private byte remtimer;
 
 	public RailVehicle(EntityType<?> type, Level world){
 		super(type, world);
@@ -65,13 +66,13 @@ public class RailVehicle extends RootVehicle {
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound){
 		super.addAdditionalSaveData(compound);
-		compound.putLong("RailEntity", vehicle.railent.uid);
+		if(vehicle.railent != null) compound.putLong("RailEntity", vehicle.railent.uid);
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound){
 		super.readAdditionalSaveData(compound);
-		kill();
+		remtimer = 40;
 	}
 
 	public V3D moveOnly(double passed){
@@ -107,6 +108,14 @@ public class RailVehicle extends RootVehicle {
 
 	@Override
 	public void tick(){
+		if(remtimer > 0){
+			if(remtimer == 1) kill();
+			remtimer--;
+		}
+		if(!level().isClientSide && vehicle.railent == null){
+			if(remtimer == 0) remtimer = 40;
+			return;
+		}
 		super.tick();
 	}
 

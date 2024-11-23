@@ -479,7 +479,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private void checkIfShouldHaveEntity(){
-		if(lastcheck == null) return; if(lastcheck > 0){ lastcheck--; return; }
+		if(lastcheck == null) return;
+		if(lastcheck > 0){
+			lastcheck--;
+			return;
+		}
 		if(vehicle.entity != null){
 			if(vehicle.seats != null){
 				for(SeatInstance seat : vehicle.seats){
@@ -505,6 +509,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 			FvtmWorld world = (FvtmWorld)region.getSystem().getWorld();
 			world.spawnRailEntity(this);
+			lastcheck = interval;
 		}
 	}
 

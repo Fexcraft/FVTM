@@ -131,7 +131,7 @@ public class FVTM4 {
 				if(obj.get() instanceof BlockBase) list.add(obj.get());
 			});
 		});
-		return (Block[])list.toArray();
+		return list.toArray(new Block[0]);
 	}
 
 	public FVTM4(){

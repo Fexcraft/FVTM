@@ -136,4 +136,8 @@ public class BlockData extends ContentData<Block, BlockData> implements TextureU
         return type.relaydata;
     }
 
+	public BlockType getBlockType(){
+        return type.blocktype;
+	}
+
 }

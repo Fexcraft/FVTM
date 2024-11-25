@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,11 @@ public class BlockBase extends PlainBase implements EntityBlock {
 		if(entity == null) return;
 		BaseBlockEntity base = (BaseBlockEntity)entity;
 		base.data = ((BlockItem)stack.getItem()).getData(StackWrapper.wrap(stack));
+	}
+
+	@Override
+	public RenderShape getRenderShape(BlockState state){
+		return type.isInvisible() ? RenderShape.INVISIBLE : type.hasPlainModel() ? RenderShape.MODEL : RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 }

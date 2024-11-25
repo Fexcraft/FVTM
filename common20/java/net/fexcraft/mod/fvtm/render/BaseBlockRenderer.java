@@ -2,24 +2,16 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
-import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
-import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.block.Lift2024Model;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.lib.common.Static.rad180;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
 import static net.fexcraft.mod.fvtm.render.Renderer120.rotateRad;
 
@@ -29,6 +21,7 @@ import static net.fexcraft.mod.fvtm.render.Renderer120.rotateRad;
 public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity> {
 
 	private BlockData data;
+	private double rot;
 
 	@Override
 	public void render(BaseBlockEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
@@ -40,9 +33,31 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity> {
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);
 		//
+		rot = getRot(tile.getBlockState());
+		if(rot != 0d){
+			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
+		}
 		data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, tile, null, null, false));
  		//
 		pose.popPose();
+	}
+
+	private double getRot(BlockState state){
+		if(data.getBlockType().rotations == 4 || data.getBlockType().rotations == 44){
+			switch(state.getValue(FACING).ordinal()){
+				case 2: return 90;
+				case 3: return -90;
+				case 4: return 180;
+				case 5: return 0;
+			}
+		}
+		else if(data.getBlockType().rotations == 8){
+			return state.getValue(PROP_ROT8) * -45 + 90;
+		}
+		else if(data.getBlockType().rotations == 16){
+			return state.getValue(PROP_ROT16) * -22.5 + 90;
+		}
+		return 0;
 	}
 
 	@Override

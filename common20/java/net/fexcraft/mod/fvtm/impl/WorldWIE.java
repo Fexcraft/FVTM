@@ -97,6 +97,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	}
 
 	public static AABB aabb = new AABB(-20, -20, -20, 20, 20, 20);
+	public static AABB aabb2 = new AABB(-2, -2, -2, 2, 2, 2);
 
 	@Override
 	public ArrayList<VehicleInstance> getVehicles(V3D pos){

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
+import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.JunctionTool;
@@ -33,6 +34,7 @@ public class FvtmGetters {
 	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
 	//
 	public static Supplier<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY;
+	public static Supplier<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY;
 	//
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
 	public static Supplier<ToolboxItem> TOOLBOX0;

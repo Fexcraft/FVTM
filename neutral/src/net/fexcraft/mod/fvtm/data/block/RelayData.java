@@ -32,9 +32,9 @@ public class RelayData {
 		JsonMap points = map.getMap("points");
 		for(Entry<String, JsonValue<?>> entry : points.entries()){
 			JsonArray array = entry.getValue().asArray();
-			int x = array.get(0).integer_value();
-			int y = array.get(1).integer_value();
-			int z = array.get(2).integer_value();
+			float x = array.get(0).float_value();
+			float y = array.get(1).float_value();
+			float z = array.get(2).float_value();
 			conns.put(entry.getKey(), new V3D(x, y, z));
 			limits.put(entry.getKey(), array.size() > 3 ? array.get(3).integer_value() : 0);
 			types.put(entry.getKey(), array.size() > 4 ? array.get(4).asArray().toStringList() : new ArrayList<>());

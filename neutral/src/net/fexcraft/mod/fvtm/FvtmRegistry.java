@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
 import net.fexcraft.mod.fvtm.util.ess.RailSpawnSystem;
+import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
@@ -97,6 +98,7 @@ public class FvtmRegistry {
 		StackWrapper.register(new PartItemApp(null));
 		UniEntity.register(new FvtmPlayerData(null));
 		EntitySystem.add(new RailSpawnSystem());
+		EntitySystem.add(new SimplePhysSpawnSystem());
 	}
 
 	public static Addon getAddon(String id){

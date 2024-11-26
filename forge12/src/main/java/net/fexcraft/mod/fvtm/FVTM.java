@@ -56,8 +56,6 @@ import net.fexcraft.mod.fvtm.util.cap.pass.PassengerCallable;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerStorage;
 import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.fvtm.util.ess.BasicSpawnSystem;
-import net.fexcraft.mod.fvtm.util.ess.RailSpawnSystem;
-import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
@@ -174,7 +172,6 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallablePacks());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
-		EntitySystem.add(new SimplePhysSpawnSystem());
 		EntitySystem.add(new BasicSpawnSystem());
 		TrafficSignLibrary.initialize(event.getSide(), event.getSuggestedConfigurationFile().getParentFile());
 		GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));

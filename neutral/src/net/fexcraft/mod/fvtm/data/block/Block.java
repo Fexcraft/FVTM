@@ -169,7 +169,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		hastile = map.getBoolean("HasBlockEntity", hastile);
 		if(map.has("Functions")){
 			map.getMap("Functions").entries().forEach(entry -> {
-				parseFunction(entry.getKey(), entry.getValue().asMap());
+				parseFunction(entry.getKey(), entry.getValue());
 			});
 		}
 		if(map.has("WireRelay")){
@@ -243,7 +243,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return channels;
 	}
 
-	private void parseFunction(String key, JsonMap elm){
+	private void parseFunction(String key, JsonValue elm){
 		try{
 			BlockFunction func = FvtmRegistry.BLOCK_FUNCTIONS.get(key).getConstructor().newInstance();
 			functions.add(func.parse(elm));
@@ -251,7 +251,6 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		catch(Exception e){
 			FvtmLogger.log("Failed to load BlockFunction for '" + id.colon() + "' with JSON: " + elm);
 			e.printStackTrace();
-			Static.stop();
 		}
 	}
 

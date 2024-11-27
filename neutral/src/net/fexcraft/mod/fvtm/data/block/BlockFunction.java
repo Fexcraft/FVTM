@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public abstract class BlockFunction {
 
-    public abstract BlockFunction parse(JsonMap map);
+    public abstract BlockFunction parse(JsonValue map);
 
     public abstract BlockFunction load(TagCW com);
 

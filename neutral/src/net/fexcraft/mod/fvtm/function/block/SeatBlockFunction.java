@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.function.block;
 import java.util.List;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
@@ -24,8 +25,8 @@ public class SeatBlockFunction extends BlockFunction.StaticBlockFunction {
     private V3D offset;
 
     @Override
-    public BlockFunction parse(JsonMap map){
-        offset = ContentConfigUtil.getVector(map.getArray("pos"));
+    public BlockFunction parse(JsonValue val){
+        offset = ContentConfigUtil.getVector(val.asArray());
         return this;
     }
 

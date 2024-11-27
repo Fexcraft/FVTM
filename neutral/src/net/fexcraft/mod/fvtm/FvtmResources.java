@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.block.BarrelBlockFunction;
 import net.fexcraft.mod.fvtm.function.block.BoolBlockFunction;
 import net.fexcraft.mod.fvtm.function.block.SeatBlockFunction;
+import net.fexcraft.mod.fvtm.function.block.SetStateFunction;
 import net.fexcraft.mod.fvtm.function.part.*;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
@@ -182,6 +183,7 @@ public abstract class FvtmResources {
 		//
 		BLOCK_FUNCTIONS.put("fvtm:seat", SeatBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:set_block", SetBlockFunction.class);
+		BLOCK_FUNCTIONS.put("fvtm:set_state", SetStateFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:boolean", BoolBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:inventory", InventoryBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:barrel", BarrelBlockFunction.class);

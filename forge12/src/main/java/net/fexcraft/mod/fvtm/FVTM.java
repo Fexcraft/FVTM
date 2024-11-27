@@ -65,8 +65,12 @@ import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.InvalidBlockStateException;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -136,6 +140,20 @@ public class FVTM {
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		StateWrapper.DEFAULT = new StateWrapperI(Blocks.AIR.getDefaultState());
 		StateWrapper.STATE_WRAPPER = state -> new StateWrapperI((IBlockState)state);
+		StateWrapper.COMMAND_WRAPPER = (block, arg) -> {
+			try{
+				if(block == null){
+					String split[] = arg.split(" ");
+					arg = split[1];
+					block = Block.REGISTRY.getObject(new ResourceLocation(split[0]));
+				}
+				return new StateWrapperI(CommandBase.convertArgToBlockState((Block)block, arg));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				return StateWrapper.DEFAULT;
+			}
+		};
 		StateWrapper.STACK_WRAPPER = (stack, ctx) ->{
 			Item item = stack.getItem().local();
 			if(item instanceof ItemBlock){

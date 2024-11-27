@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
@@ -25,8 +26,9 @@ public class SetBlockFunction extends BlockFunction.StaticBlockFunction {
 	private String state;
 
 	@Override
-	public BlockFunction parse(JsonMap map){
-		if(map == null) return this;
+	public BlockFunction parse(JsonValue val){
+		if(val == null) return this;
+		JsonMap map = val.asMap();
 		nblock = map.get("block").string_value();
 		chance = map.getFloat("chance", 1f);
 		if(chance > 1) chance = 1;

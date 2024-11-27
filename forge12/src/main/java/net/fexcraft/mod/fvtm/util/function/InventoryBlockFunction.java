@@ -26,7 +26,7 @@ public class InventoryBlockFunction extends BlockFunction {
 
 	public BlockFunction parse(JsonMap map){
 		if(map == null) return this;
-		handler = new InvHandlerInit(InvType.parse(map.get("inv_type").string_value(), true));
+		handler = new InvHandlerInit(InvType.parse(map.get("type").string_value(), true));
 		if(map.has("capacity")) handler.setCapacity(map.get("capacity").integer_value());
 		if(map.has("stacks")) handler.setCapacity(map.get("stacks").integer_value());
 		if(map.has("var")) handler.setArg(map.get("var").string_value());
@@ -82,8 +82,8 @@ public class InventoryBlockFunction extends BlockFunction {
 	}
 
 	public void onClose(BlockEntity tile){
-		BoolBlockFunction func = tile.getBlockData().getFunctionBoolInst(key);
-		if(func != null) func.toggle(tile, !bool);
+		BoolBlockFunction func = tile.getBlockData().getFunctionBool();
+		if(func != null) func.toggle(tile, key, !bool);
 	}
 
 	public boolean hasBool(){

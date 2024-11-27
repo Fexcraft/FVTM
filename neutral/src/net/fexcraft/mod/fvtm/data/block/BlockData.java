@@ -22,7 +22,7 @@ public class BlockData extends ContentData<Block, BlockData> implements TextureU
     protected Textureable texture;
     protected Map<String, RGB> channels = new LinkedHashMap<>();
     protected ArrayList<BlockFunction> functions = new ArrayList<>();
-    protected ArrayList<BoolBlockFunction> boolfuns = new ArrayList<>();
+    protected BoolBlockFunction boolfunc = null;
     protected Object invfunc;
 
     public BlockData(Block block){
@@ -36,7 +36,7 @@ public class BlockData extends ContentData<Block, BlockData> implements TextureU
         }
         for(BlockFunction func : functions){
             if(func instanceof BoolBlockFunction){
-                boolfuns.add((BoolBlockFunction)func);
+                boolfunc = (BoolBlockFunction)func;
             }
             if(func.getClass().getName().contains("InventoryBlockFunction")){
                 invfunc = func;
@@ -111,17 +111,12 @@ public class BlockData extends ContentData<Block, BlockData> implements TextureU
     }
 
     public boolean getFunctionBool(String key){
-        for(BoolBlockFunction func : boolfuns){
-            if(func.key().equals(key)) return func.val();
-        }
-        return false;
+        if(boolfunc == null) return false;
+        return boolfunc.valOf(key);
     }
 
-    public BoolBlockFunction getFunctionBoolInst(String key){
-        for(BoolBlockFunction func : boolfuns){
-            if(func.key().equals(key)) return func;
-        }
-        return null;
+    public BoolBlockFunction getFunctionBool(){
+        return boolfunc;
     }
 
     public Object getFunctionInventory(){

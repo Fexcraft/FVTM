@@ -182,7 +182,7 @@ public abstract class FvtmResources {
 		//
 		BLOCK_FUNCTIONS.put("fvtm:seat", SeatBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:set_block", SetBlockFunction.class);
-		BLOCK_FUNCTIONS.put("fvtm:bool_value", BoolBlockFunction.class);
+		BLOCK_FUNCTIONS.put("fvtm:boolean", BoolBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:inventory", InventoryBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:barrel", BarrelBlockFunction.class);
 	}

@@ -167,12 +167,9 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		tickable = map.getBoolean("Tickable", false);
 		hastile = map.getBoolean("MultiSubBlock", false);
 		hastile = map.getBoolean("HasBlockEntity", hastile);
-		if(map.has("Function")){
-			parseFunction(map.get("Function"));
-		}
-		else if(map.has("Functions")){
-			map.getArray("Functions").value.forEach(elm -> {
-				parseFunction(elm);
+		if(map.has("Functions")){
+			map.getMap("Functions").entries().forEach(entry -> {
+				parseFunction(entry.getKey(), entry.getValue().asMap());
 			});
 		}
 		if(map.has("WireRelay")){
@@ -246,15 +243,10 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return channels;
 	}
 
-	private void parseFunction(JsonValue elm){
+	private void parseFunction(String key, JsonMap elm){
 		try{
-			if(!elm.isMap()){
-				functions.add(FvtmRegistry.BLOCK_FUNCTIONS.get(elm.string_value()).newInstance().parse(null));
-			}
-			else{
-				JsonMap obj = elm.asMap();
-				functions.add(FvtmRegistry.BLOCK_FUNCTIONS.get(obj.get("type").string_value()).newInstance().parse(obj));
-			}
+			BlockFunction func = FvtmRegistry.BLOCK_FUNCTIONS.get(key).getConstructor().newInstance();
+			functions.add(func.parse(elm));
 		}
 		catch(Exception e){
 			FvtmLogger.log("Failed to load BlockFunction for '" + id.colon() + "' with JSON: " + elm);

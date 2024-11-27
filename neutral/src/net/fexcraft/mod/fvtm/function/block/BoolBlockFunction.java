@@ -25,9 +25,9 @@ public class BoolBlockFunction extends BlockFunction {
 	private String key;
 
 	@Override
-	public BlockFunction parse(JsonMap map){
-		if(map == null) return this;
-		for(Map.Entry<String, JsonValue<?>> entry : map.entries()){
+	public BlockFunction parse(JsonValue val){
+		if(val == null) return this;
+		for(Map.Entry<String, JsonValue<?>> entry : val.asMap().entries()){
 			if(key == null) key = entry.getKey();
 			bools.put(entry.getKey(), entry.getValue().bool());
 		}

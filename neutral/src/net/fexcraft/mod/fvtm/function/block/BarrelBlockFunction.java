@@ -27,8 +27,9 @@ public class BarrelBlockFunction extends BlockFunction {
 	private ArrayList<String> compatible = new ArrayList<>();
 
 	@Override
-	public BlockFunction parse(JsonMap map){
-		if(map == null) return this;
+	public BlockFunction parse(JsonValue val){
+		if(val == null) return this;
+		JsonMap map = val.asMap();
 		capacity = map.getInteger("capacity", 1000);
 		content_cat = map.getString("category", "barrel");
 		if(map.has("compatible")){

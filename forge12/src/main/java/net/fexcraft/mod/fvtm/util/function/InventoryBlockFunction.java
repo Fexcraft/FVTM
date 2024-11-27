@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -24,8 +25,9 @@ public class InventoryBlockFunction extends BlockFunction {
 	private String key;
 	private boolean bool = true;
 
-	public BlockFunction parse(JsonMap map){
-		if(map == null) return this;
+	public BlockFunction parse(JsonValue val){
+		if(val == null) return this;
+		JsonMap map = val.asMap();
 		handler = new InvHandlerInit(InvType.parse(map.get("type").string_value(), true));
 		if(map.has("capacity")) handler.setCapacity(map.get("capacity").integer_value());
 		if(map.has("stacks")) handler.setCapacity(map.get("stacks").integer_value());

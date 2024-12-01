@@ -19,6 +19,15 @@ public class StateWrapperI extends StateWrapper {
     }
 
     @Override
+    public String getStateString(){
+        String str = "";
+        for(IProperty<?> key : state.getPropertyKeys()){
+            str += key + "=" + state.getValue(key) + ",";
+        }
+        return str.length() > 0 ? str.substring(0, str.length() - 1) : str;
+    }
+
+    @Override
     public Object getBlock(){
         return state.getBlock();
     }

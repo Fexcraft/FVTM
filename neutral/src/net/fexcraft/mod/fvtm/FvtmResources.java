@@ -42,7 +42,6 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.ZipUtils;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.util.function.SetBlockFunction;
 import net.fexcraft.mod.fvtm.handler.BogieInstallationHandler;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
@@ -182,7 +181,6 @@ public abstract class FvtmResources {
 		PART_FUNCTIONS.put("fvtm:interact_zone", InteractZoneFunction.class);
 		//
 		BLOCK_FUNCTIONS.put("fvtm:seat", SeatBlockFunction.class);
-		BLOCK_FUNCTIONS.put("fvtm:set_block", SetBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:set_state", SetStateFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:boolean", BoolBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:inventory", InventoryBlockFunction.class);

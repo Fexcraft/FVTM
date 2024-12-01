@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -8,7 +9,7 @@ import net.fexcraft.mod.uni.tag.TagCW;
 public class InventoryBlockFunction extends BlockFunction {
 
 	@Override
-	public BlockFunction parse(JsonMap map){
+	public BlockFunction parse(JsonValue map){
 		return this;
 	}
 

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
@@ -152,7 +153,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
-	private void renderWire(Wire wire, float[] color,  BlockPos junc){
+	private void renderWire(Wire wire, float[] color, V3I junc){
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
 		V3D vec0, vec1;
@@ -160,8 +161,8 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
         	vec0 = wire.vecpath[00];
         	vec1 = vec0.distance(wire.vecpath[1], 15);
 			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-			bufferbuilder.pos((vec0.x - junc.getX() + 16) * 2 + guiLeft + 7, (vec0.z - junc.getZ() + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
-			bufferbuilder.pos((vec1.x - junc.getX() + 16) * 2 + guiLeft + 7, (vec1.z - junc.getZ() + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
+			bufferbuilder.pos((vec0.x - junc.x + 16) * 2 + guiLeft + 7, (vec0.z - junc.z + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
+			bufferbuilder.pos((vec1.x - junc.x + 16) * 2 + guiLeft + 7, (vec1.z - junc.z + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
 			tessellator.draw();
         	return;
         }
@@ -169,11 +170,11 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 		for(int j = 0; j < wire.vecpath.length - 1; j++){
 			vec0 = wire.vecpath[j];
 			vec1 = wire.vecpath[j + 1];
-			x0 = vec0.x - junc.getX();
-			z0 = vec0.z - junc.getZ();
+			x0 = vec0.x - junc.x;
+			z0 = vec0.z - junc.z;
 			if(x0 < -16 || z0 < -16 || x0 > 16 || z0 > 16) continue;
-			x1 = vec1.x - junc.getX();
-			z1 = vec1.z - junc.getZ();
+			x1 = vec1.x - junc.x;
+			z1 = vec1.z - junc.z;
 			if(x1 < -16 || z1 < -16 || x1 > 16 || z1 > 16) continue;
 			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 			bufferbuilder.pos((x0 + 16) * 2 + guiLeft + 7, (z0 + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
@@ -238,7 +239,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "del_wire");
 			compound.setInteger("index", i + scroll);
-			compound.setLong("holder", container.relay.getHolder().pos.toLong());
+			//TODO compound.setLong("holder", container.relay.getHolder().pos.toLong());
 			compound.setString("relay", WireRelayContainer.SELRELAY);
 			this.container.send(Side.SERVER, compound);
 			return true;

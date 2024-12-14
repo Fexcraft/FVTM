@@ -163,10 +163,10 @@ public class EffectRenderer {
 		preMeshCalls();
 		V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
 		SwivelPoint point;
-		boolean inrange;
+		//boolean inrange;
 		boolean red = false;
 		for(InteractZone zone : data.getInteractZones().values()){
-			inrange = zone.inRange(data, vehpos, ply);
+			//inrange = zone.inRange(data, vehpos, ply);
 			if(Command.TOGGABLE){
 				V3D pos = zone.pos(data);
 				GLUtils112.translate(pos);
@@ -343,7 +343,7 @@ public class EffectRenderer {
 	public static void renderToggableInfo(Entity vehicle, VehicleData data){
 		if(!Command.TOGGABLE) return;
 		float scal;
-		V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
+		//V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
     	//
     	GL11.glPushMatrix();
         preMeshCalls();

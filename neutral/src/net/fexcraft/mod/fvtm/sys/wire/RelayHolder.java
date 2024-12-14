@@ -4,23 +4,18 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.math.BlockPos;
 
 public class RelayHolder {
 	
 	public LinkedHashMap<String, WireRelay> relays = new LinkedHashMap<>();
 	private final WireRegion region;
-	protected BlockTileEntity blocktile;
-	public BlockPos pos;
+	protected Object blocktile;
+	public V3I pos;
 	
-	public RelayHolder(WireRegion region, BlockPos pos){
+	public RelayHolder(WireRegion region, V3I pos){
 		this(region);
 		this.pos = pos;
 	}
@@ -53,12 +48,12 @@ public class RelayHolder {
 		return relays.containsKey(key);
 	}
 
-	public void setTile(BlockTileEntity tile){
+	public void setTile(Object tile){
 		blocktile = tile;
 	}
 
-	public BlockTileEntity getTile(){
-		return blocktile;
+	public <TE> TE getTile(){
+		return (TE)blocktile;
 	}
 
 	protected void delete(){
@@ -70,7 +65,7 @@ public class RelayHolder {
 
 	public TagCW write(){
 		TagCW compound = TagCW.create();
-		compound.set("Pos", pos.toLong());
+		compound.set("Pos", pos);
 		TagLW list = TagLW.create();
 		for(Entry<String, WireRelay> relay : relays.entrySet()){
 			TagCW com = relay.getValue().write(null);
@@ -81,13 +76,12 @@ public class RelayHolder {
 		return compound;
 	}
 
-	public RelayHolder read(NBTTagCompound compound){
-		pos = BlockPos.fromLong(compound.getLong("Pos"));
-		NBTTagList list = (NBTTagList)compound.getTag("Relays");
-		for(NBTBase base : list){
-			NBTTagCompound com = (NBTTagCompound)base;
-			WireRelay relay = new WireRelay(this).read(com);
-			relays.put(com.getString("Key"), relay);
+	public RelayHolder read(TagCW compound){
+		pos = compound.getV3I("Pos");
+		TagLW list = compound.getList("Relays");
+		for(TagCW tag : list){
+			WireRelay relay = new WireRelay(this).read(tag);
+			relays.put(tag.getString("Key"), relay);
 		}
 		return this;
 	}

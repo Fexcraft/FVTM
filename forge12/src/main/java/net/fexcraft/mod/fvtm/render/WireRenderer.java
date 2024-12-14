@@ -7,6 +7,7 @@ import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -70,7 +71,7 @@ public class WireRenderer {
         for(WireRegion reg : wiredata.getRegions().values()){
         	for(RelayHolder holder : reg.getHolders().values()){
             	for(WireRelay relay : holder.relays.values()){
-            		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB())) continue;
+            		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
                 	GL11.glPushMatrix();
                 	TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
                 	GL11.glTranslated(relay.pos.x, relay.pos.y, relay.pos.z);
@@ -145,7 +146,7 @@ public class WireRenderer {
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotated(wire.model_start_angle, 0, 1, 0);
     	        		TexUtil.bindTexture(wire.deco_s.getTexture());
-            			wire.deco_s.getModel().render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
+            			wire.deco_s.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
         			}
@@ -160,7 +161,7 @@ public class WireRenderer {
             			GL11.glRotated(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
     	        		TexUtil.bindTexture(wire.deco_e.getTexture());
-            			wire.deco_e.getModel().render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
+            			wire.deco_e.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
@@ -181,7 +182,7 @@ public class WireRenderer {
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
                     	        		TexUtil.bindTexture(dm.getValue().getTexture());
-                    					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
+                    					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
                     					if(tlist != null){
                     		        		TexUtil.bindTexture(wire.getWireType().getTexture());
                     						tlist.get(didx++).render();
@@ -197,7 +198,7 @@ public class WireRenderer {
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
                 	        		TexUtil.bindTexture(dm.getValue().getTexture());
-                					list.render(RENDERDATA.set(relay.getTile().getBlockData(), relay.getTile(), null, null, false));
+                					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();
                 				}

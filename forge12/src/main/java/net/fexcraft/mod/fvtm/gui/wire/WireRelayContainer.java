@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.wire;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
+import static net.fexcraft.mod.uni.world.WrapperHolder.getPos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -61,7 +63,7 @@ public class WireRelayContainer extends GenericContainer {
 		system = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		data = tile.getBlockData().getType().getRelayData();
-		holder = system.getHolder(tile.getPos());
+		holder = system.getHolder(getPos(tile.getPos()));
 		conns = new ArrayList<>(holder.relays.keySet());
 		stack = player.getHeldItemMainhand();
 		type = ((WireItem)stack.getItem()).getContent();
@@ -155,13 +157,13 @@ public class WireRelayContainer extends GenericContainer {
 					return;
 				}
 				case "del_wire":{
-					holder = system.getHolder(BlockPos.fromLong(packet.getLong("holder")));
+					holder = system.getHolder(getPos(packet.getLong("holder")));
 					relay = holder.get(conns.indexOf(packet.getString("relay")));
 					relay.remove(packet.getInteger("index"), true);
 					return;
 				}
 				case "reset_deco":{
-					wire = system.getWire(new WireKey(packet.getCompoundTag("wire")));
+					wire = system.getWire(new WireKey(TagCW.wrap(packet.getCompoundTag("wire"))));
 					String deco = packet.getString("type");
 					if(deco.equals("relay")){
 						if(!packet.getBoolean("opp")){
@@ -179,7 +181,7 @@ public class WireRelayContainer extends GenericContainer {
 					return;
 				}
 				case "select_deco":{
-					wire = system.getWire(new WireKey(packet.getCompoundTag("wire")));
+					wire = system.getWire(new WireKey(TagCW.wrap(packet.getCompoundTag("wire"))));
 					String deco = packet.getString("type");
 					String seld = packet.getString("selected");
 					if(deco.equals("relay")){
@@ -199,7 +201,7 @@ public class WireRelayContainer extends GenericContainer {
 					return;
 				}
 				case "set_slack":{
-					Wire wire0 = system.getWire(new WireKey(packet.getCompoundTag("wire")));
+					Wire wire0 = system.getWire(new WireKey(TagCW.wrap(packet.getCompoundTag("wire"))));
 					Wire wire1 = system.getWire(wire0.okey);
 					float value = packet.getFloat("slack");
 					if(value > 8) value = 8;

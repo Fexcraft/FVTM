@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
 import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map.Entry;
@@ -12,22 +11,18 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 /**
  * "Wire System"
@@ -52,24 +47,24 @@ public class WireSystem extends DetachedSystem {
 		try{
 			File file = new File(getSaveRoot(), "/wiresystem.dat");
 			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			NBTTagCompound compound = CompressedStreamTools.read(file);
-			if(compound == null || compound.isEmpty()) return;
+			TagCW compound = WrapperHolder.read(file);
+			if(compound == null || compound.empty()) return;
 			gc_sections = compound.getLong("GlobalCounterSections");
 		}
-		catch(IOException e){
+		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 
 	public void save(){
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("GlobalCounterSections", gc_sections);
+		TagCW compound = TagCW.create();
+		compound.set("GlobalCounterSections", gc_sections);
 		try{
 			File file = new File(getSaveRoot(), "/wiresystem.dat");
 			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			CompressedStreamTools.write(compound, file);
+			WrapperHolder.write(compound, file);
 		}
-		catch(IOException e){
+		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -135,7 +130,7 @@ public class WireSystem extends DetachedSystem {
 			return null;
 		}
 		
-		public WireRegion get(BlockPos pos, boolean load){
+		public WireRegion get(V3I pos, boolean load){
 			WireRegion region = get(RegionKey.getRegionXZ(mutPos(pos)));
 			if(region != null || !load) return region;
 			put(new RegionKey(RegionKey.getRegionXZ(mutPos(pos))), region = new WireRegion(pos, root, false));
@@ -179,7 +174,7 @@ public class WireSystem extends DetachedSystem {
 		ArrayList<WireRelay> arr = new ArrayList<>();
 		WireRegion region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<BlockPos, RelayHolder> entry : region.getHolders().entrySet()){
+		for(Entry<V3I, RelayHolder> entry : region.getHolders().entrySet()){
 			if(entry.getKey().getX() >> 4 == cx && entry.getKey().getZ() >> 4 == cz){
 				arr.addAll(entry.getValue().relays.values());
 			}
@@ -206,7 +201,7 @@ public class WireSystem extends DetachedSystem {
 		regions.clear();
 	}
 
-	public void updateRegion(NBTTagCompound compound, @Nullable EntityPlayerMP player){
+	public void updateRegion(TagCW compound, Passenger player){
 		int[] xz = compound.getIntArray("XZ");
 		if(world.isClient()){
 			WireRegion region = regions.get(xz);

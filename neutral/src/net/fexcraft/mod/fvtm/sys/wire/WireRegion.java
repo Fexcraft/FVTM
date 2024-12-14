@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,23 +8,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
 
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
 /**
@@ -35,7 +27,7 @@ import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
  */
 public class WireRegion {
 	
-	private ConcurrentHashMap<BlockPos, RelayHolder> holders = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<V3I, RelayHolder> holders = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, ChunkW> chucks = new ConcurrentHashMap<>();
 	public long lastaccess;
 	private int timer = 0;
@@ -49,7 +41,7 @@ public class WireRegion {
 		if(load) load();
 	}
 
-	public WireRegion(BlockPos pos, WireSystem root, boolean load){
+	public WireRegion(V3I pos, WireSystem root, boolean load){
 		key = new RegionKey(RegionKey.getRegionXZ(mutPos(pos)));
 		system = root;
 		if(load) load();
@@ -57,47 +49,45 @@ public class WireRegion {
 
 	public WireRegion load(){
 		if(system.getWorld().isClient()){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", "fvtm:wiresys");
-			compound.setString("task", "update_region");
-			compound.setIntArray("XZ", key.toArray());
-			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+			TagCW compound = TagCW.create();
+			compound.set("XZ", key.toArray());
+			Packets.send(Packet_TagListener.class, "wire_upd_region", compound);
 			return this;
 		}
 		File file = new File(system.getSaveRoot(), "/wireregions/" + key.x + "_" + key.z + ".dat");
-		NBTTagCompound compound = null;
+		TagCW compound = null;
 		boolean failed = false;
 		if(file.exists()){
 			try{
-				compound = CompressedStreamTools.read(file);
+				compound = WrapperHolder.read(file);
 			}
 			catch(Throwable e){
 				failed = true;
 				e.printStackTrace();
-				Print.log("FAILED TO LOAD WIRE REGION [ " + key.x +  ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
+				FvtmLogger.log("FAILED TO LOAD WIRE REGION [ " + key.x +  ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
 				try{
 					File newfile = new File(system.getSaveRoot(), "/wireregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
 					Files.copy(file.toPath(), newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					Print.log("If things gone well, created a backup copy of the 'broken' file!");
+					FvtmLogger.log("If things gone well, created a backup copy of the 'broken' file!");
 				}
 				catch(Throwable thr){
 					thr.printStackTrace();
-					Print.log("FAILED TO CREATE BACKUP OF BROKEN WIRE REGION");
+					FvtmLogger.log("FAILED TO CREATE BACKUP OF BROKEN WIRE REGION");
 				}
 			}
 		}
-		if(!file.exists() || failed) compound = new NBTTagCompound();
+		if(!file.exists() || failed) compound = TagCW.create();
 		//
 		return this.read(compound).setAccessed();
 	}
 
-	public WireRegion read(NBTTagCompound compound){
-		if(compound.hasKey("RelayHolders")){
+	public WireRegion read(TagCW compound){
+		if(compound.has("RelayHolders")){
 			if(!holders.isEmpty()) holders.clear();
-			NBTTagList list = (NBTTagList)compound.getTag("RelayHolders");
-			for(NBTBase base : list){
+			TagLW list = compound.getList("RelayHolders");
+			for(TagCW tag : list){
 				RelayHolder holder = new RelayHolder(this);
-				holder.read((NBTTagCompound)base);
+				holder.read(tag);
 				holders.put(holder.pos, holder);
 			}
 		}
@@ -110,12 +100,12 @@ public class WireRegion {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		TagCW compound = write(false);
 		if(compound.empty()){
-			Print.debug("WireRegion [" + key.toString() + "] has no data to save, skipping.");
+			FvtmLogger.debug("WireRegion [" + key.toString() + "] has no data to save, skipping.");
 			return this;
 		}
 		compound.set("Saved", Time.getDate());
 		WrapperHolder.write(compound, file);
-		Print.debug("Saved WireRegion [" + key.toString() + "].");
+		FvtmLogger.debug("Saved WireRegion [" + key.toString() + "].");
 		return this;
 	}
 
@@ -164,24 +154,25 @@ public class WireRegion {
 	public void updateClient(String kind, String key, V3I pos, Object obj){
 		if(system.getWorld().isClient()) return;
 		TagCW compound = null;
+		String task = null;
 		switch(kind){
 			case "all":{
+				task = "wire_upd_region";
 				compound = write(true);
-				compound.set("task", "update_region");
 				compound.set("pos", pos.toLW());
 				compound.set("XZ", RegionKey.getRegionXZ(pos));
 				break;
 			}
 			case "relay":{
+				task = "wire_upd_relay";
 				compound = TagCW.create();
-				compound.set("task", "update_relay");
-				compound.set("pos", ((WireRelay)obj).holder.pos.toLong());
+				compound.set("pos", ((WireRelay)obj).holder.pos);
 				((WireRelay)obj).write(compound);
 				break;
 			}
 			case "no_relay":{
+				task = "wire_rem_relay";
 				compound = TagCW.create();
-				compound.set("task", "remove_relay");
 				compound.set("pos", pos.toLW());
 				compound.set("key", key);
 				break;
@@ -190,18 +181,18 @@ public class WireRegion {
 				RelayHolder holder = getHolder(pos);
 				if(holder == null) return;
 				compound = holder.write();
-				compound.set("task", "update_holder");
+				task = "wire_upd_holder";
 				break;
 			}
 			case "no_holder":{
+				task = "wire_rem_holder";
 				compound = TagCW.create();
 				compound.set("pos", pos.toLW());
-				compound.set("task", "rem_holder");
 				break;
 			}
 			case "sections":{
+				task = "wire_udp_sections";
 				compound = TagCW.create();
-				compound.set("task", "update_sections");
 				TagLW list = TagLW.create();
 				for(WireUnit unit : system.getWireUnits().values()){
 					TagCW com = TagCW.create();
@@ -218,17 +209,14 @@ public class WireRegion {
 			}
 		}
 		if(compound == null) return;
-		compound.set("target_listener", "fvtm:wiresys");
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound.local()), getTargetPoint(system.getDimension(), pos));
+		Packets.sendInRange(Packet_TagListener.class, system.getWorld(), pos, task, compound);
 	}
 
-	public void updateClient(EntityPlayerMP player){
+	public void updateClient(Passenger player){
 		if(system.getWorld().isClient() || player == null) return;
 		TagCW compound = this.write(true);
-		compound.set("target_listener", "fvtm:wiresys");
-		compound.set("task", "update_region");
 		compound.set("XZ", key.toArray());
-		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound.local()), player);
+		Packets.send(Packet_TagListener.class, "wire_upd_region", compound);
 	}
 	
 	public WireSystem getSystem(){
@@ -244,7 +232,7 @@ public class WireRegion {
 		return holders.get(pos);
 	}
 
-	public RelayHolder addHolder(BlockPos pos){
+	public RelayHolder addHolder(V3I pos){
 		if(!holders.containsKey(pos)){
 			RelayHolder holder = new RelayHolder(this, pos);
 			holders.put(pos, holder);
@@ -253,14 +241,14 @@ public class WireRegion {
 		else return holders.get(pos);
 	}
 
-	public void delHolder(BlockPos pos){
+	public void delHolder(V3I pos){
 		RelayHolder holder = getHolder(mutPos(pos));
 		if(holder == null) return;
 		holder.delete();
 		holders.remove(pos);
 	}
 	
-	public ConcurrentHashMap<BlockPos, RelayHolder> getHolders(){
+	public ConcurrentHashMap<V3I, RelayHolder> getHolders(){
 		return holders;
 	}
 

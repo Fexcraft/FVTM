@@ -65,7 +65,7 @@ public class RelayHolder {
 
 	public TagCW write(){
 		TagCW compound = TagCW.create();
-		compound.set("Pos", pos);
+		compound.set("Pos", pos, false);
 		TagLW list = TagLW.create();
 		for(Entry<String, WireRelay> relay : relays.entrySet()){
 			TagCW com = relay.getValue().write(null);

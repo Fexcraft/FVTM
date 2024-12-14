@@ -1,11 +1,10 @@
 package net.fexcraft.mod.fvtm.function.block;
 
-import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.BlockEntity;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -86,7 +85,7 @@ public class BoolBlockFunction extends BlockFunction {
 		return bools.containsValue(key) ? bools.get(key) : false;
 	}
 
-	public void toggle(BlockEntity tile, String key, Boolean to){
+	public void toggle(FvtmBlockEntity tile, String key, Boolean to){
 		if(key == null) key = this.key;
 		bools.put(key, to == null ? !bools.get(key) : to);
 		if(tile == null) return;

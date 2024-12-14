@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -98,10 +99,10 @@ public class SystemManager {
 		}
 		//
 		if(!DISABLE_WIRES){
-			/*if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
+			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
 			WireSystem sys = new WireSystem(world);
 			SYSTEMS.get(Systems.WIRE).put(dim, sys);
-			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);*/
+			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
 		}
 		//
 		LOADED_DIM.put(dim, true);

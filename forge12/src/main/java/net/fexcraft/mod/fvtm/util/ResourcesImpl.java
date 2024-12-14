@@ -209,10 +209,10 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			case PART:{
 				Part part = (Part)content;
-				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction || pre instanceof TireFunction).count() > 0){
+				/*if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction || pre instanceof TireFunction).count() > 0){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), PartItemModel.INSTANCE);
 					return;
-				}
+				}*/
 				break;
 			}
 			case VEHICLE:{

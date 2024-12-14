@@ -6,7 +6,7 @@ import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.block.BlockEntity;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-public class BlockTileEntity extends net.minecraft.tileentity.TileEntity implements BlockEntity, IPacketReceiver<PacketTileEntityUpdate> {
+public class BlockTileEntity extends net.minecraft.tileentity.TileEntity implements FvtmBlockEntity, IPacketReceiver<PacketTileEntityUpdate> {
 	
 	public byte meta = -1;
 	public BlockData data;

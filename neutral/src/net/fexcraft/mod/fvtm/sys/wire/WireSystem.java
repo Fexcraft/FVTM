@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
@@ -175,7 +175,7 @@ public class WireSystem extends DetachedSystem {
 		WireRegion region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
 		for(Entry<V3I, RelayHolder> entry : region.getHolders().entrySet()){
-			if(entry.getKey().getX() >> 4 == cx && entry.getKey().getZ() >> 4 == cz){
+			if(entry.getKey().x >> 4 == cx && entry.getKey().z >> 4 == cz){
 				arr.addAll(entry.getValue().relays.values());
 			}
 		}
@@ -289,9 +289,9 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	/** Adding when missing. */
-	public void register(BlockTileEntity tile){
-		RelayHolder holder = getHolder(tile.getPos());
-		if(holder == null) holder = addHolder(tile.getPos());
+	public void register(FvtmBlockEntity tile){
+		RelayHolder holder = getHolder(tile.getV3I());
+		if(holder == null) holder = addHolder(tile.getV3I());
 		for(Entry<String, V3D> entry : tile.getBlockData().getRelayData().getVectors(tile).entrySet()){
 			holder.add(entry.getKey(), entry.getValue(), false);
 		}
@@ -299,34 +299,34 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	/** Unlinking TE */
-	public void unregister(BlockTileEntity tile){
-		RelayHolder holder = getHolder(tile.getPos());
+	public void unregister(FvtmBlockEntity tile){
+		RelayHolder holder = getHolder(tile.getV3I());
 		if(holder != null) holder.setTile(null);
 	}
 	
 	/** Removing when present. */
-	public void deregister(TileEntity tileentity){
-		if(tileentity == null || tileentity instanceof BlockTileEntity == false) return;
-		BlockTileEntity tile = (BlockTileEntity)tileentity;
-		delHolder(tile.getPos());
+	public void deregister(Object tileentity){
+		if(tileentity instanceof FvtmBlockEntity == false) return;
+		FvtmBlockEntity tile = (FvtmBlockEntity)tileentity;
+		delHolder(tile.getV3I());
 	}
 
-	public RelayHolder getHolder(BlockPos pos){
+	public RelayHolder getHolder(V3I pos){
 		WireRegion region = regions.get(pos, false);
 		return region == null ? null : region.getHolder(mutPos(pos));
 	}
 
-	public RelayHolder getHolder(BlockPos pos, boolean load){
+	public RelayHolder getHolder(V3I pos, boolean load){
 		WireRegion region = regions.get(pos, load);
 		return region.getHolder(mutPos(pos));
 	}
 
-	private RelayHolder addHolder(BlockPos pos){
+	private RelayHolder addHolder(V3I pos){
 		WireRegion region = regions.get(pos, true);
 		return region.addHolder(pos);
 	}
 
-	protected void delHolder(BlockPos pos){
+	public void delHolder(V3I pos){
 		WireRegion region = regions.get(pos, true);
 		if(region != null) region.delHolder(pos);
 	}

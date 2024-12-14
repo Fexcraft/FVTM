@@ -41,7 +41,7 @@ public class RelayData {
 		}
 	}
 
-	public HashMap<String, V3D> getVectors(BlockEntity tile){
+	public HashMap<String, V3D> getVectors(FvtmBlockEntity tile){
 		LinkedHashMap<String, V3D> list = new LinkedHashMap<>();
 		for(Entry<String, V3D> entry : conns.entrySet()){
 			list.put(entry.getKey(), rotate(entry.getValue(), tile.getV3I(), tile.getMeta(), tile.getBlockData().getType().getBlockType()));

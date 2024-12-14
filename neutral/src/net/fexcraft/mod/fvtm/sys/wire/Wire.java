@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
@@ -16,12 +15,6 @@ import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * 
@@ -38,22 +31,17 @@ public class Wire {
 	protected WireRelay relay;
 	protected WireType type;
 	public boolean copy;
+	public float slack = 0;
 	//
-	@SideOnly(Side.CLIENT)
 	public PathModelPositioned wiremodel;
 	public double model_start_angle, model_end_angle;
 	public double model_start_angle_down, model_end_angle_down;
-	@SideOnly(Side.CLIENT)
 	public WireDeco deco_s, deco_e;
 	public String deco_start, deco_end;
 	public HashMap<String, String> decos;
-	@SideOnly(Side.CLIENT)
 	public HashMap<String, WireDeco> deco_m;
-	@SideOnly(Side.CLIENT)
 	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
-	@SideOnly(Side.CLIENT)
-	public HashMap<String, HashMap<String, ArrayList<ModelRendererTurbo>>> deco_g;
-	public float slack = 0;
+	public HashMap<String, HashMap<String, ArrayList<net.fexcraft.lib.tmt.ModelRendererTurbo>>> deco_g;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, V3D s_v, V3D e_v){
 		key = new WireKey(relay, relay0);
@@ -132,25 +120,25 @@ public class Wire {
 		this.relay = relay;
 	}
 
-	public Wire read(NBTTagCompound compound){
-		if(compound.hasKey("wiretype")) type = FvtmRegistry.WIRES.get(compound.getString("wiretype"));
+	public Wire read(TagCW compound){
+		if(compound.has("wiretype")) type = FvtmRegistry.WIRES.get(compound.getString("wiretype"));
 		start = new V3D(compound.getFloat("sx"), compound.getFloat("sy"), compound.getFloat("sz"));
 		end = new V3D(compound.getFloat("ex"), compound.getFloat("ey"), compound.getFloat("ez"));
-		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
+		if(compound.has("slack")) slack = compound.getFloat("slack");
 		reslack();
 		construct();
 		key = new WireKey(compound);
 		okey = key.opposite();
-		copy = compound.hasKey("copy") && compound.getBoolean("copy");
-		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
+		copy = compound.has("copy") && compound.getBoolean("copy");
+		this.length = compound.has("length") ? compound.getFloat("length") : calcLength();
 		//TODO if(relay != null) unit = getUnit(compound.getLong("section"));
-		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
-		deco_end = compound.hasKey("deco_end") ? compound.getString("deco_end") : null;
-		if(compound.hasKey("decos")){
+		deco_start = compound.has("deco_start") ? compound.getString("deco_start") : null;
+		deco_end = compound.has("deco_end") ? compound.getString("deco_end") : null;
+		if(compound.has("decos")){
 			if(decos == null) decos = new HashMap<>();
-			NBTTagList list = (NBTTagList)compound.getTag("decos");
-			for(NBTBase base : list){
-				String[] split = ((NBTTagString)base).getString().split(";");
+			TagLW list = compound.getList("decos");
+			for(int i = 0; i < list.size(); i++){
+				String[] split = list.getString(i).split(";");
 				decos.put(split[0], split[1]);
 			}
 		}

@@ -22,7 +22,7 @@ public class StateWrapperI extends StateWrapper {
     public String getStateString(){
         String str = "";
         for(IProperty<?> key : state.getPropertyKeys()){
-            str += key + "=" + state.getValue(key) + ",";
+            str += key.getName() + "=" + state.getValue(key) + ",";
         }
         return str.length() > 0 ? str.substring(0, str.length() - 1) : str;
     }

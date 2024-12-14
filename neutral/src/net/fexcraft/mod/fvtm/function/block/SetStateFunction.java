@@ -59,7 +59,8 @@ public class SetStateFunction extends BlockFunction.StaticBlockFunction {
 					stack.count(stack.count() - 1);
 				}
 			}
-			StateWrapper newstate = StateWrapper.from(cs.nstate.contains(" ") ? null : state.getBlock(), cs.nstate.length() == 0 ? state.getStateString() : cs.nstate);
+			String str = cs.nstate.isEmpty() ? state.getStateString() : cs.nstate.endsWith(" *") ? cs.nstate.replace("*", state.getStateString()) : cs.nstate;
+			StateWrapper newstate = StateWrapper.from(cs.nstate.contains(" ") ? null : state.getBlock(), str);
 			world.setBlockState(pos, newstate);
 			return true;
 		}

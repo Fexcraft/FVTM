@@ -3,11 +3,8 @@ package net.fexcraft.mod.fvtm.sys.wire;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
 
 import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
@@ -23,7 +20,7 @@ public class WireRelay {
 	public ArrayList<Wire> wires;
 	protected RelayHolder holder;
 	//
-	protected AxisAlignedBB frustumbb;
+	protected AABB frustumbb;
 	
 	/** General Constructor */
 	public WireRelay(RelayHolder holder, String key, V3D pos){
@@ -39,14 +36,14 @@ public class WireRelay {
 		wires = new ArrayList<>();
 	}
 	
-	public WireRelay read(NBTTagCompound compound){
+	public WireRelay read(TagCW compound){
 		key = compound.getString("Key");
 		int wiream = compound.getInteger("Wires");
 		if(wiream > 0){
 			wires.clear();
 			for(int i = 0; i < wiream; i++){
 				try{
-					wires.add(new Wire(this).read(compound.getCompoundTag("Wire" + i)));
+					wires.add(new Wire(this).read(compound.getCompound("Wire" + i)));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -54,7 +51,7 @@ public class WireRelay {
 			}
 		}
 		else wires.clear();
-		pos = new V3D(compound.getDouble("PosX"), compound.getDouble("PosY"), compound.getDouble("PosZ"));
+		pos = compound.getV3D("Pos");
 		frustumbb = null;
 		return this;
 	}
@@ -66,9 +63,7 @@ public class WireRelay {
 		}
 		compound.set("Wires", wires.size());
 		compound.set("Key", key);
-		compound.set("PosX", pos.x);
-		compound.set("PosY", pos.y);
-		compound.set("PosZ", pos.z);
+		compound.set("Pos", pos);
 		return compound;
 	}
 	
@@ -148,7 +143,7 @@ public class WireRelay {
 		return -1;
 	}
 
-	public AxisAlignedBB getAABB(){
+	public AABB getAABB(){
 		if(frustumbb != null) return frustumbb;
 		V3D min = new V3D(), max = new V3D(), other;
 		for(Wire wire : wires){
@@ -171,7 +166,7 @@ public class WireRelay {
 			min = new V3D(-.1f,-.1f,-.1f);
 			max = new V3D(+.1f,+.1f,+.1f);
 		}
-		return frustumbb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
+		return frustumbb = AABB.create(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 	
 	@Override
@@ -190,8 +185,8 @@ public class WireRelay {
 		return holder;
 	}
 
-	public BlockTileEntity getTile(){
-		return holder.blocktile;
+	public <TE> TE getTile(){
+		return holder.getTile();
 	}
 
 }

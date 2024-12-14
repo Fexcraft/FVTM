@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 /**
  * 
@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
  */
 public class WireKey {
 	
-	public final BlockPos start_pos, end_pos;
+	public final V3I start_pos, end_pos;
 	public final String start_relay, end_relay;
 	
 	public WireKey(WireRelay start, WireRelay end){
@@ -21,14 +21,14 @@ public class WireKey {
 		end_relay = end.key;
 	}
 	
-	public WireKey(NBTTagCompound compound){
-		start_pos = BlockPos.fromLong(compound.getLong("spos"));
-		end_pos = BlockPos.fromLong(compound.getLong("epos"));
+	public WireKey(TagCW compound){
+		start_pos = compound.getV3I("spos");
+		end_pos = compound.getV3I("epos");
 		start_relay = compound.getString("skey");
 		end_relay = compound.getString("ekey");
 	}
 	
-	public WireKey(BlockPos spos, String skey, BlockPos epos, String ekey){
+	public WireKey(V3I spos, String skey, V3I epos, String ekey){
 		start_pos = spos;
 		start_relay = skey;
 		end_pos = epos;
@@ -37,14 +37,14 @@ public class WireKey {
 
 	/** Only for temporary use. */
 	public WireKey(long pos, String string){
-		start_pos = end_pos = BlockPos.fromLong(pos);
+		start_pos = end_pos = WrapperHolder.getPos(pos);
 		start_relay = end_relay = string;
 	}
 
 	public TagCW save(TagCW compound){
 		if(compound == null) compound = TagCW.create();
-		compound.set("spos", start_pos.toLong());
-		compound.set("epos", end_pos.toLong());
+		compound.set("spos", start_pos, true);
+		compound.set("epos", end_pos, true);
 		compound.set("skey", start_relay);
 		compound.set("ekey", end_relay);
 		return compound;
@@ -54,8 +54,8 @@ public class WireKey {
 		return str(start_pos) + ":" + start_relay + ":" + end_relay + ":" + str(end_pos);
 	}
 	
-	public static String str(BlockPos pos){
-		return pos.getX() + "," + pos.getY() + "," + pos.getZ();
+	public static String str(V3I pos){
+		return pos.x + "," + pos.y + "," + pos.z;
 	}
 
 	public boolean equals(Object obj){

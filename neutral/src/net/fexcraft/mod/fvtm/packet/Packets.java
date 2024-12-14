@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
@@ -19,6 +20,10 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
+import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.fvtm.sys.wire.WireUnit;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -189,6 +194,10 @@ public abstract class Packets {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
 			system.updateRegion(com, player);
 		});
+		LIS_SERVER.put("wire_upd_region", (com, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			system.updateRegion(com, player);
+		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
 				AttrReqHandler.processToggleResponse(player, tag);
@@ -354,6 +363,55 @@ public abstract class Packets {
 						track.selected = tag.getInteger("selected");
 					}
 				}
+			});
+			LIS_CLIENT.put("wire_upd_region", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				system.updateRegion(tag, player);
+			});
+			LIS_CLIENT.put("wire_upd_relay", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				RelayHolder holder = system.getHolder(tag.getV3I("pos"));
+				String key = tag.getString("Key");
+				if(holder != null && holder.contains(key)){
+					holder.get(key).read(tag);
+				}
+			});
+			LIS_CLIENT.put("wire_rem_relay", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				RelayHolder holder = system.getHolder(tag.getV3I("pos"));
+				holder.remove(tag.getString("key"));
+			});
+			LIS_CLIENT.put("wire_upd_holder", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				V3I pos = tag.getV3I("pos");
+				RelayHolder holder = system.getHolder(pos);
+				if(holder != null) holder.read(tag);
+				else{
+					WireRegion region = system.getRegions().get(pos, false);
+					if(region != null) holder = region.addHolder(pos).read(tag);
+				}
+				if(holder.getTile() == null){
+					Object tile = system.getWorld().getBlockEntity(pos);
+					if(tile instanceof FvtmBlockEntity) holder.setTile(tile);
+				}
+			});
+			LIS_CLIENT.put("wire_rem_holder", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				system.delHolder(tag.getV3I("pos"));
+			});
+			LIS_CLIENT.put("wire_udp_sections", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				TagLW list = tag.getList("units");
+				WireUnit unit;
+				for(TagCW com : list){
+					unit = system.getWireUnits().get(com.getString("unit"));
+					if(unit != null) unit.setSection(system.getSection(com.getLong("section")));
+				}
+			});
+			LIS_CLIENT.put("wire_udp_unit", (tag, player) -> {
+				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+				WireUnit unit = system.getWireUnits().get(tag.getString("unit"));
+				if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
 			});
 		}
 	}

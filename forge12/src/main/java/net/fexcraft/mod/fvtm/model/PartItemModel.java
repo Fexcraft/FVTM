@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ public class PartItemModel implements FCLItemModel {
 		PartData data = item.getCapability(Capabilities.VAPDATA, null).getPartData();
 		if(data == null) return;
 		DefaultModel model = (DefaultModel)data.getType().getModel();
-		if(model == null) return;
+		if(model == null || model == DefaultModel.EMPTY) return;
 		//
 		GL11.glPushMatrix();
 		switch(type){
@@ -81,10 +82,8 @@ public class PartItemModel implements FCLItemModel {
 			}
 			default: break;
 		}
-		model.transforms.apply();
 		bindTexture(data.getCurrentTexture());
-		for(ModelGroup list : model.groups) list.render();
-		model.transforms.deapply();
+		model.render(DefaultModel.RENDERDATA.set(null, null, null, data, null, false, Minecraft.getMinecraft().getRenderPartialTicks()));
 		GL11.glPopMatrix();
 	}
 	

@@ -333,11 +333,9 @@ public class FVTM {
 		(Packets.INSTANCE = new PacketsImpl()).init();
 		FvtmResources.INSTANCE.registerRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.wire.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ListenerServer());
 		if(event.getSide().isClient()){
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.wire.RecClient());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ListenerClient());
 			MinecraftForge.EVENT_BUS.register(new RailRenderer());
 			MinecraftForge.EVENT_BUS.register(new EffectRenderer());

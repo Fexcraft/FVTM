@@ -159,21 +159,21 @@ public class WireRegion {
 			case "all":{
 				task = "wire_upd_region";
 				compound = write(true);
-				compound.set("pos", pos.toLW());
+				compound.set("pos", pos, false);
 				compound.set("XZ", RegionKey.getRegionXZ(pos));
 				break;
 			}
 			case "relay":{
 				task = "wire_upd_relay";
 				compound = TagCW.create();
-				compound.set("pos", ((WireRelay)obj).holder.pos);
+				compound.set("pos", ((WireRelay)obj).holder.pos, false);
 				((WireRelay)obj).write(compound);
 				break;
 			}
 			case "no_relay":{
 				task = "wire_rem_relay";
 				compound = TagCW.create();
-				compound.set("pos", pos.toLW());
+				compound.set("pos", pos, false);
 				compound.set("key", key);
 				break;
 			}
@@ -187,7 +187,7 @@ public class WireRegion {
 			case "no_holder":{
 				task = "wire_rem_holder";
 				compound = TagCW.create();
-				compound.set("pos", pos.toLW());
+				compound.set("pos", pos, false);
 				break;
 			}
 			case "sections":{

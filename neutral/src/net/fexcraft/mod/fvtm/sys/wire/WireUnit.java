@@ -1,10 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.minecraft.nbt.NBTTagCompound;
-
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.uni.tag.TagCW;
 
 /**
  * 
@@ -55,19 +53,19 @@ public class WireUnit {
 
 	private void updateClient(){
 		if(data.isRemote()) return;
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", "fvtm:wiresys");
-		compound.setString("task", "update_unit_section");
-		compound.setString("unit", getUID());
-		compound.setLong("section", getSectionId());
+		TagCW compound = TagCW.create();
+		compound.set("target_listener", "fvtm:wiresys");
+		compound.set("task", "update_unit_section");
+		compound.set("unit", getUID());
+		compound.set("section", getSectionId());
 		if(orig == null && copy == null){
-			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+			Packets.sendToAll(Packet_TagListener.class, "wire_udp_unit", compound);
 		}
 		else{
 			Wire wire = orig == null ? copy : orig;
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(wire.relay.holder.getRegion().system.getDimension(), wire.relay.holder.pos));
-			if(wire.length > 16){
-				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(wire.relay.holder.getRegion().system.getDimension(), wire.relay.holder.pos));
+			Packets.sendToAll(Packet_TagListener.class, wire.relay.holder.getRegion().system.getWorld(), wire.relay.holder.pos, "wire_udp_unit", compound);
+			if(wire.length > 16 && orig != null){
+				Packets.sendToAll(Packet_TagListener.class, wire.relay.holder.getRegion().system.getWorld(), copy.relay.holder.pos, "wire_udp_unit", compound);
 			}
 		}
 	}

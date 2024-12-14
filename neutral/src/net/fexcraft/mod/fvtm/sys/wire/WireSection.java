@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import net.fexcraft.mod.fvtm.FvtmLogger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-
-import net.fexcraft.lib.mc.utils.Print;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class WireSection {
 	
 	public WireSection(WireSystem data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
-		Print.debug("Created Section [" + sid + "] " + (sid == null));
+		FvtmLogger.debug("Created Section [" + sid + "] " + (sid == null));
 	}
 	
 	public WireSection fill(WireUnit... wires){
@@ -42,7 +42,7 @@ public class WireSection {
 	}
 
 	public void fuseAtWire(Wire zero){
-		Print.debug("Fusing sections at wire: " + zero);
+		FvtmLogger.debug("Fusing sections at wire: " + zero);
 		WireSection old = null;
 		ArrayList<WireUnit> list = new ArrayList<>();
 		list.add(zero.unit);
@@ -54,10 +54,10 @@ public class WireSection {
 				old = unit.section();
 				old.units.remove(unit);
 				unit.setSection(this);
-				Print.debug("Added into section '" + uid + "': " + unit);
+				FvtmLogger.debug("Added into section '" + uid + "': " + unit);
 				if(old.units.size() == 0){
 					data.getSections().remove(old.getUID());
-					Print.debug("Removing section '" + old.getUID() + "'!");
+					FvtmLogger.debug("Removing section '" + old.getUID() + "'!");
 				}
 			}
 		}
@@ -68,7 +68,7 @@ public class WireSection {
 
 	/** Called after a wire was removed from a relay.*/
 	public void splitAtWire(Wire wire){
-		Print.debug("Splitting section at wire: " + wire);
+		FvtmLogger.debug("Splitting section at wire: " + wire);
 		ArrayList<WireUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0 = explore(data.getRelay(wire.key), list0);
 		list1 = explore(data.getRelay(wire.okey), list1);
@@ -83,11 +83,11 @@ public class WireSection {
 		}
 		this.units.removeAll(less);
 		section.units.addAll(less);
-		Print.debug("Created section '" + section.getUID() + "' and assigned WireUnits.");
+		FvtmLogger.debug("Created section '" + section.getUID() + "' and assigned WireUnits.");
 	}
 
 	public void splitAtSignal(WireRelay relay){
-		Print.debug("Splitting section at relay: " + relay);
+		FvtmLogger.debug("Splitting section at relay: " + relay);
 		ArrayList<WireUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0.add(relay.wires.get(0).unit);
 		list1.add(relay.wires.get(1).unit);
@@ -103,7 +103,7 @@ public class WireSection {
 		for(WireUnit unit : less){ unit.setSection(section); }
 		this.units.removeAll(less);
 		section.units.addAll(less);
-		Print.debug("Created section '" + section.getUID() + "' and assigned WireUnits.");
+		FvtmLogger.debug("Created section '" + section.getUID() + "' and assigned WireUnits.");
 		//this.updateClientSections(junction, this, section);
 	}
 

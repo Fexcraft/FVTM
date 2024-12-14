@@ -5,7 +5,7 @@ import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.BlockEntity;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerInit;
@@ -72,7 +72,7 @@ public class InventoryBlockFunction extends BlockFunction {
 		if(!main) return false;
 		UIKey ui = handler.type.isFluid() ? UIKeys.BLOCK_INVENTORY_FLUID : UIKeys.BLOCK_INVENTORY_ITEM;
 		if(key != null){
-			BlockEntity tile = (BlockEntity)world.getBlockEntity(pos);
+			FvtmBlockEntity tile = (FvtmBlockEntity)world.getBlockEntity(pos);
 			if(tile.getBlockData().getFunctionBool(key) != bool) return false;
 		}
 		player.openUI(ui, pos);
@@ -83,7 +83,7 @@ public class InventoryBlockFunction extends BlockFunction {
 		return handler;
 	}
 
-	public void onClose(BlockEntity tile){
+	public void onClose(FvtmBlockEntity tile){
 		BoolBlockFunction func = tile.getBlockData().getFunctionBool();
 		if(func != null) func.toggle(tile, key, !bool);
 	}

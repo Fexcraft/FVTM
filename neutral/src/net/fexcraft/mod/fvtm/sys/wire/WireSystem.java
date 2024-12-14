@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
-import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -131,10 +130,10 @@ public class WireSystem extends DetachedSystem {
 		}
 		
 		public WireRegion get(V3I pos, boolean load){
-			WireRegion region = get(RegionKey.getRegionXZ(mutPos(pos)));
+			WireRegion region = get(RegionKey.getRegionXZ(pos));
 			if(region != null || !load) return region;
-			put(new RegionKey(RegionKey.getRegionXZ(mutPos(pos))), region = new WireRegion(pos, root, false));
-			region.load().updateClient(mutPos(pos));
+			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new WireRegion(pos, root, false));
+			region.load().updateClient(pos);
 			return region;
 		}
 
@@ -229,7 +228,7 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public Wire getWire(WireKey key){
-		WireRegion region = regions.get(RegionKey.getRegionXZ(mutPos(key.start_pos)), true);
+		WireRegion region = regions.get(RegionKey.getRegionXZ(key.start_pos), true);
 		return region == null ? null : region.getWire(key);
 	}
 	
@@ -313,12 +312,12 @@ public class WireSystem extends DetachedSystem {
 
 	public RelayHolder getHolder(V3I pos){
 		WireRegion region = regions.get(pos, false);
-		return region == null ? null : region.getHolder(mutPos(pos));
+		return region == null ? null : region.getHolder(pos);
 	}
 
 	public RelayHolder getHolder(V3I pos, boolean load){
 		WireRegion region = regions.get(pos, load);
-		return region.getHolder(mutPos(pos));
+		return region.getHolder(pos);
 	}
 
 	private RelayHolder addHolder(V3I pos){

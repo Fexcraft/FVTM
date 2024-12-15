@@ -163,8 +163,8 @@ public class WireRelay {
 			if(other.z > max.z) max.z = other.z;
 		}
 		if(size() == 0){
-			min = new V3D(-.1f,-.1f,-.1f);
-			max = new V3D(+.1f,+.1f,+.1f);
+			min = new V3D(pos.x -.1f, pos.y -.1f, pos.z -.1f);
+			max = new V3D(pos.x +.1f, pos.y +.1f, pos.z +.1f);
 		}
 		return frustumbb = AABB.create(min.x, min.y, min.z, max.x, max.y, max.z);
 	}

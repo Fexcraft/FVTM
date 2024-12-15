@@ -6,8 +6,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.uni.tag.TagCW;
 
-import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
-
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -83,7 +81,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		holder.getRegion().updateClient("relay", null, mutPos(holder.pos), this);
+		holder.getRegion().updateClient("relay", null, holder.pos, this);
 	}
 
 	public void remove(int index, boolean firstcall){

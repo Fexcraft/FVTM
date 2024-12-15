@@ -34,6 +34,7 @@ public class SWIE extends SWI {
 			case FVTM_BLOCK: return stack.getItem() instanceof BlockItem;
 			case CONTAINER: return stack.getItem() instanceof ContainerItem;
 			case FVTM_TOOLBOX: return stack.getItem() instanceof ToolboxItem;
+			case WIRE: return stack.getItem() instanceof WireItem;
 		}
 		return false;
 	}

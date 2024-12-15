@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
+import net.fexcraft.mod.fvtm.sys.wire.Wire;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -21,24 +22,24 @@ public class PathModelPositioned {
 		hedrons = new Polyhedron[i];
 		positions = new V3D[i];
 		for(int k = 0; k < i; k++){
-			hedrons[k] = new Polyhedron();
+			hedrons[k] = new Polyhedron<>();
 			//if(colour != null) turbos[k].setColor(colour);
 			positions[k] = path.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? path.length - 0.125f : k, false);
 		}
 	}
 
-	/*public TurboArrayPositioned(Wire wire, RGB colour){
+	public PathModelPositioned(Wire wire, RGB colour){
 		int i = (int)wire.getLength(null);
 		if(wire.length % 1f > 0) i++;
 		if(i == 0) i = 1;
-		turbos = new ModelRendererTurbo[i];
+		hedrons = new Polyhedron[i];
 		positions = new V3D[i];
 		for(int k = 0; k < i; k++){
-			turbos[k] = new ModelRendererTurbo(wire, 0, 0, 16, 16);
-			if(colour != null) turbos[k].setColor(colour);
+			hedrons[k] = new Polyhedron<>();
+			//if(colour != null) turbos[k].setColor(colour);
 			positions[k] = wire.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? wire.length - 0.125f : k, false);
 		}
-	}*///TODO
+	}
 
 	public void clearGL(){
 		for(Polyhedron hedron : hedrons){

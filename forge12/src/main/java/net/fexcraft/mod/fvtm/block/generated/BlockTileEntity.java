@@ -51,7 +51,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 
     @Override
     public int getMeta(){
-        return getBlockMetadata();
+        return meta;//getBlockMetadata();
     }
 
     public final void sendUpdate(){
@@ -108,9 +108,9 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         if(data != null) data.read(compound);
         else data = FvtmResources.getBlockData(compound);
         if(compound.hasKey("block_meta")) meta = compound.getByte("block_meta");
-        /*if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
-        	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
-        }*///TODO
+        if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
+        	SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world), WireSystem.class).register(this);
+        }
     }
     
     @Override
@@ -132,7 +132,9 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState){
-        return oldState.getBlock() != newState.getBlock();
+        boolean bool = oldState.getBlock() != newState.getBlock();
+        if(bool) meta = (byte)newState.getBlock().getMetaFromState(newState);
+        return bool;
     }
 	
 	@Override

@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
@@ -22,10 +23,15 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
+import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
+import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.util.ArrayList;
@@ -265,12 +271,44 @@ public class InteractionHandler {
 	}
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
-		if(!stack.empty() && !stack.isItemOfAny(ItemType.PART, ItemType.MATERIAL, ItemType.FVTM_TOOLBOX, ItemType.LEAD)) return false;
+		if(!stack.empty() && !stack.isItemOfAny(ItemType.PART, ItemType.MATERIAL, ItemType.FVTM_TOOLBOX, ItemType.LEAD, ItemType.WIRE)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
+		if(key.mouse_right() && stack.isItemOf(ItemType.WIRE)) return handleWire(world, pass, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass, stack)) return true;
+		}
+		return false;
+	}
+
+	private static boolean handleWire(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
+		if(last.equals("wire") && Time.getDate() < cooldown) return false;
+		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, (WorldW)world);
+		WireType type = stack.getContent(ContentType.WIRE);
+		V3D evec = pass.getEyeVec();
+		V3D lvec = evec.add(pass.getLookVec().multiply(3));
+		V3D vec0;
+		float size;
+		for(WireRegion reg : system.getRegions().values()){
+			for(RelayHolder holder : reg.getHolders().values()){
+				for(WireRelay relay : holder.relays.values()){
+					size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) : 0.0125f;
+					aabb = AABB.create(relay.pos.x - size, relay.pos.y - size, relay.pos.z - size, relay.pos.x + size, relay.pos.y + size, relay.pos.z + size);
+					for(float f = 0; f < 3.125f; f += th32){
+						vec0 = evec.distance(lvec, f);
+						if(aabb.contains(vec0)){
+							TagCW com = TagCW.create();
+							com.set("holder", holder.pos, false);
+							com.set("relay", relay.getKey());
+							Packets.send(Packet_TagListener.class, "relay_interact", com);
+							cooldown = Time.getDate() + 20;
+							last = "wire";
+							return true;
+						}
+					}
+				}
+			}
 		}
 		return false;
 	}

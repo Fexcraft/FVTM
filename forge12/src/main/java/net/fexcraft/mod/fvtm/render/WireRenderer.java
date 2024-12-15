@@ -9,6 +9,7 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
@@ -59,26 +61,28 @@ public class WireRenderer {
 	}
 	
 	private static WireSystem wiredata;
+	private static boolean holding;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
-    	if(DISABLE_RAILS) return;
+    	if(DISABLE_WIRES) return;
 	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
+		holding = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof WireItem;
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-cx, -cy, -cz);
+        //GL11.glTranslated(-cx, -cy, -cz);
         for(WireRegion reg : wiredata.getRegions().values()){
         	for(RelayHolder holder : reg.getHolders().values()){
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
-                	GL11.glPushMatrix();
-                	TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
-                	GL11.glTranslated(relay.pos.x, relay.pos.y, relay.pos.z);
-                	if(Command.OTHER){// && relays[i].wires.isEmpty()){
+                	if(Command.OTHER || holding || relay.wires.isEmpty()){
+						GL11.glPushMatrix();
+						TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
+						GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
                 		model.render();
+						GL11.glPopMatrix();
                 	}
-                	GL11.glPopMatrix();
             		renderWires(relay);
             	}
         	}

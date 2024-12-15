@@ -18,8 +18,6 @@ import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
-import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
-
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -42,7 +40,7 @@ public class WireRegion {
 	}
 
 	public WireRegion(V3I pos, WireSystem root, boolean load){
-		key = new RegionKey(RegionKey.getRegionXZ(mutPos(pos)));
+		key = new RegionKey(RegionKey.getRegionXZ(pos));
 		system = root;
 		if(load) load();
 	}
@@ -123,8 +121,8 @@ public class WireRegion {
 	}
 
 	public WireRelay getRelay(WireKey wkey){
-		if(!key.isInRegion(mutPos(wkey.start_pos))) return system.getRelay(wkey);
-		RelayHolder holder = getHolder(mutPos(wkey.start_pos));
+		if(!key.isInRegion(wkey.start_pos)) return system.getRelay(wkey);
+		RelayHolder holder = getHolder(wkey.start_pos);
 		return holder == null ? null : holder.get(wkey.start_relay);
 	}
 
@@ -242,7 +240,7 @@ public class WireRegion {
 	}
 
 	public void delHolder(V3I pos){
-		RelayHolder holder = getHolder(mutPos(pos));
+		RelayHolder holder = getHolder(pos);
 		if(holder == null) return;
 		holder.delete();
 		holders.remove(pos);

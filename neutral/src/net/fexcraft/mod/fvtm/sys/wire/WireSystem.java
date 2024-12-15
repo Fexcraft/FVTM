@@ -291,9 +291,7 @@ public class WireSystem extends DetachedSystem {
 	public void register(FvtmBlockEntity tile){
 		RelayHolder holder = getHolder(tile.getV3I());
 		if(holder == null) holder = addHolder(tile.getV3I());
-		for(Entry<String, V3D> entry : tile.getBlockData().getRelayData().getVectors(tile).entrySet()){
-			holder.add(entry.getKey(), entry.getValue(), false);
-		}
+		holder.integrate(tile);
 		holder.setTile(tile);
 	}
 

@@ -46,8 +46,11 @@ public class RailGaugeModel extends DefaultModel {
 				float w = Float.parseFloat(args[4]);
 				float h = Float.parseFloat(args[5]);
 				boolean m = Boolean.parseBoolean(args[6]);
+				float io = args.length > 7 ? Float.parseFloat(args[7]) : 0;
+				float iw = args.length > 8 ? Float.parseFloat(args[8]) : 1;
+				float ih = args.length > 9 ? Float.parseFloat(args[9]) : 1;
 				if(rect){
-					this.addRailRect(scale, sx, sy, w, h, m, new float[]{ 0, 1, 1 });
+					this.addRailRect(scale, sx, sy, w, h, m, new float[]{ io, iw, ih });
 				}
 				else{
 					V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);

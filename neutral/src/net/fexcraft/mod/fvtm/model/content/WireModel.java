@@ -3,7 +3,10 @@ package net.fexcraft.mod.fvtm.model.content;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
@@ -17,67 +20,70 @@ import net.fexcraft.mod.uni.IDLManager;
 public class WireModel extends DefaultModel {
 
 	public static final WireModel EMPTY = new WireModel();
-	public HashMap<Integer, ArrayList<V3D[]>> wire_model = new HashMap<>();
-	public boolean wire_nocull = false;
+	public ArrayList<V3D[]> wire_model = new ArrayList<>();
+	public ArrayList<float[]> wire_vv = new ArrayList<>();
 
 	@Override
 	public WireModel parse(ModelData data){
 		super.parse(data);
-		wire_nocull = data.getBoolean("NoWireCulling", false);
-		if(!data.has("Wire") || !data.get("Wire").isArray()) return this;
-		List<String> wires = data.getArray("Wire").toStringList();
-		for(int i = 0; i < wires.size(); i++){
-			String[] args = wires.get(i).trim().split(" ");
-			boolean rect = args[0].equals("rect") || args[0].equals("flat");
-			float scale = Float.parseFloat(args[1]);
-			float sx = Float.parseFloat(args[2]);
-			float sy = Float.parseFloat(args[3]);
-			float w = Float.parseFloat(args[4]);
-			float h = Float.parseFloat(args[5]);
-			boolean m = Boolean.parseBoolean(args[6]);
-			if(rect){
-				this.addWireRect(i, scale, sx, sy, w, h, m);
+		if(data.has("Wire")){
+			List<String> wires = data.getArray("Wire").toStringList();
+			if(wires.isEmpty()) return this;
+			for(String wire : wires){
+				String[] args = wire.trim().split(" ");
+				boolean rect = args[0].equals("rect") || args[0].equals("flat");
+				float scale = Float.parseFloat(args[1]);
+				float sx = Float.parseFloat(args[2]);
+				float sy = Float.parseFloat(args[3]);
+				float w = Float.parseFloat(args[4]);
+				float h = Float.parseFloat(args[5]);
+				boolean m = Boolean.parseBoolean(args[6]);
+				float io = args.length > 7 ? Float.parseFloat(args[7]) : 0;
+				float iw = args.length > 8 ? Float.parseFloat(args[8]) : 1;
+				float ih = args.length > 9 ? Float.parseFloat(args[9]) : 1;
+				if(rect){
+					this.addWireRect(scale, sx, sy, w, h, m, new float[]{ io, iw, ih });
+				}
+				else{
+					//V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);
+					//this.addWireRectShape(i, scale, sx, sy, w, h, tl, tr, bl, br, m);
+				}
 			}
-			else{
-				V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);
-				this.addWireRectShape(i, scale, sx, sy, w, h, tl, tr, bl, br, m);
+		}
+		if(data.has("Wires")){
+			JsonMap rails = data.getMap("Wires");
+			JsonMap map = null;
+			for(Map.Entry<String, JsonValue<?>> entry : rails.entries()){
+				map = entry.getValue().asMap();
+				float scl = map.getFloat("scale", 0.0625f);
+				float[] pos = map.has("pos") ? map.getArray("pos").toFloatArray() : new float[]{ -.5f, -.5f };
+				float[] siz = map.has("size") ? map.getArray("size").toFloatArray() : new float[]{ 1, 1 };
+				float[] vv = map.has("v") ? map.getArray("v").toFloatArray() : new float[]{ 0, 0.125f, 0.125f };
+				boolean mir = map.getBoolean("mirror", false);
+				addWireRect(scl, pos[0], pos[1], siz[0], siz[1], mir, vv);
 			}
 		}
 		return this;
 	}
 
-	public void addWireRect(int idx, float scale, float start_x, float start_y, float width, float height, boolean mirror){
-		if(!wire_model.containsKey(idx)) wire_model.put(idx, new ArrayList<>());
-		wire_model.get(idx).add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
+	public void addWireRect(float scale, float start_x, float start_y, float width, float height, boolean mirror, float[] vv){
+		wire_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
+		float buff = 0;
+		wire_vv.add(new float[]{ vv[0], vv[0] + (buff += vv[1])});
 		if(height > 0){
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + width, start_y - height, 0).scale(scale), new V3D(start_x, start_y - height, 0).scale(scale) });
+			wire_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x, start_y - height, 0).scale(scale) });
+			wire_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
+			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
+			wire_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
+			wire_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
+			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 		}
 		else{
 			float h = 0.01f / scale;
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x, start_y - h, 0).scale(scale), new V3D(start_x + width, start_y - h, 0).scale(scale) });
+			wire_model.add(new V3D[]{ new V3D(start_x, start_y - h, 0).scale(scale), new V3D(start_x + width, start_y - h, 0).scale(scale) });
+			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 		}
-		if(mirror) addWireRect(idx, scale, -start_x - width, start_y, width, height, false);
-	}
-
-	public void addWireRectShape(int idx, float scale, float start_x, float start_y, float width, float height, V3D tl, V3D tr, V3D bl, V3D br, boolean mirror){
-		if(tl == null) tl = new V3D();
-		if(tr == null) tr = new V3D();
-		if(bl == null) bl = new V3D();
-		if(br == null) br = new V3D();
-		if(!wire_model.containsKey(idx)) wire_model.put(idx, new ArrayList<>());
-		wire_model.get(idx).add(new V3D[]{ new V3D(start_x + bl.x, start_y + tl.y, 0).scale(scale), new V3D(start_x + width + br.x, start_y + tr.y, 0).scale(scale) });
-		if(height > 0){
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new V3D(start_x + bl.x, start_y + tl.y, 0).scale(scale) });
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + width + br.x, start_y + tr.y, 0).scale(scale), new V3D(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new V3D(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
-		}
-		else{
-			float h = 0.01f / scale;
-			wire_model.get(idx).add(new V3D[]{ new V3D(start_x + tl.x, start_y - h + bl.y, 0).scale(scale), new V3D(start_x + width + tr.x, start_y - h + br.y, 0).scale(scale) });
-		}
-		if(mirror) addWireRectShape(idx, scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
+		if(mirror) addWireRect(scale, -start_x - width, start_y, width, height, false, vv);
 	}
 
 }

@@ -4,7 +4,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -12,7 +11,7 @@ import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL11;//TODO
 
 import java.util.ArrayList;
 

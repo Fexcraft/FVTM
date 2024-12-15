@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -86,14 +87,14 @@ public class WireRenderer {
 						CUBE_CYN.render(1f);
 						GL11.glPopMatrix();
                 	}
-            		renderWires(relay);
+            		renderWires(relay, cx, cy, cz);
             	}
         	}
         }
 		GL11.glPopMatrix();
     }
 
-	private static void renderWires(WireRelay relay){
+	private static void renderWires(WireRelay relay, double cx, double cy, double cz){
         if(Command.OTHER){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -113,8 +114,8 @@ public class WireRenderer {
     			for(int j = 0; j < conn.vecpath.length - 1; j++){
     				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vec0.x, vec0.y + (conn.copy ? 0.1f : 0), vec0.z).color(0f, glgl, flfl, 1F).endVertex();
-                    bufferbuilder.pos(vec1.x, vec1.y + (conn.copy ? 0.1f : 0), vec1.z).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec0.x - cx, vec0.y + (conn.copy ? 0.1f : 0) - cy, vec0.z - cz).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec1.x - cx, vec1.y + (conn.copy ? 0.1f : 0) - cy, vec1.z - cz).color(0f, glgl, flfl, 1F).endVertex();
                     tessellator.draw();
     			}
                 GlStateManager.depthMask(true);
@@ -137,18 +138,18 @@ public class WireRenderer {
         		if(relay.wires.get(i).copy) continue;
         		Wire wire = relay.wires.get(i);
         		if(wire.vecpath == null || wire.getWireType() == null) continue;
-        		if(wire.wiremodel == null) generateWireModel(wire);
+				WireModel model = wire.getWireType().getModel();
+        		if(wire.wiremodel == null) PathModelGenerator.generateWireModel(wire, model);
         		TexUtil.bindTexture(wire.getWireType().getTexture());
-        		if(wire.getWireType().getModel().wire_nocull) GlStateManager.disableCull();
+				GL11.glTranslated(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
         		wire.wiremodel.render();
-        		if(wire.getWireType().getModel().wire_nocull) GlStateManager.enableCull();
         		if(relay.getTile() != null){
         			CURRENT = wire;
     				ANGLE = wire.model_end_angle;
         			if(wire.deco_s != null){
         				ANGLE_DOWN = wire.model_start_angle_down;
         				GL11.glPushMatrix();
-            			GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+            			//GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotated(wire.model_start_angle, 0, 1, 0);
@@ -162,7 +163,7 @@ public class WireRenderer {
         				ANGLE_DOWN = wire.model_end_angle_down;
             			int l = wire.vecpath.length - 1;
         				GL11.glPushMatrix();
-            			GL11.glTranslated(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
+            			//GL11.glTranslated(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotated(wire.model_end_angle, 0, 1, 0);
@@ -184,7 +185,7 @@ public class WireRenderer {
                 					int didx = 0;
                 					for(V3D vec : wire.deco_d.get(dm.getKey()).get(list.name)){
                             			GL11.glPushMatrix();
-                            			GL11.glTranslated(vec.x, vec.y, vec.z);
+                            			//GL11.glTranslated(vec.x, vec.y, vec.z);
                             			GL11.glRotated(180, 0, 0, 1);
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
@@ -229,73 +230,6 @@ public class WireRenderer {
         }
 	}
 
-	private static void generateWireModel(Wire wire){
-		/*WireModel model = wire.getWireType().getModel();
-		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
-		double angle, passed = 0;
-		V3D last, vec;
-		ArrayList<V3D> path = new ArrayList<>();
-		TexturedVertex vert0, vert1, vert2, vert3;
-		TexturedPolygon poly0;
-		//
-		for(Entry<Integer, ArrayList<V3D[]>> entry : model.wire_model.entrySet()){
-			ArrayList<V3D[]> wodl = entry.getValue();
-			for(int p = 0; p < wodl.size(); p++){
-				path.clear();
-				vec = wire.getVectorPosition(0.001f, false);
-				passed = 0;
-				angle = Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
-				angle += Static.rad90;
-				path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
-				path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, wodl.get(p)[1])));
-				for(int v = 0; v < wire.vecpath.length - 1; v++){
-					last = wire.vecpath[v];
-					vec = wire.vecpath[v + 1];
-					angle = Math.atan2(last.z - vec.z, last.x - vec.x);
-					angle += Static.rad90;
-					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
-					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[1])));
-				}
-				passed = 0;
-				for(int k = 0; k < wire.vecpath.length - 1; k++){
-					vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
-					vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
-					vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
-					vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
-					poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-					int pess = (int)passed;
-					if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
-					tarp.turbos[pess].copyTo(new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
-					passed += wire.vecpath[k].dis(wire.vecpath[k + 1]);
-				}
-			}
-		}
-		wire.wiremodel = tarp;
-		//
-		vec = wire.vecpath[wire.vecpath.length - 1];
-		wire.model_end_angle = Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
-		wire.model_end_angle = Static.toDegrees(wire.model_end_angle);
-		wire.model_start_angle = wire.model_end_angle - 180;
-		//
-		if(wire.deco_start != null) wire.deco_s = FvtmRegistry.WIREDECOS.get(wire.deco_start);
-		if(wire.deco_end != null) wire.deco_e = FvtmRegistry.WIREDECOS.get(wire.deco_end);
-		float hwl = wire.length / 2;
-		if(wire.deco_s != null){
-			float len = getLongestDownward(wire.deco_s.getModel());
-			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
-	        double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
-			wire.model_start_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
-			wire.model_start_angle_down = Static.toDegrees(wire.model_start_angle_down);
-		}
-		if(wire.deco_e != null){
-			float len = getLongestDownward(wire.deco_e.getModel());
-			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
-	        double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
-			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
-			wire.model_end_angle_down = Static.toDegrees(wire.model_end_angle_down);
-		}*///TODO
-	}
-
 	private static void genWireDeco(WireRelay relay, Wire wire){
 		wire.deco_m = new HashMap<>();
 		wire.deco_d = new HashMap<>();
@@ -316,19 +250,6 @@ public class WireRenderer {
 				}
 			}
 		}
-	}
-
-	public static float getLongestDownward(WireModel model){
-		float l = 0.01f;
-		for(ModelGroup list : model.groups){
-			for(Program program : list.getAllPrograms()){
-				if(program instanceof WirePrograms.DownwardAngled){
-					WirePrograms.DownwardAngled prog = (WirePrograms.DownwardAngled)program;
-					if(prog.length() > l) l = prog.length();
-				}
-			}
-		}
-		return l;
 	}
 
 }

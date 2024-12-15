@@ -10,6 +10,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 
 /**
@@ -21,6 +22,7 @@ public class RelayData {
 	public LinkedHashMap<String, V3D> conns = new LinkedHashMap<>();
 	public HashMap<String, ArrayList<String>> types = new HashMap<>();
 	public HashMap<String, Integer> limits = new HashMap<>();
+	public HashMap<String, Float> sizes = new HashMap<>();
 
 	public RelayData(JsonMap map){
 		input = map.getBoolean("input", true);
@@ -31,13 +33,23 @@ public class RelayData {
 		}
 		JsonMap points = map.getMap("points");
 		for(Entry<String, JsonValue<?>> entry : points.entries()){
-			JsonArray array = entry.getValue().asArray();
-			float x = array.get(0).float_value();
-			float y = array.get(1).float_value();
-			float z = array.get(2).float_value();
-			conns.put(entry.getKey(), new V3D(x, y, z));
-			limits.put(entry.getKey(), array.size() > 3 ? array.get(3).integer_value() : 0);
-			types.put(entry.getKey(), array.size() > 4 ? array.get(4).asArray().toStringList() : new ArrayList<>());
+			if(entry.getValue().isArray()){
+				JsonArray array = entry.getValue().asArray();
+				float x = array.get(0).float_value();
+				float y = array.get(1).float_value();
+				float z = array.get(2).float_value();
+				conns.put(entry.getKey(), new V3D(x, y, z));
+				limits.put(entry.getKey(), array.size() > 3 ? array.get(3).integer_value() : 0);
+				types.put(entry.getKey(), array.size() > 4 ? array.get(4).asArray().toStringList() : new ArrayList<>());
+				sizes.put(entry.getKey(), array.size() > 5 ? array.get(5).float_value() * 0.5f : 0.125f);
+			}
+			else{
+				JsonMap val = entry.getValue().asMap();
+				conns.put(entry.getKey(), ContentConfigUtil.getVector(val.getArray("pos")));
+				limits.put(entry.getKey(), val.getInteger("limit", 0));
+				types.put(entry.getKey(), val.getArray("types").toStringList());
+				sizes.put(entry.getKey(), val.getFloat("size", 0.25f) * 0.5f);
+			}
 		}
 	}
 
@@ -50,12 +62,12 @@ public class RelayData {
 	}
 
 	public static V3D rotate(V3D vector, V3I pos, int meta, BlockType type){
-		double rot = type.getRotationFor(meta);
+		double rot = type.getRelayRotFor(meta);
 		return VecUtil.rotByDeg(rot, vector).add(pos.x + .5, pos.y, pos.z + .5);
 	}
 
 	public V3D getVec(String string, V3I pos, int meta, BlockType type){
-		return VecUtil.rotByDeg(type.getRotationFor(meta), conns.get(string)).add(pos.x + .5f, pos.y, pos.z + .5f);
+		return VecUtil.rotByDeg(type.getRelayRotFor(meta), conns.get(string)).add(pos.x + .5f, pos.y, pos.z + .5f);
 	}
 
 }

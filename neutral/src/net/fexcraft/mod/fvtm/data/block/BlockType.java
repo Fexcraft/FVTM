@@ -75,6 +75,32 @@ public enum BlockType {
         }
         return 0;
     }
+    public double getRelayRotFor(int state){
+        if(rotations == 4){
+            switch(state){
+                case 2: return 90;
+                case 3: return -90;
+                case 4: return 0;
+                case 5: return 180;
+            }
+        }
+        else if(rotations == 8){
+            return state * 45 + 90;
+        }
+        else if(rotations == 16){
+            return state * 22.5 + 90;
+        }
+        else if(rotations == 44){
+            state %= 4;
+            switch(state){
+                case 0: return 90;
+                case 1: return -90;
+                case 2: return 0;
+                case 3: return 180;
+            }
+        }
+        return 0;
+    }
 
     public boolean isGenericRoad(){
         return this == GENERIC_ROAD;

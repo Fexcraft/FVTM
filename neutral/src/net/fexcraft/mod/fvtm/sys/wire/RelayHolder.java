@@ -81,7 +81,7 @@ public class RelayHolder {
 			list.add(com);
 		}
 		compound.set("Relays", list);
-		compound.set("Block", blockref.getIDS());
+		if(blockref != null) compound.set("Block", blockref.getIDS());
 		return compound;
 	}
 
@@ -92,7 +92,9 @@ public class RelayHolder {
 			WireRelay relay = new WireRelay(this).read(tag);
 			relays.put(tag.getString("Key"), relay);
 		}
-		blockref = FvtmRegistry.BLOCKS.get(compound.getString("Block"));
+		if(compound.has("Block")){
+			blockref = FvtmRegistry.BLOCKS.get(compound.getString("Block"));
+		}
 		return this;
 	}
 

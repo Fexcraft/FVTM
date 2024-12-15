@@ -198,6 +198,10 @@ public abstract class Packets {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			system.updateRegion(com, player);
 		});
+		LIS_SERVER.put("relay_interact", (com, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			player.send(com.toString());
+		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
 				AttrReqHandler.processToggleResponse(player, tag);

@@ -5,13 +5,21 @@ import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
+import net.fexcraft.mod.fvtm.data.block.RelayData;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class RelayHolder {
 	
 	public LinkedHashMap<String, WireRelay> relays = new LinkedHashMap<>();
 	private final WireRegion region;
+	protected Block blockref;
 	protected Object blocktile;
 	public V3I pos;
 	
@@ -73,6 +81,7 @@ public class RelayHolder {
 			list.add(com);
 		}
 		compound.set("Relays", list);
+		compound.set("Block", blockref.getIDS());
 		return compound;
 	}
 
@@ -83,6 +92,7 @@ public class RelayHolder {
 			WireRelay relay = new WireRelay(this).read(tag);
 			relays.put(tag.getString("Key"), relay);
 		}
+		blockref = FvtmRegistry.BLOCKS.get(compound.getString("Block"));
 		return this;
 	}
 
@@ -97,6 +107,21 @@ public class RelayHolder {
 
 	public WireRegion getRegion(){
 		return region;
+	}
+
+	public void integrate(FvtmBlockEntity tile){
+		blockref = tile.getBlockData().getType();
+		for(Entry<String, V3D> entry : blockref.getRelayData().getVectors(tile).entrySet()){
+			add(entry.getKey(), entry.getValue(), false);
+		}
+	}
+
+	public boolean hasRef(){
+		return blockref != null && blockref.getRelayData() != null;
+	}
+
+	public RelayData ref(){
+		return blockref.getRelayData();
 	}
 
 }

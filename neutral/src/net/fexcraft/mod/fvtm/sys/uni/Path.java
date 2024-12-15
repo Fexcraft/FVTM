@@ -34,7 +34,7 @@ public abstract class Path {
 		construct();
 	}
 
-	public Path(QV3D[] gridvecs){
+	public Path(QV3D... gridvecs){
 		start = gridvecs[0];
 		end = gridvecs[gridvecs.length - 1];
 		id = new PathKey(start, end);

@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
+import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_CYN;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
@@ -47,7 +48,7 @@ public class WireRenderer {
 	protected static final ModelRendererTurbo[] all;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 1.25f, 6, 6, 1, 1).setLines(new RGB(0x00ddff));
+			.addSphere(0, 0, 0, 2, 6, 6, 1, 1).setLines(new RGB(0x00ddff));
 		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
 		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
@@ -62,6 +63,7 @@ public class WireRenderer {
 	
 	private static WireSystem wiredata;
 	private static boolean holding;
+	private static float size;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(DISABLE_WIRES) return;
@@ -76,11 +78,12 @@ public class WireRenderer {
         	for(RelayHolder holder : reg.getHolders().values()){
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
-                	if(Command.OTHER || holding || relay.wires.isEmpty()){
+                	if(Command.OTHER || holding){// || relay.wires.isEmpty()){
 						GL11.glPushMatrix();
-						TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
 						GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
-                		model.render();
+						size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
+						GL11.glScalef(size, size, size);
+						CUBE_CYN.render(1f);
 						GL11.glPopMatrix();
                 	}
             		renderWires(relay);

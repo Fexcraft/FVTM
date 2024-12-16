@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+import static net.fexcraft.mod.uni.world.WrapperHolder.getPos;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -126,6 +127,20 @@ public class WireSystem extends DetachedSystem {
 			stack.getTag().set("fvtm:wirepoint_key", relay.key);
 			player.bar("interact.fvtm.relay.cached");
 		}
+	}
+
+	public void onRelayRemove(TagCW com, Passenger player){
+		RelayHolder holder = getHolder(com.getV3I("holder"));
+		if(holder == null){
+			player.send("error.holder.null");
+			return;
+		}
+		WireRelay relay = holder.get(com.getString("relay"));
+		if(relay == null){
+			player.send("error.relay.null");
+			return;
+		}
+		while(relay.size() > 0) relay.remove(0, true);
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

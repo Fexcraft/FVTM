@@ -36,8 +36,8 @@ public class WireKey {
 	}
 
 	/** Only for temporary use. */
-	public WireKey(long pos, String string){
-		start_pos = end_pos = WrapperHolder.getPos(pos);
+	public WireKey(V3I pos, String string){
+		start_pos = end_pos = pos;
 		start_relay = end_relay = string;
 	}
 

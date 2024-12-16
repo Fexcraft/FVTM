@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -63,16 +64,16 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
         tooltip.add(Formatter.format("&9Customisable: &7" + wire.isCustomisable()));
         tooltip.add(Formatter.format("&9- &6- &9- - - - &6-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:wirepoint")){
-        	tooltip.add(Formatter.format("&9Block: &7" + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint"))));
-        	tooltip.add(Formatter.format("&9Slot: &7" + stack.getTagCompound().getString("fvtm:wirepoint_slot")));
+        	tooltip.add(Formatter.format("&9Block: &7" + stack.getTagCompound().getIntArray("fvtm:wirepoint")));
+        	tooltip.add(Formatter.format("&9Relay: &7" + stack.getTagCompound().getString("fvtm:wirepoint_key")));
         }
         else{
         	tooltip.add("No Connection data.");
         }
         tooltip.add(Formatter.format("&9- &6- &9- - - - &6-"));
         tooltip.add(Formatter.format("&6Usage:"));
-        tooltip.add(Formatter.format("&b- Rightclick on a wire supplying block to select connection slot."));
-        tooltip.add(Formatter.format("&b- Rightclick 2 blocks in sequence to create a wire. "));
+        tooltip.add(Formatter.format("&b- Rightclick on a relay to select."));
+        tooltip.add(Formatter.format("&b- Rightclick 2 relays in sequence to create a wire. "));
         tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
     }
 	
@@ -88,21 +89,11 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
         if(player.isSneaking()){
         	if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:wirepoint")){
     			stack.getTagCompound().removeTag("fvtm:wirepoint");
-    			stack.getTagCompound().removeTag("fvtm:wirepoint_slot");
-    			Print.chat(player, "&bItem Cache reset.");
+    			stack.getTagCompound().removeTag("fvtm:wirepoint_key");
+				UniEntity.getEntity(player).send("interact.fvtm.relay.cache_reset");
         	}
 			return EnumActionResult.SUCCESS;
 		}
-        if(world.getBlockState(pos).getBlock() instanceof BlockBase){
-        	BlockTileEntity tile = (BlockTileEntity) world.getTileEntity(pos);
-        	if(tile != null && tile.getBlockData().getType().hasRelay()){
-        		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        		player.openGui(FVTM.getInstance(), GuiHandler.WIRE_RELAY_MAIN, world, pos.getX(), pos.getY(), pos.getZ());
-        	}
-        	else{
-    			Print.chat(player, "&7This block can not be wired.");
-        	}
-        }
         return EnumActionResult.SUCCESS;
     }
 

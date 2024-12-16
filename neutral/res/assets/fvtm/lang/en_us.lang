@@ -51,6 +51,14 @@ interact.fvtm.vehicle.attribute.not_supported=&eToggling this attribute type is 
 interact.fvtm.road_tool.empty=Please setup the tool first!
 interact.fvtm.road_tool.too_long=&cRoad vector length exceeds the configured max length.
 interact.fvtm.road_tool.complete=&bRoad placed!
+//
+interact.fvtm.relay.cached=&aRelay position cached.
+interact.fvtm.relay.cache_reset=&bItem Cache reset.
+interact.fvtm.relay.wire_not_compatible=&bWire not compatible with relay.
+interact.fvtm.relay.full=&bRelay reached wire connections limit.",
+interact.fvtm.relay.wire_too_long=&cWire length exceeds the configured max length.
+interact.fvtm.relay.wire_duplicate=&cWire has same start/end as another wire.
+interact.fvtm.relay.wire_created=&aWire created.
 
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.

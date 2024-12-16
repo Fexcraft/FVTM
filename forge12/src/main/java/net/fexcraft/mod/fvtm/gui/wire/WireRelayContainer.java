@@ -100,54 +100,7 @@ public class WireRelayContainer extends GenericContainer {
 		if(!packet.hasKey("cargo")) return;
 		if(side.isServer()){
 			switch(packet.getString("cargo")){
-				case "connect":{
-					//int index = packet.getInteger("index");
-					String relid = packet.getString("id");
-					WireRelay relay = holder.get(conns.indexOf(relid));
-					//String relid = conns.get(index);
-					ArrayList<String> list = data.types.get(relid);
-					if(!list.isEmpty() && !list.contains(type.getType())){
-						Print.chat(player, "&bWire not compatible with relay.");
-						return;
-					}
-					int l = data.limits.get(relid);
-					if(l > 0 && relay.size() > l){
-						Print.chat(player, "&bRelay reached wire limit.");
-						return;
-					}
-					if(stack.getTagCompound().hasKey("fvtm:wirepoint")){
-						WireRelay relay0 = system.getRelay(new WireKey(stack.getTagCompound().getLong("fvtm:wirepoint"), stack.getTagCompound().getString("fvtm:wirepoint_slot")));
-						if(relay0.pos.dis(relay.pos) > MAX_WIRE_LENGTH){
-							Print.chat(player, "&cWire length exceeds the configured max length.");
-							player.closeScreen();
-							return;
-						}
-						BlockTileEntity tile0 = (BlockTileEntity)((World)system.getWorld().direct()).getTileEntity(BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint")));
-						RelayData data0 = tile0.getBlockData().getType().getRelayData();
-						V3D r0 = data0.getVec(stack.getTagCompound().getString("fvtm:wirepoint_slot"), tile0.getV3I(), tile0.meta, tile0.data.getType().getBlockType());
-						V3D r1 = data.getVec(relid, tile.getV3I(), tile.meta, tile.data.getType().getBlockType());
-						Wire wire = new Wire(relay0, relay, type, r0, r1);
-						if(relay0.isDuplicate(wire) || relay.isDuplicate(wire)){
-							Print.chat(player, "&cWire has same start/end as another wire.");
-							player.closeScreen();
-							return;
-						}
-						relay0.addnew(wire);
-						relay.addnew(wire.createOppositeCopy());
-						relay0.checkWireSectionConsistency();
-		    			stack.getTagCompound().removeTag("fvtm:wirepoint");
-		    			stack.getTagCompound().removeTag("fvtm:wirepoint_slot");
-						Print.chatbar(player, "&aWire created.");
-						player.closeScreen();
-					}
-					else{
-						stack.getTagCompound().setLong("fvtm:wirepoint", tile.getPos().toLong());
-						stack.getTagCompound().setString("fvtm:wirepoint_slot", relid);
-						Print.chatbar(player, "&aRelay position cached.");
-						player.closeScreen();
-					}
-					return;
-				}
+				case "connect": return;
 				case "open_editor":{
 					player.openGui(FVTM.getInstance(), GuiHandler.WIRE_RELAY_EDIT, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
 					return;

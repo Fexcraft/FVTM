@@ -274,7 +274,7 @@ public class InteractionHandler {
 		if(!stack.empty() && !stack.isItemOfAny(ItemType.PART, ItemType.MATERIAL, ItemType.FVTM_TOOLBOX, ItemType.LEAD, ItemType.WIRE)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
-		if(key.mouse_right() && stack.isItemOf(ItemType.WIRE)) return handleWire(world, pass, key, stack);
+		if(key.mouse_right() && (stack.isItemOf(ItemType.WIRE) || (stack.isItemOf(ItemType.FVTM_TOOLBOX) && stack.damage() == 3))) return handleWire(world, pass, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass, stack)) return true;
@@ -285,7 +285,7 @@ public class InteractionHandler {
 	private static boolean handleWire(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
 		if(last.equals("wire") && Time.getDate() < cooldown) return false;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, (WorldW)world);
-		WireType type = stack.getContent(ContentType.WIRE);
+		boolean wire = stack.isItemOf(ItemType.WIRE);
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(3));
 		V3D vec0;
@@ -301,7 +301,7 @@ public class InteractionHandler {
 							TagCW com = TagCW.create();
 							com.set("holder", holder.pos, false);
 							com.set("relay", relay.getKey());
-							Packets.send(Packet_TagListener.class, "relay_interact", com);
+							Packets.send(Packet_TagListener.class, wire ? "relay_interact" : "relay_remove", com);
 							cooldown = Time.getDate() + 20;
 							last = "wire";
 							return true;

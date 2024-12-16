@@ -200,7 +200,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("relay_interact", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			player.send(com.toString());
+			system.onRelayInteract(com, player);
 		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("attr_toggle", (tag, player) -> {

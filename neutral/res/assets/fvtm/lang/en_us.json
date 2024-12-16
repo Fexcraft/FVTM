@@ -103,6 +103,14 @@
     "interact.fvtm.road_tool.too_long": "&cRoad vector length exceeds the configured max length.",
     "interact.fvtm.road_tool.complete": "&bRoad placed!",
 
+	"interact.fvtm.relay.cached": "&aRelay position cached.",
+	"interact.fvtm.relay.cache_reset": "&bItem Cache reset.",
+	"interact.fvtm.relay.wire_not_compatible": "&bWire not compatible with relay.",
+	"interact.fvtm.relay.full": "&bRelay reached wire connections limit.",
+	"interact.fvtm.relay.wire_too_long": "&cWire length exceeds the configured max length.",
+	"interact.fvtm.relay.wire_duplicate": "&cWire has same start/end as another wire.",
+	"interact.fvtm.relay.wire_created": "&aWire created.",
+
     "ui.fvtm.road_tool.add_width": "Increase Road Width",
     "ui.fvtm.road_tool.sub_width": "Decrease Road Width",
     "ui.fvtm.road_tool.enable_ground": "Enable Road Underground",

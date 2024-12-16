@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
 
 import java.io.File;
@@ -11,12 +12,14 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -67,7 +70,64 @@ public class WireSystem extends DetachedSystem {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void onRelayInteract(TagCW com, Passenger player){
+		RelayHolder holder = getHolder(com.getV3I("holder"));
+		if(holder == null){
+			player.send("error.holder.null");
+			return;
+		}
+		if(!holder.hasRef()){
+			player.send("error.holder.ref-null");
+			return;
+		}
+		WireRelay relay = holder.get(com.getString("relay"));
+		if(relay == null){
+			player.send("error.relay.null");
+			return;
+		}
+		StackWrapper stack = player.getHeldItem(true);
+		WireType type = stack.getContent(ContentType.WIRE);
+		if(type == null){
+			player.send("error.wire-type.null");
+			return;
+		}
+		ArrayList<String> list = holder.ref().types.get(relay.getKey());
+		if(!list.isEmpty() && !list.contains(type.getType())){
+			player.send("interact.fvtm.relay.wire_not_compatible");
+			return;
+		}
+		int l = holder.ref().limits.get(relay.getKey());
+		if(l > 0 && relay.size() > l){
+			player.send("interact.fvtm.relay.full");
+			return;
+		}
+		stack.createTagIfMissing();
+		if(stack.getTag().has("fvtm:wirepoint")){
+			WireRelay relay0 = getRelay(new WireKey(stack.getTag().getV3I("fvtm:wirepoint"), stack.getTag().getString("fvtm:wirepoint_key")));
+			if(relay0.pos.dis(relay.pos) > MAX_WIRE_LENGTH){
+				player.send("interact.fvtm.relay.wire_too_long");
+				return;
+			}
+			Wire wire = new Wire(relay0, relay, type, relay0.pos, relay.pos);
+			if(relay0.isDuplicate(wire) || relay.isDuplicate(wire)){
+				player.send("interact.fvtm.relay.wire_duplicate");
+				return;
+			}
+			relay0.addnew(wire);
+			relay.addnew(wire.createOppositeCopy());
+			relay0.checkWireSectionConsistency();
+			stack.getTag().rem("fvtm:wirepoint");
+			stack.getTag().rem("fvtm:wirepoint_key");
+			player.bar("interact.fvtm.relay.wire_created");
+		}
+		else{
+			stack.getTag().set("fvtm:wirepoint", holder.pos, false);
+			stack.getTag().set("fvtm:wirepoint_key", relay.key);
+			player.bar("interact.fvtm.relay.cached");
+		}
+	}
+
 	public static class WireMap extends TreeMap<String, WireUnit> {
 		
 		private WireSystem data;

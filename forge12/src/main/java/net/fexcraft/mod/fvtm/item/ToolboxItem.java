@@ -43,6 +43,10 @@ public class ToolboxItem extends Item {
 				tooltip.add("Color Channel Painting Toolbox");
 				break;
 			}
+			case 3:{
+				tooltip.add("Wire removal Toolbox");
+				break;
+			}
 		}
 	}
 
@@ -52,6 +56,7 @@ public class ToolboxItem extends Item {
 			items.add(new ItemStack(INSTANCE, 1, 0));
 			items.add(new ItemStack(INSTANCE, 1, 1));
 			items.add(new ItemStack(INSTANCE, 1, 2));
+			items.add(new ItemStack(INSTANCE, 1, 3));
 		}
 	}
 

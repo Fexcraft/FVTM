@@ -274,9 +274,9 @@ public class FVTM {
 		//
 		UniReg.registerMod(MODID, INSTANCE);
 		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "fvtm:uis/toolbox_colors", ToolboxPaintContainer.class);
 		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "assets/fvtm/uis/toolbox_texture", ToolboxTextureContainer.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
 	}
 
 	@Mod.EventHandler

@@ -125,7 +125,7 @@ public class GuiHandler implements IGuiHandler {
 			case UIKeys.ID12_VEHICLE_ATTRIBUTES:
 				return new UniCon(new VehicleAttributesCon(gJ("vehicle_attributes"), entity, pos), player);
 			case UIKeys.ID12_VEHICLE_INVENTORIES:
-				return new UniCon(new VehicleInventoriesCon(gJC("vehicle_inventories"), entity, pos), player);
+				return new UniCon(new VehicleInventoriesCon(gJ("vehicle_inventories"), entity, pos), player);
 			case UIKeys.ID12_VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
 			case UIKeys.ID12_VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
@@ -173,15 +173,15 @@ public class GuiHandler implements IGuiHandler {
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				//case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
 				case UIKeys.ID12_RAIL_JUNCTION: {
-					JsonMap map = gJC("rail_junction");
+					JsonMap map = gJ("rail_junction");
 					return new UniUI(new RailJunction(map, new RailJunctionContainer(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_ROAD_TOOL:{
-					JsonMap map = gJC("road_tool");
+					JsonMap map = gJ("road_tool");
 					return new UniUI(new RoadToolUI(map, new RoadToolConImpl(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_ROAD_TOOL_CUSTOM:{
-					JsonMap map = gJC("road_tool_custom");
+					JsonMap map = gJ("road_tool_custom");
 					return new UniUI(new RoadToolCustomUI(map, new RoadToolCustomConImpl(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_ENTITY_SYSTEM_CHOOSE: return new SpawnSystemChooser(player, x, y, z);
@@ -189,7 +189,7 @@ public class GuiHandler implements IGuiHandler {
 				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				//case CONSTRUCTOR_MAIN: return new ConstMain(player, world, x, y, z);
 				case UIKeys.ID12_CONSTRUCTOR:{
-					JsonMap map = gJC("vehicle_constructor");
+					JsonMap map = gJ("vehicle_constructor");
 					return new UniUI(new VehicleConstructor(map, new VehicleConstructorCon(map, entity, pos)), player);
 				}
 				//case CONSTRUCTOR_STATUS: return new ConstStatus(player, world, x, y, z);
@@ -200,19 +200,19 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstTextureManager(player, world, x, y, z);
 				case CONSTRUCTOR_PAINTER: return new ConstPainter(player, world, x, y, z);
 				case UIKeys.ID12_VEHICLE_MAIN:{
-					JsonMap map = gJC("vehicle_main");
+					JsonMap map = gJ("vehicle_main");
 					return new UniUI(new VehicleMain(map, new VehicleMainCon(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_VEHICLE_FUEL: {
-					JsonMap map = gJC("vehicle_fuel");
+					JsonMap map = gJ("vehicle_fuel");
 					return new UniUI(new VehicleFuel(map, new VehicleFuelConImpl(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_VEHICLE_ATTRIBUTES:{
-					JsonMap map = gJC("vehicle_attributes");
+					JsonMap map = gJ("vehicle_attributes");
 					return new UniUI(new VehicleAttributes(map, new VehicleAttributesCon(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_VEHICLE_INVENTORIES:{
-					JsonMap map = gJC("vehicle_inventories");
+					JsonMap map = gJ("vehicle_inventories");
 					return new UniUI(new VehicleInventories(map, new VehicleInventoriesCon(map, entity, pos)), player);
 				}
 				case UIKeys.ID12_VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
@@ -226,7 +226,7 @@ public class GuiHandler implements IGuiHandler {
 				case UIKeys.ID12_VEHICLE_ATTR_EDITOR: return new AttributeEditor(player, world, x, y, z);
 				//case DECORATION_EDITOR: return new DecoEditor(player, world, x);
 				case UIKeys.ID12_DECORATION_EDITOR: {
-					JsonMap map = gJC("deco_editor");
+					JsonMap map = gJ("deco_editor");
 					return new UniUI(new DecoEditor(map, new DecoContainer(map, player, x)), player);
 				}
 				case VEHICLE_AND_PART_INFO: return new VehicleAndPartInfo(player);
@@ -245,7 +245,7 @@ public class GuiHandler implements IGuiHandler {
 				case UIKeys.ID12_MULTIBLOCK_INVENTORY_VAR: return new UniVarInvUi(player, world, ID, x, y, z);
 				case UIKeys.ID12_VEHICLE_CATALOG:{
 					if(FvtmRegistry.VEHICLES.isEmpty()) return null;
-					JsonMap map = gJC("vehicle_catalog");
+					JsonMap map = gJ("vehicle_catalog");
 					return new UniUI(new VehicleCatalogImpl(map, new VehicleCatalogCon(map, entity, pos)), player);
 				}
 			}
@@ -271,11 +271,7 @@ public class GuiHandler implements IGuiHandler {
 	}
 
 	public JsonMap gJ(String uiid){
-		return getJson("assets/fvtm/uis/" + uiid + ".json");
-	}
-
-	public JsonMap gJC(String uiid){
-		return INSTANCE.getJsonC("fvtm:uis/" + uiid + ".json");
+		return getJson("data/fvtm/uis/" + uiid + ".json");
 	}
 
 }

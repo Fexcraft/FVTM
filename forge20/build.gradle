@@ -17,7 +17,7 @@ sourceSets {
         }
         resources {
             srcDirs += 'src/main/resources'
-            srcDirs += new File(file('..'), 'common20/resources')
+            //srcDirs += new File(file('..'), 'common20/resources')
             srcDirs += new File(file('..'), "neutral/res")
         }
     }

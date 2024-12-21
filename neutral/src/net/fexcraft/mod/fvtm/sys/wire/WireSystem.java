@@ -140,7 +140,10 @@ public class WireSystem extends DetachedSystem {
 			player.send("error.relay.null");
 			return;
 		}
-		while(relay.size() > 0) relay.remove(0, true);
+		if(player.isShiftDown()){
+			while(relay.size() > 0) relay.remove(0, true);
+		}
+		else relay.remove(relay.size() - 1, true);
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

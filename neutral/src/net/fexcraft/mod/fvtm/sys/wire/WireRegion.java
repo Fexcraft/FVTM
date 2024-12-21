@@ -214,7 +214,7 @@ public class WireRegion {
 		if(system.getWorld().isClient() || player == null) return;
 		TagCW compound = this.write(true);
 		compound.set("XZ", key.toArray());
-		Packets.send(Packet_TagListener.class, "wire_upd_region", compound);
+		Packets.sendTo(Packet_TagListener.class, player, "wire_upd_region", compound);
 	}
 	
 	public WireSystem getSystem(){

@@ -203,7 +203,7 @@ public class Config extends ConfigBase {
 			.rang(1, 1024));
 		entries.add(new ConfigEntry(this, catw, "slack_adjustment", new JsonValue(0.5f))
 			.info("Default slack adjustment value when using the toolbox item on a wire.")
-			.cons((con, map) -> WIRE_SLACK_ADJUSTMENT = con.getInteger(map))
+			.cons((con, map) -> WIRE_SLACK_ADJUSTMENT = con.getFloat(map))
 			.rang(Static.sixteenth, 1f));
 
 		//1.12 specific settings

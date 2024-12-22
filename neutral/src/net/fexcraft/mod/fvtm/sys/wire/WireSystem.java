@@ -158,6 +158,7 @@ public class WireSystem extends DetachedSystem {
 		wire1.reslack();
 		wire0.getRelay().updateClient();
 		wire1.getRelay().updateClient();
+		player.bar("interact.fvtm.relay.wire_slack", wire0.slack);
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

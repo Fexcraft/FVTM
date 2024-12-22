@@ -1,18 +1,16 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -20,13 +18,13 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -34,11 +32,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
+import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
+import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_CYN;
+import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_ORG;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
 public class WireRenderer {
     
@@ -63,14 +62,19 @@ public class WireRenderer {
 	}
 	
 	private static WireSystem wiredata;
-	private static boolean holding;
+	private static ItemStack held;
+	private static boolean holding_wire;
+	private static boolean holding_slack;
+	private static V3D cubepos;
 	private static float size;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(DISABLE_WIRES) return;
 	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
-		holding = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof WireItem;
+		held = Minecraft.getMinecraft().player.getHeldItemMainhand();
+		holding_wire = held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
+		holding_slack = held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -79,7 +83,7 @@ public class WireRenderer {
         	for(RelayHolder holder : reg.getHolders().values()){
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
-                	if(Command.OTHER || holding){// || relay.wires.isEmpty()){
+                	if(Command.OTHER || holding_wire){// || relay.wires.isEmpty()){
 						GL11.glPushMatrix();
 						GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
 						size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
@@ -87,6 +91,18 @@ public class WireRenderer {
 						CUBE_CYN.render(1f);
 						GL11.glPopMatrix();
                 	}
+					if((Command.OTHER || holding_slack) && relay.wires.size() > 0){
+						for(Wire wire : relay.wires){
+							if(wire.copy) continue;
+							cubepos = wire.getVectorPosition(wire.length * 0.5, false);
+							GL11.glPushMatrix();
+							GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
+							size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
+							GL11.glScalef(size, size, size);
+							CUBE_ORG.render(1f);
+							GL11.glPopMatrix();
+						}
+					}
             		renderWires(relay, cx, cy, cz);
             	}
         	}

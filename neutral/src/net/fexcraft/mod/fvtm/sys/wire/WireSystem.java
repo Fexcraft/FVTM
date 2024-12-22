@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
@@ -144,6 +145,19 @@ public class WireSystem extends DetachedSystem {
 			while(relay.size() > 0) relay.remove(0, true);
 		}
 		else relay.remove(relay.size() - 1, true);
+	}
+
+	public void onRelayWireSlack(TagCW com, Passenger player){
+		Wire wire0 = getWire(new WireKey(com));
+		Wire wire1 = getWire(wire0.okey);
+		wire0.slack += com.getBoolean("up") ? -Config.WIRE_SLACK_ADJUSTMENT : Config.WIRE_SLACK_ADJUSTMENT;
+		if(wire0.slack > 8) wire0.slack = 8;
+		if(wire0.slack < -8) wire0.slack = -8;
+		wire1.slack = wire0.slack;
+		wire0.reslack();
+		wire1.reslack();
+		wire0.getRelay().updateClient();
+		wire1.getRelay().updateClient();
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

@@ -59,6 +59,7 @@ interact.fvtm.relay.full=&bRelay reached wire connections limit.",
 interact.fvtm.relay.wire_too_long=&cWire length exceeds the configured max length.
 interact.fvtm.relay.wire_duplicate=&cWire has same start/end as another wire.
 interact.fvtm.relay.wire_created=&aWire created.
+interact.fvtm.relay.wire_slack=&aWire slack changed to %s.
 
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.

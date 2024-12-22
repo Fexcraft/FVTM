@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.uni.ConfigBase;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -53,6 +54,7 @@ public class Config extends ConfigBase {
 	public static boolean DISABLE_WIRES;
 	public static int WIRE_SEGMENTATOR;
 	public static int MAX_WIRE_LENGTH;
+	public static float WIRE_SLACK_ADJUSTMENT;
 	//deprecated
 	public static boolean OVERLAY_ON_BOTTOM;
 
@@ -199,6 +201,10 @@ public class Config extends ConfigBase {
 			.info("Max total vector length of new placed wires.")
 			.cons((con, map) -> MAX_WIRE_LENGTH = con.getInteger(map))
 			.rang(1, 1024));
+		entries.add(new ConfigEntry(this, catw, "slack_adjustment", new JsonValue(0.5f))
+			.info("Default slack adjustment value when using the toolbox item on a wire.")
+			.cons((con, map) -> WIRE_SLACK_ADJUSTMENT = con.getInteger(map))
+			.rang(Static.sixteenth, 1f));
 
 		//1.12 specific settings
 		if(UniReg.LOADER_VERSION.equals("1.12")){

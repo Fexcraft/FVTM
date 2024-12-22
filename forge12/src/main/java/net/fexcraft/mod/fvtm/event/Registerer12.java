@@ -56,7 +56,7 @@ public class Registerer12 {
 			regModel(Asphalt.ITEM, 16);
 			//
 			regModel(RoadToolItem.INSTANCE);
-			regModel(ToolboxItem.INSTANCE, 3);
+			regModel(ToolboxItem.INSTANCE, 4);
 			regModel(JunctionToolItem.INSTANCE);
 		}
 	}

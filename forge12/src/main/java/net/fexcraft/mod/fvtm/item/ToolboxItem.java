@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -47,16 +48,20 @@ public class ToolboxItem extends Item {
 				tooltip.add("Wire removal Toolbox");
 				break;
 			}
+			case 4:{
+				tooltip.add("Wire Slack Adjustment Toolbox");
+				break;
+			}
+			default: break;
 		}
 	}
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
 		if(tab == CreativeTabs.SEARCH || tab == getCreativeTab()){
-			items.add(new ItemStack(INSTANCE, 1, 0));
-			items.add(new ItemStack(INSTANCE, 1, 1));
-			items.add(new ItemStack(INSTANCE, 1, 2));
-			items.add(new ItemStack(INSTANCE, 1, 3));
+			for(ToolboxType value : ToolboxType.values()){
+				items.add(new ItemStack(INSTANCE, 1, value.idx));
+			}
 		}
 	}
 

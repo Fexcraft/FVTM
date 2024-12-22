@@ -110,6 +110,7 @@
 	"interact.fvtm.relay.wire_too_long": "&cWire length exceeds the configured max length.",
 	"interact.fvtm.relay.wire_duplicate": "&cWire has same start/end as another wire.",
 	"interact.fvtm.relay.wire_created": "&aWire created.",
+	"interact.fvtm.relay.wire_slack": "&aWire slack changed to %s.",
 
     "ui.fvtm.road_tool.add_width": "Increase Road Width",
     "ui.fvtm.road_tool.sub_width": "Decrease Road Width",

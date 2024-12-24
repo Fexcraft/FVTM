@@ -52,7 +52,6 @@ public class Config extends ConfigBase {
 	public static int ROAD_UNDO_CACHE_CLEARTIME;
 	//wire
 	public static boolean DISABLE_WIRES;
-	public static int WIRE_SEGMENTATOR;
 	public static int MAX_WIRE_LENGTH;
 	public static float WIRE_SLACK_ADJUSTMENT;
 	//deprecated
@@ -186,17 +185,6 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catw, "disable", new JsonValue(false))
 			.info("If FVTM wire system should be disabled.")
 			.cons((con, map) -> DISABLE_WIRES = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catw, "generation_segmentator", new JsonValue(4))
-			.info("Segmentator divider for wire generator, valid are 16, 8, 4, 2 or 1.")
-			.cons((con, map) -> {
-				WIRE_SEGMENTATOR = con.getInteger(map);
-				if(WIRE_SEGMENTATOR > 16) WIRE_SEGMENTATOR = 16;
-				if(WIRE_SEGMENTATOR > 8 && WIRE_SEGMENTATOR < 16) WIRE_SEGMENTATOR = 8;
-				if(WIRE_SEGMENTATOR > 4 && WIRE_SEGMENTATOR < 8) WIRE_SEGMENTATOR = 4;
-				if(WIRE_SEGMENTATOR > 2 && WIRE_SEGMENTATOR < 4) WIRE_SEGMENTATOR = 2;
-				if(WIRE_SEGMENTATOR < 1) WIRE_SEGMENTATOR = 1;
-			})
-			.rang(1, 16));
 		entries.add(new ConfigEntry(this, catw, "max_length", new JsonValue(64))
 			.info("Max total vector length of new placed wires.")
 			.cons((con, map) -> MAX_WIRE_LENGTH = con.getInteger(map))

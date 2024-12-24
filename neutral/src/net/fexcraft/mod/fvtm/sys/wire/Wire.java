@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
-import static net.fexcraft.mod.fvtm.Config.WIRE_SEGMENTATOR;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -98,7 +96,7 @@ public class Wire {
 	private V3D[] curve(V3D[] vecpoints){
 		ArrayList<V3D> vecs = new ArrayList<V3D>();
 		float length = getLength(vecpoints);
-		float increment = 1 / length / WIRE_SEGMENTATOR;
+		float increment = 1 / length / type.getSegmentation();
 		double d = 0; while(d < 1){
 			V3D[] moved = vecpoints;
 			while(moved.length > 2){

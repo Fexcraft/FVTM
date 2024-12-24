@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
@@ -26,6 +27,7 @@ public class WireType extends Content<WireType> implements WithItem, ItemTexture
 	protected ModelData modeldata;
 	protected String modelid;
 	protected String ctab;
+	protected int segmentation;
 
 	public WireType(){}
 
@@ -37,7 +39,8 @@ public class WireType extends Content<WireType> implements WithItem, ItemTexture
 		name = map.getString("Name", "Unnamed Wire");
 		description = ContentConfigUtil.getStringList(map, "Description");
 		type = map.getString("Type", "universal");
-		def_slack = map.getFloat("Slack", Static.sixteenth);
+		def_slack = map.getFloat("Slack", Config.WIRE_SLACK_ADJUSTMENT);
+		segmentation = map.getInteger("Segmentation", 4);
 		customisable = map.getBoolean("Customisable", true);
 		texture = ContentConfigUtil.getTextures(map).get(0);
 		if(EnvInfo.CLIENT){
@@ -98,6 +101,10 @@ public class WireType extends Content<WireType> implements WithItem, ItemTexture
 
 	public IDL getTexture(){
 		return texture;
+	}
+
+	public int getSegmentation(){
+		return segmentation;
 	}
 
 }

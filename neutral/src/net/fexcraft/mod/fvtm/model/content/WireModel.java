@@ -70,16 +70,16 @@ public class WireModel extends DefaultModel {
 	}
 
 	public void addWireRect(float scale, float start_x, float start_y, float width, float height, boolean mirror, float[] vv, float ang){
-		wire_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
+		wire_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
 		float buff = 0;
 		wire_vv.add(new float[]{ vv[0], vv[0] + (buff += vv[1])});
 		wire_ang.add(ang);
 		if(height > 0){
-			wire_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x, start_y - height, 0).scale(scale) });
+			wire_model.add(new V3D[]{ new V3D(start_x, start_y + height, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
 			wire_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
-			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
+			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x + width, start_y + height, 0).scale(scale) });
 			wire_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
-			wire_model.add(new V3D[]{ new V3D(start_x, start_y - height, 0).scale(scale), new V3D(start_x + width, start_y - height, 0).scale(scale) });
+			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y + height, 0).scale(scale), new V3D(start_x, start_y + height, 0).scale(scale) });
 			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 			wire_ang.add(ang);
 			wire_ang.add(ang);
@@ -87,7 +87,7 @@ public class WireModel extends DefaultModel {
 		}
 		else{
 			float h = 0.01f / scale;
-			wire_model.add(new V3D[]{ new V3D(start_x, start_y - h, 0).scale(scale), new V3D(start_x + width, start_y - h, 0).scale(scale) });
+			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y + h, 0).scale(scale), new V3D(start_x, start_y + h, 0).scale(scale) });
 			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 			wire_ang.add(ang);
 		}

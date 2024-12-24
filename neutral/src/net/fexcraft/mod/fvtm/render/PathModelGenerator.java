@@ -19,6 +19,8 @@ import net.fexcraft.mod.fvtm.util.VecUtil;
 import java.util.ArrayList;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.mod.fvtm.util.VecUtil.rotByRad;
+import static net.fexcraft.mod.fvtm.util.VecUtil.rotate;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -43,13 +45,13 @@ public class PathModelGenerator {
 			float[] vv = model.rail_vv.get(p);
 			vec = track.getVectorPosition0(0.001f, false);
 			angle = -Math.atan2(track.vecpath[0].x - vec.x, track.vecpath[0].z - vec.z);
-			path.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0]));
-			path.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1]));
+			path.add(rotByRad(angle, model.rail_model.get(p)[0]));
+			path.add(rotByRad(angle, model.rail_model.get(p)[1]));
 			for(int v = 0; v < track.vecpath.length - 1; v++){
 				last = track.vecpath[v]; vec = track.vecpath[v + 1];
 				angle = -Math.atan2(last.x - vec.x, last.z - vec.z);
-				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])).sub(cen));
-				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])).sub(cen));
+				path.add(vec.add(rotByRad(angle, model.rail_model.get(p)[0])).sub(cen));
+				path.add(vec.add(rotByRad(angle, model.rail_model.get(p)[1])).sub(cen));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
 				nbuf += (float)track.vecpath[k].dis(track.vecpath[k + 1]);
@@ -84,7 +86,7 @@ public class PathModelGenerator {
 							TexturedVertex[] verts = new TexturedVertex[poly.vertices.length];
 							for(int m = 0; m < verts.length; m++){
 								Vertex org = poly.vertices[m];
-								verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
+								verts[m] = new TexturedVertex(rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
 								double dx = (verts[m].vector.x) + vec.x - cen.x;
 								double dy = (verts[m].vector.y) + vec.y - cen.y;
 								double dz = (verts[m].vector.z) + vec.z - cen.z;
@@ -104,6 +106,8 @@ public class PathModelGenerator {
 		double angle, passed = 0;
 		float obuf = 0;
 		float nbuf = 0;
+		float abuf = 0;
+		float arad = 0;
 		V3D last, vec, cen = wire.vecpath[0];
 		ArrayList<V3D> path = new ArrayList<>();
 		TexturedVertex vert0, vert1, vert2, vert3;
@@ -115,16 +119,20 @@ public class PathModelGenerator {
 			passed = 0;
 			obuf = 0;
 			nbuf = 0;
+			abuf = 0;
+			arad = model.wire_ang.get(p) * Static.rad1;
 			float[] vv = model.wire_vv.get(p);
 			vec = wire.getVectorPosition(0.001f, false);
 			angle = -Math.atan2(wire.vecpath[0].x - vec.x, wire.vecpath[0].z - vec.z);
-			path.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[0]));
-			path.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[1]));
+			path.add(rotByRad(angle, model.wire_model.get(p)[0]));
+			path.add(rotByRad(angle, model.wire_model.get(p)[1]));
 			for(int v = 0; v < wire.vecpath.length - 1; v++){
 				last = wire.vecpath[v]; vec = wire.vecpath[v + 1];
 				angle = -Math.atan2(last.x - vec.x, last.z - vec.z);
-				path.add(vec.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[0])).sub(cen));
-				path.add(vec.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[1])).sub(cen));
+				abuf += arad * (float)last.dis(vec);
+				if(abuf >= Static.rad180) abuf -= Static.rad180 + Static.rad180;
+				path.add(vec.add(rotate(model.wire_model.get(p)[0], 0, abuf, angle)).sub(cen));
+				path.add(vec.add(rotate(model.wire_model.get(p)[1], 0, abuf, angle)).sub(cen));
 			}
 			for(int k = 0; k < wire.vecpath.length - 1; k++){
 				nbuf += (float)wire.vecpath[k].dis(wire.vecpath[k + 1]);

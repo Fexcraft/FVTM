@@ -58,7 +58,7 @@ public class Config extends ConfigBase {
 	public static boolean OVERLAY_ON_BOTTOM;
 
 	public Config(File file){
-		super(file);
+		super(file, "FVTM");
 	}
 
 	@Override

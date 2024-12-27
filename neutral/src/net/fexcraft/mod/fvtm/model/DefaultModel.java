@@ -35,7 +35,6 @@ public class DefaultModel implements Model {
 	private List<String> authors = new ArrayList<>();
 	public Transforms transforms = new Transforms();
 	public boolean smooth_shading;
-	public int textureX, textureY;
 	public int tex_width;
 	public int tex_height;
 	public boolean locked;
@@ -257,7 +256,17 @@ public class DefaultModel implements Model {
 				mat.texture = IDLManager.getIDLCached(entry.getValue().string_value());
 			}
 		}
+		if(data.has(TEXTURE_WIDTH)) tex_width = data.getInteger(TEXTURE_WIDTH, getDefTexWidth());
+		if(data.has(TEXTURE_HEIGHT)) tex_height = data.getInteger(TEXTURE_HEIGHT, getDefTexHeight());
 		return this;
+	}
+
+	public int getDefTexWidth(){
+		return 256;
+	}
+
+	public int getDefTexHeight(){
+		return 256;
 	}
 
 	@Override

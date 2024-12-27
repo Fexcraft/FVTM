@@ -121,6 +121,7 @@ public class PathModelGenerator {
 			nbuf = 0;
 			abuf = 0;
 			arad = model.wire_ang.get(p) * Static.rad1;
+			float u = model.wire_u.get(p);
 			float[] vv = model.wire_vv.get(p);
 			vec = wire.getVectorPosition(0.001f, false);
 			angle = -Math.atan2(wire.vecpath[0].x - vec.x, wire.vecpath[0].z - vec.z);
@@ -140,10 +141,10 @@ public class PathModelGenerator {
 					nbuf = obuf - nbuf;
 					obuf = 0;
 				}
-				vert0 = new TexturedVertex(path.get(k * 2), obuf, vv[1]);
-				vert1 = new TexturedVertex(path.get(k * 2 + 1), obuf, vv[0]);
-				vert2 = new TexturedVertex(path.get((k + 1) * 2), nbuf, vv[1]);
-				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), nbuf, vv[0]);
+				vert0 = new TexturedVertex(path.get(k * 2), obuf * u, vv[1]);
+				vert1 = new TexturedVertex(path.get(k * 2 + 1), obuf * u, vv[0]);
+				vert2 = new TexturedVertex(path.get((k + 1) * 2), nbuf * u, vv[1]);
+				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), nbuf * u, vv[0]);
 				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.hedrons.length) pess = tarp.hedrons.length - 1;
 				tarp.hedrons[pess].importMRT(poly0, 1f);

@@ -23,6 +23,7 @@ public class WireModel extends DefaultModel {
 	public ArrayList<V3D[]> wire_model = new ArrayList<>();
 	public ArrayList<float[]> wire_vv = new ArrayList<>();
 	public ArrayList<Float> wire_ang = new ArrayList<>();
+	public ArrayList<Float> wire_u = new ArrayList<>();
 
 	@Override
 	public WireModel parse(ModelData data){
@@ -39,12 +40,12 @@ public class WireModel extends DefaultModel {
 				float w = Float.parseFloat(args[4]);
 				float h = Float.parseFloat(args[5]);
 				boolean m = Boolean.parseBoolean(args[6]);
-				float io = args.length > 7 ? Float.parseFloat(args[7]) : 0;
-				float iw = args.length > 8 ? Float.parseFloat(args[8]) : 1;
-				float ih = args.length > 9 ? Float.parseFloat(args[9]) : 1;
+				float io = args.length > 7 ? Float.parseFloat(args[7]) / tex_height : 0;
+				float iw = args.length > 8 ? Float.parseFloat(args[8]) / tex_height : 1 / tex_height;
+				float ih = args.length > 9 ? Float.parseFloat(args[9]) / tex_height : 1 / tex_height;
 				float an = args.length > 10 ? Float.parseFloat(args[10]) : 0;
 				if(rect){
-					this.addWireRect(scale, sx, sy, w, h, m, new float[]{ io, iw, ih }, an);
+					this.addWireRect(scale, sx, sy, w, h, m, 1, new float[]{ io, iw, ih }, an);
 				}
 				else{
 					//V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);
@@ -60,38 +61,61 @@ public class WireModel extends DefaultModel {
 				float scl = map.getFloat("scale", 0.0625f);
 				float[] pos = map.has("pos") ? map.getArray("pos").toFloatArray() : new float[]{ -.5f, -.5f };
 				float[] siz = map.has("size") ? map.getArray("size").toFloatArray() : new float[]{ 1, 1 };
-				float[] vv = map.has("v") ? map.getArray("v").toFloatArray() : new float[]{ 0, 0.125f, 0.125f };
+				float[] vv;
+				if(map.has("v")){
+					vv = map.getArray("v").toFloatArray();
+					for(int i = 0; i < vv.length; i++){
+						vv[i] /= tex_height;
+					}
+				}
+				else{
+					vv = new float[]{ 0, 0.125f * tex_height, 0.125f * tex_height };
+				}
+				float u = map.getFloat("u", 16f) / tex_width;
 				float ang = map.getFloat("angle", 0);
 				boolean mir = map.getBoolean("mirror", false);
-				addWireRect(scl, pos[0], pos[1], siz[0], siz[1], mir, vv, ang);
+				addWireRect(scl, pos[0], pos[1], siz[0], siz[1], mir, u, vv, ang);
 			}
 		}
 		return this;
 	}
 
-	public void addWireRect(float scale, float start_x, float start_y, float width, float height, boolean mirror, float[] vv, float ang){
+	public void addWireRect(float scale, float start_x, float start_y, float width, float height, boolean mirror, float u, float[] vv, float ang){
 		wire_model.add(new V3D[]{ new V3D(start_x, start_y, 0).scale(scale), new V3D(start_x + width, start_y, 0).scale(scale) });
 		float buff = 0;
 		wire_vv.add(new float[]{ vv[0], vv[0] + (buff += vv[1])});
 		wire_ang.add(ang);
+		wire_u.add(u);
 		if(height > 0){
 			wire_model.add(new V3D[]{ new V3D(start_x, start_y + height, 0).scale(scale), new V3D(start_x, start_y, 0).scale(scale) });
 			wire_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
 			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y, 0).scale(scale), new V3D(start_x + width, start_y + height, 0).scale(scale) });
 			wire_vv.add(new float[]{ vv[0] + buff, vv[0] + (buff += vv[2]) });
 			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y + height, 0).scale(scale), new V3D(start_x, start_y + height, 0).scale(scale) });
-			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
-			wire_ang.add(ang);
-			wire_ang.add(ang);
-			wire_ang.add(ang);
+			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1]) });
+			for(int i = 0; i < 3; i++){
+				wire_ang.add(ang);
+				wire_u.add(u);
+			}
 		}
 		else{
 			float h = 0.01f / scale;
 			wire_model.add(new V3D[]{ new V3D(start_x + width, start_y + h, 0).scale(scale), new V3D(start_x, start_y + h, 0).scale(scale) });
 			wire_vv.add(new float[]{  vv[0] + buff, vv[0] + (buff + vv[1])  });
 			wire_ang.add(ang);
+			wire_u.add(u);
 		}
-		if(mirror) addWireRect(scale, -start_x - width, start_y, width, height, false, vv, ang);
+		if(mirror) addWireRect(scale, -start_x - width, start_y, width, height, false, u, vv, ang);
+	}
+
+	@Override
+	public int getDefTexWidth(){
+		return 16;
+	}
+
+	@Override
+	public int getDefTexHeight(){
+		return 16;
 	}
 
 }

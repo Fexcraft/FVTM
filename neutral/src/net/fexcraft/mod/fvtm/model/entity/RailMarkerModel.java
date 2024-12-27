@@ -18,53 +18,53 @@ public class RailMarkerModel extends DefaultModel {
 
 	public RailMarkerModel(){
 		super();
-		textureX = 32;
-		textureY = 32;
+		tex_width = 32;
+		tex_height = 32;
 		//
 		glow = new ModelGroup("glow");
-		glow.add(new ModelRendererTurbo(glow, 13, 0, textureX, textureY).addBox(0, 0, 0, 3.2f, 0.2f, 3.2f)
+		glow.add(new ModelRendererTurbo(glow, 13, 0, tex_width, tex_height).addBox(0, 0, 0, 3.2f, 0.2f, 3.2f)
 			.setRotationPoint(-1.6f, 14.2f, -1.6f).setRotationAngle(0, 0, 0)
 		);
-		glow.add(new ModelRendererTurbo(glow, 0, 0, textureX, textureY).addBox(0, 0, 0, 3.2f, 0.2f, 3.2f)
+		glow.add(new ModelRendererTurbo(glow, 0, 0, tex_width, tex_height).addBox(0, 0, 0, 3.2f, 0.2f, 3.2f)
 			.setRotationPoint(-1.6f, 14.6f, -1.6f).setRotationAngle(0, 0, 0)
 		);
 		groups.add(glow);
 		//
 		base = new ModelGroup("base");
-		base.add(new ModelRendererTurbo(base, 10, 14, textureX, textureY)
+		base.add(new ModelRendererTurbo(base, 10, 14, tex_width, tex_height)
 			.addShapeBox(0, 0, 0, 1, 12, 1, 0, 4, 0, 4, -4, 0, 4, -4, 0, -4, 4, 0, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-1, 0, -1).setRotationAngle(0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 13, 5, textureX, textureY).addCylinder(0, 0, 0, 3, 2, 16, 1, 1, 4, null)
+		base.add(new ModelRendererTurbo(base, 13, 5, tex_width, tex_height).addCylinder(0, 0, 0, 3, 2, 16, 1, 1, 4, null)
 			.setRotationPoint(0, 12, 0).setRotationAngle(0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 0, 5, textureX, textureY).addBox(0, 0, 0, 3, 1, 3)
+		base.add(new ModelRendererTurbo(base, 0, 5, tex_width, tex_height).addBox(0, 0, 0, 3, 1, 3)
 			.setRotationPoint(-1.5f, 14, -1.5f).setRotationAngle(0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 15, 17, textureX, textureY).addBox(0, 0, 0, 0.4f, 0.4f, 4)
+		base.add(new ModelRendererTurbo(base, 15, 17, tex_width, tex_height).addBox(0, 0, 0, 0.4f, 0.4f, 4)
 			.setRotationPoint(-0.2f, 0, -2).setRotationAngle(0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 5, 10, textureX, textureY)
+		base.add(new ModelRendererTurbo(base, 5, 10, tex_width, tex_height)
 			.addShapeBox(0, 0, 0, 1, 12, 1, 0, 4, 0, -4, -4, 0, -4, -4, 0, 4, 4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-1, 0, 0).setRotationAngle(0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 0, 10, textureX, textureY)
+		base.add(new ModelRendererTurbo(base, 0, 10, tex_width, tex_height)
 			.addShapeBox(0, 0, 0, 1, 12, 1, 0, -4, 0, -4, 4, 0, -4, 4, 0, 4, -4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 26, 0, textureX, textureY)
+		base.add(new ModelRendererTurbo(base, 26, 0, tex_width, tex_height)
 			.addShapeBox(0, 0, 0, 1, 12, 1, 0, -4, 0, 4, 4, 0, 4, 4, 0, -4, -4, 0, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(0, 0, -1).setRotationAngle(0, 0, 0)
 		);
-		base.add(new ModelRendererTurbo(base, 15, 14, textureX, textureY).addBox(0, 0, 0, 4, 0.4f, 0.4f)
+		base.add(new ModelRendererTurbo(base, 15, 14, tex_width, tex_height).addBox(0, 0, 0, 4, 0.4f, 0.4f)
 			.setRotationPoint(-2, 0, -0.2f).setRotationAngle(0, 0, 0)
 		);
 		groups.add(base);
 		//
 		arrow = new ModelGroup("arrow");
-		arrow.add(new ModelRendererTurbo(arrow, 1, 24, textureX, textureY).addCylinder(0, 0, 0, 2, 3, 8, 1, 0, 5, null)
+		arrow.add(new ModelRendererTurbo(arrow, 1, 24, tex_width, tex_height).addCylinder(0, 0, 0, 2, 3, 8, 1, 0, 5, null)
 			.setRotationPoint(0, 16, 0).setRotationAngle(0, 0, 0)
 		);
-		arrow.add(new ModelRendererTurbo(arrow, 26, 14, textureX, textureY).addCylinder(0, 0, 0, 0.5f, 8, 8, 1, 1, 4, null)
+		arrow.add(new ModelRendererTurbo(arrow, 26, 14, tex_width, tex_height).addCylinder(0, 0, 0, 0.5f, 8, 8, 1, 1, 4, null)
 			.setRotationPoint(0, 19, 0).setRotationAngle(0, 0, 0)
 		);
 		groups.add(arrow);

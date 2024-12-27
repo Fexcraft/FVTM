@@ -31,6 +31,7 @@ public class RailGaugeModel extends DefaultModel {
 	
 	@Override
 	public RailGaugeModel parse(ModelData data){
+		super.parse(data);
 		rail_tempcull = data.getBoolean("RailCulling", false);
 		ties_distance = data.getFloat("TiesDistance", ties_distance);
 		signal_offset = data.getFloat("SignalOffset", signal_offset);

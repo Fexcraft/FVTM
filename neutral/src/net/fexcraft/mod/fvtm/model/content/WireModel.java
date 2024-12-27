@@ -41,11 +41,11 @@ public class WireModel extends DefaultModel {
 				float h = Float.parseFloat(args[5]);
 				boolean m = Boolean.parseBoolean(args[6]);
 				float io = args.length > 7 ? Float.parseFloat(args[7]) / tex_height : 0;
-				float iw = args.length > 8 ? Float.parseFloat(args[8]) / tex_height : 1 / tex_height;
-				float ih = args.length > 9 ? Float.parseFloat(args[9]) / tex_height : 1 / tex_height;
+				float iw = args.length > 8 ? Float.parseFloat(args[8]) / tex_height : 0.125f / tex_height;
+				float ih = args.length > 9 ? Float.parseFloat(args[9]) / tex_height : 0.125f  / tex_height;
 				float an = args.length > 10 ? Float.parseFloat(args[10]) : 0;
 				if(rect){
-					this.addWireRect(scale, sx, sy, w, h, m, 1, new float[]{ io, iw, ih }, an);
+					this.addWireRect(scale, sx, sy, w, h, m, 1f, new float[]{ io, iw, ih }, an);
 				}
 				else{
 					//V3D tl = new V3D(args, 7), tr = new V3D(args, 10), bl = new V3D(args, 13), br = new V3D(args, 16);

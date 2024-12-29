@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -55,6 +56,7 @@ public class WireRenderer {
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		PoseStack pose = event.getPoseStack();
 		FvtmRenderTypes.setCutout(JUNCTEX);
 		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
@@ -63,6 +65,7 @@ public class WireRenderer {
 		for(WireRegion reg : wiredata.getRegions().values()){
 			for(RelayHolder holder : reg.getHolders().values()){
 				for(WireRelay relay : holder.relays.values()){
+					Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check
 					if(DebugUtils.ACTIVE || holding_wire){
 						FvtmRenderTypes.setLines();

@@ -8,6 +8,8 @@
 	"item.fvtm.toolbox_0": "FVTM Maintenance Toolbox",
 	"item.fvtm.toolbox_1": "FVTM Livery Toolbox",
 	"item.fvtm.toolbox_2": "FVTM Painting Toolbox",
+	"item.fvtm.toolbox_3": "FVTM Wire Removal Toolbox",
+	"item.fvtm.toolbox_4": "FVTM Wire Slack Toolbox",
 
 	"ui.fvtm.toolbox.painter.info": "Here you can edit your vehicle/block/container's color.",
 	"ui.fvtm.toolbox.texture.info": "Here you can select your vehicle/block/container's texture.",

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,23 @@ public class ToolboxItem extends Item {
 				tooltip.add(Component.literal("Color Channel Painting Toolbox"));
 				break;
 			}
+			case 3:{
+				tooltip.add(Component.literal("Wire removal Toolbox"));
+				break;
+			}
+			case 4:{
+				tooltip.add(Component.literal("Wire Slack Adjustment Toolbox"));
+				break;
+			}
 		}
+	}
+
+	public static int getToolboxType(ItemStack stack){
+		return ((ToolboxItem)stack.getItem()).var;
+	}
+
+	public static int getToolboxType(StackWrapper stack){
+		return ((ToolboxItem)stack.getItem().local()).var;
 	}
 
 }

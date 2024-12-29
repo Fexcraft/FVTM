@@ -39,8 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.JUNC_CORE;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.SPHERE;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -80,9 +79,9 @@ public class ForgeClientEvents {
 	}
 	private static Polyhedron sphere = new Polyhedron().importMRT(new ModelRendererTurbo(null, 0, 0, 32, 32)
 		.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32), false, 0.0625f);
-	private static Vec3f BLUE = new Vec3f(0, 0, 1);
-	private static Vec3f CYAN = new Vec3f(0, 1, 1);
-	private static Vec3f ORG = new Vec3f(1, 0.75f, 0);
+	public static Vec3f BLUE = new Vec3f(0, 0, 1);
+	public static Vec3f CYAN = new Vec3f(0, 1, 1);
+	public static Vec3f ORG = new Vec3f(1, 0.75f, 0);
 
 	@SubscribeEvent
 	public static void renderRoad(RenderLevelStageEvent event){

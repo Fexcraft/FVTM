@@ -66,7 +66,7 @@ public class TabInitializerF implements CTab {
 			if(ITEM_REGISTRY.containsKey(addonid) && ITEM_REGISTRY.get(addonid).getEntries().iterator().hasNext()){
 				return ITEM_REGISTRY.get(addonid).getEntries().iterator().next().get().getDefaultInstance();
 			}
-			else return FvtmGetters.TOOLBOX0.get().getDefaultInstance();
+			else return FvtmGetters.TOOLBOX[0].get().getDefaultInstance();
 		}).build());
 	}
 

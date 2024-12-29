@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
@@ -77,6 +78,7 @@ public class ResourcesImpl extends FvtmResources {
 		})));
 		FvtmRegistry.DECORATIONS.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new DecorationItem(veh))));
 		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), () -> new RailGaugeItem(rg))));
+		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), () -> new WireItem(wire))));
 	}
 
 	@Override
@@ -196,9 +198,9 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public void registerFvtmItems(){
 		FvtmGetters.ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
-		FvtmGetters.TOOLBOX0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
-		FvtmGetters.TOOLBOX1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
-		FvtmGetters.TOOLBOX2 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_2", () -> new ToolboxItem(2));
+		for(ToolboxType val : ToolboxType.values()){
+			FvtmGetters.TOOLBOX[val.idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_" + val.idx, () -> new ToolboxItem(val.idx));
+		}
 		FvtmGetters.JUNCTION_TOOl = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
 		for(int idx = 0; idx < FvtmGetters.ASPHALT.length; idx++){
 			int index = idx;

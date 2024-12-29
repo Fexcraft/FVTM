@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
+import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.JunctionTool;
@@ -37,9 +38,7 @@ public class FvtmGetters {
 	public static Supplier<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY;
 	//
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
-	public static Supplier<ToolboxItem> TOOLBOX0;
-	public static Supplier<ToolboxItem> TOOLBOX1;
-	public static Supplier<ToolboxItem> TOOLBOX2;
+	public static Supplier<ToolboxItem>[] TOOLBOX = new Supplier[ToolboxType.values().length];
 	public static Supplier<JunctionTool> JUNCTION_TOOl;
 	public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
 	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];

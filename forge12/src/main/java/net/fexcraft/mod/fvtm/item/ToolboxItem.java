@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.mod.fvtm.data.ToolboxType;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -63,6 +64,14 @@ public class ToolboxItem extends Item {
 				items.add(new ItemStack(INSTANCE, 1, value.idx));
 			}
 		}
+	}
+
+	public static int getToolboxType(StackWrapper stack){
+		return stack.damage();
+	}
+
+	public static int getToolboxType(ItemStack stack){
+		return stack.getItemDamage();
 	}
 
 }

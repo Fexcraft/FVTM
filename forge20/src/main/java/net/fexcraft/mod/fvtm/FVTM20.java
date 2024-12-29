@@ -45,7 +45,6 @@ public class FVTM20 {
 
 	public static void init0(){
 		EntityUtil.IMPL = EntityWIE.class;
-		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){

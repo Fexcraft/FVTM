@@ -1,10 +1,12 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.mod.fvtm.FvtmGetters;
-import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +37,15 @@ public class BlockBase extends PlainBase implements EntityBlock {
 		if(entity == null) return;
 		BaseBlockEntity base = (BaseBlockEntity)entity;
 		base.data = ((BlockItem)stack.getItem()).getData(StackWrapper.wrap(stack));
+		base.regRelay();
+	}
+
+	@Deprecated
+	public void onRemove(BlockState state0, Level level, BlockPos pos, BlockState state1, boolean bool){
+		if(type.hasRelay() && SystemManager.active(SystemManager.Systems.WIRE)){
+			SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(level), WireSystem.class).deregister(level.getBlockEntity(pos));
+		}
+		super.onRemove(state0, level, pos, state1, bool);
 	}
 
 	@Override

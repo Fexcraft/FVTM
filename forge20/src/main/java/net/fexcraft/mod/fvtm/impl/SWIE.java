@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.item.*;
+import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.minecraft.world.item.ItemStack;
@@ -31,9 +32,10 @@ public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 			case PART: return stack.getItem() instanceof PartItem;
 			case MATERIAL: return stack.getItem() instanceof MaterialItem;
 			case VEHICLE: return stack.getItem() instanceof VehicleItem;
-			//TODO case FVTM_BLOCK: return stack.getItem() instanceof BlockItem;
+			case FVTM_BLOCK: return stack.getItem() instanceof BlockItem;
 			//TODO case CONTAINER: return stack.getItem() instanceof ContainerItem;
 			case FVTM_TOOLBOX: return stack.getItem() instanceof ToolboxItem;
+			case WIRE: return stack.getItem() instanceof WireItem;
 		}
 		return super.isItemOf(type);
 	}
@@ -47,11 +49,11 @@ public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 			case MATERIAL: return (C)((MaterialItem)stack.getItem()).getContent();
 			//TODO case CONTAINER: return (C)((ContainerItem)stack.getItem()).getData(this);
 			case CONSUMABLE: return (C)((ConsumableItem)stack.getItem()).getContent();
-			//TODO case BLOCK: return (C)((BlockItem)stack.getItem()).getData(this);
+			case BLOCK: return (C)((BlockItem)stack.getItem()).getData(this);
 			//TODO case MULTIBLOCK: return (C)((MultiBlockItem)stack.getItem()).getData(this);
-			//TODO case RAILGAUGE: return (C)((RailGaugeItem)stack.getItem()).getContent();
+			case RAILGAUGE: return (C)((RailGaugeItem)stack.getItem()).getContent();
 			//TODO case CLOTH: return (C)((ClothItem)stack.getItem()).getContent();
-			//TODO case WIRE: return (C)((WireItem)stack.getItem()).getContent();
+			case WIRE: return (C)((WireItem)stack.getItem()).getContent();
 		}
 		return null;
 	}

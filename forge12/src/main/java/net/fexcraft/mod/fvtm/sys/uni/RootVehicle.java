@@ -418,6 +418,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		ticksExisted++;
 		if(ticksExisted >= Integer.MAX_VALUE) ticksExisted = 0;
 		if(vehicle.toggable_timer > 0) vehicle.toggable_timer--;
+		if(vehicle.gear_timer > 0) vehicle.gear_timer--;
+		if(vehicle.autogear_timer > 0) vehicle.autogear_timer--;
 		//
 		vehicle.checkSteerAngle(world.isRemote);
 		if(world.isRemote){
@@ -457,6 +459,15 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			wheel.prevPosY = wheel.posY;
 			wheel.prevPosZ = wheel.posZ;
 		}
+		onUpdateMovement();
+		vehicle.updatePointsSeats();
+		//collchecks
+		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
+			vehicle.sendUpdatePacket();
+		}
+	}
+
+	private void onUpdateMovement(){
 		EntityW driver = vehicle.driver();
 		if(!world.isRemote){
 			V3D fron, rear, left, righ;
@@ -500,11 +511,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		else{
 			vehicle.speed = MathUtils.calcSpeed(posX, posY, posZ, prevPosX, prevPosY, prevPosZ);
 		}
-		vehicle.updatePointsSeats();
-		//collchecks
-		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
-			vehicle.sendUpdatePacket();
-		}
 	}
 
 	protected void move(boolean needsnofuel){
@@ -534,8 +540,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				//TODO
 			}
 			else{
-				EngineFunction engine = vehicle.data.getFunctionInPart("engine", "fvtm:engine");
-				boolean consumed = engine != null && vehicle.consumeFuel(engine);
+				boolean consumed = vehicle.engine != null && vehicle.consumeFuel();
 				for(NWheelEntity wheel : wheels.values()){
 					wheel.onGround = true;
 					wheel.motionX *= 0.9;
@@ -543,20 +548,20 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 					wheel.motionZ *= 0.9;
 					wheel.motionY /*-*/= -GRAVITY_20th;
 					double steer = Math.toRadians(vehicle.steer_yaw);
-					if(engine != null && (needsnofuel || consumed)){
+					if(vehicle.engine != null && (needsnofuel || consumed)){
 						double scal = 0;
 						double wheelrot = valRad(vehicle.pivot().yaw());
 						if(vehicle.data.getType().isTracked()){
 							wheel.motionX *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
 							wheel.motionZ *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
-							scal = 0.04 * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							scal = 0.04 * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * vehicle.engine.getSphEngineSpeed();
 							double steerscal = 0.1f * (vehicle.steer_yaw > 0 ? vehicle.data.getType().getSphData().turn_left_mod : vehicle.data.getType().getSphData().turn_right_mod);
 							double wheelspeed = (vehicle.throttle + (vehicle.steer_yaw * (wheel.wheel.mirror ? -1 : 1) * steerscal)) * scal;
 							wheel.motionX += wheelspeed * Math.cos(wheelrot);
 							wheel.motionZ += wheelspeed * Math.sin(wheelrot);
 						}
 						else{
-							scal = 0.05 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							scal = 0.05 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * vehicle.engine.getSphEngineSpeed();
 							if(wheel.wheel.steering){
 								wheelrot = valRad(wheelrot + steer);
 								wheel.rotationYaw = vehicle.pivot().deg_yaw() + (float)vehicle.steer_yaw;

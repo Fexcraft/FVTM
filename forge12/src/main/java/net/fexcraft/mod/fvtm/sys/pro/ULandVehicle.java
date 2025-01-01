@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.uni12;
+package net.fexcraft.mod.fvtm.sys.pro;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
@@ -34,7 +34,6 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
@@ -77,7 +76,7 @@ import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_MAIN;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
+public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
 	private VehicleData vehicle;
 	public SwivelPoint rotpoint;
@@ -107,7 +106,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public EngineFunction engine;
     public TransmissionFunction transmission;
 
-	public ULandVehicle(World world){	
+	public ULandVehicle(World world){
 		super(world);
 		preventEntitySpawning = true; setSize(1f, 1f);
 		ignoreFrustumCheck = true; stepHeight = 1f;

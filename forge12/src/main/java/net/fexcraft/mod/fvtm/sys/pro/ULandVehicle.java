@@ -3,12 +3,9 @@ package net.fexcraft.mod.fvtm.sys.pro;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
-import net.fexcraft.lib.mc.utils.ApiUtil;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
-import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -204,6 +201,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     private double appmass = 0;
     private double accx = 0f;
 
+	@Override
 	public void onUpdateMovement(){
 		EntityW driver = vehicle.driver();
 		if(!world.isRemote){
@@ -212,7 +210,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 			}
 			if(vehicle.front == null){
 				if(vehicle.data.getType().isTrailer()) relign();
-				else onUpdateMovement();
+				else onUpdateMovement1(driver);
 			}
 		}
 		else updateSounds();
@@ -224,7 +222,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 		vehicle.speed = 0;
 		for(double d : avsp) vehicle.speed += d;
 		vehicle.speed /= avsp.size();
-		onUpdateMovement1(driver);
 	}
 
 	public void onUpdateMovement1(EntityW driver){
@@ -279,8 +276,8 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 			driver.bar("&cTEMP: Towing limit reached, vehicle is overloaded.");
     	}
     	double thr = vehicle.throttle * force;
-    	double cos = Math.cos(vehicle.pivot().deg_yaw() * 3.14159265F / 180F);
-    	double sin = Math.sin(vehicle.pivot().deg_yaw() * 3.14159265F / 180F);
+    	double cos = Math.cos(vehicle.pivot().yaw());
+    	double sin = Math.sin(vehicle.pivot().yaw());
     	boolean slowdown = vehicle.throttle < 0.001f || gear == 0;
     	double val;
     	onGround = true;
@@ -291,6 +288,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 			WheelSlot slot = vehicle.data.getWheelSlots().get(wheel.wheelid);
             wheel.onGround = true;
             wheel.rotationYaw = vehicle.pivot().deg_yaw();
+			double wheelrot = Math.toRadians(wheel.rotationYaw);
             BlockPos wheelpos = new BlockPos(wheel.posX, wheel.posY - o132, wheel.posZ);
         	boolean rainfall = world.isRainingAt(wheelpos);
             Material mat = world.getBlockState(wheelpos).getMaterial();
@@ -319,18 +317,16 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
         	double acy = (totaly / mass) * TICKA;
         	accx += acx;
         	//
-			val = acx * U12_MOTION_SCALE;
+			val = acx * MOTION_SCALE;
 			wheel.motionX *= 0.25;
 			wheel.motionZ *= 0.25;
-			wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
-			wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
+			wheel.motionX -= Math.sin(-wheelrot) * (val + motx * 0.75);
+			wheel.motionZ -= Math.cos(-wheelrot) * (val + motx * 0.75);
 			//
 			if(slot.steering){
-				if(motx > 0.01f || motx < -0.01f){
-					val = acy * 0.05;
-					wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * stew;
-					wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * stew;
-				}
+				val = acy * TICKA;
+				wheel.motionX -= Math.sin(-wheelrot) * val * stew;
+				wheel.motionZ -= Math.cos(-wheelrot) * val * stew;
 			}
             wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
             atmc = alignWheel(this, wheel, wheel.wheel.pos, atmc, false);//pulling wheel back to vehicle
@@ -350,7 +346,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
             //
             V3D trax = trailer.vehicle.pivot().get_vector(trailer.ax_rear.pos).add(trailer.posX, trailer.posY, trailer.posZ);
             trailer.vehicle.pivot().set_yaw((float)Math.atan2(conn.z - trax.z, conn.x - trax.x), false);
-    		int wheelid = 0;
         	trailer.onGround = true;
         	for(NWheelEntity wheel : trailer.wheels.values()){
         		if(wheel == null) continue;
@@ -363,7 +358,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
                 wheel.motionY -= GRAVITY_200th;
                 atmc = alignWheel(trailer, wheel, wheel.wheel.pos, atmc, true);
                 //trailer.rerott();
-                wheelid++;
         	}
             trailer.move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
             trailer.opos();

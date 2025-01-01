@@ -72,6 +72,7 @@ public class VehicleInstance {
 	//
 	public static final float GRAVITY = 9.81f;
 	public static final float GRAVITY_20th = GRAVITY / 20;
+	public static final float GRAVITY_200th = GRAVITY / 200;
 	//
 	public static final String PKT_UPD_VEHICLEDATA = "vehicledata";
 	public static final String PKT_UPD_LIGHTS = "toggle_lights";
@@ -89,6 +90,10 @@ public class VehicleInstance {
 		ref = new InteractRef(this);
 		adv = base;
 		init(vdata);
+	}
+
+	public VehicleInstance(EntityW wrapper, VehicleData vdata){
+		this(wrapper, vdata, false);
 	}
 
 	public void init(VehicleData vdata){
@@ -371,7 +376,7 @@ public class VehicleInstance {
 		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
 	}
 
-	public boolean consumeFuel(EngineFunction engine){
+	public boolean consumeFuel(){
 		if(data.outoffuel()) return false;
 		if(engine.isOn()){
 			if(throttle == 0d || (throttle < .05 && throttle > -.05)){

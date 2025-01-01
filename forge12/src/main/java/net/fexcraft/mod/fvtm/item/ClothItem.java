@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class ClothItem extends ItemArmor implements ItemTextureable.TextureableItem<Cloth> {
@@ -59,8 +60,13 @@ public class ClothItem extends ItemArmor implements ItemTextureable.TextureableI
         for(String s : cloth.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
-        tooltip.add(Formatter.format("&9Worn: &7" + net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.format((stack.getItemDamage() / (float)stack.getMaxDamage()) * 100) + "%"));
+        tooltip.add(Formatter.format("&9Worn: &7" + format((stack.getItemDamage() / (float)stack.getMaxDamage()) * 100) + "%"));
         super.addInformation(stack, world, tooltip, flag);
     }
+
+	private static final DecimalFormat df = new DecimalFormat("##.##");
+	public static String format(double d){
+		return df.format(d);
+	}
 
 }

@@ -5,7 +5,6 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
@@ -17,6 +16,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class BasicSpawnSystem extends EntitySystem {
+
+	//temp
+	public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
+	public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
 
 	@Override
 	public String getId(){
@@ -50,7 +53,7 @@ public class BasicSpawnSystem extends EntitySystem {
 	}
     
     public static boolean validToSpawn(MessageSender placer, StackWrapper stack, VehicleData data){
-		String[] index = data.getType().isTrailer() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
+		String[] index = data.getType().isTrailer() ? TRAILERWHEELINDEX : WHEELINDEX; boolean failed = false;
 		boolean tireinfo = false;
 		for(String str : index){
 			String trailer = data.getType().isTrailer() ? "&9Trailer" : "&9Vehicle";

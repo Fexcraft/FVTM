@@ -78,33 +78,19 @@ import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_MAIN;
  */
 public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
-	private VehicleData vehicle;
-	public SwivelPoint rotpoint;
-	//
-	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
-	//
-	//public double throttle;
-	public float wheelsAngle, serverWY;//, wheelsYaw;
+	public float wheelsAngle, serverWY;
     public ULandVehicle truck, trailer;
-    //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte toggle_timer, gear_timer, autogear_timer;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
     public int server_pos_ticker, rpm, orpm, crpm;
-    public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
-    public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
-    //
-    //
     //
     public ArrayList<Axle> axles = new ArrayList<>();
     public ArrayList<WheelTireData> wheeldata = new ArrayList<>();
     public Axle front, rear;
     public double wheelbase, cg_height;
     public float wheel_radius;
-    public boolean pbrake, braking;
-    public EngineFunction engine;
-    public TransmissionFunction transmission;
 
 	public ULandVehicle(World world){
 		super(world);
@@ -119,55 +105,41 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 	 * 
 	 * @param meta should be -1 or lower if placer rotation yaw matters
 	 * */
-	public ULandVehicle(World world, VehicleData data, V3D pos, @Nullable EntityPlayer placer, int meta){
-		this(world); this.setPosition(pos.x, pos.y, pos.z); this.vehicle = data;
-		if(placer != null) this.placer = placer.getGameProfile().getId();
-		initializeVehicle(false);
-		if(meta > -2){
-			float prot = placer != null ? (MathHelper.floor(((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15) * 22.5f : 0;
-			rotpoint.getPivot().set_yaw((placer == null || meta >= 0 ? (meta * 90f) : prot) + -90F, true);
-			rotpoint.updatePrevAxe();
+	public ULandVehicle(World world, VehicleData data, V3D pos, EntityPlayer placer, int meta){
+		this(world);
+		setPosition(pos.x, pos.y, pos.z);
+		vehicle.init(data);
+		if(placer != null){
+			vehicle.setPlacer(placer.getGameProfile().getId());
 		}
+		float prot = placer != null ? (MathHelper.floor(((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15) * 22.5f : 0;
+		vehicle.pivot().set_yaw((placer == null || meta >= 0 ? (meta * 90f) : prot) + -90F, true);
+		init(null);
 	}
 
-	public ULandVehicle(World world, VehicleData data, EntityPlayer player, ULandVehicle truck){
-		this(world, data, truck.rotpoint.getPivot().get_vector(V3D.NULL/*truck.vehicle.getRearConnector()*/).add(truck.posX, truck.posY, truck.posZ), player, -2);
-		(this.truck = truck).trailer = this;
-		rotpoint.getPivot().set_yaw(truck.rotpoint.getPivot().yaw(), false);
-		rotpoint.updatePrevAxe();
-        if(!world.isRemote && truck != null){
-        	this.sendConnectionUpdate();
-        	truck.sendConnectionUpdate();
-        }
-	} 
+	public ULandVehicle(NLandVehicle truck, VehicleData data, EntityPlayer placer){
+		this(truck.world, data, truck.vehicle.getV3D(), placer, 0);
+		vehicle.front = truck.vehicle;
+		truck.vehicle.rear = vehicle;
+		vehicle.point.updatePrevAxe();
+		vehicle.point.getPivot().copy(truck.vehicle.point.getPivot());
+		vehicle.sendUpdate(VehicleInstance.PKT_UPD_CONNECTOR);
+	}
+
+	@Override
+	public boolean isAdv(){
+		return true;
+	}
 
 	@Override
 	protected void entityInit(){
 		//
 	}
 
-	private void initializeVehicle(boolean remote){
-        //lata = vehicle.getType().getLegacyData();
-        wheels = new WheelEntity[WHEELINDEX.length];
-        setupWheels();
-        setupAxles();
-        engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
-        transmission = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
-        if(seats == null) seats = new SeatInstance[vehicle.getSeats().size()];
-        for(int i = 0; i < seats.length; i++) seats[i] = null;//TODO new SeatInstance(this, i);
-        //stepHeight = lata.wheel_step_height;
-        rotpoint = vehicle.getRotationPoint("vehicle");
-        this.setSize(vehicle.getAttribute("hitbox_width").asFloat(), vehicle.getAttribute("hitbox_height").asFloat());
-        ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
-        if(impl != null){ impl.setup = false; this.setupCapability(impl); }
-        else{ Print.debug("No ContainerCap Implementation Found!");}
-        //TODO vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
-        if(remote){
-        	float c = vehicle.getAttributeFloat("collision_range", 2f);
-        	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
-    		EntitySystem system = SystemManager.get(Systems.ENTITY, WrapperHolder.getWorld(world));
-    		//TODO if(system != null) system.add(this);
-        }
+	@Override
+	protected void init(TagCW com){
+		super.init(com);
+		setupAxles();
 	}
 
 	private void setupAxles(){
@@ -204,310 +176,32 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
         }
         cg_height /= axles.size();
 	}
-	
-	private void setupWheels(){
-		wheeldata.clear();
-		wheel_radius = 0;
-        for(Entry<String, V3D> entry : vehicle.getWheelPositions().entrySet()){
-        	WheelTireData wheel = new WheelTireData(entry.getKey());
-        	wheel.pos = entry.getValue();
-        	PartData part = vehicle.getPart(entry.getKey());
-        	if(!((WheelData)part.getType().getInstallHandlerData()).hasTire()){
-        		part = vehicle.getPart(entry.getKey() + ":tire");
-        		wheel_radius += ((TireData)part.getType().getInstallHandlerData()).getOuterRadius() * Static.sixteenth;
-        	}
-        	else{
-        		wheel_radius += ((WheelData)part.getType().getInstallHandlerData()).getRadius() * Static.sixteenth;
-        	}
-        	wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
-        	wheeldata.add(wheel);
-        }
-        wheel_radius /= wheeldata.size();
-	}
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
-		if(vehicle == null){
-			vehicle = FvtmResources.INSTANCE.getVehicleData(new TagCWI(compound));
-		}
-		else{
-			vehicle.read(new TagCWI(compound));
-		}
-		rotpoint = vehicle.getRotationPoint("vehicle");
-		prevRotationYaw = compound.getFloat("RotationYaw");
-		prevRotationPitch = compound.getFloat("RotationPitch");
-		prevRotationRoll = compound.getFloat("RotationRoll");
-		pbrake = compound.getBoolean("Parking");
-		rotpoint.loadPivot(new TagCWI(compound));
-		initializeVehicle(world.isRemote); // Print.debug(compound.toString());
 		super.readEntityFromNBT(compound);
+		vehicle.pbrake = compound.getBoolean("ParkingBrake");
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		vehicle.write(new TagCWI(compound));
-		compound.setBoolean("Parking", pbrake);
-		rotpoint.savePivot(new TagCWI(compound)); //Print.debug(compound.toString());
 		super.writeEntityToNBT(compound);
+		compound.setBoolean("ParkingBrake", vehicle.pbrake);
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer){
-        NBTTagCompound compound = new NBTTagCompound();
-		rotpoint.savePivot(new TagCWI(compound));
-        if(truck != null) compound.setInteger("TruckId", truck.getEntity().getEntityId());
-		ByteBufUtils.writeTag(buffer, vehicle.write(new TagCWI(compound)).local());
-	}
-
-	@Override
-	public void readSpawnData(ByteBuf buffer){
-        try{
-            NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-    		//TODO vehicle = Resources.getVehicleData(compound);
-    		rotpoint = vehicle.getRotationPoint("vehicle");
-            rotpoint.loadPivot(new TagCWI());
-            prevRotationYaw = rotpoint.getPivot().deg_yaw();
-            prevRotationPitch = rotpoint.getPivot().deg_pitch();
-            prevRotationRoll = rotpoint.getPivot().deg_roll();
-            if(compound.hasKey("TruckId")){
-            	truck = (ULandVehicle)world.getEntityByID(compound.getInteger("TruckId"));
-            }
-            initializeVehicle(true);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            Print.debug("Failed to receive additional spawn data for this vehicle!");
-        }
-	}
-    
-    @Override
-    public void setDead(){
-        if(VEHICLES_DROP_CONTENTS && !world.isRemote){
-            for(String part : vehicle.getInventories()){
-            	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory");
-            	if(func == null) continue;
-        		func.inventory().dropAllAt(this.getCapability(Capabilities.PASSENGER, null).asWrapper());
-            }
-        }
-        this.getCapability(Capabilities.CONTAINER, null).dropContents();
-        //
-        super.setDead();
-        //if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
-        if(wheels != null) for(WheelEntity wheel : wheels) if(wheel != null) wheel.setDead();
-        //
-        //TODO vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
-        if(truck != null){ truck.trailer = null; } if(trailer != null){ trailer.truck = null;}
-        //Static.exception(null, false);
-    }
-
-	@Override
-	public VehicleData getVehicleData(){
-		return vehicle;
-	}
-
-	@Override
-	public VehicleType getVehicleType(){
-		return vehicle.getType().getVehicleType();
-	}
-
-	@Override
-	public Entity getEntity(){
-		return this;
-	}
-
-	@Override
-	public SwivelPoint getRotPoint(){
-		return rotpoint;
-	}
-	
-	public WheelEntity[] getWheels(){
-		return wheels;
-	}
-	@Override
-	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		return onKeyPress(key, seat, player, false);
-	}
-
-	@Override
-	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player, boolean state){
-		//TODO for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
-        if(!seat.driver && key.driver_only()) return false;
-        if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
-			if(key.synced() && key.sync_state()){
-				Packets.send(Packet_VehKeyPressState.class, key, state, getEntityId(), player.getEntityId());
-			}
-			else{
-				Packets.send(Packet_VehKeyPress.class, key);
-				return true;
-			}
-        }
-        switch(key){
-            case ACCELERATE:{
-                throttle += 0.01f;
-                if(throttle > 1F) throttle = 1F;
-                return true;
-            }
-            case DECELERATE:{
-                throttle -= braking ? 0.05f : 0.01f;
-                if(throttle < 0F) throttle = 0F;
-                return true;
-            }
-            case TURN_LEFT:{
-                wheelsYaw -= .5f;
-                return true;
-            }
-            case TURN_RIGHT:{
-                wheelsYaw += .5f;
-                return true;
-            }
-            case BRAKE:{
-                braking = state;
-                return true;
-            }
-            case PBRAKE:{
-            	if(toggle_timer > 0) return true;
-                pbrake = !pbrake;
-            	toggle_timer += 10;
-                return true;
-            }
-            case ENGINE: {
-                this.toggleEngine();
-                return true;
-            }
-            case DISMOUNT: {
-                //TODO PacketsImpl.sendToAllAround(new PKT_VehControl(this), getTargetPoint(this));
-                player.dismountRidingEntity();
-                return true;
-            }
-            case INVENTORY: {
-                /*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
-                    Print.chat(player, "Turn engine off first!"); return true;
-                }*/
-            	player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
-                return true;
-            }
-            case TOGGABLES: {//client side
-            	if(toggle_timer > 0) return true;
-            	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
-            	toggle_timer += 10;
-                return true;
-            }
-            case GEAR_UP: {
-                if(gear_timer <= 0){
-                	if(transmission == null) return true;
-                	int gear = vehicle.getAttributeInteger("gear", 0);
-                	if(transmission.isAutomatic()){
-                		if(gear < 0){
-                    		vehicle.getAttribute("gear").set(0);
-                    		sendAttributeUpdate("gear");
-                		}
-                		else if(gear == 0){
-                    		vehicle.getAttribute("gear").set(1);
-                    		sendAttributeUpdate("gear");
-                		}
-                		autogear_timer += transmission.getShiftSpeed();
-                	}
-                	else if(gear + 1 <= transmission.getFGearAmount()){
-                		vehicle.getAttribute("gear").set(gear + 1);
-                		sendAttributeUpdate("gear");
-                	}
-                	gear_timer += 10;
-                }
-                return true;
-            }
-            case GEAR_DOWN: {
-                if(gear_timer <= 0){
-                	if(transmission == null) return true;
-                	int gear = vehicle.getAttributeInteger("gear", 0);
-                	if(transmission.isAutomatic()){
-                		if(gear > 0){
-                    		vehicle.getAttribute("gear").set(0);
-                    		sendAttributeUpdate("gear");
-                		}
-                		else if(gear == 0){
-                    		vehicle.getAttribute("gear").set(-1);
-                    		sendAttributeUpdate("gear");
-                		}
-                		autogear_timer += transmission.getShiftSpeed();
-                	}
-                	else if(gear - 1 >= -transmission.getRGearAmount()){
-                		vehicle.getAttribute("gear").set(gear - 1);
-                		sendAttributeUpdate("gear");
-                	}
-                	gear_timer += 10;
-                }
-                return true;
-            }
-            case SCRIPTS: {
-                /*if(!world.isRemote){
-                    player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_SCRIPTSGUI, world, this.getEntityId(), seat, 0);
-                    //open scripts gui
-                }*/
-                return true;
-            }
-            case LIGHTS: {
-                if(toggle_timer <= 0){
-                	if(vehicle.getAttribute("lights").asBoolean()){
-                		if(vehicle.getAttribute("lights_long").asBoolean()){
-                    		vehicle.getAttribute("lights").set(false);
-                    		vehicle.getAttribute("lights_long").set(false);
-                		}
-                		else{
-                    		vehicle.getAttribute("lights_long").set(true);
-                		}
-                	}
-                	else{
-                		vehicle.getAttribute("lights").set(true);
-                	}
-                	//
-                    ULandVehicle trailer = this.trailer;
-                    while(trailer != null){
-                        trailer.vehicle.getAttribute("lights").set(vehicle.getAttribute("lights").asBoolean());
-                        trailer.vehicle.getAttribute("lights_long").set(vehicle.getAttribute("lights_long").asBoolean());
-                        trailer = trailer.trailer;
-                    }
-                	//TODO find a way for fog lights
-                    toggle_timer = 10;
-                    NBTTagCompound nbt = new NBTTagCompound();
-                    nbt.setString("task", "toggle_lights");
-                    nbt.setBoolean("lights", vehicle.getAttribute("lights").asBoolean());
-                    nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").asBoolean());
-                    ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
-                }
-                return true;
-            }
-            case COUPLER_REAR: {
-        		if(speed > 3){
-        			Print.chat(player, "Please decrease the speed!");
-        			return true;
-        		}
-        		/*if(this.vehicle.getRearConnector() == null){
-        			Print.chat(player, "This vehicle does not have a rear connector installed.");
-        			return true;
-        		}*///TODO
-                if(toggle_timer <= 0){
-                	if(this.getCoupledEntity(false) == null){
-                		this.tryAttach(player);
-                	}
-                	else{
-                		this.tryDetach(player);
-                	}
-                    toggle_timer = 10;
-                }
-            	return true;
-            }
-            default:{
-            	/*Print.chat(player, String.format("Task for keypress %s not found.", key));*/
-            	return false;
-            }
-        }
-    }
-	
-	public boolean getKeyPressState(KeyPress key){
-		if(key == KeyPress.BRAKE){
-			return braking;
+	public void writeSpawnData(TagCW com){
+		if(vehicle.front != null){
+			com.set("TruckId", vehicle.front.entity.getId());
 		}
-		return false;
+	}
+
+	@Override
+	public void readSpawnData(TagCW com){
+		if(com.has("TruckId")){
+			vehicle.front = ((ULandVehicle)world.getEntityByID(com.getInteger("TruckId"))).vehicle;
+			vehicle.front.rear = vehicle;
+		}
 	}
 
 	public void tryAttach(EntityPlayer player){
@@ -541,45 +235,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 		Print.chat(player, "&c&oTrailer disconnected&a!");
 	}
 
-	@Override
-	public UUID getPlacer(){
-		return placer;
-	}
-
-    public void updatePrevAngles(){
-        double yaw = rotpoint.getPivot().deg_yaw() - prevRotationYaw;
-        if(yaw > 180){ prevRotationYaw += 360F; }
-        if(yaw < -180){ prevRotationYaw -= 360F; }
-        double pitch = rotpoint.getPivot().deg_pitch() - prevRotationPitch;
-        if(pitch > 180){ prevRotationPitch += 360F; }
-        if(pitch < -180){ prevRotationPitch -= 360F; }
-        double roll = rotpoint.getPivot().deg_roll() - prevRotationRoll;
-        if(roll > 180){ prevRotationRoll += 360F; }
-        if(roll < -180){ prevRotationRoll -= 360F; }
-    }
-
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel){
-        if(world.isRemote){
-            serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
-            serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
-            server_pos_ticker = VEHICLE_SYNC_RATE;
-        }
-        else{
-            setPosition(posX, posY, posZ);
-            prevRotationYaw = yaw;
-            prevRotationPitch = pitch;
-            prevRotationRoll = roll;
-            rotpoint.getPivot().set_rotation(yaw, pitch, roll, true);
-        }
-        this.throttle = throttle; serverWY = (float)steeringYaw;
-        vehicle.getAttribute("fuel_stored").set(fuel);
-	}
-	
-	/*@Override
-    public void setPosition(double x, double y, double z){
-        super.setPosition(x, y, z);
-    }*/
-
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
         return; /*if(ticksExisted > 1){ Print.debug("setPositionAndRotationDirect"); return; }
@@ -596,10 +251,10 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     }
 
 	//-- Vanilla --//
-	
+
     @Override
     protected boolean canTriggerWalking(){
-        return false;
+        return true;
     }
 
     @Override

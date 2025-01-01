@@ -10,6 +10,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.root.Sound;
@@ -18,7 +19,9 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
+import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -27,6 +30,7 @@ import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import org.w3c.dom.Attr;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -58,6 +62,14 @@ public class VehicleInstance {
 	public int fuel_consumed;
 	public HashMap<String, LoopedSound> activesounds = new LinkedHashMap<>();
 	//
+	public boolean adv;
+	public boolean braking;
+	public boolean pbrake;
+	public int gear_timer;
+	public int autogear_timer;
+	public EngineFunction engine;
+	public TransmissionFunction transmission;
+	//
 	public static final float GRAVITY = 9.81f;
 	public static final float GRAVITY_20th = GRAVITY / 20;
 	//
@@ -65,15 +77,17 @@ public class VehicleInstance {
 	public static final String PKT_UPD_LIGHTS = "toggle_lights";
 	public static final String PKT_UPD_LOCK = "lock_state";
 	public static final String PKT_UPD_TOGGLE_ATTR = "toggle_attr";
+	public static final String PKT_UPD_UPDATE_ATTR = "update_attr";
 	public static final String PKT_UPD_CONNECTOR = "vehicle_front";
 	public static final String PKT_UPD_START_SOUND = "start_sound";
 	public static final String PKT_UPD_STOP_SOUND = "stop_sound";
 	public static final String PKT_UPD_ENGINE_TOGGLE = "engine_toggle";
 	public static final String PKT_UPD_ENTITY = "entity";
 
-	public VehicleInstance(EntityW wrapper, VehicleData vdata){
+	public VehicleInstance(EntityW wrapper, VehicleData vdata, boolean base){
 		entity = wrapper;
 		ref = new InteractRef(this);
+		adv = base;
 		init(vdata);
 	}
 
@@ -83,6 +97,10 @@ public class VehicleInstance {
 		type = data.getType().getVehicleType();
 		point = data.getRotationPoint(null);
 		max_steering_yaw = data.getAttributeInteger("max_steering_angle", 45);
+		engine = data.getFunctionInPart("engine", "fvtm:engine");
+		if(adv){
+			transmission = data.getFunctionInPart("transmission", "fvtm:transmission");
+		}
 	}
 
 	public UUID getPlacer(){
@@ -101,31 +119,48 @@ public class VehicleInstance {
 		return point.getPrevPivot();
 	}
 
-	public boolean onKeyPress(KeyPress key, Seat seat, Passenger sender, boolean state){
+	public boolean onKeyPress(KeyPress key, Seat seat, Passenger sender){
 		return onKeyPress(key, seat, sender, false);
 	}
 
-	public boolean onKeyPress(KeyPress key, Seat seat, Passenger player){
+	public boolean onKeyPress(KeyPress key, Seat seat, Passenger player, boolean state){
 		//TODO script key press event
 		if(!seat.driver && key.driver_only()) return false;
 		if(entity.isOnClient() && !key.toggables()){
-			Packets.send(Packet_VehKeyPress.class, key);
-			return true;
+			if(key.synced() && key.sync_state()){
+				Packets.send(Packet_VehKeyPressState.class, key, state, entity.getId(), player.getId());
+			}
+			else{
+				Packets.send(Packet_VehKeyPress.class, key);
+				return true;
+			}
 		}
 		switch(key){
 			case ACCELERATE:{
-				throttle += throttle < 0 ? 0.02 : 0.01;
-				if(throttle > 1) throttle = 1;
+				if(adv){
+					throttle += 0.01;
+					if(throttle > 1) throttle = 1;
+				}
+				else{
+					throttle += throttle < 0 ? 0.02 : 0.01;
+					if(throttle > 1) throttle = 1;
+				}
 				return true;
 			}
 			case DECELERATE:{
-				throttle -= throttle > 0 ? 0.02 : 0.01;
-				if(throttle < -1){
-					throttle = -1;
+				if(adv){
+					throttle -= braking ? 0.05f : 0.01f;
+					if(throttle < 0F) throttle = 0F;
 				}
-				SimplePhysData spdata = data.getType().getSphData();
-				if(spdata != null && throttle < 0 && spdata.min_throttle == 0){
-					throttle = 0;
+				else{
+					throttle -= throttle > 0 ? 0.02 : 0.01;
+					if(throttle < -1){
+						throttle = -1;
+					}
+					SimplePhysData spdata = data.getType().getSphData();
+					if(spdata != null && throttle < 0 && spdata.min_throttle == 0){
+						throttle = 0;
+					}
 				}
 				return true;
 			}
@@ -148,11 +183,22 @@ public class VehicleInstance {
 				return true;
 			}
 			case BRAKE:{
-				throttle *= 0.8;
-				entity.decreaseXZMotion(0.8);
-				if(throttle < -0.0001){
-					throttle = 0;
+				if(adv){
+					braking = state;
 				}
+				else{
+					throttle *= 0.8;
+					entity.decreaseXZMotion(0.8);
+					if(throttle < -0.0001){
+						throttle = 0;
+					}
+				}
+				return true;
+			}
+			case PBRAKE:{
+				if(toggable_timer > 0) return true;
+				pbrake = !pbrake;
+				toggable_timer += 10;
 				return true;
 			}
 			case ENGINE:{
@@ -233,6 +279,52 @@ public class VehicleInstance {
 				}
 				return true;
 			}
+			case GEAR_UP: {
+				if(gear_timer <= 0){
+					if(transmission == null) return true;
+					int gear = data.getAttributeInteger("gear", 0);
+					if(transmission.isAutomatic()){
+						if(gear < 0){
+							data.getAttribute("gear").set(0);
+							updateAttr("gear");
+						}
+						else if(gear == 0){
+							data.getAttribute("gear").set(1);
+							updateAttr("gear");
+						}
+						autogear_timer += transmission.getShiftSpeed();
+					}
+					else if(gear + 1 <= transmission.getFGearAmount()){
+						data.getAttribute("gear").set(gear + 1);
+						updateAttr("gear");
+					}
+					gear_timer += 10;
+				}
+				return true;
+			}
+			case GEAR_DOWN: {
+				if(gear_timer <= 0){
+					if(transmission == null) return true;
+					int gear = data.getAttributeInteger("gear", 0);
+					if(transmission.isAutomatic()){
+						if(gear > 0){
+							data.getAttribute("gear").set(0);
+							updateAttr("gear");
+						}
+						else if(gear == 0){
+							data.getAttribute("gear").set(-1);
+							updateAttr("gear");
+						}
+						autogear_timer += transmission.getShiftSpeed();
+					}
+					else if(gear - 1 >= -transmission.getRGearAmount()){
+						data.getAttribute("gear").set(gear - 1);
+						updateAttr("gear");
+					}
+					gear_timer += 10;
+				}
+				return true;
+			}
 			default:{
 				player.bar("Action '" + key + "' not found.");
 				return false;
@@ -245,7 +337,7 @@ public class VehicleInstance {
 		TagCW com = TagCW.create();
 		com.set("cargo", "engine_toggle");
 		toggable_timer += 10;
-		EngineFunction engine = data.getPart("engine").getFunction("fvtm:engine");
+		engine = data.getPart("engine").getFunction("fvtm:engine");
 		if(entity.isOnClient()) engine.setState(com.getBoolean("engine_toggle_result"));
 		else com.set("engine_toggle_result", engine.toggle());
 		if(data.getStoredFuel() == 0){
@@ -256,7 +348,20 @@ public class VehicleInstance {
 		throttle = 0;
 	}
 
+	public void updateAttr(String attrid){
+		Attribute attr = data.getAttribute(attrid);
+		if(attr == null) return;
+		TagCW com = TagCW.create();
+		com.set("cargo", PKT_UPD_UPDATE_ATTR);
+		com.set("id", attrid);
+		attr.save(com);
+		Packets.INSTANCE.send(this, com);
+	}
+
 	public boolean getKeyPressState(KeyPress key){
+		if(key == KeyPress.BRAKE){
+			return braking;
+		}
 		return false;
 	}
 
@@ -348,7 +453,7 @@ public class VehicleInstance {
 			case PKT_UPD_ENGINE_TOGGLE:{
 				if(passenger.getSeatOn() != null && passenger.getSeatOn().root == this){
 					boolean state = packet.getBoolean("engine_toggle_result");
-					if(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state)){
+					if(engine.setState(state)){
 						passenger.send("interact.fvtm.vehicle.engine_toggled_on");
 					}
 					else{
@@ -394,6 +499,13 @@ public class VehicleInstance {
 				if(entity != null) entity.onPacket(passenger, packet);
 				return;
 			}
+			case PKT_UPD_UPDATE_ATTR:{
+				Attribute attr = data.getAttribute(packet.getString("id"));
+				if(attr != null){
+					attr.load(packet);
+				}
+				return;
+			}
 			default:{
 				FvtmLogger.LOGGER.log("'" + data.getName() + "'/" + entity.getId() + " received invalid packet: " + packet.toString());
 				return;
@@ -402,7 +514,7 @@ public class VehicleInstance {
 	}
 
 	public boolean isBraking(){
-		return false;
+		return braking;
 	}
 
 	public void assignWheels(){

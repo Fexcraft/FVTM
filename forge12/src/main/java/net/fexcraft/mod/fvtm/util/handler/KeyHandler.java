@@ -50,7 +50,7 @@ public class KeyHandler {
     	VEHICLE {
     		@Override
     		public boolean isActive(){
-    			return minecraft.player != null && minecraft.player.getRidingEntity() instanceof GenericVehicle;
+    			return minecraft.player != null && minecraft.player.getRidingEntity() instanceof RootVehicle;
     		}
     		@Override
     		public boolean conflicts(IKeyConflictContext other){

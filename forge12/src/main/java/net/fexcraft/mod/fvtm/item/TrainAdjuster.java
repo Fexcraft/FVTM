@@ -8,8 +8,8 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
-import net.fexcraft.mod.fvtm.sys.rail.vis.Reltrs;
+import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,13 +38,13 @@ public class TrainAdjuster extends Item implements JunctionGridItem {
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity){
-		if(entity instanceof RailVehicle == false) return false;
-		Reltrs rel = ((RailVehicle)entity).rek;
-		if(!rel.ent().getCompound().isSingular()){
+		if(entity instanceof NRailVehicle == false) return false;
+		RailEntity ent = ((NRailVehicle)entity).vehicle.railent;
+		if(!ent.getCompound().isSingular()){
 			Print.chatnn(player, "Rail vehicle must be disconnected from other rail vehicles.");
 			return false;
 		}
-		rel.ent().flip();
+		ent.flip();
 		return true;
 	}
 

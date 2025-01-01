@@ -20,20 +20,18 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.TagCWI;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
@@ -141,9 +139,9 @@ public class Command extends CommandBase {
             		Print.chat(sender, "&cPlease select a key type! &7(vehicle or container)");
             	}
             	else if(args[1].equals("vehicle")){
-            		if(player.isRiding() && player.getRidingEntity() instanceof GenericVehicle){
-            			GenericVehicle ent = (GenericVehicle)player.getRidingEntity();
-            			VehicleData data = ent.getVehicleData();
+            		if(player.isRiding() && player.getRidingEntity() instanceof RootVehicle){
+						RootVehicle ent = (RootVehicle)player.getRidingEntity();
+            			VehicleData data = ent.vehicle.data;
             			if(data.getLock().isLocked()){
                     		Print.chat(sender, "&cPlease unlock the Vehicle first.");
             			}

@@ -99,7 +99,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public RootVehicle(World world){
 		super(world);
-		vehicle = new VehicleInstance(new EntityWIE(this), null);
+		vehicle = new VehicleInstance(new EntityWIE(this), null, isAdv());
 	}
 
 	protected void init(TagCW com){
@@ -140,6 +140,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			renderbox = new AxisAlignedBB(-cr, -cr, -cr, cr, cr, cr);
 			//TODO register for particles
 		}
+	}
+
+	public boolean isAdv(){
+		return false;
 	}
 
 	@Override

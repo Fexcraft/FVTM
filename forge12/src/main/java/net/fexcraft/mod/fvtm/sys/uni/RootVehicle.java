@@ -467,7 +467,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 	}
 
-	private void onUpdateMovement(){
+	protected void onUpdateMovement(){
 		EntityW driver = vehicle.driver();
 		if(!world.isRemote){
 			V3D fron, rear, left, righ;

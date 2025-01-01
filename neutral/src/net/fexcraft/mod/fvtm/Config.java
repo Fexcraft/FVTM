@@ -35,9 +35,8 @@ public class Config extends ConfigBase {
 	public static boolean RENDER_VEHICLES_SEPARATELY;
 	public static boolean DISABLE_PARTICLES;
 	public static int BLINKER_INTERVAL;
-	//u12/basic
-	public static float U12_MOTION_SCALE;
 	//uni/proto
+	public static float MOTION_SCALE;
 	public static byte VEHICLE_SYNC_RATE;
 	public static float STEER_RESET_RATE;
 	//rail
@@ -130,7 +129,7 @@ public class Config extends ConfigBase {
 		//u12/basic
 		entries.add(new ConfigEntry(this, catu, "motion_scale", new JsonValue(0.2f))
 			.info("Physics Motion Scale Multiplier.").rang(0.001f, 2f)
-			.cons((con, map) -> U12_MOTION_SCALE = con.getFloat(map)));
+			.cons((con, map) -> MOTION_SCALE = con.getFloat(map)));
 
 		//general vehicle
 		entries.add(new ConfigEntry(this, catv, "sync_rate", new JsonValue(5))

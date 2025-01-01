@@ -12,8 +12,7 @@ import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
 import net.fexcraft.mod.fvtm.data.inv.VarStackHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
@@ -35,7 +34,7 @@ public class UniVarInvContainer extends GenericContainer {
 	protected ContainerEntity con_tile;
 	protected BlockTileEntity blk_tile;
 	protected InventoryFunction func;
-	protected GenericVehicle entity;
+	protected RootVehicle entity;
 	protected String inv_id, title;
 	//protected boolean coninv;
 	//
@@ -70,13 +69,13 @@ public class UniVarInvContainer extends GenericContainer {
 			title = blk_tile.getBlockData().getType().getName();
 		}
 		else if(ID == UIKeys.VEHICLE_INVENTORY_FLUID.id){
-			entity = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+			entity = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			SeatInstance seat = entity.getSeatOf(player);
 			int invid = 0;
-			for(Map.Entry<String, PartData> entry : entity.getVehicleData().getParts().entrySet()){
+			for(Map.Entry<String, PartData> entry : entity.vehicle.data.getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 				if(inv == null || inv.inventory().type.isContainer()) continue;
-				if(seat == null ? inv.getSeats().contains(entity.isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.getSeats().contains(seat.seat.name)))){
+				if(seat == null ? inv.getSeats().contains(entity.vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.getSeats().contains(seat.seat.name)))){
 					if(invid == z){
 						inv_id = entry.getKey();
 						func = inv;
@@ -87,7 +86,7 @@ public class UniVarInvContainer extends GenericContainer {
 			}
 			if(inv_id == null) player.closeScreen();
 			invhandler = (InvHandlerVar)func.inventory();
-			title = entity.getVehicleData().getType().getName() + " - " + inv_id;
+			title = entity.vehicle.data.getType().getName() + " - " + inv_id;
 		}
 		//
 		this.inventoryItemStacks.clear();

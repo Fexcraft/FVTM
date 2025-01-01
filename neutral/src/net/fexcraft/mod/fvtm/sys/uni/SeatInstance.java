@@ -116,6 +116,10 @@ public class SeatInstance {
 	}
 
 	public boolean onKeyPress(KeyPress key, Passenger player){
+		return onKeyPress(key, player, false);
+	}
+
+	public boolean onKeyPress(KeyPress key, Passenger player, boolean state){
 		if(key == null) return false;
 		else if(key.toggable_input() && root.entity.isOnClient()){
 			if(clicktimer > 0) return false;

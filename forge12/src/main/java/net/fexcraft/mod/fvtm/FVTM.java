@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.*;
-import net.fexcraft.mod.fvtm.data.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.PassCap;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.AABB;
@@ -254,7 +253,6 @@ public class FVTM {
 		MinecraftForge.EVENT_BUS.register(new ResizeHandler());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			FvtmResources.initModelSystem();
-			AddonSteeringOverlay.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
 		//
 		UniReg.registerMod(MODID, INSTANCE);

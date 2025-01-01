@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
+import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -95,7 +96,7 @@ public class KeyHandler {
         Passenger player = minecraft.player.getCapability(Capabilities.PASSENGER, null).asWrapper();
         SeatInstance seat = ((RootVehicle)minecraft.player.getRidingEntity()).getSeatOf(minecraft.player);
         if(seat == null) return;
-        boolean uni12 = false;
+        boolean uni12 = minecraft.player.getRidingEntity() instanceof ULandVehicle;
         if(isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode())){
             seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
         }

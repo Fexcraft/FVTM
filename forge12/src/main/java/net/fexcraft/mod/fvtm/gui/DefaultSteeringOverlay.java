@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import static net.fexcraft.mod.fvtm.Config.OVERLAY_ON_BOTTOM;
+import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -17,10 +18,12 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.gui.construct.ConstGui;
+import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -377,7 +380,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(68, 31 + yoff, 0);
 		GL11.glScalef(0.8f, 0.8f, 0.8f);
-		root.mc.fontRenderer.drawString(Formatter.format(fuelColour(ent.vehicle.data) + format(ent.vehicle.data.getStoredFuel())), 0, 0, 0xffffff);
+		root.mc.fontRenderer.drawString(transformat(fuelColour(ent.vehicle.data) + format(ent.vehicle.data.getStoredFuel())), 0, 0, 0xffffff);
 		GL11.glPopMatrix();
 		GL11.glPushMatrix();
 		str0 = ent.vehicle.data.getFuelCapacity() + "";
@@ -387,24 +390,24 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		GL11.glPopMatrix();
 		//
 		if(!ent.vehicle.type.isRailVehicle() && ent.vehicle.rear != null){
-			root.mc.fontRenderer.drawString(Formatter.format(TRAILER), 170, 30 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(transformat(TRAILER), 170, 30 + yoff, 0xffffff);
 		}
 		//
-		root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " "), 8, 19 + yoff, 0xffffff);
+		root.mc.fontRenderer.drawString(transformat(THROTTLE), 8, 19 + yoff, 0xffffff);
 		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
 		(ent.vehicle.throttle > 0.8 ? ConstGui.RGB_ORANGE : RGB.GREEN).glColorApply();
 		root.drawTexturedModalRect(66, 19 + yoff, 66, 19, (int)(ent.vehicle.throttle * 100), 7);
 		RGB.glColorReset();
 		//
 		if(root.uni12){
-			/*ULandVehicle veh = (ULandVehicle)root.seat().vehicle;
-			int gear = veh.getVehicleData().getAttributeInteger("gear", 0);
+			ULandVehicle veh = (ULandVehicle)root.vehicle;
+			int gear = veh.vehicle.data.getAttributeInteger("gear", 0);
 			if(lastgear != gear){
 				lastgear = gear;
-				boolean auto = veh.transmission != null && veh.transmission.isAutomatic();
-				gear_label = veh.transmission != null && veh.transmission.isAutomatic() && gear != 0 ? "A" : "";
+				boolean auto = veh.vehicle.transmission != null && veh.vehicle.transmission.isAutomatic();
+				gear_label = veh.vehicle.transmission != null && veh.vehicle.transmission.isAutomatic() && gear != 0 ? "A" : "";
 				if(gear < 0){
-					gear_label = (auto ? "A-" : "") + "R" + (veh.transmission.getRGearAmount() == 1 ? "" : -gear);
+					gear_label = (auto ? "A-" : "") + "R" + (veh.vehicle.transmission.getRGearAmount() == 1 ? "" : -gear);
 				}
 				else if(gear == 0){
 					gear_label = "N";
@@ -413,8 +416,8 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 					gear_label += gear;
 				}
 			}
-			root.mc.fontRenderer.drawString(Formatter.format(RPM + " " + (veh.crpm / 100 * 100)), 170, 8 + yoff, 0xffffff);
-			root.mc.fontRenderer.drawString(Formatter.format(GEAR + " " + gear_label), 170, 19 + yoff, 0xffffff);*/
+			root.mc.fontRenderer.drawString(transformat(RPM, (veh.crpm / 100 * 100)), 170, 8 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(transformat(GEAR, gear_label), 170, 19 + yoff, 0xffffff);
 		}
 		if(Command.OTHER && root.seat().root.wheeldata != null){//debug info
 			int idx = 0;

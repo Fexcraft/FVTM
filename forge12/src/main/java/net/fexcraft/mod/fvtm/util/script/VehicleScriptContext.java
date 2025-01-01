@@ -9,7 +9,7 @@ import net.fexcraft.lib.script.elm.RefElm;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class VehicleScriptContext implements ScrElm {
 
 	private FSVehicleScript wrapper;
-	private GenericVehicle entity;
+	private RootVehicle entity;
 	private EntityPlayer player;
 	protected VehicleData data;
 	//
@@ -37,7 +37,7 @@ public class VehicleScriptContext implements ScrElm {
 	}
 
 	public VehicleScriptContext update(Entity entity){
-		this.entity = (GenericVehicle)entity;
+		this.entity = (RootVehicle)entity;
 		seat = null;
 		player = null;
 		toggl = null;
@@ -56,7 +56,7 @@ public class VehicleScriptContext implements ScrElm {
 	}
 
 	public VehicleScriptContext update(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
-		this.entity = (GenericVehicle)entity;
+		this.entity = (RootVehicle)entity;
 		this.player = player;
 		this.toggl = attr;
 		this.oldattrval = oldvalue;
@@ -108,7 +108,7 @@ public class VehicleScriptContext implements ScrElm {
 		elm = ref.getElm(block.getScript());
 		if(elm == NULL) return;
 		if(elm instanceof Attribute){
-			vehicle().sendAttributeUpdate((Attribute<?>)elm);
+			//TODO vehicle().sendAttributeUpdate((Attribute<?>)elm);
 			return;
 		}
 		NBTTagCompound packet = new NBTTagCompound();
@@ -143,7 +143,7 @@ public class VehicleScriptContext implements ScrElm {
 		return true;
 	}
 
-	public GenericVehicle vehicle(){
+	public RootVehicle vehicle(){
 		return entity;
 	}
 	
@@ -161,7 +161,7 @@ public class VehicleScriptContext implements ScrElm {
 				case "sync":{
 					for(ScrElm elm : this.value()){
 						if(elm instanceof Attribute == false) continue;
-						context.vehicle().sendAttributeUpdate((Attribute)elm);
+						//TODO context.vehicle().sendAttributeUpdate((Attribute)elm);
 					}
 					return TRUE;
 				}

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.pro;
 import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
@@ -43,6 +44,7 @@ public class NLandVehicle extends RootVehicle {
 		truck.vehicle.rear = vehicle;
 		vehicle.point.updatePrevAxe();
 		vehicle.point.getPivot().copy(truck.vehicle.point.getPivot());
+		vehicle.sendUpdate(VehicleInstance.PKT_UPD_CONNECTOR);
 	}
 
 	@Override

@@ -421,21 +421,6 @@ public class EffectRenderer {
     		}
     	}
 	}
-	
-	public static void renderSeats(GenericVehicle vehicle){
-		/*if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
-		preMeshCalls();
-    	GL11.glPushMatrix();
-		for(SeatCache seat : vehicle.seats){
-			V3D pos = seat.getFreshPosition().sub(vehicle.posX, vehicle.posY, vehicle.posZ);
-			GL11.glTranslated(pos.x, pos.y, pos.z);
-			(seat.passenger() != null ? SEAT_CUBE_OCCUPIED : seat.seatdata.sitting ? SEAT_CUBE_SITTING : SEAT_CUBE_STANDING).render(0.5f * seat.seatdata.scale());
-			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
-		}
-    	GL11.glPopMatrix();
-		postMeshCalls();
-		RGB.glColorReset();*/
-	}
 
 	public static void renderSeats(VehicleInstance vehicle){
 		if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;

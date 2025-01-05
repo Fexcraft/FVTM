@@ -468,8 +468,7 @@ public class RootVehicle extends Entity {
 				//TODO
 			}
 			else{
-				EngineFunction engine = vehicle.data.getFunctionInPart("engine", "fvtm:engine");
-				boolean consumed = engine != null && vehicle.consumeFuel(engine);
+				boolean consumed = vehicle.engine != null && vehicle.consumeFuel();
 				for(WheelEntity wheel : wheels.values()){
 					wheel.setOnGround(true);
 					wheel.motionX *= 0.9;
@@ -477,20 +476,20 @@ public class RootVehicle extends Entity {
 					wheel.motionZ *= 0.9;
 					wheel.motionY /*-*/ = -GRAVITY_20th;
 					double steer = Math.toRadians(vehicle.steer_yaw);
-					if(engine != null && (needsnofuel || consumed)){
+					if(vehicle.engine != null && (needsnofuel || consumed)){
 						double scal = 0;
 						double wheelrot = valRad(vehicle.pivot().yaw());
 						if(vehicle.data.getType().isTracked()){
 							wheel.motionX *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
 							wheel.motionZ *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
-							scal = 0.04 * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							scal = 0.04 * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * vehicle.engine.getSphEngineSpeed();
 							double steerscal = 0.1f * (vehicle.steer_yaw > 0 ? vehicle.data.getType().getSphData().turn_left_mod : vehicle.data.getType().getSphData().turn_right_mod);
 							double wheelspeed = (vehicle.throttle + (vehicle.steer_yaw * (wheel.wheel.mirror ? -1 : 1) * steerscal)) * scal;
 							wheel.motionX += wheelspeed * Math.cos(wheelrot);
 							wheel.motionZ += wheelspeed * Math.sin(wheelrot);
 						}
 						else{
-							scal = 0.05 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							scal = 0.05 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * vehicle.engine.getSphEngineSpeed();
 							if(wheel.wheel.steering){
 								wheelrot = valRad(wheelrot + steer);
 								wheel.setYRot(vehicle.pivot().deg_yaw() + (float)vehicle.steer_yaw);

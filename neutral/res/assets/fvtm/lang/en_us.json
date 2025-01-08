@@ -1,4 +1,8 @@
 {
+	"recipe.fvtm.blocks": "FVTM Blocks",
+
+	"block.fvtm.vehicle_lift": "Vehicle Maintenance Lift",
+
 	"ui.fvtm.decoration_editor.position": "Position Offset",
 	"ui.fvtm.decoration_editor.rotation": "Rotation (Degrees)",
 	"ui.fvtm.decoration_editor.scale": "Scale",

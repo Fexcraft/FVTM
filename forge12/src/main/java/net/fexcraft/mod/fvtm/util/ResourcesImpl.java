@@ -18,7 +18,6 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -37,8 +36,6 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
-import net.fexcraft.mod.fvtm.function.part.TireFunction;
-import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
@@ -276,7 +273,7 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public void registerRecipes(){
+	public void registerFvtmRecipes(){
 		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(ConstructorBlock.INSTANCE))

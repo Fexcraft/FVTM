@@ -5,10 +5,7 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.mod.fvtm.data.Content;
-import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.Decoration;
-import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.attribute.*;
@@ -44,6 +41,7 @@ import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.BogieInstallationHandler;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -287,7 +285,17 @@ public abstract class FvtmResources {
 
 	public abstract void createContentItems();
 
-	public abstract void registerRecipes();
+	public void registerRecipes(){
+		registerFvtmRecipes();
+		INSTANCE.searchInPacksFor(ContentType.RECIPE);
+		for(Recipe recipe : RECIPES){
+			if(recipe.fcl){
+				FclRecipe.register(recipe.category, new FclRecipe(recipe.output, recipe.fclcomps.toArray(new FclRecipe.Component[0])));
+			}
+		}
+	}
+
+	public abstract void registerFvtmRecipes();
 
 	public abstract ItemWrapper getItemWrapper(String id);
 

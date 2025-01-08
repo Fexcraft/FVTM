@@ -220,6 +220,7 @@ public class FVTM4 {
 				}
 			});
 		});
+		FvtmResources.INSTANCE.registerRecipes();
 	}
 
 	public static class PackAdder {

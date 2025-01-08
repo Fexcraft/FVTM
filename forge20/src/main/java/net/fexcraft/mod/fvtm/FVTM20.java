@@ -105,7 +105,6 @@ public class FVTM20 {
 				DefaultPrograms.setupBlinkerTimer();
 			}
 		}
-		FvtmResources.INSTANCE.registerRecipes();
 	}
 
 	public static LiteralArgumentBuilder<CommandSourceStack> genCommand(){

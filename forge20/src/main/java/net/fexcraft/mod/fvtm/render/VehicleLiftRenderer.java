@@ -13,10 +13,7 @@ import net.fexcraft.mod.fvtm.model.block.Lift2024Model;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
-import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.lib.common.Static.rad180;
@@ -40,7 +37,6 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 		if(tile.rot != 0){
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(BlockType.GENERIC_4ROT.getRotationFor(tile.rot)), AY));
 		}
-		ChestRenderer e;
 		Lift2024Model.center.render();
 		data = tile.getVehicleData();
 		if(data != null){

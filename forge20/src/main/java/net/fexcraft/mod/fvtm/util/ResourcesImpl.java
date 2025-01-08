@@ -17,7 +17,6 @@ import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -82,7 +81,7 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public void registerRecipes(){
+	public void registerFvtmRecipes(){
 		//
 	}
 

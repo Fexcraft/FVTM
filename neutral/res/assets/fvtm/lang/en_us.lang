@@ -9,9 +9,12 @@
 # Commands
 commands.fvtm.main_usage=Try: /fvtm help
 
+# Recipes
+recipe.fvtm.blocks=FVTM Blocks
+
 # Blocks
 tile.fvtm:constructor.name=Constructor Block
-tile.fvtm:constructor_lift.name=Constructor Center/Lift
+tile.fvtm:vehicle_lift.name=Vehicle Maintenance Lift
 tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt

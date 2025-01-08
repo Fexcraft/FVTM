@@ -294,13 +294,13 @@ public class ResourcesImpl extends FvtmResources {
 			.add(new ItemStack(Blocks.LEVER, 2))
 			.add(new ItemStack(Blocks.PISTON, 2))
 			.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(VPInfo.INSTANCE))
+		/*FclRecipe.newBuilder(blockcat).output(new ItemStack(VPInfo.INSTANCE))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Items.BOOK, 16))
 			.add(new ItemStack(Items.REDSTONE, 4))
 			.add(new ItemStack(Blocks.LEVER, 4))
 			.add(new ItemStack(Items.GLASS_BOTTLE, 2))
-			.register();
+			.register();*/
 	}
 
 
@@ -451,6 +451,7 @@ public class ResourcesImpl extends FvtmResources {
 	private void registerTESR(){
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(VehicleLiftEntity.class, new net.fexcraft.mod.fvtm.render.VehicleLiftRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
+		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstructorEntity.class, new net.fexcraft.mod.fvtm.render.CatalogRenderer());
 	}
 
 	@Override

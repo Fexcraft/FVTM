@@ -219,9 +219,11 @@ public abstract class FvtmResources {
 				for(File file : files){
 					try{
 						JsonMap map = JsonHandler.parse(file);
+						IDL idl = ContentConfigUtil.getID(map);
+						if(idl == null) map.add("ID", addon.getID().id() + ":" + file.getName().substring(0, file.getName().indexOf(".")).toLowerCase());
 						Content<?> content = (Content<?>)contype.impl.newInstance().parse(map);
 						if(content == null){
-							IDL idl = ContentConfigUtil.getID(map);
+							idl = ContentConfigUtil.getID(map);
 							LOGGER.log("Errors while loading config file: " + file + " for " + idl.colon());
 						}
 						contype.register(content);
@@ -246,9 +248,11 @@ public abstract class FvtmResources {
 						if(entry.getName().startsWith(path) && entry.getName().endsWith(contype.suffix)){
 							try{
 								JsonMap map = JsonHandler.parse(zip.getInputStream(entry));
+								IDL idl = ContentConfigUtil.getID(map);
+								if(idl == null) map.add("ID", addon.getID().id() + ":" + entry.getName().substring(0, entry.getName().indexOf(".")).toLowerCase());
 								Content<?> content = (Content<?>)contype.impl.newInstance().parse(map);
 								if(content == null){
-									IDL idl = ContentConfigUtil.getID(map);
+									idl = ContentConfigUtil.getID(map);
 									LOGGER.log("Errors while loading config from zip: " + addon.getFile() + " for " + idl.colon());
 								}
 								contype.register(content);

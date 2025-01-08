@@ -68,11 +68,7 @@ public enum ContentType {
 			case WIRE: WIRES.register(content); return;
 			case WIREDECO: WIREDECOS.register(content); return;
 			case DECORATION: DECORATIONS.register(content); return;
-			case RECIPE:{
-				RECIPES.register(content);
-				FvtmResources.registerRecipe((Recipe)content);
-				return;
-			}
+			case RECIPE: RECIPES.register(content); return;
 			default: return;
 		}
 	}

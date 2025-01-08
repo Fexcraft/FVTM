@@ -28,7 +28,8 @@ public class ContentConfigUtil {
 
 	public static IDL getID(JsonMap map){
 		if(map.has("ID")) return IDLManager.getIDLCached(map.get("ID").string_value());
-		else return IDLManager.getIDLCached(map.get("RegistryName").string_value());
+		else if(map.has("RegistryName")) return IDLManager.getIDLCached(map.get("RegistryName").string_value());
+		else return null;
 	}
 
 	public static IDL getID(Addon pack, JsonMap map){

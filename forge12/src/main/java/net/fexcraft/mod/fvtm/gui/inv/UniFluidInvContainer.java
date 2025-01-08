@@ -54,7 +54,7 @@ public class UniFluidInvContainer extends GenericContainer {
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		if(ID == UIKeys.MULTIBLOCK_INVENTORY_FLUID.id){
 			mb_tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
-			NBTTagCompound com = GuiHandler.validate(player, null, player.world.isRemote);
+			NBTTagCompound com = new NBTTagCompound();//TODO GuiHandler.validate(player, null, player.world.isRemote);
 			if(com == null){
 				player.closeScreen();
 				return;

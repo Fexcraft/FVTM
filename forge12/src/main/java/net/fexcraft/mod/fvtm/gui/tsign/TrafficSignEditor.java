@@ -18,7 +18,6 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.gui.construct.ConstPainter;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
@@ -62,8 +61,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private TSEButton[] tabclose = new TSEButton[2];
 	private TSEButton[] editorconfirm = new TSEButton[7];
 	private TSEButton[] border = new TSEButton[5];
-	private ConstPainter.Spectrum spectrum;
-	private ConstPainter.Palette palette;
+	//private ConstPainter.Spectrum spectrum;
+	//private ConstPainter.Palette palette;
 	private BasicText title;
 	private BasicText[] lList = new BasicText[15];
 	private BasicText[] rList = new BasicText[15];
@@ -367,7 +366,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				return true;
 			}
 		});
-		buttons.put("spectrum", spectrum = new ConstPainter.Spectrum(guiLeft - 105, guiTop + 125, 110, 10, 55){
+		/*buttons.put("spectrum", spectrum = new ConstPainter.Spectrum(guiLeft - 105, guiTop + 125, 110, 10, 55){
 			public boolean onclick(int x, int y, int b){
 				setcolor(getColorAt(x));
 				return true;
@@ -378,7 +377,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 				setcolor(getColorAt(x, y));
 				return true;
 			}
-		});
+		});*///TODO
 		//
 		texts.put("font_text", editor[0] = new BasicText(guiLeft - 103, guiTop + 23, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.font_text")));
 		texts.put("sign_sides", editor[1] = new BasicText(guiLeft - 103, guiTop + 51, 106, darkgray, I18n.format("gui.fvtm.trafficsigneditor.tab_editor.sign_sides")));
@@ -645,7 +644,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			comp.channels[channel_selected].packed = color.packed;
 		}
 		current_color = color;
-		palette.recalc(color);
+		//TODO palette.recalc(color);
 		byte[] arr = color.toByteArray();
 		rgb_field.setText((arr[0] + 128) + ", " + (arr[1] + 128) + ", " + (arr[2] + 128));
 		hex_field.setText("#" + Integer.toHexString(color.packed));
@@ -956,9 +955,9 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 			gui.rgb_field.setVisible(color);
 			gui.hex_field.setVisible(color);
 			gui.tabclose[0].visible = color;
-			gui.spectrum.visible = color;
+			/*gui.spectrum.visible = color;
 			gui.palette.visible = color;
-			gui.palette.recalc(gui.current_color);
+			gui.palette.recalc(gui.current_color);*///TODO
 			//
 			boolean edit = edit();
 			for(int i = 0; i < gui.editor.length; i++) gui.editor[i].visible = edit;

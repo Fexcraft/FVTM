@@ -184,7 +184,7 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallablePacks());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
-		EntitySystem.add(new BasicSpawnSystem());
+		//TODO EntitySystem.add(new BasicSpawnSystem());
 		TrafficSignLibrary.initialize(event.getSide(), event.getSuggestedConfigurationFile().getParentFile());
 		GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));
 		GameRegistry.registerTileEntity(SignalTileEntity.class, new ResourceLocation("fvtm:rail_signal"));
@@ -256,10 +256,11 @@ public class FVTM {
 		}
 		//
 		UniReg.registerMod(MODID, INSTANCE);
-		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "fvtm:uis/toolbox_colors", ToolboxPaintContainer.class);
-		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
+		UIKeys.ROAD_TOOL_CON = RoadToolConImpl.class;
+		UIKeys.ROAD_TOOL_CUSTOM_CON = RoadToolCustomConImpl.class;
+		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
+		UIKeys.VEHICLE_FUEL_CON = VehicleFuelConImpl.class;
+		UIKeys.register();
 	}
 
 	@Mod.EventHandler

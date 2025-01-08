@@ -130,7 +130,7 @@ public class Command extends CommandBase {
             	break;
             }
             case "catalog":{
-            	((EntityPlayer)sender.getCommandSenderEntity()).openGui(FVTM.getInstance(), UIKeys.ID12_VEHICLE_CATALOG, sender.getEntityWorld(), 0, 0, 0);
+				UniEntity.getEntity(sender.getCommandSenderEntity()).openUI(UIKeys.VEHICLE_CATALOG, V3I.NULL);
             	break;
             }
             case "get-key": {

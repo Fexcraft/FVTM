@@ -1,5 +1,11 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
+import net.fexcraft.mod.fvtm.ui.vehicle.*;
+import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.ui.UIKey;
 
 /**
@@ -59,5 +65,39 @@ public class UIKeys {
 	public static final UIKey MULTIBLOCK_INVENTORY_ITEM = new UIKey(ID12_MULTIBLOCK_INVENTORY_ITEM, "fvtm:mb_inventory_item");
 	public static final UIKey MULTIBLOCK_INVENTORY_FLUID = new UIKey(ID12_MULTIBLOCK_INVENTORY_FLUID, "fvtm:mb_inventory_fluid");
 	public static final UIKey MULTIBLOCK_INVENTORY_VAR = new UIKey(ID12_MULTIBLOCK_INVENTORY_VAR, "fvtm:mb_inventory_var");
+	//
+	public static Class<? extends RoadToolCon> ROAD_TOOL_CON;
+	public static Class<? extends RoadToolCustomCon> ROAD_TOOL_CUSTOM_CON;
+	public static Class<? extends VehicleCatalog> VEHICLE_CATALOG_IMPL;
+	public static Class<? extends VehicleFuelCon> VEHICLE_FUEL_CON;
+
+	public static void register(){
+		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "fvtm:uis/toolbox_colors", ToolboxPaintContainer.class);
+		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
+		UniReg.registerUI(UIKeys.VEHICLE_CATALOG, VEHICLE_CATALOG_IMPL);
+		UniReg.registerMenu(UIKeys.VEHICLE_CATALOG, "fvtm:uis/vehicle_catalog", VehicleCatalogCon.class);
+		//
+		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
+		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
+		UniReg.registerUI(UIKeys.ROAD_TOOL, RoadToolUI.class);
+		UniReg.registerMenu(UIKeys.ROAD_TOOL, "fvtm:uis/road_tool", ROAD_TOOL_CON);
+		UniReg.registerUI(UIKeys.ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
+		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "fvtm:uis/road_tool_custom", ROAD_TOOL_CUSTOM_CON);
+		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
+		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "fvtm:uis/deco_editor", DecoContainer.class);
+		//
+		//TODO entity system chooser
+		//
+		UniReg.registerUI(UIKeys.VEHICLE_MAIN, VehicleMain.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_MAIN, "fvtm:uis/vehicle_main", VehicleMainCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_ATTRIBUTES, VehicleAttributes.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_ATTRIBUTES, "fvtm:uis/vehicle_attributes", VehicleAttributesCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_INVENTORIES, VehicleInventories.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VEHICLE_FUEL_CON);
+	}
 
 }

@@ -52,6 +52,7 @@ import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.render.block.BlockItemModel;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
@@ -277,85 +278,32 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public void registerRecipes(){
 		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
-		String blockcat = "fvtm.recipes.blocks";
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(ConstructorBlock.INSTANCE),
-			new ItemStack(Blocks.IRON_BLOCK),
-			new ItemStack(Items.COMPARATOR, 4),
-			new ItemStack(Items.REPEATER, 8),
-			new ItemStack(Items.REDSTONE, 16),
-			new ItemStack(Items.BOOK, 2),
-			new ItemStack(Blocks.LEVER, 8)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(VehicleLiftBlock.INSTANCE),
-			new ItemStack(Blocks.IRON_BLOCK, 2),
-			new ItemStack(Items.IRON_INGOT, 8),
-			new ItemStack(Items.COMPARATOR, 2),
-			new ItemStack(Items.REPEATER, 4),
-			new ItemStack(Items.REDSTONE, 4),
-			new ItemStack(Items.BOOK, 1),
-			new ItemStack(Blocks.LEVER, 2),
-			new ItemStack(Blocks.PISTON, 2)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(VPInfo.INSTANCE),
-			new ItemStack(Blocks.IRON_BLOCK),
-			new ItemStack(Items.BOOK, 16),
-			new ItemStack(Items.REDSTONE, 4),
-			new ItemStack(Blocks.LEVER, 4),
-			new ItemStack(Items.GLASS_BOTTLE, 2)
-		);
-		String gauge = FvtmRegistry.STANDARD_GAUGE.toString();
-		Item gaugeitem = Item.getByNameOrId(gauge);
-		Item gaugeitem16 = Item.getByNameOrId(gauge + ".16_straight");
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(gaugeitem),
-			new ItemStack(Items.IRON_INGOT, 4),
-			new ItemStack(Blocks.PLANKS, 4)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".4_straight")),
-			new ItemStack(gaugeitem, 4),
-			new ItemStack(Items.IRON_INGOT, 2)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".8_straight")),
-			new ItemStack(gaugeitem, 8),
-			new ItemStack(Items.IRON_INGOT, 3)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".16_straight")),
-			new ItemStack(gaugeitem, 16),
-			new ItemStack(Items.IRON_INGOT, 4)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".32_straight")),
-			new ItemStack(gaugeitem, 32),
-			new ItemStack(Items.IRON_INGOT, 8)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")),
-			new ItemStack(gaugeitem, 16),
-			new ItemStack(Items.IRON_INGOT, 4),
-			new ItemStack(Blocks.PLANKS, 4)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")),
-			new ItemStack(gaugeitem, 16),
-			new ItemStack(Items.IRON_INGOT, 4),
-			new ItemStack(Blocks.PLANKS, 4)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")),
-			new ItemStack(gaugeitem16),
-			new ItemStack(Blocks.PLANKS, 4)
-		);
-		RecipeRegistry.addBluePrintRecipe(blockcat,
-			new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")),
-			new ItemStack(gaugeitem16),
-			new ItemStack(Blocks.PLANKS, 4)
-		);
+		String blockcat = "recipe.fvtm.blocks";
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(ConstructorBlock.INSTANCE))
+			.add(new ItemStack(Blocks.IRON_BLOCK))
+			.add(new ItemStack(Items.COMPARATOR, 4))
+			.add(new ItemStack(Items.REPEATER, 8))
+			.add(new ItemStack(Items.REDSTONE, 16))
+			.add(new ItemStack(Items.BOOK, 2))
+			.add(new ItemStack(Blocks.LEVER, 8))
+			.register();
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(VehicleLiftBlock.INSTANCE))
+			.add(new ItemStack(Blocks.IRON_BLOCK, 2))
+			.add(new ItemStack(Items.IRON_INGOT, 8))
+			.add(new ItemStack(Items.COMPARATOR, 2))
+			.add(new ItemStack(Items.REPEATER, 4))
+			.add(new ItemStack(Items.REDSTONE, 4))
+			.add(new ItemStack(Items.BOOK, 1))
+			.add(new ItemStack(Blocks.LEVER, 2))
+			.add(new ItemStack(Blocks.PISTON, 2))
+			.register();
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(VPInfo.INSTANCE))
+			.add(new ItemStack(Blocks.IRON_BLOCK))
+			.add(new ItemStack(Items.BOOK, 16))
+			.add(new ItemStack(Items.REDSTONE, 4))
+			.add(new ItemStack(Blocks.LEVER, 4))
+			.add(new ItemStack(Items.GLASS_BOTTLE, 2))
+			.register();
 	}
 
 

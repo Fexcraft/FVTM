@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -25,7 +26,8 @@ public enum ContentType {
 	CLOTH(".cloth", "clothes", Cloth.class),
 	WIRE(".wire", "wires", WireType.class),
 	WIREDECO(".wiredeco", "wires", WireDeco.class),
-	DECORATION(".deco", "decos", Decoration.class)
+	DECORATION(".deco", "decos", Decoration.class),
+	RECIPE(".json", "recipes", Recipe.class),
 	;
 
 	static{
@@ -66,6 +68,11 @@ public enum ContentType {
 			case WIRE: WIRES.register(content); return;
 			case WIREDECO: WIREDECOS.register(content); return;
 			case DECORATION: DECORATIONS.register(content); return;
+			case RECIPE:{
+				RECIPES.register(content);
+				FvtmResources.registerRecipe((Recipe)content);
+				return;
+			}
 			default: return;
 		}
 	}

@@ -364,6 +364,13 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 		return catalog;
 	}
 
+	public CatalogPreset getCatalogEntry(String rec){
+		for(CatalogPreset preset : catalog){
+			if(preset.id.equals(rec)) return preset;
+		}
+		return null;
+	}
+
 	public List<InteractZone> getDefaultInteractZones(){
 		return interact_zones;
 	}

@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.impl.AABBI;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
@@ -61,31 +63,11 @@ public class FVTM20 {
 			//
 		});
 		//
-		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
-		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "fvtm:uis/deco_editor", DecoContainer.class);
-		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "fvtm:uis/toolbox_colors", ToolboxPaintContainer.class);
-		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
-		//
-		UniReg.registerUI(UIKeys.ROAD_TOOL, RoadToolUI.class);
-		UniReg.registerMenu(UIKeys.ROAD_TOOL, "fvtm:uis/road_tool", RoadToolConImpl.class);
-		UniReg.registerUI(UIKeys.ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
-		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "fvtm:uis/road_tool_custom", RoadToolCustomConImpl.class);
-		//
-		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
-		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
-		//
-		UniReg.registerUI(UIKeys.VEHICLE_MAIN, VehicleMain.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_MAIN, "fvtm:uis/vehicle_main", VehicleMainCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VehicleFuelConImpl.class);
-		UniReg.registerUI(UIKeys.VEHICLE_ATTRIBUTES, VehicleAttributes.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_ATTRIBUTES, "fvtm:uis/vehicle_attributes", VehicleAttributesCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_INVENTORIES, VehicleInventories.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_CATALOG, VehicleCatalog.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_CATALOG, "fvtm:uis/vehicle_catalog", VehicleCatalogCon.class);
+		UIKeys.ROAD_TOOL_CON = RoadToolConImpl.class;
+		UIKeys.ROAD_TOOL_CUSTOM_CON = RoadToolCustomConImpl.class;
+		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalog.class;
+		UIKeys.VEHICLE_FUEL_CON = VehicleFuelConImpl.class;
+		UIKeys.register();
 		//
 		FvtmResources.INSTANCE.init();
 	}

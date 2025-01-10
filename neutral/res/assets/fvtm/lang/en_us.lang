@@ -93,6 +93,9 @@ ui.fvtm.vehicle_catalog.next_vehicle=Next Vehicle
 ui.fvtm.vehicle_catalog.confirm=Craft Vehicle
 ui.fvtm.vehicle_catalog.variant=Variant %s of %s
 ui.fvtm.vehicle_catalog.no_desc=no variant description was provided
+ui.fvtm.vehicle_catalog.craft_invalid=A recipe component is invalid.
+ui.fvtm.vehicle_catalog.craft_not_enough=&eNot enough of &c%s
+ui.fvtm.vehicle_catalog.craft_success=Vehicle crafted successfully.
 //
 ui.fvtm.road_tool.add_width=Increase Road Width
 ui.fvtm.road_tool.sub_width=Decrease Road Width

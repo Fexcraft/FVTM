@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
-import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
-import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
+import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.*;
@@ -35,6 +33,7 @@ public class FvtmGetters {
 	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
 	//
 	public static Supplier<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY;
+	public static Supplier<BlockEntityType<ConstructorEntity>> CONST_ENTITY;
 	public static Supplier<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY;
 	//
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
@@ -44,6 +43,8 @@ public class FvtmGetters {
 	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
 	public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
 	public static Supplier<BlockItem> LIFT_BLOCK_ITEM;
+	public static Supplier<ConstructorBlock> CONST_BLOCK;
+	public static Supplier<BlockItem> CONST_BLOCK_ITEM;
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 

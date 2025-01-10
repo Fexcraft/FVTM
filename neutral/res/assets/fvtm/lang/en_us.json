@@ -44,6 +44,9 @@
 	"ui.fvtm.vehicle_catalog.confirm": "Craft Vehicle",
 	"ui.fvtm.vehicle_catalog.variant": "Variant %s of %s",
 	"ui.fvtm.vehicle_catalog.no_desc": "no variant description was provided",
+	"ui.fvtm.vehicle_catalog.craft_invalid": "A recipe component is invalid.",
+	"ui.fvtm.vehicle_catalog.craft_not_enough": "&eNot enough of &c%s",
+	"ui.fvtm.vehicle_catalog.craft_success": "Vehicle crafted successfully.",
 
 	"handler.install.fvtm.default.category_occupied": "There is already another part on that spot with that category.",
 	"handler.install.fvtm.default.part_incompatible_vehicle": "Part is incompatible with this vehicle.",

@@ -2,17 +2,19 @@ package net.fexcraft.mod.fvtm.ui.vehicle;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.vehicle.CatalogPreset;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.util.*;
+
+import static net.fexcraft.mod.uni.ui.ContainerInterface.SEND_TO_SERVER;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -69,6 +71,13 @@ public class VehicleCatalog extends UserInterface {
 				switchRecipe(1);
 				return true;
 			}
+			case "confirm":{
+				TagCW com = TagCW.create();
+				com.set("veh", veh.getIDS());
+				com.set("rec", veh.getCatalog().get(recipe).id);
+				SEND_TO_SERVER.accept(com);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -103,12 +112,7 @@ public class VehicleCatalog extends UserInterface {
 		if(preset.desc.isEmpty()) texts.get("desc1").translate();
 		texts.get("variant").value("ui.fvtm.vehicle_catalog.variant");
 		texts.get("variant").translate(recipe + 1, veh.getCatalog().size());
-		stacks.clear();
-		for(Map.Entry<String, Integer> entry : preset.recipe.entrySet()){
-			StackWrapper stack = FvtmResources.newStack(FvtmRegistry.getItem(entry.getKey()));
-			stack.count(entry.getValue());
-			stacks.add(stack);
-		}
+		stacks = ((VehicleCatalogCon)container).parseStacks(preset);
 	}
 
 	@Override

@@ -122,6 +122,10 @@ public class FVTM20 {
 				DebugUtils.ACTIVE = !DebugUtils.ACTIVE;
 				return 0;
 			}))
+			.then(Commands.literal("catalog").executes(ctx -> {
+				UniEntity.getEntity(ctx.getSource().getPlayer()).openUI(UIKeys.VEHICLE_CATALOG, V3I.NULL);
+				return 0;
+			}))
 			.then(Commands.literal("reload").executes(ctx -> {
 				if(EnvInfo.DEV){
 					ctx.getSource().sendSystemMessage(Component.literal("Reloading Config..."));

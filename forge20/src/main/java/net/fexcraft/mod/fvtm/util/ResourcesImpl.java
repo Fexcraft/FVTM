@@ -4,6 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -11,11 +12,13 @@ import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
+import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
+import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
@@ -26,11 +29,10 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -82,7 +84,26 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmRecipes(){
-		//
+		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
+		String blockcat = "recipe.fvtm.blocks";
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.CONST_BLOCK_ITEM.get()))
+				.add(new ItemStack(Blocks.IRON_BLOCK))
+				.add(new ItemStack(Items.COMPARATOR, 4))
+				.add(new ItemStack(Items.REPEATER, 8))
+				.add(new ItemStack(Items.REDSTONE, 16))
+				.add(new ItemStack(Items.BOOK, 2))
+				.add(new ItemStack(Blocks.LEVER, 8))
+				.register();
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.LIFT_BLOCK_ITEM.get()))
+				.add(new ItemStack(Blocks.IRON_BLOCK, 2))
+				.add(new ItemStack(Items.IRON_INGOT, 8))
+				.add(new ItemStack(Items.COMPARATOR, 2))
+				.add(new ItemStack(Items.REPEATER, 4))
+				.add(new ItemStack(Items.REDSTONE, 4))
+				.add(new ItemStack(Items.BOOK, 1))
+				.add(new ItemStack(Blocks.LEVER, 2))
+				.add(new ItemStack(Blocks.PISTON, 2))
+				.register();
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
@@ -192,6 +213,7 @@ public class ResourcesImpl extends FvtmResources {
 			FvtmGetters.ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
 		}
 		FvtmGetters.LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
+		FvtmGetters.CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
 	}
 
 	@Override
@@ -206,6 +228,7 @@ public class ResourcesImpl extends FvtmResources {
 			FvtmGetters.ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(FvtmGetters.ASPHALT[index].get(), new Item.Properties()));
 		}
 		FvtmGetters.LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(FvtmGetters.LIFT_BLOCK.get(), new Item.Properties()));
+		FvtmGetters.CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(FvtmGetters.CONST_BLOCK.get(), new Item.Properties()));
 	}
 
 	@Override

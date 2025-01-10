@@ -33,6 +33,18 @@
 	"ui.fvtm.vehicle_inventories.page_next": "Next Page",
 	"ui.fvtm.vehicle_inventories.page_prev": "Previous Page",
 
+	"ui.fvtm.vehicle.catalog.no_vehicles": "You have no Packs with Vehicles installed.",
+	"ui.fvtm.vehicle_catalog.info": "You can use this Catalog to &mcreate Blueprints&r craft vehicles.",
+	"ui.fvtm.vehicle_catalog.prev_pack": "Previous Pack",
+	"ui.fvtm.vehicle_catalog.next_pack": "Next Pack",
+	"ui.fvtm.vehicle_catalog.prev_variant": "Previous Variant",
+	"ui.fvtm.vehicle_catalog.next_variant": "Next Variant",
+	"ui.fvtm.vehicle_catalog.prev_vehicle": "Previous Vehicle",
+	"ui.fvtm.vehicle_catalog.next_vehicle": "Next Vehicle",
+	"ui.fvtm.vehicle_catalog.confirm": "Craft Vehicle",
+	"ui.fvtm.vehicle_catalog.variant": "Variant %s of %s",
+	"ui.fvtm.vehicle_catalog.no_desc": "no variant description was provided",
+
 	"handler.install.fvtm.default.category_occupied": "There is already another part on that spot with that category.",
 	"handler.install.fvtm.default.part_incompatible_vehicle": "Part is incompatible with this vehicle.",
 	"handler.install.fvtm.default.vehicle_contains_incompatible": "Vehicle contains parts incompatible with this part.",

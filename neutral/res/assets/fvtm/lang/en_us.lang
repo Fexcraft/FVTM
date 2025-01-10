@@ -83,14 +83,14 @@ ui.fvtm.vehicle_inventories.page_next=Next Page
 ui.fvtm.vehicle_inventories.page_prev=Previous Page
 //
 ui.fvtm.vehicle.catalog.no_vehicles=You have no Packs with Vehicles installed.
-ui.fvtm.vehicle_catalog.info=You can use this Catalog to create Blueprints.
+ui.fvtm.vehicle_catalog.info=You can use this Catalog to &mcreate Blueprints&r craft vehicles.
 ui.fvtm.vehicle_catalog.prev_pack=Previous Pack
 ui.fvtm.vehicle_catalog.next_pack=Next Pack
 ui.fvtm.vehicle_catalog.prev_variant=Previous Variant
 ui.fvtm.vehicle_catalog.next_variant=Next Variant
 ui.fvtm.vehicle_catalog.prev_vehicle=Previous Vehicle
 ui.fvtm.vehicle_catalog.next_vehicle=Next Vehicle
-ui.fvtm.vehicle_catalog.confirm=Confirm Selection
+ui.fvtm.vehicle_catalog.confirm=Craft Vehicle
 ui.fvtm.vehicle_catalog.variant=Variant %s of %s
 ui.fvtm.vehicle_catalog.no_desc=no variant description was provided
 //

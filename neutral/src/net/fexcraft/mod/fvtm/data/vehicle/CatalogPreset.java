@@ -23,7 +23,7 @@ public class CatalogPreset {
 
 	public final Map<String, String> parts = new LinkedHashMap<>();
 	public final Map<String, RGB> channels = new LinkedHashMap<>();
-	public final List<String> recipe = new ArrayList<>();
+	public final Map<String, Integer> recipe = new LinkedHashMap<>();
 	public final List<String> desc;
 	public final Vehicle vehicle;
 	public final String name;
@@ -40,14 +40,10 @@ public class CatalogPreset {
 				parts.put(entry.getKey(), entry.getValue().string_value());
 			});
 		}
-		if(map.has("recipe")){
-			for(JsonValue<?> elm : map.getArray("recipe").value){
-				if(elm.isMap()){
-
-				}
-				else{
-					recipe.add(elm.string_value());
-				}
+		if(map.has("recipe") && map.get("recipe").isMap()){
+			for(Map.Entry<String, JsonValue<?>> entry : map.getMap("recipe").entries()){
+				int val = entry.getValue().integer_value();
+				recipe.put(entry.getKey(), val < 1 ? 1 : val > 64 ? 64 : val);
 			}
 		}
 		if(map.has("colors")){

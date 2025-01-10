@@ -22,6 +22,7 @@ public class VehicleCatalogImpl extends VehicleCatalog  {
 
 	@Override
 	public void postdraw(float ticks, int mx, int my){
+		super.postdraw(ticks, mx, my);
         RenderHelper.enableStandardItemLighting();
 		GL11.glPushMatrix();
 		GL11.glTranslated(gLeft + 67, gTop + 63, 100);

@@ -12,9 +12,7 @@ import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -106,19 +104,32 @@ public class VehicleCatalog extends UserInterface {
 		texts.get("variant").value("ui.fvtm.vehicle_catalog.variant");
 		texts.get("variant").translate(recipe + 1, veh.getCatalog().size());
 		stacks.clear();
-		for(String str : preset.recipe){
-			stacks.add(FvtmResources.newStack(FvtmRegistry.getItem(str)));
+		for(Map.Entry<String, Integer> entry : preset.recipe.entrySet()){
+			StackWrapper stack = FvtmResources.newStack(FvtmRegistry.getItem(entry.getKey()));
+			stack.count(entry.getValue());
+			stacks.add(stack);
 		}
 	}
 
 	@Override
-	public void drawbackground(float ticks, int mx, int my){
-		if(stacks.size() == 0) return;
+	public void postdraw(float ticks, int mx, int my){
 		for(int x = 0; x < 5; x++){
 			for(int y = 0; y < 4; y++){
 				int z = x + (y * 5);
 				if(z >= stacks.size()) break;
-				drawer.draw(gLeft + 146 + (x * 18), gTop + 25 + (y * 18) , stacks.get(z));
+				drawer.draw(gLeft + 146 + (x * 18), gTop + 25 + (y * 18), stacks.get(z), true);
+			}
+		}
+	}
+
+	@Override
+	public void getTooltip(int mx, int my, List<String> list){
+		if(mx >= gLeft + 145 && mx <= gLeft + 235 && my >= gTop + 24 && my <= gTop + 96){
+			int x = (mx - gLeft - 145) / 18;
+			int y = (my - gTop - 24) / 18;
+			int z = y * 5 + x;
+			if(z >= 0 && z < stacks.size()){
+				list.add(stacks.get(z).getName());
 			}
 		}
 	}

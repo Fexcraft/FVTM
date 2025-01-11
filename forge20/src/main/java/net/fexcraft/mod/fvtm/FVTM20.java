@@ -65,7 +65,7 @@ public class FVTM20 {
 		//
 		UIKeys.ROAD_TOOL_CON = RoadToolConImpl.class;
 		UIKeys.ROAD_TOOL_CUSTOM_CON = RoadToolCustomConImpl.class;
-		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalog.class;
+		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
 		UIKeys.VEHICLE_FUEL_CON = VehicleFuelConImpl.class;
 		UIKeys.register();
 		//

@@ -6,11 +6,8 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.function.Supplier;
 
-import net.fexcraft.lib.common.utils.ObjParser;
-import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.gen.FRLObjParser;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Model;

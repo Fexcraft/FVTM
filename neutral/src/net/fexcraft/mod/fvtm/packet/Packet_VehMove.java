@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.packet;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.world.EntityW;
 
 /**

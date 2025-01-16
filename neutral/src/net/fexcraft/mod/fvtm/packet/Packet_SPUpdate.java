@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.world.EntityW;
 
 import java.nio.charset.StandardCharsets;

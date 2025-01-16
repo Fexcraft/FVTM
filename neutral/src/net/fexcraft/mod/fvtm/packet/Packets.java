@@ -29,9 +29,12 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.packet.PacketBase;
+import net.fexcraft.mod.uni.packet.PacketListener;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 
 import java.util.HashMap;
@@ -52,29 +55,29 @@ public abstract class Packets {
 
 	public void init(){
 		LIS_SERVER.put("attr_toggle", (com, player) -> {
-			AttrReqHandler.processToggleRequest(player, com);
+			AttrReqHandler.processToggleRequest((Passenger)player, com);
 		});
 		LIS_SERVER.put("attr_update", (com, player) -> {
-			AttrReqHandler.processUpdateRequest(player, com);
+			AttrReqHandler.processUpdateRequest((Passenger)player, com);
 		});
 		LIS_SERVER.put("open_ui", (com, player) -> {
 			player.openUI(UIKey.byId(com.getInteger("ui")), new V3I(com.getIntArray("pos"), 0));
 		});
 		LIS_SERVER.put("vehicle", (com, player) -> {
-			VehicleInstance inst = player.getFvtmWorld().getVehicle(com.getInteger("entity"));
-			if(inst != null) inst.packet(com, player);
+			VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(com.getInteger("entity"));
+			if(inst != null) inst.packet(com, (Passenger)player);
 		});
 		LIS_SERVER.put("vehicle_packet", (com, player) -> {
-			VehicleInstance inst = player.getFvtmWorld().getVehicle(com.getInteger("entity"));
-			if(inst != null) inst.packet(com, player);
+			VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(com.getInteger("entity"));
+			if(inst != null) inst.packet(com, (Passenger)player);
 		});
 		LIS_SERVER.put("blockentity", (com, player) -> {
-			player.getFvtmWorld().handleBlockEntityPacket(com, player);
+			((Passenger)player).getFvtmWorld().handleBlockEntityPacket(com, (Passenger)player);
 		});
 		LIS_SERVER.put("install_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
 			PartData data = wrapper.getContent(ContentType.PART);
-			Map.Entry<VehicleData, InteractRef> ref = player.getFvtmWorld().getInteractRef(com);
+			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			String category = com.getString("category");
 			if(ref.getKey().getPart(category) != null){
 				PartData oldpart = ref.getKey().getPart(category);
@@ -103,7 +106,7 @@ public abstract class Packets {
 		LIS_SERVER.put("install_wheel", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
 			PartData data = wrapper.getContent(ContentType.PART);
-			Map.Entry<VehicleData, InteractRef> ref = player.getFvtmWorld().getInteractRef(com);
+			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref.getValue().isVehicle()){
 				player.send("interact.fvtm.vehicle.wheel_install");
 				return;
@@ -127,7 +130,7 @@ public abstract class Packets {
 		LIS_SERVER.put("remove_wheel", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
 			Material mat = wrapper.getContent(ContentType.MATERIAL);
-			Map.Entry<VehicleData, InteractRef> ref = player.getFvtmWorld().getInteractRef(com);
+			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref.getValue().isVehicle()){
 				player.send("interact.fvtm.vehicle.wheel_remove");
 				return;
@@ -160,7 +163,7 @@ public abstract class Packets {
 		LIS_SERVER.put("remove_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
 			if(!wrapper.isItemOf(ItemType.FVTM_TOOLBOX)) return;
-			Map.Entry<VehicleData, InteractRef> ref = player.getFvtmWorld().getInteractRef(com);
+			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref == null) return;
 			String category = com.getString("category");
 			PartData part = ref.getKey().getPart(category);
@@ -182,7 +185,7 @@ public abstract class Packets {
 		LIS_SERVER.put("texture_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
 			if(!wrapper.isItemOf(ItemType.FVTM_TOOLBOX)) return;
-			Map.Entry<VehicleData, InteractRef> ref = player.getFvtmWorld().getInteractRef(com);
+			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref == null || !ref.getValue().isVehicle()) return;
 			String category = com.getString("category");
 			PartData part = ref.getKey().getPart(category);
@@ -196,37 +199,37 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("wire_upd_region", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.updateRegion(com, player);
+			system.updateRegion(com, (Passenger)player);
 		});
 		LIS_SERVER.put("relay_interact", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.onRelayInteract(com, player);
+			system.onRelayInteract(com, (Passenger)player);
 		});
 		LIS_SERVER.put("relay_remove", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.onRelayRemove(com, player);
+			system.onRelayRemove(com, (Passenger)player);
 		});
 		LIS_SERVER.put("relay_wire_slack", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.onRelayWireSlack(com, player);
+			system.onRelayWireSlack(com, (Passenger)player);
 		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
-				AttrReqHandler.processToggleResponse(player, tag);
+				AttrReqHandler.processToggleResponse((Passenger)player, tag);
 			});
 			LIS_CLIENT.put("attr_update", (tag, player) -> {
-				AttrReqHandler.processUpdateResponse(player, tag);
+				AttrReqHandler.processUpdateResponse((Passenger)player, tag);
 			});
 			LIS_CLIENT.put("vehicle", (tag, player) -> {
-				VehicleInstance inst = player.getFvtmWorld().getVehicle(tag.getInteger("entity"));
-				if(inst != null) inst.packet(tag, player);
+				VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("entity"));
+				if(inst != null) inst.packet(tag, (Passenger) player);
 			});
 			LIS_CLIENT.put("vehicle_packet", (tag, player) -> {
-				VehicleInstance inst = player.getFvtmWorld().getVehicle(tag.getInteger("entity"));
-				if(inst != null) inst.packet(tag, player);
+				VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("entity"));
+				if(inst != null) inst.packet(tag, (Passenger)player);
 			});
 			LIS_CLIENT.put("vehicle_color", (tag, player) -> {
-				VehicleInstance inst = player.getFvtmWorld().getVehicle(tag.getInteger("vehicle"));
+				VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("vehicle"));
 				if(inst != null){
 					inst.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
 				}
@@ -252,7 +255,7 @@ public abstract class Packets {
 				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
 				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
 				if(road == null) return;
-				road.remove(player, new QV3D(tag, "vector"));
+				road.remove((Passenger)player, new QV3D(tag, "vector"));
 			});
 			LIS_CLIENT.put("road_tool_reset", (tag, player) -> {
 				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
@@ -260,7 +263,7 @@ public abstract class Packets {
 				RoadPlacingUtil.QUEUE.remove(uuid);
 			});
 			LIS_CLIENT.put("blockentity", (tag, player) -> {
-				player.getFvtmWorld().handleBlockEntityPacket(tag, player);
+				((Passenger)player).getFvtmWorld().handleBlockEntityPacket(tag, (Passenger)player);
 			});
 			LIS_CLIENT.put("rail_upd_unit_section", (tag, player) -> {
 				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
@@ -378,7 +381,7 @@ public abstract class Packets {
 			});
 			LIS_CLIENT.put("wire_upd_region", (tag, player) -> {
 				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				system.updateRegion(tag, player);
+				system.updateRegion(tag, (Passenger)player);
 			});
 			LIS_CLIENT.put("wire_upd_relay", (tag, player) -> {
 				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
@@ -465,7 +468,7 @@ public abstract class Packets {
 	}
 
 	/** Sends a Packet to all in range. */
-	public static void sendInRange(Class<? extends PacketBase> packet, Passenger pass, Object... data){
+	public static void sendInRange(Class<? extends PacketBase> packet, EntityW pass, Object... data){
 		sendInRange(packet, pass.getWorld(), pass.getPos(), data);
 	}
 

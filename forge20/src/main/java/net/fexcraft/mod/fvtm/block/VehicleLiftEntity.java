@@ -14,11 +14,12 @@ import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRefHolder;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.uni.packet.PacketListener;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -149,7 +150,7 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener, In
 	}
 
 	@Override
-	public void handle(TagCW packet, Passenger player){
+	public void handle(TagCW packet, EntityW player){
 		if(level.isClientSide){
 			switch(packet.getString("task")){
 				case "update":{

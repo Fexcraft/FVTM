@@ -294,6 +294,11 @@ public class ResourcesImpl extends FvtmResources {
 			.add(new ItemStack(Blocks.LEVER, 2))
 			.add(new ItemStack(Blocks.PISTON, 2))
 			.register();
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(FuelFillerBlock.INSTANCE))
+			.add(new ItemStack(Blocks.IRON_BLOCK))
+			.add(new ItemStack(Blocks.HOPPER, 2))
+			.add(new ItemStack(Blocks.STONE_BUTTON,4))
+			.register();
 		/*FclRecipe.newBuilder(blockcat).output(new ItemStack(VPInfo.INSTANCE))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Items.BOOK, 16))
@@ -432,6 +437,12 @@ public class ResourcesImpl extends FvtmResources {
 		ConstructorBlock.ITEM.setTranslationKey(ConstructorBlock.INSTANCE.getTranslationKey());
 		GameRegistry.registerTileEntity(ConstructorEntity.class, new ResourceLocation("fvtm:constructor"));
 		//
+		FuelFillerBlock.INSTANCE = new FuelFillerBlock();
+		FuelFillerBlock.ITEM = new ItemBlock16(FuelFillerBlock.INSTANCE);
+		FuelFillerBlock.ITEM.setRegistryName(FuelFillerBlock.INSTANCE.getRegistryName());
+		FuelFillerBlock.ITEM.setTranslationKey(FuelFillerBlock.INSTANCE.getTranslationKey());
+		GameRegistry.registerTileEntity(FuelFillerEntity.class, new ResourceLocation("fvtm:fuel_filler"));
+ 		//
 		VehicleLiftBlock.INSTANCE = new VehicleLiftBlock();
 		VehicleLiftBlock.ITEM = new ItemBlock16(VehicleLiftBlock.INSTANCE);
 		VehicleLiftBlock.ITEM.setRegistryName(VehicleLiftBlock.INSTANCE.getRegistryName());
@@ -452,6 +463,7 @@ public class ResourcesImpl extends FvtmResources {
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(VehicleLiftEntity.class, new net.fexcraft.mod.fvtm.render.VehicleLiftRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstructorEntity.class, new net.fexcraft.mod.fvtm.render.CatalogRenderer());
+		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(FuelFillerEntity.class, new net.fexcraft.mod.fvtm.render.FuelFillerRenderer());
 	}
 
 	@Override

@@ -272,6 +272,7 @@ public class FVTM {
 		if(event.getSide().isClient()){
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
 			ConstructorBlock.INSTANCE.setCreativeTab(tab);
+			FuelFillerBlock.INSTANCE.setCreativeTab(tab);
 			VehicleLiftBlock.INSTANCE.setCreativeTab(tab);
 			/*DisplayBlock.INSTANCE.setCreativeTab(tab);
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);

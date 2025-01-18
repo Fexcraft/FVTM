@@ -6,7 +6,9 @@ import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.ui.UserInterface;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -22,6 +24,7 @@ public class UIKeys {
 	public static final int ID12_ENTITY_SYSTEM_CHOOSE = 705;
 	public static final int ID12_DECORATION_EDITOR = 713;
 	public static final int ID12_CONSTRUCTOR = 900;
+	public static final int ID12_FUEL_FILLER = 901;
 	public static final int ID12_VEHICLE_MAIN = 930;
 	public static final int ID12_VEHICLE_INFO = 931;
 	public static final int ID12_VEHICLE_ATTR_EDITOR = 932;
@@ -46,6 +49,7 @@ public class UIKeys {
 	public static final UIKey ROAD_TOOL_CUSTOM = new UIKey(ID12_ROAD_TOOL_CUSTOM, "fvtm:road_tool_custom");
 	public static final UIKey ENTITY_SYSTEM_CHOOSE = new UIKey(ID12_ENTITY_SYSTEM_CHOOSE, "fvtm:entity_system_choose");
 	public static final UIKey CONSTRUCTOR = new UIKey(ID12_CONSTRUCTOR, "fvtm:constructor");
+	public static final UIKey FUEL_FILLER = new UIKey(ID12_FUEL_FILLER, "fvtm:fuel_filler");
 	public static final UIKey VEHICLE_CATALOG = new UIKey(ID12_VEHICLE_CATALOG, "fvtm:vehicle_catalog");
 	public static final UIKey VEHICLE_MAIN = new UIKey(ID12_VEHICLE_MAIN, "fvtm:vehicle_main");
 	public static final UIKey VEHICLE_INFO = new UIKey(ID12_VEHICLE_INFO, "fvtm:vehicle_info");
@@ -78,6 +82,8 @@ public class UIKeys {
 		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
 		UniReg.registerUI(UIKeys.VEHICLE_CATALOG, VEHICLE_CATALOG_IMPL);
 		UniReg.registerMenu(UIKeys.VEHICLE_CATALOG, "fvtm:uis/vehicle_catalog", VehicleCatalogCon.class);
+		UniReg.registerUI(UIKeys.FUEL_FILLER, UserInterface.class);
+		UniReg.registerMenu(UIKeys.FUEL_FILLER, "fvtm:uis/fuel_filler", ContainerInterface.class);
 		//
 		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
 		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);

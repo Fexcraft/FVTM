@@ -1,0 +1,60 @@
+{
+	"_info_": "Fuel Filler UI",
+	"background": false,
+	"size": [ 176, 192 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/fuel_filler.png",
+			"size": [ 176, 192 ],
+			"pos": [ 0, 0 ],
+			"texts": [
+				"selected",
+				"accepts",
+				"stored",
+				"converted"
+			]
+		}
+	},
+	"texts": {
+		"selected": {
+			"size": [ 110, 8 ],
+			"pos": [ 9, 9 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"accepts": {
+			"size": [ 158, 8 ],
+			"pos": [ 9, 23 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"stored": {
+			"size": [ 158, 8 ],
+			"pos": [ 9, 37 ],
+			"autoscale": true,
+			"color": "242424"
+		},
+		"converted": {
+			"size": [ 158, 8 ],
+			"pos": [ 9, 71 ],
+			"autoscale": true,
+			"color": "242424"
+		}
+	},
+	"slots": {
+		"fuel": {
+			"pos": [ 116, 50 ],
+			"player": false
+		},
+		"player3x9": {
+			"pos": [ 8, 108 ],
+			"index": 9,
+			"repeat": [ 9, 3 ]
+		},
+		"player1x9": {
+			"pos": [ 8, 164 ],
+			"index": 0,
+			"repeat": [ 9, 1 ]
+		}
+	}
+}

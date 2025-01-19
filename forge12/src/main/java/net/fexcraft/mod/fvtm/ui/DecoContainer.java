@@ -117,6 +117,7 @@ public class DecoContainer extends ContainerInterface {
 
 	@Override
 	public void onClosed(){
+		super.onClosed();
 		if(entity != null && !entity.world.isRemote){
 			entity.updateClient();
 		}

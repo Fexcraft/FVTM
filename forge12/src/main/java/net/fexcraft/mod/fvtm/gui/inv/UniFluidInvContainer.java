@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -18,8 +17,10 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.UniInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,7 +47,7 @@ public class UniFluidInvContainer extends GenericContainer {
 	protected InvHandler invhandler;
 	protected EntityPlayerMP mpp;
 	protected long fluid_date;
-	protected GenericIInventory fluid_io;
+	protected IInventory fluid_io;
 	protected FluidTank tank;
 
 	public UniFluidInvContainer(EntityPlayer player, World world, int ID, int x, int y, int z){
@@ -98,7 +99,7 @@ public class UniFluidInvContainer extends GenericContainer {
 		//
 		this.inventoryItemStacks.clear();
 		this.inventorySlots.clear();
-		fluid_io = new GenericIInventory(null, 2, 1);
+		fluid_io = UniInventory.create(2).stacksize(1).cast();
 		addSlotToContainer(new Slot(fluid_io, 0, 116, 50));
 		addSlotToContainer(new Slot(fluid_io, 1, 152, 50));
 		//

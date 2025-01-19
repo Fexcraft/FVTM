@@ -9,14 +9,14 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniInventory;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.ui.InventoryInterface;
-import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class VehicleFuelCon extends InventoryInterface {
+public class VehicleFuelCon extends ContainerInterface {
 
 	protected VehicleInstance vehicle;
 	protected long date;
@@ -24,6 +24,7 @@ public abstract class VehicleFuelCon extends InventoryInterface {
 	public VehicleFuelCon(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		vehicle = ((Passenger)player.entity).getFvtmWorld().getVehicle(pos.x);
+		inventory = UniInventory.create(1).stacksize(1).drop(true);
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public abstract class VehicleFuelCon extends InventoryInterface {
 		if(com.getString("cargo").equals("update_fuel_tank")){
 			vehicle.data.getAttribute("fuel_stored").set(com.getInteger("state"));
 			if(com.has("stack")){
-				setInventoryContent(0, com.getCompound("stack"));
+				inventory.set(0, StackWrapper.wrap(com.getCompound("stack")));
 			}
 		}
 		if(com.getString("cargo").equals("update_fuel_data")){
@@ -48,13 +49,21 @@ public abstract class VehicleFuelCon extends InventoryInterface {
 		}
 	}
 
+	protected boolean isFuelItem(){
+		return inventory.get(0).getItem().direct() instanceof Fuel.FuelItem;
+	}
+
+	protected Fuel.FuelItem getFuelItem(){
+		return inventory.get(0).getItem().local();
+	}
+
 	@Override
 	public void update(Object lc){
-		if(isInventoryEmpty(0)) return;
+		if(inventory.empty(0)) return;
 		if(date + 50 > Time.getDate()) return;
 		date = Time.getDate();
 		boolean changes = false;
-		StackWrapper stack = getInventoryContent(0);
+		StackWrapper stack = inventory.get(0);
 		if(isFuelItem()){
 			Fuel.FuelItem item = getFuelItem();
 			boolean pass = false;
@@ -126,9 +135,5 @@ public abstract class VehicleFuelCon extends InventoryInterface {
 			SEND_TO_CLIENT.accept(com, player);
 		}
 	}
-
-	protected abstract boolean isFuelItem();
-
-	protected abstract Fuel.FuelItem getFuelItem();
 
 }

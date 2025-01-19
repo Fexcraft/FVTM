@@ -2,17 +2,17 @@ package net.fexcraft.mod.fvtm.ui.road;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniInventory;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.ui.InventoryInterface;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class RoadToolCon extends InventoryInterface {
+public abstract class RoadToolCon extends ContainerInterface {
 
 	public static final String[] fills = new String[]{ "RoadFill", "BottomFill", "SideLeftFill", "SideRightFill", "TopFill", "LinesFill" };
 	protected StackWrapper stack;
@@ -27,12 +27,13 @@ public abstract class RoadToolCon extends InventoryInterface {
 		custom_road = stack.getTag().has("CustomRoadFill");
 		custom_top = stack.getTag().has("CustomTopFill");
 		custom_lines = stack.getTag().has("CustomLinesFill");
+		inventory = UniInventory.create(6).stacksize(1).name("Road Fill Inventory");
 	}
 
 	protected void initInv(){
 		for(int i = 0; i < fills.length; i++){
         	if(stack.getTag().has(fills[i])){
-				setInventoryContent(i, stack.getTag().getCompound(fills[i]));
+				inventory.set(i, stack.getTag().getCompound(fills[i]));
         	}
         }
 	}
@@ -67,10 +68,11 @@ public abstract class RoadToolCon extends InventoryInterface {
 
 	@Override
 	public void onClosed(){
+		super.onClosed();
 		for(int i = 0; i < fills.length; i++){
-        	if(!isInventoryEmpty(i)){
+        	if(!inventory.empty(i)){
 				TagCW tag = TagCW.create();
-				getInventoryContent(i).save(tag);
+				inventory.get(i).save(tag);
         		stack.getTag().set(fills[i], tag);
         	}
         	else stack.getTag().rem(fills[i]);

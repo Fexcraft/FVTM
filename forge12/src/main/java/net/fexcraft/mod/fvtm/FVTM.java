@@ -18,7 +18,6 @@ import net.fexcraft.mod.fvtm.data.impl.InvHandlerItemImpl;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerFluid;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
-import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.event.Registerer12;
@@ -51,7 +50,6 @@ import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerCallable;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerStorage;
 import net.fexcraft.mod.fvtm.util.caps.*;
-import net.fexcraft.mod.fvtm.util.ess.BasicSpawnSystem;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
@@ -60,6 +58,8 @@ import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -73,6 +73,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
@@ -125,6 +126,7 @@ public class FVTM {
 		StackWrapper.SUPPLIER = obj -> {
 			if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
 			if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
+			if(obj instanceof TagCW) return new SWIE(new ItemStack((NBTTagCompound)((TagCW)obj).direct()));
 			return null;
 		};
 		ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
@@ -256,11 +258,9 @@ public class FVTM {
 		}
 		//
 		UniReg.registerMod(MODID, INSTANCE);
-		UIKeys.ROAD_TOOL_CON = RoadToolConImpl.class;
-		UIKeys.ROAD_TOOL_CUSTOM_CON = RoadToolCustomConImpl.class;
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
-		UIKeys.VEHICLE_FUEL_CON = VehicleFuelConImpl.class;
 		UIKeys.register();
+		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
 	}
 
 	@Mod.EventHandler

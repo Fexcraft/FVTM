@@ -1,12 +1,19 @@
 package net.fexcraft.mod.fvtm.block;
 
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.FuelFiller;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
-public class FuelFillerEntity extends TileEntity {
+public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFillerContainer {
 
-	public FuelFillerEntity(){}
+    public FuelFiller filler;
+
+	public FuelFillerEntity(){
+        filler = new FuelFiller();
+    }
 
     @Override
     public SPacketUpdateTileEntity getUpdatePacket(){
@@ -21,12 +28,21 @@ public class FuelFillerEntity extends TileEntity {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
+        compound.setTag("filler", filler.save().local());
         return compound;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
+        if(compound.hasKey("filler")){
+            filler.load(TagCW.wrap(compound.getCompoundTag("filler")));
+        }
+    }
+
+    @Override
+    public FuelFiller getFuelFiller(){
+        return filler;
     }
 
 }

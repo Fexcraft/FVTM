@@ -70,10 +70,7 @@ public class UIKeys {
 	public static final UIKey MULTIBLOCK_INVENTORY_FLUID = new UIKey(ID12_MULTIBLOCK_INVENTORY_FLUID, "fvtm:mb_inventory_fluid");
 	public static final UIKey MULTIBLOCK_INVENTORY_VAR = new UIKey(ID12_MULTIBLOCK_INVENTORY_VAR, "fvtm:mb_inventory_var");
 	//
-	public static Class<? extends RoadToolCon> ROAD_TOOL_CON;
-	public static Class<? extends RoadToolCustomCon> ROAD_TOOL_CUSTOM_CON;
 	public static Class<? extends VehicleCatalog> VEHICLE_CATALOG_IMPL;
-	public static Class<? extends VehicleFuelCon> VEHICLE_FUEL_CON;
 
 	public static void register(){
 		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
@@ -88,9 +85,9 @@ public class UIKeys {
 		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
 		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
 		UniReg.registerUI(UIKeys.ROAD_TOOL, RoadToolUI.class);
-		UniReg.registerMenu(UIKeys.ROAD_TOOL, "fvtm:uis/road_tool", ROAD_TOOL_CON);
+		UniReg.registerMenu(UIKeys.ROAD_TOOL, "fvtm:uis/road_tool", RoadToolCon.class);
 		UniReg.registerUI(UIKeys.ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
-		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "fvtm:uis/road_tool_custom", ROAD_TOOL_CUSTOM_CON);
+		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "fvtm:uis/road_tool_custom", RoadToolCustomCon.class);
 		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
 		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "fvtm:uis/deco_editor", DecoContainer.class);
 		//
@@ -103,7 +100,7 @@ public class UIKeys {
 		UniReg.registerUI(UIKeys.VEHICLE_INVENTORIES, VehicleInventories.class);
 		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
 		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VEHICLE_FUEL_CON);
+		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VehicleFuelCon.class);
 	}
 
 }

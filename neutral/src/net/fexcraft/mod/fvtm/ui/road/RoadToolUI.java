@@ -32,32 +32,32 @@ public class RoadToolUI extends UserInterface {
 			texts.get("road_fill").value("ui.fvtm.road_tool.road_fill_custom");
 			texts.get("road_fill").translate();
 		}
-		else if(rtc.isInventoryEmpty(0)){
+		else if(rtc.inventory.empty(0)){
 			texts.get("road_fill").value("ui.fvtm.road_tool.no_fill_block");
 			texts.get("road_fill").translate();
 		}
 		else{
-			texts.get("road_fill").value(rtc.getInventoryContent(0).getName());
+			texts.get("road_fill").value(rtc.inventory.get(0).getName());
 		}
 		texts.get("road_width").value("ui.fvtm.road_tool.road_fill_width");
 		texts.get("road_width").translate(size[0]);
 		//
-		if(rtc.isInventoryEmpty(1)){
+		if(rtc.inventory.empty(1)){
 			texts.get("ground_fill").value("ui.fvtm.road_tool.no_fill_block");
 			texts.get("ground_fill").translate();
 		}
 		else{
-			texts.get("ground_fill").value(rtc.getInventoryContent(1).getName());
+			texts.get("ground_fill").value(rtc.inventory.get(1).getName());
 		}
 		texts.get("ground_status").value("ui.fvtm.road_tool.ground_fill_" + (size[1] > 0 ? "enabled" : "disabled"));
 		texts.get("ground_status").translate();
 		//
-		if(rtc.isInventoryEmpty(2)){
+		if(rtc.inventory.empty(2)){
 			texts.get("left_fill").value("ui.fvtm.road_tool.no_fill_block");
 			texts.get("left_fill").translate();
 		}
 		else{
-			texts.get("left_fill").value(rtc.getInventoryContent(2).getName());
+			texts.get("left_fill").value(rtc.inventory.get(2).getName());
 		}
 		if(size[2] > 0){
 			texts.get("left_size").value("ui.fvtm.road_tool.left_fill_size");
@@ -68,12 +68,12 @@ public class RoadToolUI extends UserInterface {
 			texts.get("left_size").translate();
 		}
 		//
-		if(rtc.isInventoryEmpty(3)){
+		if(rtc.inventory.empty(3)){
 			texts.get("right_fill").value("ui.fvtm.road_tool.no_fill_block");
 			texts.get("right_fill").translate();
 		}
 		else{
-			texts.get("right_fill").value(rtc.getInventoryContent(3).getName());
+			texts.get("right_fill").value(rtc.inventory.get(3).getName());
 		}
 		if(size[3] > 0){
 			texts.get("right_size").value("ui.fvtm.road_tool.right_fill_size");
@@ -88,12 +88,12 @@ public class RoadToolUI extends UserInterface {
 			texts.get("top_fill").value("ui.fvtm.road_tool.top_fill_custom");
 			texts.get("top_fill").translate();
 		}
-		else if(rtc.isInventoryEmpty(4)){
+		else if(rtc.inventory.empty(4)){
 			texts.get("top_fill").value("ui.fvtm.road_tool.no_fill_block");
 			texts.get("top_fill").translate();
 		}
 		else{
-			texts.get("top_fill").value(rtc.getInventoryContent(4).getName());
+			texts.get("top_fill").value(rtc.inventory.get(4).getName());
 		}
 		texts.get("top_status").value("ui.fvtm.road_tool.top_fill_" + (size[4] > 0 ? "enabled" : "disabled"));
 		texts.get("top_status").translate();
@@ -102,12 +102,12 @@ public class RoadToolUI extends UserInterface {
 			texts.get("lines_fill").value("ui.fvtm.road_tool.lines_fill_custom");
 			texts.get("lines_fill").translate();
 		}
-		else if(rtc.isInventoryEmpty(5)){
+		else if(rtc.inventory.empty(5)){
 			texts.get("lines_fill").value("ui.fvtm.road_tool.no_fill_block");
 			texts.get("lines_fill").translate();
 		}
 		else{
-			texts.get("lines_fill").value(rtc.getInventoryContent(5).getName());
+			texts.get("lines_fill").value(rtc.inventory.get(5).getName());
 		}
 		texts.get("lines_status").value("ui.fvtm.road_tool.lines_fill_" + (size[5] > 0 ? "enabled" : "disabled"));
 		texts.get("lines_status").translate();
@@ -231,7 +231,7 @@ public class RoadToolUI extends UserInterface {
 
 	@Override
 	public void getTooltip(int mx, int my, List<String> list){
-		if(rtc.isInventoryEmpty(0) && slots.get("road").hovered(gLeft, gTop, mx, my)){
+		if(rtc.inventory.empty(0) && slots.get("road").hovered(gLeft, gTop, mx, my)){
 			for(int i = 0; i < 6; i++){
 				list.add(container.TRANSLATOR.apply("ui.fvtm.road_tool.road_slot_info" + i));
 			}

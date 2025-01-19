@@ -9,9 +9,14 @@
 			"pos": [ 0, 0 ],
 			"texts": [
 				"selected",
-				"accepts",
+				"info",
 				"stored",
 				"converted"
+			],
+			"buttons": [
+				"prev",
+				"next",
+				"confirm"
 			]
 		}
 	},
@@ -22,7 +27,7 @@
 			"autoscale": true,
 			"color": "242424"
 		},
-		"accepts": {
+		"info": {
 			"size": [ 158, 8 ],
 			"pos": [ 9, 23 ],
 			"autoscale": true,
@@ -39,6 +44,23 @@
 			"pos": [ 9, 71 ],
 			"autoscale": true,
 			"color": "242424"
+		}
+	},
+	"buttons": {
+		"prev": {
+			"size": [ 14, 14 ],
+			"pos": [ 123, 6 ],
+			"tooltip": "ui.fvtm.fuel_filler.prev"
+		},
+		"next": {
+			"size": [ 14, 14 ],
+			"pos": [ 139, 6 ],
+			"tooltip": "ui.fvtm.fuel_filler.next"
+		},
+		"confirm": {
+			"size": [ 14, 14 ],
+			"pos": [ 155, 6 ],
+			"tooltip": "ui.fvtm.fuel_filler.confirm"
 		}
 	},
 	"slots": {

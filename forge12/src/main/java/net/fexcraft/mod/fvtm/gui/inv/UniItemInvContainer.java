@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -18,8 +17,10 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.UniInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,7 +42,7 @@ public class UniItemInvContainer extends GenericContainer {
 	protected int page, rows;
 	protected InvHandler invhandler;
 	protected EntityPlayerMP mpp;
-	protected GenericIInventory insert;
+	protected IInventory insert;
 
 	public UniItemInvContainer(EntityPlayer player, World world, int ID, int x, int y, int z){
 		super(player);
@@ -88,7 +89,7 @@ public class UniItemInvContainer extends GenericContainer {
 			invhandler = func.inventory();
 			title = entity.vehicle.data.getType().getName() + " - " + inv_id;
 		}
-		insert = new GenericIInventory(null, 1, 64);
+		insert = UniInventory.create(1).cast();
 	}
 
 	protected void populateSlots(){

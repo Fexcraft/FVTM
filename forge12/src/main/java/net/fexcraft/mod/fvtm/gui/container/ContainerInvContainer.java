@@ -5,9 +5,10 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
-import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.item.UniInventory;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +26,7 @@ public class ContainerInvContainer extends GenericContainer {
 	protected GenericGui<ContainerInvContainer> gui;
 	//
 	protected long fluid_date;
-	protected GenericIInventory fluid_io;
+	protected IInventory fluid_io;
 	protected FluidTank tank;
 	protected int slots;
 	//
@@ -43,7 +44,7 @@ public class ContainerInvContainer extends GenericContainer {
 		slots = 0;
 		InvType type = tile.getInventoryType();
 		if(type.isFluid()){
-			fluid_io = new GenericIInventory(null, 2, 1);
+			fluid_io = UniInventory.create(2).stacksize(1).cast();
 			slots = 2;
 			addSlotToContainer(new Slot(fluid_io, 0, 116, 50));
 			addSlotToContainer(new Slot(fluid_io, 1, 152, 50));

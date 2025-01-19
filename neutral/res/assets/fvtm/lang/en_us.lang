@@ -67,6 +67,14 @@ interact.fvtm.relay.wire_slack=&aWire slack changed to %s.
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.
 ui.fvtm.toolbox.texture.info=Here you can select your vehicle/block/container's texture.
+//
+ui.fvtm.fuel_filler.prev=Previous Fuel Type
+ui.fvtm.fuel_filler.next=Next Fuel Type
+ui.fvtm.fuel_filler.confirm=Confirm Change
+ui.fvtm.fuel_filler.warning=Stored fuel is lost if type changed!!
+ui.fvtm.fuel_filler.stored=Stored: %s
+ui.fvtm.fuel_filler.converted=Converted: %s
+//
 ui.fvtm.vehicle_fuel.accepts=Accepts:
 ui.fvtm.vehicle_attributes.toggle=Toggle Attribute Value
 ui.fvtm.vehicle_attributes.edit=Edit Attribute

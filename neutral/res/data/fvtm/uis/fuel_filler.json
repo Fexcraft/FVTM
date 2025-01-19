@@ -42,8 +42,14 @@
 		}
 	},
 	"slots": {
-		"fuel": {
+		"input": {
 			"pos": [ 116, 50 ],
+			"index": 0,
+			"player": false
+		},
+		"output": {
+			"pos": [ 116, 84 ],
+			"index": 1,
 			"player": false
 		},
 		"player3x9": {

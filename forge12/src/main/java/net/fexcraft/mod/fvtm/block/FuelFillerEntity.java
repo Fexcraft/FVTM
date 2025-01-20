@@ -6,8 +6,9 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 
-public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFillerContainer {
+public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFillerContainer, ITickable {
 
     public FuelFiller filler;
 
@@ -43,6 +44,11 @@ public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFille
     @Override
     public FuelFiller getFuelFiller(){
         return filler;
+    }
+
+    @Override
+    public void update(){
+        filler.update();
     }
 
 }

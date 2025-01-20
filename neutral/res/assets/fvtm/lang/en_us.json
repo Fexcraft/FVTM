@@ -3,6 +3,7 @@
 
 	"block.fvtm.vehicle_lift": "Vehicle Maintenance Lift",
 	"block.fvtm.constructor": "Constructor",
+	"block.fvtm.fuel_filler": "Fuel Filler",
 
 	"ui.fvtm.decoration_editor.position": "Position Offset",
 	"ui.fvtm.decoration_editor.rotation": "Rotation (Degrees)",

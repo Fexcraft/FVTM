@@ -21,9 +21,9 @@ public class FuelFillerCon extends ContainerInterface {
 
 	public FuelFillerCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
-		inventory = UniInventory.create(2).drop(true);
 		tile = (FuelFiller.FuelFillerContainer)ply.entity.getWorld().getBlockEntity(pos);
 		filler = tile.getFuelFiller();
+		inventory = filler.items;
 	}
 
 	@Override
@@ -37,6 +37,11 @@ public class FuelFillerCon extends ContainerInterface {
 			}
 			else SEND_TO_CLIENT.accept(com, player);
 		}
+	}
+
+	@Override
+	public void update(Object localcon){
+
 	}
 
 }

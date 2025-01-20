@@ -15,6 +15,7 @@ recipe.fvtm.blocks=FVTM Blocks
 # Blocks
 tile.fvtm:constructor.name=Constructor Block
 tile.fvtm:vehicle_lift.name=Vehicle Maintenance Lift
+tile.fvtm:fuel_filler.name=Fuel Filler
 tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt

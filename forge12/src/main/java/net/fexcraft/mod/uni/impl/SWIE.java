@@ -5,9 +5,11 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemLead;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -20,6 +22,13 @@ public class SWIE extends SWI {
 
 	public SWIE(ItemStack is){
 		super(is);
+	}
+
+	public static SWIE parse(Object obj){
+		if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
+		if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
+		if(obj instanceof TagCW) return new SWIE(new ItemStack((NBTTagCompound)((TagCW)obj).direct()));
+		return null;
 	}
 
 	@Override

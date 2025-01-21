@@ -5,6 +5,7 @@ import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.item.UniInventory;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 /**
@@ -48,7 +49,7 @@ public class FuelFiller {
 		fluid = IDLManager.getIDLCached("fluid");
 		for(int i = 0; i < 2; i++){
 			if(!com.has("item" + i)) continue;
-			items.set(i, StackWrapper.wrap(com.getCompound("item" + i)));
+			items.set(i, UniStack.createStack(com.getCompound("item" + i)));
 		}
 	}
 

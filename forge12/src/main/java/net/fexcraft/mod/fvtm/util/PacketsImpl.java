@@ -139,10 +139,7 @@ public class PacketsImpl extends Packets {
 		try{
 			instance.sendToServer((IMessage)PACKETS.get(packet).newInstance().fill(data));
 		}
-		catch(IllegalAccessException e){
-			throw new RuntimeException(e);
-		}
-		catch(InstantiationException e){
+		catch(IllegalAccessException | InstantiationException e){
 			throw new RuntimeException(e);
 		}
 	}

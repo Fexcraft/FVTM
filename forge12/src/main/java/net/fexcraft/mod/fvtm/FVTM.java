@@ -58,6 +58,7 @@ import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.item.ClothMaterial;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.*;
@@ -123,12 +124,7 @@ public class FVTM {
 				logger.info(obj);
 			}
 		};
-		StackWrapper.SUPPLIER = obj -> {
-			if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
-			if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
-			if(obj instanceof TagCW) return new SWIE(new ItemStack((NBTTagCompound)((TagCW)obj).direct()));
-			return null;
-		};
+		UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
 		ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
 		AABB.SUPPLIER = () -> new AABBI();
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;

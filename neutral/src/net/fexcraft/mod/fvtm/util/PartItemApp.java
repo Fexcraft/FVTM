@@ -5,22 +5,23 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.uni.Appendable;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class PartItemApp implements Appendable<StackWrapper> {
+public class PartItemApp implements Appendable<UniStack> {
 
 	public final PartData data;
 
-	public PartItemApp(StackWrapper stack){
+	public PartItemApp(UniStack stack){
 		if(stack == null) data = null;
-		else data = stack.getContent(ContentType.PART);
+		else data = stack.stack.getContent(ContentType.PART);
 	}
 
 	@Override
-	public Appendable<StackWrapper> create(StackWrapper stack){
-		if(!stack.isItemOf(ItemType.PART)) return null;
+	public Appendable<UniStack> create(UniStack stack){
+		if(!stack.stack.isItemOf(ItemType.PART)) return null;
 		return new PartItemApp(stack);
 	}
 

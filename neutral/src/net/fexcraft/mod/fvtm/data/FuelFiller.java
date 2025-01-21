@@ -22,6 +22,7 @@ public class FuelFiller {
 		selected = FvtmRegistry.FUELS.get(0);
 		fluid = IDLManager.getIDLCached("minecraft:lava");
 		items = UniInventory.create(2).stacksize(1);
+		items.addValidator(1, (idx, stack) -> stack.getItem().direct() instanceof Fuel.FuelItem);
 	}
 
 	public TagCW save(){

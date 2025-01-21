@@ -66,7 +66,7 @@ public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFille
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return null;
+            return (T)filler.items;
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
             return null;

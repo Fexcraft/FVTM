@@ -31,6 +31,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 
 /**
  * FVTM Registry
@@ -95,8 +96,8 @@ public class FvtmRegistry {
 		WHITE_TEXTURE = IDLManager.getIDLNamed("No Texture;fvtm:textures/entity/white.png");
 		STANDARD_GAUGE = IDLManager.getIDLCached("fvtm:standard");
 		//
-		StackWrapper.register(new VehItemApp(null));
-		StackWrapper.register(new PartItemApp(null));
+		UniStack.register(new VehItemApp(null));
+		UniStack.register(new PartItemApp(null));
 		UniEntity.register(new FvtmPlayerData(null));
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new SimplePhysSpawnSystem());

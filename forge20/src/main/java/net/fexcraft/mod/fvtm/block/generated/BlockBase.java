@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,7 +37,7 @@ public class BlockBase extends PlainBase implements EntityBlock {
 		BlockEntity entity = level.getBlockEntity(pos);
 		if(entity == null) return;
 		BaseBlockEntity base = (BaseBlockEntity)entity;
-		base.data = ((BlockItem)stack.getItem()).getData(StackWrapper.wrap(stack));
+		base.data = ((BlockItem)stack.getItem()).getData(UniStack.getStack(stack));
 		base.regRelay();
 	}
 

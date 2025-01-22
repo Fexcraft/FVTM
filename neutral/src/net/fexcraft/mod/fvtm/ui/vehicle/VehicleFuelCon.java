@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.item.UniInventory;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
@@ -39,7 +40,7 @@ public class VehicleFuelCon extends ContainerInterface {
 		if(com.getString("cargo").equals("update_fuel_tank")){
 			vehicle.data.getAttribute("fuel_stored").set(com.getInteger("state"));
 			if(com.has("stack")){
-				inventory.set(0, StackWrapper.wrap(com.getCompound("stack")));
+				inventory.set(0, UniStack.createStack(com.getCompound("stack")));
 			}
 		}
 		if(com.getString("cargo").equals("update_fuel_data")){

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
-import net.fexcraft.mod.fcl.util.StackWrapperProvider;
+import net.fexcraft.mod.fcl.util.UniStackProvider;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -157,7 +156,6 @@ public class FVTM4 {
 		FvtmGetters.LIFT_ENTITY = () -> LIFT_ENTITY.get();
 		FvtmGetters.CONST_ENTITY = () -> CONST_ENTITY.get();
 		FvtmGetters.BLOCK_ENTITY = () -> BLOCK_ENTITY.get();
-		StackWrapperProvider.IMPL = SWIE.class;
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;
 		}

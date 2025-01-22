@@ -7,7 +7,9 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
@@ -140,10 +142,11 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         if(queueid.equals(current)){
         	NewRoad road = RoadPlacingUtil.QUEUE.get(current);
         	if(road == null) return true;
+			Passenger pass = (Passenger)UniEntity.getEntity(player);
         	if(player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
-        		road.create(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), position, StackWrapper.wrap(player.getHeldItemMainhand()));
+        		road.create(pass, position, pass.getHeldItem(true));
         	}
-        	else road.select(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), position);
+        	else road.select(pass, position);
     		return true;
         }
         return true;
@@ -158,7 +161,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
             if(queueid != null && queueid.equals(queueid)){
             	EntityPlayer player = (EntityPlayer)damagesource.getTrueSource();
             	NewRoad road = RoadPlacingUtil.QUEUE.get(queueid);
-            	if(road != null) road.remove(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), position);
+            	if(road != null) road.remove((Passenger)UniEntity.getEntity(player), position);
                 setDead();
             }
         }

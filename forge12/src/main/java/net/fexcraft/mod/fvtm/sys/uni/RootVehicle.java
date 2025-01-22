@@ -34,6 +34,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWIE;
@@ -364,7 +365,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 						FvtmLogger.debug(vehicle.data.getConnectors());
 						return true;
 					}
-                	if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), StackWrapper.wrap(stack), data)) return true;
+                	if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), UniStack.getStack(stack), data)) return true;
 					if(vehicle.rear != null){
 						pass.send("interact.fvtm.vehicle.disconnect_trailer");
 						return true;

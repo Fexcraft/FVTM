@@ -24,6 +24,7 @@ import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
@@ -84,7 +85,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmRecipes(){
-		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
+		StackWrapper.EMPTY = SWIE.parse(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.CONST_BLOCK_ITEM.get()))
 				.add(new ItemStack(Blocks.IRON_BLOCK))
@@ -124,22 +125,22 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public StackWrapper newStack0(ItemWrapper item){
-		return StackWrapper.wrap(item);
+		return SWIE.parse(item);
 	}
 
 	@Override
 	public StackWrapper newStack0(TagCW com){
-		return StackWrapper.wrap(ItemStack.of(com.local()));
+		return SWIE.parse(ItemStack.of(com.local()));
 	}
 
 	@Override
 	public StackWrapper newStack0(Object item){
-		return StackWrapper.wrap(new IWI((Item)item));
+		return SWIE.parse(new IWI((Item)item));
 	}
 
 	@Override
 	public StackWrapper wrapStack0(Object stack){
-		return StackWrapper.wrap(stack);
+		return UniStack.getStack(stack);
 	}
 
 	@Override

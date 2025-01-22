@@ -23,6 +23,7 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.resources.I18n;
@@ -138,7 +139,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     	if(world.getBlockState(pos).getBlock() instanceof VehicleLiftBlock) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
 		EntityW ent = UniEntity.getEntity(player);
-    	EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ), data, StackWrapper.wrap(stack));
+    	EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ), data, UniStack.getStack(stack));
     	return EnumActionResult.SUCCESS;
     }
 

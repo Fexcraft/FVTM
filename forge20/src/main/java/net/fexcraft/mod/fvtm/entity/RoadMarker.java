@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entity;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -116,10 +117,11 @@ public class RoadMarker extends Entity {
 		if(queueid.equals(current)){
 			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(current);
 			if(road == null) return InteractionResult.SUCCESS;
+			Passenger pass = UniEntity.getCasted(player);
 			if(player.getMainHandItem().getItem() instanceof RoadToolItem){
-				road.create(UniEntity.getCasted(player), position, StackWrapper.wrap(player.getMainHandItem()));
+				road.create(pass, position, pass.getHeldItem(true));
 			}
-			else road.select(UniEntity.getCasted(player), position);
+			else road.select(pass, position);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.SUCCESS;

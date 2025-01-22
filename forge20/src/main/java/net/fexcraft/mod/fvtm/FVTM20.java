@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.impl.AABBI;
+import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.uni.UniEntity;
@@ -27,6 +28,8 @@ import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.commands.CommandSourceStack;
@@ -47,6 +50,7 @@ public class FVTM20 {
 
 	public static void init0(){
 		EntityUtil.IMPL = EntityWIE.class;
+		UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
 		AABB.SUPPLIER = () -> new AABBI();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
@@ -63,11 +67,9 @@ public class FVTM20 {
 			//
 		});
 		//
-		UIKeys.ROAD_TOOL_CON = RoadToolConImpl.class;
-		UIKeys.ROAD_TOOL_CUSTOM_CON = RoadToolCustomConImpl.class;
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
-		UIKeys.VEHICLE_FUEL_CON = VehicleFuelConImpl.class;
 		UIKeys.register();
+		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
 		//
 		FvtmResources.INSTANCE.init();
 	}

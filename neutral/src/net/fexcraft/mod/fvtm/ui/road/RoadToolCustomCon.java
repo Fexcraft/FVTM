@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.item.UniInventory;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UniCon;
@@ -73,7 +74,7 @@ public abstract class RoadToolCustomCon extends ContainerInterface {
 				inventory.set(i, StackWrapper.EMPTY);
 				continue;
 			}
-			inventory.set(i, StackWrapper.wrap(compound.getCompound("Block" + j)));
+			inventory.set(i, UniStack.createStack(compound.getCompound("Block" + j)));
 		}
 	}
 

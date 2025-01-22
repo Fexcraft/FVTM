@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.render.ItemRenderers;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -97,7 +98,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 		ItemStack stack = context.getItemInHand();
 		VehicleData data = getDataFromTag(stack.getTag());
 		EntityW ent = UniEntity.getEntity(context.getPlayer());
-		EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), data, StackWrapper.wrap(stack));
+		EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), data, UniStack.getStack(stack));
 		return InteractionResult.SUCCESS;
 	}
 

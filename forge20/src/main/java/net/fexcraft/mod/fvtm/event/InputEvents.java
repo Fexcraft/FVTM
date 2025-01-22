@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -114,21 +115,21 @@ public class InputEvents {
 	@SubscribeEvent
 	public static void clickEmpty(PlayerInteractEvent.RightClickEmpty event){
 		if(event.getHand() == InteractionHand.MAIN_HAND){
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()));
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(event.getItemStack()));
 		}
 	}
 
 	@SubscribeEvent
 	public static void clickEmpty(PlayerInteractEvent.LeftClickEmpty event){
 		if(event.getHand() == InteractionHand.MAIN_HAND){
-			InteractionHandler.handle(KeyPress.MOUSE_MAIN, StackWrapper.wrap(event.getItemStack()));
+			InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(event.getItemStack()));
 		}
 	}
 
 	@SubscribeEvent
 	public static void clickItem(PlayerInteractEvent.RightClickItem event){
 		if(!event.getLevel().isClientSide) return;
-		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()))){
+		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(event.getItemStack()))){
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.PASS);
 		}
@@ -137,7 +138,7 @@ public class InputEvents {
 	@SubscribeEvent
 	public static void clickBlock(PlayerInteractEvent.RightClickBlock event){
 		if(!event.getLevel().isClientSide) return;
-		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()))){
+		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(event.getItemStack()))){
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.PASS);
 		}
@@ -145,7 +146,7 @@ public class InputEvents {
 
 	@SubscribeEvent
 	public static void clickBlock(PlayerInteractEvent.LeftClickBlock event){
-		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, StackWrapper.wrap(event.getItemStack()))){
+		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(event.getItemStack()))){
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.PASS);
 		}

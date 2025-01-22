@@ -4,8 +4,11 @@ import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.LeadItem;
 
@@ -14,12 +17,19 @@ import net.minecraft.world.item.LeadItem;
  */
 public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 
-	public SWIE(ItemWrapper item){
+	private SWIE(ItemWrapper item){
 		super(item);
 	}
 
-	public SWIE(ItemStack stack){
+	private SWIE(ItemStack stack){
 		super(stack);
+	}
+
+	public static SWIE parse(Object obj){
+		if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
+		if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
+		if(obj instanceof TagCW) return new SWIE(ItemStack.of((CompoundTag)((TagCW)obj).direct()));
+		return null;
 	}
 
 	@Override

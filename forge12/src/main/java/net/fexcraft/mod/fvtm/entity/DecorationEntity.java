@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -163,7 +164,7 @@ public class DecorationEntity extends Entity implements IEntityAdditionalSpawnDa
         }
         if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
 			if(stack.getItem() instanceof DecorationItem){
-				DecorationData data = ((DecorationItem)stack.getItem()).getData(StackWrapper.wrap(stack));
+				DecorationData data = ((DecorationItem)stack.getItem()).getData(UniStack.getStack(stack));
 				if(data != null){
 					decos.add(data);
 					updateClient();

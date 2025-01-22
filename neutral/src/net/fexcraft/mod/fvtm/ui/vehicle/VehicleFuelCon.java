@@ -137,4 +137,18 @@ public class VehicleFuelCon extends ContainerInterface {
 		}
 	}
 
+
+	@Override
+	public void onClosed(){
+		super.onClosed();
+		if(player.entity.isOnClient()) return;
+		if(inventory.empty(0)) return;
+		try{
+			player.entity.addStack(inventory.get(0));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 }

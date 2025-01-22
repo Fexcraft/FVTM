@@ -12,7 +12,7 @@ import net.fexcraft.mod.uni.ui.ContainerInterface;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class RoadToolCon extends ContainerInterface {
+public class RoadToolCon extends ContainerInterface {
 
 	public static final String[] fills = new String[]{ "RoadFill", "BottomFill", "SideLeftFill", "SideRightFill", "TopFill", "LinesFill" };
 	protected StackWrapper stack;
@@ -28,14 +28,11 @@ public abstract class RoadToolCon extends ContainerInterface {
 		custom_top = stack.getTag().has("CustomTopFill");
 		custom_lines = stack.getTag().has("CustomLinesFill");
 		inventory = UniInventory.create(6).stacksize(1).name("Road Fill Inventory");
-	}
-
-	protected void initInv(){
 		for(int i = 0; i < fills.length; i++){
-        	if(stack.getTag().has(fills[i])){
+			if(stack.getTag().has(fills[i])){
 				inventory.set(i, stack.getTag().getCompound(fills[i]));
-        	}
-        }
+			}
+		}
 	}
 
 	@Override

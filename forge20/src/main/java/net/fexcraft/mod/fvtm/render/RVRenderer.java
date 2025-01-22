@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -287,13 +288,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 
 	private static PartData isNormalPart(){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
-		PartData data = StackWrapper.wrapAndGetApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
+		PartData data = UniStack.getApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
 		return data.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData ? data : null;
 	}
 
 	private static PartData isWheelOrTire(){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
-		PartData data = StackWrapper.wrapAndGetApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
+		PartData data = UniStack.getApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
 		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
 	}
 

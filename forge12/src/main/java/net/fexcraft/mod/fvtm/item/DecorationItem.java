@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -60,7 +61,9 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 		for(String s : deco.getDescription()){
 			tooltip.add(Formatter.format(I18n.format(s)));
 		}
-		DecorationData data = getData(StackWrapper.wrap(stack));
+		UniStack uni = UniStack.get(stack);
+		if(uni == null) return;
+		DecorationData data = getData(uni.stack);
 		if(data != null){
 			tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
 			if(deco.getModel() != null && deco.getModel().getCreators().size() > 0){
@@ -77,7 +80,7 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
-		DecorationData data = getData(StackWrapper.wrap(stack));
+		DecorationData data = getData(UniStack.getStack(stack));
 		QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
 		DecorationEntity decoen = new DecorationEntity(world);
 		decoen.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);

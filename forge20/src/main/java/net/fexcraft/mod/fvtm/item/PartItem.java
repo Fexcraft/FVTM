@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.language.I18n;
@@ -53,14 +54,14 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 				tooltip.add(GenericUtils.format(idata.swappable ? "&a&oSwappable" : "&e&oNot Swappable"));
 			}
         }
-        if(!data.getFunctions().isEmpty()){
-			StackWrapper wrapper = StackWrapper.wrap(stack);
+		UniStack uni = UniStack.get(stack);
+        if(!data.getFunctions().isEmpty() && uni != null){
 			ArrayList<String> tips = new ArrayList<>();
-            for(PartFunction func : data.getFunctions().values()){
-				func.addInformation(wrapper, WrapperHolder.getWorld(world), data, tips, flag.isAdvanced());
-            }
+			for(PartFunction func : data.getFunctions().values()){
+				func.addInformation(uni.stack, WrapperHolder.getWorld(world), data, tips, flag.isAdvanced());
+			}
 			for(String tip : tips) tooltip.add(GenericUtils.format(tip));
-            tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
+			tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
         }
         if(part.getDefaultAttributes().size() > 0){
         	tooltip.add(GenericUtils.format("&0&9This part has &7%s &9Attribute/s.", part.getDefaultAttributes().size()));

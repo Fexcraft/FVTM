@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -52,14 +53,15 @@ public class BlockItem extends net.minecraft.world.item.BlockItem implements Con
 		else if(type.getBlockType().getMetaVariants() > 0){
 			tooltip.add(GenericUtils.format("&9Variant: &7" + stack.getDamageValue()));
 		}
-		StackWrapper wrapper = StackWrapper.wrap(stack);
-		BlockData data = wrapper.getContent(ContentType.BLOCK);
+		UniStack uni = UniStack.get(stack);
+		if(uni == null) return;
+		BlockData data = uni.stack.getContent(ContentType.BLOCK);
 		if(data == null) return;
 		if(!data.getType().hasPlainModel()) tooltip.add(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
 		if(!data.getFunctions().isEmpty()){
 			ArrayList<String> tips = new ArrayList<>();
 			for(BlockFunction func : data.getFunctions()){
-				func.addInformation(wrapper, getWorld(world), data, tips, flag.isAdvanced());
+				func.addInformation(uni.stack, getWorld(world), data, tips, flag.isAdvanced());
 			}
 			for(String str : tips) tooltip.add(GenericUtils.format(str));
 			tooltip.add(GenericUtils.format("&9- - - - - - &7-"));

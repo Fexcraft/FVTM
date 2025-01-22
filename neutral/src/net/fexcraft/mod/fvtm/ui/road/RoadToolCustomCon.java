@@ -13,7 +13,7 @@ import net.fexcraft.mod.uni.ui.UniCon;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class RoadToolCustomCon extends ContainerInterface {
+public class RoadToolCustomCon extends ContainerInterface {
 
 	protected int[] size = new int[]{ 1, 0, 0, 0, 0, 0 };
 	protected StackWrapper stack;

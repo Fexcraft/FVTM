@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.content.VehicleModel;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +28,7 @@ public class ItemRenderers {
 	public static final NonNullLazy<BlockEntityWithoutLevelRenderer> VEHICLE_RENDERER = NonNullLazy.of(() -> new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()) {
 		@Override
 		public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack pose, MultiBufferSource src, int v0, int v1){
-			VehItemApp via = StackWrapper.wrapAndGetApp(stack, VehItemApp.class);
+			VehItemApp via = UniStack.getApp(stack, VehItemApp.class);
 			if(via != null && via.data != null && via.data.getType().getModel() != null){
 				VehicleModel model = (VehicleModel)via.data.getType().getModel();
 				Renderer120.set(pose, src, v0);

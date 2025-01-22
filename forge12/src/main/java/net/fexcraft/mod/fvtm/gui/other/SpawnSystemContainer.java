@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.item.UniStack;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -50,8 +51,8 @@ public class SpawnSystemContainer extends GenericContainer {
 					VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData().copy();
 					player.closeScreen();
 					FvtmPlayerData pd = UniEntity.get(player).getApp(FvtmPlayerData.class);
-					if(!demo && sys.canSpawn(pd.getPlayer(), pd.getPlayer().getWorld(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack))){
-						sys.spawn(pd.getPlayer(), pd.getPlayer().getWorld(), pd.getActiveSpawnPoint(), data, StackWrapper.wrap(stack));
+					if(!demo && sys.canSpawn(pd.getPlayer(), pd.getPlayer().getWorld(), pd.getActiveSpawnPoint(), data, UniStack.getStack(stack))){
+						sys.spawn(pd.getPlayer(), pd.getPlayer().getWorld(), pd.getActiveSpawnPoint(), data, UniStack.getStack(stack));
 					}
 					if(save){
 						pd.setFavoriteSpawnSystemFor(type, sys.getId());

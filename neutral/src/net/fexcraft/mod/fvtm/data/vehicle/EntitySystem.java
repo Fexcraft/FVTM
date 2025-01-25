@@ -4,7 +4,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.FvtmPlayerData;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;

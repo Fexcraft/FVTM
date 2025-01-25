@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.function.block;
 
 import java.util.List;
 
-import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
@@ -11,9 +10,8 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.CubeSide;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 

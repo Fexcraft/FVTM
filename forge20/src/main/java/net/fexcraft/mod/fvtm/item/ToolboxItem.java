@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
 
 import java.util.LinkedHashMap;
 import java.util.List;

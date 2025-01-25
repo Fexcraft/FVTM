@@ -3,9 +3,8 @@ package net.fexcraft.mod.fvtm.data;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.item.UniInventory;
-import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.inv.UniInventory;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 /**

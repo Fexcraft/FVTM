@@ -13,10 +13,9 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.CubeSide;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 

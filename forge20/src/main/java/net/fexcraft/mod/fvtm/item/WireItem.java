@@ -1,20 +1,14 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.*;
-import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +20,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;

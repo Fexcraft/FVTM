@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.CompatUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;

@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 
 import net.fexcraft.lib.common.lang.FilledList;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 

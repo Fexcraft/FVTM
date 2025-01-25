@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.PartFunction.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 
 /**

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.app.json.FJson;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
@@ -18,7 +16,7 @@ import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 

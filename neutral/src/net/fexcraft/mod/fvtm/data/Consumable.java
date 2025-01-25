@@ -5,7 +5,7 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

@@ -4,10 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.FuelFiller;
-import net.fexcraft.mod.fvtm.data.vehicle.CatalogPreset;
-import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.item.UniInventory;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 

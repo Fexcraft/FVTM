@@ -27,8 +27,7 @@ import net.fexcraft.mod.fvtm.sys.wire.WireUnit;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.ItemType;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.packet.PacketListener;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -76,7 +75,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("install_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
-			PartData data = wrapper.getContent(ContentType.PART);
+			PartData data = wrapper.getContent(ContentType.PART.item_type);
 			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			String category = com.getString("category");
 			if(ref.getKey().getPart(category) != null){
@@ -105,7 +104,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("install_wheel", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
-			PartData data = wrapper.getContent(ContentType.PART);
+			PartData data = wrapper.getContent(ContentType.PART.item_type);
 			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref.getValue().isVehicle()){
 				player.send("interact.fvtm.vehicle.wheel_install");
@@ -129,7 +128,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("remove_wheel", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
-			Material mat = wrapper.getContent(ContentType.MATERIAL);
+			Material mat = wrapper.getContent(ContentType.MATERIAL.item_type);
 			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref.getValue().isVehicle()){
 				player.send("interact.fvtm.vehicle.wheel_remove");
@@ -162,7 +161,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("remove_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
-			if(!wrapper.isItemOf(ItemType.FVTM_TOOLBOX)) return;
+			if(!wrapper.isItemOf(ContentType.TOOLBOX.item_type)) return;
 			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref == null) return;
 			String category = com.getString("category");
@@ -184,7 +183,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("texture_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
-			if(!wrapper.isItemOf(ItemType.FVTM_TOOLBOX)) return;
+			if(!wrapper.isItemOf(ContentType.TOOLBOX.item_type)) return;
 			Map.Entry<VehicleData, InteractRef> ref = ((Passenger)player).getFvtmWorld().getInteractRef(com);
 			if(ref == null || !ref.getValue().isVehicle()) return;
 			String category = com.getString("category");

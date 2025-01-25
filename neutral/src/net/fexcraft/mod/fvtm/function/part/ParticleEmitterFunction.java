@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 
 /**

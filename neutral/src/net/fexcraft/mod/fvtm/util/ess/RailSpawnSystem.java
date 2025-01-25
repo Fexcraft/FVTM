@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;
 

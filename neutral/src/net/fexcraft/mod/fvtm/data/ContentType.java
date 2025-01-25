@@ -2,11 +2,12 @@ package net.fexcraft.mod.fvtm.data;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+
+import java.util.ArrayList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -14,32 +15,40 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 public enum ContentType {
 
 	ADDON(".fvtm", null),
-	PART(".part", "parts", Part.class),
-	VEHICLE(".vehicle", "vehicles", Vehicle.class),
-	MATERIAL(".material", "materials", Material.class),
-	CONTAINER(".container", "containers", Container.class),
-	CONSUMABLE(".consumable", "consumables", Consumable.class),
-	FUEL(".fuel", "fuels", Fuel.class),
-	BLOCK(".block", "blocks", Block.class),
-	MULTIBLOCK(".multiblock", "blocks"),
-	RAILGAUGE(".gauge", "railgauges", RailGauge.class),
-	CLOTH(".cloth", "clothes", Cloth.class),
-	WIRE(".wire", "wires", WireType.class),
-	WIREDECO(".wiredeco", "wires", WireDeco.class),
-	DECORATION(".deco", "decos", Decoration.class),
-	RECIPE(".json", "recipes", Recipe.class),
+	TOOLBOX(null, null, "fvtm:toolbox", null),
+	//
+	PART(".part", "parts", "fvtm:part", Part.class),
+	VEHICLE(".vehicle", "vehicles", "fvtm:vehicle", Vehicle.class),
+	MATERIAL(".material", "materials", "fvtm:material", Material.class),
+	CONTAINER(".container", "containers", "fvtm:container", Container.class),
+	CONSUMABLE(".consumable", "consumables", "fvtm:consumable", Consumable.class),
+	FUEL(".fuel", "fuels", null, Fuel.class),
+	BLOCK(".block", "blocks", "fvtm:block", Block.class),
+	MULTIBLOCK(".multiblock", "blocks", "fvtm:multiblock", null),
+	RAILGAUGE(".gauge", "railgauges", "fvtm:railgauge", RailGauge.class),
+	CLOTH(".cloth", "clothes", "fvtm:cloth", Cloth.class),
+	WIRE(".wire", "wires", "fvtm:wire", WireType.class),
+	WIREDECO(".wiredeco", "wires", "fvtm:wiredeco", WireDeco.class),
+	DECORATION(".deco", "decos", "fvtm:decoration", Decoration.class),
+	RECIPE(".json", "recipes", null, Recipe.class),
 	;
 
+	public static ArrayList<String> ITYPES = new ArrayList<>();
+	public static String ITYPE = "fvtm:content";
 	static{
 		VEHICLE.customitemmodel = true;
 		CONTAINER.customitemmodel = true;
 		PART.customitemmodel = true;
 		BLOCK.customitemmodel = true;
 		DECORATION.customitemmodel = true;
+		for(ContentType value : values()){
+			if(value.item_type != null) ITYPES.add(value.item_type);
+		}
 	}
 
 	public String suffix;
 	public String folder;
+	public String item_type;
 	public Class<? extends Content<?>> impl;
 	private boolean customitemmodel = false;
 
@@ -48,9 +57,10 @@ public enum ContentType {
 		this.folder = folder;
 	}
 
-	ContentType(String suffix, String folder, Class<? extends Content<?>> clazz){
+	ContentType(String suffix, String folder, String itid, Class<? extends Content<?>> clazz){
 		this(suffix, folder);
 		impl = clazz;
+		item_type = itid;
 	}
 
 	public void register(Content<?> content){

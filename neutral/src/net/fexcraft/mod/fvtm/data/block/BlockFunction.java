@@ -1,12 +1,11 @@
 package net.fexcraft.mod.fvtm.data.block;
 
-import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.*;
 

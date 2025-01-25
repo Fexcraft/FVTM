@@ -8,9 +8,9 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.item.UniInventory;
-import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniInventory;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 

@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.function.part.*;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;

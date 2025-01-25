@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

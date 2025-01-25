@@ -8,8 +8,8 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

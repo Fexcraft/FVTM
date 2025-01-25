@@ -6,7 +6,6 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
@@ -20,14 +19,11 @@ import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.wire.*;
-import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.ItemType;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -60,18 +56,18 @@ public class InteractionHandler {
 		if(key.mouse_right() && ref.isVehicle() && mountSeat(ref.vehicle(), seat, pass, stack)) return true;
 		if(Time.getDate() < cooldown) return false;
 		if(!stack.empty()){
-			if(stack.isItemOf(ItemType.PART)){
-				PartData data = stack.getContent(ContentType.PART);
+			if(stack.isItemOf(ContentType.PART.item_type)){
+				PartData data = stack.getContent(ContentType.PART.item_type);
 				if(data.getType().getInstallHandlerData() instanceof DPIHData && tryInstall(vehdata, ref, data, seat, pass)) return true;
 				if(data.getType().getInstallHandlerData() instanceof TireData && tryWTInstall(vehdata, ref, data, seat, pass)) return true;
 				if(data.getType().getInstallHandlerData() instanceof WheelData && tryWTInstall(vehdata, ref, data, seat, pass)) return true;
 				return false;
 			}
-			if(stack.isItemOf(ItemType.MATERIAL)){
-				Material mat = stack.getContent(ContentType.MATERIAL);
+			if(stack.isItemOf(ContentType.MATERIAL.item_type)){
+				Material mat = stack.getContent(ContentType.MATERIAL.item_type);
 				if(mat.getImpactLevel() > -1 && tryWheelRemoval(vehdata, ref, stack, mat, pass)) return true;
 			}
-			if(stack.isItemOf(ItemType.FVTM_TOOLBOX)){
+			if(stack.isItemOf(ContentType.TOOLBOX.item_type)){
 				boolean prt = getToolboxType(stack) == 0;
 				boolean tex = getToolboxType(stack) == 1;
 				if(prt && tryRemTex(vehdata, ref, seat, pass, false)) return true;
@@ -272,10 +268,10 @@ public class InteractionHandler {
 	}
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
-		if(!stack.empty() && !stack.isItemOfAny(ItemType.PART, ItemType.MATERIAL, ItemType.FVTM_TOOLBOX, ItemType.LEAD, ItemType.WIRE)) return false;
+		if(!stack.empty() && !stack.isItemOfAny(ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
-		if((stack.isItemOf(ItemType.WIRE) || (stack.isItemOf(ItemType.FVTM_TOOLBOX) && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
+		if((stack.isItemOf(ContentType.WIRE.item_type) || (stack.isItemOf(ContentType.TOOLBOX.item_type) && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass, stack)) return true;
@@ -285,7 +281,7 @@ public class InteractionHandler {
 
 	private static boolean handleWire(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
 		if(last.equals("wire") && Time.getDate() < cooldown) return false;
-		boolean wire = stack.isItemOf(ItemType.WIRE);
+		boolean wire = stack.isItemOf(ContentType.WIRE.item_type);
 		boolean slack = WIRE_SLACK.eq(getToolboxType(stack));
 		if(key.mouse_main() && (wire || !slack)) return false;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, (WorldW)world);
@@ -344,7 +340,7 @@ public class InteractionHandler {
 	private static boolean mountSeat(VehicleInstance vehicle, SeatInstance seat, Passenger pass, StackWrapper stack){
 		if(vehicle == null) return false;
 		if(last.equals("seat") && Time.getDate() < cooldown) return false;
-		if(!stack.empty() && stack.isItemOfAny(ItemType.LEAD, ItemType.FVTM_TOOLBOX)) return false;
+		if(!stack.empty() && stack.isItemOfAny(StackWrapper.IT_LEAD, ContentType.TOOLBOX.item_type)) return false;
 		if(seat == null) seat = pass.getSeatOn();
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(3));

@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.item.ClothMaterial;
+import net.fexcraft.mod.uni.inv.ClothMaterial;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

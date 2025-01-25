@@ -12,7 +12,6 @@ import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
-import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
@@ -22,9 +21,10 @@ import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
-import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
@@ -85,7 +85,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmRecipes(){
-		StackWrapper.EMPTY = SWIE.parse(ItemStack.EMPTY);
+		//StackWrapper.EMPTY = SWIE.parse(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.CONST_BLOCK_ITEM.get()))
 				.add(new ItemStack(Blocks.IRON_BLOCK))
@@ -125,17 +125,17 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public StackWrapper newStack0(ItemWrapper item){
-		return SWIE.parse(item);
+		return SWI.parse(item);
 	}
 
 	@Override
 	public StackWrapper newStack0(TagCW com){
-		return SWIE.parse(ItemStack.of(com.local()));
+		return SWI.parse(ItemStack.of(com.local()));
 	}
 
 	@Override
 	public StackWrapper newStack0(Object item){
-		return SWIE.parse(new IWI((Item)item));
+		return SWI.parse(new IWI((Item)item));
 	}
 
 	@Override

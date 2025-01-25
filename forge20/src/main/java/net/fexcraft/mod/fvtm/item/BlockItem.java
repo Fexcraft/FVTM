@@ -8,8 +8,8 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class BlockItem extends net.minecraft.world.item.BlockItem implements Con
 		}
 		UniStack uni = UniStack.get(stack);
 		if(uni == null) return;
-		BlockData data = uni.stack.getContent(ContentType.BLOCK);
+		BlockData data = uni.stack.getContent(ContentType.BLOCK.item_type);
 		if(data == null) return;
 		if(!data.getType().hasPlainModel()) tooltip.add(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
 		if(!data.getFunctions().isEmpty()){

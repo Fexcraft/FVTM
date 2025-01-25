@@ -5,7 +5,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;

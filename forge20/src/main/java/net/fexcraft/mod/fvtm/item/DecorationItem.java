@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;

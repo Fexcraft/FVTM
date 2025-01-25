@@ -5,8 +5,8 @@ import java.util.UUID;
 import net.fexcraft.mod.fvtm.data.Saveable;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.MessageSender;
 

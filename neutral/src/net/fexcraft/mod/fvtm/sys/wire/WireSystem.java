@@ -21,7 +21,7 @@ import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -89,7 +89,7 @@ public class WireSystem extends DetachedSystem {
 			return;
 		}
 		StackWrapper stack = player.getHeldItem(true);
-		WireType type = stack.getContent(ContentType.WIRE);
+		WireType type = stack.getContent(ContentType.WIRE.item_type);
 		if(type == null){
 			player.send("error.wire-type.null");
 			return;

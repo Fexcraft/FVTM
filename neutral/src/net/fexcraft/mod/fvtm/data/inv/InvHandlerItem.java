@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;

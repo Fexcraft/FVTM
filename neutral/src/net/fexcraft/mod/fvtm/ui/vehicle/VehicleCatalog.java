@@ -6,7 +6,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.vehicle.CatalogPreset;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;

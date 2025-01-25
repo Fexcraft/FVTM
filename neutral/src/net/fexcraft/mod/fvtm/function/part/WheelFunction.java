@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 

@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.CubeSide;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;

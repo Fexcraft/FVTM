@@ -12,8 +12,9 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Lockable.LockableItem;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.impl.SWIE;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,7 +43,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
  */
 public class MaterialItem extends Item implements ContentItem<Material>, LockableItem, TextureableItem<Material>, Fuel.FuelItem {
 
-	private SWIE wrapper = new SWIE(ItemStack.EMPTY);
+	private SWI wrapper = new SWI(ItemStack.EMPTY);
 	private Material material;
 
     public MaterialItem(Material content){
@@ -66,7 +67,7 @@ public class MaterialItem extends Item implements ContentItem<Material>, Lockabl
         	tooltip.add(Formatter.format("&9OreDict: &7" + material.getOreDictId()));
         }
         if(material.isVehicleKey()){
-        	tooltip.add(Formatter.format("&9LockCode: &7" + this.getLockCode(new SWIE(stack))));
+        	tooltip.add(Formatter.format("&9LockCode: &7" + this.getLockCode(UniStack.getStack(stack))));
         }
         if(material.isFuelContainer()){
 			wrapper.stack = stack;

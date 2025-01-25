@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.util.Properties;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.state.IBlockState;

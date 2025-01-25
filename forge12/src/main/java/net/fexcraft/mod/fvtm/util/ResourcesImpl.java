@@ -53,9 +53,9 @@ import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
-import net.fexcraft.mod.uni.impl.SWIE;
-import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -274,7 +274,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmRecipes(){
-		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
+		//StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(ConstructorBlock.INSTANCE))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
@@ -324,22 +324,22 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public StackWrapper newStack0(ItemWrapper item){
-		return new SWIE(item);
+		return new SWI(item);
 	}
 
 	@Override
 	public StackWrapper newStack0(TagCW com){
-		return new SWIE(new ItemStack((NBTTagCompound)com.direct()));
+		return new SWI(new ItemStack((NBTTagCompound)com.direct()));
 	}
 
 	@Override
 	public StackWrapper newStack0(Object item){
-		return new SWIE(new IWI((Item)item));
+		return new SWI(new IWI((Item)item));
 	}
 
 	@Override
 	public StackWrapper wrapStack0(Object stack){
-		return new SWIE((ItemStack)stack);
+		return new SWI((ItemStack)stack);
 	}
 
 	@Override

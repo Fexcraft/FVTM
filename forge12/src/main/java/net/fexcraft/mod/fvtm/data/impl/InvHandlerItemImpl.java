@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.impl;
 
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerItem;
 import net.fexcraft.mod.fvtm.data.inv.ItemStackHandler;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class InvHandlerItemImpl extends InvHandlerItem {

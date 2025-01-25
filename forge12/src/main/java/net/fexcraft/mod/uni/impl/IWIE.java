@@ -6,7 +6,6 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 

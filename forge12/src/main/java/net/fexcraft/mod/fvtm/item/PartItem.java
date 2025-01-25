@@ -16,8 +16,8 @@ import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.impl.SWIE;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
@@ -67,7 +67,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 			}
         }
         if(!data.getFunctions().isEmpty()){
-			StackWrapper wrapper = new SWIE(stack);
+			StackWrapper wrapper = UniStack.getStack(stack);
             for(PartFunction func : data.getFunctions().values()){
 				func.addInformation(wrapper, WrapperHolder.getWorld(world), data, tooltip, flag.isAdvanced());
             }

@@ -24,7 +24,6 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.fvtm.util.VecUtil;
-import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;

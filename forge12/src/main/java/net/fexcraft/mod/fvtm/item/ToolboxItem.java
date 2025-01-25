@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

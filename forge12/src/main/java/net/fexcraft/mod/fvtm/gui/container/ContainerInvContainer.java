@@ -6,7 +6,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.uni.impl.TagCWI;
-import net.fexcraft.mod.uni.item.UniInventory;
+import net.fexcraft.mod.uni.inv.UniInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;

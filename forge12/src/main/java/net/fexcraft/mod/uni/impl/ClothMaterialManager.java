@@ -4,7 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.item.ClothMaterial;
+import net.fexcraft.mod.uni.inv.ClothMaterial;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.common.util.EnumHelper;
 

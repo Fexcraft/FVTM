@@ -8,7 +8,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;

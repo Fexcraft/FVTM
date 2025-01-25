@@ -31,10 +31,9 @@ import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.impl.SWIE;
 import net.fexcraft.mod.uni.impl.TagCWI;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWIE;
@@ -52,7 +51,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -332,7 +330,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
 				return true;
 			}
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, new SWIE(stack));
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, UniStack.getStack(stack));
 			return true;
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
@@ -748,7 +746,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		SeatInstance seat = vehicle.seats.get(seatidx);
 		PassCap pass = player.getCapability(PASSENGER, null);
 		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString())) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(pass.asSender(), new SWIE(stack));
+			vehicle.data.getLock().toggle(pass.asSender(), UniStack.getStack(stack));
 			sendLockStateUpdate();
 			return true;
 		}

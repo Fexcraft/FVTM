@@ -1,13 +1,10 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
 
 import java.util.ArrayList;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -17,8 +14,7 @@ import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.item.UniStack;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

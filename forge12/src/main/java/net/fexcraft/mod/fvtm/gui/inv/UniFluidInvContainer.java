@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.impl.TagCWI;
-import net.fexcraft.mod.uni.item.UniInventory;
+import net.fexcraft.mod.uni.inv.UniInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;

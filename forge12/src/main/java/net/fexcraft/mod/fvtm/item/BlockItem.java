@@ -15,8 +15,8 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.impl.SWIE;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -77,7 +77,7 @@ public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, Blo
         if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(!data.getFunctions().isEmpty()){
             for(BlockFunction func : data.getFunctions()){
-                func.addInformation(new SWIE(stack), getWorld(world), data, tooltip, flag.isAdvanced());
+                func.addInformation(UniStack.getStack(stack), getWorld(world), data, tooltip, flag.isAdvanced());
             }
             tooltip.add(Formatter.format("&9- - - - - - &7-"));
         }

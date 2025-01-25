@@ -4,8 +4,8 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.uni.impl.SWIE;
-import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumActionResult;
@@ -179,7 +179,7 @@ public class KeyHandler {
     public void clickEmpty(RightClickEmpty event){
     	//if(!event.getItemStack().isEmpty()) return;
         if(event.getHand() == EnumHand.MAIN_HAND){
-            InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWIE(event.getItemStack()));
+            InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(event.getItemStack()));
         }
     }
 
@@ -187,7 +187,7 @@ public class KeyHandler {
     public void clickEmpty(LeftClickEmpty event){
     	//if(!event.getItemStack().isEmpty()) return;
         if(event.getHand() == EnumHand.MAIN_HAND){
-            InteractionHandler.handle(KeyPress.MOUSE_MAIN, new SWIE(event.getItemStack()));
+            InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(event.getItemStack()));
         }
     }
     
@@ -197,7 +197,7 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickItem(RightClickItem event){
         if(!event.getWorld().isRemote) return;
-        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWIE(event.getItemStack()))){
+        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }
@@ -207,7 +207,7 @@ public class KeyHandler {
     public void clickBlock(RightClickBlock event){
         if(!event.getWorld().isRemote) return;
     	//if(!event.getItemStack().isEmpty()) return;
-        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, new SWIE(event.getItemStack()))){
+        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }
@@ -217,7 +217,7 @@ public class KeyHandler {
     public void clickBlock(LeftClickBlock event){
         if(!event.getWorld().isRemote) return;
     	//if(!event.getItemStack().isEmpty()) return;
-        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, new SWIE(event.getItemStack()))){
+        if(event.getHand() == EnumHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(event.getItemStack()))){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }

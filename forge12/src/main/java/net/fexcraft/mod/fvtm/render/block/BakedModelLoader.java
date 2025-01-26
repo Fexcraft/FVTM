@@ -17,7 +17,7 @@ public class BakedModelLoader {
 		net.minecraftforge.client.model.ModelLoaderRegistry.registerLoader(net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader.getInstance());
 	}
 
-	public static ArrayList<ModelGroup> getPolygons(BlockModel model, IBlockState state, EnumFacing side, ModelData data, long rand){
+	public static ArrayList<ModelGroup> getPolygons(BlockModel model, IBlockState state, EnumFacing side, long rand){
         ArrayList<ModelGroup> list = new ArrayList<>();
 		for(ModelGroup group : model.groups){
             if(group.has_pre_prog){
@@ -29,7 +29,7 @@ public class BakedModelLoader {
 		return list;
 	}
 
-    public static void reset(BlockModel model, IBlockState state, EnumFacing side, ModelData data, long rand){
+    public static void reset(BlockModel model, IBlockState state, EnumFacing side, long rand){
         for(ModelGroup group : model.groups){
             if(group.has_pst_prog){
                 for(Program program : group.getPstPrograms()) program.post(group, DefaultModel.RENDERDATA.set((BlockData)null, null, null, state, false));

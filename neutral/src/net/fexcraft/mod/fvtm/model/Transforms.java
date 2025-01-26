@@ -49,13 +49,14 @@ public class Transforms {
 	}
 
 	public Vec3f getBakedTranslate(){
+		Vec3f vec = new Vec3f();
 		for(Transformer trn : transformers){
 			if(trn instanceof TF_Translate){
 				TF_Translate tf = (TF_Translate)trn;
-				return new Vec3f(tf.x, tf.y, tf.z);
+				vec = vec.add(tf.x, tf.y, tf.z);
 			}
 		}
-		return new Vec3f();
+		return vec;
 	}
 
 	public boolean hasScale(){

@@ -75,7 +75,7 @@ public class ContentConfigUtil {
 		else{
 			IDL idl = IDLManager.getIDLCached(id.space() + ":textures/item/" + id.path() + ".png");
 			try{
-				if(EnvInfo.CLIENT && FvtmResources.INSTANCE.getAssetInputStream(idl, true) == null){
+				if(EnvInfo.CLIENT && FvtmResources.INSTANCE.getAssetInputStream(idl, EnvInfo.DEV) == null){
 					switch(contype){
 						case VEHICLE: return ITL_VEHICLE;
 						case PART: return ITL_PART;

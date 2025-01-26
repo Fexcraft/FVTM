@@ -7,7 +7,6 @@ import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
@@ -69,7 +68,7 @@ public class BakedModelImpl implements IBakedModel {
         if(quads.containsKey(statekey)) return quads.get(statekey);
         List<BakedQuad> newquads = new ArrayList<>();
         try{
-            getQuads(model, newquads, state, side, rand);
+            if(model.rootrender) getQuads(model, newquads, state, side, rand);
             if(model.state_models.size() > 0){
                 for(IProperty<?> prop : state.getBlock().getBlockState().getProperties()){
                     String str = prop.getName() + "=" + state.getValue(prop);
@@ -93,12 +92,12 @@ public class BakedModelImpl implements IBakedModel {
             }
         }
         quads.put(statekey, newquads);
-        BakedModelLoader.reset(model, state, side, root.block.getModelData(), rand);
+        BakedModelLoader.reset(model, state, side, rand);
         return newquads;
     }
 
     private void getQuads(BlockModel model, List<BakedQuad> newquads, IBlockState state, EnumFacing side, long rand){
-        ArrayList<ModelGroup> groups = BakedModelLoader.getPolygons(model, state, side, root.block.getModelData(), rand);
+        ArrayList<ModelGroup> groups = BakedModelLoader.getPolygons(model, state, side, rand);
         BakedModelLoader.convertTransforms(model, root.block, state);
         TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){
@@ -131,17 +130,17 @@ public class BakedModelImpl implements IBakedModel {
                     Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
                     Vec3f vec2 = vec1.cross(vec0).normalize();
                     vec2 = model.bk.rot_poly.getRelativeVector(vec2);
-                    if(!model.nodefrot) vec2 = model.bk.rot_meta.getRelativeVector(vec2);
+                    if(model.defrot) vec2 = model.bk.rot_meta.getRelativeVector(vec2);
                     if(model.bk.rot_tf != null) for(AxisRotator rot : model.bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
                     UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                     builder.setContractUVs(true);
                     builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
                     builder.setTexture(sprite);
-                    putVertexData(builder, poly, poli.vertices[0], vec2, sprite, colorprog);
-                    putVertexData(builder, poly, poli.vertices[1], vec2, sprite, colorprog);
-                    putVertexData(builder, poly, poli.vertices[2], vec2, sprite, colorprog);
-                    if(tri) putVertexData(builder, poly, poli.vertices[2], vec2, sprite, colorprog);
-                    else putVertexData(builder, poly, poli.vertices[3], vec2, sprite, colorprog);
+                    putVertexData(model, builder, poly, poli.vertices[0], vec2, sprite, colorprog);
+                    putVertexData(model, builder, poly, poli.vertices[1], vec2, sprite, colorprog);
+                    putVertexData(model, builder, poly, poli.vertices[2], vec2, sprite, colorprog);
+                    if(tri) putVertexData(model, builder, poly, poli.vertices[2], vec2, sprite, colorprog);
+                    else putVertexData(model, builder, poly, poli.vertices[3], vec2, sprite, colorprog);
                     newquads.add(builder.build());
                 }
             }
@@ -180,12 +179,12 @@ public class BakedModelImpl implements IBakedModel {
         return root.tex_sprites.get(tempres.get(name));
     }
 
-    private void putVertexData(UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture, BakedPrograms.ColorSetter colorprog){
+    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture, BakedPrograms.ColorSetter colorprog){
         for(int e = 0; e < format.getElementCount(); e++){
             switch(format.getElement(e).getUsage()){
                 case POSITION:
-                    Vec3f vec = model.bk.rot_poly.getRelativeVector(vert.vector);
-                    vec = model.bk.rot_meta.getRelativeVector(vec.add(poly.posX, poly.posY, poly.posZ));
+                    Vec3f vec = model.bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
+                    if(model.defrot) vec = model.bk.rot_meta.getRelativeVector(vec);
                     if(model.bk.rot_tf != null) for(AxisRotator rot : model.bk.rot_tf) vec = rot.getRelativeVector(vec);
                     builder.put(e,
                             vec.x * model.bk.scale.x + model.bk.translate.x + 0.5f,

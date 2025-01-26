@@ -167,7 +167,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		tickable = map.getBoolean("Tickable", false);
 		hastile = map.getBoolean("MultiSubBlock", false);
 		hastile = map.getBoolean("HasBlockEntity", hastile);
-		if(map.has("Functions")){
+		if(map.has("Functions") && map.get("Functions").isMap()){
 			map.getMap("Functions").entries().forEach(entry -> {
 				parseFunction(entry.getKey(), entry.getValue());
 			});

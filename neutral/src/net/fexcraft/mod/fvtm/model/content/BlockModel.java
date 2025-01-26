@@ -27,7 +27,8 @@ public class BlockModel extends DefaultModel {
 	public float gui_scale_y = 0.75f;
 	public float gui_scale_z = 0.75f;
 	public boolean bindtex = true;
-	public boolean nodefrot;
+	public boolean defrot;
+	public boolean rootrender;
 	public BakedTransformData bk;
 	public HashMap<String, String> tg;
 	public boolean grouptexname;
@@ -66,27 +67,28 @@ public class BlockModel extends DefaultModel {
 				if(entry.getValue().isMap()){
 					ArrayList<BlockModel> list = new ArrayList();
 					for(Map.Entry<String, JsonValue<?>> e : entry.getValue().asMap().entries()){
-						Model model = FvtmResources.getModel(e.getKey(), new ModelData(e.getValue().asMap()), BlockModel.class);
+						Model model = FvtmResources.getModel(e.getKey(), mergeModelData(data, e.getValue().asMap()), BlockModel.class);
 						if(model != null) list.add((BlockModel)model);
 					}
 					if(list.size() > 0) state_models.put(entry.getKey(), list);
 				}
 				else if(entry.getValue().isArray()){
 					for(JsonValue<?> val : entry.getValue().asArray().value){
-						JsonMap mep = val.asMap();
-						Model model = null;
-						if(mep.has("model")){
-							model = FvtmResources.getModel(mep.get("model").string_value(), new ModelData(mep), BlockModel.class);
+						ModelData md = mergeModelData(data, val.asMap());
+						BlockModel model = null;
+						if(val.asMap().has("Model")){
+							model = (BlockModel)FvtmResources.getModel(val.asMap().get("Model").string_value(), md, BlockModel.class);
 						}
-						else model = copy();
-						if(model != null){
-							if(!state_models.containsKey(entry.getKey())) state_models.put(entry.getKey(), new ArrayList<>());
-							state_models.get(entry.getKey()).add((BlockModel)model);
+						else{
+							model = copy();
+							model.parse(md).lock();
 						}
+						if(!state_models.containsKey(entry.getKey())) state_models.put(entry.getKey(), new ArrayList<>());
+						state_models.get(entry.getKey()).add(model);
 					}
 				}
 				else{
-					Model model = FvtmResources.getModel(entry.getValue().string_value(), new ModelData(), BlockModel.class);
+					Model model = FvtmResources.getModel(entry.getValue().string_value(), mergeModelData(data, new JsonMap()), BlockModel.class);
 					if(model != null){
 						if(!state_models.containsKey(entry.getKey())) state_models.put(entry.getKey(), new ArrayList<>());
 						state_models.get(entry.getKey()).add((BlockModel)model);
@@ -107,7 +109,8 @@ public class BlockModel extends DefaultModel {
 			JsonArray array = data.getArray("Translate");
 			transforms.add(new Transforms.TF_Translate(array.get(0).float_value(), array.get(1).float_value(), array.get(2).float_value()));
 		}
-		nodefrot = data.getBoolean("NoDefaultRotation", false);
+		defrot = data.getBoolean("DefaultRotation", true);
+		rootrender = data.getBoolean("RootRender", true);
 		if(data.has("GroupTextures")){
 			tg = new HashMap<>();
 			JsonMap grtex = data.getMap("GroupTextures");
@@ -127,12 +130,39 @@ public class BlockModel extends DefaultModel {
 		return this;
 	}
 
+	private ModelData mergeModelData(ModelData data, JsonMap map){
+		if(!map.getBoolean("Merge", true)) return new ModelData(new JsonMap("ModelData", map));
+		ModelData md = new ModelData(new JsonMap("ModelData", data.copy()));
+		md.rem("States");
+		merge(md, map);
+		return md;
+	}
+
+	private void merge(JsonMap root, JsonMap map){
+		for(Map.Entry<String, JsonValue<?>> entry : map.entries()){
+			if(root.has(entry.getKey())){
+				if(entry.getValue().isMap()){
+					merge(root.getMap(entry.getKey()), entry.getValue().asMap());
+					continue;
+				}
+				else if(entry.getValue().isArray() && !entry.getKey().equals("Translate")){
+					for(JsonValue<?> val : entry.getValue().asArray().value){
+						root.getArray(entry.getKey()).add(val);
+					}
+					continue;
+				}
+			}
+			root.add(entry.getKey(), entry.getValue());
+		}
+	}
+
 	/**
 	 * @author Ferdinand Calo' (FEX___96)
 	 */
 	public static class BakedTransformData {
 
-		public AxisRotator rot_poly, rot_meta;
+		public AxisRotator rot_poly;
+		public AxisRotator rot_meta;
 		public AxisRotator[] rot_tf;
 		public Vec3f translate;
 		public Vec3f scale;

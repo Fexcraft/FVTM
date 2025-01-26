@@ -23,9 +23,14 @@ public class Handler_TagListener implements PacketHandler<Packet_TagListener> {
 	@Override
 	public Runnable handleClient(Packet_TagListener packet, EntityW player){
 		return () -> {
-			PacketListener lis = Packets.LIS_CLIENT.get(packet.to);
-			if(lis != null) lis.handle(packet.tag, player);
-			else FvtmLogger.log("Tag Packet Listener not found: " + packet.to);
+			try{
+				PacketListener lis = Packets.LIS_CLIENT.get(packet.to);
+				if(lis != null) lis.handle(packet.tag, player);
+				else FvtmLogger.log("Tag Packet Listener not found: " + packet.to);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		};
 	}
 

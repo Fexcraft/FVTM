@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCK_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
 import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
@@ -29,10 +28,8 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
 import net.fexcraft.mod.fvtm.data.container.Container;
-import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
@@ -46,7 +43,6 @@ import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12;
 import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
-import net.fexcraft.mod.fvtm.render.block.BlockItemModel;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.FclRecipe;
@@ -189,14 +185,14 @@ public class ResourcesImpl extends FvtmResources {
 	@SideOnly(Side.CLIENT)
 	public void checkForCustomModel(AddonLocation loc, ContentType contype, Content<?> content){
 		switch(contype){
-			case BLOCK:{
+			/*case BLOCK:{
 				Block block = (Block)content;
-				if(/*!block.hasPlainModel() &&*/ RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
+				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockItemModel.INSTANCE);
 					return;
 				}
 				break;
-			}
+			}*/
 			case CONTAINER:{
 				Container con = null;//TODO
 				if(!con.noCustomItemModel()){
@@ -206,8 +202,8 @@ public class ResourcesImpl extends FvtmResources {
 				break;
 			}
 			case PART:{
-				Part part = (Part)content;
-				/*if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction || pre instanceof TireFunction).count() > 0){
+				/*Part part = (Part)content;
+				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction || pre instanceof TireFunction).count() > 0){
 					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), PartItemModel.INSTANCE);
 					return;
 				}*/
@@ -532,7 +528,23 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	private void regItemModelLoc(Item item){
-		net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+		if(item instanceof BlockItem){
+			try{
+				int var = ((BlockItem)item).getContent().getBlockType().getMetaVariants();
+				if(var < 2){
+					net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+				}
+				else{
+					for(int v = 0; v < var; v++){
+						net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName() + "_" + v), "inventory"));
+					}
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		else net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 
 }

@@ -37,7 +37,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
         TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
         GL11.glPushMatrix();
         GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0, 1, 0);
-        model.render(BlockModel.RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false));
+        if(model.rootrender) model.render(BlockModel.RENDERDATA.set(data, tile, tile.getCapability(Capabilities.RENDERCACHE, null), null, false));
         if(model.state_models.size() > 0){
             IBlockState state = tile.getWorld().getBlockState(tile.getPos());
             for(IProperty<?> prop : tile.getBlockType().getBlockState().getProperties()){

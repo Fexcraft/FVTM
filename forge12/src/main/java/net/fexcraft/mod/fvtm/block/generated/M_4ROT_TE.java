@@ -132,7 +132,7 @@ public class M_4ROT_TE extends BlockBase {
     	NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("inventory", target);
         int[] xyz = new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() };
-        GenericContainer.openGui(handler.type.guiId(), xyz, LISTENERID, packet, player);
+        GenericContainer.openGui(handler.type.getMBUI().id, xyz, LISTENERID, packet, player);
 	}
 
 	@Override

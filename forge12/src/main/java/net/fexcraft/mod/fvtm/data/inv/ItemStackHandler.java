@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,7 +57,7 @@ public class ItemStackHandler implements IItemHandler {
 		if(stack.getItem() instanceof VehicleItem || stack.getItem() instanceof ContainerItem || isContainerPart(stack) || !isValid(stack)){
 			return stack;
 		}
-		StackEntry entry = handler.getEntryFor(FvtmResources.wrapStack(stack));
+		StackEntry entry = handler.getEntryFor(UniStack.getStack(stack));
 		if(entry == null){
 			if(handler.full()) return stack;
 			if(simulate) return ItemStack.EMPTY;

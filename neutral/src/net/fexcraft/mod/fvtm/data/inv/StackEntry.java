@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 /**
@@ -13,7 +14,7 @@ public class StackEntry {
 	public int amount = 0;
 
 	public StackEntry(TagCW com){
-		stack = FvtmResources.newStack(com);
+		stack = UniStack.getStack(com);
 		amount = com.getInteger("fvtm:stack_amount");
 	}
 

@@ -327,44 +327,13 @@ public abstract class FvtmResources {
 
 	public abstract StackWrapper newStack0(ItemWrapper item);
 
-	public abstract StackWrapper newStack0(TagCW com);
-
-	public abstract StackWrapper newStack0(Object item);
-
 	public static StackWrapper newStack(IDL id){
 		return INSTANCE.newStack0(FvtmRegistry.getItem(id.colon()));
-	}
-
-	public static StackWrapper newStack(TagCW com){
-		return INSTANCE.newStack0(com);
-	}
-
-	public static StackWrapper newStack(Object item){
-		return INSTANCE.newStack0(item);
 	}
 
 	public static StackWrapper newStack(ItemWrapper item){
 		return INSTANCE.newStack0(item);
 	}
-
-	public static StackWrapper wrapStack(Object stack){
-		return INSTANCE.wrapStack0(stack);
-	}
-
-	public abstract StackWrapper wrapStack0(Object stack);
-
-	public static JsonMap getJson(String loc){
-		try{
-			return JsonHandler.parse(FvtmResources.class.getClassLoader().getResourceAsStream(loc));
-		}
-		catch(IOException e){
-			e.printStackTrace();
-			if(EnvInfo.DEV) throw new RuntimeException(e);
-		}
-		return new JsonMap();
-	}
-
-	public abstract JsonMap getJsonC(String loc);
 
 	//-V-// Model Loading //-V-//
 

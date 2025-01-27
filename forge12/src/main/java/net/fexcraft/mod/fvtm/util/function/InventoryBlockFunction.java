@@ -28,7 +28,7 @@ public class InventoryBlockFunction extends BlockFunction {
 	public BlockFunction parse(JsonValue val){
 		if(val == null) return this;
 		JsonMap map = val.asMap();
-		handler = new InvHandlerInit(InvType.parse(map.get("type").string_value(), true));
+		handler = new InvHandlerInit(InvType.parse(map.get("type").string_value()));
 		if(map.has("capacity")) handler.setCapacity(map.get("capacity").integer_value());
 		if(map.has("stacks")) handler.setCapacity(map.get("stacks").integer_value());
 		if(map.has("var")) handler.setArg(map.get("var").string_value());

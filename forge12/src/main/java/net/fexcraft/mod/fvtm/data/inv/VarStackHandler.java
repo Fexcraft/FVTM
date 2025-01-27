@@ -2,11 +2,10 @@ package net.fexcraft.mod.fvtm.data.inv;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-
-import static net.fexcraft.mod.fvtm.FvtmResources.wrapStack;
 
 public class VarStackHandler implements IItemHandler {
 
@@ -47,7 +46,7 @@ public class VarStackHandler implements IItemHandler {
 		boolean full = stack.getCount() > max;
 		if(!simulate){
 			if(local.isEmpty()){
-				handler.stacks.set(idx, wrapStack(full ? ItemHandlerHelper.copyStackWithSize(stack, max) : stack));
+				handler.stacks.set(idx, UniStack.getStack(full ? ItemHandlerHelper.copyStackWithSize(stack, max) : stack));
 			}
 			else{
 				local.grow(full ? max : stack.getCount());
@@ -68,7 +67,7 @@ public class VarStackHandler implements IItemHandler {
 			return local;
 		}
 		else{
-			if(!simulate) handler.stacks.set(idx, wrapStack(ItemHandlerHelper.copyStackWithSize(local, local.getCount() - rem)));
+			if(!simulate) handler.stacks.set(idx, UniStack.getStack(ItemHandlerHelper.copyStackWithSize(local, local.getCount() - rem)));
 			return ItemHandlerHelper.copyStackWithSize(local, rem);
 		}
 	}

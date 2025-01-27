@@ -43,7 +43,7 @@ public class InventoryFunction extends PartFunction {
 	@Override
 	public PartFunction init(Part part, FJson json){
 		JsonMap map = json.asMap();
-		inventory = new InvHandlerInit(InvType.parse(map.getString("type", "item"), false));
+		inventory = new InvHandlerInit(InvType.parse(map.getString("type", "item")));
 		inventory.setCapacity(map.getInteger("capacity", 0));
 		inventory.setArg(map.getString("fluid", "minecraft:water"));
 		//

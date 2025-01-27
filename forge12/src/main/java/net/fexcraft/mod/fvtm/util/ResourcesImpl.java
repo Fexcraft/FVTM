@@ -324,32 +324,6 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public StackWrapper newStack0(TagCW com){
-		return new SWI(new ItemStack((NBTTagCompound)com.direct()));
-	}
-
-	@Override
-	public StackWrapper newStack0(Object item){
-		return new SWI(new IWI((Item)item));
-	}
-
-	@Override
-	public StackWrapper wrapStack0(Object stack){
-		return new SWI((ItemStack)stack);
-	}
-
-	@Override
-	public JsonMap getJsonC(String loc){
-		try{
-			return JsonHandler.parse(getModelInputStream(new ResourceLocation(loc), true));
-		}
-		catch(IOException e){
-			if(EnvInfo.DEV) throw new RuntimeException(e);
-		}
-		return new JsonMap();
-	}
-
-	@Override
 	public void initModelPrograms(){
 		Transforms.GET_TRANSFORM = args -> {
 			switch(args[0]){

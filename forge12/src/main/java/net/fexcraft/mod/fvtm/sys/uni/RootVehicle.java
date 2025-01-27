@@ -321,7 +321,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if(isDead || hand == EnumHand.OFF_HAND) return false;
 		ItemStack stack = player.getHeldItemMainhand();
-		StackWrapper wrapper = FvtmResources.wrapStack(stack);
+		StackWrapper wrapper = UniStack.getStack(stack);
 		Passenger pass = player.getCapability(PASSENGER, null).asWrapper();
 		if(world.isRemote){
 			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return true;

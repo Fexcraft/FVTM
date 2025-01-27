@@ -59,7 +59,7 @@ public class Container extends Content<Container> implements TextureHolder, Colo
 			channels.put("secondary", RGB.WHITE.copy());
 		}
 		keytype = map.has("KeyType") ? IDLManager.getIDLCached(map.getString("KeyType", null)) : null;
-		invtype = new InvHandlerInit(InvType.parse(map.getString("InventoryType", "item"), false));
+		invtype = new InvHandlerInit(InvType.parse(map.getString("InventoryType", "item")));
 		invtype.setCapacity(map.getInteger("InventorySize", invtype.type.isItem() ? 8 : 16000));
         if(invtype.type.isFluid() && map.has("FluidType")) invtype.setArg(map.get("FluidType").string_value());
         if(invtype.type.isItem() &&  map.has("ContentFilter")) invtype.setArg(map.get("ContentFilter").string_value());

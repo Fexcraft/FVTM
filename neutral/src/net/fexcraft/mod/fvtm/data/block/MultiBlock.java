@@ -51,7 +51,7 @@ public class MultiBlock extends Content<MultiBlock> implements WithItem, ItemTex
 			JsonMap invs = map.getMap("Inventories");
 			for(Entry<String, JsonValue<?>> entry : invs.entries()){
 				JsonArray array = entry.getValue().asArray();
-				InvHandler handler = new InvHandlerInit(InvType.parse(array.get(0).string_value(), true));
+				InvHandler handler = new InvHandlerInit(InvType.parse(array.get(0).string_value()));
 				handler.setCapacity(array.get(1).integer_value());
 				if(array.size() > 2){
 					handler.setArg(array.get(2).string_value());

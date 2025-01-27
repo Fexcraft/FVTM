@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 import net.fexcraft.lib.common.lang.FilledList;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 
@@ -18,7 +19,7 @@ public class StackUtil {
 			TagCW com = list.getCompound(i);
 			int s = com.getInteger("Slot");
 			if(s >= 0 && s < stacks.size()){
-				stacks.set(i, FvtmResources.newStack(com));
+				stacks.set(i, UniStack.getStack(com));
 			}
 		}
 	}

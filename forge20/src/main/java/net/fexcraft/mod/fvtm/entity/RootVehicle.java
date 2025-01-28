@@ -242,7 +242,7 @@ public class RootVehicle extends Entity {
 	public InteractionResult interact(Player player, InteractionHand hand){
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 		ItemStack stack = player.getItemInHand(hand);
-		StackWrapper wrapper = FvtmResources.wrapStack(stack);
+		StackWrapper wrapper = UniStack.getStack(stack);
 		Passenger pass = UniEntity.getCasted(player);
 		if(level().isClientSide){
 			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return InteractionResult.SUCCESS;

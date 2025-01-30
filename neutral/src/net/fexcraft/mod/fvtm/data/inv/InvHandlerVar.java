@@ -130,12 +130,11 @@ public class InvHandlerVar extends InvHandler {
 		if(in){
 			for(StackWrapper stack : stacks){
 				if(stack.empty()) continue;
-				stack.createTagIfMissing();
-				if(!stack.getTag().has("BlockFunction")){
-					BlockData data = FvtmResources.getBlockData(stack.getTag());
-					data.write(stack.getTag());
+				if(!stack.directTag().has("BlockFunction")){
+					BlockData data = FvtmResources.getBlockData(stack.directTag());
+					stack.updateTag(tag -> data.write(tag));
 				}
-				TagCW com = stack.getTag().getCompound("BlockFunction").getCompound("fvtm:barrel");
+				/*TagCW com = stack.getTag().getCompound("BlockFunction").getCompound("fvtm:barrel");
 				if(com.empty()) return;
 				if(!com.has("fvtm:barrel")) com.set("fvtm:barrel", TagCW.create());
 				com = com.getCompound("fvtm:barrel");
@@ -150,14 +149,13 @@ public class InvHandlerVar extends InvHandler {
 						com.set("stored", 0);
 						value += s;
 					}
-				}
+				}*///TODO
 			}
 		}
 		else{
 			for(StackWrapper stack : stacks){
 				if(stack.empty()) continue;
-				stack.createTagIfMissing();
-				if(!stack.getTag().has("BlockFunction")){
+				/*if(!stack.getTag().has("BlockFunction")){
 					BlockData data = FvtmResources.getBlockData(stack.getTag());
 					data.write(stack.getTag());
 				}
@@ -177,7 +175,7 @@ public class InvHandlerVar extends InvHandler {
 						com.set("stored", s + 10);
 						value -= 10;
 					}
-				}
+				}*///TODO
 			}
 		}
 	}

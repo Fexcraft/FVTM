@@ -20,10 +20,10 @@ public class RoadToolUI extends UserInterface {
 	public RoadToolUI(JsonMap map, ContainerInterface con) throws Exception{
 		super(map, con);
 		rtc = (RoadToolCon)con;
-		if(!rtc.stack.getTag().has("RoadLayers")){
-			rtc.stack.getTag().set("RoadLayers", size);
+		if(!rtc.stack.directTag().has("RoadLayers")){
+			rtc.stack.updateTag(tag -> tag.set("RoadLayers", size));
 		}
-		else size = rtc.stack.getTag().getIntArray("RoadLayers");
+		else size = rtc.stack.directTag().getIntArray("RoadLayers");
 	}
 
 	@Override

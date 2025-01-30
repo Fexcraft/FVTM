@@ -111,8 +111,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 
 	@Override
 	public PartData getData(StackWrapper stack){
-		if(!stack.hasTag()) stack.setTag(TagCW.create());
-		return getData(stack.getTag());
+		return getData(stack.directTag());
 	}
 
 	@Override

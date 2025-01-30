@@ -77,8 +77,7 @@ public class ContainerItem extends Item implements ContentItem.ContentDataItem<C
 
 	@Override
 	public ContainerData getData(StackWrapper stack){
-		if(!stack.hasTag()) stack.setTag(TagCW.create());
-		return getData(stack.getTag());
+		return getData(stack.directTag());
 	}
 
 	@Override

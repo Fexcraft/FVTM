@@ -104,9 +104,9 @@ public class WireSystem extends DetachedSystem {
 			player.send("interact.fvtm.relay.full");
 			return;
 		}
-		stack.createTagIfMissing();
-		if(stack.getTag().has("fvtm:wirepoint")){
-			WireRelay relay0 = getRelay(new WireKey(stack.getTag().getV3I("fvtm:wirepoint"), stack.getTag().getString("fvtm:wirepoint_key")));
+		TagCW tag = stack.copyTag();
+		if(tag.has("fvtm:wirepoint")){
+			WireRelay relay0 = getRelay(new WireKey(tag.getV3I("fvtm:wirepoint"), tag.getString("fvtm:wirepoint_key")));
 			if(relay0.pos.dis(relay.pos) > MAX_WIRE_LENGTH){
 				player.send("interact.fvtm.relay.wire_too_long");
 				return;
@@ -119,13 +119,15 @@ public class WireSystem extends DetachedSystem {
 			relay0.addnew(wire);
 			relay.addnew(wire.createOppositeCopy());
 			relay0.checkWireSectionConsistency();
-			stack.getTag().rem("fvtm:wirepoint");
-			stack.getTag().rem("fvtm:wirepoint_key");
+			tag.rem("fvtm:wirepoint");
+			tag.rem("fvtm:wirepoint_key");
+			stack.updateTag(tag);
 			player.bar("interact.fvtm.relay.wire_created");
 		}
 		else{
-			stack.getTag().set("fvtm:wirepoint", holder.pos, false);
-			stack.getTag().set("fvtm:wirepoint_key", relay.key);
+			tag.set("fvtm:wirepoint", holder.pos, false);
+			tag.set("fvtm:wirepoint_key", relay.key);
+			stack.updateTag(tag);
 			player.bar("interact.fvtm.relay.cached");
 		}
 	}

@@ -5,7 +5,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;

@@ -10,8 +10,8 @@ import net.fexcraft.mod.uni.inv.UniInventory;
 public class FvtmInventory {
 
 	public final InvType type;
-	public Object inventory;
-	public Object invinfo;
+	public UniInventory inv_items;
+	public Object inv_info;
 	public String point;
 	public V3D pos;
 
@@ -21,16 +21,16 @@ public class FvtmInventory {
 
 	public FvtmInventory init(JsonMap map){
 		switch(type){
+			case VARIABLE:
 			case ITEM:{
 				UniInvInfo info = new UniInvInfo();
-				info.rows = map.getInteger("rows", 3);
-				info.cols = map.getInteger("cols", 9);
-				UniInventory inv = UniInventory.create(info.rows * info.cols);
+				info.rows = map.getInteger("rows", 1);
+				info.cols = map.getInteger("cols", 1);
+				inv_items = UniInventory.create(info.rows * info.cols);
 				if(map.has("filter")){
 					//TODO
 				}
-				inventory = inv;
-				invinfo = info;
+				inv_info = info;
 				break;
 			}
 		}
@@ -38,7 +38,7 @@ public class FvtmInventory {
 	}
 
 	public UniInventory getItems(){
-		return (UniInventory)inventory;
+		return inv_items;
 	}
 
 	public static class UniInvInfo {

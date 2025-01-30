@@ -548,7 +548,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 
 	public StackWrapper newItemStack(){
 		StackWrapper stack = this.type.getNewStack();
-		stack.setTag(write(TagCW.create()));
+		stack.updateTag(write(TagCW.create()));
 		return stack;
 	}
 	

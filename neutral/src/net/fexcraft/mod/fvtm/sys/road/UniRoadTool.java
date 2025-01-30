@@ -107,7 +107,8 @@ public class UniRoadTool {
 			pass.bar("interact.fvtm.road_tool.too_long");
 			return false;
 		}
-		int[] layers = stack.getTag().getIntArray("RoadLayers");
+		TagCW tag = stack.copyTag();
+		int[] layers = tag.getIntArray("RoadLayers");
 		StackWrapper top = null;
 		StackWrapper bot = null;
 		StackWrapper left = null;
@@ -127,29 +128,29 @@ public class UniRoadTool {
 		ArrayList<ArrayList<QV3D>> linefill = null;
 		ArrayList<ArrayList<QV3D>> roadfill = null;
 		boolean flnk = false;
-		if(stack.getTag().has("RoadFill")){
-			road_b = UniStack.getStack(stack.getTag().getCompound("RoadFill"));
+		if(tag.has("RoadFill")){
+			road_b = UniStack.getStack(tag.getCompound("RoadFill"));
 			flnk = CompatUtil.isValidFurenikus(road_b.getIDL());
 		}
-		if(layers[1] > 0 && stack.getTag().has("BottomFill")){
-			bot = UniStack.getStack(stack.getTag().getCompound("BottomFill"));
+		if(layers[1] > 0 && tag.has("BottomFill")){
+			bot = UniStack.getStack(tag.getCompound("BottomFill"));
 			ground = new ArrayList<>();
 		}
-		if(layers[2] > 0 && stack.getTag().has("SideLeftFill")){
-			left = UniStack.getStack(stack.getTag().getCompound("SideLeftFill"));
+		if(layers[2] > 0 && tag.has("SideLeftFill")){
+			left = UniStack.getStack(tag.getCompound("SideLeftFill"));
 			border_hl = layers[2];
 			border_l = new ArrayList<>();
 		}
-		if(layers[3] > 0 && stack.getTag().has("SideRightFill")){
-			righ = UniStack.getStack(stack.getTag().getCompound("SideRightFill"));
+		if(layers[3] > 0 && tag.has("SideRightFill")){
+			righ = UniStack.getStack(tag.getCompound("SideRightFill"));
 			border_hr = layers[3];
 			border_r = new ArrayList<>();
 		}
-		if(layers[4] > 0 && stack.getTag().has("TopFill") && !stack.getTag().has("CustomTopFill")){
-			top = UniStack.getStack(stack.getTag().getCompound("TopFill"));
+		if(layers[4] > 0 && tag.has("TopFill") && !tag.has("CustomTopFill")){
+			top = UniStack.getStack(tag.getCompound("TopFill"));
 		}
-		if(layers[5] > 0 && stack.getTag().has("LinesFill") && !stack.getTag().has("CustomLinesFill")){
-			line_b = UniStack.getStack(stack.getTag().getCompound("LinesFill"));
+		if(layers[5] > 0 && tag.has("LinesFill") && !tag.has("CustomLinesFill")){
+			line_b = UniStack.getStack(tag.getCompound("LinesFill"));
 		}
 		top_h = border_hl > border_hr ? border_hl : border_hr;
 		if(top_h == 0){
@@ -163,20 +164,20 @@ public class UniRoadTool {
 		ArrayList<StackWrapper> roadfill_b = null;
 		ArrayList<StackWrapper> rooffill_b = null;
 		ArrayList<StackWrapper> linefill_b = null;
-		if(stack.getTag().has("CustomRoadFill")){
+		if(tag.has("CustomRoadFill")){
 			roadfill = new ArrayList<>();
 			roadfill_b = new ArrayList<>();
-			loadFill(roadfill, roadfill_b, layers[0], stack.getTag().getCompound("CustomRoadFill"));
+			loadFill(roadfill, roadfill_b, layers[0], tag.getCompound("CustomRoadFill"));
 		}
-		if(layers[4] > 0 && stack.getTag().has("CustomTopFill")){
+		if(layers[4] > 0 && tag.has("CustomTopFill")){
 			rooffill = new ArrayList<>();
 			rooffill_b = new ArrayList<>();
-			loadFill(rooffill, rooffill_b, layers[0], stack.getTag().getCompound("CustomTopFill"));
+			loadFill(rooffill, rooffill_b, layers[0], tag.getCompound("CustomTopFill"));
 		}
-		if(layers[5] > 0 && stack.getTag().has("CustomLinesFill")){
+		if(layers[5] > 0 && tag.has("CustomLinesFill")){
 			linefill = new ArrayList<>();
 			linefill_b = new ArrayList<>();
-			loadFill(linefill, linefill_b, layers[0], stack.getTag().getCompound("CustomLinesFill"));
+			loadFill(linefill, linefill_b, layers[0], tag.getCompound("CustomLinesFill"));
 		}
 		V3I pos = new V3I();
 		V3D last;
@@ -281,7 +282,8 @@ public class UniRoadTool {
 		}
 		pass.bar("interact.fvtm.road_tool.complete");
 		RoadPlacingCache.addEntry(pass.getUUID(), pass.dimid(), map);
-		stack.getTag().set("LastRoadDim", pass.dimid());
+		tag.set("LastRoadDim", pass.dimid());
+		stack.updateTag(tag);
 		return true;
 	}
 

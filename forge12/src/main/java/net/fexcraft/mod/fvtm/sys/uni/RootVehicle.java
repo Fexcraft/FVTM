@@ -29,7 +29,7 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.event.EventHandler;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.inv.StackWrapper;

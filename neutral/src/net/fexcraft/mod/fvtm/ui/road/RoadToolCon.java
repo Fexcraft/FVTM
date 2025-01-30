@@ -23,14 +23,13 @@ public class RoadToolCon extends ContainerInterface {
 	public RoadToolCon(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		stack = player.entity.getHeldItem(true);
-		stack.createTagIfMissing();
-		custom_road = stack.getTag().has("CustomRoadFill");
-		custom_top = stack.getTag().has("CustomTopFill");
-		custom_lines = stack.getTag().has("CustomLinesFill");
+		custom_road = stack.directTag().has("CustomRoadFill");
+		custom_top = stack.directTag().has("CustomTopFill");
+		custom_lines = stack.directTag().has("CustomLinesFill");
 		inventory = UniInventory.create(6).stacksize(1).name("Road Fill Inventory");
 		for(int i = 0; i < fills.length; i++){
-			if(stack.getTag().has(fills[i])){
-				inventory.set(i, stack.getTag().getCompound(fills[i]));
+			if(stack.directTag().has(fills[i])){
+				inventory.set(i, stack.directTag().getCompound(fills[i]));
 			}
 		}
 	}
@@ -45,7 +44,7 @@ public class RoadToolCon extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		switch(com.getString("cargo")){
 			case "save":{
-				stack.getTag().set("RoadLayers", com.getIntArray("sizes"));
+				stack.updateTag(tag -> tag.set("RoadLayers", com.getIntArray("sizes")));
 				break;
 			}
 			case "custom":{
@@ -53,10 +52,10 @@ public class RoadToolCon extends ContainerInterface {
 				break;
 			}
 			case "remove":{
-				stack.getTag().rem("Custom" + fills[com.getInteger("layer")]);
-				custom_road = stack.getTag().has("CustomRoadFill");
-				custom_top = stack.getTag().has("CustomTopFill");
-				custom_lines = stack.getTag().has("CustomLinesFill");
+				stack.updateTag(tag -> tag.rem("Custom" + fills[com.getInteger("layer")]));
+				custom_road = stack.directTag().has("CustomRoadFill");
+				custom_top = stack.directTag().has("CustomTopFill");
+				custom_lines = stack.directTag().has("CustomLinesFill");
 				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
@@ -66,14 +65,16 @@ public class RoadToolCon extends ContainerInterface {
 	@Override
 	public void onClosed(){
 		super.onClosed();
-		for(int i = 0; i < fills.length; i++){
-        	if(!inventory.empty(i)){
-				TagCW tag = TagCW.create();
-				inventory.get(i).save(tag);
-        		stack.getTag().set(fills[i], tag);
-        	}
-        	else stack.getTag().rem(fills[i]);
-        }
+		stack.updateTag(com -> {
+			for(int i = 0; i < fills.length; i++){
+				if(!inventory.empty(i)){
+					TagCW tag = TagCW.create();
+					inventory.get(i).save(tag);
+					com.set(fills[i], tag);
+				}
+				else com.rem(fills[i]);
+			}
+		});
 	}
 
 }

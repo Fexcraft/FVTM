@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util.function;
+package net.fexcraft.mod.fvtm.function.part;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,27 +6,23 @@ import java.util.List;
 import net.fexcraft.app.json.FJson;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerInit;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class InventoryFunction extends PartFunction {
 	
 	private InvHandler inventory;
-    private ArrayList<ItemStack> allowed = new ArrayList<ItemStack>();
-    private ArrayList<ItemStack> disallowed = new ArrayList<ItemStack>();
+    private ArrayList<StackWrapper> allowed = new ArrayList<>();
+    private ArrayList<StackWrapper> disallowed = new ArrayList<>();
     private ArrayList<String> seats = new ArrayList<String>();
 
 	/** Static Copy in Part. */
@@ -51,7 +47,11 @@ public class InventoryFunction extends PartFunction {
 			map.get("allowed").asArray().value.forEach(val -> {
 				try{
 					JsonMap jsn = val.asMap();
-					allowed.add(new ItemStack(Item.getByNameOrId(jsn.getString("id", "minecraft:stone")), 1, map.getInteger("meta", 0)));
+					StackWrapper stack = FvtmResources.newStack(IDLManager.getIDL(jsn.getString("id", "minecraft:stone")));
+					if(!stack.empty()){
+						if(jsn.has("meta")) stack.damage(jsn.getInteger("meta", 0));
+						allowed.add(stack);
+					}
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -62,7 +62,11 @@ public class InventoryFunction extends PartFunction {
 			map.get("disallowed").asArray().value.forEach(val -> {
 				try{
 					JsonMap jsn = val.asMap();
-					disallowed.add(new ItemStack(Item.getByNameOrId(jsn.getString("id", "minecraft:stone")), 1, map.getInteger("meta", 0)));
+					StackWrapper stack = FvtmResources.newStack(IDLManager.getIDL(jsn.getString("id", "minecraft:stone")));
+					if(!stack.empty()){
+						if(jsn.has("meta")) stack.damage(jsn.getInteger("meta", 0));
+						disallowed.add(stack);
+					}
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -94,31 +98,15 @@ public class InventoryFunction extends PartFunction {
 	public PartFunction copy(Part part){
 		return new InventoryFunction(this);
 	}
-
-	public boolean isInventoryType(InvType othertype){
-		return inventory.type == othertype;
-	}
-
-	public boolean isInventoryType(Capability<?> capability){
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return inventory.type.isItem();
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return inventory.type.isFluid();
-		return false;
-	}
-
-	public <T> T getInventory(Capability<?> capability){
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T)inventory.getStackHandler();
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return (T)inventory.getTank();
-		return null;
-	}
     
     public ArrayList<String> getSeats(){
     	return seats;
     }
     
-    public boolean isItemValid(ItemStack stack){
-        for(ItemStack itemstack : disallowed){
-            if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
-                if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){
+    public boolean isItemValid(StackWrapper stack){
+        for(StackWrapper itemstack : disallowed){
+            if(stack.getID().equals(itemstack.getID())){
+                if(itemstack.damage() == 0 || stack.damage() == itemstack.damage()){
                     return false;
                 }
             }
@@ -126,9 +114,9 @@ public class InventoryFunction extends PartFunction {
         //
         if(!allowed.isEmpty()){
             boolean found = false;
-            for(ItemStack itemstack : allowed){
-                if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
-                    if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){
+            for(StackWrapper itemstack : allowed){
+                if(stack.getID().equals(itemstack.getID())){
+                    if(itemstack.damage() == 0 || stack.damage() == itemstack.damage()){
                         found = true;
                         break;
                     }
@@ -136,16 +124,15 @@ public class InventoryFunction extends PartFunction {
             } return found;
         } return true;
     }
-
-    @Override
-    public void addInformation(StackWrapper stack, WorldW world, PartData data, List<String> tooltip, boolean ext){
-        tooltip.add(Formatter.format("&9Inventory Size: &7" + inventory.capacity() + " " + inventory.type.unit_suffix));
-        tooltip.add(Formatter.format("&9Inventory Type: &7" + inventory.type.name()));
-        if(inventory.type.isFluid()){
-			FluidTank tank = inventory.getTank();
-            tooltip.add(Formatter.format("&9Inv. Content: &7" + (tank.getFluidAmount() == 0 ? "empty" : tank.getFluid().getLocalizedName())));
-        }
-    }
+	@Override
+	public void addInformation(StackWrapper stack, WorldW world, PartData data, List<String> tooltip, boolean ext){
+		tooltip.add(Formatter.format("&9Inventory Size: &7" + inventory.capacity() + " " + inventory.type.unit_suffix));
+		tooltip.add(Formatter.format("&9Inventory Type: &7" + inventory.type.name()));
+		if(inventory.type.isFluid()){
+			//UniFluidTank tank = inventory.getTank();
+			//tooltip.add(Formatter.format("&9Inv. Content: &7" + (tank.amount() == 0 ? "empty" : tank.fluid_name())));
+		}
+	}
 
 	public InvHandler inventory(){
 		return inventory;

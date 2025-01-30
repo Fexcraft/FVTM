@@ -40,7 +40,7 @@ public abstract class ContentData<TYPE extends Content<TYPE>, SELF> {
 	public abstract JsonMap toJson();
 
 	public StackWrapper getNewStack(){
-		return type.getNewStack().setTag(write(null));
+		return type.getNewStack().updateTag(write(null));
 	}
 
 }

@@ -24,11 +24,10 @@ public class RoadToolCustomCon extends ContainerInterface {
 	public RoadToolCustomCon(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		stack = player.entity.getHeldItem(true);
-		stack.createTagIfMissing();
-		if(!stack.getTag().has("RoadLayers")){
-			stack.getTag().set("RoadLayers", size);
+		if(!stack.directTag().has("RoadLayers")){
+			stack.updateTag(tag -> tag.set("RoadLayers", size));
 		}
-		else size = stack.getTag().getIntArray("RoadLayers");
+		else size = stack.directTag().getIntArray("RoadLayers");
 		tagname = "Custom" + RoadToolCon.fills[pos.x];
 		offset = size[0] > 9 ? 9 * 9 : (size[0] * 9);
 		inventory = UniInventory.create(size[0] >= 9 ? 9 : size[0]);
@@ -65,8 +64,8 @@ public class RoadToolCustomCon extends ContainerInterface {
 	}
 
 	protected void fillStacks(){
-		if(!stack.getTag().has(tagname)) return;
-		TagCW compound = stack.getTag().getCompound(tagname);
+		if(!stack.directTag().has(tagname)) return;
+		TagCW compound = stack.directTag().getCompound(tagname);
 		for(int i = 0; i < 9; i++){
 			int j = i + scroll;
 			if(j >= size[0]) break;
@@ -80,7 +79,7 @@ public class RoadToolCustomCon extends ContainerInterface {
 
 	protected void saveStacks(){
 		try{
-			TagCW com = stack.getTag().has(tagname) ? stack.getTag().getCompound(tagname) : TagCW.create();
+			TagCW com = stack.directTag().has(tagname) ? stack.directTag().getCompound(tagname).copy() : TagCW.create();
 			com.set("Size", size[0]);
 			int is = size[0] > 9 ? 9 : size[0];
 			for(int i = 0; i < is; i++){
@@ -95,7 +94,7 @@ public class RoadToolCustomCon extends ContainerInterface {
 					com.set("Block" + j, tag);
 				}
 			}
-			stack.getTag().set(tagname, com);
+			stack.updateTag(tag -> tag.set(tagname, com));
 		}
 		catch(Exception e){
 			e.printStackTrace();

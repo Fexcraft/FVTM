@@ -5,7 +5,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;

@@ -109,8 +109,7 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 
 	@Override
 	public DecorationData getData(StackWrapper stack){
-		if(!stack.hasTag()) stack.setTag(TagCW.create());
-		return getData(stack.getTag());
+		return getData(stack.directTag());
 	}
 
 	@Override

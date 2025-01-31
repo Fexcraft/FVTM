@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.function.part;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.fexcraft.app.json.FJson;
@@ -64,6 +65,10 @@ public class InventoryFunction extends PartFunction {
 
 	public FvtmInv inventory(){
 		return inventory;
+	}
+
+	public ArrayList<String> access(){
+		return inventory.access;
 	}
 
 }

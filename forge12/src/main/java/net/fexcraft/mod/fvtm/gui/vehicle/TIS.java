@@ -29,7 +29,7 @@ public class TIS extends Slot {
         }
         if(stack.getItem() instanceof PartItem){
             PartData data = ((PartItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
-            if(data.hasFunction("fvtm:inventory") && !data.getFunction(InventoryFunction.class, "fvtm:inventory").inventory().getStacks().isEmpty()){
+            if(data.hasFunction("fvtm:inventory")){//TODO && !data.getFunction(InventoryFunction.class, "fvtm:inventory").inventory().getStacks().isEmpty()){
                 return false;
             }
         }

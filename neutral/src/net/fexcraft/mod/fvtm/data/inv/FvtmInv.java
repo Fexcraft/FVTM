@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.inv;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 
 import java.util.ArrayList;
 
@@ -32,5 +33,8 @@ public abstract class FvtmInv {
 	public abstract void load(TagCW com, String ctag);
 
 	public abstract <Inv extends FvtmInv> Inv copy();
+
+	/** Drops inventory's content at this entity's location. */
+	public abstract void clearAt(EntityW entity);
 
 }

@@ -23,6 +23,10 @@ public class FvtmInvItems extends FvtmInv {
 	public FvtmInvItems init(JsonMap map){
 		rows = map.getInteger("rows", 1);
 		cols = map.getInteger("cols", 1);
+		if(rows < 1) rows = 1;
+		if(rows > 7) rows = 7;
+		if(cols < 1) cols = 1;
+		if(cols > 9) cols = 9;
 		items = UniInventory.create(rows * cols);
 		if(map.has("filter")){
 			//TODO

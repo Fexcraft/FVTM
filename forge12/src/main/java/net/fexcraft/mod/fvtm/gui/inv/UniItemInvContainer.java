@@ -76,7 +76,7 @@ public class UniItemInvContainer extends GenericContainer {
 			for(Map.Entry<String, PartData> entry : entity.vehicle.data.getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 				if(inv == null || inv.inventory().type.isContainer()) continue;
-				if(seat == null ? inv.getSeats().contains(entity.vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.getSeats().contains(seat.seat.name)))){
+				if(seat == null ? inv.access().contains(entity.vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.access().contains(seat.seat.name)))){
 					if(invid == z){
 						inv_id = entry.getKey();
 						func = inv;
@@ -86,7 +86,7 @@ public class UniItemInvContainer extends GenericContainer {
 				}
 			}
 			if(inv_id == null) player.closeScreen();
-			invhandler = func.inventory();
+			//TODO invhandler = func.inventory();
 			title = entity.vehicle.data.getType().getName() + " - " + inv_id;
 		}
 		insert = UniInventory.create(1).cast();

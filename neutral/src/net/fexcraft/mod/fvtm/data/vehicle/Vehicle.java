@@ -18,6 +18,8 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
+import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable.ColorHolder;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
@@ -43,6 +45,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 	protected Map<String, Attribute<?>> attributes = new LinkedHashMap<>();
 	protected Map<String, WheelSlot> wheelpos = new LinkedHashMap<>();
 	protected Map<String, V3D> connectors = new LinkedHashMap<>();
+	protected Map<String, FvtmInv> definvs = new LinkedHashMap<>();
 	protected Model model;
 	protected ModelData modeldata;
 	protected List<IDL> textures;
@@ -225,6 +228,18 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 				}
 			}
 		}
+		if(map.has("Inventories")){
+			for(Entry<String, JsonValue<?>> entry : map.getMap("Inventories").entries()){
+				try{
+					JsonMap mep = entry.getValue().asMap();
+					InvType type = InvType.parse(mep.getString("type", "item"));
+					definvs.put(entry.getKey(), type.newInv());
+				}
+				catch(Exception e){
+					FvtmLogger.log(e, "vehicle inventory parsing");
+				}
+			}
+		}
 		return this;
 	}
 
@@ -389,6 +404,10 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 
 	public Map<String, V3D> getDefaultConnectors(){
 		return connectors;
+	}
+
+	public Map<String, FvtmInv> getDefaultInventories(){
+		return definvs;
 	}
 
 }

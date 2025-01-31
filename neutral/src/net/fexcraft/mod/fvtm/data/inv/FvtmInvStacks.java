@@ -4,6 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.uni.inv.UniInventory;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.world.EntityW;
 
 import java.util.ArrayList;
 
@@ -47,6 +48,18 @@ public class FvtmInvStacks extends FvtmInv {
 		for(TagCW com : list){
 			stacks.add(new StackEntry(com));
 		}
+	}
+
+	@Override
+	public void clearAt(EntityW entity){
+		for(StackEntry entry : stacks){
+			int am = entry.amount;
+			while(am - entry.stack.maxsize() > 0){
+				entity.drop(entry.stack, 0.5f);
+				am -= entry.stack.maxsize();
+			}
+		}
+		stacks.clear();
 	}
 
 	@Override

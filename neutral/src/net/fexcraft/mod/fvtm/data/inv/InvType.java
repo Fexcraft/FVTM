@@ -73,4 +73,17 @@ public enum InvType {
 		return null;
 	}
 
+	public FvtmInv newInv(){
+		switch(this){
+			case STACK: return new FvtmInvStacks();
+			case ITEM: return new FvtmInvItems();
+			case FLUID:
+			case ENERGY:
+			case CONTAINER:
+			case VARIABLE:
+			default:
+				return null;
+		}
+	}
+
 }

@@ -210,7 +210,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			for(String part : vehicle.data.getInventories()){
             	InventoryFunction func = vehicle.data.getPart(part).getFunction("fvtm:inventory");
             	if(func == null) continue;
-        		func.inventory().dropAllAt(this.getCapability(Capabilities.PASSENGER, null).asWrapper());
+        		func.inventory().clearAt(vehicle.entity);
             }
 		}
 		super.setDead();

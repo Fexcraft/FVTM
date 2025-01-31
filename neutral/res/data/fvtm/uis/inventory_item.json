@@ -1,0 +1,24 @@
+{
+	"_info_": "Fuel Filler UI",
+	"background": false,
+	"size": [ 176, 234 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/inventory_item.png",
+			"size": [ 176, 92 ],
+			"pos": [ 0, 142 ]
+		}
+	},
+	"slots": {
+		"player3x9": {
+			"pos": [ 8, 154 ],
+			"index": 9,
+			"repeat": [ 9, 3 ]
+		},
+		"player1x9": {
+			"pos": [ 8, 210 ],
+			"index": 0,
+			"repeat": [ 9, 1 ]
+		}
+	}
+}

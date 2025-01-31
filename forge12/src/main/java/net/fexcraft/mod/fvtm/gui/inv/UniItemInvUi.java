@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class UniItemInvUi extends GenericGui<UniItemInvContainer> {
 	
-	private static final ResourceLocation texture_item = new ResourceLocation("fvtm:textures/gui/inventory_item.png");
+	private static final ResourceLocation texture_item = new ResourceLocation("fvtm:textures/gui/inventory_stack.png");
 	
 	public UniItemInvUi(EntityPlayer player, World world, int ID, int x, int y, int z){
 		super(texture_item, new UniItemInvContainer(player, world, ID, x, y, z), player);

@@ -32,7 +32,7 @@ public class VehicleInventories extends UserInterface {
 		for(Map.Entry<String, PartData> entry : vehicle.data.getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 			if(inv == null || inv.inventory().type.isContainer()) continue;
-			if(seat == null ? inv.getSeats().contains(vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.getSeats().contains(seat.seat.name)))){
+			if(seat == null ? inv.access().contains(vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.access().contains(seat.seat.name)))){
 				inventories.add(inv);
 				inv_names.add(entry.getKey());
 			}

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.ui.vehicle;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class VehicleInventories extends UserInterface {
 
-	private ArrayList<InventoryFunction> inventories = new ArrayList<>();
+	private ArrayList<FvtmInv> inventories = new ArrayList<>();
 	private ArrayList<String> inv_names = new ArrayList<>();
 	private RGB[] colors = new RGB[8];
 	private VehicleInstance vehicle;
@@ -29,11 +30,15 @@ public class VehicleInventories extends UserInterface {
 		super(map, con);
 		vehicle = (VehicleInstance)container.get("vehicle");
 		SeatInstance seat = vehicle.getSeatOf(con.player.entity.direct());
+		for(int i = 0; i < vehicle.data.getVehInvKeys().size(); i++){
+			inventories.add(vehicle.data.getVehInventories().get(i));
+			inv_names.add(vehicle.data.getVehInvKeys().get(i));
+		}
 		for(Map.Entry<String, PartData> entry : vehicle.data.getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 			if(inv == null || inv.inventory().type.isContainer()) continue;
 			if(seat == null ? inv.access().contains(vehicle.data.getLock().isLocked() ? "external-locked" : "external") : (seat.seat.driver || (inv.access().contains(seat.seat.name)))){
-				inventories.add(inv);
+				inventories.add(inv.inventory());
 				inv_names.add(entry.getKey());
 			}
 		}
@@ -78,7 +83,7 @@ public class VehicleInventories extends UserInterface {
 			texts.get("inv_" + j).value(bool ? "" : inv_names.get(k));
 			buttons.get("inv_" + j).enabled(!bool);
 			if(!bool){
-				colors[j] = inventories.get(k).inventory().type.color;
+				colors[j] = inventories.get(k).type.color;
 			}
 			else{
 				colors[j] = RGB.WHITE;

@@ -5,6 +5,7 @@ import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniInventory;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -64,6 +65,16 @@ public class FvtmInvItems extends FvtmInv {
 				items.set(idx, stack);
 			}
 		}
+	}
+
+	@Override
+	public void clearAt(EntityW entity){
+		StackWrapper stack;
+		for(int i = 0; i < items.size(); i++){
+			if((stack = items.get(i)).empty()) continue;
+			entity.drop(stack, 0.5f);
+		}
+		items.clear();
 	}
 
 	@Override

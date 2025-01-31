@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.ui.vehicle;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
@@ -33,8 +34,16 @@ public class VehicleInventoriesCon extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		if(client || !com.has("open")) return;
 		InventoryFunction func = vehicle.data.getFunctionInPart(com.getString("open"), "fvtm:inventory");
-		UIKey ui = func.inventory().type.isItem() ? UIKeys.VEHICLE_INVENTORY_ITEM : UIKeys.VEHICLE_INVENTORY_FLUID;
-		player.entity.openUI(ui, pos.add(0, vehicle.data.getInventories().indexOf(com.getString("open")), 0));
+		if(func == null){
+			int idx = vehicle.data.getVehInvKeys().indexOf(com.getString("open"));
+			if(idx < 0) return;
+			UIKey ui = vehicle.data.getVehInventories().get(idx).type.isItem() ? UIKeys.VEHICLE_INVENTORY_ITEM : UIKeys.VEHICLE_INVENTORY_FLUID;
+			player.entity.openUI(ui, pos.add(0, idx, 0));
+		}
+		else{
+			UIKey ui = func.inventory().type.isItem() ? UIKeys.VEHICLE_INVENTORY_ITEM : UIKeys.VEHICLE_INVENTORY_FLUID;
+			player.entity.openUI(ui, pos.add(0, vehicle.data.getVehInvKeys().size() + vehicle.data.getInventories().indexOf(com.getString("open")), 0));
+		}
 	}
 
 }

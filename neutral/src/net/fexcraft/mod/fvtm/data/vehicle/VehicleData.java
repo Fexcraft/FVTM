@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
 import net.fexcraft.mod.fvtm.data.part.*;
 import net.fexcraft.mod.fvtm.data.root.*;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
@@ -45,6 +46,8 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected TreeMap<String, PartSlots> partproviders = new TreeMap<>();
 	protected TreeMap<String, InteractZone> interact_zones = new TreeMap<>();
+	protected ArrayList<String> vehinvkeys = new ArrayList<>();
+	protected ArrayList<FvtmInv> vehinvs = new ArrayList<>();
 	//protected ArrayList<VehicleScript> scripts = new ArrayList<>();
 	protected ArrayList<String> inventories = new ArrayList<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
@@ -92,6 +95,10 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 				}
 			}
 		}
+		for(Entry<String, FvtmInv> entry : type.definvs.entrySet()){
+			vehinvkeys.add(entry.getKey());
+			vehinvs.add(entry.getValue().copy());
+		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
 		conns.putAll(type.getDefaultConnectors());
@@ -138,6 +145,9 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			}
 			if(!cscripts.empty()) compound.set("Scripts", cscripts);
 		}*/
+		for(int i = 0; i < vehinvs.size(); i++){
+			vehinvs.get(i).save(compound, "Inv_" + vehinvkeys.get(i));
+		}
 		if(!rotpoints.isEmpty()){
 			TagCW csp = TagCW.create();
 			for(Entry<String, SwivelPoint> point : rotpoints.entrySet()){
@@ -215,6 +225,9 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 				}
 			}
 		}*/
+		for(int i = 0; i < vehinvs.size(); i++){
+			vehinvs.get(i).load(compound, "Inv_" + vehinvkeys.get(i));
+		}
 		if(compound.has("SwivelPoints")){
 			TagCW csp = compound.getCompound("SwivelPoints");
 			for(String key : csp.keys()){
@@ -813,6 +826,14 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 
 	public EventHolder getEventHolder(){
 		return holder;
+	}
+
+	public ArrayList<String> getVehInvKeys(){
+		return vehinvkeys;
+	}
+
+	public ArrayList<FvtmInv> getVehInventories(){
+		return vehinvs;
 	}
 
 }

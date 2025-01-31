@@ -32,8 +32,9 @@ public class UIKeys {
 	public static final int ID12_VEHICLE_ATTRIBUTES = 934;
 	public static final int ID12_VEHICLE_INVENTORIES = 935;
 	public static final int ID12_VEHICLE_INVENTORY_ITEM = 9361;
-	public static final int ID12_VEHICLE_INVENTORY_FLUID = 9362;
-	public static final int ID12_VEHICLE_INVENTORY_VAR = 9363;
+	public static final int ID12_VEHICLE_INVENTORY_STACK = 9362;
+	public static final int ID12_VEHICLE_INVENTORY_FLUID = 9363;
+	public static final int ID12_VEHICLE_INVENTORY_VAR = 9364;
 	public static final int ID12_VEHICLE_CONTAINERS = 937;
 	public static final int ID12_VEHICLE_CONNECTORS = 939;
 	public static final int ID12_BLOCK_INVENTORY_ITEM = 961;
@@ -57,9 +58,10 @@ public class UIKeys {
 	public static final UIKey VEHICLE_FUEL = new UIKey(ID12_VEHICLE_FUEL, "fvtm:vehicle_fuel");
 	public static final UIKey VEHICLE_ATTRIBUTES = new UIKey(ID12_VEHICLE_ATTRIBUTES, "fvtm:vehicle_attributes");
 	public static final UIKey VEHICLE_INVENTORIES = new UIKey(ID12_VEHICLE_INVENTORIES, "fvtm:vehicle_inventories");
-	public static final UIKey VEHICLE_INVENTORY_ITEM = new UIKey(ID12_VEHICLE_INVENTORY_ITEM, "fvtm:vehicle_inventory_item");
-	public static final UIKey VEHICLE_INVENTORY_FLUID = new UIKey(ID12_VEHICLE_INVENTORY_FLUID, "fvtm:vehicle_inventory_fluid");
-	public static final UIKey VEHICLE_INVENTORY_VAR = new UIKey(ID12_VEHICLE_INVENTORY_VAR, "fvtm:vehicle_inventory_var");
+	public static final UIKey VEHICLE_INVENTORY_ITEM = new UIKey(ID12_VEHICLE_INVENTORY_ITEM, "fvtm:vehicle_inv_item");
+	public static final UIKey VEHICLE_INVENTORY_STACK = new UIKey(ID12_VEHICLE_INVENTORY_STACK, "fvtm:vehicle_inv_stack");
+	public static final UIKey VEHICLE_INVENTORY_FLUID = new UIKey(ID12_VEHICLE_INVENTORY_FLUID, "fvtm:vehicle_inv_fluid");
+	public static final UIKey VEHICLE_INVENTORY_VAR = new UIKey(ID12_VEHICLE_INVENTORY_VAR, "fvtm:vehicle_inv_var");
 	public static final UIKey VEHICLE_CONTAINERS = new UIKey(ID12_VEHICLE_CONTAINERS, "fvtm:vehicle_containers");
 	public static final UIKey VEHICLE_CONNECTORS = new UIKey(ID12_VEHICLE_CONNECTORS, "fvtm:vehicle_connectors");
 	public static final UIKey DECORATION_EDITOR = new UIKey(ID12_DECORATION_EDITOR, "fvtm:decoration_editor");
@@ -101,6 +103,8 @@ public class UIKeys {
 		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
 		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
 		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VehicleFuelCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_INVENTORY_ITEM, UserInterface.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORY_ITEM, "fvtm:uis/inventory_item", ContainerInterface.class);
 	}
 
 }

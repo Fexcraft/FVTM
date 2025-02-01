@@ -85,9 +85,9 @@ public class FvtmInvItems extends FvtmInv {
 	@Override
 	public FvtmInvItems copy(){
 		FvtmInvItems inv = new FvtmInvItems();
+		copy(inv);
 		inv.rows = rows;
 		inv.cols = cols;
-		inv.access = access;
 		inv.items = UniInventory.create(rows * cols);
 		return inv;
 	}

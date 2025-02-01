@@ -83,8 +83,7 @@ public class BlockItem extends net.minecraft.world.item.BlockItem implements Con
 
 	@Override
 	public BlockData getData(StackWrapper stack){
-		if(!stack.hasTag()) stack.setTag(TagCW.create());
-		return getData(stack.getTag());
+		return getData(stack.directTag());
 	}
 
 	@Override

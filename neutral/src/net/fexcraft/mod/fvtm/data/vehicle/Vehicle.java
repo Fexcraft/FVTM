@@ -233,7 +233,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 				try{
 					JsonMap mep = entry.getValue().asMap();
 					InvType type = InvType.parse(mep.getString("type", "item"));
-					definvs.put(entry.getKey(), type.newInv());
+					definvs.put(entry.getKey(), type.newInv().init(mep));
 				}
 				catch(Exception e){
 					FvtmLogger.log(e, "vehicle inventory parsing");

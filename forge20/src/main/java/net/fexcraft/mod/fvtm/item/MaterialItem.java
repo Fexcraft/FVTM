@@ -79,7 +79,7 @@ public class MaterialItem extends Item implements ContentItem<Material>, Fuel.Fu
 	public Fuel getStoredFuelType(StackWrapper stack){
 		if(!material.isFuelContainer()) return null;
 		if(material.getFuelType() != null) return material.getFuelType();
-		if(stack.hasTag()) return getFuel(stack.getTag().getString("StoredFuelType"));
+		if(stack.hasTag()) return getFuel(stack.directTag().getString("StoredFuelType"));
 		else return null;
 	}
 
@@ -87,29 +87,31 @@ public class MaterialItem extends Item implements ContentItem<Material>, Fuel.Fu
 	public String getStoredFuelName(StackWrapper stack){
 		if(!material.isFuelContainer()) return "Nothing.";
 		if(material.getFuelType() != null) return material.getFuelType().getName();
-		if(stack.hasTag()) return FvtmRegistry.getFuelName(stack.getTag().getString("StoredFuelType"));
+		if(stack.hasTag()) return FvtmRegistry.getFuelName(stack.directTag().getString("StoredFuelType"));
 		else return "none";
 	}
 
 	@Override
 	public int getStoredFuelAmount(StackWrapper stack){
 		if(!material.isFuelContainer() || !stack.hasTag()) return 0;
-		return stack.getTag().getInteger("StoredFuelAmount");
+		return stack.directTag().getInteger("StoredFuelAmount");
 	}
 
 	@Override
 	public void extractFuel(StackWrapper stack, int stored){
-		stack.createTagIfMissing();
-		stack.getTag().set("StoredFuelAmount", stack.getTag().getInteger("StoredFuelAmount") - stored);
-		if(stack.getTag().getInteger("StoredFuelAmount") < 0) stack.getTag().set("StoredFuelAmount", 0);
+		stack.updateTag(tag -> {
+			tag.set("StoredFuelAmount", tag.getInteger("StoredFuelAmount") - stored);
+			if(tag.getInteger("StoredFuelAmount") < 0) tag.set("StoredFuelAmount", 0);
+		});
 	}
 
 	@Override
 	public void insertFuel(StackWrapper stack, int stored){
-		stack.createTagIfMissing();
-		stack.getTag().set("StoredFuelAmount", stack.getTag().getInteger("StoredFuelAmount") + stored);
-		if(stack.getTag().getInteger("StoredFuelAmount") > material.getFuelCapacity())
-			stack.getTag().set("StoredFuelAmount", material.getFuelCapacity());
+		stack.updateTag(tag -> {
+			tag.set("StoredFuelAmount", tag.getInteger("StoredFuelAmount") + stored);
+			if(tag.getInteger("StoredFuelAmount") > material.getFuelCapacity())
+				tag.set("StoredFuelAmount", material.getFuelCapacity());
+		});
 	}
 
 }

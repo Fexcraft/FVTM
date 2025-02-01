@@ -20,6 +20,7 @@ public class FvtmInvItems extends FvtmInv {
 		super(InvType.ITEM);
 	}
 
+	@Override
 	public FvtmInvItems init(JsonMap map){
 		rows = map.getInteger("rows", 1);
 		cols = map.getInteger("cols", 1);

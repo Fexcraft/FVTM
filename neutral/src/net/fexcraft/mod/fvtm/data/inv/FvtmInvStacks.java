@@ -65,8 +65,8 @@ public class FvtmInvStacks extends FvtmInv {
 	@Override
 	public FvtmInvStacks copy(){
 		FvtmInvStacks inv = new FvtmInvStacks();
+		copy(inv);
 		inv.capacity = capacity;
-		inv.access = access;
 		return inv;
 	}
 

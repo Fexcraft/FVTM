@@ -6,9 +6,7 @@ import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
-import net.fexcraft.mod.uni.ui.UserInterface;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -103,8 +101,8 @@ public class UIKeys {
 		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
 		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
 		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VehicleFuelCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_INVENTORY_ITEM, UserInterface.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORY_ITEM, "fvtm:uis/inventory_item", ContainerInterface.class);
+		UniReg.registerUI(UIKeys.VEHICLE_INVENTORY_ITEM, VehicleInvItems.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORY_ITEM, "fvtm:uis/inventory_item", VehicleInvItemsCon.class);
 	}
 
 }

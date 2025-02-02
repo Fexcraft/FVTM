@@ -72,7 +72,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		//
 		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
 		//EffectRenderer.renderContainerInfo(rv, rot);
-		//EffectRenderer.renderSeats(rv.vehicle);
+		EffectRenderer.renderSeatsAndInvs(rv.vehicle);
         GL11.glPopMatrix();
     }
     

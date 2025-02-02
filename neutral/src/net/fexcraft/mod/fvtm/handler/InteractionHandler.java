@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
@@ -33,8 +35,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
 
@@ -75,15 +77,44 @@ public class InteractionHandler {
 			}
 			return false;
 		}
-		List<Attribute<?>> attributes = vehdata.getAttributes().values().stream().filter(attr -> attr.hasBoxes() && (attr.valuetype.isTristate() || attr.valuetype.isNumber()) && (seat == null ? attr.external : (seat.seat.driver || attr.access.contains(seat.seat.name)))).collect(Collectors.toList());
-		if(attributes.size() == 0) return false;
-		ArrayList<AttrInteractive> list = new ArrayList<>();
-		attributes.forEach(attr -> list.add(new AttrInteractive(attr)));
-		AttrInteractive inter = getInteracted(seat == null, vehdata, ref, pass, list);
-		if(inter == null) return false;
-		Attribute<?> attr = inter.attribute;
-		if(attr.id.equals(last) && Time.getDate() < cooldown) return true;
-		return toggle(attr, vehdata, ref, key, null, pass);
+		List<Attribute<?>> attributes = vehdata.getAttributes().values().stream().filter(attr -> attr.hasBoxes() && (attr.valuetype.isTristate() || attr.valuetype.isNumber()) && (seat == null ? attr.external : (seat.seat.driver || attr.access.contains(seat.seat.name)))).collect(toList());
+		if(attributes.size() > 0){
+			ArrayList<AttrInteractive> list = new ArrayList<>();
+			attributes.forEach(attr -> list.add(new AttrInteractive(attr)));
+			AttrInteractive inter = getInteracted(seat == null, vehdata, ref, pass, list);
+			if(inter != null){
+				Attribute<?> attr = inter.attribute;
+				if(attr.id.equals(last) && Time.getDate() < cooldown) return true;
+				return toggle(attr, vehdata, ref, key, null, pass);
+			}
+		}
+		if(!ref.isVehicle()) return false;
+		if(vehdata.getVehInventories().size() == 0 && vehdata.getInventories().size() == 0) return false;
+		ArrayList<InvInteractive> invs = new ArrayList<>();
+		FvtmInv inv;
+		for(int i = 0; i < vehdata.getVehInvKeys().size(); i++){
+			inv = vehdata.getVehInventories().get(i);
+			if(seat == null ? inv.external : (seat.seat.driver || inv.access.contains(seat.seat.name))){
+				invs.add(new InvInteractive(vehdata.getVehInvKeys().get(i), inv, null, i));
+			}
+		}
+		for(int i = 0; i < vehdata.getInventories().size(); i++){
+			InventoryFunction func = vehdata.getFunctionInPart(vehdata.getInventories().get(i), "fvtm:inventory");
+			if(func == null) continue;
+			inv = func.inventory();
+			if(seat == null ? inv.external : (seat.seat.driver || inv.access.contains(seat.seat.name))){
+				invs.add(new InvInteractive(vehdata.getInventories().get(i), inv, null, vehdata.getVehInvKeys().size() + i));
+			}
+		}
+		InvInteractive inter = getInteracted(seat == null, vehdata, ref, pass, invs);
+		if(inter != null){
+			if(inter.key.equals(last) && Time.getDate() < cooldown) return true;
+			last = inter.key;
+			cooldown = Time.getDate() + 20;
+			pass.openUI(inter.inv.getUIKey(ContentType.VEHICLE), ref.inst.entity.getId(), inter.index, 0);
+			return true;
+		}
+		return false;
 	}
 
 	private static boolean tryInstall(VehicleData vehdata, InteractRef ref, PartData data, SeatInstance seat, Passenger pass){
@@ -267,8 +298,10 @@ public class InteractionHandler {
 		return true;
 	}
 
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type };
+
 	public static boolean handle(KeyPress key, StackWrapper stack){
-		if(!stack.empty() && !stack.isItemOfAny(ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type)) return false;
+		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
 		if((stack.isItemOf(ContentType.WIRE.item_type) || (stack.isItemOf(ContentType.TOOLBOX.item_type) && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
@@ -503,6 +536,42 @@ public class InteractionHandler {
 		public void collect(boolean external, VehicleData data, InteractRef ref, Passenger player, Map<String, AABB> aabbs){
 			V3D pos = data.getRotationPoint(SwivelPoint.DEFAULT).getRelativeVector(wheel.position).add(ref.pos);
 			double hs = wheel.max_radius * .5;
+			aabbs.put(id(), AABB.create(pos.x - hs, pos.y - hs, pos.z - hs, pos.x + hs, pos.y + hs, pos.z + hs));
+		}
+
+	}
+
+	public static class InvInteractive implements Interactive {
+
+		private String key;
+		private FvtmInv inv;
+		private PartData part;
+		private int index;
+
+		public InvInteractive(String id, FvtmInv finv, PartData data, int idx){
+			key = id;
+			inv = finv;
+			part = data;
+			index = idx;
+		}
+
+		@Override
+		public String id(){
+			return (part == null ? "part-" : "") + key;
+		}
+
+		@Override
+		public void collect(boolean external, VehicleData data, InteractRef ref, Passenger player, Map<String, AABB> aabbs){
+			V3D pos;
+			if(part != null){
+				pos = data.getRotationPoint(part.getSwivelPointInstalledOn())
+					.getRelativeVector(part.getInstalledPos().add(inv.pos)).add(ref.pos);
+			}
+			else{
+				pos = data.getRotationPoint(SwivelPoint.DEFAULT)
+					.getRelativeVector(inv.pos).add(ref.pos);
+			}
+			double hs = inv.scale * .5;
 			aabbs.put(id(), AABB.create(pos.x - hs, pos.y - hs, pos.z - hs, pos.x + hs, pos.y + hs, pos.z + hs));
 		}
 

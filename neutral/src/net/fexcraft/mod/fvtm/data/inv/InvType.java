@@ -77,7 +77,7 @@ public enum InvType {
 		switch(this){
 			case STACK: return new FvtmInvStacks();
 			case ITEM: return new FvtmInvItems();
-			case FLUID:
+			case FLUID: return new FvtmInvFluid();
 			case ENERGY:
 			case CONTAINER:
 			case VARIABLE:

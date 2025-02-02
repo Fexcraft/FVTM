@@ -836,4 +836,15 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return vehinvs;
 	}
 
+	public FvtmInv getInvByIdx(int idx){
+		if(idx < vehinvkeys.size()){
+			return vehinvs.get(idx);
+		}
+		else{
+			idx -= vehinvkeys.size();
+			InventoryFunction func = getFunctionInPart(inventories.get(idx), "fvtm:inventory");
+			return func.inventory();
+		}
+	}
+
 }

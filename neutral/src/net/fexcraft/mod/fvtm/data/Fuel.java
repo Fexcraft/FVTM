@@ -46,6 +46,10 @@ public class Fuel extends Content<Fuel> {
 		return secondary;
 	}
 
+	public boolean isSourceFluid(String fluid_id){
+		return false;
+	}
+
 	public static interface FuelItem {
 
 		public Fuel getStoredFuelType(StackWrapper stack);

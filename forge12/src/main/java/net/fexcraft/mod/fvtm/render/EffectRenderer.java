@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
+import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
@@ -21,10 +22,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
-import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12.LightBeam;
@@ -422,24 +421,27 @@ public class EffectRenderer {
     	}
 	}
 
-	public static void renderSeats(VehicleInstance vehicle){
+	public static void renderSeatsAndInvs(VehicleInstance vehicle){
 		if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
 		preMeshCalls();
 		GL11.glPushMatrix();
 		for(SeatInstance seat : vehicle.seats){
-			if(seat.point.isVehicle()){
-				GLUtils112.translate(seat.seat.pos);
-			}
-			else{
-				GL11.glPushMatrix();
-				GLUtils112.translate(seat.point.getRelativeVector(seat.seat.pos));
+			GL11.glPushMatrix();
+			GLUtils112.translate(seat.point.getRelativeVector(seat.seat.pos));
+			if(!seat.point.isVehicle()){
 				GL11.glRotatef(seat.point.getPivot().deg_yaw(), 0, 1, 0);
 				GL11.glRotatef(seat.point.getPivot().deg_pitch(), 1, 0, 0);
 				GL11.glRotatef(seat.point.getPivot().deg_roll(), 0, 0, 1);
 			}
 			(seat.passenger() != null ? SEAT_CUBE_OCCUPIED : seat.seat.sitting ? SEAT_CUBE_SITTING : SEAT_CUBE_STANDING).render(0.5f * seat.seat.scale());
-			if(!seat.point.isVehicle()) GL11.glPopMatrix();
-			else GLUtils112.translateR(seat.seat.pos);
+			GL11.glPopMatrix();
+		}
+		for(int i = 0; i < vehicle.data.getVehInvKeys().size(); i++){
+			FvtmInv inv = vehicle.data.getVehInventories().get(i);
+			GL11.glPushMatrix();
+			GLUtils112.translate(vehicle.pivot().get_vector(inv.pos));
+			CUBE_YLW.render(inv.scale);
+			GL11.glPopMatrix();
 		}
 		GL11.glPopMatrix();
 		postMeshCalls();

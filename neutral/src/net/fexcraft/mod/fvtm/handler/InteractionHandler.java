@@ -94,7 +94,7 @@ public class InteractionHandler {
 		FvtmInv inv;
 		for(int i = 0; i < vehdata.getVehInvKeys().size(); i++){
 			inv = vehdata.getVehInventories().get(i);
-			if(seat == null ? inv.external : (seat.seat.driver || inv.access.contains(seat.seat.name))){
+			if(!inv.pos.isNull() && seat == null ? inv.external : (seat.seat.driver || inv.access.contains(seat.seat.name))){
 				invs.add(new InvInteractive(vehdata.getVehInvKeys().get(i), inv, null, i));
 			}
 		}

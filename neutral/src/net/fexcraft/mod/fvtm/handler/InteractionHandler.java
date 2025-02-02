@@ -111,7 +111,11 @@ public class InteractionHandler {
 			if(inter.key.equals(last) && Time.getDate() < cooldown) return true;
 			last = inter.key;
 			cooldown = Time.getDate() + 20;
-			pass.openUI(inter.inv.getUIKey(ContentType.VEHICLE), ref.inst.entity.getId(), inter.index, 0);
+			TagCW com = TagCW.create();
+			com.set("inventory", inter.index);
+			com.set("type", ContentType.VEHICLE.name());
+			ref.setPacket(com);
+			Packets.send(Packet_TagListener.class, "open_inv", com);
 			return true;
 		}
 		return false;

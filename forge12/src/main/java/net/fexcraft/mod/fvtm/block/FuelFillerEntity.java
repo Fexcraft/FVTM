@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.mod.fvtm.data.FuelFiller;
+import net.fexcraft.mod.uni.inv.UniFluidTank;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -66,10 +67,10 @@ public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFille
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return (T)filler.items;
+            return filler.items.cast();
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return null;
+            return filler.tank.local();
         }
         return super.getCapability(capability, facing);
     }

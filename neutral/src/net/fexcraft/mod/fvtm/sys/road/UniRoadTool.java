@@ -54,19 +54,19 @@ public class UniRoadTool {
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.road_fill_custom", new Object[]{ layers[0] })));
 			}
 			else{
-				stack = UniStack.getStack(com.getCompound("RoadFill"));
+				stack = UniStack.createStack(com.getCompound("RoadFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.road_fill", new Object[]{ stack.getName(), stack.count() })));
 			}
 			if(com.has("BottomFill") && layers[1] > 0){
-				stack = UniStack.getStack(com.getCompound("BottomFill"));
+				stack = UniStack.createStack(com.getCompound("BottomFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.ground_fill", new Object[]{ stack.getName() })));
 			}
 			if(com.has("SideLeftFill") && layers[2] > 0){
-				stack = UniStack.getStack(com.getCompound("SideLeftFill"));
+				stack = UniStack.createStack(com.getCompound("SideLeftFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.left_fill", new Object[]{ stack.getName(), layers[2] })));
 			}
 			if(com.has("SideRightFill") && layers[2] > 0){
-				stack = UniStack.getStack(com.getCompound("SideRightFill"));
+				stack = UniStack.createStack(com.getCompound("SideRightFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.right_fill", new Object[]{ stack.getName(), layers[3] })));
 			}
 			//
@@ -74,7 +74,7 @@ public class UniRoadTool {
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.top_fill_custom", new Object[]{ layers[0] })));
 			}
 			else if(com.has("TopFill") && layers[4] > 0){
-				stack = UniStack.getStack(com.getCompound("TopFill"));
+				stack = UniStack.createStack(com.getCompound("TopFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.top_fill", new Object[]{ stack.getName(), stack.count() })));
 			}
 			//

@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.FuelFiller;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.inv.UniFluidTank;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
@@ -38,7 +39,7 @@ public class FuelFillerCon extends ContainerInterface {
 
 	@Override
 	public void update(Object localcon){
-
+		//TODO send sync packet
 	}
 
 }

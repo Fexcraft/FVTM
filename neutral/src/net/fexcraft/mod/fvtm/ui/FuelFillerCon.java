@@ -16,6 +16,7 @@ public class FuelFillerCon extends ContainerInterface {
 
 	protected FuelFiller.FuelFillerContainer tile;
 	protected FuelFiller filler;
+	protected int timer = 10;
 
 	public FuelFillerCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
@@ -35,11 +36,25 @@ public class FuelFillerCon extends ContainerInterface {
 			}
 			else SEND_TO_CLIENT.accept(com, player);
 		}
+		if(com.has("sync") && client){
+			filler.stored = com.getInteger("s");
+			filler.converted = com.getInteger("c");
+		}
 	}
 
 	@Override
 	public void update(Object localcon){
-		//TODO send sync packet
+		if(player.entity.isOnClient()) return;
+		if(timer > 0){
+			timer--;
+			return;
+		}
+		timer = 10;
+		TagCW com = TagCW.create();
+		com.set("sync", true);
+		com.set("s", filler.stored);
+		com.set("c", filler.converted);
+		SEND_TO_CLIENT.accept(com, player);
 	}
 
 }

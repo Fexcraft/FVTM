@@ -15,6 +15,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
+import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCKS_SEPARATELY;
+
 @fTESR
 public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity> {
 	
@@ -23,6 +25,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
 
     @Override
     public void render(BlockTileEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+        if(RENDER_BLOCKS_SEPARATELY) return;
         if((data = tile.getBlockData()) == null) return;
         model = (BlockModel)data.getType().getModel();
         if(model == null){

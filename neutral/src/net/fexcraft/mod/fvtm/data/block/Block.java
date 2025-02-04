@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -291,6 +292,9 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		else if(type.equals("collision")){
 			if(aabbs.containsKey("collision#" + state)) return aabbs.get("collision#" + state);
 			if(aabbs.containsKey("collision#normal")) return aabbs.get("collision#normal");
+		}
+		else if(type.equals("render") && aabbs.containsKey("render")){
+			return aabbs.get("render");
 		}
 		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : AABBs.FULL;
 	}

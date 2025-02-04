@@ -166,7 +166,7 @@ public class RoadPlacingUtil {
 				return;
 			}
 			if(!UniRoadTool.placeRoad(pass, stack, new Road(nroad.points.toArray(new QV3D[0])))) return;
-			pass.send("&o> Road Created.");
+			pass.send("interact.fvtm.road_tool.complete");
 			nroad.reset();
 		}
 

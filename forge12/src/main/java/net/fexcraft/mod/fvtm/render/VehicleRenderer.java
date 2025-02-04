@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
@@ -22,6 +23,7 @@ import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
@@ -31,6 +33,9 @@ public class VehicleRenderer {
 	
 	private static final MutableBlockPos pos =  new BlockPos.MutableBlockPos(0, 0, 0);
 	private static final ArrayList<Entity> entities = new ArrayList<>();
+	private static AxisAlignedBB box;
+	private static float ran;
+	private static V3D iz;
 	
     public static void renderVehicles(World world, double cx, double cy, double cz, float ticks){
     	if(!RENDER_VEHICLES_SEPARATELY) return;
@@ -46,7 +51,7 @@ public class VehicleRenderer {
             x = vehicle.lastTickPosX + (vehicle.posX - vehicle.lastTickPosX) * ticks;
             y = vehicle.lastTickPosY + (vehicle.posY - vehicle.lastTickPosY) * ticks;
             z = vehicle.lastTickPosZ + (vehicle.posZ - vehicle.lastTickPosZ) * ticks;
-        	if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(vehicle.renderbox == null ? vehicle.getEntityBoundingBox() : vehicle.renderbox.offset(x, y, z))) continue;
+			if(!inView(vehicle, x, y, z));
         	//
         	SeparateRenderCache.SORTED_VEH_POS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x - cx, y - cy, z - cz);
@@ -113,6 +118,18 @@ public class VehicleRenderer {
         }
 		GL11.glPopMatrix();
     }
+
+	private static boolean inView(RootVehicle ent, double x, double y, double z){
+		for(InteractZone value : ent.vehicle.data.getInteractZones().values()){
+			iz = value.pos(ent.vehicle.data).add(x, y, z);
+			ran = value.range;
+			box = new AxisAlignedBB(iz.x - ran, iz.y - ran, iz.z - ran, iz.x + ran, iz.y + ran, iz.z + ran);
+			if(RenderView.FRUSTUM.isBoundingBoxInFrustum(box)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static void renderPoint(SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
 		ArrayList<Entry<String, PartData>> parts = data.sorted_parts.get(point.id);

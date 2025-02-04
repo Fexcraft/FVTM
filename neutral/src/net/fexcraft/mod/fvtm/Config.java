@@ -32,6 +32,7 @@ public class Config extends ConfigBase {
 	public static boolean RENDER_VEHILE_MODELS_AS_ITEMS;
 	public static boolean DISABLE_LIGHT_BEAMS;
 	public static boolean RENDER_VEHICLES_SEPARATELY;
+	public static boolean RENDER_BLOCKS_SEPARATELY;
 	public static boolean DISABLE_PARTICLES;
 	public static int BLINKER_INTERVAL;
 	//uni/proto
@@ -116,8 +117,11 @@ public class Config extends ConfigBase {
 			.info("If light beam rendering should be disabled.")
 			.cons((con, map) -> DISABLE_LIGHT_BEAMS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catc, "render_vehicles_separately", new JsonValue(true))
-			.info("If vehicles should be rendered separately new a new render pass. Allows for higher view distance.")
+			.info("If vehicles should be rendered separately in a new render pass. Allows for higher view distance.")
 			.cons((con, map) -> RENDER_VEHICLES_SEPARATELY = con.getBoolean(map)));
+		entries.add(new ConfigEntry(this, catc, "render_blocks_separately", new JsonValue(true))
+			.info("If blocks (with entity) should be rendered separately in a new render pass. Allows for higher view distance.")
+			.cons((con, map) -> RENDER_BLOCKS_SEPARATELY = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catc, "disable_particles", new JsonValue(false))
 			.info("If FVTM particles (particle system) should be disabled.")
 			.cons((con, map) -> DISABLE_PARTICLES = con.getBoolean(map)));

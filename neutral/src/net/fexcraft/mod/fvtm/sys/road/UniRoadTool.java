@@ -82,7 +82,7 @@ public class UniRoadTool {
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.lines_fill_custom", new Object[]{ layers[0] })));
 			}
 			else if(com.has("LinesFill") && layers[5] > 0){
-				stack = UniStack.getStack(com.getCompound("LinesFill"));
+				stack = UniStack.createStack(com.getCompound("LinesFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.lines_fill", new Object[]{ stack.getName(), stack.count() })));
 			}
 			list.add(format(translator.apply("tooltip.fvtm.road_tool.undo", NA)));
@@ -129,28 +129,28 @@ public class UniRoadTool {
 		ArrayList<ArrayList<QV3D>> roadfill = null;
 		boolean flnk = false;
 		if(tag.has("RoadFill")){
-			road_b = UniStack.getStack(tag.getCompound("RoadFill"));
+			road_b = UniStack.createStack(tag.getCompound("RoadFill"));
 			flnk = CompatUtil.isValidFurenikus(road_b.getIDL());
 		}
 		if(layers[1] > 0 && tag.has("BottomFill")){
-			bot = UniStack.getStack(tag.getCompound("BottomFill"));
+			bot = UniStack.createStack(tag.getCompound("BottomFill"));
 			ground = new ArrayList<>();
 		}
 		if(layers[2] > 0 && tag.has("SideLeftFill")){
-			left = UniStack.getStack(tag.getCompound("SideLeftFill"));
+			left = UniStack.createStack(tag.getCompound("SideLeftFill"));
 			border_hl = layers[2];
 			border_l = new ArrayList<>();
 		}
 		if(layers[3] > 0 && tag.has("SideRightFill")){
-			righ = UniStack.getStack(tag.getCompound("SideRightFill"));
+			righ = UniStack.createStack(tag.getCompound("SideRightFill"));
 			border_hr = layers[3];
 			border_r = new ArrayList<>();
 		}
 		if(layers[4] > 0 && tag.has("TopFill") && !tag.has("CustomTopFill")){
-			top = UniStack.getStack(tag.getCompound("TopFill"));
+			top = UniStack.createStack(tag.getCompound("TopFill"));
 		}
 		if(layers[5] > 0 && tag.has("LinesFill") && !tag.has("CustomLinesFill")){
-			line_b = UniStack.getStack(tag.getCompound("LinesFill"));
+			line_b = UniStack.createStack(tag.getCompound("LinesFill"));
 		}
 		top_h = border_hl > border_hr ? border_hl : border_hr;
 		if(top_h == 0){
@@ -300,7 +300,7 @@ public class UniRoadTool {
 			fill.add(new ArrayList<>());
 			StackWrapper stack = StackWrapper.EMPTY;
 			if(com.has("Block" + i)){
-				stack = UniStack.getStack(com.getCompound("Block" + i));
+				stack = UniStack.createStack(com.getCompound("Block" + i));
 			}
 			bill.add(stack);
 		}

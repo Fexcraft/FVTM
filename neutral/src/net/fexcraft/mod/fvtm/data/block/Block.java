@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

@@ -80,7 +80,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public VehicleInstance vehicle;
 	public HashMap<String, NWheelEntity> wheels = new HashMap<>();
-	public AxisAlignedBB renderbox;
 	public float rotationRoll = 0;
 	public float prevRotationRoll = 0;
 	public float wheel_radius = 0;
@@ -135,8 +134,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			vehicle.sendUpdate(PKT_UPD_CONNECTOR);
 		}
 		if(world.isRemote){
-			float cr = vehicle.data.getAttributeFloat("collision_range", 2f);
-			renderbox = new AxisAlignedBB(-cr, -cr, -cr, cr, cr, cr);
 			//TODO register for particles
 		}
 	}

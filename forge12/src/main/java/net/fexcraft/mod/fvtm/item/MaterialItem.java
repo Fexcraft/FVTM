@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -15,7 +14,6 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -36,14 +34,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class MaterialItem extends Item implements ContentItem<Material>, LockableItem, TextureableItem<Material>, Fuel.FuelItem {
+public class MaterialItem extends Item implements ContentItem<Material>, LockableItem, TextureableItem<Material> {
 
-	private SWI wrapper = new SWI(ItemStack.EMPTY);
 	private Material material;
 
     public MaterialItem(Material content){
@@ -70,10 +66,10 @@ public class MaterialItem extends Item implements ContentItem<Material>, Lockabl
         	tooltip.add(Formatter.format("&9LockCode: &7" + this.getLockCode(UniStack.getStack(stack))));
         }
         if(material.isFuelContainer()){
-			wrapper.stack = stack;
+			StackWrapper wrapper = UniStack.getStack(stack);
         	tooltip.add(Formatter.format("&9Container: &7" + (material.isUniversalFuelContainer() ? "universal" : material.getFuelType() == null ? material.getFuelGroup() : material.getFuelType().getName())));
-        	tooltip.add(Formatter.format("&9Fuel Stored: &7" + this.getStoredFuelName(wrapper)));
-        	tooltip.add(Formatter.format("&9Fuel Amount: &7" + this.getStoredFuelAmount(wrapper) + "mB"));
+        	tooltip.add(Formatter.format("&9Fuel Stored: &7" + Fuel.getStoredName(wrapper)));
+        	tooltip.add(Formatter.format("&9Fuel Amount: &7" + Fuel.getStoredAmount(wrapper) + "mB"));
         }
         if(material.getImpactLevel() > -1){
         	tooltip.add(Formatter.format("&9Impact Wrench Level: &7" + material.getImpactLevel()));
@@ -122,44 +118,6 @@ public class MaterialItem extends Item implements ContentItem<Material>, Lockabl
 		if(!material.isVehicleKey()) return null;
 		if(!stack.directTag().has("LockCode")) stack.updateTag(tag -> tag.set("LockCode", Lockable.newCode()));
 		return stack.directTag().getString("LockCode");
-	}
-
-	@Override
-	public Fuel getStoredFuelType(StackWrapper stack){
-    	if(!material.isFuelContainer()) return null;
-		if(material.getFuelType() != null) return material.getFuelType();
-    	if(stack.hasTag()) return getFuel(stack.directTag().getString("StoredFuelType"));
-    	else return null;
-	}
-
-	@Override
-    public String getStoredFuelName(StackWrapper stack){
-    	if(!material.isFuelContainer()) return "Nothing.";
-		if(material.getFuelType() != null) return material.getFuelType().getName();
-    	if(stack.hasTag()) return FvtmRegistry.getFuelName(stack.directTag().getString("StoredFuelType"));
-    	else return "none";
-    }
-
-	@Override
-	public int getStoredFuelAmount(StackWrapper stack){
-    	if(!material.isFuelContainer() || !stack.hasTag()) return 0;
-    	return stack.directTag().getInteger("StoredFuelAmount");
-	}
-
-	@Override
-	public void extractFuel(StackWrapper stack, int stored){
-		stack.updateTag(tag -> {
-			tag.set("StoredFuelAmount", tag.getInteger("StoredFuelAmount") - stored);
-			if(tag.getInteger("StoredFuelAmount") < 0) tag.set("StoredFuelAmount", 0);
-		});
-	}
-
-	@Override
-	public void insertFuel(StackWrapper stack, int stored){
-		stack.updateTag(tag -> {
-			tag.set("StoredFuelAmount", tag.getInteger("StoredFuelAmount") + stored);
-			if(tag.getInteger("StoredFuelAmount") > material.getFuelCapacity()) tag.set("StoredFuelAmount", material.getFuelCapacity());
-		});
 	}
 
 }

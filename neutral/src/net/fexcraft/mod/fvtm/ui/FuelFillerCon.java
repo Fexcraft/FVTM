@@ -29,7 +29,7 @@ public class FuelFillerCon extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		if(com.has("sel")){
 			filler.selected = FvtmRegistry.getFuel(com.getString("sel"));
-			filler.stored = 0;
+			filler.tank.clear();
 			filler.converted = 0;
 			if(client){
 				((FuelFillerUI)ui).updateSelectedText(true);
@@ -37,7 +37,7 @@ public class FuelFillerCon extends ContainerInterface {
 			else SEND_TO_CLIENT.accept(com, player);
 		}
 		if(com.has("sync") && client){
-			filler.stored = com.getInteger("s");
+			filler.tank.amount(com.getString("t"), com.getInteger("s"));
 			filler.converted = com.getInteger("c");
 		}
 	}
@@ -52,7 +52,8 @@ public class FuelFillerCon extends ContainerInterface {
 		timer = 10;
 		TagCW com = TagCW.create();
 		com.set("sync", true);
-		com.set("s", filler.stored);
+		com.set("s", filler.tank.amount());
+		com.set("t", filler.tank.getFluid());
 		com.set("c", filler.converted);
 		SEND_TO_CLIENT.accept(com, player);
 	}

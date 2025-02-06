@@ -119,7 +119,7 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catc, "render_vehicles_separately", new JsonValue(true))
 			.info("If vehicles should be rendered separately in a new render pass. Allows for higher view distance.")
 			.cons((con, map) -> RENDER_VEHICLES_SEPARATELY = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catc, "render_blocks_separately", new JsonValue(true))
+		entries.add(new ConfigEntry(this, catc, "render_blocks_separately", new JsonValue(false))
 			.info("If blocks (with entity) should be rendered separately in a new render pass. Allows for higher view distance.")
 			.cons((con, map) -> RENDER_BLOCKS_SEPARATELY = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catc, "disable_particles", new JsonValue(false))

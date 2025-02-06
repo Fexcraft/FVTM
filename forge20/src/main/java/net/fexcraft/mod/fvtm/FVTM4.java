@@ -26,6 +26,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -86,7 +89,7 @@ public class FVTM4 {
 			.build("rail_marker")
 	);
 	public static final RegistryObject<EntityType<WheelEntityF>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
-		EntityType.Builder.of((EntityType.EntityFactory<WheelEntityF>)(type, level) -> new WheelEntityF(type, level), MobCategory.MISC)
+		EntityType.Builder.of((EntityType.EntityFactory<WheelEntityF>)(type, level) -> new WheelEntityF(type, level), MobCategory.CREATURE)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
@@ -237,6 +240,14 @@ public class FVTM4 {
 					if(pack != null) cons.accept(pack);
 				});
 			}
+		}
+
+		@SubscribeEvent
+		public void onEntAttrEvent(EntityAttributeCreationEvent event) {
+			event.put(WHEEL_ENTITY.get(),
+				AttributeSupplier.builder()
+					.add(Attributes.MAX_HEALTH, Integer.MAX_VALUE)
+					.add(Attributes.KNOCKBACK_RESISTANCE, 20).build());
 		}
 
 	}

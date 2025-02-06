@@ -2,9 +2,6 @@ package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniFluidTank;
 import net.fexcraft.mod.uni.inv.UniInventory;
@@ -21,22 +18,24 @@ public class FuelFiller {
 	public static int fullenough = 15000;
 	public UniInventory items;
 	public UniFluidTank tank;
-	public long converted;
-	public long stored;
+	public float converted;
 	public Fuel selected;
 	private int ticks;
 
 	public FuelFiller(){
 		selected = FvtmRegistry.FUELS.get(0);
 		items = UniInventory.create(2).stacksize(1);
-		items.addValidator(1, (idx, stack) -> stack.getItem().direct() instanceof Fuel.FuelItem);
+		items.addValidator(1, (idx, stack) -> {
+			Material mat = stack.getContent(ContentType.MATERIAL.item_type);
+			return mat != null && mat.isFuelContainer();
+		});
 		tank = UniFluidTank.create(tanksize);
 	}
 
 	public TagCW save(){
 		TagCW com = TagCW.create();
 		com.set("fuel", selected.getIDS());
-		com.set("stored", stored);
+		//com.set("stored", stored);
 		com.set("converted", converted);
 		com.set("tank", tank.save());
 		for(int i = 0; i < 2; i++){
@@ -51,8 +50,8 @@ public class FuelFiller {
 	public void load(TagCW com){
 		selected = FvtmRegistry.getFuel(com.getString("fuel"));
 		if(selected == null) selected = FvtmRegistry.FUELS.get(0);
-		stored = com.getLong("stored");
-		converted = com.getLong("converted");
+		//stored = com.getFloat("stored");
+		converted = com.getFloat("converted");
 		tank.load(com.getCompound("tank"));
 		tank.addValidator(stack -> selected.isSourceFluid(tank.getFluidFromStack(stack)));
 		for(int i = 0; i < 2; i++){
@@ -73,7 +72,7 @@ public class FuelFiller {
 	}
 
 	private void extractFromItem(){
-		if(stored > fullenough) return;
+		if(tank.amount() > fullenough) return;
 		StackWrapper stack = items.get(0);
 		if(!tank.isValid(stack)) return;
 		Pair<StackWrapper, Boolean> res = tank.drainFrom(stack, 1000);
@@ -81,23 +80,30 @@ public class FuelFiller {
 	}
 
 	private void convert(){
-		if(stored <= 0) return;
-
+		if(tank.amount() <= 0) return;
+		float am = tank.amount() < 200 ? tank.amount() : 200;
+		tank.drain((int)am, true);
+		converted += am * selected.getConversionRate(tank.getFluid());
+		if(converted > tanksize) converted = tanksize;
 	}
 
 	private void insertToItem(){
 		if(converted <= 0) return;
 		StackWrapper stack = items.get(1);
-		if(stack.getItem().direct() instanceof Fuel.FuelItem == false) return;
-		Fuel.FuelItem item = stack.getItem().local();
 		Material mat = stack.getContent(ContentType.MATERIAL.item_type);
-		Fuel fuel = item.getStoredFuelType(stack);
-		if(!fuel.getPrimaryGroup().equals(selected.getPrimaryGroup())) return;
-		int stored = item.getStoredFuelAmount(stack);
+		if(mat == null || !mat.isFuelContainer()) return;
+		Fuel fuel = Fuel.getStoredType(stack);
+		if(fuel == null){
+			Fuel.setStoredType(stack, selected);
+		}
+		else{
+			if(!fuel.getIDS().equals(selected.getIDS())) return;
+		}
+		int stored = Fuel.getStoredAmount(stack);
 		if(stored >= mat.fuel_capacity) return;
 		int cangiv = converted < 1000 ? (int)converted : 1000;
 		int canfit = Math.min(mat.fuel_capacity - stored, cangiv);
-		item.insertFuel(stack, canfit);
+		Fuel.insert(stack, canfit);
 		converted -= canfit;
 	}
 

@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.ui.vehicle;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -50,14 +52,6 @@ public class VehicleFuelCon extends ContainerInterface {
 		}
 	}
 
-	protected boolean isFuelItem(){
-		return inventory.get(0).getItem().direct() instanceof Fuel.FuelItem;
-	}
-
-	protected Fuel.FuelItem getFuelItem(){
-		return inventory.get(0).getItem().local();
-	}
-
 	@Override
 	public void update(Object lc){
 		if(inventory.empty(0)) return;
@@ -65,10 +59,9 @@ public class VehicleFuelCon extends ContainerInterface {
 		date = Time.getDate();
 		boolean changes = false;
 		StackWrapper stack = inventory.get(0);
-		if(isFuelItem()){
-			Fuel.FuelItem item = getFuelItem();
+		if(Fuel.isFuelItem(stack)){
 			boolean pass = false;
-			Fuel fuel = item.getStoredFuelType(stack);
+			Fuel fuel = Fuel.getStoredType(stack);
 			if(fuel != null){
 				for(String str : vehicle.data.getFuelGroup()){
 					if(fuel.primary.equals(str)){
@@ -78,7 +71,7 @@ public class VehicleFuelCon extends ContainerInterface {
 				}
 			}
 			if(!pass) return;
-			int stored = item.getStoredFuelAmount(stack);
+			int stored = Fuel.getStoredAmount(stack);
 			if(stored > 0){
 				boolean considerempty = vehicle.data.getAttribute("fuel_stored").asInteger() <= 1000;
 				int in = vehicle.data.getAttribute("fuel_stored").asInteger();
@@ -86,7 +79,7 @@ public class VehicleFuelCon extends ContainerInterface {
 				if(cantake < stored) stored = cantake;
 				if(stored > 100) stored = 100;
 				if(stored > 0){
-					item.extractFuel(stack, stored);
+					Fuel.extract(stack, stored);
 					vehicle.data.getAttribute("fuel_stored").increase(stored);
 					changes = true;
 					//

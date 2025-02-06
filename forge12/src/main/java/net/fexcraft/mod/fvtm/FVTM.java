@@ -131,7 +131,9 @@ public class FVTM {
 		StackWrapper.ITEM_TYPES.put(ContentType.WIRE.item_type, item -> item instanceof WireItem);
 		StackWrapper.CONTENT_TYPES.put(ContentType.PART.item_type, stack -> ((PartItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.VEHICLE.item_type, stack -> ((VehicleItem)stack.getItem().direct()).getData(stack));
-		StackWrapper.CONTENT_TYPES.put(ContentType.MATERIAL.item_type, stack -> ((MaterialItem)stack.getItem().direct()).getContent());
+		StackWrapper.CONTENT_TYPES.put(ContentType.MATERIAL.item_type, stack -> {
+			return stack.getItem().direct() instanceof MaterialItem ? ((MaterialItem)stack.getItem().direct()).getContent() : null;
+		});
 		StackWrapper.CONTENT_TYPES.put(ContentType.CONTAINER.item_type, stack -> ((ContainerItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.CONSUMABLE.item_type, stack -> ((ConsumableItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem)stack.getItem().direct()).getData(stack));

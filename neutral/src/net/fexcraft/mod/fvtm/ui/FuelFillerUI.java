@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.FuelFiller;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
@@ -31,9 +32,21 @@ public class FuelFillerUI extends UserInterface {
 	@Override
 	public void predraw(float t, int x, int y){
 		texts.get("stored").value("ui.fvtm.fuel_filler.stored");
-		texts.get("stored").translate(con.filler.stored);
+		texts.get("stored").translate(con.filler.tank.amount());
 		texts.get("converted").value("ui.fvtm.fuel_filler.converted");
 		texts.get("converted").translate(con.filler.converted);
+	}
+
+	@Override
+	public void drawbackground(float t, int x, int y){
+		int a = (int)((float)con.filler.tank.amount() / FuelFiller.tanksize * 100);
+		if(a > 0){
+			drawer.draw(gLeft + 10, gTop + 49, 0, 219, a, 18);
+		}
+		a = (int)(con.filler.converted / FuelFiller.tanksize * 100);
+		if(a > 0){
+			drawer.draw(gLeft + 10, gTop + 83, 0, 238, a, 18);
+		}
 	}
 
 	@Override

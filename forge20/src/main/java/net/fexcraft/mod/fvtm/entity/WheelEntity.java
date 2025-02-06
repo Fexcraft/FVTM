@@ -79,12 +79,12 @@ public class WheelEntity extends LivingEntity {
 	}
 
 	@Override
-	public ItemStack getItemBySlot(EquipmentSlot equipmentSlot){
+	public ItemStack getItemBySlot(EquipmentSlot slot){
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack){
+	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){
 
 	}
 
@@ -100,7 +100,7 @@ public class WheelEntity extends LivingEntity {
 
 	@Override
 	public HumanoidArm getMainArm(){
-		return null;
+		return HumanoidArm.RIGHT;
 	}
 
 	@Override

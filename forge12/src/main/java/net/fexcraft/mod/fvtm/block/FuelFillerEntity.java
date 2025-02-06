@@ -54,7 +54,7 @@ public class FuelFillerEntity extends TileEntity implements FuelFiller.FuelFille
 
     @Override
     public void update(){
-        filler.update();
+        if(!world.isRemote) filler.update();
     }
 
     @Override

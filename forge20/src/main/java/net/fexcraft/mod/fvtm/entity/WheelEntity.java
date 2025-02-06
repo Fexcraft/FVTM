@@ -6,18 +6,19 @@ import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends Entity {
+public class WheelEntity extends LivingEntity {
 
 	public RootVehicle root;
 	private boolean found;
@@ -31,7 +32,7 @@ public class WheelEntity extends Entity {
 	private int remtimer;
 
 	public WheelEntity(EntityType<?> type, Level level){
-		super(type, level);
+		super((EntityType<? extends LivingEntity>)type, level);
 	}
 
 	public WheelEntity(RootVehicle veh, String wid){
@@ -64,7 +65,7 @@ public class WheelEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData(){
-
+		super.defineSynchedData();
 	}
 
 	@Override
@@ -73,13 +74,33 @@ public class WheelEntity extends Entity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag){
+	public Iterable<ItemStack> getArmorSlots(){
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public ItemStack getItemBySlot(EquipmentSlot equipmentSlot){
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack){
+
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag){
 		//
 	}
 
 	@Override
 	public boolean isPickable(){
 		return false;
+	}
+
+	@Override
+	public HumanoidArm getMainArm(){
+		return null;
 	}
 
 	@Override

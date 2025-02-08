@@ -125,24 +125,27 @@ public class SeatInstance {
 			return bool;
 		}
 		else if(!seat.driver && root.entity.isOnClient()){
-			if(!attrkeys.containsKey(key)) return false;
-			if(attrkeys.get(key)[0] > 0) return false;
-			boolean bool = false;
-			for(Attribute<?> attr : seatattrs){
-				Float val = attr.getKeyValue(key);
-				if(val != null){
-					KeyPress mouse = val == 0 ? KeyPress.RESET : val > 0 ? KeyPress.MOUSE_MAIN : KeyPress.MOUSE_RIGHT;
-					if(InteractionHandler.toggle(attr, root.data, root.iref(), mouse, val, player)) bool = true;
-				}
-			}
-			attrkeys.get(key)[0] += 5;
-			return bool;
+			if(attrKeyPress(key, player)) return true;
 		}
 		else if(key.dismount() && root.entity.isOnClient() && passenger != null){
 			passenger.dismount();
-			return true;
 		}
-		else return root.onKeyPress(key, seat, player, state);
+		return root.onKeyPress(key, seat, player, state, false);
+	}
+
+	private boolean attrKeyPress(KeyPress key, Passenger player){
+		if(!attrkeys.containsKey(key)) return false;
+		if(attrkeys.get(key)[0] > 0) return false;
+		boolean bool = false;
+		for(Attribute<?> attr : seatattrs){
+			Float val = attr.getKeyValue(key);
+			if(val != null){
+				KeyPress mouse = val == 0 ? KeyPress.RESET : val > 0 ? KeyPress.MOUSE_MAIN : KeyPress.MOUSE_RIGHT;
+				if(InteractionHandler.toggle(attr, root.data, root.iref(), mouse, val, player)) bool = true;
+			}
+		}
+		attrkeys.get(key)[0] += 5;
+		return bool;
 	}
 
 }

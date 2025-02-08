@@ -131,7 +131,7 @@ public class KeyHandler {
             }
             boolean state = isKeyDown(KeyHandler.brake.getKeyCode());
             if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-                seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state);
+                seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
             }
         }
         else{
@@ -172,7 +172,7 @@ public class KeyHandler {
     }
 
     public boolean isKeyDown(int keycode){
-        return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : keycode > 255 ? /* invalid code - PASS */ false : Keyboard.isKeyDown(keycode);
+		return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : keycode <= 255 && Keyboard.isKeyDown(keycode);
     }
 
     @SubscribeEvent

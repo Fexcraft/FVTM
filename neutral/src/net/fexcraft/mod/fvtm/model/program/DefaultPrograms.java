@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -146,6 +147,7 @@ public class DefaultPrograms {
 				return "fvtm:back_lights_signal_right";
 			}
 		});
+		ModelGroup.PROGRAMS.add(new AttributeLights("", false));
 	}
 
 	public static void setupBlinkerTimer(){
@@ -193,6 +195,57 @@ public class DefaultPrograms {
 		@Override
 		public RenderOrder order(){
 			return RenderOrder.BLENDED;
+		}
+
+	}
+
+	public static abstract class AttributeBased implements Program {
+
+		protected Attribute<?> attr;
+		protected String attribute;
+
+		public AttributeBased(String attr){
+			attribute = attr;
+		}
+
+		@Override
+		public void init(ModelGroup list){}
+
+	}
+
+	public static class AttributeLights extends AttributeBased {
+
+		private boolean equals, did;
+
+		public AttributeLights(String attr, boolean eq){
+			super(attr);
+			equals = eq;
+		}
+
+		@Override
+		public String id(){ return "fvtm:attribute_lights"; }
+
+		@Override
+		public void pre(ModelGroup group, ModelRenderData data){
+			attr = data.vehicle.getAttribute(attribute);
+			if(attr == null) return;
+			if(attr.asBoolean() != equals){
+				GLOW.pre(group, data);
+				did = true;
+			}
+		}
+
+		@Override
+		public void post(ModelGroup group, ModelRenderData data){
+			if(did){
+				GLOW.post(group, data);
+				did = false;
+			}
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new AttributeLights(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
 		}
 
 	}

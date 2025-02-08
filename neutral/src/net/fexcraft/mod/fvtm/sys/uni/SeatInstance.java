@@ -142,7 +142,7 @@ public class SeatInstance {
 			passenger.dismount();
 			return true;
 		}
-		else return root.onKeyPress(key, seat, player);
+		else return root.onKeyPress(key, seat, player, state);
 	}
 
 }

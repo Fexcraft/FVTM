@@ -260,7 +260,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
-		ModelGroup.PROGRAMS.add(new AttributeLights("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
@@ -564,22 +563,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 	}
 	
-	public static abstract class AttributeBased implements Program {
-
-		protected Attribute<?> attr;
-		protected String attribute;
-		
-		public AttributeBased(String attr){
-			attribute = attr;
-		}
-
-		@Override
-		public void init(ModelGroup list){
-			//
-		}
-		
-	}
-	
 	public static class AttributeRotator extends AttributeBased {
 
 		private float min, max, step = 1;
@@ -737,45 +720,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		}
 		
 	}
-
-	public static class AttributeLights extends AttributeBased {
-
-		private boolean equals, did;
-
-		public AttributeLights(String attr, boolean eq){
-			super(attr);
-			equals = eq;
-		}
-
-		@Override
-		public String id(){ return "fvtm:attribute_lights"; }
-
-		@Override
-		public void pre(ModelGroup group, ModelRenderData data){
-			attr = data.vehicle.getAttribute(attribute);
-			if(attr == null) return;
-			if(attr.asBoolean() != equals){
-				GLOW.pre(group, data);
-				did = true;
-			}
-		}
-
-		@Override
-		public void post(ModelGroup group, ModelRenderData data){
-			if(did){
-				GLOW.post(group, data);
-				did = false;
-			}
-		}
-
-		@Override
-		public Program parse(String[] args){
-			return new AttributeLights(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
-		}
-
-	}
-	
-
 	
 	public static class Transparent implements Program {
 		

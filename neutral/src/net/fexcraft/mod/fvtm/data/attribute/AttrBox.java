@@ -16,7 +16,7 @@ public class AttrBox {
 		this.swivel_point = point == null ? "vehicle" : point;
 		this.id = id;
 		pos = new V3D(data[0], data[1], data[2]);
-		size = data[3];
+		size = data[3] * 0.5f;
 		if(data.length > 4){
 			increase = data[4];
 			decrease = data[5];

@@ -74,7 +74,7 @@ public class InputEvents {
 			}
 			boolean state = brake.isDown();
 			if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-				seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state);
+				seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
 			}
 		}
 		else{

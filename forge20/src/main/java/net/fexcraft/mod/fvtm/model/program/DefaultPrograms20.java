@@ -286,22 +286,6 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 	}
 
-	public static abstract class AttributeBased implements Program {
-
-		protected Attribute<?> attr;
-		protected String attribute;
-
-		public AttributeBased(String attr){
-			attribute = attr;
-		}
-
-		@Override
-		public void init(ModelGroup list){
-			//
-		}
-
-	}
-
 	public static class AttributeRotator extends AttributeBased {
 
 		private float min, max, step = 1;

@@ -17,7 +17,7 @@ public class Handler_VehKeyPressState implements PacketHandler<Packet_VehKeyPres
 			Passenger pass = (Passenger)player;
 			SeatInstance seat = pass.getSeatOn();
 			if(seat == null) return;
-			seat.root.onKeyPress(packet.keypress, seat.seat, pass, packet.state);
+			seat.root.onKeyPress(packet.keypress, seat.seat, pass, packet.state, true);
 			Packets.sendInRange(Packet_VehKeyPressState.class, player, packet.data());
 		};
 	}
@@ -29,7 +29,7 @@ public class Handler_VehKeyPressState implements PacketHandler<Packet_VehKeyPres
 			if(pass == null) return;
 			SeatInstance seat = pass.getSeatOn();
 			if(seat == null) return;
-			seat.root.onKeyPress(packet.keypress, seat.seat, pass, packet.state);
+			seat.root.onKeyPress(packet.keypress, seat.seat, pass, packet.state, true);
 		};
 	}
 

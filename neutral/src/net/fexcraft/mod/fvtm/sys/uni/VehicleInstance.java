@@ -124,10 +124,6 @@ public class VehicleInstance {
 		return point.getPrevPivot();
 	}
 
-	public boolean onKeyPress(KeyPress key, Seat seat, Passenger sender){
-		return onKeyPress(key, seat, sender, false);
-	}
-
 	public boolean onKeyPress(KeyPress key, Seat seat, Passenger player, boolean state){
 		//TODO script key press event
 		if(!seat.driver && key.driver_only()) return false;
@@ -215,7 +211,7 @@ public class VehicleInstance {
 				return true;
 			}
 			case INVENTORY:{
-				player.openUI(UIKeys.VEHICLE_MAIN, new V3I(entity.getId(), 0, 0));
+				if(!player.isOnClient()) player.openUI(UIKeys.VEHICLE_MAIN, new V3I(entity.getId(), 0, 0));
 				return true;
 			}
 			case TOGGABLES:{

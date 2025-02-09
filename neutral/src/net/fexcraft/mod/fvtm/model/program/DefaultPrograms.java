@@ -169,8 +169,7 @@ public class DefaultPrograms {
 
 		private boolean didglow;
 
-		public AlwaysGlow(){
-		}
+		public AlwaysGlow(){}
 
 		public abstract boolean shouldGlow(ModelGroup list, ModelRenderData data);
 
@@ -228,8 +227,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup group, ModelRenderData data){
 			attr = data.vehicle.getAttribute(attribute);
-			if(attr == null) return;
-			if(attr.asBoolean() != equals){
+			if(did = attr != null && attr.asBoolean() != equals){
 				GLOW.pre(group, data);
 				did = true;
 			}

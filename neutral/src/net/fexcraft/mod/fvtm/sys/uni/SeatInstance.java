@@ -120,7 +120,7 @@ public class SeatInstance {
 		if(key == null) return false;
 		else if(key.toggable_input() && root.entity.isOnClient()){
 			if(clicktimer > 0) return false;
-			boolean bool = InteractionHandler.handle(key, root.data, root.iref(), null, player, StackWrapper.EMPTY);
+			boolean bool = InteractionHandler.handle(key, root.data, root.iref(), this, player, StackWrapper.EMPTY);
 			clicktimer += 10;
 			return bool;
 		}

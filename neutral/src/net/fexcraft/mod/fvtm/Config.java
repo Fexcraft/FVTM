@@ -34,7 +34,7 @@ public class Config extends ConfigBase {
 	public static boolean RENDER_VEHICLES_SEPARATELY;
 	public static boolean RENDER_BLOCKS_SEPARATELY;
 	public static boolean DISABLE_PARTICLES;
-	public static int BLINKER_INTERVAL;
+	public static int SIGNAL_INTERVAL;
 	//uni/proto
 	public static float MOTION_SCALE;
 	public static byte VEHICLE_SYNC_RATE;
@@ -125,9 +125,9 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catc, "disable_particles", new JsonValue(false))
 			.info("If FVTM particles (particle system) should be disabled.")
 			.cons((con, map) -> DISABLE_PARTICLES = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catc, "blinker_interval", new JsonValue(750))
-			.info("Blinker/Turn Signal toggle interval, in milliseconds.").rang(100, 2000)
-			.cons((con, map) -> BLINKER_INTERVAL = con.getInteger(map)));
+		entries.add(new ConfigEntry(this, catc, "signal_interval", new JsonValue(750))
+			.info("Blinker/Turn/Emergency Signal toggle interval, in milliseconds.").rang(100, 2000)
+			.cons((con, map) -> SIGNAL_INTERVAL = con.getInteger(map)));
 
 		//u12/basic
 		entries.add(new ConfigEntry(this, catu, "motion_scale", new JsonValue(0.2f))

@@ -38,7 +38,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 		FvtmRenderTypes.setCutout(texture);
 		RailMarkerModel.INST.base.render();
 		DefaultModel.RENDERDATA.texture = null;
-		FvtmRenderTypes.setDef(RenderType.eyes(texture.local()));
+		FvtmRenderTypes.setGlow(texture);
 		RailMarkerModel.INST.glow.render();
 		FvtmRenderTypes.setCutout(texture);
 		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
@@ -53,7 +53,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer120.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					FvtmRenderTypes.setDef(RenderType.eyes(texture.local()));
+					FvtmRenderTypes.setGlow(texture.local());
 					RailMarkerModel.INST.arrow.render();
 					FvtmRenderTypes.setCutout(texture);
 				}

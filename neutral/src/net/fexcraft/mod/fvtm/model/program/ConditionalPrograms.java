@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.model.program;
 
-import static net.fexcraft.mod.fvtm.model.program.DefaultPrograms.BLINKER_TOGGLE;
+import static net.fexcraft.mod.fvtm.model.program.DefaultPrograms.SIGNAL_TOGGLE;
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
 
 import net.fexcraft.mod.fvtm.model.ModelGroup;
@@ -130,7 +130,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return BLINKER_TOGGLE && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
+			return SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
 		}
 		
 	}
@@ -139,7 +139,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return BLINKER_TOGGLE && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
+			return SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
 		}
 		
 	}
@@ -148,7 +148,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return BLINKER_TOGGLE && data.vehicle.getWarningLights();
+			return SIGNAL_TOGGLE[0] && data.vehicle.getWarningLights();
 		}
 		
 	}
@@ -160,7 +160,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
 			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
 		
@@ -170,7 +170,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return BLINKER_TOGGLE;
+			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
 			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}
 		

@@ -64,7 +64,7 @@ public class FVTM20 {
 		AABB.SUPPLIER = () -> new AABBI();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
-			CONFIG.addListener(DefaultPrograms::setupBlinkerTimer);
+			CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 			Renderer.RENDERER = new Renderer120();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
@@ -95,8 +95,8 @@ public class FVTM20 {
 		FvtmResources.INSTANCE.createContentItems();
 		if(EnvInfo.CLIENT){
 			FvtmResources.initModelSystem();
-			if(DefaultPrograms.BLINKER_TIMER == null){
-				DefaultPrograms.setupBlinkerTimer();
+			if(DefaultPrograms.SIGNAL_TIMER[0] == null){
+				DefaultPrograms.setupSignalTimer();
 			}
 		}
 	}

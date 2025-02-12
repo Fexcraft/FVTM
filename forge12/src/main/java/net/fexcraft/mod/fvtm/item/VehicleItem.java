@@ -62,7 +62,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
         VehicleData data = cache.getVehicleData();
         if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
-        if(data.hasPart("engine")){
+        if(data.hasPart("engine") && data.getFunctionInPart("engine", "fvtm:engine") != null){
             tooltip.add(Formatter.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
             tooltip.add(Formatter.format("&9Fuel Group: &7" + data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup()[0]));
             tooltip.add(Formatter.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").asInteger() + "mB"));

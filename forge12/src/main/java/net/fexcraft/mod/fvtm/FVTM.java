@@ -191,7 +191,7 @@ public class FVTM {
 		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", FvtmRegistry.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
 		if(EnvInfo.CLIENT){
-			CONFIG.addListener(DefaultPrograms::setupBlinkerTimer);
+			CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
 			ConditionRegistry.BUILDER = CondBuilder.run();
 		}
@@ -299,8 +299,8 @@ public class FVTM {
 			Asphalt.INSTANCE.setCreativeTab(tab);
 			//VPInfo.INSTANCE.setCreativeTab(tab);
 			//
-			if(DefaultPrograms.BLINKER_TIMER == null){
-				DefaultPrograms.setupBlinkerTimer();
+			if(DefaultPrograms.SIGNAL_TIMER[0] == null){
+				DefaultPrograms.setupSignalTimer();
 			}
 			try{
 				EventHandler.loadLitePackLang();

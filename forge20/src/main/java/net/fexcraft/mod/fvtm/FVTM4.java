@@ -67,43 +67,43 @@ public class FVTM4 {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "fvtm");
 	//
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, "fvtm");
-	public static final RegistryObject<EntityType<DecorationF>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
-		EntityType.Builder.of(DecorationF::new, MobCategory.MISC)
+	public static final RegistryObject<EntityType<DecorationEntity>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
+		EntityType.Builder.of(DecorationEntity::new, MobCategory.MISC)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(10)
 			.setTrackingRange(256)
 			.build("decoration")
 	);
-	public static final RegistryObject<EntityType<RoadMarkerF>> ROAD_MARKER_ENTITY = ENTITIES.register("road_marker", () ->
-		EntityType.Builder.of(RoadMarkerF::new, MobCategory.MISC)
+	public static final RegistryObject<EntityType<RoadMarker>> ROAD_MARKER_ENTITY = ENTITIES.register("road_marker", () ->
+		EntityType.Builder.of(RoadMarker::new, MobCategory.MISC)
 			.sized(0.24F, 0.48F)
 			.setUpdateInterval(10)
 			.setTrackingRange(256)
 			.build("road_marker")
 	);
-	public static final RegistryObject<EntityType<RailMarkerF>> RAIL_MARKER_ENTITY = ENTITIES.register("rail_marker", () ->
-		EntityType.Builder.of(RailMarkerF::new, MobCategory.MISC)
+	public static final RegistryObject<EntityType<RailMarker>> RAIL_MARKER_ENTITY = ENTITIES.register("rail_marker", () ->
+		EntityType.Builder.of(RailMarker::new, MobCategory.MISC)
 			.sized(0.24F, 1F)
 			.setUpdateInterval(10)
 			.setTrackingRange(256)
 			.build("rail_marker")
 	);
-	public static final RegistryObject<EntityType<WheelEntityF>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
-		EntityType.Builder.of((EntityType.EntityFactory<WheelEntityF>)(type, level) -> new WheelEntityF(type, level), MobCategory.CREATURE)
+	public static final RegistryObject<EntityType<WheelEntity>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
+		EntityType.Builder.of((EntityType.EntityFactory<WheelEntity>)(type, level) -> new WheelEntity(type, level), MobCategory.CREATURE)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
 			.build("wheel")
 	);
-	public static final RegistryObject<EntityType<RootVehicleF>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
-		EntityType.Builder.of(RootVehicleF::new, MobCategory.MISC)
+	public static final RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
+		EntityType.Builder.of(RootVehicle::new, MobCategory.MISC)
 			.sized(1F, 1F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
 			.build("vehicle")
 	);
-	public static final RegistryObject<EntityType<RailVehicleF>> RAILVEH_ENTITY = ENTITIES.register("railveh", () ->
-		EntityType.Builder.of(RailVehicleF::new, MobCategory.MISC)
+	public static final RegistryObject<EntityType<RailVehicle>> RAILVEH_ENTITY = ENTITIES.register("railveh", () ->
+		EntityType.Builder.of(RailVehicle::new, MobCategory.MISC)
 			.sized(1F, 1F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
@@ -152,7 +152,6 @@ public class FVTM4 {
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.RAILVEHICLE_ENTITY = () -> RAILVEH_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
-		FvtmGetters.WHEEL_ENTITY_CLASS = WheelEntityF.class;
 		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
 		FvtmGetters.LIFT_ENTITY = () -> LIFT_ENTITY.get();
 		FvtmGetters.CONST_ENTITY = () -> CONST_ENTITY.get();

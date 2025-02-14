@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -18,18 +19,20 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.UUID;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RoadMarker extends Entity {
+public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
 
 	public QV3D position;
 	public UUID queueid;
 
-	protected RoadMarker(EntityType<? extends RoadMarker> type, Level level){
+	public RoadMarker(EntityType<? extends RoadMarker> type, Level level){
 		super(type, level);
 	}
 
@@ -59,7 +62,8 @@ public class RoadMarker extends Entity {
 		}
 	}
 
-	public void writeSpawnData(ByteBuf buffer){
+	@Override
+	public void writeSpawnData(FriendlyByteBuf buffer){
 		try{
 			if(queueid == null){
 				buffer.writeLong(0);
@@ -78,7 +82,8 @@ public class RoadMarker extends Entity {
 		}
 	}
 
-	public void readSpawnData(ByteBuf buffer){
+	@Override
+	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			long m = buffer.readLong(), l = buffer.readLong();
 			if(m == 0 && l == 0) queueid = null;
@@ -92,8 +97,8 @@ public class RoadMarker extends Entity {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket(){
-		return new ClientboundAddEntityPacket(this);
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override

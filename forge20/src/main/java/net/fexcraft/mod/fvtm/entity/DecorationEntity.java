@@ -27,18 +27,20 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.ArrayList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DecorationEntity extends Entity {
+public class DecorationEntity extends Entity implements IEntityAdditionalSpawnData {
 
 	public ArrayList<DecorationData> decos = new ArrayList<>();
 	protected boolean locked;
 
-	protected DecorationEntity(EntityType<?> type, Level level){
+	public DecorationEntity(EntityType<?> type, Level level){
 		super(type, level);
 	}
 
@@ -66,6 +68,7 @@ public class DecorationEntity extends Entity {
 		tag.put("decorations", list);
 	}
 
+	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		try{
 			buffer.writeBoolean(this.locked);
@@ -79,6 +82,7 @@ public class DecorationEntity extends Entity {
 		}
 	}
 
+	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			locked = buffer.readBoolean();
@@ -94,8 +98,8 @@ public class DecorationEntity extends Entity {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket(){
-		return new ClientboundAddEntityPacket(this);
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override

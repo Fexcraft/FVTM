@@ -54,7 +54,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 			sender.send("handler.install.fvtm.wheel.width_too_thin:" + idata.width + ":" + slot.min_width(idata.has_tire));
 			return false;
 		}
-		if(idata.hubsize != slot.hubsize){
+		if(idata.hubsize != slot.hubsize && slot.hubsize != 0f){
 			sender.send("handler.install.fvtm.wheel.incompatible_connector");
 			return false;
 		}

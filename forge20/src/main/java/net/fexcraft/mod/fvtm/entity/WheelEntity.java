@@ -6,11 +6,19 @@ import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -18,7 +26,7 @@ import java.util.Collections;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends LivingEntity {
+public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnData {
 
 	public RootVehicle root;
 	private boolean found;
@@ -56,6 +64,7 @@ public class WheelEntity extends LivingEntity {
 		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
 		setOldPosAndRot();
+		Sheep r;
 	}
 
 	private void setStepHeight(){
@@ -89,6 +98,11 @@ public class WheelEntity extends LivingEntity {
 	}
 
 	@Override
+	public boolean hurt(DamageSource src, float am){
+		return false;
+	}
+
+	@Override
 	public void addAdditionalSaveData(CompoundTag tag){
 		//
 	}
@@ -113,6 +127,7 @@ public class WheelEntity extends LivingEntity {
 		return stepheight;
 	}
 
+	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		if(wheelid == null){
 			buffer.writeInt(0);
@@ -124,6 +139,7 @@ public class WheelEntity extends LivingEntity {
 		buffer.writeCharSequence(wheelid, StandardCharsets.UTF_8);
 	}
 
+	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
 		vehid = buffer.readInt();
 		wheelid = buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
@@ -132,6 +148,11 @@ public class WheelEntity extends LivingEntity {
 		setPos(root.position());
 		if(root.vehicle.data == null) return;
 		wheel = root.vehicle.wheeldata.get(wheelid);
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override

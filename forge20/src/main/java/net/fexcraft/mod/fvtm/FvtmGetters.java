@@ -30,7 +30,6 @@ public class FvtmGetters {
 	public static Supplier<EntityType<? extends RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Supplier<EntityType<? extends RailVehicle>> RAILVEHICLE_ENTITY;
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
-	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
 	//
 	public static Supplier<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY;
 	public static Supplier<BlockEntityType<ConstructorEntity>> CONST_ENTITY;
@@ -74,9 +73,9 @@ public class FvtmGetters {
 
 	public static WheelEntity getNewWheel(RootVehicle veh, String wid){
 		try{
-			return WHEEL_ENTITY_CLASS.getConstructor(RootVehicle.class, String.class).newInstance(veh, wid);
+			return new WheelEntity(veh, wid);
 		}
-		catch(InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+		catch(Exception e){
 			throw new RuntimeException(e);
 		}
 	}

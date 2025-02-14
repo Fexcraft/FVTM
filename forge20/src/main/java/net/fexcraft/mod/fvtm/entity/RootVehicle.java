@@ -31,6 +31,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -45,6 +47,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +65,7 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity {
+public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	public VehicleInstance vehicle;
 	protected SimplePhysData spdata;
@@ -159,6 +163,7 @@ public class RootVehicle extends Entity {
 		vehicle.point.savePivot(com);
 	}
 
+	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		TagCW com = TagCW.create();
 		vehicle.point.savePivot(com);
@@ -170,6 +175,7 @@ public class RootVehicle extends Entity {
 		buffer.writeNbt(com.local());
 	}
 
+	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			TagCW com = TagCW.wrap(buffer.readNbt());
@@ -190,6 +196,11 @@ public class RootVehicle extends Entity {
 			e.printStackTrace();
 			FvtmLogger.LOGGER.log("Failed to read additional spawn data for vehicle entity with ID " + getId() + "!");
 		}
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	public void writeSpawnData(TagCW com){}
@@ -508,8 +519,8 @@ public class RootVehicle extends Entity {
 					dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
 					dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
 					if(dest.length() > 0.001){
-						if(dest.length() > 16) wheel.setPos(dest.x, dest.y, dest.z);
-						else wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
+						//if(dest.length() > 16) wheel.setPos(dest.x, dest.y, dest.z);
+						//else wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
 						move.x -= dest.x * 0.5;
 						move.y -= dest.y * 0.5;
 						move.z -= dest.z * 0.5;

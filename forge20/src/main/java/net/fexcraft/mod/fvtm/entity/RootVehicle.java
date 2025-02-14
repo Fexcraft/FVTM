@@ -474,6 +474,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				}
 			}
 			move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+			//setPos(position().x + move.x, position().y + move.y, position().z + move.z);
 		}
 		else{
 			if(vehicle.type.isWaterVehicle()){
@@ -521,12 +522,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 					if(dest.length() > 0.001){
 						//if(dest.length() > 16) wheel.setPos(dest.x, dest.y, dest.z);
 						//else wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
+						//moved to wheel entity class instead
 						move.x -= dest.x * 0.5;
 						move.y -= dest.y * 0.5;
 						move.z -= dest.z * 0.5;
 					}
 				}
 				move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+				//setPos(position().x + move.x, position().y + move.y, position().z + move.z);
 				vehicle.speed = Math.sqrt(move.x * move.x + move.z * move.z);
 			}
 		}
@@ -675,11 +678,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		return vehicle.data.newItemStack().local();
 	}
 
-	//@Override
-	public void lerpTo(double x, double y, double z, float yrot, float xrot, int steps){
-		//
-	}
-
+	@Override
 	public void lerpTo(double x, double y, double z, float yr, float xr, int s, boolean b) {
         //
     }

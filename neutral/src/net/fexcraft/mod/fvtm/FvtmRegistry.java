@@ -82,7 +82,6 @@ public class FvtmRegistry {
 	public static final HashMap<String, ItemWrapper> ITEMS = new HashMap<>();
 
 	public static final void init(String loadver, File conf){
-		UniReg.LOADER_VERSION = loadver;
 		is112 = loadver.equals("1.12");
 		is120 = !is112;
 		CONFIG_DIR = conf;

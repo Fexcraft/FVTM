@@ -525,7 +525,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
 				dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
 				if(dest.length() > 0.001){
-					wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
+					if(dest.length() > 16) wheel.setPosition(wheel.posX + dest.x, wheel.posY + dest.y, wheel.posZ + dest.z);
+					else wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 					move = move.sub(dest.scale(0.5));
 				}
 			}
@@ -571,11 +572,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 					}
 					wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 					V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
-					dest.x = (dest.x - (wheel.posX - posX)) * 0.5;
-					dest.y = (dest.y - (wheel.posY - posY)) * 0.5;
-					dest.z = (dest.z - (wheel.posZ - posZ)) * 0.5;
+					dest.x = (dest.x - (wheel.posX - posX)) * 0.25;
+					dest.y = (dest.y - (wheel.posY - posY)) * 0.25;
+					dest.z = (dest.z - (wheel.posZ - posZ)) * 0.25;
 					if(dest.length() > 0.001){
-						if(dest.length() > 16) wheel.setPosition(dest.x, dest.y, dest.z);
+						if(dest.length() > 16) wheel.setPosition(wheel.posX + dest.x, wheel.posY + dest.y, wheel.posZ + dest.z);
 						else wheel.move(MoverType.SELF, dest.x, dest.y, dest.z);
 						move.x -= dest.x * 0.5;
 						move.y -= dest.y * 0.5;

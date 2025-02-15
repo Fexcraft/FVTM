@@ -754,13 +754,15 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 		if(seat.interacttimer > 0) return false;
 		if(stack.getItem() instanceof ItemLead){
-			if(seat.passenger().isPlayer()) return false;
-			if(seat.passenger().isLiving()){
-				EntityLiving ent = seat.passenger().local();
-				ent.dismountRidingEntity();
-				ent.setLeashHolder(player, true);
-				seat.interacttimer += 10;
-				return true;
+			if(seat.passenger() != null){
+				if(seat.passenger().isPlayer()) return false;
+				if(seat.passenger().isLiving()){
+					EntityLiving ent = seat.passenger().local();
+					ent.dismountRidingEntity();
+					ent.setLeashHolder(player, true);
+					seat.interacttimer += 10;
+					return true;
+				}
 			}
 			double range = 10;
 			V3D pos = new V3D(posX, posY, posZ);

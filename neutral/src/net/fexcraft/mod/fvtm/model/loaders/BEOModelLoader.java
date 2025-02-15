@@ -1,13 +1,16 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.*;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.model.*;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -38,6 +41,8 @@ public class BEOModelLoader implements ModelLoader {
 	private static final int UV = 5;
 	private static final int NORMAL = 6;
 	private static final int FACE = 7;
+	private static ArrayList<Vec3f> vecs = new ArrayList<>();
+	private static ArrayList<float[]> uvs = new ArrayList<>();
 
 	@Override
 	public boolean accepts(String name, String suffix){
@@ -81,6 +86,9 @@ public class BEOModelLoader implements ModelLoader {
 		}
 		//
 		if(streams.length > 1) for(Closeable c : (Closeable[])streams[1]) c.close();
+		vecs.clear();
+		uvs.clear();
+		//FMLCommonHandler.instance().exitJava(1, true);
 		return new Object[]{ model, confdata };
 	}
 
@@ -107,13 +115,16 @@ public class BEOModelLoader implements ModelLoader {
 			if((r = stream.read()) == -1) break;
 			if(r != OBJECT) break;
 			mrt = new ModelRendererTurbo(group, 0, 0, tx, ty);
-			ArrayList<Vec3f> vecs = new ArrayList<>();
-			ArrayList<float[]> uvs = new ArrayList<>();
 			while(true){
 				if((r = stream.read()) == -1) break;
+				if(r == END){
+					group.add(new Polyhedron().importMRT(mrt, false, 0.0625f));
+					break;
+				}
 				switch(r){
 					case NAME:{
 						mrt.boxName = readString(stream);
+						continue;
 					}
 					case POSITION:{
 						float[] fl = readFloats(stream, 3);
@@ -134,6 +145,10 @@ public class BEOModelLoader implements ModelLoader {
 						uvs.add(readFloats(stream, 2));
 						continue;
 					}
+					case NORMAL:{
+						//
+						continue;
+					}
 					case FACE:{
 						int len = readIntegers(stream, 1)[0];
 						int[] ids = readIntegers(stream, len + len);
@@ -150,7 +165,6 @@ public class BEOModelLoader implements ModelLoader {
 					default: break;
 				}
 			}
-			group.add(new Polyhedron().importMRT(mrt, false, 0.0625f));
 		}
 	}
 

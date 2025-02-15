@@ -469,12 +469,12 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
 				dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
 				if(dest.length() > 0.001){
-					wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
+					//wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
 					move = move.sub(dest.scale(0.5));
 				}
 			}
-			move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
-			//setPos(position().x + move.x, position().y + move.y, position().z + move.z);
+			//move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+			setPos(position().x + move.x, position().y + move.y, position().z + move.z);
 		}
 		else{
 			if(vehicle.type.isWaterVehicle()){
@@ -528,8 +528,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 						move.z -= dest.z * 0.5;
 					}
 				}
-				move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
-				//setPos(position().x + move.x, position().y + move.y, position().z + move.z);
+				//move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+				setPos(position().x + move.x, position().y + move.y, position().z + move.z);
 				vehicle.speed = Math.sqrt(move.x * move.x + move.z * move.z);
 			}
 		}

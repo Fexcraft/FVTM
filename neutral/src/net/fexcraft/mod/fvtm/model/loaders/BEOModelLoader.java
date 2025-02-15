@@ -1,16 +1,12 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
-import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.*;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.model.*;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -18,12 +14,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * All rights reserved, only to be distributed within authorized mods.
+ * All rights reserved. Only to be distributed within authorized mods.
  *
  * @author Ferdinand Calo' (FEX___96)
  */

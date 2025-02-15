@@ -164,7 +164,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 			if(remtimer == 1) kill();
 			remtimer--;
 		}
-		if(level().isClientSide && !found){
+		if(!found){
 			root = (RootVehicle)level().getEntity(vehid);
 			if(root == null) return;
 			found = true;
@@ -176,7 +176,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 		dest.y = (dest.y - (position().y - root.position().y)) * 0.5;
 		dest.z = (dest.z - (position().z - root.position().z)) * 0.5;
 		if(dest.length() > 0.001){
-			if(dest.length() > 16) setPos(dest.x, dest.y, dest.z);
+			if(dest.length() > 16) setPos(position().x + dest.x, position().y + dest.y, position().z + dest.z);
 			else move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
 		}
 	}

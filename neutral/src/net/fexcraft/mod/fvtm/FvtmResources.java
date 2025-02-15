@@ -346,6 +346,7 @@ public abstract class FvtmResources {
 		MODEL_LOADERS.add(new FMFModelLoader());
 		MODEL_LOADERS.add(new ObjModelLoader());
 		MODEL_LOADERS.add(new SMPTBJavaModelLoader());
+		MODEL_LOADERS.add(new BEOModelLoader());
 	}
 
 	public abstract void initModelPrograms();

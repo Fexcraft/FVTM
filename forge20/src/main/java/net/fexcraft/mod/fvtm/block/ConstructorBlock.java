@@ -30,6 +30,7 @@ public class ConstructorBlock extends Block implements EntityBlock {
 	public ConstructorBlock(){
 		super(Properties.of().noOcclusion().explosionResistance(64).strength(2));
 	}
+
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState){
 		return FvtmGetters.CONST_ENTITY.get().create(pPos, pState);

@@ -217,7 +217,7 @@ public class ResourcesImpl extends FvtmResources {
 		}
 		FvtmGetters.LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(FvtmGetters.LIFT_BLOCK.get(), new Item.Properties()));
 		FvtmGetters.CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(FvtmGetters.CONST_BLOCK.get(), new Item.Properties()));
-		FvtmGetters.FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuelfiller", () -> new BlockItem(FvtmGetters.FUELFILLER_BLOCK.get(), new Item.Properties()));
+		FvtmGetters.FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FvtmGetters.FUELFILLER_BLOCK.get(), new Item.Properties()));
 	}
 
 	@Override

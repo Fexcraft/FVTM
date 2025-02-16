@@ -58,6 +58,7 @@ public class ClientEvents {
 	public static void renderInit(EntityRenderersEvent.RegisterRenderers event){
 		event.registerBlockEntityRenderer(FvtmGetters.LIFT_ENTITY.get(), con -> new VehicleLiftRenderer());
 		event.registerBlockEntityRenderer(FvtmGetters.CONST_ENTITY.get(), con -> new ConstRenderer());
+		event.registerBlockEntityRenderer(FvtmGetters.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
 		event.registerBlockEntityRenderer(FvtmGetters.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
 	}
 

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.uni.inv.StackWrapper;

@@ -5,6 +5,7 @@ import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.FuelFillerBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -105,6 +106,11 @@ public class ResourcesImpl extends FvtmResources {
 				.add(new ItemStack(Blocks.LEVER, 2))
 				.add(new ItemStack(Blocks.PISTON, 2))
 				.register();
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.FUELFILLER_ITEM.get()))
+			.add(new ItemStack(Blocks.IRON_BLOCK))
+			.add(new ItemStack(Blocks.HOPPER, 2))
+			.add(new ItemStack(Blocks.STONE_BUTTON,4))
+			.register();
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
@@ -195,6 +201,7 @@ public class ResourcesImpl extends FvtmResources {
 		}
 		FvtmGetters.LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
 		FvtmGetters.CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
+		FvtmGetters.FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());
 	}
 
 	@Override
@@ -210,6 +217,7 @@ public class ResourcesImpl extends FvtmResources {
 		}
 		FvtmGetters.LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(FvtmGetters.LIFT_BLOCK.get(), new Item.Properties()));
 		FvtmGetters.CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(FvtmGetters.CONST_BLOCK.get(), new Item.Properties()));
+		FvtmGetters.FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuelfiller", () -> new BlockItem(FvtmGetters.FUELFILLER_BLOCK.get(), new Item.Properties()));
 	}
 
 	@Override

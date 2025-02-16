@@ -33,6 +33,7 @@ public class FvtmGetters {
 	//
 	public static Supplier<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY;
 	public static Supplier<BlockEntityType<ConstructorEntity>> CONST_ENTITY;
+	public static Supplier<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT;
 	public static Supplier<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY;
 	//
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
@@ -43,7 +44,9 @@ public class FvtmGetters {
 	public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
 	public static Supplier<BlockItem> LIFT_BLOCK_ITEM;
 	public static Supplier<ConstructorBlock> CONST_BLOCK;
+	public static Supplier<FuelFillerBlock> FUELFILLER_BLOCK;
 	public static Supplier<BlockItem> CONST_BLOCK_ITEM;
+	public static Supplier<BlockItem> FUELFILLER_ITEM;
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 

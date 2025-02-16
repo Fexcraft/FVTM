@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
+import net.fexcraft.mod.fvtm.block.FuelFillerEntity;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
@@ -124,6 +125,8 @@ public class FVTM4 {
 		BlockEntityType.Builder.of(VehicleLiftEntity::new, FvtmGetters.LIFT_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ConstructorEntity>> CONST_ENTITY = BLOCKENTS.register("constructor", () ->
 			BlockEntityType.Builder.of(ConstructorEntity::new, FvtmGetters.CONST_BLOCK.get()).build(null));
+	public static final RegistryObject<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT = BLOCKENTS.register("fuel_filler", () ->
+		BlockEntityType.Builder.of(FuelFillerEntity::new, FvtmGetters.FUELFILLER_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY = BLOCKENTS.register("blockbase", () ->
 		BlockEntityType.Builder.of(BaseBlockEntity::new, getBlockArray()).build(null));
 
@@ -155,6 +158,7 @@ public class FVTM4 {
 		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
 		FvtmGetters.LIFT_ENTITY = () -> LIFT_ENTITY.get();
 		FvtmGetters.CONST_ENTITY = () -> CONST_ENTITY.get();
+		FvtmGetters.FUELFILLER_ENT = () -> FUELFILLER_ENT.get();
 		FvtmGetters.BLOCK_ENTITY = () -> BLOCK_ENTITY.get();
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;

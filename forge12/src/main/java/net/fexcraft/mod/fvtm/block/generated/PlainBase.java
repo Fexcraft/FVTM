@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
+import net.fexcraft.mod.fvtm.util.SoundTypeHandler;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -36,6 +37,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 		this.setResistance(type.getResistance());
 		this.setLightOpacity(type.getLightOpacity());
 		this.setHarvestLevel(type.getHarverestToolClass(), type.getHarverestToolLevel());
+		setSoundType(SoundTypeHandler.parse(type.getSoundTypeId()));
 	}
 	
 	@Override

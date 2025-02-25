@@ -64,6 +64,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	protected String material;
 	protected String mapcolor;
 	protected String harverest_class;
+	protected String soundtype;
 	protected float hardness;
 	protected float lightlevel;
 	protected float resistance;
@@ -175,6 +176,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		if(map.has("WireRelay")){
 			relaydata = new RelayData(map.getMap("WireRelay"));
 		}
+		soundtype = map.getString("SoundType", "ground");
 		//
 		ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
@@ -433,6 +435,10 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 
 	public boolean isPlantableOn(){
 		return plantableon;
+	}
+
+	public String getSoundTypeId(){
+		return soundtype;
 	}
 
 }

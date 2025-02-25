@@ -18,9 +18,9 @@ public class DecoContainer extends ContainerInterface {
 	protected DecorationEntity entity;
 	protected DecorationData selected;
 
-	public DecoContainer(JsonMap map, EntityPlayer player, int entid){
-		super(map, UniEntity.get(player), new V3I(entid, 0, 0));
-		entity = (DecorationEntity)player.world.getEntityByID(entid);
+	public DecoContainer(JsonMap map, UniEntity player, V3I pos){
+		super(map, player, pos);
+		entity = (DecorationEntity)((EntityPlayer)player.entity.direct()).world.getEntityByID(pos.x);
 	}
 
 	@Override

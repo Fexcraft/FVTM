@@ -176,7 +176,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		if(map.has("WireRelay")){
 			relaydata = new RelayData(map.getMap("WireRelay"));
 		}
-		soundtype = map.getString("SoundType", "ground");
+		soundtype = map.getString("SoundType", "stone");
 		//
 		ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);

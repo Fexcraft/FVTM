@@ -27,7 +27,7 @@ public class SoundTypeHandler {
 			TYPES.put("anvil", SoundType.ANVIL);
 			TYPES.put("slime", SoundType.SLIME);
 		}
-		return TYPES.containsKey(id) ? TYPES.get(id) : TYPES.get("ground");
+		return TYPES.containsKey(id) ? TYPES.get(id) : TYPES.get("stone");
 	}
 
 }

@@ -48,12 +48,14 @@ public class VehicleAttributes extends UserInterface {
 		UIText temp = null;
 		for(int k = 0; k < 14; k++){
 			int l = scroll + k;
+			if(l < 0) break;
 			if(l >= attributes.size()){
 				texts.get("attr_" + k).visible(false);
 				buttons.get("toggle_" + k).visible(false);
 				buttons.get("edit_" + k).visible(false);
 			}
 			else{
+
 				temp = texts.get("attr_" + k);
 				temp.visible(true);
 				temp.value(attributes.get(l).id);
@@ -158,13 +160,15 @@ public class VehicleAttributes extends UserInterface {
 		for(int i = 0; i < 14; i++){
 			text = texts.get("attr_" + i);
 			if(!text.visible() || !text.hovered()) continue;
-			Attribute<?> attr = attributes.get(i + scroll);
+			int j = i + scroll;
+			if(j < 0 || j >= attributes.size()) break;
+			Attribute<?> attr = attributes.get(j);
 			list.add(PARAGRAPH_SIGN + "6V: " + PARAGRAPH_SIGN + "7" + attr.asString());
 			if(attr.group != null){
 				list.add(PARAGRAPH_SIGN + "bG: " + PARAGRAPH_SIGN + "7" + attr.group);
 			}
 			if(attr.hasPerm()){
-				list.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attributes.get(i).perm);
+				list.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attr.perm);
 			}
 			if(!attr.editable){
 				text.value("ui.fvtm.vehicle_attributes.not_editable");

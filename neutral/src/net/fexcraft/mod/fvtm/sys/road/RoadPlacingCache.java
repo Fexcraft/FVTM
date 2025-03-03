@@ -33,13 +33,18 @@ public class RoadPlacingCache {
 			timer.schedule(new TimerTask(){
 				@Override
 				public void run(){
-					List<UUID> uuids = WrapperHolder.getOnlinePlayerIDs();
-					for(UUID id : uuids){
-						if(id.equals(uuid)) return;
+					try{
+						List<UUID> uuids = WrapperHolder.getOnlinePlayerIDs();
+						for(UUID id : uuids){
+							if(id.equals(uuid)) return;
+						}
+						UNDOCACHE.remove(uuid);
+						timer.cancel();
+						TIMERCACHE.remove(uuid);
 					}
-					UNDOCACHE.remove(uuid);
-					timer.cancel();
-					TIMERCACHE.remove(uuid);
+					catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 			}, new Date(Time.getDate() + (ROAD_UNDO_CACHE_CLEARTIME * 60000L)));
 			TIMERCACHE.put(uuid, timer);

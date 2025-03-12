@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.ContentData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.fvtm.util.SaveUtils;
 import net.fexcraft.mod.uni.IDL;
@@ -19,12 +20,14 @@ import net.fexcraft.mod.uni.tag.TagLW;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class PartData extends ContentData<Part, PartData> implements TextureUser {
-	
+
+	public static String DEF_SOURCE = SwivelPoint.DEFAULT;
 	protected TreeMap<String, PartFunction> functions = new TreeMap<>();
 	protected Textureable texture;
 	protected V3D currentpos = new V3D();
 	protected Rot currentrot = new Rot();
 	protected String rotpoint;
+	protected String source = DEF_SOURCE;
 
 	public PartData(Part type){
 		super(type);
@@ -38,9 +41,10 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	public TagCW write(TagCW compound){
 		if(compound == null) compound = TagCW.create();
 		compound.set("Part", type.getIDS());
+		if(!source.equals(DEF_SOURCE)) compound.set("Source", source);
 		compound.set("CurrentPos", SaveUtils.saveV3D(currentpos));
 		currentrot.toTag("CurrentRot", compound);
-		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.set("SwivelPoint", rotpoint);
+		if(rotpoint != null && !rotpoint.equals(SwivelPoint.DEFAULT)) compound.set("SwivelPoint", rotpoint);
 		//
 		texture.save(compound);
 		//
@@ -63,6 +67,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		if(compound == null || compound.direct() == null) compound = TagCW.create();
 		currentpos = SaveUtils.loadV3D(compound.getList("CurrentPos"));
 		currentrot = Rot.fromTag("CurrentRot", compound);
+		source = compound.has("Source") ? compound.getString("Source") : DEF_SOURCE;
 		rotpoint = compound.has("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
 		texture.load(compound);
@@ -85,6 +90,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		//this.type = Resources.getPart(regname);
 		currentpos = SaveUtils.loadV3D(map.getArray("CurrentPos", 0));
 		currentrot = Rot.fromJson(map, "CurrentPos");
+		source = map.getString("Source", DEF_SOURCE);
 		//
 		return this;
 	}
@@ -94,6 +100,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		JsonMap obj = new JsonMap();
 		obj.add("Part", type.getIDS());
 		obj.add("CurrentPos", SaveUtils.saveV3DJson(currentpos));
+		obj.add("Source", source);
 		if(!currentrot.isNull()) obj.add("CurrentRot", currentrot.toJson());
 		//
 		return obj;
@@ -103,16 +110,14 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 		return currentpos;
 	}
 	
-	public void setInstalledPos(V3D pos){
-		this.currentpos = pos;
+	public void setInstalled(String src, V3D pos, Rot rot){
+		if(pos != null) currentpos = pos;
+		if(rot != null) currentrot = rot;
+		source = src == null ? DEF_SOURCE : src;
 	}
 
 	public Rot getInstalledRot(){
 		return currentrot;
-	}
-	
-	public void setInstalledRot(Rot rot){
-		currentrot = rot;
 	}
 
 	public void setInstalledOnSwivelPoint(String newpoint){
@@ -160,6 +165,10 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	@Override
 	public TextureHolder getTexHolder(){
 		return type;
+	}
+
+	public String getSource(){
+		return source;
 	}
 
 }

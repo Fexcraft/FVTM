@@ -80,7 +80,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
 		String whcat = cat.split(":")[0];
-		part.setInstalledPos(data.getWheelSlots().get(whcat).position);
+		part.setInstalled(null, data.getWheelSlots().get(whcat).position, null);
 		{
 			PartData wheel = data.getPart(whcat);
 			WheelFunction func = wheel.getFunction("fvtm:wheel");
@@ -109,7 +109,7 @@ public class TireInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new V3D(0, 0, 0));
+		part.setInstalled(null, new V3D(0, 0, 0), null);
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
 		sender.send("handler.deinstall.fvtm.tire.success");

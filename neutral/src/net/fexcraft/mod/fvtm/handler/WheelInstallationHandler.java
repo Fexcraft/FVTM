@@ -65,7 +65,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 	@Override
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(data.getWheelSlots().get(cat).position);
+		part.setInstalled(null, data.getWheelSlots().get(cat).position, null);
 		{
 			WheelFunction func = part.getFunction("fvtm:wheel");
 			if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
@@ -97,7 +97,7 @@ public class WheelInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new V3D(0, 0, 0));
+		part.setInstalled(null, new V3D(0, 0, 0), null);
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
 		sender.send("handler.deinstall.fvtm.wheel.success");

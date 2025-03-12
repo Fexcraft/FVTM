@@ -108,12 +108,11 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 		if(!slots.get(slotin[1]).swivel.equals(SwivelPoint.DEFAULT) && data.getRotationPoints().containsKey(slots.get(slotin[1]).swivel)){
 			part.setInstalledOnSwivelPoint(slots.get(slotin[1]).swivel);
 		}
-		part.setInstalledPos(result);
-		part.setInstalledRot(rosult);
+		part.setInstalled(slotin[0], result, rosult);
 	}
 
 	@Override
-	public boolean validUninstall(MessageSender sender, PartData part, String is_category, VehicleData from, boolean swap){
+	public boolean validUninstall(MessageSender sender, PartData part, String in_cat, VehicleData from, boolean swap){
 		DPIHData idata = part.getType().getInstallHandlerData();
 		if(!idata.removable && !swap){
 			sender.send("handler.deinstall.fvtm.default.part_not_removable");
@@ -121,7 +120,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 		}
 		//Function Check
 		if(!checkWheelSlotsInUse(sender, part, from)) return false;
-		if(!checkPartSlotsInUse(sender, part, from)) return false;
+		if(!checkPartSlotsInUse(sender, in_cat, part, from)) return false;
 		sender.send("handler.deinstall.fvtm.default.check_passed");
 		return true;
 	}
@@ -139,11 +138,11 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 		return true;
 	}
 
-	public static boolean checkPartSlotsInUse(MessageSender sender, PartData part, VehicleData from){
+	public static boolean checkPartSlotsInUse(MessageSender sender, String cat, PartData part, VehicleData from){
 		if(!part.hasFunction("fvtm:part_slots")) return true;
 		PartSlotsFunction func = part.getFunction(PartSlotsFunction.class, "fvtm:part_slots");
 		for(Entry<String, PartSlot> slot : func.getPartSlotss().entrySet()){
-			if(from.hasPart(slot.getKey())){
+			if(from.hasPart(slot.getKey()) && from.getPart(slot.getKey()).getSource().equals(cat)){
 				sender.send("handler.deinstall.fvtm.default.remove_sub_parts");
 				return false;
 			}
@@ -153,8 +152,7 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(V3D.NULL);
-		part.setInstalledRot(Rot.NULL);
+		part.setInstalled(null, V3D.NULL, Rot.NULL);
 		part.setInstalledOnSwivelPoint(null);
 		data.getParts().remove(cat);
 		sender.send("handler.deinstall.fvtm.default.success");

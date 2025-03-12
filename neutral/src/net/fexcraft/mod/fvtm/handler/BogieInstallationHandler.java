@@ -42,7 +42,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 	@Override
 	public boolean processInstall(MessageSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(data.getWheelSlots().get(cat).position);
+		part.setInstalled(null, data.getWheelSlots().get(cat).position, null);
 		BogieFunction func = part.getFunction("fvtm:bogie");
 		if(func != null) func.setBogie(cat);
 		BogieData idata = part.getType().getInstallHandlerData();
@@ -64,7 +64,7 @@ public class BogieInstallationHandler extends PartInstallHandler {
 
 	@Override
 	public boolean processUninstall(MessageSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new V3D(0, 0, 0));
+		part.setInstalled(null, new V3D(0, 0, 0), null);
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
 		sender.send("handler.deinstall.fvtm.bogie.success");

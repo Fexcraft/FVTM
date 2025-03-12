@@ -250,10 +250,13 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	private void refreshModificableDataByParts(){
 		wheels.clear();
 		type.getWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(null)));
-		for(PartData part : parts.values()){
-			if(part.hasFunction("fvtm:wheel_positions")){
-				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
-				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos())));
+		for(Entry<String, PartData> part : parts.entrySet()){
+			if(part.getValue().hasFunction("fvtm:wheel_positions")){
+				WheelPositionsFunction func = part.getValue().getFunction("fvtm:wheel_positions");
+				func.getPositions().entrySet().forEach(entry -> {
+					String key = entry.getKey().replace("*", part.getKey());
+					wheels.put(key, entry.getValue().copy(part.getValue().getInstalledPos()));
+				});
 			}
 		}
 		//

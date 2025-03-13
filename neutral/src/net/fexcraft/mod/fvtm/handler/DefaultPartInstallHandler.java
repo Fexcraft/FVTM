@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -119,17 +120,18 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 			return false;
 		}
 		//Function Check
-		if(!checkWheelSlotsInUse(sender, part, from)) return false;
+		if(!checkWheelSlotsInUse(sender, in_cat, part, from)) return false;
 		if(!checkPartSlotsInUse(sender, in_cat, part, from)) return false;
 		sender.send("handler.deinstall.fvtm.default.check_passed");
 		return true;
 	}
 	
-	public static boolean checkWheelSlotsInUse(MessageSender sender, PartData part, VehicleData from){
+	public static boolean checkWheelSlotsInUse(MessageSender sender, String cat, PartData part, VehicleData from){
 		if(part.hasFunction("fvtm:wheel_positions")){
 			WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
+			ArrayList<String> pid = func.getPosIds(cat);
 			for(String key : from.getParts().keySet()){
-				if(func.getPositions().containsKey(key)){
+				if(pid.contains(key)){
 					sender.send("handler.deinstall.fvtm.default.remove_linked_wheels");
 					return false;
 				}

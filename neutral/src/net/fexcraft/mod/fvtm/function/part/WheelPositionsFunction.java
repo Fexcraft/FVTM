@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.function.part;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -33,5 +34,11 @@ public class WheelPositionsFunction extends StaticFunction {
 	public HashMap<String, WheelSlot> getPositions(){
 		return wheels;
 	}
-	
+
+	public ArrayList<String> getPosIds(String cat){
+		ArrayList<String> list = new ArrayList<>();
+		for(String key : wheels.keySet()) list.add(key.replace("*", cat));
+		return list;
+	}
+
 }

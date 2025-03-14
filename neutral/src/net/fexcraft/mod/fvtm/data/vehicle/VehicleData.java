@@ -850,4 +850,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 	}
 
+	public boolean hasPartWithId(String str){
+		for(PartData value : parts.values()){
+			if(value.getType().getIDS().equals(str)) return true;
+		}
+		return false;
+	}
+
 }

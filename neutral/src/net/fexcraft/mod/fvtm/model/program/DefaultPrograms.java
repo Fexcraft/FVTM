@@ -160,6 +160,8 @@ public class DefaultPrograms {
 		}
 		ModelGroup.PROGRAMS.add(new AttributeLights("", false));
 		ModelGroup.PROGRAMS.add(new AttributeSignalLights("", 0, false));
+		ModelGroup.PROGRAMS.add(new IDSpecific(""));
+		ModelGroup.PROGRAMS.add(new IDSpecificArray(""));
 	}
 
 	public static void setupSignalTimer(){
@@ -291,6 +293,60 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new AttributeSignalLights(args[0], args.length > 1 ? Integer.parseInt(args[1]) : 1, args.length > 2 && Boolean.parseBoolean(args[2]));
+		}
+
+	}
+
+	public static class IDSpecific implements Program {
+
+		private String group;
+
+		public IDSpecific(String id){ this.group = id; }
+
+		@Override
+		public String id(){ return "fvtm:category_specific"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(!data.part_category.equals(group)) list.visible = false;
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			if(args.length > 1) return new IDSpecificArray(args);
+			return new IDSpecific(args[0]);
+		}
+
+	}
+
+	public static class IDSpecificArray implements Program {
+
+		private String[] groups;
+
+		public IDSpecificArray(String... ids){ this.groups = ids; }
+
+		@Override
+		public String id(){ return "fvtm:category_specific_array"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			for(String str : groups) if(str.equals(data.part_category)) return; list.visible = false;
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			if(args.length == 1) return new IDSpecific(args[0]);
+			return new IDSpecificArray(args);
 		}
 
 	}

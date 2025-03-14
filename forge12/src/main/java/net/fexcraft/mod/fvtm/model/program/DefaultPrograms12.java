@@ -757,58 +757,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 	}
 	
-	public static class IDSpecific implements Program {
-		
-		private String group;
-		
-		public IDSpecific(String id){ this.group = id; }
-
-		@Override
-		public String id(){ return "fvtm:category_specific"; }
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if(!data.part_category.equals(group)) list.visible = false;
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			list.visible = true;
-		}
-
-		@Override
-		public Program parse(String[] args){
-			return new IDSpecific(args[0]);
-		}
-
-	}
-	
-	public static class IDSpecificArray implements Program {
-		
-		private String[] groups;
-		
-		public IDSpecificArray(String... ids){ this.groups = ids; }
-
-		@Override
-		public String id(){ return "fvtm:category_specific_array"; }
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			for(String str : groups) if(str.equals(data.part_category)) return; list.visible = false;
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			list.visible = true;
-		}
-
-		@Override
-		public Program parse(String[] args){
-			return new IDSpecificArray(args);
-		}
-
-	}
-	
 	public static class Scale implements Program {
 		
 		private float scale;

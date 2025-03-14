@@ -73,7 +73,10 @@ public class DefaultPartInstallHandler extends PartInstallHandler {
 	private boolean incompatible(DPIHData idata, VehicleData data){
 		if(!idata.incompatible.containsKey(data.getType().getIDS())) return false;
 		ArrayList<String> list = idata.incompatible.get(data.getType().getIDS());
-		for(String str : list) if(data.getParts().containsKey(str)) return true;
+		for(String str : list){
+			if(str.contains(":") && data.hasPartWithId(str)) return true;
+			else if(data.getParts().containsKey(str)) return true;
+		}
 		return false;
 	}
 	

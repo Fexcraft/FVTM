@@ -350,12 +350,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			return;
 		}
 		if(!level().isClientSide){
-			for(Map.Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
-				if(!wheels.containsKey(entry.getKey()) || !wheels.get(entry.getKey()).isAddedToWorld()){
-					wheels.put(entry.getKey(), FvtmGetters.getNewWheel(this, entry.getKey()));
-					level().addFreshEntity(wheels.get(entry.getKey()));
-				}
-			}
+			checkWheelPresence(vehicle.w_front_l.id);
+			checkWheelPresence(vehicle.w_front_r.id);
+			checkWheelPresence(vehicle.w_rear_l.id);
+			checkWheelPresence(vehicle.w_rear_r.id);
 		}
 		yRotO = vehicle.point.getPivot().deg_yaw();
 		xRotO = vehicle.point.getPivot().deg_pitch();
@@ -447,6 +445,13 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		//collchecks
 		if(!level().isClientSide && tickCount % VEHICLE_SYNC_RATE == 0){
 			vehicle.sendUpdatePacket();
+		}
+	}
+
+	private void checkWheelPresence(String id){
+		if(!wheels.containsKey(id) || !wheels.get(id).isAddedToWorld()){
+			wheels.put(id, FvtmGetters.getNewWheel(this, id));
+			level().addFreshEntity(wheels.get(id));
 		}
 	}
 

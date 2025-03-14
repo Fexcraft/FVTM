@@ -99,11 +99,13 @@ public class InteractionHandler {
 			}
 		}
 		for(int i = 0; i < vehdata.getInventories().size(); i++){
-			InventoryFunction func = vehdata.getFunctionInPart(vehdata.getInventories().get(i), "fvtm:inventory");
+			PartData part = vehdata.getPart(vehdata.getInventories().get(i));
+			if(part == null) continue;
+			InventoryFunction func = part.getFunction("fvtm:inventory");
 			if(func == null) continue;
 			inv = func.inventory();
 			if(seat == null ? inv.external : (seat.seat.driver || inv.access.contains(seat.seat.name))){
-				invs.add(new InvInteractive(vehdata.getInventories().get(i), inv, null, vehdata.getVehInvKeys().size() + i));
+				invs.add(new InvInteractive(vehdata.getInventories().get(i), inv, part, vehdata.getVehInvKeys().size() + i));
 			}
 		}
 		InvInteractive inter = getInteracted(seat == null, vehdata, ref, pass, invs);

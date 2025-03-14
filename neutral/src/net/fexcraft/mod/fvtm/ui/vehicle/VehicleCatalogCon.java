@@ -29,8 +29,8 @@ public class VehicleCatalogCon extends ContainerInterface {
 		try{
 			Vehicle veh = FvtmRegistry.VEHICLES.get(com.getString("veh"));
 			CatalogPreset preset = veh.getCatalogEntry(com.getString("rec"));
-			if(canCraft(parseStacks(preset))){
-				doCraft(parseStacks(preset));
+			if(player.entity.isCreative() || canCraft(parseStacks(preset))){
+				if(!player.entity.isCreative()) doCraft(parseStacks(preset));
 				player.entity.addStack(preset.getVehicleData().newItemStack());
 				player.entity.send("ui.fvtm.vehicle_catalog.craft_success");
 				player.entity.closeUI();

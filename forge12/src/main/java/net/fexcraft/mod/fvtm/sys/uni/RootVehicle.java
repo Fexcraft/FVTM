@@ -59,7 +59,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -79,7 +78,6 @@ import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
 	public VehicleInstance vehicle;
-	public HashMap<String, NWheelEntity> wheels = new HashMap<>();
 	public float rotationRoll = 0;
 	public float prevRotationRoll = 0;
 	public float wheel_radius = 0;
@@ -92,7 +90,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	}
 
 	protected void init(TagCW com){
-		wheels.clear();
+		vehicle.wheels.clear();
 		wheel_radius = 0;
 		if(!vehicle.type.isRailVehicle()){
 			for(Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
@@ -202,8 +200,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
             }
 		}
 		super.setDead();
-		if(!wheels.isEmpty()){
-			for(NWheelEntity wheel : wheels.values()) wheel.setDead();
+		if(!vehicle.wheels.isEmpty()){
+			for(UniWheel wheel : vehicle.wheels.values()) wheel.remove();
 		}
 		//TODO vehicle removal script/event
 		if(!vehicle.type.isRailVehicle()){
@@ -379,9 +377,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		}
 		if(!world.isRemote){
 			for(Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
-				if(!wheels.containsKey(entry.getKey()) || !wheels.get(entry.getKey()).addedToChunk){
-					wheels.put(entry.getKey(), new NWheelEntity(this, entry.getKey()));
-					world.spawnEntity(wheels.get(entry.getKey()));
+				if(!vehicle.wheels.containsKey(entry.getKey()) || !((Entity)vehicle.wheels.get(entry.getKey())).addedToChunk){
+					NWheelEntity wheel = new NWheelEntity(this, entry.getKey());
+					vehicle.wheels.put(entry.getKey(), wheel);
+					world.spawnEntity(wheel);
 				}
 			}
 		}
@@ -427,11 +426,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				vehicle.data.setAttribute("speed", vehicle.speed);
 			}
 		}
-		for(NWheelEntity wheel : wheels.values()){
-			if(wheel == null) continue;
-			wheel.prevPosX = wheel.posX;
-			wheel.prevPosY = wheel.posY;
-			wheel.prevPosZ = wheel.posZ;
+		for(UniWheel wheel : vehicle.wheels.values()){
+			if(wheel != null) wheel.setPosAsPrev();
 		}
 		onUpdateMovement();
 		vehicle.updatePointsSeats();
@@ -461,10 +457,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				move(!VEHICLES_NEED_FUEL || creative);
 				if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
 				//
-				NWheelEntity fl = wheels.get(vehicle.w_front_l.id);
-				NWheelEntity fr = wheels.get(vehicle.w_front_r.id);
-				NWheelEntity rl = wheels.get(vehicle.w_rear_l.id);
-				NWheelEntity rr = wheels.get(vehicle.w_rear_r.id);
+				NWheelEntity fl = vehicle.wheels.getWheel(vehicle.w_front_l.id);
+				NWheelEntity fr = vehicle.wheels.getWheel(vehicle.w_front_r.id);
+				NWheelEntity rl = vehicle.wheels.getWheel(vehicle.w_rear_l.id);
+				NWheelEntity rr = vehicle.wheels.getWheel(vehicle.w_rear_r.id);
 				fron = new V3D((fl.posX + fr.posX) * 0.5, (fl.posY + fr.posY) * 0.5, (fl.posZ + fr.posZ) * 0.5);
 				rear = new V3D((rl.posX + rr.posX) * 0.5, (rl.posY + rr.posY) * 0.5, (rl.posZ + rr.posZ) * 0.5);
 				left = new V3D((fl.posX + rl.posX) * 0.5, (fl.posY + rl.posY) * 0.5, (fl.posZ + rl.posZ) * 0.5);
@@ -491,7 +487,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		onGround = true;
 		V3D move = new V3D();
 		if(vehicle.data.getType().isTrailer()){
-			for(NWheelEntity wheel : wheels.values()){
+			for(UniWheel ent : vehicle.wheels.values()){
+				NWheelEntity wheel = (NWheelEntity)ent;
 				wheel.onGround = true;
 				wheel.rotationYaw = vehicle.pivot().deg_yaw();
 				wheel.motionX *= 0.9;
@@ -516,7 +513,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			}
 			else{
 				boolean consumed = vehicle.engine != null && vehicle.consumeFuel();
-				for(NWheelEntity wheel : wheels.values()){
+				for(UniWheel ent : vehicle.wheels.values()){
+					NWheelEntity wheel = (NWheelEntity)ent;
 					wheel.onGround = true;
 					wheel.motionX *= 0.9;
 					//wheel.motionY *= 0.9;
@@ -572,13 +570,13 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevPosX = posX;
 		prevPosY = posY;
 		prevPosZ = posZ;
-		if(wheels.isEmpty() || vehicle.front == null) return;
+		if(vehicle.wheels.isEmpty() || vehicle.front == null) return;
 		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getConnectorFor(vehicle.data.getType().getCategories()));
 		conn = conn.add(vehicle.front.getV3D());
 		setPosition(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
-		NWheelEntity wl = wheels.get(vehicle.w_rear_l.id);
-		NWheelEntity wr = wheels.get(vehicle.w_rear_r.id);
+		NWheelEntity wl = vehicle.wheels.getWheel(vehicle.w_rear_l.id);
+		NWheelEntity wr = vehicle.wheels.getWheel(vehicle.w_rear_r.id);
 		vehicle.pivot().set_rotation(-Math.atan2((wl.posX + wr.posX) * 0.5 - conn.x, (wl.posZ + wr.posZ) * 0.5 - conn.z), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
 		//alignWheels();
 		if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity).align();
@@ -586,7 +584,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	protected void alignWheels(){
 		onGround = true;
-		for(NWheelEntity wheel : wheels.values()){
+		for(UniWheel ent : vehicle.wheels.values()){
+			NWheelEntity wheel = (NWheelEntity)ent;
 			wheel.onGround = true;
 			wheel.rotationYaw = vehicle.pivot().deg_yaw();
 			V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);

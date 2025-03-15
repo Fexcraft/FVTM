@@ -253,7 +253,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     	float diff = vehicle.data.getAttributeFloat("differential_ratio", 3.5f);
     	if(vehicle.engine != null && vehicle.transmission != null){
         	orpm = rpm;
-        	rpm = (int)((vehicle.speed / wheel_radius) * vehicle.transmission.getRatio(gear) * diff * 60 / Static.PI2);
+        	rpm = (int)((vehicle.speed / axles.get(0).wheels.get(0).radius) * vehicle.transmission.getRatio(gear) * diff * 60 / Static.PI2);
         	rpm = (orpm + rpm) / 2;
         	if(rpm < 0) rpm = -rpm;
         	if(rpm < vehicle.engine.minRPM()) rpm = vehicle.engine.minRPM();
@@ -261,7 +261,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     	}
     	float force = 0;
     	if(!overloaded && vehicle.engine != null && vehicle.transmission != null){
-    		force = vehicle.engine.getTorque(rpm) * vehicle.transmission.getRatio(gear) * diff * vehicle.transmission.getEfficiency() / wheel_radius;
+    		force = vehicle.engine.getTorque(rpm) * vehicle.transmission.getRatio(gear) * diff * vehicle.transmission.getEfficiency() / axles.get(0).wheels.get(0).radius;
         	if(vehicle.transmission.isAutomatic() && vehicle.autogear_timer <= 0){
         		int ngear = vehicle.transmission.processAutoShift(gear, rpm, vehicle.engine.maxRPM(), vehicle.throttle);
         		if(ngear != gear){

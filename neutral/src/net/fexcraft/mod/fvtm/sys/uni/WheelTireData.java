@@ -14,6 +14,8 @@ public class WheelTireData {
 	public TireAttr function;
 	public boolean steering;
 	public boolean mirror;
+	public float radius;
+	public float rotation;
 
 	public WheelTireData(String key){
 		this.id = key;

@@ -44,6 +44,10 @@ public class VehicleInstance {
 	public SwivelPoint point;
 	private InteractRef ref;
 	//
+	public double[] serv_pos = new double[3];
+	public double[] serv_rot = new double[3];
+	public double serv_steer;
+	public byte serv_sync;
 	public WheelTireData w_front_l;
 	public WheelTireData w_front_r;
 	public WheelTireData w_rear_l;
@@ -623,6 +627,15 @@ public class VehicleInstance {
 			}
 		}
 		return null;
+	}
+
+	public void onVehMovePkt(Packet_VehMove packet){
+		serv_pos = packet.pos;
+		serv_rot = packet.rot;
+		serv_steer = packet.steering;
+		throttle = packet.throttle;
+		data.getAttribute("fuel_stored").set(packet.fuel);
+		serv_sync = Config.VEHICLE_SYNC_RATE;
 	}
 
 }

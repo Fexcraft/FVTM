@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entity;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,7 +27,7 @@ import java.util.Collections;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnData {
+public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnData, UniWheel {
 
 	public RootVehicle root;
 	private boolean found;
@@ -168,7 +169,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 			root = (RootVehicle)level().getEntity(vehid);
 			if(root == null) return;
 			found = true;
-			root.wheels.put(wheelid, this);
+			root.vehicle.wheels.put(wheelid, this);
 		}
 		if(root == null || wheel == null) return;
 		V3D dest = root.vehicle.pivot().get_vector(wheel.pos);
@@ -187,6 +188,16 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 
 	public double getHorSpeed(){
 		return Math.sqrt(motionX * motionX + motionZ * motionZ);
+	}
+
+	@Override
+	public void setPrevAsPos(){
+		setOldPosAndRot();
+	}
+
+	@Override
+	public void remove(){
+		kill();
 	}
 
 }

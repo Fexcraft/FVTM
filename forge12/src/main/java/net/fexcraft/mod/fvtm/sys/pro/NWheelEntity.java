@@ -102,7 +102,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 		else{
 			WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 			NLandVehicle veh = (NLandVehicle) root;
-			stepHeight = wtd == null ? veh.spdata == null ? 1f : veh.spdata.wheel_step_height : wtd.function.step_height;
+			stepHeight = wtd == null ? veh.vehicle.data == null ? 1f : veh.vehicle.data.getType().getSphData().wheel_step_height : wtd.function.step_height;
 		}
 	}
 

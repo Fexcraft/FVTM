@@ -88,39 +88,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	}
 
 	protected void init(TagCW com){
-		vehicle.wheels.clear();
-		if(!vehicle.type.isRailVehicle()){
-			for(Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
-				if(entry.getKey().endsWith(":tire")) continue;
-				WheelTireData wheel = new WheelTireData(entry.getKey());
-				wheel.pos = entry.getValue();
-				PartData part = vehicle.data.getPart(entry.getKey());
-				if(!((WheelData)part.getType().getInstallHandlerData()).hasTire()){
-					part = vehicle.data.getPart(entry.getKey()+ ":tire");
-					wheel.radius = ((TireData)part.getType().getInstallHandlerData()).getOuterRadius();
-				}
-				else{
-					wheel.radius += ((WheelData)part.getType().getInstallHandlerData()).getRadius();
-				}
-				wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
-				wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
-				wheel.mirror = vehicle.data.getWheelSlots().get(entry.getKey()).mirror;
-				vehicle.wheeldata.put(entry.getKey(), wheel);
-			}
-			vehicle.assignWheels();
-		}
-		vehicle.seats.clear();
-		for(int i = 0; i < vehicle.data.getSeats().size(); i++){
-			vehicle.seats.add(new SeatInstance(vehicle, i));
-		}
 		setSize(vehicle.data.getAttribute("hitbox_width").asFloat(), vehicle.data.getAttribute("hitbox_height").asFloat());
-		//TODO spawn script/event
-		if(!world.isRemote && vehicle.front != null){
-			vehicle.sendUpdate(PKT_UPD_CONNECTOR);
-		}
-		if(world.isRemote){
-			//TODO register for particles
-		}
 	}
 
 	public boolean isAdv(){
@@ -135,16 +103,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		TagCW com = TagCW.wrap(compound);
-		if(vehicle.data == null){
-			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
-		}
-		else{
-			vehicle.data.read(com);
-		}
 		prevRotationYaw = com.getFloat("RotationYaw");
 		prevRotationPitch = com.getFloat("RotationPitch");
 		prevRotationRoll = com.getFloat("RotationRoll");
-		vehicle.point.loadPivot(com);
+		vehicle.init(com);
 		init(com);
 	}
 
@@ -172,13 +134,12 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public void readSpawnData(ByteBuf buffer){
 		try{
 			TagCW com = TagCW.wrap(ByteBufUtils.readTag(buffer));
-			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
-			vehicle.point.loadPivot(com);
+			vehicle.init(com);
+			readSpawnData(com);
+			init(com);
 			prevRotationYaw = vehicle.point.getPivot().deg_yaw();
 			prevRotationPitch = vehicle.point.getPivot().deg_pitch();
 			prevRotationRoll = vehicle.point.getPivot().deg_roll();
-			readSpawnData(com);
-			init(com);
 		}
 		catch(Exception e){
 			e.printStackTrace();

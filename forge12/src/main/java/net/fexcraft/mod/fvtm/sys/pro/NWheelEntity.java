@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
+public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, UniWheel {
 
 	public RootVehicle root;
 	private boolean found;
@@ -151,7 +152,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 			root = (RootVehicle)world.getEntityByID(vehid);
 			if(root == null) return;
 			found = true;
-			root.wheels.put(wheelid, this);
+			root.vehicle.wheels.put(wheelid, this);
 		}
 		if(root == null) return;
 		if(!addedToChunk) world.spawnEntity(this);
@@ -165,6 +166,18 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	public String getName(){
 		return "entity.fvtm.wheel." + wheelid;
+	}
+
+	@Override
+	public void setPosAsPrev(){
+		prevPosX = posX;
+		prevPosY = posY;
+		prevPosZ = posZ;
+	}
+
+	@Override
+	public void remove(){
+		setDead();
 	}
 
 }

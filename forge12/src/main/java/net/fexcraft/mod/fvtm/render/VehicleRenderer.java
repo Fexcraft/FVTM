@@ -48,6 +48,7 @@ public class VehicleRenderer {
         for(Entity entity : entities){
         	if(entity instanceof RootVehicle == false) continue;
         	RootVehicle vehicle = (RootVehicle)entity;
+			if(vehicle.vehicle.data == null) continue;
             x = vehicle.lastTickPosX + (vehicle.posX - vehicle.lastTickPosX) * ticks;
             y = vehicle.lastTickPosY + (vehicle.posY - vehicle.lastTickPosY) * ticks;
             z = vehicle.lastTickPosZ + (vehicle.posZ - vehicle.lastTickPosZ) * ticks;

@@ -65,13 +65,6 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	}
 
 	@Override
-	public void onVehicleMove(Packet_VehMove packet){
-		Entity ent = level.getEntity(packet.entid);
-		if(ent instanceof RootVehicle == false) return;
-		((RootVehicle)ent).setPosRotMot(packet.pos, packet.yaw, packet.pitch, packet.roll, packet.throttle, packet.steering, packet.fuel);
-	}
-
-	@Override
 	public VehicleInstance getVehicle(int entid){
 		Entity ent = level.getEntity(entid);
 		if(ent instanceof RootVehicle == false) return null;

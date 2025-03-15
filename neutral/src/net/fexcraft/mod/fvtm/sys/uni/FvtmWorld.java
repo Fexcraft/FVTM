@@ -25,8 +25,6 @@ public interface FvtmWorld {
 
 	public Passenger getPassenger(int source);
 
-	public void onVehicleMove(Packet_VehMove packet);
-
 	public VehicleInstance getVehicle(int entid);
 
 	public Map.Entry<VehicleData, InteractRef> getInteractRef(TagCW packet);

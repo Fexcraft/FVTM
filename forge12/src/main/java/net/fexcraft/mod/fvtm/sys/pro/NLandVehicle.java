@@ -14,8 +14,6 @@ import net.minecraft.world.World;
  */
 public class NLandVehicle extends RootVehicle {
 
-	public SimplePhysData spdata;
-
 	public NLandVehicle(World world){
 		super(world);
 		preventEntitySpawning = true;
@@ -49,8 +47,7 @@ public class NLandVehicle extends RootVehicle {
 
 	@Override
 	protected void init(TagCW com){
-		spdata = vehicle.data.getType().getSphData();
-		stepHeight = spdata.wheel_step_height;
+		stepHeight = vehicle.data.getType().getSphData().wheel_step_height;
 		super.init(com);
 	}
 

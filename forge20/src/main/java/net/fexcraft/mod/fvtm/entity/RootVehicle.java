@@ -68,7 +68,6 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	public VehicleInstance vehicle;
-	protected SimplePhysData spdata;
 	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
@@ -87,40 +86,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	protected void init(TagCW com){
-		spdata = vehicle.data.getType().getSphData();
-		vehicle.wheels.clear();
-		wheel_radius = 0;
-		if(!vehicle.type.isRailVehicle()){
-			for(Map.Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
-				if(entry.getKey().endsWith(":tire")) continue;
-				WheelTireData wheel = new WheelTireData(entry.getKey());
-				wheel.pos = entry.getValue();
-				PartData part = vehicle.data.getPart(entry.getKey());
-				if(!((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).hasTire()){
-					part = vehicle.data.getPart(entry.getKey() + ":tire");
-					wheel_radius += ((TireInstallationHandler.TireData)part.getType().getInstallHandlerData()).getOuterRadius();
-				}
-				else{
-					wheel_radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
-				}
-				wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
-				wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
-				wheel.mirror = vehicle.data.getWheelSlots().get(entry.getKey()).mirror;
-				vehicle.wheeldata.put(entry.getKey(), wheel);
-			}
-			vehicle.assignWheels();
-			wheel_radius /= vehicle.wheeldata.size();
-		}
-		vehicle.seats.clear();
-		for(int i = 0; i < vehicle.data.getSeats().size(); i++){
-			vehicle.seats.add(new SeatInstance(vehicle, i));
-		}
-		if(!level().isClientSide && vehicle.front != null && !vehicle.type.isRailVehicle()){
-			vehicle.sendUpdate(PKT_UPD_CONNECTOR);
-		}
 		if(level().isClientSide){
-			int cr = (int)vehicle.data.getAttributeFloat("collision_range", 2f);
-			renderbox = new BoundingBox(-cr, -cr, -cr, cr, cr, cr);
+			int w = vehicle.data.getAttribute("hitbox_width").asInteger();
+			int h = vehicle.data.getAttribute("hitbox_height").asInteger();
+			renderbox = new BoundingBox(-w, -h, -w, w, h, w);
 		}
 	}
 
@@ -132,17 +101,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag){
 		TagCW com = TagCW.wrap(tag);
-		if(vehicle.data == null){
-			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
-		}
-		else{
-			vehicle.data.read(com);
-		}
 		setXRot(com.getFloat("RotationPitch"));
 		setYRot(com.getFloat("RotationYaw"));
 		protZ = rotZ = com.getFloat("RotationYaw");
 		setOldPosAndRot();
-		vehicle.point.loadPivot(com);
+		vehicle.init(com);
 		init(com);
 	}
 
@@ -169,18 +132,13 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			TagCW com = TagCW.wrap(buffer.readNbt());
-			vehicle.init(FvtmResources.INSTANCE.getVehicleData(com));
-			vehicle.point.loadPivot(com);
+			vehicle.init(com);
 			readSpawnData(com);
+			init(com);
 			setYRot(vehicle.point.getPivot().deg_yaw());
 			setXRot(vehicle.point.getPivot().deg_pitch());
 			protZ = rotZ = vehicle.point.getPivot().deg_roll();
 			setOldPosAndRot();
-			if(com.has("TruckId")){
-				vehicle.front = ((RootVehicle)level().getEntity(com.getInteger("TruckId"))).vehicle;
-				vehicle.front.rear = vehicle;
-			}
-			init(com);
 		}
 		catch(Exception e){
 			e.printStackTrace();

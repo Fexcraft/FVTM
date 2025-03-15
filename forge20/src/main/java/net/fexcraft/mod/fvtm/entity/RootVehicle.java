@@ -373,7 +373,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			}
 		}
 		for(UniWheel wheel : vehicle.wheels.values()){
-			if(wheel != null) wheel.setPrevAsPos();
+			if(wheel != null) wheel.setPosAsPrev();
 		}
 		Player driver = getDriver();
 		if(!level().isClientSide){

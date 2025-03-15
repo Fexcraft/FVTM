@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.Pivot;
@@ -54,6 +55,7 @@ public class VehicleInstance {
 	public WheelTireData w_rear_r;
 	public RailEntity railent;
 	//
+	public WheelMap wheels = new WheelMap();
 	public double steer_yaw;
 	public double throttle;
 	public double speed;

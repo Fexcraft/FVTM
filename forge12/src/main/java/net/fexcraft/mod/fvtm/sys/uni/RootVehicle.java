@@ -80,8 +80,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public VehicleInstance vehicle;
 	public float rotationRoll = 0;
 	public float prevRotationRoll = 0;
-	public float wheel_radius = 0;
-	public float wheel_rotation = 0;
 	public boolean should_sit = true;
 
 	public RootVehicle(World world){
@@ -91,7 +89,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	protected void init(TagCW com){
 		vehicle.wheels.clear();
-		wheel_radius = 0;
 		if(!vehicle.type.isRailVehicle()){
 			for(Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
 				if(entry.getKey().endsWith(":tire")) continue;
@@ -100,10 +97,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				PartData part = vehicle.data.getPart(entry.getKey());
 				if(!((WheelData)part.getType().getInstallHandlerData()).hasTire()){
 					part = vehicle.data.getPart(entry.getKey()+ ":tire");
-					wheel_radius += ((TireData)part.getType().getInstallHandlerData()).getOuterRadius();
+					wheel.radius = ((TireData)part.getType().getInstallHandlerData()).getOuterRadius();
 				}
 				else{
-					wheel_radius += ((WheelData)part.getType().getInstallHandlerData()).getRadius();
+					wheel.radius += ((WheelData)part.getType().getInstallHandlerData()).getRadius();
 				}
 				wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
 				wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
@@ -111,7 +108,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				vehicle.wheeldata.put(entry.getKey(), wheel);
 			}
 			vehicle.assignWheels();
-			wheel_radius /= vehicle.wheeldata.size();
 		}
 		vehicle.seats.clear();
 		for(int i = 0; i < vehicle.data.getSeats().size(); i++){
@@ -420,8 +416,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				attr.value = (float)vehicle.steer_yaw;
 				double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(prevPosX - posX, prevPosZ - posZ) + rad180);
 				dir = dir > rad90 || dir < -rad90? -1 : 1;
-				wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * dir * wheel_radius * 100));
-				vehicle.data.setAttribute("wheel_angle", wheel_rotation);
+				for(WheelTireData val : vehicle.wheeldata.values()){
+					val.rotation = valDegF(val.rotation + vehicle.speed * dir * val.radius * 100);
+				}
+				vehicle.data.setAttribute("wheel_angle", 0);
 				vehicle.data.setAttribute("throttle", vehicle.throttle);
 				vehicle.data.setAttribute("speed", vehicle.speed);
 			}

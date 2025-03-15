@@ -1,17 +1,16 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.UUID;
+import java.util.*;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
@@ -19,12 +18,14 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
+import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
+import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.Pivot;
@@ -55,6 +56,7 @@ public class VehicleInstance {
 	public WheelTireData w_rear_r;
 	public RailEntity railent;
 	//
+	public SimplePhysData spdata;
 	public WheelMap wheels = new WheelMap();
 	public double steer_yaw;
 	public double throttle;
@@ -111,6 +113,7 @@ public class VehicleInstance {
 		if(adv){
 			transmission = data.getFunctionInPart("transmission", "fvtm:transmission");
 		}
+		spdata = data.getType().getSphData();
 	}
 
 	public UUID getPlacer(){
@@ -638,6 +641,51 @@ public class VehicleInstance {
 		throttle = packet.throttle;
 		data.getAttribute("fuel_stored").set(packet.fuel);
 		serv_sync = Config.VEHICLE_SYNC_RATE;
+	}
+
+	public void init(TagCW com){
+		if(data == null){
+			init(FvtmResources.INSTANCE.getVehicleData(com));
+		}
+		else{
+			data.read(com);
+		}
+		point.loadPivot(com);
+		initWheels();
+		seats.clear();
+		for(int i = 0; i < data.getSeats().size(); i++){
+			seats.add(new SeatInstance(this, i));
+		}
+		if(!entity.isOnClient()){
+			if(front != null) sendUpdate(PKT_UPD_CONNECTOR);
+		}
+		else{
+			//TODO register for particles
+		}
+	}
+
+	public void initWheels(){
+		wheels.clear();
+		if(!type.isRailVehicle()){
+			for(Map.Entry<String, V3D> entry : data.getWheelPositions().entrySet()){
+				if(entry.getKey().endsWith(":tire")) continue;
+				WheelTireData wheel = new WheelTireData(entry.getKey());
+				wheel.pos = entry.getValue();
+				PartData part = data.getPart(entry.getKey());
+				if(!((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).hasTire()){
+					part = data.getPart(entry.getKey()+ ":tire");
+					wheel.radius = ((TireInstallationHandler.TireData)part.getType().getInstallHandlerData()).getOuterRadius();
+				}
+				else{
+					wheel.radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
+				}
+				wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
+				wheel.steering = data.getWheelSlots().get(entry.getKey()).steering;
+				wheel.mirror = data.getWheelSlots().get(entry.getKey()).mirror;
+				wheeldata.put(entry.getKey(), wheel);
+			}
+			assignWheels();
+		}
 	}
 
 }

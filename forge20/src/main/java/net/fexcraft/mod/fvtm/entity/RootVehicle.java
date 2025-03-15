@@ -69,7 +69,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	public VehicleInstance vehicle;
 	protected SimplePhysData spdata;
-	public HashMap<String, WheelEntity> wheels = new HashMap<>();
 	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
@@ -89,7 +88,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	protected void init(TagCW com){
 		spdata = vehicle.data.getType().getSphData();
-		wheels.clear();
+		vehicle.wheels.clear();
 		wheel_radius = 0;
 		if(!vehicle.type.isRailVehicle()){
 			for(Map.Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
@@ -208,8 +207,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			}
 		}
 		super.kill();
-		if(!wheels.isEmpty()){
-			for(WheelEntity wheel : wheels.values()) wheel.kill();
+		if(!vehicle.wheels.isEmpty()){
+			for(UniWheel wheel : vehicle.wheels.values()) wheel.remove();
 		}
 		if(!vehicle.type.isRailVehicle()){
 			if(vehicle.front != null) vehicle.front.rear = null;
@@ -373,9 +372,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				vehicle.data.setAttribute("speed", vehicle.speed);
 			}
 		}
-		for(WheelEntity wheel : wheels.values()){
-			if(wheel == null) continue;
-			wheel.setOldPosAndRot();
+		for(UniWheel wheel : vehicle.wheels.values()){
+			if(wheel != null) wheel.setPrevAsPos();
 		}
 		Player driver = getDriver();
 		if(!level().isClientSide){
@@ -396,10 +394,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 				move(!VEHICLES_NEED_FUEL || creative);
 				if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
 				//
-				WheelEntity fl = wheels.get(vehicle.w_front_l.id);
-				WheelEntity fr = wheels.get(vehicle.w_front_r.id);
-				WheelEntity rl = wheels.get(vehicle.w_rear_l.id);
-				WheelEntity rr = wheels.get(vehicle.w_rear_r.id);
+				WheelEntity fl = vehicle.wheels.getWheel(vehicle.w_front_l.id);
+				WheelEntity fr = vehicle.wheels.getWheel(vehicle.w_front_r.id);
+				WheelEntity rl = vehicle.wheels.getWheel(vehicle.w_rear_l.id);
+				WheelEntity rr = vehicle.wheels.getWheel(vehicle.w_rear_r.id);
 				if(fl == null) return;
 				fron = new V3D((fl.position().x + fr.position().x) * 0.5, (fl.position().y + fr.position().y) * 0.5, (fl.position().z + fr.position().z) * 0.5);
 				rear = new V3D((rl.position().x + rr.position().x) * 0.5, (rl.position().y + rr.position().y) * 0.5, (rl.position().z + rr.position().z) * 0.5);
@@ -427,9 +425,10 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	private void checkWheelPresence(String id){
-		if(!wheels.containsKey(id) || !wheels.get(id).isAddedToWorld()){
-			wheels.put(id, FvtmGetters.getNewWheel(this, id));
-			level().addFreshEntity(wheels.get(id));
+		if(!vehicle.wheels.containsKey(id) || !((Entity)vehicle.wheels.get(id)).isAddedToWorld()){
+			WheelEntity ent = FvtmGetters.getNewWheel(this, id);
+			vehicle.wheels.put(id, ent);
+			level().addFreshEntity(ent);
 		}
 	}
 
@@ -437,7 +436,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		setOnGround(true);
 		V3D move = new V3D();
 		if(vehicle.data.getType().isTrailer()){
-			for(WheelEntity wheel : wheels.values()){
+			for(UniWheel ent : vehicle.wheels.values()){
+				WheelEntity wheel = (WheelEntity)ent;
 				wheel.setOnGround(true);
 				wheel.setYRot(vehicle.pivot().deg_yaw());
 				if(!vehicle.data.getType().isTracked() && wheel.wheel.steering){
@@ -465,7 +465,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			}
 			else{
 				boolean consumed = vehicle.engine != null && vehicle.consumeFuel();
-				for(WheelEntity wheel : wheels.values()){
+				for(UniWheel ent : vehicle.wheels.values()){
+					WheelEntity wheel = (WheelEntity)ent;
 					wheel.setOnGround(true);
 					wheel.motionX *= 0.9;
 					//wheel.motionY *= 0.9;
@@ -521,13 +522,13 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	/** for trailers */
 	protected void align(){
 		setOldPosAndRot();
-		if(wheels.isEmpty() || vehicle.front == null) return;
+		if(vehicle.wheels.isEmpty() || vehicle.front == null) return;
 		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getConnectorFor(vehicle.data.getType().getCategories()));
 		conn = conn.add(vehicle.front.getV3D());
 		setPos(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
-		WheelEntity wl = wheels.get(vehicle.w_rear_l.id);
-		WheelEntity wr = wheels.get(vehicle.w_rear_r.id);
+		WheelEntity wl = vehicle.wheels.getWheel(vehicle.w_rear_l.id);
+		WheelEntity wr = vehicle.wheels.getWheel(vehicle.w_rear_r.id);
 		vehicle.pivot().set_rotation(-Math.atan2((wl.position().x + wr.position().x) * 0.5 - conn.x, (wl.position().z + wr.position().z) * 0.5 - conn.z), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
 		//alignWheels();
 		if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity).align();
@@ -535,7 +536,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	protected void alignWheels(){
 		setOnGround(true);
-		for(WheelEntity wheel : wheels.values()){
+		for(UniWheel ent : vehicle.wheels.values()){
+			WheelEntity wheel = (WheelEntity)ent;
 			wheel.setOnGround(true);
 			wheel.setYRot(vehicle.pivot().deg_yaw());
 			V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);

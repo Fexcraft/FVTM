@@ -85,15 +85,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public float wheel_radius = 0;
 	public float wheel_rotation = 0;
 	public boolean should_sit = true;
-	//
-	public double serverX;
-	public double serverY;
-	public double serverZ;
-	public double serverYaw;
-	public double serverPitch;
-	public double serverRoll;
-	public double serverSteer;
-	public byte server_sync;
 
 	public RootVehicle(World world){
 		super(world);
@@ -157,8 +148,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			vehicle.data.read(com);
 		}
 		prevRotationYaw = com.getFloat("RotationYaw");
-		prevRotationPitch = com.getFloat("RotationYaw");
-		prevRotationRoll = com.getFloat("RotationYaw");
+		prevRotationPitch = com.getFloat("RotationPitch");
+		prevRotationRoll = com.getFloat("RotationRoll");
 		vehicle.point.loadPivot(com);
 		init(com);
 	}
@@ -219,19 +210,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			if(vehicle.front != null) vehicle.front.rear = null;
 			if(vehicle.rear != null) vehicle.rear.front = null;
 		}
-	}
-
-	public void setPosRotMot(V3D pos, double yaw, double pit, double rol, double thr, double steer, int fuel){
-		serverX = pos.x;
-		serverY = pos.y;
-		serverZ = pos.z;
-		serverYaw = yaw;
-		serverPitch = pit;
-		serverRoll = rol;
-		serverSteer = steer;
-		server_sync = Config.VEHICLE_SYNC_RATE;
-		vehicle.throttle = thr;
-		vehicle.data.getAttribute("fuel_stored").set(fuel);
 	}
 
 	//-- General Vanilla --//
@@ -419,18 +397,18 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		//
 		vehicle.checkSteerAngle(world.isRemote);
 		if(world.isRemote){
-			if(server_sync > 0){
-				double x = posX + (serverX - posX) / server_sync;
-				double y = posY + (serverY - posY) / server_sync;
-				double z = posZ + (serverZ - posZ) / server_sync;
-				double yw = valDeg(serverYaw - vehicle.pivot().deg_yaw());
-				double pt = valDeg(serverPitch - vehicle.pivot().deg_pitch());
-				double rl = valDeg(serverRoll - vehicle.pivot().deg_roll());
-				rotationYaw = (float)(vehicle.pivot().deg_yaw() + yw / server_sync);
-				rotationPitch = (float)(vehicle.pivot().deg_pitch() + pt / server_sync);
-				rotationRoll = (float)(vehicle.pivot().deg_roll() + rl / server_sync);
-				vehicle.steer_yaw += (serverSteer - vehicle.steer_yaw) / server_sync;
-				server_sync--;
+			if(vehicle.serv_sync > 0){
+				double x = posX + (vehicle.serv_pos[0] - posX) / vehicle.serv_sync;
+				double y = posY + (vehicle.serv_pos[1] - posY) / vehicle.serv_sync;
+				double z = posZ + (vehicle.serv_pos[2] - posZ) / vehicle.serv_sync;
+				double yw = valDeg(vehicle.serv_rot[0] - vehicle.pivot().deg_yaw());
+				double pt = valDeg(vehicle.serv_rot[1] - vehicle.pivot().deg_pitch());
+				double rl = valDeg(vehicle.serv_rot[2] - vehicle.pivot().deg_roll());
+				rotationYaw = (float)(vehicle.pivot().deg_yaw() + yw / vehicle.serv_sync);
+				rotationPitch = (float)(vehicle.pivot().deg_pitch() + pt / vehicle.serv_sync);
+				rotationRoll = (float)(vehicle.pivot().deg_roll() + rl / vehicle.serv_sync);
+				vehicle.steer_yaw += (vehicle.serv_steer - vehicle.steer_yaw) / vehicle.serv_sync;
+				vehicle.serv_sync--;
 				setPosition(x, y, z);
 				vehicle.pivot().set_rotation(rotationYaw, rotationPitch, rotationRoll, true);
 			}

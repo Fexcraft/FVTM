@@ -55,4 +55,6 @@ public interface FvtmWorld {
 
 	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer);
 
+	public UniWheel spawnWheel(VehicleInstance vehicle, String id);
+
 }

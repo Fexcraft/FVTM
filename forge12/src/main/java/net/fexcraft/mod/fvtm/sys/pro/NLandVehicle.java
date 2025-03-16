@@ -28,7 +28,7 @@ public class NLandVehicle extends RootVehicle {
 	public NLandVehicle(World world, VehicleData data, Vec3d pos, EntityPlayer placer, int meta){
 		this(world);
 		setPosition(pos.x, pos.y, pos.z);
-		vehicle.init(data);
+		vehicle.init(data, null);
 		if(placer != null){
 			vehicle.setPlacer(placer.getGameProfile().getId());
 			vehicle.pivot().set_yaw(placer.rotationYaw, true);

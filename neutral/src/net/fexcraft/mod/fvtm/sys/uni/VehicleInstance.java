@@ -763,7 +763,7 @@ public class VehicleInstance {
 						player.send("interact.fvtm.vehicle.disconnect_trailer");
 						return INTERACT_SUCCESS;
 					}
-					//TODO spawn
+					((FvtmWorld)entity.getWorld()).spawnLandEntity(data, this, player);
 				}
 				return INTERACT_SUCCESS;
 			}

@@ -9,11 +9,14 @@ import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -25,6 +28,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	private int vehid;
 	public WheelTireData wheel;
 	public String wheelid;
+	protected V3D pos;
 
 	public NWheelEntity(World world){
 		super(world);
@@ -169,10 +173,10 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	}
 
 	@Override
-	public void setPosAsPrev(){
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
+	public void updatePrevPos(){
+		pos.x = prevPosX = posX;
+		pos.y = prevPosY = posY;
+		pos.z = prevPosZ = posZ;
 	}
 
 	@Override
@@ -183,6 +187,33 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	@Override
 	public boolean isAdded(){
 		return addedToChunk;
+	}
+
+	@Override
+	public V3D pos(){
+		return pos;
+	}
+
+	@Override
+	public void move(float yaw){
+		onGround = true;
+		rotationYaw = yaw;
+		motionX *= 0.9;
+		motionZ *= 0.9;
+		motionY = -GRAVITY_20th;
+		move(MoverType.SELF, motionX, motionY, motionZ);
+	}
+
+	@Override
+	public WheelTireData wtd(){
+		return wheel;
+	}
+
+	@Override
+	public void addMotion(double x, double y, double z){
+		motionX += x;
+		motionY += y;
+		motionZ += z;
 	}
 
 }

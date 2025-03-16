@@ -41,7 +41,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	public double motionY;
 	public double motionZ;
 	private int remtimer;
-	protected V3D pos;
+	protected V3D pos = new V3D();
 
 	public WheelEntity(EntityType<?> type, Level level){
 		super((EntityType<? extends LivingEntity>)type, level);

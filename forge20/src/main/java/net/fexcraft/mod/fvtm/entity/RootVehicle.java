@@ -174,88 +174,17 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand){
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
-		ItemStack stack = player.getItemInHand(hand);
-		StackWrapper wrapper = UniStack.getStack(stack);
-		Passenger pass = UniEntity.getCasted(player);
-		if(level().isClientSide){
-			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return InteractionResult.SUCCESS;
-			if(Lockable.isKey(wrapper.getItem())) return InteractionResult.SUCCESS;
-			if(vehicle.data.getLock().isLocked()){
-				player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
-				return InteractionResult.SUCCESS;
-			}
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, wrapper);
-			return InteractionResult.SUCCESS;
-		}
-		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(pass, wrapper);
-			vehicle.sendUpdate(PKT_UPD_LOCK);
-			return InteractionResult.SUCCESS;
-		}
-		if(!stack.isEmpty()){
-			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				pass.openUI(UIKeys.VEHICLE_FUEL, new V3I(getId(), 0, 0));
-				return InteractionResult.SUCCESS;
-			}
-			else if(stack.getItem() instanceof ToolboxItem){
-				int var = ((ToolboxItem)stack.getItem()).var;
-				if(var == 0){
-
-				}
-				else if(var == 1){
-					pass.openUI(UIKeys.TOOLBOX_TEXTURE, new V3I(getId(), 0, 0));
-				}
-				else if(var == 2){
-					pass.openUI(UIKeys.TOOLBOX_COLORS, new V3I(getId(), 0, 0));
-				}
-				return InteractionResult.SUCCESS;
-			}
-			else if(stack.getItem() instanceof VehicleItem && vehicle.type.isLandVehicle()){
-				VehicleData data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTag()));
-				if(data.getType().isTrailer()){
-					if(!vehicle.data.hasCompatibleConnector(data.getType().getCategories())){
-						pass.send("interact.fvtm.vehicle.no_compatible_connector");
-						FvtmLogger.debug(vehicle.data.getConnectors());
-						return InteractionResult.SUCCESS;
-					}
-                	//TODO position/data validation
-					if(vehicle.rear != null){
-						pass.send("interact.fvtm.vehicle.disconnect_trailer");
-						return InteractionResult.SUCCESS;
-					}
-					RootVehicle veh = FvtmGetters.getNewVehicle(level());
-					veh.vehicle.front = this.vehicle;
-					vehicle.rear = veh.vehicle;
-					veh.initVD(data);
-					veh.vehicle.point.updatePrevAxe();
-					veh.vehicle.point.getPivot().copy(vehicle.point.getPivot());
-					veh.setPos(position());
-					level().addFreshEntity(veh);
-				}
-				return InteractionResult.SUCCESS;
-			}
-			/*else if(stack.getItem() instanceof ContainerItem){
-				//TODO open container ui
-				return InteractionResult.SUCCESS;
-			}*/
-			else{
-				if(vehicle.data.hasPart("engine") && vehicle.data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
-					player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.engine_on"));
-				}
-				else{
-					pass.openUI(VEHICLE_MAIN, new V3I(0, getId(), 0));
-				}
-				return InteractionResult.SUCCESS;
-			}
-		}
-		if(vehicle.data.getLock().isLocked()){
-			player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
-			return InteractionResult.SUCCESS;
-		}
-		//temporary until seat interaction is added
-		player.startRiding(this);
-		return InteractionResult.SUCCESS;
-		//return InteractionResult.FAIL;
+		int res = vehicle.onInteract((Passenger)UniEntity.getEntity(player), UniStack.getStack(player.getItemInHand(hand)));
+		//TODO trailer
+		/*RootVehicle veh = FvtmGetters.getNewVehicle(level());
+		veh.vehicle.front = this.vehicle;
+		vehicle.rear = veh.vehicle;
+		veh.initVD(data);
+		veh.vehicle.point.updatePrevAxe();
+		veh.vehicle.point.getPivot().copy(vehicle.point.getPivot());
+		veh.setPos(position());
+		level().addFreshEntity(veh);*/
+		return res == 1 ? InteractionResult.SUCCESS : res == 0 ? InteractionResult.PASS : InteractionResult.FAIL;
 	}
 
 	private boolean isFuelContainer(Item item){

@@ -583,7 +583,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
-		if(vehicle.data == null) vehicle.init(FvtmResources.getVehicleData(compound));
+		if(vehicle.data == null) vehicle.init(FvtmResources.getVehicleData(compound), null);
 		else vehicle.data.read(compound);
 		if(vehicle.data == null){ this.remove(); return null; }
 		//if(compound.has("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));

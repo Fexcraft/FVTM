@@ -180,4 +180,9 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 		setDead();
 	}
 
+	@Override
+	public boolean isAdded(){
+		return addedToChunk;
+	}
+
 }

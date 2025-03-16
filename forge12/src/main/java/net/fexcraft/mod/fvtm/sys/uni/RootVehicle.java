@@ -237,7 +237,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if(isDead || hand == EnumHand.OFF_HAND) return false;
 		int res = vehicle.onInteract((Passenger)UniEntity.getEntity(player), UniStack.getStack(player.getHeldItemMainhand()));
-		//TODO trailer // world.spawnEntity(new NLandVehicle((NLandVehicle)this, data, player));
 		return res >= 0;
 	}
 

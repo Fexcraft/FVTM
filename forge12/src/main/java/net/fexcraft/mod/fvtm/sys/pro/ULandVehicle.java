@@ -52,7 +52,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 	public ULandVehicle(World world, VehicleData data, V3D pos, EntityPlayer placer, int meta){
 		this(world);
 		setPosition(pos.x, pos.y, pos.z);
-		vehicle.init(data);
+		vehicle.init(data, null);
 		if(placer != null){
 			vehicle.setPlacer(placer.getGameProfile().getId());
 		}
@@ -201,7 +201,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     private double appmass = 0;
     private double accx = 0f;
 
-	@Override
+	//TODO @Override
 	public void onUpdateMovement(){
 		EntityW driver = vehicle.driver();
 		if(!world.isRemote){

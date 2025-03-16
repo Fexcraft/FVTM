@@ -46,7 +46,9 @@ import net.fexcraft.mod.uni.world.EntityW;
 
 import static net.fexcraft.lib.common.Static.rad180;
 import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
+import static net.fexcraft.mod.fvtm.util.MathUtils.valRad;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -78,6 +80,7 @@ public class VehicleInstance {
 	public double speed;
 	public V3D pos;
 	public V3D prev;
+	public V3D move;
 	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
@@ -823,7 +826,17 @@ public class VehicleInstance {
 			}
 			prev = entity.getPrevPos();
 			if(type.isRailVehicle()){
-				//TODO update bogie rot
+				if(railent.current == null) return;
+				V3D bf0 = railent.moveOnly((float)(railent.passed + 0.1));
+				V3D bf1 = railent.moveOnly((float)(railent.passed - 0.1));
+				V3D br0 = railent.moveOnly((float)(railent.passed - railent.frbogiedis - railent.rrbogiedis + 0.1));
+				V3D br1 = railent.moveOnly((float)(railent.passed - railent.frbogiedis - railent.rrbogiedis - 0.1));
+				if(bf0 != null && br0 != null && bf1 != null && br1 != null){
+					float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - point.getPivot().deg_yaw());
+					float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - point.getPivot().deg_yaw());
+					data.getAttribute("bogie_front_angle").set(front);
+					data.getAttribute("bogie_rear_angle").set(rear);
+				}
 			}
 			else{
 				AttrFloat attr = (AttrFloat)data.getAttribute("steering_angle");
@@ -840,9 +853,9 @@ public class VehicleInstance {
 			}
 		}
 		for(UniWheel wheel : wheels.values()){
-			if(wheel != null) wheel.setPosAsPrev();
+			if(wheel != null) wheel.updatePrevPos();
 		}
-		onUpdateMovement();
+		onUpdateMovement(remote);
 		updatePointsSeats();
 	}
 
@@ -852,7 +865,119 @@ public class VehicleInstance {
 		}
 	}
 
-	private void onUpdateMovement(){
+	private void onUpdateMovement(boolean remote){
+		EntityW driver = driver();
+		boolean creative = driver != null && driver.isCreative();
+		if(!remote){
+			V3D fro, rea, lef, rig;
+			if(type.isRailVehicle()){
+				data.getAttribute("section_on").set(railent.current.getUnit().section().getUID());
+				railent.alignEntity(false);
+				//
+				fro = railent.bfront;
+				rea = railent.brear;
+				lef = rig = new V3D((fro.x + rea.x) * 0.5, (fro.y + rea.y) * 0.5, (fro.z + rea.z) * 0.5);
+			}
+			else{
+				if(driver == null || (!creative && data.outoffuel())){
+					throttle *= 0.98;
+				}
+				move(!VEHICLES_NEED_FUEL || creative);
+				if(rear != null) rear.align();
+				//
+				V3D fl = wheels.get(w_front_l.id).pos();
+				V3D fr = wheels.get(w_front_r.id).pos();
+				V3D rl = wheels.get(w_rear_l.id).pos();
+				V3D rr = wheels.get(w_rear_r.id).pos();
+				if(fl == null) return;
+				fro = new V3D((fl.x + fr.x) * 0.5, (fl.y + fr.y) * 0.5, (fl.z + fr.z) * 0.5);
+				rea = new V3D((rl.x + rr.x) * 0.5, (rl.y + rr.y) * 0.5, (rl.z + rr.z) * 0.5);
+				lef = new V3D((fl.x + rl.x) * 0.5, (fl.y + rl.y) * 0.5, (fl.z + rl.z) * 0.5);
+				rig = new V3D((fr.x + rr.x) * 0.5, (fr.y + rr.y) * 0.5, (fr.z + rr.z) * 0.5);
+			}
+			double dx = rea.x - fro.x, dy = rea.y - fro.y, dz = rea.z - fro.z;
+			double drx = rig.x - lef.x, dry = rig.y - lef.y, drz = rig.z - lef.z;
+			double dxz = Math.sqrt(dx * dx + dz * dz);
+			double y = -Math.atan2(dx, dz);
+			double p = -Math.atan2(dy, dxz);
+			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
+			pivot().set_rotation(y, p, r, false);
+		}
+		else{
+			speed = MathUtils.calcSpeed(pos.x, pos.y, pos.z, prev.x, prev.y, prev.z);
+		}
+	}
+
+	private void move(boolean nocons){
+		entity.setOnGround(true);
+		move.x = move.y = move.z = 0;
+		if(data.getType().isTrailer()){
+			for(UniWheel wheel : wheels.values()) moveWheel(wheel, pivot().deg_yaw());
+		}
+		else{
+			if(type.isWaterVehicle()){
+				//TODO
+			}
+			else{
+				double steer = Math.toRadians(steer_yaw);
+				double wyaw = valRad(pivot().yaw());
+				double syaw = valRad(wyaw + steer);
+				double myaw = 0;
+				double ryaw = 0;
+				double scal = 0;
+				boolean cons = nocons || (engine != null && consumeFuel());
+				for(UniWheel wheel : wheels.values()){
+					if(engine != null && cons){
+						if(data.getType().isTracked()){
+							//TODO
+						}
+						else{
+							scal = 0.05 * throttle * (throttle > 0 ? spdata.max_throttle : spdata.min_throttle) * engine.getSphEngineSpeed();
+							ryaw = pivot().deg_yaw();
+							myaw = wyaw;
+							if(wheel.wtd().steering){
+								ryaw += steer_yaw;
+								myaw = syaw;
+							}
+						}
+						wheel.addMotion(-Math.sin(-myaw) * scal, 0, -Math.cos(-myaw) * scal);
+					}
+					moveWheel(wheel, ryaw);
+				}
+			}
+		}
+		move.x += pos.x;
+		move.y += pos.y;
+		move.z += pos.z;
+		entity.setPos(move);
+		speed = Math.sqrt(move.x * move.x + move.z * move.z);
+	}
+
+	private void moveWheel(UniWheel wheel, double yaw){
+		wheel.move((float)yaw);
+		V3D dest = pivot().get_vector(wheel.wtd().pos);
+		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.5;
+		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.5;
+		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.5;
+		if(dest.length() > 0.001){
+			move.x -= dest.x * 0.5;
+			move.y -= dest.y * 0.5;
+			move.z -= dest.z * 0.5;
+		}
+	}
+
+	/** for trailers */
+	private void align(){
+		entity.setPrevPos(entity.getPos());
+		if(wheels.isEmpty() || front == null) return;
+		V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
+		V3D.add(front.getV3D(), conn);
+		entity.setPos(conn);
+		throttle = front.throttle;
+		V3D wl = wheels.get(w_rear_l.id).pos();
+		V3D wr = wheels.get(w_rear_r.id).pos();
+		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
+		if(rear != null) rear.align();
 	}
 
 }

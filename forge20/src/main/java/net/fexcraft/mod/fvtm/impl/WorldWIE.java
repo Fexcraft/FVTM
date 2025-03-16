@@ -196,4 +196,16 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		level.addFreshEntity(veh);
 	}
 
+	@Override
+	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer){
+		RootVehicle veh = FvtmGetters.getNewVehicle(level);
+		veh.vehicle.front = truck;
+		truck.rear = veh.vehicle;
+		veh.initVD(data);
+		veh.vehicle.point.updatePrevAxe();
+		veh.vehicle.point.getPivot().copy(truck.point.getPivot());
+		veh.setPos(((Entity)truck.entity.local()).position());
+		level.addFreshEntity(veh);
+	}
+
 }

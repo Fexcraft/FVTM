@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
@@ -685,6 +686,21 @@ public class VehicleInstance {
 				wheeldata.put(entry.getKey(), wheel);
 			}
 			assignWheels();
+		}
+	}
+
+	public void onRemove(){
+		if(Config.VEHICLES_DROP_CONTENTS && !entity.isOnClient()){
+			for(String part : data.getInventories()){
+				InventoryFunction func = data.getPart(part).getFunction("fvtm:inventory");
+				if(func == null) continue;
+				func.inventory().clearAt(entity);
+			}
+		}
+		for(UniWheel wheel : wheels.values()) wheel.remove();
+		if(!type.isRailVehicle()){
+			if(front != null) front.rear = null;
+			if(rear != null) rear.front = null;
 		}
 	}
 

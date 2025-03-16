@@ -149,22 +149,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	@Override
 	public void setDead(){
-		if(Config.VEHICLES_DROP_CONTENTS && !world.isRemote){
-			for(String part : vehicle.data.getInventories()){
-            	InventoryFunction func = vehicle.data.getPart(part).getFunction("fvtm:inventory");
-            	if(func == null) continue;
-        		func.inventory().clearAt(vehicle.entity);
-            }
-		}
+		if(vehicle != null) vehicle.onRemove();
 		super.setDead();
-		if(!vehicle.wheels.isEmpty()){
-			for(UniWheel wheel : vehicle.wheels.values()) wheel.remove();
-		}
-		//TODO vehicle removal script/event
-		if(!vehicle.type.isRailVehicle()){
-			if(vehicle.front != null) vehicle.front.rear = null;
-			if(vehicle.rear != null) vehicle.rear.front = null;
-		}
 	}
 
 	//-- General Vanilla --//

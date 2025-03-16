@@ -11,13 +11,11 @@ import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WorldWI;
 import net.fexcraft.mod.uni.packet.PacketListener;
@@ -206,6 +204,13 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		veh.vehicle.point.getPivot().copy(truck.point.getPivot());
 		veh.setPos(((Entity)truck.entity.local()).position());
 		level.addFreshEntity(veh);
+	}
+
+	@Override
+	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
+		WheelEntity wheel = FvtmGetters.getNewWheel(vehicle.entity.local(), id);
+		level.addFreshEntity(wheel);
+		return wheel;
 	}
 
 }

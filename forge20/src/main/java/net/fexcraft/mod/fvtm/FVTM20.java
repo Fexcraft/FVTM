@@ -60,6 +60,7 @@ public class FVTM20 {
 		StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.RAILGAUGE.item_type, stack -> ((RailGaugeItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.WIRE.item_type, stack -> ((WireItem)stack.getItem().direct()).getContent());
+		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);
 		//UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
 		AABB.SUPPLIER = () -> new AABBI();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;

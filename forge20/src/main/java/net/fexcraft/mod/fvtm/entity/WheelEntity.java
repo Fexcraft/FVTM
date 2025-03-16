@@ -24,6 +24,8 @@ import net.minecraftforge.network.NetworkHooks;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -39,6 +41,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	public double motionY;
 	public double motionZ;
 	private int remtimer;
+	protected V3D pos;
 
 	public WheelEntity(EntityType<?> type, Level level){
 		super((EntityType<? extends LivingEntity>)type, level);
@@ -191,8 +194,11 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	}
 
 	@Override
-	public void setPosAsPrev(){
+	public void updatePrevPos(){
 		setOldPosAndRot();
+		pos.x = position().x;
+		pos.y = position().y;
+		pos.z = position().z;
 	}
 
 	@Override
@@ -203,6 +209,33 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	@Override
 	public boolean isAdded(){
 		return isAddedToWorld();
+	}
+
+	@Override
+	public V3D pos(){
+		return pos;
+	}
+
+	@Override
+	public void move(float yaw){
+		setOnGround(true);
+		setYRot(yaw);
+		motionX *= 0.9;
+		motionZ *= 0.9;
+		motionY = -GRAVITY_20th;
+		move(MoverType.SELF, motion());
+	}
+
+	@Override
+	public WheelTireData wtd(){
+		return wheel;
+	}
+
+	@Override
+	public void addMotion(double x, double y, double z){
+		motionX += x;
+		motionY += y;
+		motionZ += z;
 	}
 
 }

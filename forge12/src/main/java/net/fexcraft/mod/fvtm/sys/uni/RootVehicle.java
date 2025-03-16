@@ -236,78 +236,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if(isDead || hand == EnumHand.OFF_HAND) return false;
-		ItemStack stack = player.getHeldItemMainhand();
-		StackWrapper wrapper = UniStack.getStack(stack);
-		Passenger pass = player.getCapability(PASSENGER, null).asWrapper();
-		if(world.isRemote){
-			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return true;
-			if(Lockable.isKey(wrapper.getItem())) return true;
-			if(vehicle.data.getLock().isLocked()){
-				player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
-				return true;
-			}
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, UniStack.getStack(stack));
-			return true;
-		}
-		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(player.getCapability(PASSENGER, null).asSender(), wrapper);
-			vehicle.sendUpdate(PKT_UPD_LOCK);
-			return true;
-		}
-		if(!stack.isEmpty()){
-			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				pass.openUI(UIKeys.VEHICLE_FUEL, new V3I(getEntityId(), 0, 0));
-				return true;
-			}
-			else if(stack.getItem() instanceof ToolboxItem){
-				if(stack.getMetadata() == 0){
-
-				}
-				else if(stack.getMetadata() == 1){
-					pass.openUI(UIKeys.TOOLBOX_TEXTURE, new V3I(getEntityId(), 0, 0));
-				}
-				else if(stack.getMetadata() == 2){
-					pass.openUI(UIKeys.TOOLBOX_COLORS, new V3I(getEntityId(), 0, 0));
-				}
-				return true;
-			}
-			else if(stack.getItem() instanceof VehicleItem && vehicle.type.isLandVehicle()){
-				VehicleData data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTagCompound()));
-				if(data.getType().isTrailer()){
-					if(!vehicle.data.hasCompatibleConnector(data.getType().getCategories())){
-						pass.send("interact.fvtm.vehicle.no_compatible_connector");
-						FvtmLogger.debug(vehicle.data.getConnectors());
-						return true;
-					}
-                	if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), UniStack.getStack(stack), data)) return true;
-					if(vehicle.rear != null){
-						pass.send("interact.fvtm.vehicle.disconnect_trailer");
-						return true;
-					}
-					world.spawnEntity(new NLandVehicle((NLandVehicle)this, data, player));
-				}
-				return true;
-			}
-			else if(stack.getItem() instanceof ContainerItem){
-				//TODO open container ui
-				return true;
-			}
-			else{
-				if(vehicle.data.hasPart("engine") && vehicle.data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
-					player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.engine_on"), true);
-				}
-				else{
-					player.openGui(FVTM.getInstance(), VEHICLE_MAIN.id, world, 0, this.getEntityId(), 0);
-				}
-				return true;
-			}
-		}
-		if(vehicle.data.getLock().isLocked()){
-			player.sendStatusMessage(new TextComponentTranslation("interact.fvtm.vehicle.locked"), true);
-			return true;
-		}
-		//TODO script interact event
-		return false;
+		int res = vehicle.onInteract((Passenger)UniEntity.getEntity(player), UniStack.getStack(player.getHeldItemMainhand()));
+		//TODO trailer // world.spawnEntity(new NLandVehicle((NLandVehicle)this, data, player));
+		return res >= 0;
 	}
 
 	@Override

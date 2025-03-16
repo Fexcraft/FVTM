@@ -106,7 +106,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevRotationYaw = com.getFloat("RotationYaw");
 		prevRotationPitch = com.getFloat("RotationPitch");
 		prevRotationRoll = com.getFloat("RotationRoll");
-		vehicle.init(com);
+		vehicle.init(null, com);
 		init(com);
 	}
 
@@ -134,7 +134,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	public void readSpawnData(ByteBuf buffer){
 		try{
 			TagCW com = TagCW.wrap(ByteBufUtils.readTag(buffer));
-			vehicle.init(com);
+			vehicle.init(null, com);
 			readSpawnData(com);
 			init(com);
 			prevRotationYaw = vehicle.point.getPivot().deg_yaw();

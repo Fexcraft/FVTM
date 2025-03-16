@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
+import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
 import net.fexcraft.mod.uni.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
@@ -184,6 +185,13 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	@Override
 	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer){
 		world.spawnEntity(new NLandVehicle(truck.entity.local(), data, placer.local()));
+	}
+
+	@Override
+	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
+		NWheelEntity wheel = new NWheelEntity(vehicle.entity.local(), id);
+		world.spawnEntity(wheel);
+		return wheel;
 	}
 
 }

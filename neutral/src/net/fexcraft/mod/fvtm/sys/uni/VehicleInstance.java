@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -33,6 +34,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
@@ -41,6 +43,10 @@ import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+
+import static net.fexcraft.lib.common.Static.rad180;
+import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -70,6 +76,9 @@ public class VehicleInstance {
 	public double steer_yaw;
 	public double throttle;
 	public double speed;
+	public V3D pos;
+	public V3D prev;
+	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
 	public byte toggable_timer;
@@ -385,12 +394,6 @@ public class VehicleInstance {
 			return braking;
 		}
 		return false;
-	}
-
-	public void checkSteerAngle(boolean client){
-		if(!client) steer_yaw *= Config.STEER_RESET_RATE;
-		if(steer_yaw > max_steering_yaw) steer_yaw = max_steering_yaw;
-		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
 	}
 
 	public boolean consumeFuel(){
@@ -785,6 +788,71 @@ public class VehicleInstance {
 			player.bar("interact.fvtm.vehicle.locked");
 		}
 		return INTERACT_PASS;
+	}
+
+	public void onUpdate(){
+		boolean remote = entity.isOnClient();
+		if(!remote){
+			checkWheelPresence(w_front_l.id);
+			checkWheelPresence(w_front_r.id);
+			checkWheelPresence(w_rear_l.id);
+			checkWheelPresence(w_rear_r.id);
+		}
+		point.updatePrevAxe();
+		if(toggable_timer > 0) toggable_timer--;
+		if(gear_timer > 0) gear_timer--;
+		if(autogear_timer > 0) autogear_timer--;
+		if(!remote) steer_yaw *= Config.STEER_RESET_RATE;
+		if(steer_yaw > max_steering_yaw) steer_yaw = max_steering_yaw;
+		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
+		//
+		pos = entity.getPos();
+		rot = point.getPivot().toArray();
+		if(remote){
+			if(serv_sync > 0){
+				pos.x = pos.x + (serv_pos[0] - pos.x) / serv_sync;
+				pos.y = pos.y + (serv_pos[1] - pos.y) / serv_sync;
+				pos.z = pos.z + (serv_pos[2] - pos.z) / serv_sync;
+				rot[0] = MathUtils.valDeg(rot[0] + (serv_rot[0] - rot[0]) / serv_sync);
+				rot[1] = MathUtils.valDeg(rot[1] + (serv_rot[1] - rot[1]) / serv_sync);
+				rot[2] = MathUtils.valDeg(rot[2] + (serv_rot[2] - rot[2]) / serv_sync);
+				steer_yaw += (serv_steer - steer_yaw) / serv_sync;
+				serv_sync--;
+				entity.setPos(pos);
+				pivot().set_rotation(rot[0], rot[1], rot[2], true);
+			}
+			prev = entity.getPrevPos();
+			if(type.isRailVehicle()){
+				//TODO update bogie rot
+			}
+			else{
+				AttrFloat attr = (AttrFloat)data.getAttribute("steering_angle");
+				attr.initial = attr.value;
+				attr.value = (float)steer_yaw;
+				double dir = Math.abs(pivot().yaw() + rad180) - Math.abs(-Math.atan2(prev.x - pos.x, prev.z - pos.z) + rad180);
+				dir = dir > rad90 || dir < -rad90 ? -1 : 1;
+				for(WheelTireData val : wheeldata.values()){
+					val.rotation = valDegF(val.rotation + speed * dir * val.radius * 100);
+				}
+				data.setAttribute("wheel_angle", 0);
+				data.setAttribute("throttle", throttle);
+				data.setAttribute("speed", speed);
+			}
+		}
+		for(UniWheel wheel : wheels.values()){
+			if(wheel != null) wheel.setPosAsPrev();
+		}
+		onUpdateMovement();
+		updatePointsSeats();
+	}
+
+	private void checkWheelPresence(String id){
+		if(!wheels.containsKey(id) || !wheels.get(id).isAdded()){
+			wheels.put(id, ((FvtmWorld)entity.getWorld()).spawnWheel(this, id));
+		}
+	}
+
+	private void onUpdateMovement(){
 	}
 
 }

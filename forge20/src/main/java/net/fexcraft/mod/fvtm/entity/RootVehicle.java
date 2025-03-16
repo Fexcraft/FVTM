@@ -175,15 +175,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public InteractionResult interact(Player player, InteractionHand hand){
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 		int res = vehicle.onInteract((Passenger)UniEntity.getEntity(player), UniStack.getStack(player.getItemInHand(hand)));
-		//TODO trailer
-		/*RootVehicle veh = FvtmGetters.getNewVehicle(level());
-		veh.vehicle.front = this.vehicle;
-		vehicle.rear = veh.vehicle;
-		veh.initVD(data);
-		veh.vehicle.point.updatePrevAxe();
-		veh.vehicle.point.getPivot().copy(vehicle.point.getPivot());
-		veh.setPos(position());
-		level().addFreshEntity(veh);*/
 		return res == 1 ? InteractionResult.SUCCESS : res == 0 ? InteractionResult.PASS : InteractionResult.FAIL;
 	}
 

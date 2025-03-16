@@ -195,6 +195,11 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	}
 
 	@Override
+	public void pos(double x, double y, double z){
+		setPosition(x, y, z);
+	}
+
+	@Override
 	public void move(float yaw){
 		onGround = true;
 		rotationYaw = yaw;

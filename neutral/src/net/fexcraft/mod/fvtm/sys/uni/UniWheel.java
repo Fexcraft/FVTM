@@ -9,4 +9,6 @@ public interface UniWheel {
 
 	public void remove();
 
+	public boolean isAdded();
+
 }

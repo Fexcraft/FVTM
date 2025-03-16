@@ -7,10 +7,13 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
@@ -21,6 +24,7 @@ import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
@@ -31,6 +35,10 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
+import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 
@@ -81,6 +89,10 @@ public class VehicleInstance {
 	public static final float GRAVITY = 9.81f;
 	public static final float GRAVITY_20th = GRAVITY / 20;
 	public static final float GRAVITY_200th = GRAVITY / 200;
+	//
+	public static final int INTERACT_SUCCESS = 1;
+	public static final int INTERACT_PASS = 0;
+	public static final int INTERACT_FAIL = -1;
 	//
 	public static final String PKT_UPD_VEHICLEDATA = "vehicledata";
 	public static final String PKT_UPD_LIGHTS = "toggle_lights";
@@ -702,6 +714,77 @@ public class VehicleInstance {
 			if(front != null) front.rear = null;
 			if(rear != null) rear.front = null;
 		}
+	}
+
+	public int onInteract(Passenger player, StackWrapper stack){
+		if(entity.isOnClient()){
+			if(!stack.empty() && stack.isItemOf(ContentType.PART.item_type)) return INTERACT_SUCCESS;
+			if(Lockable.isKey(stack.getItem())) return INTERACT_SUCCESS;
+			if(data.getLock().isLocked()){
+				player.bar("interact.fvtm.vehicle.locked");
+				return INTERACT_SUCCESS;
+			}
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, data, iref(), null, player, stack);
+			return INTERACT_SUCCESS;
+		}
+		if(Lockable.isKey(stack.getItem()) && !Material.isFuelContainer(stack)){
+			data.getLock().toggle(player, stack);
+			sendUpdate(PKT_UPD_LOCK);
+		}
+		if(!stack.empty()){
+			if(Material.isFuelContainer(stack)){
+				player.openUI(UIKeys.VEHICLE_FUEL, entity.getId(), 0, 0);
+			}
+			else if(stack.isItemOf(ContentType.TOOLBOX.item_type)){
+				int type = stack.getContent(ContentType.TOOLBOX.item_type);
+				switch(type){
+					case 1:{
+						player.openUI(UIKeys.TOOLBOX_TEXTURE, entity.getId(), 0, 0);
+						break;
+					}
+					case 2:{
+						player.openUI(UIKeys.TOOLBOX_COLORS, entity.getId(), 0, 0);
+						break;
+					}
+					default: break;
+				}
+				return INTERACT_SUCCESS;
+			}
+			else if(stack.isItemOf(ContentType.VEHICLE.item_type) && type.isLandVehicle()){
+				VehicleData tdat = stack.getContent(ContentType.VEHICLE.item_type);
+				if(tdat.getType().isTrailer()){
+					if(!data.hasCompatibleConnector(tdat.getType().getCategories())){
+						player.send("interact.fvtm.vehicle.no_compatible_connector");
+						FvtmLogger.debug(data.getConnectors());
+						return INTERACT_SUCCESS;
+					}
+					if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), UniStack.getStack(stack), data)) return INTERACT_SUCCESS;
+					if(rear != null){
+						player.send("interact.fvtm.vehicle.disconnect_trailer");
+						return INTERACT_SUCCESS;
+					}
+					//TODO spawn
+				}
+				return INTERACT_SUCCESS;
+			}
+			else if(stack.isItemOf(ContentType.CONTAINER.item_type)){
+				//TODO
+				return INTERACT_SUCCESS;
+			}
+			else{
+				if(engine != null && engine.isOn()){
+					player.send("interact.fvtm.vehicle.engine_on");
+				}
+				else{
+					player.openUI(UIKeys.VEHICLE_MAIN, 0, entity.getId(), 0);
+				}
+				return INTERACT_SUCCESS;
+			}
+		}
+		if(data.getLock().isLocked()){
+			player.bar("interact.fvtm.vehicle.locked");
+		}
+		return INTERACT_PASS;
 	}
 
 }

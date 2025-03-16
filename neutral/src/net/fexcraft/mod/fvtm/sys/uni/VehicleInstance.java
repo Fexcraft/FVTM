@@ -80,7 +80,7 @@ public class VehicleInstance {
 	public double speed;
 	public V3D pos;
 	public V3D prev;
-	public V3D move;
+	public V3D move = new V3D();
 	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
@@ -121,24 +121,11 @@ public class VehicleInstance {
 		entity = wrapper;
 		ref = new InteractRef(this);
 		adv = base;
-		init(vdata);
+		init(vdata, null);
 	}
 
 	public VehicleInstance(EntityW wrapper, VehicleData vdata){
 		this(wrapper, vdata, false);
-	}
-
-	public void init(VehicleData vdata){
-		data = vdata;
-		if(data == null) return;
-		type = data.getType().getVehicleType();
-		point = data.getRotationPoint(null);
-		max_steering_yaw = data.getAttributeInteger("max_steering_angle", 45);
-		engine = data.getFunctionInPart("engine", "fvtm:engine");
-		if(adv){
-			transmission = data.getFunctionInPart("transmission", "fvtm:transmission");
-		}
-		spdata = data.getType().getSphData();
 	}
 
 	public UUID getPlacer(){
@@ -662,14 +649,27 @@ public class VehicleInstance {
 		serv_sync = Config.VEHICLE_SYNC_RATE;
 	}
 
-	public void init(TagCW com){
-		if(data == null){
-			init(FvtmResources.INSTANCE.getVehicleData(com));
+	public void init(VehicleData vdata, TagCW com){
+		if(vdata != null) data = vdata;
+		if(com != null){
+			if(data == null){
+				data = FvtmResources.getVehicleData(com);
+			}
+			else{
+				data.read(com);
+			}
 		}
-		else{
-			data.read(com);
+		if(data == null) return;
+		type = data.getType().getVehicleType();
+		point = data.getRotationPoint(null);
+		if(com != null) point.loadPivot(com);
+		max_steering_yaw = data.getAttributeInteger("max_steering_angle", 45);
+		engine = data.getFunctionInPart("engine", "fvtm:engine");
+		if(adv){
+			transmission = data.getFunctionInPart("transmission", "fvtm:transmission");
 		}
-		point.loadPivot(com);
+		spdata = data.getType().getSphData();
+		//
 		initWheels();
 		seats.clear();
 		for(int i = 0; i < data.getSeats().size(); i++){
@@ -764,12 +764,12 @@ public class VehicleInstance {
 						FvtmLogger.debug(data.getConnectors());
 						return INTERACT_SUCCESS;
 					}
-					if(!SimplePhysSpawnSystem.validToSpawn(UniEntity.getEntity(player), UniStack.getStack(stack), data)) return INTERACT_SUCCESS;
+					if(!SimplePhysSpawnSystem.validToSpawn(player, stack, tdat)) return INTERACT_SUCCESS;
 					if(rear != null){
 						player.send("interact.fvtm.vehicle.disconnect_trailer");
 						return INTERACT_SUCCESS;
 					}
-					((FvtmWorld)entity.getWorld()).spawnLandEntity(data, this, player);
+					((FvtmWorld)entity.getWorld()).spawnLandEntity(tdat, this, player);
 				}
 				return INTERACT_SUCCESS;
 			}
@@ -968,7 +968,7 @@ public class VehicleInstance {
 
 	/** for trailers */
 	private void align(){
-		entity.setPrevPos(entity.getPos());
+		//entity.setPrevPos(entity.getPos());
 		if(wheels.isEmpty() || front == null) return;
 		V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
 		V3D.add(front.getV3D(), conn);

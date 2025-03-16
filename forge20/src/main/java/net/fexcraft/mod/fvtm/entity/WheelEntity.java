@@ -217,6 +217,11 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	}
 
 	@Override
+	public void pos(double x, double y, double z){
+		setPos(x, y, z);
+	}
+
+	@Override
 	public void move(float yaw){
 		setOnGround(true);
 		setYRot(yaw);

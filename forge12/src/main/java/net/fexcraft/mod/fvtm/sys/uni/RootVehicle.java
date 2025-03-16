@@ -248,64 +248,17 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			FvtmLogger.LOGGER.log("Vehicle '" + getEntityId() + "' has no data, skipping update.");
 			return;
 		}
-		if(!world.isRemote){
-			for(Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
-				if(!vehicle.wheels.containsKey(entry.getKey()) || !((Entity)vehicle.wheels.get(entry.getKey())).addedToChunk){
-					NWheelEntity wheel = new NWheelEntity(this, entry.getKey());
-					vehicle.wheels.put(entry.getKey(), wheel);
-					world.spawnEntity(wheel);
-				}
-			}
-		}
+		ticksExisted++;
+		if(ticksExisted >= Integer.MAX_VALUE) ticksExisted = 0;
 		prevRotationYaw = vehicle.point.getPivot().deg_yaw();
 		prevRotationPitch = vehicle.point.getPivot().deg_pitch();
 		prevRotationRoll = vehicle.point.getPivot().deg_roll();
-		vehicle.point.updatePrevAxe();
-		ticksExisted++;
-		if(ticksExisted >= Integer.MAX_VALUE) ticksExisted = 0;
-		if(vehicle.toggable_timer > 0) vehicle.toggable_timer--;
-		if(vehicle.gear_timer > 0) vehicle.gear_timer--;
-		if(vehicle.autogear_timer > 0) vehicle.autogear_timer--;
+		vehicle.onUpdate();
 		//
-		vehicle.checkSteerAngle(world.isRemote);
-		if(world.isRemote){
-			if(vehicle.serv_sync > 0){
-				double x = posX + (vehicle.serv_pos[0] - posX) / vehicle.serv_sync;
-				double y = posY + (vehicle.serv_pos[1] - posY) / vehicle.serv_sync;
-				double z = posZ + (vehicle.serv_pos[2] - posZ) / vehicle.serv_sync;
-				double yw = valDeg(vehicle.serv_rot[0] - vehicle.pivot().deg_yaw());
-				double pt = valDeg(vehicle.serv_rot[1] - vehicle.pivot().deg_pitch());
-				double rl = valDeg(vehicle.serv_rot[2] - vehicle.pivot().deg_roll());
-				rotationYaw = (float)(vehicle.pivot().deg_yaw() + yw / vehicle.serv_sync);
-				rotationPitch = (float)(vehicle.pivot().deg_pitch() + pt / vehicle.serv_sync);
-				rotationRoll = (float)(vehicle.pivot().deg_roll() + rl / vehicle.serv_sync);
-				vehicle.steer_yaw += (vehicle.serv_steer - vehicle.steer_yaw) / vehicle.serv_sync;
-				vehicle.serv_sync--;
-				setPosition(x, y, z);
-				vehicle.pivot().set_rotation(rotationYaw, rotationPitch, rotationRoll, true);
-			}
-			if(vehicle.type.isRailVehicle()){
-				((NRailVehicle)this).updBogieRot();
-			}
-			else{
-				AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
-				attr.initial = attr.value;
-				attr.value = (float)vehicle.steer_yaw;
-				double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(prevPosX - posX, prevPosZ - posZ) + rad180);
-				dir = dir > rad90 || dir < -rad90? -1 : 1;
-				for(WheelTireData val : vehicle.wheeldata.values()){
-					val.rotation = valDegF(val.rotation + vehicle.speed * dir * val.radius * 100);
-				}
-				vehicle.data.setAttribute("wheel_angle", 0);
-				vehicle.data.setAttribute("throttle", vehicle.throttle);
-				vehicle.data.setAttribute("speed", vehicle.speed);
-			}
-		}
-		for(UniWheel wheel : vehicle.wheels.values()){
-			if(wheel != null) wheel.setPosAsPrev();
+		if(world.isRemote && vehicle.type.isRailVehicle()){
+			((NRailVehicle)this).updBogieRot();
 		}
 		onUpdateMovement();
-		vehicle.updatePointsSeats();
 		//collchecks
 		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
 			vehicle.sendUpdatePacket();

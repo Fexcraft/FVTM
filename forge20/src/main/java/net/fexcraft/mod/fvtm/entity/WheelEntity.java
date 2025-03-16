@@ -70,7 +70,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 
 	private void setStepHeight(){
 		WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
-		stepheight = wtd == null ? root.spdata == null ? 1f : root.spdata.wheel_step_height : wtd.function.step_height;
+		stepheight = wtd == null ? root.vehicle.spdata == null ? 1f : root.vehicle.spdata.wheel_step_height : wtd.function.step_height;
 	}
 
 	@Override
@@ -191,13 +191,18 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	}
 
 	@Override
-	public void setPrevAsPos(){
+	public void setPosAsPrev(){
 		setOldPosAndRot();
 	}
 
 	@Override
 	public void remove(){
 		kill();
+	}
+
+	@Override
+	public boolean isAdded(){
+		return isAddedToWorld();
 	}
 
 }

@@ -28,7 +28,7 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	private int vehid;
 	public WheelTireData wheel;
 	public String wheelid;
-	protected V3D pos;
+	protected V3D pos = new V3D();
 
 	public NWheelEntity(World world){
 		super(world);

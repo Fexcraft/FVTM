@@ -157,21 +157,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	@Override
 	public void kill(){
-		if(Config.VEHICLES_DROP_CONTENTS && !level().isClientSide){
-			for(String part : vehicle.data.getInventories()){
-				InventoryFunction func = vehicle.data.getPart(part).getFunction("fvtm:inventory");
-				if(func == null) continue;
-				//TODO func.inventory().dropAllAt(this);
-			}
-		}
+		if(vehicle != null) vehicle.onRemove();
 		super.kill();
-		if(!vehicle.wheels.isEmpty()){
-			for(UniWheel wheel : vehicle.wheels.values()) wheel.remove();
-		}
-		if(!vehicle.type.isRailVehicle()){
-			if(vehicle.front != null) vehicle.front.rear = null;
-			if(vehicle.rear != null) vehicle.rear.front = null;
-		}
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -132,6 +133,12 @@ public class Material extends Content<Material> implements WithItem, ItemTexture
 
 	public int getImpactLevel(){
 		return impact;
+	}
+
+	public static boolean isFuelContainer(StackWrapper stack){
+		if(!stack.isItemOf(ContentType.MATERIAL.item_type)) return false;
+		Material mat = stack.getContent(ContentType.MATERIAL.item_type);
+		return mat != null && mat.isFuelContainer();
 	}
 
 }

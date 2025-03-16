@@ -191,54 +191,15 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			FvtmLogger.LOGGER.log("Vehicle '" + getId() + "' has no data, skipping update.");
 			return;
 		}
-		if(!level().isClientSide){
-			checkWheelPresence(vehicle.w_front_l.id);
-			checkWheelPresence(vehicle.w_front_r.id);
-			checkWheelPresence(vehicle.w_rear_l.id);
-			checkWheelPresence(vehicle.w_rear_r.id);
-		}
+		tickCount++;
+		if(tickCount >= Integer.MAX_VALUE) tickCount = 0;
 		yRotO = vehicle.point.getPivot().deg_yaw();
 		xRotO = vehicle.point.getPivot().deg_pitch();
 		protZ = vehicle.point.getPivot().deg_roll();
-		vehicle.point.updatePrevAxe();
-		tickCount++;
-		if(tickCount >= Integer.MAX_VALUE) tickCount = 0;
-		if(vehicle.toggable_timer > 0) vehicle.toggable_timer--;
+		vehicle.onUpdate();
 		//
-		vehicle.checkSteerAngle(level().isClientSide);
-		if(level().isClientSide){
-			if(vehicle.serv_sync > 0){
-				double x = position().x + (vehicle.serv_pos[0] - position().x) / vehicle.serv_sync;
-				double y = position().y + (vehicle.serv_pos[1] - position().y) / vehicle.serv_sync;
-				double z = position().z + (vehicle.serv_pos[2] - position().z) / vehicle.serv_sync;
-				double yw = valDeg(vehicle.serv_rot[0] - vehicle.pivot().deg_yaw());
-				double pt = valDeg(vehicle.serv_rot[1] - vehicle.pivot().deg_pitch());
-				double rl = valDeg(vehicle.serv_rot[2] - vehicle.pivot().deg_roll());
-				setYRot((float)(vehicle.pivot().deg_yaw() + yw / vehicle.serv_sync));
-				setXRot((float)(vehicle.pivot().deg_pitch() + pt / vehicle.serv_sync));
-				rotZ = (float)(vehicle.pivot().deg_roll() + rl / vehicle.serv_sync);
-				vehicle.steer_yaw += (vehicle.serv_steer - vehicle.steer_yaw) / vehicle.serv_sync;
-				vehicle.serv_sync--;
-				setPos(x, y, z);
-				vehicle.pivot().set_rotation(getYRot(), getXRot(), rotZ, true);
-			}
-			if(vehicle.type.isRailVehicle()){
-				((RailVehicle)this).updBogieRot();
-			}
-			else{
-				AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
-				attr.initial = attr.value;
-				attr.value = (float)vehicle.steer_yaw;
-				double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(xOld - position().x, zOld - position().z) + rad180);
-				dir = dir > rad90 || dir < -rad90 ? -1 : 1;
-				wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * dir * wheel_radius * 100));
-				vehicle.data.setAttribute("wheel_angle", wheel_rotation);
-				vehicle.data.setAttribute("throttle", vehicle.throttle);
-				vehicle.data.setAttribute("speed", vehicle.speed);
-			}
-		}
-		for(UniWheel wheel : vehicle.wheels.values()){
-			if(wheel != null) wheel.setPosAsPrev();
+		if(level().isClientSide && vehicle.type.isRailVehicle()){
+			((RailVehicle)this).updBogieRot();
 		}
 		Player driver = getDriver();
 		if(!level().isClientSide){
@@ -282,18 +243,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		else{
 			vehicle.speed = MathUtils.calcSpeed(position().x, position().y, position().z, xOld, yOld, zOld);
 		}
-		vehicle.updatePointsSeats();
 		//collchecks
 		if(!level().isClientSide && tickCount % VEHICLE_SYNC_RATE == 0){
 			vehicle.sendUpdatePacket();
-		}
-	}
-
-	private void checkWheelPresence(String id){
-		if(!vehicle.wheels.containsKey(id) || !((Entity)vehicle.wheels.get(id)).isAddedToWorld()){
-			WheelEntity ent = FvtmGetters.getNewWheel(this, id);
-			vehicle.wheels.put(id, ent);
-			level().addFreshEntity(ent);
 		}
 	}
 

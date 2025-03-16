@@ -53,4 +53,6 @@ public interface FvtmWorld {
 
 	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer);
 
+	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer);
+
 }

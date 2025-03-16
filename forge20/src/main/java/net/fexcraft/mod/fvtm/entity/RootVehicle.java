@@ -81,7 +81,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	public void initVD(VehicleData data){
-		vehicle.init(data);
+		vehicle.init(data, null);
 		init(null);
 	}
 
@@ -105,7 +105,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		setYRot(com.getFloat("RotationYaw"));
 		protZ = rotZ = com.getFloat("RotationYaw");
 		setOldPosAndRot();
-		vehicle.init(com);
+		vehicle.init(null, com);
 		init(com);
 	}
 
@@ -132,7 +132,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			TagCW com = TagCW.wrap(buffer.readNbt());
-			vehicle.init(com);
+			vehicle.init(null, com);
 			readSpawnData(com);
 			init(com);
 			setYRot(vehicle.point.getPivot().deg_yaw());

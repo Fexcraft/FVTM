@@ -15,6 +15,8 @@ public interface UniWheel {
 
 	public V3D pos();
 
+	public void pos(double x, double y, double z);
+
 	public void move(float yaw);
 
 	public WheelTireData wtd();

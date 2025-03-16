@@ -964,11 +964,12 @@ public class VehicleInstance {
 			move.y -= dest.y * 0.5;
 			move.z -= dest.z * 0.5;
 		}
+		if(data.getType().isTrailer()) wheel.pos(wheel.pos().x + dest.x, wheel.pos().y + dest.y, wheel.pos().z + dest.z);
 	}
 
 	/** for trailers */
 	private void align(){
-		//entity.setPrevPos(entity.getPos());
+		entity.setPrevPos(entity.getPos());
 		if(wheels.isEmpty() || front == null) return;
 		V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
 		V3D.add(front.getV3D(), conn);

@@ -181,4 +181,9 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		world.spawnEntity(new NLandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), placer == null ? null : placer.local(), -1));
 	}
 
+	@Override
+	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer){
+		world.spawnEntity(new NLandVehicle(truck.entity.local(), data, placer.local()));
+	}
+
 }

@@ -847,7 +847,6 @@ public class VehicleInstance {
 				for(WheelTireData val : wheeldata.values()){
 					val.rotation = valDegF(val.rotation + speed * dir * val.radius * 100);
 				}
-				data.setAttribute("wheel_angle", 0);
 				data.setAttribute("throttle", throttle);
 				data.setAttribute("speed", speed);
 			}

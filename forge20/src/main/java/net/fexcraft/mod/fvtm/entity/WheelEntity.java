@@ -222,12 +222,20 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	}
 
 	@Override
-	public void move(float yaw){
-		setOnGround(true);
+	public void yaw(float yaw){
 		setYRot(yaw);
+	}
+
+	@Override
+	public void prepare(){
+		setOnGround(true);
 		motionX *= 0.9;
 		motionZ *= 0.9;
 		motionY = -GRAVITY_20th;
+	}
+
+	@Override
+	public void move(){
 		move(MoverType.SELF, motion());
 	}
 
@@ -241,6 +249,13 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 		motionX += x;
 		motionY += y;
 		motionZ += z;
+	}
+
+	@Override
+	public void setMotion(double x, double y, double z){
+		motionX = x;
+		motionY = y;
+		motionZ = z;
 	}
 
 }

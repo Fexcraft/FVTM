@@ -909,43 +909,46 @@ public class VehicleInstance {
 	}
 
 	private void move(boolean nocons){
+		if(data.getType().isTrailer()) return;
 		entity.setOnGround(true);
 		move.x = move.y = move.z = 0;
-		if(data.getType().isTrailer()){
-			for(UniWheel wheel : wheels.values()) moveWheel(wheel, pivot().deg_yaw());
+		if(type.isWaterVehicle()){
+			//TODO
 		}
 		else{
-			if(type.isWaterVehicle()){
-				//TODO
-			}
-			else{
-				double steer = Math.toRadians(steer_yaw);
-				double wyaw = valRad(pivot().yaw());
-				double syaw = valRad(wyaw + steer);
-				double myaw = 0;
-				double ryaw = 0;
-				double scal = 0;
-				boolean cons = nocons || (engine != null && consumeFuel());
-				for(UniWheel wheel : wheels.values()){
-					if(engine != null && cons){
-						if(data.getType().isTracked()){
-							//TODO
-						}
-						else{
-							scal = 0.05 * throttle * (throttle > 0 ? spdata.max_throttle : spdata.min_throttle) * engine.getSphEngineSpeed();
-							ryaw = pivot().deg_yaw();
-							myaw = wyaw;
-							if(wheel.wtd().steering){
-								ryaw += steer_yaw;
-								myaw = syaw;
-							}
-						}
-						wheel.addMotion(-Math.sin(-myaw) * scal, 0, -Math.cos(-myaw) * scal);
+			double steer = Math.toRadians(steer_yaw);
+			double wyaw = valRad(pivot().yaw());
+			double syaw = valRad(wyaw + steer);
+			double myaw = 0;
+			double ryaw = 0;
+			double scal = 0;
+			boolean cons = nocons || (engine != null && consumeFuel());
+			for(UniWheel wheel : wheels.values()){
+				wheel.prepare();
+				if(engine != null && cons){
+					if(data.getType().isTracked()){
+						//TODO
 					}
-					moveWheel(wheel, ryaw);
+					else{
+						scal = 0.05 * throttle * (throttle > 0 ? spdata.max_throttle : spdata.min_throttle) * engine.getSphEngineSpeed();
+						ryaw = pivot().deg_yaw();
+						myaw = wyaw;
+						if(wheel.wtd().steering){
+							ryaw += steer_yaw;
+							myaw = syaw;
+						}
+					}
+					wheel.addMotion(-Math.sin(-myaw) * scal, 0, -Math.cos(-myaw) * scal);
 				}
+				wheel.yaw((float)ryaw);
+				wheel.move();
+				moveToWheel(wheel);
 			}
 		}
+		moveFinish();
+	}
+
+	private void moveFinish(){
 		move.x += pos.x;
 		move.y += pos.y;
 		move.z += pos.z;
@@ -953,18 +956,14 @@ public class VehicleInstance {
 		speed = Math.sqrt(move.x * move.x + move.z * move.z);
 	}
 
-	private void moveWheel(UniWheel wheel, double yaw){
-		wheel.move((float)yaw);
+	private void moveToWheel(UniWheel wheel){
 		V3D dest = pivot().get_vector(wheel.wtd().pos);
-		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.5;
-		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.5;
-		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.5;
+		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
+		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
+		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
 		if(dest.length() > 0.001){
-			move.x -= dest.x * 0.5;
-			move.y -= dest.y * 0.5;
-			move.z -= dest.z * 0.5;
+			V3D.sub(dest, move);
 		}
-		if(data.getType().isTrailer()) wheel.pos(wheel.pos().x + dest.x, wheel.pos().y + dest.y, wheel.pos().z + dest.z);
 	}
 
 	/** for trailers */
@@ -978,6 +977,20 @@ public class VehicleInstance {
 		V3D wl = wheels.get(w_rear_l.id).pos();
 		V3D wr = wheels.get(w_rear_r.id).pos();
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
+		move.x = move.y = move.z = 0;
+		pos = entity.getPos();
+		for(UniWheel wheel : wheels.values()){
+			wheel.prepare();
+			wheel.yaw(pivot().deg_yaw());
+			V3D dest = pivot().get_vector(wheel.wtd().pos);
+			dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
+			dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
+			dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
+			wheel.addMotion(dest.x, dest.y, dest.z);
+			wheel.move();
+			moveToWheel(wheel);
+		}
+		moveFinish();
 		if(rear != null) rear.align();
 	}
 

@@ -13,10 +13,12 @@ import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;
@@ -92,8 +94,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
 			private WheelSlot slot;
-			private AttrFloat attr = null;
-			private float am;
+			private WheelTireData wtd;
 
 			public String id(){
 				return "fvtm:wheel_auto_all";
@@ -103,11 +104,12 @@ public class DefaultPrograms20 extends DefaultPrograms {
 				pushPose();
 				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering){
-					attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
-					am = attr.initial + data.partialticks * (attr.value - attr.initial);
-					rotateDeg(-am, AY);
+					rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
 				}
-				rotateDeg(-data.vehicle.getAttribute("wheel_angle").asFloat(), AX);
+				if(data.vehent != null){
+					wtd = data.vehent.wheeldata.get(data.part_category);
+					rotateDeg(-wtd.rotation, AX);
+				}
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
 			}
 
@@ -135,6 +137,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
 			private WheelSlot slot;
+			private WheelTireData wtd;
 
 			public String id(){
 				return "fvtm:wheel_auto_all_opposite";
@@ -144,7 +147,10 @@ public class DefaultPrograms20 extends DefaultPrograms {
 				pushPose();
 				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
-				rotateDeg(data.vehicle.getAttribute("wheel_angle").asFloat(), AX);
+				if(data.vehent != null){
+					wtd = data.vehent.wheeldata.get(data.part_category);
+					rotateDeg(-wtd.rotation, AX);
+				}
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
 			}
 

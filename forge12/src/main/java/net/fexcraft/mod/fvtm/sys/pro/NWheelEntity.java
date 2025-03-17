@@ -200,12 +200,20 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	}
 
 	@Override
-	public void move(float yaw){
-		onGround = true;
+	public void yaw(float yaw){
 		rotationYaw = yaw;
+	}
+
+	@Override
+	public void prepare(){
+		onGround = true;
 		motionX *= 0.9;
 		motionZ *= 0.9;
 		motionY = -GRAVITY_20th;
+	}
+
+	@Override
+	public void move(){
 		move(MoverType.SELF, motionX, motionY, motionZ);
 	}
 
@@ -219,6 +227,13 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 		motionX += x;
 		motionY += y;
 		motionZ += z;
+	}
+
+	@Override
+	public void setMotion(double x, double y, double z){
+		motionX = x;
+		motionY = y;
+		motionZ = z;
 	}
 
 }

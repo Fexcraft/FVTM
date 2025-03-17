@@ -17,10 +17,16 @@ public interface UniWheel {
 
 	public void pos(double x, double y, double z);
 
-	public void move(float yaw);
+	public void yaw(float yaw);
+
+	public void prepare();
+
+	public void move();
 
 	public WheelTireData wtd();
 
 	public void addMotion(double x, double y, double z);
+
+	public void setMotion(double x, double y, double z);
 
 }

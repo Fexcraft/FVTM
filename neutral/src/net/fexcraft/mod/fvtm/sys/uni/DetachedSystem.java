@@ -18,7 +18,7 @@ public abstract class DetachedSystem {
 	
 	public DetachedSystem(WorldW world){
 		this.world = world;
-		root = new File(WrapperHolder.getWorldFolder(world), "/fvtm");
+		root = WrapperHolder.getWorldFolder(world, "fvtm");
 	}
 	
 	public WorldW getWorld(){

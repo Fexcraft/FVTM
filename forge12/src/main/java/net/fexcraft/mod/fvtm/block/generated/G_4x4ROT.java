@@ -30,17 +30,17 @@ public class G_4x4ROT extends PlainBase {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", "variant=" + state.getValue(VARIANTS4) + ",facing=" + state.getValue(FACING).getName() + "").get(0);
+        return type.getAABB("default", "variant=" + state.getValue(VARIANTS4), "facing=" + state.getValue(FACING).getName() + "").get(0);
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "variant=" + state.getValue(VARIANTS4) + ",facing=" + state.getValue(FACING).getName()).offset(0, pos.getX(), pos.getY(), pos.getZ()).local();
+        return type.getAABB("selection", "variant=" + state.getValue(VARIANTS4), "facing=" + state.getValue(FACING).getName()).offset(0, pos.getX(), pos.getY(), pos.getZ()).local();
     }
     
     @Nullable @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", "variant=" + state.getValue(VARIANTS4) + ",facing=" + state.getValue(FACING).getName()).get(0);
+        return type.getAABB("collision", "variant=" + state.getValue(VARIANTS4), "facing=" + state.getValue(FACING).getName()).get(0);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class G_4x4ROT extends PlainBase {
 
 	@Override
 	protected void addCollisionsToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entitybox, List<AxisAlignedBB> boxes){
-		for(AABB aabb : type.getAABB("collision", "variant=" + state.getValue(VARIANTS4) + ",facing=" + state.getValue(FACING).getName()).get()){
+		for(AABB aabb : type.getAABB("collision", "variant=" + state.getValue(VARIANTS4), "facing=" + state.getValue(FACING).getName()).get()){
 			if(entitybox == null) boxes.add(aabb.local());
 			else addCollisionBoxToList(pos, entitybox, boxes, aabb.local());
 		}

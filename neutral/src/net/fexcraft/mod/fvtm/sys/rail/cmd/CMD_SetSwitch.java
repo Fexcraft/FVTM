@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.rail.cmd;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -15,7 +13,7 @@ public class CMD_SetSwitch extends JEC {
 	private QV3D junction;
 	private byte entry, state;
 
-	public CMD_SetSwitch(String label, EntryDirection dir, byte entry, byte state, @Nullable String junction, String[] targets){
+	public CMD_SetSwitch(String label, EntryDirection dir, byte entry, byte state, String junction, String[] targets){
 		super(label, JECType.SET_STATE, dir, targets); this.entry = entry; this.state = state;
 		this.junction = junction == null || junction.length() == 0 || junction.equals("this") ? null : QV3D.fromIDString(junction);
 	}

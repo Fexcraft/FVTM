@@ -2,12 +2,9 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.AABB;
-import net.fexcraft.mod.fvtm.render.PathModelPositioned;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -259,8 +256,7 @@ public class Junction {
 		this.updateClient();
 	}
 
-	@Nullable
-	public Track getNext(@Nullable RailEntity entity, PathKey track, boolean applystate){
+	public Track getNext(RailEntity entity, PathKey track, boolean applystate){
 		if(entity != null && fortrains.size() > 0){
 			Track track0 = getNext0(entity, track, applystate);
 			for(JEC cmd : fortrains){
@@ -272,8 +268,7 @@ public class Junction {
 		else return getNext0(entity, track, applystate);
 	}
 
-	@Nullable
-	public Track getNext0(@Nullable RailEntity entity, PathKey track, boolean applystate){
+	public Track getNext0(RailEntity entity, PathKey track, boolean applystate){
 		if(type == null)
 			type = size() <= 2 ? JuncType.STRAIGHT : size() == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
 		if(entity != null){

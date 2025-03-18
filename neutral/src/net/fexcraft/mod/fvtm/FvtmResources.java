@@ -37,7 +37,6 @@ import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.ZipUtils;
-import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
 import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.BogieInstallationHandler;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -181,7 +180,7 @@ public abstract class FvtmResources {
 		BLOCK_FUNCTIONS.put("fvtm:seat", SeatBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:set_state", SetStateFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:boolean", BoolBlockFunction.class);
-		BLOCK_FUNCTIONS.put("fvtm:inventory", InventoryBlockFunction.class);
+		//BLOCK_FUNCTIONS.put("fvtm:inventory", InventoryBlockFunction.class);
 		BLOCK_FUNCTIONS.put("fvtm:barrel", BarrelBlockFunction.class);
 	}
 
@@ -433,7 +432,7 @@ public abstract class FvtmResources {
 		//if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
 		//if(clazz == PartModel.class) return PartModel.EMPTY;
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
-		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
+		//if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
 		if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;

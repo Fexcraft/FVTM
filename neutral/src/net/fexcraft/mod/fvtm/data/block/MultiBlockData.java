@@ -65,9 +65,9 @@ public class MultiBlockData extends ContentData<MultiBlock, MultiBlockData> {
 		return inventories;
 	}
 
-	public BlockScript getScript(){
+	/*public BlockScript getScript(){
 		return null;
-	}
+	}*/
 
 	public InvHandler getInventory(String invid){
 		return inventories.get(invid);

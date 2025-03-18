@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "fvtm",
+	"version": "${version}",
+	"name": "Fex's Vehicle & Transportation Mod",
+	"description": "A mod providing a vehicles, blocks, items & more via a content/addon pack system.",
+	"authors": [
+		"Ferdinand (FEX___96)"
+	],
+	"contact": {
+		"homepage": "https://fexcraft.net/",
+		"sources": "https://github.com/Fexcraft/fabric-example-mod"
+	},
+	"license": "https://fexcraft.net/license?id=mods",
+	"icon": "fvtm_logo.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.fexcraft.mod.fvtm.FVTM"
+		],
+		"client": [
+			"net.fexcraft.mod.fvtm.FVTMC"
+		]
+	},
+	"mixins": [
+		"fvtm.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fcl": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

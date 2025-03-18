@@ -12,8 +12,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -322,7 +320,7 @@ public class RailSystem extends DetachedSystem {
 		regions.clear();
 	}
 
-	public void updateRegion(TagCW compound, @Nullable EntityW player){
+	public void updateRegion(TagCW compound, EntityW player){
 		int[] xz = compound.getIntArray("XZ");
 		if(world.isClient()){
 			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false));

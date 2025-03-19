@@ -224,6 +224,7 @@ public abstract class FvtmResources {
 						if(content == null){
 							idl = ContentConfigUtil.getID(map);
 							LOGGER.log("Errors while loading config file: " + file + " for " + idl.colon());
+							continue;
 						}
 						contype.register(content);
 						if(EnvInfo.CLIENT) checkForCustomModel(addon.getLocation(), contype, content);
@@ -253,6 +254,7 @@ public abstract class FvtmResources {
 								if(content == null){
 									idl = ContentConfigUtil.getID(map);
 									LOGGER.log("Errors while loading config from zip: " + addon.getFile() + " for " + idl.colon());
+									continue;
 								}
 								contype.register(content);
 								if(EnvInfo.CLIENT) checkForCustomModel(addon.getLocation(), contype, content);

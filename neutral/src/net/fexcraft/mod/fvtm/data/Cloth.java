@@ -46,7 +46,7 @@ public class Cloth extends Content<Cloth> implements ItemTextureable, WithItem {
 		else material = ClothMaterial.get(FvtmRegistry.NONE_CLOTH_MAT);
 		//
 		texture = IDLManager.getIDLNamed(map.get("Texture", FvtmResources.NULL_TEXTURE.colon()));
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

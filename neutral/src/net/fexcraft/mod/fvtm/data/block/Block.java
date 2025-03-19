@@ -101,7 +101,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		oredict = map.getString("OreDictionary", null);
 		modelid = map.getString("Model", null);
 		if(modelid == null || modelid.equals("null") || modelid.startsWith("baked|")) plain_model = true;
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modeldata = new ModelData(map);
 			if(modeldata.getBoolean("Baked", false)) plain_model = true;
 		}

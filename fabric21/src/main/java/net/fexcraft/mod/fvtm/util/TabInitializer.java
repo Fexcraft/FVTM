@@ -25,6 +25,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +50,7 @@ public class TabInitializer implements CTab {
 			else return TOOLBOX[0].getDefaultInstance();
 		}).displayItems((par, out) -> {
 			Item item;
-			for(Map.Entry<String, ConcurrentHashMap<String, Item>> registry : Resources21.ITEMS.entrySet()){
+			for(Map.Entry<String, LinkedHashMap<String, Item>> registry : Resources21.ITEMS.entrySet()){
 				for(Map.Entry<String, Item> entry : registry.getValue().entrySet()){
 					item = entry.getValue();
 					if(item instanceof ContentItem<?> == false){

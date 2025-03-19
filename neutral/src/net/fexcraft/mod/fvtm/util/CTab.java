@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
 
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.uni.IDL;
@@ -12,7 +12,7 @@ import net.fexcraft.mod.uni.IDLManager;
  */
 public interface CTab {
 
-	public static TreeMap<IDL, CTab> TABS = new TreeMap<>();
+	public static LinkedHashMap<IDL, CTab> TABS = new LinkedHashMap<>();
 	public static final String DEFAULT = "default";
 	public static Class<? extends CTab>[] IMPL = new Class[1];
 

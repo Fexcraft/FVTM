@@ -16,8 +16,8 @@ public class ToolboxItem extends Item {
 
 	public final int var;
 
-	public ToolboxItem(int var){
-		super(new Properties().stacksTo(1));
+	public ToolboxItem(Properties prop, int var){
+		super(prop.stacksTo(1));
 		this.var = var;
 	}
 

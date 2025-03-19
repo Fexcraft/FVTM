@@ -64,7 +64,7 @@ public class Container extends Content<Container> implements TextureHolder, Colo
         if(invtype.type.isFluid() && map.has("FluidType")) invtype.setArg(map.get("FluidType").string_value());
         if(invtype.type.isItem() &&  map.has("ContentFilter")) invtype.setArg(map.get("ContentFilter").string_value());
 		//
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

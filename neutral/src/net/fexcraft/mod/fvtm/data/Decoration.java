@@ -62,7 +62,7 @@ public class Decoration extends Content<Decoration> implements WithItem, ItemTex
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
 		no3ditem = map.getBoolean("Disable3DItemModel", false);
 		randomtex = map.getBoolean("RandomTexture", false);
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

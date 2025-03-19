@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.fvtm.util.ResourcesImpl;
+import net.fexcraft.mod.fvtm.util.Resources20;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WorldWI;
 import net.fexcraft.mod.uni.packet.PacketListener;
@@ -166,7 +166,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 			str = str.substring(0, str.lastIndexOf("_") + 1);
 			return StateWrapper.of(BuiltInRegistries.BLOCK.get(new ResourceLocation(str + height)).defaultBlockState());
 		}
-		return StateWrapper.of(ResourcesImpl.ASPHALT[height].get().defaultBlockState());
+		return StateWrapper.of(Resources20.ASPHALT[height].get().defaultBlockState());
 	}
 
 	@Override

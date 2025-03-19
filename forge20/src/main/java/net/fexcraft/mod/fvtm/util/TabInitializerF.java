@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static net.fexcraft.mod.fvtm.FVTM4.ITEM_REGISTRY;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
-import static net.fexcraft.mod.fvtm.util.ResourcesImpl.TOOLBOX;
+import static net.fexcraft.mod.fvtm.util.Resources20.TOOLBOX;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

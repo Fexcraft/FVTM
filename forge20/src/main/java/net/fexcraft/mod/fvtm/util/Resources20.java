@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -25,8 +24,6 @@ import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.inv.ItemWrapper;
 import net.fexcraft.mod.uni.inv.StackWrapper;
-import net.fexcraft.mod.uni.inv.UniStack;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -46,7 +43,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.BLOCKS;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ResourcesImpl extends FvtmResources {
+public class Resources20 extends FvtmResources {
 
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
 	public static Supplier<ToolboxItem>[] TOOLBOX = new Supplier[ToolboxType.values().length];

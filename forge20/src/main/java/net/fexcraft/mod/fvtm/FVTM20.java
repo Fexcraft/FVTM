@@ -69,7 +69,7 @@ public class FVTM20 {
 			Renderer.RENDERER = new Renderer120();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
-		FvtmResources.INSTANCE = new ResourcesImpl();
+		FvtmResources.INSTANCE = new Resources20();
 		LoopedSound.ACTIVATE = sound -> {
 			sound.localsound = new LoopSound(sound);
 			net.minecraft.client.Minecraft.getInstance().getSoundManager().play((SoundInstance)sound.localsound);

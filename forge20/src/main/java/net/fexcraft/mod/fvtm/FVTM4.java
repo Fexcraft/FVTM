@@ -56,7 +56,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.Function;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -124,11 +123,11 @@ public class FVTM4 {
 	//
 	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
 	public static final RegistryObject<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY = BLOCKENTS.register("vehicle_lift", () ->
-		BlockEntityType.Builder.of(VehicleLiftEntity::new, ResourcesImpl.LIFT_BLOCK.get()).build(null));
+		BlockEntityType.Builder.of(VehicleLiftEntity::new, Resources20.LIFT_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ConstructorEntity>> CONST_ENTITY = BLOCKENTS.register("constructor", () ->
-			BlockEntityType.Builder.of(ConstructorEntity::new, ResourcesImpl.CONST_BLOCK.get()).build(null));
+			BlockEntityType.Builder.of(ConstructorEntity::new, Resources20.CONST_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT = BLOCKENTS.register("fuel_filler", () ->
-		BlockEntityType.Builder.of(FuelFillerEntity::new, ResourcesImpl.FUELFILLER_BLOCK.get()).build(null));
+		BlockEntityType.Builder.of(FuelFillerEntity::new, Resources20.FUELFILLER_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY = BLOCKENTS.register("blockbase", () ->
 		BlockEntityType.Builder.of(BaseBlockEntity::new, getBlockArray()).build(null));
 

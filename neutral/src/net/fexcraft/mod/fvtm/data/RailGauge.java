@@ -59,7 +59,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		ties_texture = IDLManager.getIDLNamed(map.getString("TiesTexture", "minecraft:textures/" + blks + "/anvil_base.png"));
 		model_texture = IDLManager.getIDLNamed(map.getString("ModelTexture", "fvtm:textures/" + blks + "/null.png"));
 		compatible = ContentConfigUtil.getStringList(map, "Compatible");
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

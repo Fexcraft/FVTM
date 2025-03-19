@@ -176,7 +176,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 			}
 		}
 		partslots = new PartSlots(map.has("PartSlots") && map.get("PartSlots").isMap() ? map.getMap("PartSlots") : new JsonMap());
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

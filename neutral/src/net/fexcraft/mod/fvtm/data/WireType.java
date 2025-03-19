@@ -43,7 +43,7 @@ public class WireType extends Content<WireType> implements WithItem, ItemTexture
 		segmentation = map.getInteger("Segmentation", 4);
 		customisable = map.getBoolean("Customisable", true);
 		texture = ContentConfigUtil.getTextures(map).get(0);
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

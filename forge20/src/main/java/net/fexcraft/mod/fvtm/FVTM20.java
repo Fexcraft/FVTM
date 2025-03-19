@@ -40,8 +40,6 @@ import net.minecraft.world.level.block.Block;
  */
 public class FVTM20 {
 
-	public static Config CONFIG;
-
 	public static void init0(){
 		EntityUtil.IMPL = EntityWIE.class;
 		StackWrapper.ITEM_TYPES.put(ContentType.ITYPE, item -> item instanceof ContentItem<?>);
@@ -65,7 +63,7 @@ public class FVTM20 {
 		AABB.SUPPLIER = () -> new AABBI();
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
-			CONFIG.addListener(DefaultPrograms::setupSignalTimer);
+			FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 			Renderer.RENDERER = new Renderer120();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
@@ -74,7 +72,7 @@ public class FVTM20 {
 			sound.localsound = new LoopSound(sound);
 			net.minecraft.client.Minecraft.getInstance().getSoundManager().play((SoundInstance)sound.localsound);
 		};
-		CONFIG.addListener(() -> {
+		FvtmRegistry.CONFIG.addListener(() -> {
 			//
 		});
 		//

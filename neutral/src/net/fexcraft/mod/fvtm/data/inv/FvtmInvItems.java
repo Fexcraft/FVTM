@@ -44,7 +44,7 @@ public class FvtmInvItems extends FvtmInv {
 		for(int r = 0; r < rows; r++){
 			for(int c = 0; c < cols; c++){
 				stack = items.get(idx = r * cols + c);
-				if(stack.empty()) continue;
+				if(stack == null || stack.empty()) continue;
 				TagCW com = TagCW.create();
 				stack.save(com);
 				stacks.set("s" + idx, com);

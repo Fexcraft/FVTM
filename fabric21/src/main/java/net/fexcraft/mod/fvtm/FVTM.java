@@ -3,48 +3,46 @@ package net.fexcraft.mod.fvtm;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fexcraft.lib.frl.GLO;
-import net.fexcraft.lib.frl.Renderer;
+import net.fexcraft.mod.fcl.local.CraftingEntity;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.block.AABB;
-import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.model.GLObject;
-import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
-import net.fexcraft.mod.fvtm.render.Renderer21;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.EntityWIE;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
-import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.fexcraft.mod.uni.inv.StackWrapper;
-import net.fexcraft.mod.uni.ui.UISlot;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Properties;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -131,15 +129,27 @@ public class FVTM implements ModInitializer {
 		});
 	}
 
-	public static Item register(String idl, Function<Item.Properties, Item> func){
-		return register(idl, func, new Item.Properties());
+	public static <I extends Item> I regItem(String idl, Function<Item.Properties, Item> func){
+		return (I)regItem(idl, func, new Item.Properties());
 	}
 
-	public static Item register(String idl, Function<Item.Properties, Item> func, Item.Properties prop){
+	public static <I extends Item> I regItem(String idl, Function<Item.Properties, Item> func, Item.Properties prop){
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, ResourceLocation.parse(idl));
 		Item item = Items.registerItem(key, func, prop);
 		Resources21.addItem(idl, item);
-		return item;
+		return (I)item;
+	}
+
+	public static Pair<Block, BlockItem> regBlock(String idl, Function<Block.Properties, Block> factory){
+		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(idl));
+		Block block = Blocks.register(key, factory, BlockBehaviour.Properties.of());
+		Item item = Items.registerBlock(block);
+		Resources21.addItem(idl, item);
+		return Pair.of(block, (BlockItem)item);
+	}
+
+	public static <T extends BlockEntity> BlockEntityType<T> regBlockEntity(String idl, FabricBlockEntityTypeBuilder.Factory<BlockEntity> supp, Block... blocks){
+		return (BlockEntityType<T>)Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, idl, FabricBlockEntityTypeBuilder.create(supp, blocks).build());
 	}
 
 }

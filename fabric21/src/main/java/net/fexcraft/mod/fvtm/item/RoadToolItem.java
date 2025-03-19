@@ -1,13 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,9 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +17,8 @@ import java.util.List;
  */
 public class RoadToolItem extends Item {
 
-	public RoadToolItem INSTANCE;
-
-	public RoadToolItem(){
-		super(new Properties().stacksTo(1));
-		INSTANCE = this;
+	public RoadToolItem(Properties prop){
+		super(prop.stacksTo(1));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
@@ -11,7 +12,8 @@ import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
-import net.fexcraft.mod.uni.FclRecipe;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms21;
+import net.fexcraft.mod.fvtm.render.Transforms21;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
@@ -23,14 +25,15 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -38,17 +41,24 @@ import java.util.function.Supplier;
 public class Resources21 extends FvtmResources {
 
 	public static ConcurrentHashMap<String, ConcurrentHashMap<String, Item>> ITEMS = new ConcurrentHashMap<>();
-	//public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
+	public static RoadToolItem ROAD_TOOL_ITEM;
 	public static ToolboxItem[] TOOLBOX = new ToolboxItem[ToolboxType.values().length];
-	//public static Supplier<JunctionTool> JUNCTION_TOOl;
-	//public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
-	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
-	//public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
-	public static Supplier<BlockItem> LIFT_BLOCK_ITEM;
-	//public static Supplier<ConstructorBlock> CONST_BLOCK;
-	//public static Supplier<FuelFillerBlock> FUELFILLER_BLOCK;
-	public static Supplier<BlockItem> CONST_BLOCK_ITEM;
-	public static Supplier<BlockItem> FUELFILLER_ITEM;
+	public static JunctionTool JUNCTION_TOOl;
+	//
+	public static Asphalt[] ASPHALT = new Asphalt[16];
+	public static BlockItem[] ASPHALT_ITEM = new BlockItem[16];
+	//
+	public static VehicleLiftBlock LIFT_BLOCK;
+	public static BlockItem LIFT_BLOCK_ITEM;
+	public static BlockEntityType<VehicleLiftEntity> LIFT_ENTITY;
+	//
+	public static ConstructorBlock CONST_BLOCK;
+	public static BlockItem CONST_BLOCK_ITEM;
+	public static BlockEntityType<ConstructorEntity> CONST_ENTITY;
+	//
+	public static FuelFillerBlock FUELFILLER_BLOCK;
+	public static BlockItem FUELFILLER_ITEM;
+	public static BlockEntityType<FuelFillerEntity> FUELFILLER_ENTITY;
 
 	public static void addItem(String idl, Item item){
 		String[] split = idl.split(":");
@@ -79,17 +89,17 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void createContentItems(){
-		FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), FVTM.register(mat.getIDS(), prop -> new MaterialItem(prop, mat)))));
-		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), FVTM.register(con.getIDS(), prop -> new ConsumableItem(prop, con)))));
-		FvtmRegistry.PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), FVTM.register(part.getIDS(), prop -> new PartItem(prop, part)))));
-		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), FVTM.register(veh.getIDS(), prop -> new VehicleItem(prop, veh)))));
+		FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), FVTM.regItem(mat.getIDS(), prop -> new MaterialItem(prop, mat)))));
+		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), FVTM.regItem(con.getIDS(), prop -> new ConsumableItem(prop, con)))));
+		FvtmRegistry.PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), FVTM.regItem(part.getIDS(), prop -> new PartItem(prop, part)))));
+		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), FVTM.regItem(veh.getIDS(), prop -> new VehicleItem(prop, veh)))));
 		/*FvtmRegistry.BLOCKS.forEach(blk -> blk.setItemWrapper(wrapwrapper(blk.getID(), () -> {
 			FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
 			return new net.fexcraft.mod.fvtm.item.BlockItem(blk);
 		})));*/
-		FvtmRegistry.DECORATIONS.forEach(dec -> dec.setItemWrapper(wrapwrapper(dec.getID(), FVTM.register(dec.getIDS(), prop -> new DecorationItem(prop, dec)))));
-		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), FVTM.register(rg.getIDS(), prop -> new RailGaugeItem(prop, rg)))));
-		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), FVTM.register(wire.getIDS(), prop -> new WireItem(prop, wire)))));
+		FvtmRegistry.DECORATIONS.forEach(dec -> dec.setItemWrapper(wrapwrapper(dec.getID(), FVTM.regItem(dec.getIDS(), prop -> new DecorationItem(prop, dec)))));
+		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), FVTM.regItem(rg.getIDS(), prop -> new RailGaugeItem(prop, rg)))));
+		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), FVTM.regItem(wire.getIDS(), prop -> new WireItem(prop, wire)))));
 	}
 
 	@Override
@@ -145,30 +155,30 @@ public class Resources21 extends FvtmResources {
 	@Override
 	public void initModelPrograms(){
 		Transforms.GET_TRANSFORM = (args -> {
-			/*switch(args[0]){
+			switch(args[0]){
 				case "translation":
 				case "translate":
 				case "trans":
 				case "tra":
 				case "tr":
-					return (Transforms.Transformer)new Transforms120.TF_Translate(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					return (Transforms.Transformer)new Transforms21.TF_Translate(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
 				case "rotation":
 				case "rotate":
 				case "rot":
-					return (Transforms.Transformer)new Transforms120.TF_Rotate(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]), Float.parseFloat(args[4]));
+					return (Transforms.Transformer)new Transforms21.TF_Rotate(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]), Float.parseFloat(args[4]));
 				case "scale":
 					if(args.length < 3){
 						float scale = Float.parseFloat(args[1]);
-						return (Transforms.Transformer)new Transforms120.TF_Scale(scale, scale, scale);
+						return (Transforms.Transformer)new Transforms21.TF_Scale(scale, scale, scale);
 					}
-					return (Transforms.Transformer)new Transforms120.TF_Scale(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					return (Transforms.Transformer)new Transforms21.TF_Scale(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
 				case "gl_rescale_normal":
 				case "rescale_normal":
-					return (Transforms.Transformer)Transforms120.TF_RESCALE_NORMAL;
-			}*/
+					return (Transforms.Transformer)Transforms21.TF_RESCALE_NORMAL;
+			}
 			return null;
 		});
-		//TODO DefaultPrograms20.init();
+		DefaultPrograms21.init();
 		ConditionalPrograms.init();
 	}
 
@@ -203,29 +213,34 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void registerFvtmBlocks(){
-		/*for(int idx = 0; idx < ASPHALT.length; idx++){
+		Pair<Block, BlockItem> reg;
+		for(int idx = 0; idx < ASPHALT.length; idx++){
 			int index = idx;
-			ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
+			reg = FVTM.regBlock("fvtm:asphalt_" + idx, prop -> new Asphalt(prop, index));
+			ASPHALT[idx] = (Asphalt)reg.getLeft();
+			ASPHALT_ITEM[idx] = reg.getRight();
 		}
-		LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
-		CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
-		FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());*/
+		reg = FVTM.regBlock("fvtm:vehicle_lift", prop -> new VehicleLiftBlock(prop));
+		LIFT_BLOCK = (VehicleLiftBlock)reg.getLeft();
+		LIFT_BLOCK_ITEM = reg.getRight();
+		LIFT_ENTITY = FVTM.regBlockEntity("fvtm:vehicle_lift", VehicleLiftEntity::new, LIFT_BLOCK);
+		reg = FVTM.regBlock("fvtm:constructor", prop -> new ConstructorBlock(prop));
+		CONST_BLOCK = (ConstructorBlock)reg.getLeft();
+		CONST_BLOCK_ITEM = reg.getRight();
+		CONST_ENTITY = FVTM.regBlockEntity("fvtm:constructor", ConstructorEntity::new, CONST_BLOCK);
+		reg = FVTM.regBlock("fvtm:fuel_filler", prop -> new FuelFillerBlock(prop));
+		FUELFILLER_BLOCK = (FuelFillerBlock)reg.getLeft();
+		FUELFILLER_ITEM = reg.getRight();
+		FUELFILLER_ENTITY = FVTM.regBlockEntity("fvtm:fuel_filler", FuelFillerEntity::new, FUELFILLER_BLOCK);
 	}
 
 	@Override
 	public void registerFvtmItems(){
-		//ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
+		ROAD_TOOL_ITEM = FVTM.regItem("fvtm:road_tool", prop -> new RoadToolItem(prop));
 		for(ToolboxType val : ToolboxType.values()){
-			TOOLBOX[val.idx] = (ToolboxItem)FVTM.register("fvtm:toolbox_" + val.idx, prop -> new ToolboxItem(prop, val.idx));
+			TOOLBOX[val.idx] = (ToolboxItem)FVTM.regItem("fvtm:toolbox_" + val.idx, prop -> new ToolboxItem(prop, val.idx));
 		}
-		/*JUNCTION_TOOl = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
-		for(int idx = 0; idx < ASPHALT.length; idx++){
-			int index = idx;
-			ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(ASPHALT[index].get(), new Item.Properties()));
-		}
-		LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(LIFT_BLOCK.get(), new Item.Properties()));
-		CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(CONST_BLOCK.get(), new Item.Properties()));
-		FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FUELFILLER_BLOCK.get(), new Item.Properties()));*/
+		JUNCTION_TOOl = FVTM.regItem("fvtm:junction_tool", prop -> new JunctionTool(prop));
 	}
 
 	@Override

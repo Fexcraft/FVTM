@@ -27,8 +27,8 @@ import static net.minecraft.network.chat.Component.literal;
  */
 public class JunctionTool extends Item {
 
-	public JunctionTool(){
-		super(new Properties().stacksTo(1));
+	public JunctionTool(Properties prop){
+		super(prop.stacksTo(1));
 	}
 
 	@Override

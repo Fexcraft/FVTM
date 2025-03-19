@@ -25,10 +25,7 @@ import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
 import net.fexcraft.mod.fvtm.util.ess.RailSpawnSystem;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.*;
 import net.fexcraft.mod.uni.inv.ItemWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 
@@ -44,6 +41,7 @@ public class FvtmRegistry {
 	public static Config CONFIG;
 	public static boolean is112;
 	public static boolean is120;
+	public static boolean is121;
 	//
 	public static IDL INTERNAL_ADDON_ID;
 	public static IDL NONE_CLOTH_MAT;
@@ -82,8 +80,10 @@ public class FvtmRegistry {
 	public static final HashMap<String, ItemWrapper> ITEMS = new HashMap<>();
 
 	public static final void init(String loadver, File conf){
-		is112 = loadver.equals("1.12");
-		is120 = !is112;
+		UniReg.LOADER_VERSION = loadver;
+		is112 = EnvInfo.is112();
+		is120 = EnvInfo.is120();
+		is121 = EnvInfo.is121();
 		CONFIG_DIR = conf;
 		if(!CONFIG_DIR.exists()) CONFIG_DIR.mkdirs();
 		CONFIG = new Config(new File(conf, "fvtm.json"));

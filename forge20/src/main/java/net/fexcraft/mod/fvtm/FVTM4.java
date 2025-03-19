@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -55,6 +56,7 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -122,11 +124,11 @@ public class FVTM4 {
 	//
 	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
 	public static final RegistryObject<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY = BLOCKENTS.register("vehicle_lift", () ->
-		BlockEntityType.Builder.of(VehicleLiftEntity::new, FvtmGetters.LIFT_BLOCK.get()).build(null));
+		BlockEntityType.Builder.of(VehicleLiftEntity::new, ResourcesImpl.LIFT_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ConstructorEntity>> CONST_ENTITY = BLOCKENTS.register("constructor", () ->
-			BlockEntityType.Builder.of(ConstructorEntity::new, FvtmGetters.CONST_BLOCK.get()).build(null));
+			BlockEntityType.Builder.of(ConstructorEntity::new, ResourcesImpl.CONST_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT = BLOCKENTS.register("fuel_filler", () ->
-		BlockEntityType.Builder.of(FuelFillerEntity::new, FvtmGetters.FUELFILLER_BLOCK.get()).build(null));
+		BlockEntityType.Builder.of(FuelFillerEntity::new, ResourcesImpl.FUELFILLER_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY = BLOCKENTS.register("blockbase", () ->
 		BlockEntityType.Builder.of(BaseBlockEntity::new, getBlockArray()).build(null));
 
@@ -149,17 +151,6 @@ public class FVTM4 {
 			}
 		};
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
-		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
-		FvtmGetters.ROAD_MARKER_ENTITY = () -> ROAD_MARKER_ENTITY.get();
-		FvtmGetters.RAIL_MARKER_ENTITY = () -> RAIL_MARKER_ENTITY.get();
-		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
-		FvtmGetters.RAILVEHICLE_ENTITY = () -> RAILVEH_ENTITY.get();
-		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
-		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
-		FvtmGetters.LIFT_ENTITY = () -> LIFT_ENTITY.get();
-		FvtmGetters.CONST_ENTITY = () -> CONST_ENTITY.get();
-		FvtmGetters.FUELFILLER_ENT = () -> FUELFILLER_ENT.get();
-		FvtmGetters.BLOCK_ENTITY = () -> BLOCK_ENTITY.get();
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;
 		}
@@ -276,6 +267,10 @@ public class FVTM4 {
 			event.getDispatcher().register(FVTM20.genCommand());
 		}
 
+	}
+
+	public static RenderCache getRenderCache(Entity entity){
+		return entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
 	}
 
 }

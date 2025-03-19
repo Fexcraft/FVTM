@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.block;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.FuelFiller;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.core.BlockPos;
@@ -25,7 +25,7 @@ public class FuelFillerEntity extends BlockEntity implements FuelFiller.FuelFill
     public FuelFiller filler;
 
     public FuelFillerEntity(BlockPos pos, BlockState state){
-        super(FvtmGetters.FUELFILLER_ENT.get(), pos, state);
+        super(FVTM4.FUELFILLER_ENT.get(), pos, state);
         filler = new FuelFiller();
     }
 

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.block;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.core.BlockPos;
@@ -19,8 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.Nullable;
-
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
 
 /**
@@ -34,7 +32,7 @@ public class FuelFillerBlock extends Block implements EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state){
-        return FvtmGetters.FUELFILLER_ENT.get().create(pos, state);
+        return FVTM4.FUELFILLER_ENT.get().create(pos, state);
     }
 
     @Override

@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
@@ -16,7 +16,6 @@ import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.packet.PacketListener;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -47,7 +46,7 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener, In
 	public int rot;
 
 	public VehicleLiftEntity(BlockPos pPos, BlockState pBlockState){
-		super(FvtmGetters.LIFT_ENTITY.get(), pPos, pBlockState);
+		super(FVTM4.LIFT_ENTITY.get(), pPos, pBlockState);
 	}
 
 	public VehicleData getVehicleData(){

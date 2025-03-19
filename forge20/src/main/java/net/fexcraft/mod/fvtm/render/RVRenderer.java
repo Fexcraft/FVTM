@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.InteractZone;
@@ -69,7 +69,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		pose.pushPose();
 		Model vehmod = veh.vehicle.data.getType().getModel();
 		FvtmRenderTypes.setCutout(veh.vehicle.data.getCurrentTexture());
-		RenderCache cache = FvtmGetters.getRenderCache(veh);
+		RenderCache cache = FVTM4.getRenderCache(veh);
 		if(vehmod != null){
 			pose.pushPose();
 			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh.vehicle, cache, false, tick));

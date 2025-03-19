@@ -4,7 +4,6 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fexcraft.mod.fvtm.FVTM4;
-import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.*;
 import net.minecraft.client.KeyMapping;
@@ -56,10 +55,10 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void renderInit(EntityRenderersEvent.RegisterRenderers event){
-		event.registerBlockEntityRenderer(FvtmGetters.LIFT_ENTITY.get(), con -> new VehicleLiftRenderer());
-		event.registerBlockEntityRenderer(FvtmGetters.CONST_ENTITY.get(), con -> new ConstRenderer());
-		event.registerBlockEntityRenderer(FvtmGetters.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
-		event.registerBlockEntityRenderer(FvtmGetters.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
+		event.registerBlockEntityRenderer(FVTM4.LIFT_ENTITY.get(), con -> new VehicleLiftRenderer());
+		event.registerBlockEntityRenderer(FVTM4.CONST_ENTITY.get(), con -> new ConstRenderer());
+		event.registerBlockEntityRenderer(FVTM4.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
+		event.registerBlockEntityRenderer(FVTM4.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
 	}
 
 	@SubscribeEvent

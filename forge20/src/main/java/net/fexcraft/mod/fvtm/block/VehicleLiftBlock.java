@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.block;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -38,7 +38,7 @@ public class VehicleLiftBlock extends Block implements EntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState){
-		return FvtmGetters.LIFT_ENTITY.get().create(pPos, pState);
+		return FVTM4.LIFT_ENTITY.get().create(pPos, pState);
 	}
 
 	@Override

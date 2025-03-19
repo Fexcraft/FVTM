@@ -48,6 +48,18 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.BLOCKS;
  */
 public class ResourcesImpl extends FvtmResources {
 
+	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
+	public static Supplier<ToolboxItem>[] TOOLBOX = new Supplier[ToolboxType.values().length];
+	public static Supplier<JunctionTool> JUNCTION_TOOl;
+	public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
+	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
+	public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
+	public static Supplier<BlockItem> LIFT_BLOCK_ITEM;
+	public static Supplier<ConstructorBlock> CONST_BLOCK;
+	public static Supplier<FuelFillerBlock> FUELFILLER_BLOCK;
+	public static Supplier<BlockItem> CONST_BLOCK_ITEM;
+	public static Supplier<BlockItem> FUELFILLER_ITEM;
+
 	@Override
 	public void searchASMPacks(){}
 
@@ -88,7 +100,7 @@ public class ResourcesImpl extends FvtmResources {
 	public void registerFvtmRecipes(){
 		//StackWrapper.EMPTY = SWIE.parse(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.CONST_BLOCK_ITEM.get()))
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM.get()))
 				.add(new ItemStack(Blocks.IRON_BLOCK))
 				.add(new ItemStack(Items.COMPARATOR, 4))
 				.add(new ItemStack(Items.REPEATER, 8))
@@ -96,7 +108,7 @@ public class ResourcesImpl extends FvtmResources {
 				.add(new ItemStack(Items.BOOK, 2))
 				.add(new ItemStack(Blocks.LEVER, 8))
 				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.LIFT_BLOCK_ITEM.get()))
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(LIFT_BLOCK_ITEM.get()))
 				.add(new ItemStack(Blocks.IRON_BLOCK, 2))
 				.add(new ItemStack(Items.IRON_INGOT, 8))
 				.add(new ItemStack(Items.COMPARATOR, 2))
@@ -106,7 +118,7 @@ public class ResourcesImpl extends FvtmResources {
 				.add(new ItemStack(Blocks.LEVER, 2))
 				.add(new ItemStack(Blocks.PISTON, 2))
 				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FvtmGetters.FUELFILLER_ITEM.get()))
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM.get()))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Blocks.HOPPER, 2))
 			.add(new ItemStack(Blocks.STONE_BUTTON,4))
@@ -195,29 +207,29 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmBlocks(){
-		for(int idx = 0; idx < FvtmGetters.ASPHALT.length; idx++){
+		for(int idx = 0; idx < ASPHALT.length; idx++){
 			int index = idx;
-			FvtmGetters.ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
+			ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
 		}
-		FvtmGetters.LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
-		FvtmGetters.CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
-		FvtmGetters.FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());
+		LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
+		CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
+		FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());
 	}
 
 	@Override
 	public void registerFvtmItems(){
-		FvtmGetters.ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
+		ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
 		for(ToolboxType val : ToolboxType.values()){
-			FvtmGetters.TOOLBOX[val.idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_" + val.idx, () -> new ToolboxItem(val.idx));
+			TOOLBOX[val.idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_" + val.idx, () -> new ToolboxItem(val.idx));
 		}
-		FvtmGetters.JUNCTION_TOOl = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
-		for(int idx = 0; idx < FvtmGetters.ASPHALT.length; idx++){
+		JUNCTION_TOOl = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
+		for(int idx = 0; idx < ASPHALT.length; idx++){
 			int index = idx;
-			FvtmGetters.ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(FvtmGetters.ASPHALT[index].get(), new Item.Properties()));
+			ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(ASPHALT[index].get(), new Item.Properties()));
 		}
-		FvtmGetters.LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(FvtmGetters.LIFT_BLOCK.get(), new Item.Properties()));
-		FvtmGetters.CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(FvtmGetters.CONST_BLOCK.get(), new Item.Properties()));
-		FvtmGetters.FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FvtmGetters.FUELFILLER_BLOCK.get(), new Item.Properties()));
+		LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(LIFT_BLOCK.get(), new Item.Properties()));
+		CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(CONST_BLOCK.get(), new Item.Properties()));
+		FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FUELFILLER_BLOCK.get(), new Item.Properties()));
 	}
 
 	@Override
@@ -232,7 +244,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void spawnRoadMarker(WorldW world, QV3D vector, UUID nid){
-		RoadMarker marker = FvtmGetters.getNewRoadMarker(world.local());
+		RoadMarker marker = FVTM4.ROAD_MARKER_ENTITY.get().create(world.local());
 		marker.queueid = nid;
 		marker.position = vector;
 		marker.setPos(vector.vec.x, vector.vec.y + 1, vector.vec.z);
@@ -241,7 +253,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void spawnRailMarker(WorldW world, QV3D vector, UUID nid){
-		RailMarker marker = FvtmGetters.getNewRailMarker(world.local());
+		RailMarker marker = FVTM4.RAIL_MARKER_ENTITY.get().create(world.local());
 		marker.queueid = nid;
 		marker.position = vector;
 		marker.setPos(vector.vec.x, vector.vec.y, vector.vec.z);

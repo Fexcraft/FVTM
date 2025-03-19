@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -28,7 +28,7 @@ public class BlockBase extends PlainBase implements EntityBlock {
 
 	@Override
 	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state){
-		return FvtmGetters.BLOCK_ENTITY.get().create(pos, state);
+		return FVTM4.BLOCK_ENTITY.get().create(pos, state);
 	}
 
 	@Override

@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.FvtmGetters;
-import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.nbt.CompoundTag;
@@ -11,8 +10,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +45,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 	}
 
 	public WheelEntity(RootVehicle veh, String wid){
-		super(FvtmGetters.WHEEL_ENTITY.get(), veh.level());
+		super(FVTM4.WHEEL_ENTITY.get(), veh.level());
 		vehid = (root = veh).getId();
 		wheelid = wid;
 		wheel = root.vehicle.wheeldata.get(wid);

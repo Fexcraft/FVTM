@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Decoration;
@@ -59,7 +59,7 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	public InteractionResult useOn(UseOnContext context){
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
-		DecorationEntity decoen = FvtmGetters.getNewDecoration(context.getLevel());
+		DecorationEntity decoen = FVTM4.DECORATION_ENTITY.get().create(context.getLevel());
 		DecorationData data = getDataFromTag(stack.getTag());
 		if(data != null) decoen.decos.add(data);
 		decoen.setPos(context.getClickLocation());

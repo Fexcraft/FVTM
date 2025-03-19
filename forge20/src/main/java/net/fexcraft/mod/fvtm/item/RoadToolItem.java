@@ -26,8 +26,11 @@ import java.util.List;
  */
 public class RoadToolItem extends Item {
 
+	public RoadToolItem INSTANCE;
+
 	public RoadToolItem(){
 		super(new Properties().stacksTo(1));
+		INSTANCE = this;
 	}
 
 	@Override

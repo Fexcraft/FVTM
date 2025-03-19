@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,7 @@ public class ConstructorBlock extends Block implements EntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState){
-		return FvtmGetters.CONST_ENTITY.get().create(pPos, pState);
+		return FVTM4.CONST_ENTITY.get().create(pPos, pState);
 	}
 
 	@Override

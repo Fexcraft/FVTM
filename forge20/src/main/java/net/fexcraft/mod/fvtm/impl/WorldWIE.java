@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
@@ -13,9 +13,9 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
-import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WorldWI;
 import net.fexcraft.mod.uni.packet.PacketListener;
@@ -166,7 +166,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 			str = str.substring(0, str.lastIndexOf("_") + 1);
 			return StateWrapper.of(BuiltInRegistries.BLOCK.get(new ResourceLocation(str + height)).defaultBlockState());
 		}
-		return StateWrapper.of(FvtmGetters.ASPHALT[height].get().defaultBlockState());
+		return StateWrapper.of(ResourcesImpl.ASPHALT[height].get().defaultBlockState());
 	}
 
 	@Override
@@ -183,12 +183,12 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public void spawnRailEntity(RailEntity ent){
-		level.addFreshEntity(FvtmGetters.getNewRailVeh(level).assign(ent));
+		level.addFreshEntity(FVTM4.RAILVEH_ENTITY.get().create(level).assign(ent));
 	}
 
 	@Override
 	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer){
-		RootVehicle veh = FvtmGetters.getNewVehicle(level);
+		RootVehicle veh = FVTM4.VEHICLE_ENTITY.get().create(level);
 		veh.setPos(pos.x, pos.y, pos.z);
 		veh.initVD(data);
 		level.addFreshEntity(veh);
@@ -196,7 +196,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer){
-		RootVehicle veh = FvtmGetters.getNewVehicle(level);
+		RootVehicle veh = FVTM4.VEHICLE_ENTITY.get().create(level);
 		veh.vehicle.front = truck;
 		truck.rear = veh.vehicle;
 		veh.initVD(data);
@@ -208,7 +208,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
-		WheelEntity wheel = FvtmGetters.getNewWheel(vehicle.entity.local(), id);
+		WheelEntity wheel = new WheelEntity(vehicle.entity.local(), id);
 		level.addFreshEntity(wheel);
 		return wheel;
 	}

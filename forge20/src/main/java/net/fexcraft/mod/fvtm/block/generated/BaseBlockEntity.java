@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
@@ -29,7 +29,7 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 	public BlockData data;
 
 	public BaseBlockEntity(BlockPos pos, BlockState state){
-		super(FvtmGetters.BLOCK_ENTITY.get(), pos, state);
+		super(FVTM4.BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util;
+package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.mod.fcl.util.EntityWI;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;

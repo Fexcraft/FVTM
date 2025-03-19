@@ -36,7 +36,7 @@ public class WireDeco extends Content<WireDeco> {
 		type = map.getString("Type", "relay");
 		texture = ContentConfigUtil.getTextures(map).get(0);
 		accepts = ContentConfigUtil.getStringList(map, "Accepts");
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

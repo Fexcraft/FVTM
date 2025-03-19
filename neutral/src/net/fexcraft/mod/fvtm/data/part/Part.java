@@ -133,7 +133,7 @@ public class Part extends Content<Part> implements TextureHolder, SoundHolder, W
 			}
 		}
 		//TODO load scripts
-		if(EnvInfo.CLIENT){
+		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}

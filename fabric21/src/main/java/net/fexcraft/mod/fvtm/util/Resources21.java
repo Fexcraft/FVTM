@@ -39,6 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Resources21 extends FvtmResources {
 
-	public static ConcurrentHashMap<String, ConcurrentHashMap<String, Item>> ITEMS = new ConcurrentHashMap<>();
+	public static LinkedHashMap<String, LinkedHashMap<String, Item>> ITEMS = new LinkedHashMap<>();
 	public static RoadToolItem ROAD_TOOL_ITEM;
 	public static ToolboxItem[] TOOLBOX = new ToolboxItem[ToolboxType.values().length];
 	public static JunctionTool JUNCTION_TOOl;
@@ -77,7 +78,7 @@ public class Resources21 extends FvtmResources {
 
 	public static void addItem(String idl, Item item){
 		String[] split = idl.split(":");
-		if(!ITEMS.containsKey(split[0])) ITEMS.put(split[0], new ConcurrentHashMap<>());
+		if(!ITEMS.containsKey(split[0])) ITEMS.put(split[0], new LinkedHashMap<>());
 		ITEMS.get(split[0]).put(idl, item);
 	}
 

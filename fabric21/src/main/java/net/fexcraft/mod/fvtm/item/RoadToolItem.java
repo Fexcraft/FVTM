@@ -1,7 +1,12 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.inv.UniStack;
+import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,10 +29,9 @@ public class RoadToolItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		/*ArrayList<String> list = new ArrayList<>();
-		if(!stack.hasTag()) stack.setTag(new CompoundTag());
-		UniRoadTool.addTooltip(TagCW.wrap(stack.getTag()), list, (str, objs) -> I18n.get(str, objs));
-		for(String str : list) tooltip.add(Component.literal(str));*/
+		ArrayList<String> list = new ArrayList<>();
+		UniRoadTool.addTooltip(UniStack.getStack(stack).directTag(), list, (str, objs) -> I18n.get(str, objs));
+		for(String str : list) tooltip.add(Component.literal(str));
 	}
 
 	@Override
@@ -37,12 +42,11 @@ public class RoadToolItem extends Item {
 			case 2: return InteractionResult.SUCCESS;
 			case 3:{
 				//TODO perm check
-				/*ItemStack stack = context.getPlayer().getItemInHand(context.getHand());
-				if(!stack.hasTag()) stack.setTag(new CompoundTag());
+				ItemStack stack = context.getPlayer().getItemInHand(context.getHand());
 				RoadPlacingUtil.place(WrapperHolder.getWorld(context.getLevel()),
 					UniEntity.getCasted(context.getPlayer()),
-					TagCW.wrap(stack.getTag()),
-					new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z));*/
+					UniStack.getStack(stack).directTag(),
+					new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z));
 				return InteractionResult.SUCCESS;
 			}
 			case 0:

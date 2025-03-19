@@ -38,7 +38,11 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 	private int remtimer;
 	protected V3D pos = new V3D();
 
-	public WheelEntity(EntityType<WheelEntity> type, RootVehicle veh, String wid){
+	public WheelEntity(EntityType<LivingEntity> type, Level level){
+		super(type, level);
+	}
+
+	public WheelEntity(EntityType<LivingEntity> type, RootVehicle veh, String wid){
 		super(type, veh.level());
 		vehid = (root = veh).getId();
 		wheelid = wid;

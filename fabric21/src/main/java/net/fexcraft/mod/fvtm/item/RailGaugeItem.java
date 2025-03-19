@@ -8,8 +8,13 @@ import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
+import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.network.chat.Component;
@@ -37,7 +42,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		/*tooltip.add(GenericUtils.format("&9Name: &7" + gauge.getName()));
+		tooltip.add(GenericUtils.format("&9Name: &7" + gauge.getName()));
 		for(String s : gauge.getDescription()){
 			tooltip.add(GenericUtils.format(ContainerInterface.translate(s)));
 		}
@@ -59,15 +64,16 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			tooltip.add(GenericUtils.format("&6Enable advanced tooltips for item usage info."));
 		}
 		tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
-		if(stack.hasTag() && stack.getTag().contains("fvtm:railpoints")){
-			ListTag list = (ListTag)stack.getTag().get("fvtm:railpoints");
+		StackWrapper us = UniStack.getStack(stack);
+		if(us.directTag().has("fvtm:railpoints")){
+			TagLW list = us.directTag().getList("fvtm:railpoints");
 			for(int i = 0; i < list.size(); i++){
-				tooltip.add(GenericUtils.format("&9PT" + i + " POS:" + new QV3D(TagCW.wrap(list.getCompound(i)), null)));
+				tooltip.add(GenericUtils.format("&9PT" + i + " POS:" + new QV3D(list.getCompound(i), null)));
 			}
 		}
 		else{
 			tooltip.add(GenericUtils.format("No Connection data."));
-		}*/
+		}
 	}
 
 	@Override
@@ -76,7 +82,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 		WorldW world = WrapperHolder.getWorld(context.getLevel());
 		RailSystem railsys = SystemManager.get(Systems.RAIL, world);
 		if(railsys == null){
-			/*context.getPlayer().sendSystemMessage(GenericUtils.format("RailSystem not found on this Level."));*/
+			UniEntity.getEntity(context.getPlayer()).send("RailSystem not found on this Level.");
 			return InteractionResult.FAIL;
 		}
 		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);

@@ -9,11 +9,13 @@ import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
+import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms21;
 import net.fexcraft.mod.fvtm.render.Transforms21;
+import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
@@ -24,8 +26,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -59,6 +67,13 @@ public class Resources21 extends FvtmResources {
 	public static FuelFillerBlock FUELFILLER_BLOCK;
 	public static BlockItem FUELFILLER_ITEM;
 	public static BlockEntityType<FuelFillerEntity> FUELFILLER_ENTITY;
+	//
+	public static EntityType<LivingEntity> WHEEL_ENTITY;
+	public static EntityType<Entity> VEHICLE_ENTITY;
+	public static EntityType<Entity> RAIL_ENTITY;
+	public static EntityType<Entity> ROAD_MARKER_ENTITY;
+	public static EntityType<Entity> RAIL_MARKER_ENTITY;
+	public static EntityType<Entity> DECO_ENTITY;
 
 	public static void addItem(String idl, Item item){
 		String[] split = idl.split(":");
@@ -104,9 +119,8 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void registerFvtmRecipes(){
-		//StackWrapper.EMPTY = SWIE.parse(ItemStack.EMPTY);
-		/*String blockcat = "recipe.fvtm.blocks";
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM.get()))
+		String blockcat = "recipe.fvtm.blocks";
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM))
 				.add(new ItemStack(Blocks.IRON_BLOCK))
 				.add(new ItemStack(Items.COMPARATOR, 4))
 				.add(new ItemStack(Items.REPEATER, 8))
@@ -114,7 +128,7 @@ public class Resources21 extends FvtmResources {
 				.add(new ItemStack(Items.BOOK, 2))
 				.add(new ItemStack(Blocks.LEVER, 8))
 				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(LIFT_BLOCK_ITEM.get()))
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(LIFT_BLOCK_ITEM))
 				.add(new ItemStack(Blocks.IRON_BLOCK, 2))
 				.add(new ItemStack(Items.IRON_INGOT, 8))
 				.add(new ItemStack(Items.COMPARATOR, 2))
@@ -124,11 +138,11 @@ public class Resources21 extends FvtmResources {
 				.add(new ItemStack(Blocks.LEVER, 2))
 				.add(new ItemStack(Blocks.PISTON, 2))
 				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM.get()))
+		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Blocks.HOPPER, 2))
 			.add(new ItemStack(Blocks.STONE_BUTTON,4))
-			.register();*/
+			.register();
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -255,20 +269,20 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void spawnRoadMarker(WorldW world, QV3D vector, UUID nid){
-		/*RoadMarker marker = FVTM4.ROAD_MARKER_ENTITY.get().create(world.local());
+		RoadMarker marker = (RoadMarker)ROAD_MARKER_ENTITY.create(world.local(), EntitySpawnReason.SPAWN_ITEM_USE);
 		marker.queueid = nid;
 		marker.position = vector;
 		marker.setPos(vector.vec.x, vector.vec.y + 1, vector.vec.z);
-		((Level)world.direct()).addFreshEntity(marker);*/
+		((Level)world.direct()).addFreshEntity(marker);
 	}
 
 	@Override
 	public void spawnRailMarker(WorldW world, QV3D vector, UUID nid){
-		/*RailMarker marker = FVTM4.RAIL_MARKER_ENTITY.get().create(world.local());
+		RailMarker marker = (RailMarker)RAIL_MARKER_ENTITY.create(world.local(), EntitySpawnReason.SPAWN_ITEM_USE);
 		marker.queueid = nid;
 		marker.position = vector;
 		marker.setPos(vector.vec.x, vector.vec.y, vector.vec.z);
-		((Level)world.direct()).addFreshEntity(marker);*/
+		((Level)world.direct()).addFreshEntity(marker);
 	}
 
 }

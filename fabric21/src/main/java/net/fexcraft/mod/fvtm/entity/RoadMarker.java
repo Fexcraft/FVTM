@@ -30,7 +30,7 @@ public class RoadMarker extends Entity {
 	public QV3D position;
 	public UUID queueid;
 
-	public RoadMarker(EntityType<? extends RoadMarker> type, Level level){
+	public RoadMarker(EntityType<Entity> type, Level level){
 		super(type, level);
 	}
 

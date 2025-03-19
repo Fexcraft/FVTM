@@ -44,6 +44,10 @@ dependencies {
 	
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/fvtm.accesswidener")
+}
+
 processResources {
 	inputs.property "version", project.version
 

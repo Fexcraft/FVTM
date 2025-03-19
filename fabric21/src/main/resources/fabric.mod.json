@@ -34,5 +34,6 @@
 	},
 	"suggests": {
 		"another-mod": "*"
-	}
+	},
+	"accessWidener" : "fvtm.accesswidener"
 }

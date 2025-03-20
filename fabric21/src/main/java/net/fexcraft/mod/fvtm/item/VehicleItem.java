@@ -1,13 +1,22 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
+import net.fexcraft.mod.fvtm.util.GenericUtils;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -31,11 +40,13 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		/*tooltip.add(GenericUtils.format("&9Name: &7" + vehicle.getName()));
+		tooltip.add(GenericUtils.format("&9Name: &7" + vehicle.getName()));
 		for(String s : vehicle.getDescription()){
 			tooltip.add(GenericUtils.format(I18n.get(s)));
 		}
-		VehicleData data = getDataFromTag(stack.getTag());
+		StackWrapper wrapper = UniStack.getStack(stack);
+		if(wrapper == null) return;
+		VehicleData data = wrapper.getContent(ContentType.VEHICLE.item_type);
 		if(data == null) return;
 		tooltip.add(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
 		if(data.hasPart("engine")){
@@ -55,7 +66,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 			for(String str : vehicle.getModel().getCreators()){
 				tooltip.add(GenericUtils.format("&7- " + str));
 			}
-		}*/
+		}
 		//TODO other data
 	}
 
@@ -79,10 +90,10 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 	@Override
 	public InteractionResult useOn(UseOnContext context){
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
-		/*ItemStack stack = context.getItemInHand();
-		VehicleData data = getDataFromTag(stack.getTag());
+		StackWrapper stack = UniStack.getStack(context.getItemInHand());
+		VehicleData data = stack.getContent(ContentType.VEHICLE.item_type);
 		EntityW ent = UniEntity.getEntity(context.getPlayer());
-		EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), data, UniStack.getStack(stack));*/
+		EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), data, UniStack.getStack(stack));
 		return InteractionResult.SUCCESS;
 	}
 
@@ -95,15 +106,5 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 	public ContentType getType(){
 		return ContentType.VEHICLE;
 	}
-
-	/*@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer){
-		consumer.accept(new IClientItemExtensions(){
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer(){
-				return ItemRenderers.VEHICLE_RENDERER.get();
-			}
-		});
-	}*/
 
 }

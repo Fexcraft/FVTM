@@ -5,7 +5,9 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -16,7 +18,6 @@ import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.mixin.PackRepoMixin;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
@@ -79,7 +80,10 @@ public class FVTM implements ModInitializer {
 			}
 		};
 		//
-		EntityUtil.IMPL = EntityWIE.class;
+		FCL.INIT_COMPLETE.add(() -> {
+			WrapperHolderImpl.LEVEL_PROVIDER = lvl -> new WorldWIE((Level)lvl);
+			EntityUtil.IMPL = EntityWIE.class;
+		});
 		CTab.IMPL[0] = TabInitializer.class;
 		StackWrapper.ITEM_TYPES.put(ContentType.ITYPE, item -> item instanceof ContentItem<?>);
 		StackWrapper.ITEM_TYPES.put(ContentType.PART.item_type, item -> item instanceof PartItem);
@@ -117,6 +121,7 @@ public class FVTM implements ModInitializer {
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
 			0, 256, 1, "fvtm.wheel", Optional.empty(), FeatureFlagSet.of()));
+		FabricDefaultAttributeRegistry.register(Resources21.WHEEL_ENTITY, LivingEntity.createLivingAttributes().build());
 		Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
@@ -156,7 +161,6 @@ public class FVTM implements ModInitializer {
 		FvtmResources.INSTANCE.createContentItems();
 		//
 		//TODO init packets
-		WrapperHolderImpl.LEVEL_PROVIDER = lvl -> new WorldWIE((Level)lvl);
 		FvtmRegistry.VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(sound.soundid.space().equals("minecraft")){

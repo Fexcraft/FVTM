@@ -70,11 +70,11 @@ public class Resources21 extends FvtmResources {
 	public static BlockEntityType<FuelFillerEntity> FUELFILLER_ENTITY;
 	//
 	public static EntityType<LivingEntity> WHEEL_ENTITY;
-	public static EntityType<Entity> VEHICLE_ENTITY;
-	public static EntityType<Entity> RAIL_ENTITY;
-	public static EntityType<Entity> ROAD_MARKER_ENTITY;
-	public static EntityType<Entity> RAIL_MARKER_ENTITY;
-	public static EntityType<Entity> DECO_ENTITY;
+	public static EntityType<RootVehicle> VEHICLE_ENTITY;
+	public static EntityType<RailVehicle> RAIL_ENTITY;
+	public static EntityType<RoadMarker> ROAD_MARKER_ENTITY;
+	public static EntityType<RailMarker> RAIL_MARKER_ENTITY;
+	public static EntityType<DecorationEntity> DECO_ENTITY;
 
 	public static void addItem(String idl, Item item){
 		String[] split = idl.split(":");

@@ -4,19 +4,20 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
@@ -43,7 +44,7 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 	}
 
 	public WheelEntity(EntityType<LivingEntity> type, RootVehicle veh, String wid){
-		super(type, veh.level());
+		this(type, veh.level());
 		vehid = (root = veh).getId();
 		wheelid = wid;
 		wheel = root.vehicle.wheeldata.get(wid);
@@ -63,12 +64,12 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
 		setOldPosAndRot();
-		Sheep r;
 	}
 
 	private void setStepHeight(){
 		WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 		stepheight = wtd == null ? root.vehicle.spdata == null ? 1f : root.vehicle.spdata.wheel_step_height : wtd.function.step_height;
+		getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
 	}
 
 	@Override
@@ -120,11 +121,6 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 	}
 
 	/*@Override
-	public float getStepHeight(){
-		return stepheight;
-	}
-
-	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		if(wheelid == null){
 			buffer.writeInt(0);
@@ -145,12 +141,17 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 		setPos(root.position());
 		if(root.vehicle.data == null) return;
 		wheel = root.vehicle.wheeldata.get(wheelid);
+	}*/
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity ent){
+		return new ClientboundAddEntityPacket(this, ent);
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}*/
+	protected void defineSynchedData(SynchedEntityData.Builder builder){
+		super.defineSynchedData(builder);
+	}
 
 	@Override
 	public void tick(){

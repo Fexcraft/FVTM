@@ -29,7 +29,7 @@ public class RailMarker extends Entity {
 	public QV3D position;
 	public UUID queueid;
 
-	public RailMarker(EntityType<Entity> type, Level level){
+	public RailMarker(EntityType<RailMarker> type, Level level){
 		super(type, level);
 	}
 

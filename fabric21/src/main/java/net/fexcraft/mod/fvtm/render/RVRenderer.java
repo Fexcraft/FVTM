@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -32,7 +31,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RVRenderer extends EntityRenderer<RootVehicle, EntityRenderState> {
+public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 
 	public RVRenderer(EntityRendererProvider.Context context){
 		super(context);
@@ -54,16 +52,24 @@ public class RVRenderer extends EntityRenderer<RootVehicle, EntityRenderState> {
 	}
 
 	@Override
-	public EntityRenderState createRenderState(){
-		return new EntityRenderState();
+	public FvtmRenderState createRenderState(){
+		return new FvtmRenderState();
 	}
 
 	@Override
-	public void render(EntityRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
-		/*if(veh.vehicle == null || veh.vehicle.data == null) return;
+	public void extractRenderState(RootVehicle entity, FvtmRenderState state, float f){
+		super.extractRenderState(entity, state, f);
+		state.entity = entity;
+		state.vehicle = entity.vehicle;
+		state.f = f;
+	}
+
+	@Override
+	public void render(FvtmRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
+		if(state.vehicle == null || state.vehicle.data == null) return;
 		pose.pushPose();
 		//pose.translate(0, 0, 0);
-		V3D rot = getRotations(veh, tick);
+		V3D rot = getRotations(state.entity, state.f);
 		pose.mulPose(new Quaternionf()
 			.rotateAxis((float)Static.toRadians(-rot.x), AY)
 			.rotateAxis((float)Static.toRadians(rot.y), AX)
@@ -72,28 +78,28 @@ public class RVRenderer extends EntityRenderer<RootVehicle, EntityRenderState> {
 		Renderer21.set(pose, buffer, light);
 		//
 		pose.pushPose();
-		Model vehmod = veh.vehicle.data.getType().getModel();
-		FvtmRenderTypes.setCutout(veh.vehicle.data.getCurrentTexture());
+		Model vehmod = state.vehicle.data.getType().getModel();
+		FvtmRenderTypes.setCutout(state.vehicle.data.getCurrentTexture());
 		RenderCache cache = null;//TODO
 		if(vehmod != null){
 			pose.pushPose();
-			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh.vehicle, cache, false, tick));
+			vehmod.render(RENDERDATA.set(state.vehicle.data, state.vehicle, cache, false, state.f));
 			pose.popPose();
 		}
 		else{
-			FvtmLogger.LOGGER.info("NO MODEL " + veh.getId() + " " + veh.vehicle.data.getType().getID());
+			FvtmLogger.LOGGER.info("NO MODEL " + state.entity.getId() + " " + state.vehicle.data.getType().getID());
 			//TODO render "missing model" model
 		}
-		if(veh.vehicle.data.getParts().size() > 0){
-			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, cache, tick);
+		if(state.vehicle.data.getParts().size() > 0){
+			renderPoint(pose, state.vehicle.point, state.entity, state.vehicle.data, cache, state.f);
 		}
-		V3D vp = veh.vehicle.getV3D();
-		if(isInRange(pose, vp, veh.vehicle.data)){
-			renderVehicleInfo(pose, vp, veh.vehicle.data);
+		V3D vp = state.vehicle.getV3D();
+		if(isInRange(pose, vp, state.vehicle.data)){
+			renderVehicleInfo(pose, vp, state.vehicle.data);
 			//renderInstallInfo(pose, vp, veh.vehicle.data);
 			//renderWheelInstallInfo(pose, veh.vehicle.data);
 			//renderRemovalInfo(pose, veh.vehicle.data);
-		}*/
+		}
 		pose.popPose();
 		//
 		//TODO toggle info

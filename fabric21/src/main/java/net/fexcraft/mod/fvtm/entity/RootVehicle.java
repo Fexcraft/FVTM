@@ -50,8 +50,6 @@ public class RootVehicle extends Entity {
 	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
-	public float wheel_radius = 0;
-	public float wheel_rotation = 0;
 	public boolean should_sit = true;
 
 	public RootVehicle(EntityType<?> type, Level level){

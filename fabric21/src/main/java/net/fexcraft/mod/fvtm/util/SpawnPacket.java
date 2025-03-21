@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -27,13 +26,9 @@ public record SpawnPacket(int entity, TagCW com) implements CustomPacketPayload 
 		ent.writeSpawnData(com);
 	}
 
-	public void encode(FriendlyByteBuf buf){
-		buf.writeInt(entity);
-		buf.writeNbt(com.local());
-	}
-
 	public static void encode(FriendlyByteBuf buf, SpawnPacket packet){
-		packet.encode(buf);
+		buf.writeInt(packet.entity);
+		buf.writeNbt(packet.com.local());
 	}
 
 	@Override

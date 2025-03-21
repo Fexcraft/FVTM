@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.item;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.util.GenericUtils;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
@@ -26,15 +28,15 @@ public class ConsumableItem extends Item implements ContentItem<Consumable> {
 	private static FoodProperties build(Consumable consumable){
 		FoodProperties.Builder prop = new FoodProperties.Builder();
 		prop.nutrition(consumable.getHealAmount());
-		/*prop.saturationMod(consumable.getSaturation());
-		if(consumable.isWolfFood()) prop.meat();
-		if(consumable.isAlwaysEdible()) prop.alwaysEat();*/
+		prop.saturationModifier(consumable.getSaturation());
+		//TODO if(consumable.isWolfFood()) prop.meat();
+		if(consumable.isAlwaysEdible()) prop.alwaysEdible();
 		return prop.build();
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){;
-		/*tooltip.add(GenericUtils.format("&9Name: &7" + consumable.getName()));
+		tooltip.add(GenericUtils.format("&9Name: &7" + consumable.getName()));
 		for(String s : consumable.getDescription()) tooltip.add(GenericUtils.format(I18n.get(s)));
 		tooltip.add(GenericUtils.format("&9Type: &7" + (consumable.isDrinkable() ? "drink/beverage" : "food")));
 		tooltip.add(GenericUtils.format("&9Heal Amout: &7" + consumable.getHealAmount()));
@@ -47,7 +49,7 @@ public class ConsumableItem extends Item implements ContentItem<Consumable> {
 		}
 		if(consumable.getOreDictId() != null){
 			tooltip.add(GenericUtils.format("&9OreDict: &7" + consumable.getOreDictId()));
-		}*/
+		}
 	}
 
 	@Override

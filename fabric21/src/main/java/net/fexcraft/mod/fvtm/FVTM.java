@@ -123,7 +123,7 @@ public class FVTM implements ModInitializer {
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
 		//
-		Resources21.WHEEL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:wheel", new EntityType<WheelEntity>(WheelEntity::new,
+		Resources21.WHEEL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:wheel", new EntityType<>(WheelEntity::new,
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
 			0, 256, 1, "fvtm.wheel", Optional.empty(), FeatureFlagSet.of()));

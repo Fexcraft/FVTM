@@ -20,9 +20,6 @@ import net.fexcraft.mod.fvtm.util.SaveUtils;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.Level;
 
 /**
  * First prototype of RailEntity system.

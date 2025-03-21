@@ -923,6 +923,7 @@ public class VehicleInstance {
 			double scal = 0;
 			boolean cons = nocons || (engine != null && consumeFuel());
 			for(UniWheel wheel : wheels.values()){
+				if(wheel.wtd() == null) continue;
 				wheel.prepare();
 				if(engine != null && cons){
 					if(data.getType().isTracked()){

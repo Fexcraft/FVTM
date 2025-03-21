@@ -107,8 +107,7 @@ public class Packets21 extends Packets {
 			context.server().execute(() -> {
 				Entity ent = context.player().level().getEntity(packet.entity());
 				if(ent instanceof SpawnPacket.PacketEntity pe){
-					pe.writeSpawnData(packet.com());
-					ServerPlayNetworking.getSender(context.player()).sendPacket(packet);
+					ServerPlayNetworking.getSender(context.player()).sendPacket(new SpawnPacket(pe));
 				}
 			});
 		});

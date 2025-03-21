@@ -321,7 +321,7 @@ public class InteractionHandler {
 	private static boolean handleWire(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
 		if(last.equals("wire") && Time.getDate() < cooldown) return false;
 		boolean wire = stack.isItemOf(ContentType.WIRE.item_type);
-		boolean slack = WIRE_SLACK.eq(getToolboxType(stack));
+		boolean slack = !wire && WIRE_SLACK.eq(getToolboxType(stack));
 		if(key.mouse_main() && (wire || !slack)) return false;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, (WorldW)world);
 		V3D evec = pass.getEyeVec();

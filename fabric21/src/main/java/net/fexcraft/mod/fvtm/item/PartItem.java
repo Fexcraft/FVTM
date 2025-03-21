@@ -4,14 +4,22 @@ import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
+import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +36,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 
     @Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		/*PartData data = getDataFromTag(stack.getTag());
+		PartData data = UniStack.getStack(stack).getContent(ContentType.PART.item_type);
     	tooltip.add(GenericUtils.format("&9Name: &7" + part.getName()));
         tooltip.add(GenericUtils.format("&9Type: &7" + part.getCategory()));
         for(String s : part.getDescription()){
@@ -49,7 +57,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
         if(!data.getFunctions().isEmpty() && uni != null){
 			ArrayList<String> tips = new ArrayList<>();
 			for(PartFunction func : data.getFunctions().values()){
-				func.addInformation(uni.stack, WrapperHolder.getWorld(world), data, tips, flag.isAdvanced());
+				func.addInformation(uni.stack, WrapperHolder.getClientWorld(), data, tips, flag.isAdvanced());
 			}
 			for(String tip : tips) tooltip.add(GenericUtils.format(tip));
 			tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
@@ -68,7 +76,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
             for(String str : part.getModel().getCreators()){
             	tooltip.add(GenericUtils.format("&7- " + str));
             }
-        }*/
+        }
     }
 
 	private String getTexTitle(PartData data){

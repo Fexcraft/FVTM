@@ -7,11 +7,11 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
+import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -52,14 +52,12 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
+	private int synctimer;
 	public boolean should_sit = true;
 
 	public RootVehicle(EntityType<?> type, Level level){
 		super(type, level);
 		vehicle = new VehicleInstance(new EntityWIE(this), null);
-		if(level.isClientSide){
-			ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-		}
 	}
 
 	@Override
@@ -85,7 +83,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		TagCW com = TagCW.wrap(tag);
 		setXRot(com.getFloat("RotationPitch"));
 		setYRot(com.getFloat("RotationYaw"));
-		protZ = rotZ = com.getFloat("RotationYaw");
+		protZ = rotZ = com.getFloat("RotationRoll");
 		setOldPosAndRot();
 		vehicle.init(null, com);
 		init(com);
@@ -126,7 +124,6 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	@Override
 	public void kill(ServerLevel level){
 		if(vehicle != null) vehicle.onRemove();
-		FvtmLogger.log(new Exception(), "remove");
 		super.kill(level);
 	}
 
@@ -157,7 +154,11 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		super.tick();
 		if(isRemoved()) return;
 		if(vehicle.data == null){
-			FvtmLogger.LOGGER.log("Vehicle '" + getId() + "' has no data, skipping update.");
+			if(level().isClientSide && synctimer < 1){
+				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+			}
+			synctimer--;
+			FvtmLogger.log("Vehicle '" + getId() + "' has no data, skipping update. " + level().isClientSide);
 			return;
 		}
 		tickCount++;

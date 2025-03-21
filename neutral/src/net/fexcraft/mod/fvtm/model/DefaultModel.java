@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroupList.DefaultModelGroupList;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.program.AnimationPrograms.AnimationRoot;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms.ConditionBased;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import org.lwjgl.opengl.GL11;
 
@@ -128,7 +129,7 @@ public class DefaultModel implements Model {
 					groups.get(split[0]).addProgram(parseProgram(split));
 				}
 				catch(Exception e){
-					e.printStackTrace();
+					if(EnvInfo.DEV) e.printStackTrace();
 				}
 			}
 		}

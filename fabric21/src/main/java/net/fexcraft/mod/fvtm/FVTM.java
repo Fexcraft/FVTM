@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm;
 
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -16,13 +15,15 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.AABBI;
+import net.fexcraft.mod.fvtm.impl.EntityWIE;
+import net.fexcraft.mod.fvtm.impl.Packets21;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.*;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
 import net.fexcraft.mod.fvtm.util.CTab;
-import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
@@ -35,9 +36,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.FilePackResources.FileResourcesSupplier;
-import net.minecraft.server.packs.repository.*;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -160,7 +166,7 @@ public class FVTM implements ModInitializer {
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();
 		//
-		//TODO init packets
+		(Packets.INSTANCE = new Packets21()).init();
 		FvtmRegistry.VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(sound.soundid.space().equals("minecraft")){

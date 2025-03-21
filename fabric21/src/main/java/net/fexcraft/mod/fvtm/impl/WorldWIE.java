@@ -209,7 +209,8 @@ public class WorldWIE extends LevelW implements FvtmWorld {
 
 	@Override
 	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
-		WheelEntity wheel = new WheelEntity(Resources21.WHEEL_ENTITY, vehicle.entity.local(), id);
+		WheelEntity wheel = Resources21.WHEEL_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+		wheel.assign(vehicle.entity.local(), id);
 		level.addFreshEntity(wheel);
 		return wheel;
 	}

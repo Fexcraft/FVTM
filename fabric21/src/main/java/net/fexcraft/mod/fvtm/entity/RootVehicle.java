@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.entity;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -11,6 +12,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.impl.EntityWIE;
+import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -44,7 +46,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_LOCK;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity {
+public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 
 	public VehicleInstance vehicle;
 	public BoundingBox renderbox;
@@ -55,6 +57,9 @@ public class RootVehicle extends Entity {
 	public RootVehicle(EntityType<?> type, Level level){
 		super(type, level);
 		vehicle = new VehicleInstance(new EntityWIE(this), null);
+		if(level.isClientSide){
+			ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+		}
 	}
 
 	@Override
@@ -93,24 +98,19 @@ public class RootVehicle extends Entity {
 		vehicle.point.savePivot(com);
 	}
 
-	/*@Override
-	public void writeSpawnData(FriendlyByteBuf buffer){
-		TagCW com = TagCW.create();
+	@Override
+	public void writeSpawnData(TagCW com){
 		vehicle.point.savePivot(com);
 		if(vehicle.front != null){
 			com.set("TruckId", vehicle.front.entity.getId());
 		}
-		writeSpawnData(com);
 		vehicle.data.write(com);
-		buffer.writeNbt(com.local());
 	}
 
 	@Override
-	public void readSpawnData(FriendlyByteBuf buffer){
+	public void readSpawnData(TagCW com){
 		try{
-			TagCW com = TagCW.wrap(buffer.readNbt());
 			vehicle.init(null, com);
-			readSpawnData(com);
 			init(com);
 			setYRot(vehicle.point.getPivot().deg_yaw());
 			setXRot(vehicle.point.getPivot().deg_pitch());
@@ -124,17 +124,9 @@ public class RootVehicle extends Entity {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}*/
-
-	public void writeSpawnData(TagCW com){}
-
-	public void readSpawnData(TagCW com){}
-
-	@Override
 	public void kill(ServerLevel level){
 		if(vehicle != null) vehicle.onRemove();
+		FvtmLogger.log(new Exception(), "remove");
 		super.kill(level);
 	}
 

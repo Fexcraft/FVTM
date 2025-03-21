@@ -156,6 +156,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		if(vehicle.data == null){
 			if(level().isClientSide && synctimer < 1){
 				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+				synctimer = 10;
 			}
 			synctimer--;
 			FvtmLogger.log("Vehicle '" + getId() + "' has no data, skipping update. " + level().isClientSide);

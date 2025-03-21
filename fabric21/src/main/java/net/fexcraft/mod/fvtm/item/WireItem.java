@@ -5,10 +5,14 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -36,15 +40,16 @@ public class WireItem extends Item implements ContentItem<WireType> {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		/*tooltip.add(GenericUtils.format("&9Name: &7" + wire.getName()));
+		tooltip.add(GenericUtils.format("&9Name: &7" + wire.getName()));
 		for(String s : wire.getDescription())
 			tooltip.add(GenericUtils.format(I18n.get(s)));
 		tooltip.add(GenericUtils.format("&9Def. Slack: &7" + wire.getDefaultSlack()));
 		tooltip.add(GenericUtils.format("&9Customisable: &7" + wire.isCustomisable()));
 		tooltip.add(GenericUtils.format("&9- &6- &9- - - - &6-"));
-		if(stack.hasTag() && stack.getTag().contains("fvtm:wirepoint")){
-			tooltip.add(GenericUtils.format("&9Block: &7" + stack.getTag().getIntArray("fvtm:wirepoint")));
-			tooltip.add(GenericUtils.format("&9Relay: &7" + stack.getTag().getString("fvtm:wirepoint_key")));
+		TagCW com = UniStack.getStack(stack).directTag();
+		if(com.has("fvtm:wirepoint")){
+			tooltip.add(GenericUtils.format("&9Block: &7" + com.getIntArray("fvtm:wirepoint")));
+			tooltip.add(GenericUtils.format("&9Relay: &7" + com.getString("fvtm:wirepoint_key")));
 		}
 		else{
 			tooltip.add(Component.literal("No Connection data."));
@@ -53,7 +58,7 @@ public class WireItem extends Item implements ContentItem<WireType> {
 		tooltip.add(GenericUtils.format("&6Usage:"));
 		tooltip.add(GenericUtils.format("&b- Rightclick on a relay to select."));
 		tooltip.add(GenericUtils.format("&b- Rightclick 2 relays in sequence to create a wire. "));
-		tooltip.add(GenericUtils.format("&b- Rightclick + Sneak to reset point cache (sequence)."));*/
+		tooltip.add(GenericUtils.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
 	}
 
 	@Override
@@ -76,14 +81,17 @@ public class WireItem extends Item implements ContentItem<WireType> {
 			return InteractionResult.FAIL;
 		}
 		ItemStack stack = context.getPlayer().getMainHandItem();
-		/*if(player.isShiftDown()){
-			if(stack.getTag() != null && stack.getTag().contains("fvtm:wirepoint")){
-				stack.getTag().remove("fvtm:wirepoint");
-				stack.getTag().remove("fvtm:wirepoint_key");
+		if(player.isShiftDown()){
+			StackWrapper sw = UniStack.getStack(stack);
+			if(sw.directTag().has("fvtm:wirepoint")){
+				sw.updateTag(com -> {
+					com.rem("fvtm:wirepoint");
+					com.rem("fvtm:wirepoint_key");
+				});
 				UniEntity.getEntity(player).send("interact.fvtm.relay.cache_reset");
 			}
 			return InteractionResult.SUCCESS;
-		}*/
+		}
 		return InteractionResult.SUCCESS;
 	}
 

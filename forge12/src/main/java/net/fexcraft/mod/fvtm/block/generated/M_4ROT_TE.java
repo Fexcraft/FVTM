@@ -108,10 +108,10 @@ public class M_4ROT_TE extends BlockBase {
         			openInventory(player, trigger.getTarget(), handler, core);
         			return true;
         		}
-        		if(trigger.forScript() && data.getScript() != null){
+        		/*if(trigger.forScript() && data.getScript() != null){
         			data.getScript().onTrigger(data, trigger, player, hand, core, pos, side, hit);
         			return true;
-        		}
+        		}*/
         	}
         	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
     	}

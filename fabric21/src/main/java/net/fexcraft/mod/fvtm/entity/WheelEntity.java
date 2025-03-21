@@ -57,12 +57,12 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 			return this;
 		}
 		if(!root.vehicle.wheeldata.containsKey(wheelid)){
-			remtimer = 10;
+			remtimer = 100;
 			return this;
 		}
-		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
+		/*V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
-		setOldPosAndRot();
+		setOldPosAndRot();*/
 		return this;
 	}
 
@@ -74,7 +74,8 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag){
-		remtimer = 40;
+		wheelid = tag.getString("wheelid");
+		remtimer = 100;
 	}
 
 	/*@Override
@@ -105,7 +106,7 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag){
-		//
+		tag.putString("wheelid", wheelid);
 	}
 
 	@Override
@@ -146,10 +147,12 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 		if(remtimer > 0){
 			if(remtimer == 1) kill((ServerLevel)level());
 			remtimer--;
+			return;
 		}
 		if(!found){
 			if(level().isClientSide && vehid == 0 && synctimer < 1){
 				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+				synctimer = 10;
 			}
 			synctimer--;
 			root = (RootVehicle)level().getEntity(vehid);

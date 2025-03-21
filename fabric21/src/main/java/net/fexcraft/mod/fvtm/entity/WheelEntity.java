@@ -1,14 +1,13 @@
 package net.fexcraft.mod.fvtm.entity;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
+import net.fexcraft.mod.fvtm.util.SpawnPacket;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -25,7 +24,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends LivingEntity implements UniWheel {
+public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.PacketEntity {
 
 	public RootVehicle root;
 	private boolean found;
@@ -41,6 +40,9 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 
 	public WheelEntity(EntityType<LivingEntity> type, Level level){
 		super(type, level);
+		if(level.isClientSide){
+			ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+		}
 	}
 
 	public WheelEntity(EntityType<LivingEntity> type, RootVehicle veh, String wid){
@@ -120,32 +122,22 @@ public class WheelEntity extends LivingEntity implements UniWheel {
 		return false;
 	}
 
-	/*@Override
-	public void writeSpawnData(FriendlyByteBuf buffer){
-		if(wheelid == null){
-			buffer.writeInt(0);
-			buffer.writeInt(0);
-			return;
-		}
-		buffer.writeInt(vehid);
-		buffer.writeInt(wheelid.length());
-		buffer.writeCharSequence(wheelid, StandardCharsets.UTF_8);
+	@Override
+	public void writeSpawnData(TagCW com){
+		if(wheelid == null) return;
+		com.set("veh", vehid);
+		com.set("id", wheelid);
 	}
 
 	@Override
-	public void readSpawnData(FriendlyByteBuf buffer){
-		vehid = buffer.readInt();
-		wheelid = buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
+	public void readSpawnData(TagCW com){
+		vehid = com.getInteger("veh");
+		wheelid = com.getString("id");
 		root = (RootVehicle)level().getEntity(vehid);
 		if(root == null) return;
 		setPos(root.position());
 		if(root.vehicle.data == null) return;
 		wheel = root.vehicle.wheeldata.get(wheelid);
-	}*/
-
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity ent){
-		return new ClientboundAddEntityPacket(this, ent);
 	}
 
 	@Override

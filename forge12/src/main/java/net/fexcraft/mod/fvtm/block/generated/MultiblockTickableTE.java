@@ -19,8 +19,8 @@ public class MultiblockTickableTE extends MultiblockTileEntity implements IPacke
 
 	@Override
 	public void update(){
-		if(data == null || mdata == null || mdata.getScript() == null) return;
-		mdata.getScript().onUpdate(this);
+		if(data == null || mdata == null) return;// || mdata.getScript() == null) return;
+		//mdata.getScript().onUpdate(this);
 		if(pass > 0){
 			pass--;
 			return;

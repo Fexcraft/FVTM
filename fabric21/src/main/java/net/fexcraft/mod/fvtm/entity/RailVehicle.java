@@ -49,6 +49,7 @@ public class RailVehicle extends RootVehicle {
 
 	@Override
 	public void writeSpawnData(TagCW com){
+		super.writeSpawnData(com);
 		if(vehicle.railent == null) return;
 		com.set("fr_bogie", vehicle.railent.frbogiedis);
 		com.set("rr_bogie", vehicle.railent.rrbogiedis);
@@ -58,6 +59,7 @@ public class RailVehicle extends RootVehicle {
 
 	@Override
 	public void readSpawnData(TagCW com){
+		super.readSpawnData(com);
 		//railent = sys.getEntity(com.getLong("RID"), true);
 		current = new Track(null).read(com.getCompound("Track"));
 		frbogiedis = com.getDouble("fr_bogie");

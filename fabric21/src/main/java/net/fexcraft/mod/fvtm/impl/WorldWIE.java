@@ -184,12 +184,12 @@ public class WorldWIE extends LevelW implements FvtmWorld {
 
 	@Override
 	public void spawnRailEntity(RailEntity ent){
-		level.addFreshEntity(((RailVehicle)Resources21.RAIL_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE)).assign(ent));
+		level.addFreshEntity(Resources21.RAIL_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE).assign(ent));
 	}
 
 	@Override
 	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer){
-		RootVehicle veh = (RootVehicle)Resources21.VEHICLE_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+		RootVehicle veh = Resources21.VEHICLE_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
 		veh.setPos(pos.x, pos.y, pos.z);
 		veh.initVD(data);
 		level.addFreshEntity(veh);
@@ -197,7 +197,7 @@ public class WorldWIE extends LevelW implements FvtmWorld {
 
 	@Override
 	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer){
-		RootVehicle veh = (RootVehicle)Resources21.VEHICLE_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+		RootVehicle veh = Resources21.VEHICLE_ENTITY.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
 		veh.vehicle.front = truck;
 		truck.rear = veh.vehicle;
 		veh.initVD(data);

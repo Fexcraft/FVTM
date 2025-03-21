@@ -30,7 +30,7 @@ public class GBlockCraftChooseContainer extends GenericContainer {
 		if(side.isServer()){
 			switch(packet.getString("cargo")){
 				case "choose":{
-					((CraftBlockScript)tile.getMultiBlockData().getScript()).setSelectedRecipe(tile, packet.getString("recipe"));
+					//TODO ((CraftBlockScript)tile.getMultiBlockData().getScript()).setSelectedRecipe(tile, packet.getString("recipe"));
 					player.openGui(FVTM.getInstance(), MULTIBLOCK_CRAFT_MAIN, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
 					break;
 				}

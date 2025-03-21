@@ -203,9 +203,9 @@ public class MultiblockTileEntity extends BlockTileEntity {
     @Override
     public void processClientPacket(PacketTileEntityUpdate pkt){
     	if(pkt.nbt.hasKey("target") && pkt.nbt.getString("target").equals("script")){
-    		if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
+    		/*if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
     			this.getMultiBlockData().getScript().onUpdatePacket(this, pkt.nbt);
-    		}
+    		}*/
     		return;
     	}
     	super.processClientPacket(pkt);
@@ -214,9 +214,9 @@ public class MultiblockTileEntity extends BlockTileEntity {
     @Override
     public void processServerPacket(PacketTileEntityUpdate pkt){
     	if(pkt.nbt.hasKey("target") && pkt.nbt.getString("target").equals("script")){
-    		if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
+    		/*if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
     			this.getMultiBlockData().getScript().onUpdatePacket(this, pkt.nbt);
-    		}
+    		}*/
     		return;
     	}
     	super.processServerPacket(pkt);

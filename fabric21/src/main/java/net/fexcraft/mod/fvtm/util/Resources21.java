@@ -67,7 +67,7 @@ public class Resources21 extends FvtmResources {
 	public static BlockItem FUELFILLER_ITEM;
 	public static BlockEntityType<FuelFillerEntity> FUELFILLER_ENTITY;
 	//
-	public static EntityType<LivingEntity> WHEEL_ENTITY;
+	public static EntityType<WheelEntity> WHEEL_ENTITY;
 	public static EntityType<RootVehicle> VEHICLE_ENTITY;
 	public static EntityType<RailVehicle> RAIL_ENTITY;
 	public static EntityType<RoadMarker> ROAD_MARKER_ENTITY;

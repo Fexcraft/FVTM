@@ -24,7 +24,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.PacketEntity {
+public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketEntity {
 
 	public RootVehicle root;
 	private boolean found;
@@ -36,17 +36,14 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	public double motionY;
 	public double motionZ;
 	private int remtimer;
+	private int synctimer;
 	protected V3D pos = new V3D();
 
-	public WheelEntity(EntityType<LivingEntity> type, Level level){
+	public WheelEntity(EntityType<WheelEntity> type, Level level){
 		super(type, level);
-		if(level.isClientSide){
-			ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-		}
 	}
 
-	public WheelEntity(EntityType<LivingEntity> type, RootVehicle veh, String wid){
-		this(type, veh.level());
+	public WheelEntity assign(RootVehicle veh, String wid){
 		vehid = (root = veh).getId();
 		wheelid = wid;
 		wheel = root.vehicle.wheeldata.get(wid);
@@ -57,21 +54,22 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 				level().addFreshEntity(new ItemEntity(level(), position().x, position().y, position().z, root.vehicle.data.newItemStack().local()));
 				root.kill((ServerLevel)level());
 			}
-			return;
+			return this;
 		}
 		if(!root.vehicle.wheeldata.containsKey(wheelid)){
-			kill((ServerLevel)level());
-			return;
+			remtimer = 10;
+			return this;
 		}
 		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
 		setOldPosAndRot();
+		return this;
 	}
 
 	private void setStepHeight(){
 		WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 		stepheight = wtd == null ? root.vehicle.spdata == null ? 1f : root.vehicle.spdata.wheel_step_height : wtd.function.step_height;
-		getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
+		//getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
 	}
 
 	@Override
@@ -79,7 +77,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 		remtimer = 40;
 	}
 
-	@Override
+	/*@Override
 	public Iterable<ItemStack> getArmorSlots(){
 		return Collections.EMPTY_LIST;
 	}
@@ -90,9 +88,12 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	}
 
 	@Override
-	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){
+	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){}
 
-	}
+	@Override
+	public HumanoidArm getMainArm(){
+		return HumanoidArm.RIGHT;
+	}*/
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float f){
@@ -110,11 +111,6 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	@Override
 	public boolean isPickable(){
 		return false;
-	}
-
-	@Override
-	public HumanoidArm getMainArm(){
-		return HumanoidArm.RIGHT;
 	}
 
 	@Override
@@ -142,7 +138,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
-		super.defineSynchedData(builder);
+		//
 	}
 
 	@Override
@@ -152,6 +148,10 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 			remtimer--;
 		}
 		if(!found){
+			if(level().isClientSide && vehid == 0 && synctimer < 1){
+				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+			}
+			synctimer--;
 			root = (RootVehicle)level().getEntity(vehid);
 			if(root == null) return;
 			found = true;

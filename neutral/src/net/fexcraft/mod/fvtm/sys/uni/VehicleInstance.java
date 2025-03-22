@@ -923,7 +923,6 @@ public class VehicleInstance {
 			double scal = 0;
 			boolean cons = nocons || (engine != null && consumeFuel());
 			for(UniWheel wheel : wheels.values()){
-				if(wheel.wtd() == null) continue;
 				wheel.prepare();
 				if(engine != null && cons){
 					if(data.getType().isTracked()){
@@ -983,9 +982,9 @@ public class VehicleInstance {
 			wheel.prepare();
 			wheel.yaw(pivot().deg_yaw());
 			V3D dest = pivot().get_vector(wheel.wtd().pos);
-			dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
-			dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
-			dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
+			dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.5;
+			dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.5;
+			dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.5;
 			wheel.addMotion(dest.x, dest.y, dest.z);
 			wheel.move();
 			moveToWheel(wheel);

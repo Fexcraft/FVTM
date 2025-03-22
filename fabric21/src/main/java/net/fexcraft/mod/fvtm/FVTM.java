@@ -125,28 +125,28 @@ public class FVTM implements ModInitializer {
 		//
 		Resources21.WHEEL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:wheel", new EntityType<>(WheelEntity::new,
 			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
+			ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
 			0, 256, 1, "fvtm.wheel", Optional.empty(), FeatureFlagSet.of()));
 		//FabricDefaultAttributeRegistry.register(Resources21.WHEEL_ENTITY, LivingEntity.createLivingAttributes().build());
 		Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
 			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
+			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
 			0, 256, 1, "fvtm.vehicle", Optional.empty(), FeatureFlagSet.of()));
 		Resources21.RAIL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_vehicle", new EntityType<>(RailVehicle::new,
 			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
+			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
 			0, 256, 1, "fvtm.rail_vehicle", Optional.empty(), FeatureFlagSet.of()));
 		Resources21.DECO_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:decoration", new EntityType<>(DecorationEntity::new,
 			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
+			ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
 			0, 256, 1, "fvtm.decoration", Optional.empty(), FeatureFlagSet.of()));
 		Resources21.RAIL_MARKER_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_marker", new EntityType<>(RailMarker::new,
 			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
+			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
 			0, 256, 1, "fvtm.rail_marker", Optional.empty(), FeatureFlagSet.of()));
 		Resources21.ROAD_MARKER_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:road_marker", new EntityType<>(RoadMarker::new,
 			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.scalable(Float.MIN_VALUE, Float.MAX_VALUE),
+			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
 			0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
 		//
 		FvtmResources.INSTANCE.init();

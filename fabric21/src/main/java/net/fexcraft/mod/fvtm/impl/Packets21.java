@@ -126,7 +126,7 @@ public class Packets21 extends Packets {
 		PACKETS.put(root, (Class<? extends PacketBase>)ext);
 		PayloadTypeRegistry.playS2C().register(type, codec);
 		PayloadTypeRegistry.playC2S().register(type, codec);
-		ServerPlayNetworking.registerGlobalReceiver(type, (packet, context) -> context.server().execute(() -> ph.handleServer((PacketBase)packet, UniEntity.getEntity(context.player()))));
+		ServerPlayNetworking.registerGlobalReceiver(type, (packet, context) -> context.server().execute(ph.handleServer((PacketBase)packet, UniEntity.getEntity(context.player()))));
 	}
 
 	@Override

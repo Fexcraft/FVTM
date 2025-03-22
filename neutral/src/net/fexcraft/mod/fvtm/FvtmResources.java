@@ -218,7 +218,7 @@ public abstract class FvtmResources {
 				for(File file : files){
 					try{
 						JsonMap map = JsonHandler.parse(file);
-						IDL idl = ContentConfigUtil.getID(map);
+						IDL idl = ContentConfigUtil.getID(addon, map);
 						if(idl == null) map.add("ID", addon.getID().id() + ":" + file.getName().substring(0, file.getName().indexOf(".")).toLowerCase());
 						Content<?> content = (Content<?>)contype.impl.newInstance().parse(map);
 						if(content == null){
@@ -248,7 +248,7 @@ public abstract class FvtmResources {
 						if(entry.getName().startsWith(path) && entry.getName().endsWith(contype.suffix)){
 							try{
 								JsonMap map = JsonHandler.parse(zip.getInputStream(entry));
-								IDL idl = ContentConfigUtil.getID(map);
+								IDL idl = ContentConfigUtil.getID(addon, map);
 								if(idl == null) map.add("ID", addon.getID().id() + ":" + entry.getName().substring(0, entry.getName().indexOf(".")).toLowerCase());
 								Content<?> content = (Content<?>)contype.impl.newInstance().parse(map);
 								if(content == null){

@@ -14,6 +14,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
@@ -57,9 +58,9 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 			remtimer = 100;
 			return this;
 		}
-		/*V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
+		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
-		setOldPosAndRot();*/
+		setOldPosAndRot();
 		return this;
 	}
 

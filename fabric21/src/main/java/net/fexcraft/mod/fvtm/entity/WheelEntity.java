@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.SpawnPacket;
@@ -11,13 +12,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Collections;
 
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 
@@ -160,15 +157,6 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 			found = true;
 			root.vehicle.wheels.put(wheelid, this);
 		}
-		if(root == null || wheel == null) return;
-		V3D dest = root.vehicle.pivot().get_vector(wheel.pos);
-		dest.x = (dest.x - (position().x - root.position().x)) * 0.5;
-		dest.y = (dest.y - (position().y - root.position().y)) * 0.5;
-		dest.z = (dest.z - (position().z - root.position().z)) * 0.5;
-		if(dest.length() > 0.001){
-			if(dest.length() > 16) setPos(position().x + dest.x, position().y + dest.y, position().z + dest.z);
-			else move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
-		}
 	}
 
 	public Vec3 motion(){
@@ -194,7 +182,7 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 
 	@Override
 	public boolean isAdded(){
-		return true;//TODO
+		return !isRemoved();//TODO
 	}
 
 	@Override

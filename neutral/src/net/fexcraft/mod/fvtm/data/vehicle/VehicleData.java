@@ -91,7 +91,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 					}
 				}
 				catch(Exception e){
-					if(!EnvInfo.DEV) FvtmLogger.log(e, "vehicledata (" + type.getID() + ") part pre-install of " + entry.getValue().colon() + " as " + entry.getKey());
+					FvtmLogger.log(e, "vehicledata (" + type.getID() + ") part pre-install of " + entry.getValue().colon() + " as " + entry.getKey());
 				}
 			}
 		}

@@ -171,15 +171,6 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 			found = true;
 			root.vehicle.wheels.put(wheelid, this);
 		}
-		if(root == null || wheel == null) return;
-		V3D dest = root.vehicle.pivot().get_vector(wheel.pos);
-		dest.x = (dest.x - (position().x - root.position().x)) * 0.5;
-		dest.y = (dest.y - (position().y - root.position().y)) * 0.5;
-		dest.z = (dest.z - (position().z - root.position().z)) * 0.5;
-		if(dest.length() > 0.001){
-			if(dest.length() > 16) setPos(position().x + dest.x, position().y + dest.y, position().z + dest.z);
-			else move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
-		}
 	}
 
 	public Vec3 motion(){

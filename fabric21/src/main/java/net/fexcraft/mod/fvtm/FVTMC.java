@@ -68,7 +68,7 @@ public class FVTMC implements ClientModInitializer {
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){
-		ClientPlayNetworking.registerGlobalReceiver(type, (packet, context) -> context.client().execute(() -> ph.handleClient((PacketBase)packet, UniEntity.getEntity(context.player()))));
+		ClientPlayNetworking.registerGlobalReceiver(type, (packet, context) -> context.client().execute(ph.handleClient((PacketBase)packet, UniEntity.getEntity(context.player()))));
 	}
 
 }

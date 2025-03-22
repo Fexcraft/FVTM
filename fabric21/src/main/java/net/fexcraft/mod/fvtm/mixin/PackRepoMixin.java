@@ -29,7 +29,9 @@ public class PackRepoMixin {
 	private void discover(CallbackInfoReturnable info){
 		FvtmLogger.marker("ADDING PACKS");
 		LinkedHashSet<RepositorySource> set = new LinkedHashSet<>(sources);
-		set.addAll(fvtm_packs);
+		for(RepositorySource pack : fvtm_packs){
+			if(!set.contains(pack)) set.add(pack);
+		}
 		sources = ImmutableSet.copyOf(set);
 	}
 

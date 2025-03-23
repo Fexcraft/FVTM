@@ -218,222 +218,224 @@ public abstract class Packets {
 			FvtmInv inv = ref.getKey().getInvByIdx(com.getInteger("inventory"));
 			player.openUI(inv.getUIKey(ContentType.valueOf(com.getString("type"))), ref.getValue().vehicle().entity.getId(), com.getInteger("inventory"), 0);
 		});
-		if(EnvInfo.CLIENT){
-			LIS_CLIENT.put("attr_toggle", (tag, player) -> {
-				AttrReqHandler.processToggleResponse((Passenger)player, tag);
-			});
-			LIS_CLIENT.put("attr_update", (tag, player) -> {
-				AttrReqHandler.processUpdateResponse((Passenger)player, tag);
-			});
-			LIS_CLIENT.put("vehicle", (tag, player) -> {
-				VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("entity"));
-				if(inst != null) inst.packet(tag, (Passenger) player);
-			});
-			LIS_CLIENT.put("vehicle_packet", (tag, player) -> {
-				VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("entity"));
-				if(inst != null) inst.packet(tag, (Passenger)player);
-			});
-			LIS_CLIENT.put("vehicle_color", (tag, player) -> {
-				VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("vehicle"));
-				if(inst != null){
-					inst.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
+		if(EnvInfo.CLIENT) initClient();
+	}
+
+	public void initClient(){
+		LIS_CLIENT.put("attr_toggle", (tag, player) -> {
+			AttrReqHandler.processToggleResponse((Passenger)player, tag);
+		});
+		LIS_CLIENT.put("attr_update", (tag, player) -> {
+			AttrReqHandler.processUpdateResponse((Passenger)player, tag);
+		});
+		LIS_CLIENT.put("vehicle", (tag, player) -> {
+			VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("entity"));
+			if(inst != null) inst.packet(tag, (Passenger) player);
+		});
+		LIS_CLIENT.put("vehicle_packet", (tag, player) -> {
+			VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("entity"));
+			if(inst != null) inst.packet(tag, (Passenger)player);
+		});
+		LIS_CLIENT.put("vehicle_color", (tag, player) -> {
+			VehicleInstance inst = ((Passenger)player).getFvtmWorld().getVehicle(tag.getInteger("vehicle"));
+			if(inst != null){
+				inst.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
+			}
+		});
+		LIS_CLIENT.put("road_tool_new", (tag, player) -> {
+			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+			RoadPlacingUtil.CL_CURRENT = new RoadPlacingUtil.NewRoad(uuid, new QV3D(tag, "vector"), tag.getInteger("width"));
+			RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
+		});
+		LIS_CLIENT.put("road_tool_add", (tag, player) -> {
+			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
+			if(road == null) return;
+			road.add(new QV3D(tag, "vector"), tag.getInteger("width"));
+		});
+		LIS_CLIENT.put("road_tool_selected", (tag, player) -> {
+			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
+			if(road == null) return;
+			road.selected = tag.getInteger("selected");
+		});
+		LIS_CLIENT.put("road_tool_remove", (tag, player) -> {
+			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
+			if(road == null) return;
+			road.remove((Passenger)player, new QV3D(tag, "vector"));
+		});
+		LIS_CLIENT.put("road_tool_reset", (tag, player) -> {
+			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+			if(RoadPlacingUtil.CL_CURRENT.id.equals(uuid)) RoadPlacingUtil.CL_CURRENT = null;
+			RoadPlacingUtil.QUEUE.remove(uuid);
+		});
+		LIS_CLIENT.put("blockentity", (tag, player) -> {
+			((Passenger)player).getFvtmWorld().handleBlockEntityPacket(tag, (Passenger)player);
+		});
+		LIS_CLIENT.put("rail_upd_unit_section", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			TrackUnit unit = system.getTrackUnits().get(tag.getString("unit"));
+			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")), false);
+		});
+		LIS_CLIENT.put("rail_upd_sections", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			TagLW list = tag.getList("units");
+			TrackUnit unit;
+			for(TagCW com : list){
+				unit = system.getTrackUnits().get(com.getString("unit"));
+				if(unit != null){
+					unit.setSection(system.getSection(com.getLong("section")), false);
 				}
-			});
-			LIS_CLIENT.put("road_tool_new", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.CL_CURRENT = new RoadPlacingUtil.NewRoad(uuid, new QV3D(tag, "vector"), tag.getInteger("width"));
-				RoadPlacingUtil.QUEUE.put(uuid, RoadPlacingUtil.CL_CURRENT);
-			});
-			LIS_CLIENT.put("road_tool_add", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-				if(road == null) return;
-				road.add(new QV3D(tag, "vector"), tag.getInteger("width"));
-			});
-			LIS_CLIENT.put("road_tool_selected", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-				if(road == null) return;
-				road.selected = tag.getInteger("selected");
-			});
-			LIS_CLIENT.put("road_tool_remove", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
-				if(road == null) return;
-				road.remove((Passenger)player, new QV3D(tag, "vector"));
-			});
-			LIS_CLIENT.put("road_tool_reset", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				if(RoadPlacingUtil.CL_CURRENT.id.equals(uuid)) RoadPlacingUtil.CL_CURRENT = null;
-				RoadPlacingUtil.QUEUE.remove(uuid);
-			});
-			LIS_CLIENT.put("blockentity", (tag, player) -> {
-				((Passenger)player).getFvtmWorld().handleBlockEntityPacket(tag, (Passenger)player);
-			});
-			LIS_CLIENT.put("rail_upd_unit_section", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				TrackUnit unit = system.getTrackUnits().get(tag.getString("unit"));
-				if(unit != null) unit.setSection(system.getSection(tag.getLong("section")), false);
-			});
-			LIS_CLIENT.put("rail_upd_sections", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				TagLW list = tag.getList("units");
-				TrackUnit unit;
-				for(TagCW com : list){
-					unit = system.getTrackUnits().get(com.getString("unit"));
-					if(unit != null){
-						unit.setSection(system.getSection(com.getLong("section")), false);
-					}
+			}
+			FvtmLogger.debug(tag);
+		});
+		LIS_CLIENT.put("rail_upd_region", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			system.updateRegion(tag, null);
+		});
+		LIS_CLIENT.put("rail_spawn_ent", (tag, player) -> {
+			FvtmLogger.debug("Receiving entity spawn request.");
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			Region region = system.getRegions().get(tag.getIntArray("XZ"), true);
+			if(region != null && region.loaded){
+				//TODO region.spawnEntity(new RailEntity(region, tag.getLong("uid")).read(tag));
+			}
+			else Region.clientqueue.put(tag.getLong("uid"), tag.copy());
+		});
+		LIS_CLIENT.put("rail_rem_ent", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			//TODO RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false);
+			//TODO if(ent != null) ent.remove();
+		});
+		LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			V3I vec = new V3I(tag.getList("pos"));
+			Junction junction = system.getJunction(vec);
+			if(junction != null) junction.read(tag);
+			else{
+				Region region = system.getRegions().get(vec, false);
+				if(region != null){
+					region.getJunctions().put(vec, new Junction(region).read(tag));
 				}
-				FvtmLogger.debug(tag);
-			});
-			LIS_CLIENT.put("rail_upd_region", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				system.updateRegion(tag, null);
-			});
-			LIS_CLIENT.put("rail_spawn_ent", (tag, player) -> {
-				FvtmLogger.debug("Receiving entity spawn request.");
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Region region = system.getRegions().get(tag.getIntArray("XZ"), true);
-				if(region != null && region.loaded){
-					//TODO region.spawnEntity(new RailEntity(region, tag.getLong("uid")).read(tag));
+			}
+		});
+		LIS_CLIENT.put("rail_rem_junc", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			system.delJunction(new V3I(tag.getList("pos")));
+		});
+		LIS_CLIENT.put("rail_upd_junc_state", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			Junction junction = system.getJunction(new V3I(tag.getList("pos")));
+			if(junction != null){
+				junction.switch0 = tag.getBoolean("switch0");
+				junction.switch1 = tag.getBoolean("switch1");
+			}
+		});
+		LIS_CLIENT.put("rail_upd_junc_signal", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			Junction junction = system.getJunction(new V3I(tag.getList("pos")));
+			if(junction != null){
+				if(tag.has("nosignal") && tag.getBoolean("nosignal")){
+					junction.signal = null;
+					junction.signal_dir = EntryDirection.FORWARD;
 				}
-				else Region.clientqueue.put(tag.getLong("uid"), tag.copy());
-			});
-			LIS_CLIENT.put("rail_rem_ent", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				//TODO RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false);
-				//TODO if(ent != null) ent.remove();
-			});
-			LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				V3I vec = new V3I(tag.getList("pos"));
-				Junction junction = system.getJunction(vec);
-				if(junction != null) junction.read(tag);
 				else{
-					Region region = system.getRegions().get(vec, false);
-					if(region != null){
-						region.getJunctions().put(vec, new Junction(region).read(tag));
-					}
+					junction.signal = null;//TODOSignalType.values()[tag.getInteger("signal")];
+					junction.signal_dir = EntryDirection.values()[tag.getInteger("signal_dir")];
 				}
-			});
-			LIS_CLIENT.put("rail_rem_junc", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				system.delJunction(new V3I(tag.getList("pos")));
-			});
-			LIS_CLIENT.put("rail_upd_junc_state", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Junction junction = system.getJunction(new V3I(tag.getList("pos")));
-				if(junction != null){
-					junction.switch0 = tag.getBoolean("switch0");
-					junction.switch1 = tag.getBoolean("switch1");
+				junction.signalpos0 = junction.signalpos1 = null;
+			}
+		});
+		LIS_CLIENT.put("rail_upd_junc_signal_state", (tag, player) -> {
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			Junction junction = system.getJunction(new V3I(tag.getList("pos")));
+			if(junction != null){
+				junction.signal0 = tag.getBoolean("signal0");
+				junction.signal1 = tag.getBoolean("signal1");
+			}
+		});
+		LIS_CLIENT.put("rail_place_util", (tag, player) -> {
+			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
+			switch(tag.getString("subtask")){
+				case "new":{
+					RailPlacingUtil.CL_CURRENT = new RailPlacingUtil.NewTrack(uuid, new QV3D(tag, "vector"), FvtmRegistry.RAILGAUGES.get(tag.getString("gauge")));
+					RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
+					break;
 				}
-			});
-			LIS_CLIENT.put("rail_upd_junc_signal", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Junction junction = system.getJunction(new V3I(tag.getList("pos")));
-				if(junction != null){
-					if(tag.has("nosignal") && tag.getBoolean("nosignal")){
-						junction.signal = null;
-						junction.signal_dir = EntryDirection.FORWARD;
-					}
-					else{
-						junction.signal = null;//TODOSignalType.values()[tag.getInteger("signal")];
-						junction.signal_dir = EntryDirection.values()[tag.getInteger("signal_dir")];
-					}
-					junction.signalpos0 = junction.signalpos1 = null;
+				case "reset":{
+					if(RailPlacingUtil.CL_CURRENT.id.equals(uuid)) RailPlacingUtil.CL_CURRENT = null;
+					RailPlacingUtil.QUEUE.remove(uuid);
+					break;
 				}
-			});
-			LIS_CLIENT.put("rail_upd_junc_signal_state", (tag, player) -> {
-				RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-				Junction junction = system.getJunction(new V3I(tag.getList("pos")));
-				if(junction != null){
-					junction.signal0 = tag.getBoolean("signal0");
-					junction.signal1 = tag.getBoolean("signal1");
+				case "add":{
+					RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+					if(track == null) return;
+					track.add(new QV3D(tag, "vector"));
+					break;
 				}
-			});
-			LIS_CLIENT.put("rail_place_util", (tag, player) -> {
-				UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
-				switch(tag.getString("subtask")){
-					case "new":{
-						RailPlacingUtil.CL_CURRENT = new RailPlacingUtil.NewTrack(uuid, new QV3D(tag, "vector"), FvtmRegistry.RAILGAUGES.get(tag.getString("gauge")));
-						RailPlacingUtil.QUEUE.put(uuid, RailPlacingUtil.CL_CURRENT);
-						break;
-					}
-					case "reset":{
-						if(RailPlacingUtil.CL_CURRENT.id.equals(uuid)) RailPlacingUtil.CL_CURRENT = null;
-						RailPlacingUtil.QUEUE.remove(uuid);
-						break;
-					}
-					case "add":{
-						RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
-						if(track == null) return;
-						track.add(new QV3D(tag, "vector"));
-						break;
-					}
-					case "remove":{
-						RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
-						if(track == null) return;
-						track.remove(player, new QV3D(tag, "vector"));
-						break;
-					}
-					case "selected":{
-						RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
-						if(track == null) return;
-						track.selected = tag.getInteger("selected");
-					}
+				case "remove":{
+					RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+					if(track == null) return;
+					track.remove(player, new QV3D(tag, "vector"));
+					break;
 				}
-			});
-			LIS_CLIENT.put("wire_upd_region", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				system.updateRegion(tag, (Passenger)player);
-			});
-			LIS_CLIENT.put("wire_upd_relay", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				RelayHolder holder = system.getHolder(tag.getV3I("pos"));
-				String key = tag.getString("Key");
-				if(holder != null && holder.contains(key)){
-					holder.get(key).read(tag);
+				case "selected":{
+					RailPlacingUtil.NewTrack track = RailPlacingUtil.QUEUE.get(uuid);
+					if(track == null) return;
+					track.selected = tag.getInteger("selected");
 				}
-			});
-			LIS_CLIENT.put("wire_rem_relay", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				RelayHolder holder = system.getHolder(tag.getV3I("pos"));
-				holder.remove(tag.getString("key"));
-			});
-			LIS_CLIENT.put("wire_upd_holder", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				V3I pos = tag.getV3I("pos");
-				RelayHolder holder = system.getHolder(pos);
-				if(holder != null) holder.read(tag);
-				else{
-					WireRegion region = system.getRegions().get(pos, false);
-					if(region != null) holder = region.addHolder(pos).read(tag);
-				}
-				if(holder.getTile() == null){
-					Object tile = system.getWorld().getBlockEntity(pos);
-					if(tile instanceof FvtmBlockEntity) holder.setTile(tile);
-				}
-			});
-			LIS_CLIENT.put("wire_rem_holder", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				system.delHolder(tag.getV3I("pos"));
-			});
-			LIS_CLIENT.put("wire_udp_sections", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				TagLW list = tag.getList("units");
-				WireUnit unit;
-				for(TagCW com : list){
-					unit = system.getWireUnits().get(com.getString("unit"));
-					if(unit != null) unit.setSection(system.getSection(com.getLong("section")));
-				}
-			});
-			LIS_CLIENT.put("wire_udp_unit", (tag, player) -> {
-				WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-				WireUnit unit = system.getWireUnits().get(tag.getString("unit"));
-				if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
-			});
-		}
+			}
+		});
+		LIS_CLIENT.put("wire_upd_region", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			system.updateRegion(tag, (Passenger)player);
+		});
+		LIS_CLIENT.put("wire_upd_relay", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			RelayHolder holder = system.getHolder(tag.getV3I("pos"));
+			String key = tag.getString("Key");
+			if(holder != null && holder.contains(key)){
+				holder.get(key).read(tag);
+			}
+		});
+		LIS_CLIENT.put("wire_rem_relay", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			RelayHolder holder = system.getHolder(tag.getV3I("pos"));
+			holder.remove(tag.getString("key"));
+		});
+		LIS_CLIENT.put("wire_upd_holder", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			V3I pos = tag.getV3I("pos");
+			RelayHolder holder = system.getHolder(pos);
+			if(holder != null) holder.read(tag);
+			else{
+				WireRegion region = system.getRegions().get(pos, false);
+				if(region != null) holder = region.addHolder(pos).read(tag);
+			}
+			if(holder.getTile() == null){
+				Object tile = system.getWorld().getBlockEntity(pos);
+				if(tile instanceof FvtmBlockEntity) holder.setTile(tile);
+			}
+		});
+		LIS_CLIENT.put("wire_rem_holder", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			system.delHolder(tag.getV3I("pos"));
+		});
+		LIS_CLIENT.put("wire_udp_sections", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			TagLW list = tag.getList("units");
+			WireUnit unit;
+			for(TagCW com : list){
+				unit = system.getWireUnits().get(com.getString("unit"));
+				if(unit != null) unit.setSection(system.getSection(com.getLong("section")));
+			}
+		});
+		LIS_CLIENT.put("wire_udp_unit", (tag, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireUnit unit = system.getWireUnits().get(tag.getString("unit"));
+			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
+		});
 	}
 
 	public abstract void writeTag(ByteBuf buffer, TagCW tag);

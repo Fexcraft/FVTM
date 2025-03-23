@@ -27,7 +27,7 @@ public class PackRepoMixin {
 
 	@Inject(at = @At("HEAD"), method = "discoverAvailable")
 	private void discover(CallbackInfoReturnable info){
-		FvtmLogger.marker("ADDING PACKS");
+		FvtmLogger.log("Inserting FVTM Packs into Resourcepacks.");
 		LinkedHashSet<RepositorySource> set = new LinkedHashSet<>(sources);
 		for(RepositorySource pack : fvtm_packs){
 			if(!set.contains(pack)) set.add(pack);

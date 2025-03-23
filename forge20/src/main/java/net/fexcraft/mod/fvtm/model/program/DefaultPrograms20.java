@@ -108,7 +108,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 				}
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					rotateDeg(-wtd.rotation, AX);
+					if(wtd != null) rotateDeg(-wtd.rotation, AX);
 				}
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
 			}
@@ -149,7 +149,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					rotateDeg(-wtd.rotation, AX);
+					if(wtd != null) rotateDeg(-wtd.rotation, AX);
 				}
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
 			}

@@ -16,7 +16,7 @@ public class Handler_TagListener implements PacketHandler<Packet_TagListener> {
 		return () -> {
 			PacketListener lis = Packets.LIS_SERVER.get(packet.to);
 			if(lis != null) lis.handle(packet.tag, player);
-			else FvtmLogger.log("Tag Packet Listener not found: " + packet.to);
+			else FvtmLogger.log("S | Tag Packet Listener not found: " + packet.to);
 		};
 	}
 
@@ -26,7 +26,7 @@ public class Handler_TagListener implements PacketHandler<Packet_TagListener> {
 			try{
 				PacketListener lis = Packets.LIS_CLIENT.get(packet.to);
 				if(lis != null) lis.handle(packet.tag, player);
-				else FvtmLogger.log("Tag Packet Listener not found: " + packet.to);
+				else FvtmLogger.log("C | Tag Packet Listener not found: " + packet.to);
 			}
 			catch(Exception e){
 				e.printStackTrace();

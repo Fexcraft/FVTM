@@ -37,6 +37,7 @@ import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
@@ -251,36 +252,37 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float f){
 		if(source.getDirectEntity() instanceof Player && getDriver() == null){
+			Passenger pass = UniEntity.getCasted(source.getDirectEntity());
 			Player player = (Player)source.getDirectEntity();
-			/*if(vehicle.data.getLock().isLocked()){
-				player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.remove_locked"));
+			if(vehicle.data.getLock().isLocked()){
+				pass.send("interact.fvtm.vehicle.remove_locked");
 				return false;
-			}*/
+			}
 			EngineFunction engine = vehicle.data.hasPart("engine") ? vehicle.data.getFunctionInPart("engine", "fvtm:engine") : null;
 			if(engine != null) engine.setState(false);
 			//TODO perm check
-			/*if(vehicle.type.isRailVehicle()){
+			if(vehicle.type.isRailVehicle()){
 				vehicle.railent.remove();
 			}
 			else{
 				VehicleInstance trailer = vehicle;
 				while((trailer = trailer.rear) != null){
 					Entity rear = trailer.entity.local();
-					rear.spawnAtLocation(trailer.data.newItemStack().local(), 0.5f);
+					rear.spawnAtLocation(level, trailer.data.newItemStack().local(), 0.5f);
 					rear.kill(level);
 				}
 			}
-			spawnAtLocation(vehicle.data.newItemStack().local(), 0.5f);
+			spawnAtLocation(level, vehicle.data.newItemStack().local(), 0.5f);
 			kill(level);
-			return true;*/
+			return true;
 		}
 		return true;
 	}
 
-	/*@Override
-	public ItemStack getPickedResult(HitResult rtr){
+	@Override
+	public ItemStack getPickResult(){
 		return vehicle.data.newItemStack().local();
-	}*/
+	}
 
 	@Override
 	public void lerpTo(double x, double y, double z, float yr, float xr, int s){

@@ -57,7 +57,7 @@ public class FvtmRenderTypes {
 			Renderer21.rentype = type;
 			return;
 		}
-		type = GLOW.apply(tex.local());
+		type = GLOW.apply(tex);
 		GLOWS.put(tex, type);
 		Renderer21.rentype = type;
 	}

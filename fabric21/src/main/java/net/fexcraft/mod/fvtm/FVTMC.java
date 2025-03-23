@@ -72,6 +72,7 @@ public class FVTMC implements ClientModInitializer {
 			registerClientPacket(VEHKEYSTATE_PACKET_TYPE, HVKS);
 			registerClientPacket(SEATUPDATE_PACKET_TYPE, HSU);
 			registerClientPacket(SPUPDATE_PACKET_TYPE, HSPU);
+			Packets21.INSTANCE.initClient();
 		});
 		UseBlockCallback.EVENT.register((player, world, hand, res) -> {
 			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){

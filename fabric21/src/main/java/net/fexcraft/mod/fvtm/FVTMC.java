@@ -178,7 +178,7 @@ public class FVTMC implements ClientModInitializer {
 			}
 		}
 		else{
-			if(brake.isDown()){
+			if(minecraft.options.keyJump.isDown() || brake.isDown()){
 				seat.onKeyPress(KeyPress.BRAKE, player);
 			}
 		}

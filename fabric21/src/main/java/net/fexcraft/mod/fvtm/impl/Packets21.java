@@ -83,21 +83,24 @@ public class Packets21 extends Packets {
 			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
 			vehicle.processSeatInteract(index, player.local(), InteractionHand.MAIN_HAND);
 		});
-		if(EnvInfo.CLIENT){
-			LIS_CLIENT.put("deco", (tag, player) -> {
-				Level level = player.getWorld().local();
-				Entity ent = level.getEntity(tag.getInteger("entid"));
-				if(ent != null && ent instanceof DecorationEntity){
-					((DecorationEntity)ent).readAdditionalSaveData(tag.local());
-				}
-			});
-			LIS_CLIENT.put("passenger_update", (tag, player) -> {
-				Level level = player.getWorld().local();
-				Entity ent = level.getEntity(tag.getInteger("entity"));
-				if(ent == null) return;
-				((Passenger)UniEntity.getEntity(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
-			});
-		}
+	}
+
+	@Override
+	public void initClient(){
+		super.initClient();
+		LIS_CLIENT.put("deco", (tag, player) -> {
+			Level level = player.getWorld().local();
+			Entity ent = level.getEntity(tag.getInteger("entid"));
+			if(ent != null && ent instanceof DecorationEntity){
+				((DecorationEntity)ent).readAdditionalSaveData(tag.local());
+			}
+		});
+		LIS_CLIENT.put("passenger_update", (tag, player) -> {
+			Level level = player.getWorld().local();
+			Entity ent = level.getEntity(tag.getInteger("entity"));
+			if(ent == null) return;
+			((Passenger)UniEntity.getEntity(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
+		});
 	}
 
 	private void register(){
@@ -153,10 +156,10 @@ public class Packets21 extends Packets {
 	public void send(VehicleInstance vehicle, TagCW com){
 		com.set("entity", vehicle.entity.getId());
 		if(vehicle.entity.isOnClient()){
-			send(Pkt_TagListener.class, "vehicle", com);
+			send(PKT_TAG, "vehicle", com);
 		}
 		else{
-			sendInRange(Pkt_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), "vehicle", com);
+			sendInRange(PKT_TAG, vehicle.entity.getWorld(), vehicle.entity.getPos(), "vehicle", com);
 		}
 	}
 

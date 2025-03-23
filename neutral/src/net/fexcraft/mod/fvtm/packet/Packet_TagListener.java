@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.tag.TagCW;
 
@@ -33,7 +34,7 @@ public class Packet_TagListener implements PacketBase<Packet_TagListener> {
 	public void decode(ByteBuf buffer){
 		tag = Packets.INSTANCE.readTag(buffer);
 		int length = buffer.readInt();
-		to = buffer.toString(buffer.readerIndex(), length, StandardCharsets.UTF_8);
+		to = buffer.readCharSequence(length, StandardCharsets.UTF_8).toString();
 	}
 
 }

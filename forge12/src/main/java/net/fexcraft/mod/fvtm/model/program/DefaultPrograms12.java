@@ -105,7 +105,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				}
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					GL11.glRotatef(-wtd.rotation, 1, 0, 0);
+					if(wtd != null) GL11.glRotatef(-wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 			}
@@ -113,7 +113,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					GL11.glRotatef(wtd.rotation, 1, 0, 0);
+					if(wtd != null) GL11.glRotatef(wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
@@ -149,7 +149,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					GL11.glRotatef(wtd.rotation, 1, 0, 0);
+					if(wtd != null) GL11.glRotatef(wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 			}
@@ -157,7 +157,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					GL11.glRotatef(-wtd.rotation, 1, 0, 0);
+					if(wtd != null) GL11.glRotatef(-wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.steering)
 					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);

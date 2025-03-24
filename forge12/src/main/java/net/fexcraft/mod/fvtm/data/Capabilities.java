@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.model.RenderCache;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -29,9 +28,5 @@ public class Capabilities {
 	/** Optional Passenger Capability */
 	@CapabilityInject(PassCap.class)
 	public static final Capability<PassCap> PASSENGER = null;
-	
-	/** TrafficSign Chunk Storage */
-	@CapabilityInject(TrafficSigns.class)
-	public static final Capability<TrafficSigns> TRAFFIC_SIGNS = null;
 	
 }

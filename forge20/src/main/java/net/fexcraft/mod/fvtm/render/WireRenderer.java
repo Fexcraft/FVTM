@@ -71,7 +71,7 @@ public class WireRenderer {
 						FvtmRenderTypes.setLines();
 						pose.pushPose();
 						pose.translate(relay.pos.x, relay.pos.y, relay.pos.z);
-						size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
+						size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
 						pose.scale(size, size, size);
 						Renderer120.setColor(CYAN);
 						CUBE.render();
@@ -85,7 +85,7 @@ public class WireRenderer {
 							cubepos = wire.getVectorPosition(wire.length * 0.5, false);
 							pose.pushPose();
 							pose.translate(cubepos.x, cubepos.y, cubepos.z);
-							size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
+							size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
 							pose.scale(size, size, size);
 							Renderer120.setColor(ORG);
 							CUBE.render();

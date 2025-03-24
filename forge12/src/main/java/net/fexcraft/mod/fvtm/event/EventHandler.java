@@ -25,7 +25,6 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
@@ -94,7 +93,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onAttachChunkCapabilities(AttachCapabilitiesEvent<Chunk> event){
-		event.addCapability(new ResourceLocation("fvtm:trafficsigns"), new TrafficSignCapHandler(event.getObject()));
+		//
 	}
 	
 	@SubscribeEvent

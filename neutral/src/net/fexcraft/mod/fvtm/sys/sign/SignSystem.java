@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.signs;
+package net.fexcraft.mod.fvtm.sys.sign;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;

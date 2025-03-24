@@ -1,6 +1,5 @@
-package net.fexcraft.mod.fvtm.sys.signs;
+package net.fexcraft.mod.fvtm.sys.sign;
 
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 

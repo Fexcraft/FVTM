@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.signs;
+package net.fexcraft.mod.fvtm.sys.sign;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
@@ -8,9 +8,6 @@ import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
-import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
-import net.fexcraft.mod.fvtm.sys.wire.WireUnit;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;

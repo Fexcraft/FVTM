@@ -40,9 +40,6 @@ import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.ui.*;
@@ -58,7 +55,6 @@ import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.inv.ClothMaterial;
 import net.fexcraft.mod.uni.inv.ItemWrapper;
 import net.fexcraft.mod.uni.inv.StackWrapper;
-import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.*;
 import net.minecraft.block.Block;
@@ -185,7 +181,6 @@ public class FVTM {
 		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);
 		CONFIG.addListener(() -> {
-			TrafficSignLibrary.load(true);
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
 		});
 		ClothMaterial.MANAGER[0] = new ClothMaterialManager();
@@ -202,7 +197,6 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
 		//TODO EntitySystem.add(new BasicSpawnSystem());
-		TrafficSignLibrary.initialize(event.getSide(), event.getSuggestedConfigurationFile().getParentFile());
 		GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));
 		GameRegistry.registerTileEntity(SignalTileEntity.class, new ResourceLocation("fvtm:rail_signal"));
 		GameRegistry.registerTileEntity(SwitchTileEntity.class, new ResourceLocation("fvtm:rail_switch"));
@@ -213,14 +207,13 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
 		CapabilityManager.INSTANCE.register(PassCap.class, new PassengerStorage(), new PassengerCallable());
-		CapabilityManager.INSTANCE.register(TrafficSigns.class, new TrafficSignCapHandler.Storage(), new TrafficSignCapHandler.Callable());
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:simple_vehicle"), NLandVehicle.class, "fvtm.simple_vehicle", 0, this, 256, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), NWheelEntity.class, "fvtm.wheel", 100, this, 256, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), NRailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, true);
 		//
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trafficsign"), TrafficSignEntity.class, "fvtm.trafficsign", 7001, this, 256, 600, false);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trafficsign"), TrafficSignEntity.class, "fvtm.trafficsign", 7001, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:decoration"), DecorationEntity.class, "fvtm.decoration", 7002, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railmarker"), RailMarker.class, "fvtm.railmarker", 7003, this, 256, 5, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadmarker"), RoadMarker.class, "fvtm.roadmarker", 7004, this, 256, 5, false);
@@ -234,8 +227,6 @@ public class FVTM {
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(NRailVehicle.class, RenderRV::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(ULandVehicle.class, RenderRV::new);
 			//
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(TrafficSignEntity.class, RenderTrafficSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailMarker.class, RenderRailMarker::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadMarker.class, RenderRoadMarker::new);

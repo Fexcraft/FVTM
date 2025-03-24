@@ -4,9 +4,6 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.BaseData;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.ComponentData;
 import org.lwjgl.opengl.GL11;
 
 public class TrafficSignPrograms {

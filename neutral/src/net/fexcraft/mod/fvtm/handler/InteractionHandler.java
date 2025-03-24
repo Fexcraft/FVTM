@@ -330,7 +330,7 @@ public class InteractionHandler {
 		for(WireRegion reg : system.getRegions().values()){
 			for(RelayHolder holder : reg.getHolders().values()){
 				for(WireRelay relay : holder.relays.values()){
-					size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) : 0.0125f;
+					size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) : 0.0125f;
 					if(slack){
 						for(Wire wr : relay.wires){
 							if(wr.copy) continue;

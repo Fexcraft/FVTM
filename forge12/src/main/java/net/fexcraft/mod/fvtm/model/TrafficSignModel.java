@@ -10,9 +10,6 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms.SignBase;
 import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms.SignBorder;
 import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms.SignBorderEdge;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.CompDataRoot;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontData;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData.FontOffset;
 
 public class TrafficSignModel extends DefaultModel {
 

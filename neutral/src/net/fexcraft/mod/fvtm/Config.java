@@ -53,6 +53,9 @@ public class Config extends ConfigBase {
 	public static boolean DISABLE_WIRES;
 	public static int MAX_WIRE_LENGTH;
 	public static float WIRE_SLACK_ADJUSTMENT;
+	//signs
+	public static boolean DISABLE_SIGNS;
+	public static int SIGN_VIEW_DISTANCE;
 	//deprecated
 	public static boolean OVERLAY_ON_BOTTOM;
 
@@ -77,6 +80,7 @@ public class Config extends ConfigBase {
 		String catr = "rail";
 		String cato = "road";
 		String catw = "wire";
+		String cats = "sign";
 
 		entries.add(new ConfigEntry(this, catg, "dev_mode", new JsonValue(EnvInfo.DEV))
 			.info("If the FVTM Dev Mode (generally more logging) should be enabled.")
@@ -128,6 +132,9 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catc, "signal_interval", new JsonValue(750))
 			.info("Blinker/Turn/Emergency Signal toggle interval, in milliseconds.").rang(100, 2000)
 			.cons((con, map) -> SIGNAL_INTERVAL = con.getInteger(map)));
+		entries.add(new ConfigEntry(this, catc, "sign_view_distance", new JsonValue(300))
+			.info("View distance for road/traffic signs.").rang(1, 40960)
+			.cons((con, map) -> SIGN_VIEW_DISTANCE = con.getInteger(map)));
 
 		//u12/basic
 		entries.add(new ConfigEntry(this, catu, "motion_scale", new JsonValue(0.2f))
@@ -195,6 +202,11 @@ public class Config extends ConfigBase {
 			.info("Default slack adjustment value when using the toolbox item on a wire.")
 			.cons((con, map) -> WIRE_SLACK_ADJUSTMENT = con.getFloat(map))
 			.rang(Static.sixteenth, 1f));
+
+		//signs
+		entries.add(new ConfigEntry(this, cats, "disable", new JsonValue(false))
+			.info("If the FVTM sign system should be disabled.")
+			.cons((con, map) -> DISABLE_SIGNS = con.getBoolean(map)));
 
 		//1.12 specific settings
 		if(UniReg.LOADER_VERSION.equals("1.12")){

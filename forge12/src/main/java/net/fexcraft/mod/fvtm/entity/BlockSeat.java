@@ -1,25 +1,8 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import io.netty.buffer.ByteBuf;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.TrafficSignItem;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.TSEDITOR;
 
 public class BlockSeat extends Entity {
 

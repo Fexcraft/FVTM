@@ -70,4 +70,9 @@ public class RelayData {
 		return VecUtil.rotByDeg(type.getRelayRotFor(meta), conns.get(string)).add(pos.x + .5f, pos.y, pos.z + .5f);
 	}
 
+	public float getSize(String key){
+		Float size = sizes.get(key);
+		return size == null ? 1 : size;
+	}
+
 }

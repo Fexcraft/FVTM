@@ -38,6 +38,7 @@ import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_CYN;
 import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_ORG;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 
 public class WireRenderer {
     
@@ -238,7 +239,7 @@ public class WireRenderer {
 					V3D pos = wire.getVectorPosition(wire.length * 0.5, false);
 	    			double off = wire.copy ? 0.125 : -0.125;
 	    			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90d;
-	    			RenderStreetSign.drawString(wire.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, wire.copy ? 0xb8bc38 : 0x32a852, deg);
+	    			drawString(wire.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, wire.copy ? 0xb8bc38 : 0x32a852, deg);
         		}
         	}
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -1,18 +1,11 @@
 package net.fexcraft.mod.fvtm.util;
 
-import java.util.UUID;
-
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
-import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignData;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.Entity;
@@ -57,31 +50,6 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null || ent instanceof RootVehicle == false) return;
 				((RootVehicle)ent).vehicle.data.getColorChannel(packet.nbt.getString("channel")).packed = packet.nbt.getInteger("color");
-				return;
-			}
-			case "ts_ck_sync":{
-				TrafficSigns signs = player.world.getChunk(packet.nbt.getInteger("x"), packet.nbt.getInteger("z")).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-				if(signs != null) signs.read(null, packet.nbt.getCompoundTag("signs"));
-				return;
-			}
-			case "ts_removed":{
-				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-				if(signs != null) signs.remove(pos);
-				return;
-			}
-			case "ts_update":{
-				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-				if(signs == null) return;
-				TrafficSignData data = signs.getSign(pos);
-				if(data != null) data.read(packet.nbt.getCompoundTag("signdata"));
-				return;
-			}
-			case "ts_added":{
-				BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-				TrafficSigns signs = player.world.getChunk(pos).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-				if(signs != null) signs.addSignAt(pos, packet.nbt.getFloat("rotation"), packet.nbt.getFloat("offset"), true);
 				return;
 			}
 			case "deco_update":{

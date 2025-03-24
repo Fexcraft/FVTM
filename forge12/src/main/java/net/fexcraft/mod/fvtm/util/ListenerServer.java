@@ -1,10 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
-import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,12 +30,6 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				if(ent != null && ent.getCapability(Capabilities.PASSENGER, null).seat() > -1){
 					ent.getCapability(Capabilities.PASSENGER, null).update_packet();
 				}
-				return;
-			}
-			case "ts_ck_sync":{
-				TrafficSigns signs = player.world.getChunk(packet.nbt.getInteger("x"), packet.nbt.getInteger("z")).getCapability(Capabilities.TRAFFIC_SIGNS, null);
-				packet.nbt.setTag("signs", signs.write(null));
-				PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(packet.nbt), player);
 				return;
 			}
 			default: return;

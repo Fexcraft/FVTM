@@ -1,9 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
-import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,10 +11,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.signs.SignSystem;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+
+import static net.fexcraft.mod.fvtm.Config.*;
 
 /**
  * 
@@ -104,6 +103,12 @@ public class SystemManager {
 			SYSTEMS.get(Systems.WIRE).put(dim, sys);
 			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
 		}
+		if(!DISABLE_SIGNS){
+			if(!SYSTEMS.containsKey(Systems.SIGN)) SYSTEMS.put(Systems.SIGN, new ConcurrentHashMap<>());
+			SignSystem sys = new SignSystem(world);
+			SYSTEMS.get(Systems.SIGN).put(dim, sys);
+			SYSTEMS_DIM.get(dim).put(Systems.SIGN, sys);
+		}
 		//
 		LOADED_DIM.put(dim, true);
 	}
@@ -160,7 +165,7 @@ public class SystemManager {
 	
 	public static enum Systems {
 		
-		RAIL, ROAD, WIRE, ENTITY
+		RAIL, ROAD, WIRE, ENTITY, SIGN
 		
 	}
 

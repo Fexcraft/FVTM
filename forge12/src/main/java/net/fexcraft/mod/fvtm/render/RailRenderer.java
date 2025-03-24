@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 
 import java.util.ArrayList;
 
@@ -281,15 +282,15 @@ public class RailRenderer {
 					V3D pos = track.getVectorPosition(track.length * 0.5f, false);
 	    			double off = track.isOppositeCopy() ? 0.125f : -0.125f;
 	    			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-	    			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, track.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
+	    			drawString(track.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, track.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
 	    			//
 	    			if(!track.isOppositeCopy() && track.getUnit().getEntities().size() > 0){
 	    				RailEntity[] ents = track.getUnit().getEntities().toArray(new RailEntity[0]);
 	    				String str = ents[0].uid + ""; for(int j = 1; j < ents.length; j++) str += ", " + ents[j].uid;
-	        			RenderStreetSign.drawString(str, pos.x, pos.y + 0.75, pos.z, true, true, 0.8f, 0x4287f5, deg);
+	        			drawString(str, pos.x, pos.y + 0.75, pos.z, true, true, 0.8f, 0x4287f5, deg);
 	    			}
 	    			/*if(!track.isOppositeCopy()){
-	        			RenderStreetSign.drawString(track.getId().toUnitId(false), pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xb8bc38, deg);
+	        			drawString(track.getId().toUnitId(false), pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xb8bc38, deg);
 	    			}*/
         		}
         	}
@@ -330,11 +331,11 @@ public class RailRenderer {
         			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
         			long uid = value.tracks.get(value.signal_dir.getTrackId()).getUnit().section().getUID();
 					V3D pos = value.signalpos0;
-        			RenderStreetSign.drawString(uid + "/" + value.signal0, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
+        			drawString(uid + "/" + value.signal0, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
     				if(value.signal_dir.isBoth()){
     					uid = value.tracks.get(1).getUnit().section().getUID();
 						pos = value.signalpos1;
-            			RenderStreetSign.drawString(uid + "/" + value.signal1, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
+            			drawString(uid + "/" + value.signal1, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
     				}
     			}
     		}

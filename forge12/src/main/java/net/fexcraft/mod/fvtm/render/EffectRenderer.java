@@ -330,7 +330,7 @@ public class EffectRenderer {
 						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
 						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
 					}
-					RenderStreetSign.drawString(entry.getKey(), 0, entry.getValue().radius + 0.1f, 0, true, true, 0.5f, 0xffffff, null);
+					drawString(entry.getKey(), 0, entry.getValue().radius + 0.1f, 0, true, true, 0.5f, 0xffffff, null);
 					if(!point.isVehicle()) GL11.glPopMatrix();
 					else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 				}
@@ -457,7 +457,7 @@ public class EffectRenderer {
 					GL11.glRotatef(seat.point.getPivot().deg_pitch(), 1, 0, 0);
 					GL11.glRotatef(seat.point.getPivot().deg_roll(), 0, 0, 1);
 				}
-				RenderStreetSign.drawString(seat.seat.name, 0, 0.5f, 0, true, true, 0.5f, 0xffffff, null);
+				drawString(seat.seat.name, 0, 0.5f, 0, true, true, 0.5f, 0xffffff, null);
 				if(!seat.point.isVehicle()) GL11.glPopMatrix();
 				else GLUtils112.translateR(seat.seat.pos);
 			}
@@ -636,5 +636,23 @@ public class EffectRenderer {
 		}
 		GL11.glPopMatrix();
     }
+
+	public static void drawString(String str, double x, double y, double z, boolean centered, boolean glow, float scale, int color, Double yaw){
+		FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+		GlStateManager.pushMatrix(); GlStateManager.translate(x, y, z);
+		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
+		if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
+		if(glow){ GlStateManager.disableLighting(); }
+		GlStateManager.depthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.depthMask(true);
+		if(yaw != null) GL11.glRotated(yaw, 0, 1, 0);
+		fontRenderer.drawString(str, centered ? -fontRenderer.getStringWidth(str) / 2 : -24, 0, color);
+		if(glow){ GlStateManager.enableLighting(); }
+		GlStateManager.disableBlend();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.popMatrix();
+	}
 
 }

@@ -86,7 +86,7 @@ public class WireRenderer {
                 	if(Command.OTHER || holding_wire){// || relay.wires.isEmpty()){
 						GL11.glPushMatrix();
 						GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
-						size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
+						size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
 						GL11.glScalef(size, size, size);
 						CUBE_CYN.render(1f);
 						GL11.glPopMatrix();
@@ -97,7 +97,7 @@ public class WireRenderer {
 							cubepos = wire.getVectorPosition(wire.length * 0.5, false);
 							GL11.glPushMatrix();
 							GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
-							size = holder.hasRef() ? holder.ref().sizes.get(relay.getKey()) * 2 : 0.25f;
+							size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
 							GL11.glScalef(size, size, size);
 							CUBE_ORG.render(1f);
 							GL11.glPopMatrix();

@@ -199,6 +199,7 @@ public abstract class FvtmResources {
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.RAILGAUGE);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIREDECO);
+		FvtmResources.INSTANCE.searchInPacksFor(ContentType.SIGN);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.DECORATION);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONTAINER);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.BLOCK);

@@ -41,7 +41,6 @@ import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12;
-import net.fexcraft.mod.fvtm.model.program.TrafficSignPrograms;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.FclRecipe;
@@ -351,7 +350,6 @@ public class ResourcesImpl extends FvtmResources {
 		DefaultPrograms12.init();
 		ConditionalPrograms.init();
 		WirePrograms.init();
-		TrafficSignPrograms.init();
 	}
 
 	@Override

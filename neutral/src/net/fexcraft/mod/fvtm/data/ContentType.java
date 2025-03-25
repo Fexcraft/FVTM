@@ -30,6 +30,7 @@ public enum ContentType {
 	WIRE(".wire", "wires", "fvtm:wire", WireType.class),
 	WIREDECO(".wiredeco", "wires", "fvtm:wiredeco", WireDeco.class),
 	DECORATION(".deco", "decos", "fvtm:decoration", Decoration.class),
+	SIGN(".sign", "signs", "fvtm:sign", Decoration.class),
 	RECIPE(".json", "recipes", null, Recipe.class),
 	;
 
@@ -79,6 +80,7 @@ public enum ContentType {
 			case WIREDECO: WIREDECOS.register(content); return;
 			case DECORATION: DECORATIONS.register(content); return;
 			case RECIPE: RECIPES.register(content); return;
+			case SIGN: SIGNS.register(content); return;
 			default: return;
 		}
 	}

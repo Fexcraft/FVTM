@@ -37,11 +37,6 @@ public enum ContentType {
 	public static ArrayList<String> ITYPES = new ArrayList<>();
 	public static String ITYPE = "fvtm:content";
 	static{
-		VEHICLE.customitemmodel = true;
-		CONTAINER.customitemmodel = true;
-		PART.customitemmodel = true;
-		BLOCK.customitemmodel = true;
-		DECORATION.customitemmodel = true;
 		for(ContentType value : values()){
 			if(value.item_type != null) ITYPES.add(value.item_type);
 		}
@@ -51,7 +46,6 @@ public enum ContentType {
 	public String folder;
 	public String item_type;
 	public Class<? extends Content<?>> impl;
-	private boolean customitemmodel = false;
 
 	ContentType(String suffix, String folder){
 		this.suffix = suffix;
@@ -83,11 +77,6 @@ public enum ContentType {
 			case SIGN: SIGNS.register(content); return;
 			default: return;
 		}
-	}
-
-	@Deprecated
-	public boolean usesCustomItemModel(){
-		return customitemmodel;
 	}
 
 }

@@ -71,7 +71,7 @@ public class Decoration extends Content<Decoration> implements WithItem, ItemTex
 
 	@Override
 	public ContentType getContentType(){
-		return ContentType.CONSUMABLE;
+		return ContentType.DECORATION;
 	}
 
 	@Override

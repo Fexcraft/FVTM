@@ -174,6 +174,22 @@ ui.fvtm.decoration_editor.rotation=Rotation (Degrees)
 ui.fvtm.decoration_editor.scale=Scale
 ui.fvtm.decoration_editor.texture=Texture
 ui.fvtm.decoration_editor.no_color_channels=No Color Channels
+//
+ui.fvtm.sign_editor.com_prev=Previous Component
+ui.fvtm.sign_editor.com_next=Next Component
+ui.fvtm.sign_editor.text_prev=Previous Text
+ui.fvtm.sign_editor.text_next=Next Text
+ui.fvtm.sign_editor.text_set=Set Text
+ui.fvtm.sign_editor.sign_top=Toggle Sign Top Border
+ui.fvtm.sign_editor.sign_left=Toggle Sign Left Border
+ui.fvtm.sign_editor.sign_right=Toggle Sign Right Border
+ui.fvtm.sign_editor.sign_bot=Toggle Sign Bottom Border
+ui.fvtm.sign_editor.scale_x=Sign Base Width
+ui.fvtm.sign_editor.scale_y=Sign Base Height
+ui.fvtm.sign_editor.remove=Remove Sign and drop Components
+ui.fvtm.sign_editor.import=Import/Copy Sign from Clipboard
+ui.fvtm.sign_editor.export=Export/Copy Sign to Clipboard
+
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part on that spot with that category.

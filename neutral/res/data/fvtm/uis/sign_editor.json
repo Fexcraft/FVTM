@@ -1,0 +1,418 @@
+{
+	"_info_": "Sign Editor UI",
+	"background": false,
+	"size": [ 256, 256 ],
+	"tabs": {
+		"left": {
+			"texture": "fvtm:textures/gui/sign_editor_left.png",
+			"size": [ 152, 135 ],
+			"pos": [ 0, 0 ],
+			"absolute": true,
+			"buttons": [
+				"com_prev",
+				"com_next",
+				"text_prev",
+				"text_next",
+				"text_set",
+				"sign_top",
+				"sign_left",
+				"sign_right",
+				"sign_bot",
+				"sign_scale_x",
+				"sign_scale_y",
+				"remove",
+				"import",
+				"export"
+			],
+			"texts":[
+				"com_sel",
+				"com_name",
+				"text_sel",
+				"sign_sides"
+			],
+			"fields":[
+				"text",
+				"scale_x",
+				"scale_y"
+			]
+		},
+		"right": {
+			"texture": "fvtm:textures/gui/deco_editor_right.png",
+			"size": [ 144, 188 ],
+			"pos": [ -144, 0 ],
+			"uv": [ 112, 0 ],
+			"absolute": true,
+			"buttons": [
+				"pos0", "pos1", "pos2",
+				"rot0", "rot1", "rot2",
+				"scl0", "scl1", "scl2",
+				"tex_prev", "tex_next",
+				"ch_prev", "ch_next",
+				"rgb", "hex",
+				"colorpicker"
+			],
+			"texts": [
+				"pos",
+				"rot",
+				"scl",
+				"tex",
+				"texc",
+				"channel"
+			],
+			"fields": [
+				"pos0", "pos1", "pos2",
+				"rot0", "rot1", "rot2",
+				"scl0", "scl1", "scl2",
+				"rgb", "hex"
+			]
+		}
+	},
+	"buttons": {
+		"com_prev": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 123, 2 ],
+			"tooltip": "ui.fvtm.sign_editor.com_prev"
+		},
+		"com_next": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 135, 2 ],
+			"tooltip": "ui.fvtm.sign_editor.com_next"
+		},
+		"text_prev": {
+			"absolute": true,
+			"size": [ 12, 12 ],
+			"pos": [ 113, 30 ],
+			"tooltip": "ui.fvtm.sign_editor.text_prev"
+		},
+		"text_next": {
+			"absolute": true,
+			"size": [ 12, 12 ],
+			"pos": [ 126, 30 ],
+			"tooltip": "ui.fvtm.sign_editor.text_next"
+		},
+		"text_set": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 127, 45 ],
+			"tooltip": "ui.fvtm.sign_editor.text_set"
+		},
+		"sign_top": {
+			"absolute": true,
+			"size": [ 118, 8 ],
+			"pos": [ 11, 75 ],
+			"tooltip": "ui.fvtm.sign_editor.sign_top"
+		},
+		"sign_left": {
+			"absolute": true,
+			"size": [ 8, 16 ],
+			"pos": [ 3, 83 ],
+			"tooltip": "ui.fvtm.sign_editor.sign_left"
+		},
+		"sign_right": {
+			"absolute": true,
+			"size": [ 8, 16 ],
+			"pos": [ 129, 83 ],
+			"tooltip": "ui.fvtm.sign_editor.sign_right"
+		},
+		"sign_bot": {
+			"absolute": true,
+			"size": [ 118, 8 ],
+			"pos": [ 11, 99 ],
+			"tooltip": "ui.fvtm.sign_editor.sign_bot"
+		},
+		"sign_scale_x": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 58, 111 ],
+			"tooltip": "ui.fvtm.sign_editor.scale_x"
+		},
+		"sign_scale_y": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 127, 111 ],
+			"tooltip": "ui.fvtm.sign_editor.scale_y"
+		},
+		"remove": {
+			"absolute": true,
+			"size": [ 7, 7 ],
+			"pos": [ 106, 127 ],
+			"tooltip": "ui.fvtm.sign_editor.remove"
+		},
+		"import": {
+			"absolute": true,
+			"size": [ 7, 7 ],
+			"pos": [ 115, 127 ],
+			"tooltip": "ui.fvtm.sign_editor.import"
+		},
+		"export": {
+			"absolute": true,
+			"size": [ 7, 7 ],
+			"pos": [ 124, 127 ],
+			"tooltip": "ui.fvtm.sign_editor.export"
+		},
+		"pos0": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -105, 17 ],
+			"uv": [ 197, 17 ]
+		},
+		"pos1": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -59, 17 ],
+			"uv": [ 197, 17 ]
+		},
+		"pos2": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 17 ],
+			"uv": [ 197, 17 ]
+		},
+		"rot0": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -105, 45 ],
+			"uv": [ 197, 45 ]
+		},
+		"rot1": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -59, 45 ],
+			"uv": [ 197, 45 ]
+		},
+		"rot2": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 45 ],
+			"uv": [ 197, 45 ]
+		},
+		"scl0": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -105, 73 ],
+			"uv": [ 197, 73 ]
+		},
+		"scl1": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -59, 73 ],
+			"uv": [ 197, 73 ]
+		},
+		"scl2": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 73 ],
+			"uv": [ 197, 73 ]
+		},
+		"tex_prev": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -25, 101 ],
+			"uv": [ 231, 101 ]
+		},
+		"tex_next": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 101 ],
+			"uv": [ 243, 101 ]
+		},
+		"ch_prev": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -25, 126 ],
+			"uv": [ 231, 126 ]
+		},
+		"ch_next": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 126 ],
+			"uv": [ 243, 126 ]
+		},
+		"rgb": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 146 ],
+			"uv": [ 243, 146 ]
+		},
+		"hex": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 166 ],
+			"uv": [ 243, 166 ]
+		},
+		"colorpicker": {
+			"absolute": true,
+			"size": [ 6, 6 ],
+			"pos": [ -10, 118 ],
+			"uv": [ 246, 118 ]
+		}
+	},
+	"texts": {
+		"com_sel": {
+			"absolute": true,
+			"size": [ 115, 8 ],
+			"pos": [ 4, 3 ]
+		},
+		"com_name": {
+			"absolute": true,
+			"size": [ 138, 8 ],
+			"pos": [ 4, 15 ]
+		},
+		"text_sel": {
+			"absolute": true,
+			"size": [ 106, 8 ],
+			"pos": [ 4, 32 ]
+		},
+		"sign_sides": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ 4, 63 ]
+		},
+		"pos": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 5 ],
+			"value": "ui.fvtm.decoration_editor.position",
+			"translate": true
+		},
+		"rot": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 33 ],
+			"value": "ui.fvtm.decoration_editor.rotation",
+			"translate": true
+		},
+		"scl": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 61 ],
+			"value": "ui.fvtm.decoration_editor.scale",
+			"translate": true
+		},
+		"tex": {
+			"absolute": true,
+			"size": [ 132, 8 ],
+			"pos": [ -136, 89 ],
+			"value": "ui.fvtm.decoration_editor.texture",
+			"translate": true
+		},
+		"texc": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -136, 102 ],
+			"autoscale": true,
+			"color": "cfcfcf",
+			"value": "-"
+		},
+		"channel": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -136, 127 ],
+			"autoscale": true,
+			"color": "cfcfcf",
+			"value": "-"
+		}
+	},
+	"fields": {
+		"text": {
+			"absolute": true,
+			"size": [ 123, 10 ],
+			"pos": [ 3, 45 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scale_x": {
+			"absolute": true,
+			"size": [ 54, 10 ],
+			"pos": [ 3, 111 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scale_y": {
+			"absolute": true,
+			"size": [ 54, 10 ],
+			"pos": [ 72, 111 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos0": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -135, 18 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos1": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -89, 18 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos2": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -43, 18 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot0": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -135, 46 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot1": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -89, 46 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot2": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -43, 46 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl0": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -135, 74 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl1": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -89, 74 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl2": {
+			"absolute": true,
+			"size": [ 27, 8 ],
+			"pos": [ -43, 74 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rgb": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -135, 147 ],
+			"background": false,
+			"numberfield": true
+		},
+		"hex": {
+			"absolute": true,
+			"size": [ 107, 8 ],
+			"pos": [ -135, 167 ],
+			"background": false,
+			"numberfield": true
+		}
+	}
+}

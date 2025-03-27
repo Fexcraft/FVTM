@@ -543,6 +543,13 @@ public abstract class FvtmResources {
 		return getDecorationData(TagCW.wrap(com));
 	}
 
+	public static SignData getSignData(TagCW com){
+		Sign sign = SIGNS.get(com.getString("Sign"));
+		if(sign == null && com.has("key")) sign = SIGNS.get(com.getString("key"));
+		if(sign == null) return null;
+		return new SignData(sign).read(com);
+	}
+
 	public static BlockData getBlockData(TagCW com){
 		Block block = BLOCKS.get(com.getString("Block"));
 		if(block == null) return null;

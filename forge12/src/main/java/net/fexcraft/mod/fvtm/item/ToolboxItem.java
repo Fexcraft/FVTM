@@ -53,6 +53,10 @@ public class ToolboxItem extends Item {
 				tooltip.add("Wire Slack Adjustment Toolbox");
 				break;
 			}
+			case 5:{
+				tooltip.add("Sign Adjustment and Removal Toolbox");
+				break;
+			}
 			default: break;
 		}
 	}

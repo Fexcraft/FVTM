@@ -31,6 +31,8 @@ public class Sign extends Content<Sign> implements WithItem, Textureable.Texture
 	protected ModelData modeldata = new ModelData();
 	protected List<IDL> textures;
 	protected Map<String, RGB> channels = new LinkedHashMap<>();
+	protected String text;
+	protected boolean base;
 
 	public Sign(){}
 
@@ -49,6 +51,12 @@ public class Sign extends Content<Sign> implements WithItem, Textureable.Texture
 			}
 		}
 		if(channels.isEmpty()) channels.put("primary", RGB.WHITE.copy());
+		JsonValue val = map.get("Text");
+		if(val != null){
+			if(val.isBoolean() && val.bool()) text = "";
+			else text = val.string_value();
+		}
+		base = map.getBoolean("Base", false);
 		//
         ctab = map.getString("CreativeTab", "default");
 		if(EnvInfo.CLIENT || EnvInfo.is121()){
@@ -100,6 +108,14 @@ public class Sign extends Content<Sign> implements WithItem, Textureable.Texture
 	@Override
 	public List<IDL> getDefaultTextures(){
 		return textures;
+	}
+
+	public boolean isText(){
+		return text != null;
+	}
+
+	public boolean isBase(){
+		return base;
 	}
 
 }

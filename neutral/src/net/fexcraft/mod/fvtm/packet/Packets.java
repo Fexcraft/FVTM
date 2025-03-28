@@ -221,6 +221,16 @@ public abstract class Packets {
 			FvtmInv inv = ref.getKey().getInvByIdx(com.getInteger("inventory"));
 			player.openUI(inv.getUIKey(ContentType.valueOf(com.getString("type"))), ref.getValue().vehicle().entity.getId(), com.getInteger("inventory"), 0);
 		});
+		LIS_SERVER.put("sign_interact", (com, player) -> {
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
+			QV3D pos = new QV3D(com, "pos");
+			if(com.getBoolean("remove")){
+				system.delSign(pos);
+			}
+			else{
+				player.openUI(UIKeys.SIGN_EDITOR, pos.pos);
+			}
+		});
 		if(EnvInfo.CLIENT) initClient();
 	}
 

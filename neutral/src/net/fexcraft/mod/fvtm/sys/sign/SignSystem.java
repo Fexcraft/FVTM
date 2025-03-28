@@ -2,7 +2,9 @@ package net.fexcraft.mod.fvtm.sys.sign;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
@@ -130,7 +132,7 @@ public class SignSystem extends DetachedSystem {
 		return region.getSign(pos);
 	}
 
-	private SignInstance addSign(QV3D pos){
+	public SignInstance addSign(QV3D pos){
 		SignRegion region = regions.get(pos, true);
 		return region.addSign(pos);
 	}
@@ -195,6 +197,19 @@ public class SignSystem extends DetachedSystem {
 
 	public RegionMap getRegions(){
 		return regions;
+	}
+
+	public void updateRegion(TagCW compound, Passenger player){
+		int[] xz = compound.getIntArray("XZ");
+		if(world.isClient()){
+			SignRegion region = regions.get(xz);
+			if(region == null) regions.put(new RegionKey(xz), region = new SignRegion(xz[0], xz[1], this, false));
+			region.read(compound);
+		}
+		else{
+			SignRegion region = regions.get(xz, true);
+			region.updateClient(player);
+		}
 	}
 
 }

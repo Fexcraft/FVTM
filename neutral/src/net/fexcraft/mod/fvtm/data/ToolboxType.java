@@ -9,7 +9,8 @@ public enum ToolboxType {
 	TEXTURE(1),
 	COLOR_CHANNEL(2),
 	WIRE_REMOVAL(3),
-	WIRE_SLACK(4)
+	WIRE_SLACK(4),
+	SIGN_ADJREM(5),
 	;
 
 	public final int idx;

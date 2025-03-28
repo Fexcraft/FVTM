@@ -216,9 +216,9 @@ public class ResourcesImpl extends FvtmResources {
 			default:
 				break;
 		}
-		if(loc.isConfigPack() || isItemModelMissing(content)){
+		/*if(loc.isConfigPack() || isItemModelMissing(content)){
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ItemPlaceholderModel.INSTANCE);
-		}
+		}*/
 	}
 
 	@SideOnly(Side.CLIENT)

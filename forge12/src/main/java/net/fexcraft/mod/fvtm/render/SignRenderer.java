@@ -2,7 +2,9 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.SignData;
+import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
@@ -14,8 +16,6 @@ import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -24,10 +24,12 @@ import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 public class SignRenderer {
 
 	private static SignSystem sys;
+	private static boolean holding;
 
 	public static void renderSigns(World world, double cx, double cy, double cz, float ticks){
 		sys = SystemManager.get(SystemManager.Systems.SIGN, WrapperHolder.getWorld(world));
 		if(sys == null) return;
+		holding = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ToolboxItem && Minecraft.getMinecraft().player.getHeldItemMainhand().getItemDamage() == ToolboxType.SIGN_ADJREM.idx;
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		for(SignRegion reg : sys.getRegions().values()){
@@ -39,7 +41,7 @@ public class SignRenderer {
 					rencube();
 				}
 				else{
-					if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof SignItem){
+					if(holding || Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof SignItem){
 						rencube();
 					}
 					RenderCache cache = sign.getRenderCache();

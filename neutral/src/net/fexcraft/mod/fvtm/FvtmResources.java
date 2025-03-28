@@ -363,6 +363,7 @@ public abstract class FvtmResources {
 		CONTAINERS.forEach(con -> con.loadModel());
 		RAILGAUGES.forEach(rail -> rail.loadModel());
 		DECORATIONS.forEach(deco -> deco.loadModel());
+		SIGNS.forEach(sign -> sign.loadModel());
 	}
 
 	public void initModelsClear(){

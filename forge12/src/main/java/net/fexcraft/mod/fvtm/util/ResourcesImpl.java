@@ -262,6 +262,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 		});
 		DECORATIONS.forEach(deco -> deco.setItemWrapper(wrapwrapper(deco.getID(), new DecorationItem(deco))));
+		SIGNS.forEach(sign -> sign.setItemWrapper(wrapwrapper(sign.getID(), new SignItem(sign))));
 	}
 
 	@Override

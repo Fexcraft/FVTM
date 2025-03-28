@@ -36,7 +36,7 @@ public class ConstRenderer implements BlockEntityRenderer<ConstructorEntity> {
 		Direction dir = tile.getBlockState().getValue(FACING);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(dir.getAxis() == Direction.Axis.Z ? dir.toYRot() + 90 : dir.toYRot() - 90), AY));
 		if(MODEL == null) MODEL = (BlockModel)FvtmResources.getModel("fvtm:models/block/catalog.fmf", new ModelData(), BlockModel.class);
-		if(MODEL != null) MODEL.render(DefaultModel.RENDERDATA.set(null, null, null));
+		if(MODEL != null) MODEL.render(DefaultModel.RENDERDATA.clear());
 		else DebugUtils.SPHERE.render();
 		pose.popPose();
 	}

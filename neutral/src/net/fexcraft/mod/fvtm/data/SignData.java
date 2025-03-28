@@ -21,13 +21,22 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 	public V3D offset = new V3D(0, 0, 0);
 	public float rotx, roty, rotz;
 	public float sclx = 1, scly = 1, sclz = 1;
+	//
+	public String text, form;
+	public boolean[] sides;
+	public float width, height;
 
-	public SignData(Sign deco){
-		super(deco);
-		texture = new Textureable(deco);
+	public SignData(Sign sign){
+		super(sign);
+		texture = new Textureable(sign);
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
+		if(sign.isText()) text = form = sign.text;
+		if(sign.isBase()){
+			sides = new boolean[4];
+		}
+		width = height = 1f;
 	}
 
 	@Override
@@ -62,6 +71,17 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 		for(String str : channels.keySet()){
 			compound.set("rgb_" + str, channels.get(str).packed);
 		}
+		if(type.isText()){
+			compound.set("text", text);
+			compound.set("form", form);
+		}
+		if(type.isBase()){
+			for(int i = 0; i < sides.length; i++){
+				if(sides[i]) compound.set("side" + i, sides[i]);
+			}
+			if(width != 1f) compound.set("width", width);
+			if(height != 1f) compound.set("height", height);
+		}
 		return compound;
 	}
 
@@ -81,6 +101,18 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 			if(compound.has("rgb_" + str)){
 				channels.get(str).packed = compound.getInteger("rgb_" + str);
 			}
+		}
+		if(type.isText()){
+			text = compound.getString("text");
+			form = compound.getString("form");
+		}
+		if(type.isBase()){
+			if(sides == null) sides = new boolean[4];
+			for(int i = 0; i < sides.length; i++){
+				if(compound.has("side" + i)) sides[i] = compound.getBoolean("sides" + i);
+			}
+			width = compound.has("width") ? compound.getFloat("width") : 1;
+			height = compound.has("height") ? compound.getFloat("height") : 1;
 		}
 		return this;
 	}

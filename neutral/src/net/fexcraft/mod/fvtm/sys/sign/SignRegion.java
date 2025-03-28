@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SignRegion {
 
-	private ConcurrentHashMap<V3I, SignInstance> signs = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<V3I, SignInstance> signs = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<RegionKey, ChunkW> chucks = new ConcurrentHashMap<>();
 	protected final SignSystem system;
 	protected final RegionKey key;
@@ -99,12 +99,12 @@ public class SignRegion {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		TagCW compound = write(false);
 		if(compound.empty()){
-			FvtmLogger.debug("SignRegion [" + key.toString() + "] has no data to save, skipping.");
+			FvtmLogger.debug("SignRegion [" + key + "] has no data to save, skipping.");
 			return this;
 		}
 		compound.set("Saved", Time.getDate());
 		WrapperHolder.write(compound, file);
-		FvtmLogger.debug("Saved SignRegion [" + key.toString() + "].");
+		FvtmLogger.debug("Saved SignRegion [" + key + "].");
 		return this;
 	}
 
@@ -189,23 +189,23 @@ public class SignRegion {
 
 	public SignInstance getSign(QV3D pos){
 		if(!key.isInRegion(pos)) return system.getSign(pos);
-		return signs.get(pos);
+		return signs.get(pos.pos);
 	}
 
 	public SignInstance addSign(QV3D pos){
-		if(!signs.containsKey(pos)){
+		if(!signs.containsKey(pos.pos)){
 			SignInstance sign = new SignInstance(this, pos);
 			signs.put(pos.pos, sign);
 			return sign;
 		}
-		else return signs.get(pos);
+		else return signs.get(pos.pos);
 	}
 
 	public void delSign(QV3D pos){
 		SignInstance sign = getSign(pos);
 		if(sign == null) return;
 		sign.delete();
-		signs.remove(pos);
+		signs.remove(pos.pos);
 	}
 	
 	public ConcurrentHashMap<V3I, SignInstance> getSigns(){

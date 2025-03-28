@@ -65,7 +65,7 @@ public class Sign extends Content<Sign> implements WithItem, Textureable.Texture
 
 	@Override
 	public Class<?> getDataClass(){
-		return DecorationData.class;
+		return SignData.class;
 	}
 
 	@Override

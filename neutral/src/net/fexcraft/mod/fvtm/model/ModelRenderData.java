@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 
 import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -10,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.event.EventData;
+import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
 /**
@@ -28,7 +30,8 @@ public class ModelRenderData extends EventData {
 	public PartData part;
 	public String part_category;
 	public DecorationData decoration;
-	public Object trafficsign_compdata;
+	public SignData sign;
+	public SignInstance sign_inst;
 	public Object cloth_item;
 	public ArrayList<String> cloth_groups;
 	public boolean itemrender;
@@ -106,18 +109,21 @@ public class ModelRenderData extends EventData {
 	}
 
 
-	public ModelRenderData set(Object item, ArrayList<String> list, Object ent, RenderCache renca) {
-		cloth_item = item;
-		cloth_groups = list;
-		entity = ent;
+	public ModelRenderData set(SignData data, SignInstance inst, RenderCache renca) {
+		sign = data;
+		sign_inst = inst;
 		cache = renca;
+		color = data;
 		itemrender = false;
 		return this;
 	}
 
 
-	public ModelRenderData set(Object comp) {
-		trafficsign_compdata = comp;
+	public ModelRenderData set(Object item, ArrayList<String> list, Object ent, RenderCache renca) {
+		cloth_item = item;
+		cloth_groups = list;
+		entity = ent;
+		cache = renca;
 		itemrender = false;
 		return this;
 	}

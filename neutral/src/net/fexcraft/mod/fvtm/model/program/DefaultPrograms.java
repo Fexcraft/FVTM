@@ -162,6 +162,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeSignalLights("", 0, false));
 		ModelGroup.PROGRAMS.add(new IDSpecific(""));
 		ModelGroup.PROGRAMS.add(new IDSpecificArray(""));
+		ModelGroup.PROGRAMS.add(new SignBorder(0));
 	}
 
 	public static void setupSignalTimer(){
@@ -347,6 +348,35 @@ public class DefaultPrograms {
 		public Program parse(String[] args){
 			if(args.length == 1) return new IDSpecific(args[0]);
 			return new IDSpecificArray(args);
+		}
+
+	}
+
+	public static class SignBorder implements Program {
+
+		private int side;
+
+		public SignBorder(int sid){
+			side = sid;
+		}
+
+		@Override
+		public String id(){ return "fvtm:sign_border"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.sign == null) return;
+			if(data.sign.sides[side]) list.visible = false;
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new SignBorder(args.length > 0 ? Integer.parseInt(args[0]) : 0);
 		}
 
 	}

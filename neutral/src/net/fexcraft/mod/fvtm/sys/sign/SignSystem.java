@@ -62,7 +62,7 @@ public class SignSystem extends DetachedSystem {
 
 	@Override
 	public void onServerTick(){
-		//
+		for(SignRegion reg : regions.values()) reg.updateTick();
 	}
 
 	@Override

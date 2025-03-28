@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.event;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.*;
+import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
@@ -59,7 +60,7 @@ public class Registerer12 {
 			regModel(Asphalt.ITEM, 16);
 			//
 			regModel(RoadToolItem.INSTANCE);
-			regModel(ToolboxItem.INSTANCE, 5);
+			regModel(ToolboxItem.INSTANCE, ToolboxType.values().length);
 			regModel(JunctionToolItem.INSTANCE);
 		}
 	}

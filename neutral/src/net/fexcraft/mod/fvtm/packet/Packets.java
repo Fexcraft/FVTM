@@ -447,7 +447,7 @@ public abstract class Packets {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
 			QV3D pos = new QV3D(tag, "pos");
 			SignRegion region = system.getRegions().get(pos, false);
-			if(region != null) region.addSign(pos).read(tag);
+			if(region != null) region.addSign(pos).read(tag.getCompound("sign"));
 		});
 		LIS_CLIENT.put("sign_rem", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());

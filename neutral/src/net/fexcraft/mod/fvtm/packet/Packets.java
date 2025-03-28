@@ -18,6 +18,9 @@ import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
+import net.fexcraft.mod.fvtm.sys.sign.SignRegion;
+import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -435,6 +438,20 @@ public abstract class Packets {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			WireUnit unit = system.getWireUnits().get(tag.getString("unit"));
 			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
+		});
+		LIS_CLIENT.put("sign_reg", (tag, player) -> {
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
+			system.updateRegion(tag, (Passenger)player);
+		});
+		LIS_CLIENT.put("sign_upd", (tag, player) -> {
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
+			QV3D pos = new QV3D(tag, "pos");
+			SignRegion region = system.getRegions().get(pos, false);
+			if(region != null) region.addSign(pos).read(tag);
+		});
+		LIS_CLIENT.put("sign_rem", (tag, player) -> {
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
+			system.delSign(new QV3D(tag, "pos"));
 		});
 	}
 

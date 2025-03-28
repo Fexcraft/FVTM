@@ -23,6 +23,9 @@ import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
+import net.fexcraft.mod.fvtm.sys.sign.SignRegion;
+import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -52,6 +55,7 @@ public class InteractionHandler {
 	private static float seatbbsh = .1875f;
 	private static float th32 = .0625f * .5f;
 	private static AABB aabb;
+	private static boolean is_toolbox;
 
 	/** Vehicle Interaction */
 	public static boolean handle(KeyPress key, VehicleData vehdata, InteractRef ref, SeatInstance seat, Passenger pass, StackWrapper stack){
@@ -310,10 +314,36 @@ public class InteractionHandler {
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
-		if((stack.isItemOf(ContentType.WIRE.item_type) || (stack.isItemOf(ContentType.TOOLBOX.item_type) && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
+		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
+		if((stack.isItemOf(ContentType.WIRE.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
+		if(is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM)) return handleSign(world, pass, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass, stack)) return true;
+		}
+		return false;
+	}
+
+	private static boolean handleSign(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
+		if(last.equals("sign") && Time.getDate() < cooldown) return false;
+		if(key.mouse_main()) return false;
+		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, (WorldW)world);
+		V3D evec = pass.getEyeVec();
+		V3D lvec = evec.add(pass.getLookVec().multiply(3));
+		float size = 0.25f;
+		for(SignRegion reg : system.getRegions().values()){
+			for(SignInstance sign : reg.getSigns().values()){
+				aabb = AABB.create(sign.vec.vec.x - size, sign.vec.vec.y - size, sign.vec.vec.z - size, sign.vec.vec.x + size, sign.vec.vec.y + size, sign.vec.vec.z + size);
+				if(contains(evec, lvec, aabb)){
+					TagCW com = TagCW.create();
+					sign.vec.write(com, "pos");
+					com.set("remove", pass.isShiftDown());
+					Packets.send(Packet_TagListener.class, "sign_interact", com);
+					cooldown = Time.getDate() + 20;
+					last = "sign";
+					return true;
+				}
+			}
 		}
 		return false;
 	}

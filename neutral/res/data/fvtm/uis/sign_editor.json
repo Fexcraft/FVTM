@@ -11,8 +11,6 @@
 			"buttons": [
 				"com_prev",
 				"com_next",
-				"text_prev",
-				"text_next",
 				"text_set",
 				"sign_top",
 				"sign_left",
@@ -79,18 +77,6 @@
 			"size": [ 10, 10 ],
 			"pos": [ 135, 2 ],
 			"tooltip": "ui.fvtm.sign_editor.com_next"
-		},
-		"text_prev": {
-			"absolute": true,
-			"size": [ 12, 12 ],
-			"pos": [ 113, 30 ],
-			"tooltip": "ui.fvtm.sign_editor.text_prev"
-		},
-		"text_next": {
-			"absolute": true,
-			"size": [ 12, 12 ],
-			"pos": [ 126, 30 ],
-			"tooltip": "ui.fvtm.sign_editor.text_next"
 		},
 		"text_set": {
 			"absolute": true,
@@ -262,7 +248,7 @@
 		},
 		"text_sel": {
 			"absolute": true,
-			"size": [ 106, 8 ],
+			"size": [ 132, 8 ],
 			"pos": [ 4, 32 ]
 		},
 		"sign_sides": {

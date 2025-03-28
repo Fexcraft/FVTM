@@ -146,33 +146,32 @@ public class SignRegion {
 	}
 
 	public void updateClient(QV3D pos){
-		updateClient("all", null, pos, null);
+		updateClient(Update.ALL, pos, null);
 	}
 
-	public void updateClient(String kind, String key, QV3D pos, SignInstance sign){
+	public void updateClient(Update kind, QV3D pos, SignInstance sign){
 		if(system.getWorld().isClient()) return;
 		TagCW com = null;
 		String task = null;
 		switch(kind){
-			case "all":{
+			case ALL:{
 				task = "sign_reg";
 				com = write(true);
 				pos.write(com, "pos");
 				com.set("XZ", RegionKey.getRegionXZ(pos));
 				break;
 			}
-			case "sign":{
+			case SIGN:{
 				task = "sign_upd";
 				com = TagCW.create();
 				pos.write(com, "pos");
 				com.set("sign", sign.write());
 				break;
 			}
-			case "no_sign":{
+			case SIGN_REM:{
 				task = "sign_rem";
 				com = TagCW.create();
 				pos.write(com, "pos");
-				com.set("key", key);
 				break;
 			}
 			default:{
@@ -211,6 +210,12 @@ public class SignRegion {
 	
 	public ConcurrentHashMap<V3I, SignInstance> getSigns(){
 		return signs;
+	}
+
+	public static enum Update {
+
+		ALL, SIGN, SIGN_REM
+
 	}
 
 }

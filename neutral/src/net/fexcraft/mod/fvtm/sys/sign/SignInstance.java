@@ -57,4 +57,7 @@ public class SignInstance {
 		//
 	}
 
+	public void updateClient(){
+		region.updateClient(SignRegion.Update.SIGN, vec, this);
+	}
 }

@@ -109,7 +109,7 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 		if(type.isBase()){
 			if(sides == null) sides = new boolean[4];
 			for(int i = 0; i < sides.length; i++){
-				if(compound.has("side" + i)) sides[i] = compound.getBoolean("sides" + i);
+				if(compound.has("side" + i)) sides[i] = compound.getBoolean("side" + i);
 			}
 			width = compound.has("width") ? compound.getFloat("width") : 1;
 			height = compound.has("height") ? compound.getFloat("height") : 1;

@@ -30,6 +30,7 @@ public class SignInstance {
 	}
 
 	public void read(TagCW com){
+		components.clear();
 		vec = new QV3D(com, "pos");
 		TagLW list = com.getList("comp");
 		for(TagCW c : list){

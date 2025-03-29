@@ -90,7 +90,7 @@ public class SignItem extends Item implements ContentItem.ContentDataItem<Sign, 
 		inst.components.add(data);
 		inst.updateClient();
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);
-		ply.openUI(UIKeys.SIGN_EDITOR, pos.getX(), pos.getY(), pos.getZ());
+		//ply.openUI(UIKeys.SIGN_EDITOR, pos.getX(), pos.getY(), pos.getZ());
 		return EnumActionResult.SUCCESS;
 	}
 

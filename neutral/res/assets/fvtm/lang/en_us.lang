@@ -177,6 +177,7 @@ ui.fvtm.decoration_editor.no_color_channels=No Color Channels
 //
 ui.fvtm.sign_editor.com_prev=Previous Component
 ui.fvtm.sign_editor.com_next=Next Component
+ui.fvtm.sign_editor.com_rem=Remove Component
 ui.fvtm.sign_editor.text_prev=Previous Text
 ui.fvtm.sign_editor.text_next=Next Text
 ui.fvtm.sign_editor.text_set=Set Text
@@ -189,6 +190,11 @@ ui.fvtm.sign_editor.scale_y=Sign Base Height
 ui.fvtm.sign_editor.remove=Remove Sign and drop Components
 ui.fvtm.sign_editor.import=Import/Copy Sign from Clipboard
 ui.fvtm.sign_editor.export=Export/Copy Sign to Clipboard
+ui.fvtm.sign_editor.com_sel=Component %s of %s
+ui.fvtm.sign_editor.text_sel=Custom Component Text
+ui.fvtm.sign_editor.text_none=Not a Text Component
+ui.fvtm.sign_editor.sign_sides=Base Component Settings
+ui.fvtm.sign_editor.sign_nosides=Not a Base Component
 
 
 # Handlers

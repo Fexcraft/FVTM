@@ -329,7 +329,7 @@ public class InteractionHandler {
 		if(key.mouse_main()) return false;
 		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, (WorldW)world);
 		V3D evec = pass.getEyeVec();
-		V3D lvec = evec.add(pass.getLookVec().multiply(3));
+		V3D lvec = evec.add(pass.getLookVec().multiply(5));
 		float size = 0.25f;
 		for(SignRegion reg : system.getRegions().values()){
 			for(SignInstance sign : reg.getSigns().values()){

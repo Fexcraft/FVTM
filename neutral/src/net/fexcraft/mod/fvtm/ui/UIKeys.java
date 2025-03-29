@@ -85,8 +85,8 @@ public class UIKeys {
 		UniReg.registerMenu(UIKeys.VEHICLE_CATALOG, "fvtm:uis/vehicle_catalog", VehicleCatalogCon.class);
 		UniReg.registerUI(UIKeys.FUEL_FILLER, FuelFillerUI.class);
 		UniReg.registerMenu(UIKeys.FUEL_FILLER, "fvtm:uis/fuel_filler", FuelFillerCon.class);
-		UniReg.registerUI(SIGN_EDITOR, UserInterface.class);
-		UniReg.registerMenu(SIGN_EDITOR, "fvtm:uis/sign_editor", ContainerInterface.class);
+		UniReg.registerUI(SIGN_EDITOR, SignEditor.class);
+		UniReg.registerMenu(SIGN_EDITOR, "fvtm:uis/sign_editor", SignContainer.class);
 		//
 		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
 		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);

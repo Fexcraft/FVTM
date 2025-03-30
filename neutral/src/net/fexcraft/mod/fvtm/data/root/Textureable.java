@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.root;
 
 import java.util.List;
 
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Saveable;
 import net.fexcraft.mod.uni.IDL;
@@ -115,6 +116,28 @@ public class Textureable implements Saveable {
 				current = holder.getDefaultTextures().get(selected);
 				custom = "";
 			}
+		}
+	}
+
+	public JsonMap save(){
+		JsonMap map = new JsonMap();
+		map.add("sel", selected);
+		map.add("ext", external);
+		map.add("tex", external ? custom : current.toString());
+		return map;
+	}
+
+	public void load(JsonMap map){
+		selected = map.getInteger("sel", 0);
+		external = map.getBoolean("ext", false);
+		String str = map.getString("tex", "");
+		if(selected < 0){
+			current = external ? FvtmResources.INSTANCE.getExternalTexture(str): IDLManager.getIDLNamed(str);
+			custom = external ? str : current.toString();
+		}
+		else{
+			current = holder.getDefaultTextures().get(selected);
+			custom = "";
 		}
 	}
 

@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -37,6 +38,7 @@ import org.lwjgl.opengl.GL12;
 import java.util.HashMap;
 import java.util.function.Predicate;
 
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.*;
 import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
@@ -49,7 +51,8 @@ import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 public class DefaultPrograms12 extends DefaultPrograms {
 
 	public static boolean DIDLOAD = false;
-	
+	private static FontRenderer fr;
+
 	public static void init(){
 		DefaultPrograms.init();
 		GLOW = new Transparent(189f, 4f);
@@ -317,6 +320,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new RenderOrderSetter(null));
 		ModelGroup.PROGRAMS.add(new RotateTo());
 		ModelGroup.PROGRAMS.add(new TranslateTo());
+		ModelGroup.PROGRAMS.add(new SignText());
 		//
 		AnimationPrograms.init();
 		OpenGlPrograms.init();
@@ -1840,6 +1844,37 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		@Override
 		public int ticktime(){
 			return time;
+		}
+
+	}
+
+	public static class SignText implements Program {
+
+		@Override
+		public String id(){ return "fvtm:sign_text"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.sign == null || data.sign.text == null || data.sign.text.length() == 0) return;
+			if(fr == null) fr = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+			GlStateManager.pushMatrix();
+			GlStateManager.scale(-0.025F, -0.025F, 0.025F);
+			GlStateManager.rotate(90, 0, 1, 0);
+			/*if(glow)*/ GlStateManager.disableLighting();
+			fr.drawString(data.sign.text, data.sign.centered ? -fr.getStringWidth(data.sign.text) / 2 : 0, 0, data.sign.getColorChannel("text").packed - 16777216);
+			/*if(glow)*/ GlStateManager.enableLighting();
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.popMatrix();
+		}
+
+		@Override
+		public boolean post(){
+			return false;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return this;
 		}
 
 	}

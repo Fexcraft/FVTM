@@ -167,7 +167,8 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new SignBase());
 		ModelGroup.PROGRAMS.add(SignScaled.INST[0]);
 		ModelGroup.PROGRAMS.add(new SignScaledOff(false, false, 0, 0));
-		ModelGroup.PROGRAMS.add(new SignBorder(0));
+		ModelGroup.PROGRAMS.add(SignBorder.INST[0]);
+		ModelGroup.PROGRAMS.add(SignCorner.INST[0]);
 	}
 
 	public static void setupSignalTimer(){
@@ -459,9 +460,11 @@ public class DefaultPrograms {
 
 	public static class SignBorder implements Program {
 
+		public static SignBorder[] INST = new SignBorder[4];
+		static{ for(int i = 0; i < INST.length; i++) INST[i] = new SignBorder(i); }
 		private int side;
 
-		public SignBorder(int sid){
+		private SignBorder(int sid){
 			side = sid;
 		}
 
@@ -481,7 +484,43 @@ public class DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			return new SignBorder(args.length > 0 ? Integer.parseInt(args[0]) : 0);
+			return INST[args.length > 0 ? Integer.parseInt(args[0]) : 0];
+		}
+
+	}
+
+	public static class SignCorner implements Program {
+
+		public static SignBorder[] INST = new SignBorder[4];
+		static{ for(int i = 0; i < INST.length; i++) INST[i] = new SignBorder(i); }
+		private int corner;
+
+		private SignCorner(int cid){
+			corner = cid;
+		}
+
+		@Override
+		public String id(){ return "fvtm:sign_corner"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.sign == null) return;
+			switch(corner){
+				case 0: if(data.sign.sides[0] || data.sign.sides[1]) list.visible = false; break;
+				case 1: if(data.sign.sides[0] || data.sign.sides[2]) list.visible = false; break;
+				case 2: if(data.sign.sides[2] || data.sign.sides[3]) list.visible = false; break;
+				case 3: if(data.sign.sides[1] || data.sign.sides[3]) list.visible = false; break;
+			}
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return INST[args.length > 0 ? Integer.parseInt(args[0]) : 0];
 		}
 
 	}

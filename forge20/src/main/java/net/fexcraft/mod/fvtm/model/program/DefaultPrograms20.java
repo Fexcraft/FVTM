@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
@@ -187,6 +188,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
+		ModelGroup.PROGRAMS.add(new SignText());
 	}
 
 	public static class RGBCustom implements Program {
@@ -484,6 +486,29 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new TextureBinder(args[0]);
+		}
+
+	}
+
+	public static class SignText implements Program {
+
+		@Override
+		public String id(){ return "fvtm:sign_text"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.sign == null || data.sign.text == null || data.sign.text.length() == 0) return;
+			//TODO
+		}
+
+		@Override
+		public boolean post(){
+			return false;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return this;
 		}
 
 	}

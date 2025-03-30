@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
@@ -87,6 +86,7 @@ public class SignItem extends Item implements ContentItem.ContentDataItem<Sign, 
 			return EnumActionResult.FAIL;
 		}
 		SignInstance inst = system.addSign(vec);
+		inst.yaw = -facing.getHorizontalAngle() - 90;
 		inst.components.add(data);
 		inst.updateClient();
 		if(!player.capabilities.isCreativeMode) stack.shrink(1);

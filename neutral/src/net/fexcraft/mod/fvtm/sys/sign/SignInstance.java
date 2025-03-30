@@ -18,6 +18,7 @@ public class SignInstance {
 	public ConcurrentLinkedQueue<SignData> components = new ConcurrentLinkedQueue<>();
 	private RenderCache cache;
 	public SignRegion region;
+	public float yaw;
 	public QV3D vec;
 
 	public SignInstance(SignRegion reg){
@@ -32,6 +33,7 @@ public class SignInstance {
 	public void read(TagCW com){
 		components.clear();
 		vec = new QV3D(com, "pos");
+		yaw = com.getFloat("yaw");
 		TagLW list = com.getList("comp");
 		for(TagCW c : list){
 			try{
@@ -46,6 +48,7 @@ public class SignInstance {
 	public TagCW write(){
 		TagCW com = TagCW.create();
 		vec.write(com, "pos");
+		com.set("yaw", yaw);
 		TagLW list = TagLW.create();
 		for(SignData sd : components){
 			list.add(sd.write(TagCW.create()));

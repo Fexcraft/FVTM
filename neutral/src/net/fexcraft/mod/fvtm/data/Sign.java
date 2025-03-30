@@ -50,11 +50,14 @@ public class Sign extends Content<Sign> implements WithItem, Textureable.Texture
 				channels.put(entry.getKey(), new RGB(entry.getValue().string_value()));
 			}
 		}
-		if(channels.isEmpty()) channels.put("primary", RGB.WHITE.copy());
+		//if(channels.isEmpty()) channels.put("primary", RGB.WHITE.copy());
 		JsonValue val = map.get("Text");
 		if(val != null){
 			if(val.isBoolean() && val.bool()) text = "";
 			else text = val.string_value();
+		}
+		if(isText() && !channels.containsKey("text")){
+			channels.put("text", RGB.WHITE.copy());
 		}
 		base = map.getBoolean("Base", false);
 		//

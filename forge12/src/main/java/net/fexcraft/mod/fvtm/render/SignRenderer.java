@@ -60,7 +60,7 @@ public class SignRenderer {
 							if(scom.rotx != 0f) GL11.glRotatef(scom.rotx, 1, 0, 0);
 							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) GL11.glScalef(scom.sclx, scom.scly, scom.sclz);
 							TexUtil.bindTexture(scom.getTexture().getTexture());
-							scom.getType().getModel().render(RENDERDATA.set(scom, null, cache));
+							scom.getType().getModel().render(RENDERDATA.set(scom, sign, cache));
 							GL11.glPopMatrix();
 						}
 					}

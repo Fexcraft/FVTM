@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.lib.common.Static;
-
 import static net.fexcraft.lib.common.Static.*;
 
 /**

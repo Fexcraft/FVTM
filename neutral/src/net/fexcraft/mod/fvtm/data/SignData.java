@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -122,13 +124,78 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 
 	@Override
 	public SignData parse(JsonMap map){
-		//
+		JsonArray arr = map.getArray("off");
+		offset.x = arr.get(0).float_value();
+		offset.y = arr.get(1).float_value();
+		offset.z = arr.get(2).float_value();
+		if(map.has("rot")){
+			arr = map.getArray("rot");
+			rotx = arr.get(0).float_value();
+			roty = arr.get(1).float_value();
+			rotz = arr.get(2).float_value();
+		}
+		if(map.has("scl")){
+			arr = map.getArray("scl");
+			sclx = arr.get(0).float_value();
+			scly = arr.get(1).float_value();
+			sclz = arr.get(2).float_value();
+		}
+		texture.load(map);
+		if(map.has("rgb")){
+			JsonMap rgb = map.getMap("rgb");
+			for(Entry<String, JsonValue<?>> entry : rgb.entries()){
+				int col = Integer.parseInt(entry.getValue().string_value(), 16);
+				if(channels.containsKey(entry.getKey())){
+					channels.get(entry.getKey()).packed = col;
+				}
+				else channels.put(entry.getKey(), new RGB(col));
+			}
+		}
+		if(type.isText()){
+			text = map.getString("text", text);
+			form = map.getString("form", form);
+			centered = map.getBoolean("center", false);
+		}
+		if(type.isBase()){
+			String sd = map.getString("sides", "0000");
+			for(int i = 0; i < (sd.length() > 4 ? 4 : sd.length()); i++){
+				sides[i] = sd.charAt(i) == '1';
+			}
+			width = map.getFloat("width", 1f);
+			height = map.getFloat("height", 1f);
+		}
 		return this;
 	}
 
 	@Override
 	public JsonMap toJson(){
-		return new JsonMap();
+		JsonMap map = new JsonMap();
+		map.add("type", type.getIDS());
+		map.add("off", new JsonArray.Flat(offset.x, offset.y, offset.z));
+		if(rotx != 1f || roty != 1f || rotz != 1f) map.add("rot", new JsonArray.Flat(rotx, roty, rotz));
+		if(sclx != 1f || scly != 1f || sclz != 1f) map.add("scl", new JsonArray.Flat(sclx, scly, sclz));
+		JsonMap sub = texture.save();
+		if(!sub.empty()) map.add("tex", sub);
+		sub = new JsonMap();
+		for(String str : channels.keySet()){
+			sub.add(str, Integer.toHexString(channels.get(str).packed));
+		}
+		if(!sub.empty()) map.add("rgb", sub);
+		if(type.isText()){
+			map.add("text", text);
+			map.add("form", form);
+			if(centered) map.add("center", true);
+		}
+		if(type.isBase()){
+			StringBuilder sb = new StringBuilder();
+			for(int i = 0; i < sides.length; i++){
+				sb.append(sides[i] ? "1" : "0");
+			}
+			map.add("sides", sb.toString());
+			if(width != 1f) map.add("width", width);
+			if(height != 1f) map.add("height", height);
+		}
+		return map;
 	}
 
 	@Override

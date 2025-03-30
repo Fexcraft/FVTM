@@ -13,9 +13,9 @@
 
 	"ui.fvtm.sign_editor.com_prev": "Previous Component",
 	"ui.fvtm.sign_editor.com_next": "Next Component",
+	"ui.fvtm.sign_editor.com_copy": "Copy Component",
 	"ui.fvtm.sign_editor.com_rem": "Remove Component",
-	"ui.fvtm.sign_editor.text_prev": "Previous Text",
-	"ui.fvtm.sign_editor.text_next": "Next Text",
+	"ui.fvtm.sign_editor.text_center": "Toggle Centered Text",
 	"ui.fvtm.sign_editor.text_set": "Set Text",
 	"ui.fvtm.sign_editor.sign_top": "Toggle Sign Top Border",
 	"ui.fvtm.sign_editor.sign_left": "Toggle Sign Left Border",

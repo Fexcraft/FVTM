@@ -310,13 +310,13 @@ public class SignEditor extends UserInterface {
 			return true;
 		}
 		else if(id.equals("sign_scale_x")){
-			double val = fields.get(id).number();
+			double val = fields.get("scale_x").number();
 			val += am > 0 ? -0.1 : 0.1;
 			fields.get("scale_x").text(df.format(val));
 			onAction(button, id, mx, my, 0);
 		}
 		else if(id.equals("sign_scale_y")){
-			double val = fields.get(id).number();
+			double val = fields.get("scale_y").number();
 			val += am > 0 ? -0.1 : 0.1;
 			fields.get("scale_y").text(df.format(val));
 			onAction(button, id, mx, my, 0);

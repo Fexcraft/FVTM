@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
@@ -167,6 +166,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new SignBase());
 		ModelGroup.PROGRAMS.add(SignScaled.INST[0]);
 		ModelGroup.PROGRAMS.add(new SignScaledOff(false, false, 0, 0));
+		ModelGroup.PROGRAMS.add(new SignOffset(0, 0));
 		ModelGroup.PROGRAMS.add(SignBorder.INST[0]);
 		ModelGroup.PROGRAMS.add(SignCorner.INST[0]);
 	}
@@ -392,8 +392,7 @@ public class DefaultPrograms {
 			INST[2] = new SignScaled(false, true);
 			INST[3] = new SignScaled(true, true);
 		}
-
-		private boolean width, height;
+		protected boolean width, height;
 
 		public SignScaled(boolean w, boolean h){
 			width = w;
@@ -438,13 +437,16 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			super.pre(list, data);
-			if(data.sign != null && list.visible) RENDERER.translate(0, (data.sign.height - 1) * hs, (data.sign.width - 1) * ws);
+			RENDERER.push();
+			if(data.sign != null && list.visible){
+				RENDERER.translate(0, data.sign.height * hs, data.sign.width * ws);
+				RENDERER.scale(1, height ? data.sign.height : 1, width ? data.sign.width : 1);
+			}
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			super.post(list, data);
+			RENDERER.pop();
 		}
 
 		@Override
@@ -454,6 +456,40 @@ public class DefaultPrograms {
 			float ws = args.length > 2 ? Float.parseFloat(args[2]) : 1;
 			float hs = args.length > 3 ? Float.parseFloat(args[3]) : 1;
 			return new SignScaledOff(w, h, ws, hs);
+		}
+
+	}
+
+	public static class SignOffset implements Program {
+
+		private float ws, hs;
+
+		public SignOffset(float sx, float sy){
+			ws = sx;
+			hs = sy;
+		}
+
+		@Override
+		public String id(){ return "fvtm:sign_offset"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			RENDERER.push();
+			if(data.sign != null && list.visible){
+				RENDERER.translate(0, data.sign.height * hs, data.sign.width * ws);
+			}
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			RENDERER.pop();
+		}
+
+		@Override
+		public Program parse(String[] args){
+			float ws = args.length > 0 ? Float.parseFloat(args[0]) : 1;
+			float hs = args.length > 1 ? Float.parseFloat(args[1]) : 1;
+			return new SignOffset(ws, hs);
 		}
 
 	}

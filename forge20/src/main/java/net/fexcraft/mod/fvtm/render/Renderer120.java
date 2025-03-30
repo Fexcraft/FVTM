@@ -135,6 +135,35 @@ public class Renderer120 extends Renderer<GLObject> {
 		//
 	}
 
+	@Override
+	public void push(){
+		pose.pushPose();
+	}
+
+	@Override
+	public void pop(){
+		pose.popPose();
+	}
+
+	@Override
+	public void translate(double x, double y, double z){
+		pose.translate(x, y, z);
+	}
+
+	@Override
+	public void rotate(float deg, int x, int y, int z){
+		Matrix4f mat = new Matrix4f();
+		if(x != 0f) mat.rotate(deg, AX);
+		if(y != 0f) mat.rotate(deg, AY);
+		if(z != 0f) mat.rotate(deg, AZ);
+		pose.mulPoseMatrix(mat);
+	}
+
+	@Override
+	public void scale(double x, double y, double z){
+		pose.scale((float)x, (float)y, (float)z);
+	}
+
 	public static void set(PoseStack ps, MultiBufferSource mbs, int lgt, int ol){
 		pose = ps;
 		buffer = mbs;

@@ -109,6 +109,10 @@ public class SignContainer extends ContainerInterface {
 			case "side":{
 				SignData sign = signs.get(com.getInteger("idx"));
 				if(!sign.getType().isBase()) return;
+				if(client && SystemManager.SINGLEPLAYER){
+					mirror(com, client);
+					return;
+				}
 				int i = com.getInteger("side");
 				sign.sides[i] = !sign.sides[i];
 				mirror(com, client);

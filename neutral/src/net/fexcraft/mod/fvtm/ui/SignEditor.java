@@ -55,6 +55,20 @@ public class SignEditor extends UserInterface {
 				SEND_TO_SERVER.accept(com);
 				break;
 			}
+			case "com_copy":{
+				TagCW com = TagCW.create();
+				com.set("task", "copy");
+				com.set("idx", com_sel);
+				SEND_TO_SERVER.accept(com);
+				break;
+			}
+			case "text_cen":{
+				TagCW com = TagCW.create();
+				com.set("task", "text_center");
+				com.set("idx", com_sel);
+				SEND_TO_SERVER.accept(com);
+				break;
+			}
 			case "tex_prev":{
 				if(com_sel < 0 || com_sel >= scon.signs.size()) return true;
 				TagCW com = TagCW.create();

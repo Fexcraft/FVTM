@@ -11,7 +11,9 @@
 			"buttons": [
 				"com_prev",
 				"com_next",
+				"com_copy",
 				"com_rem",
+				"text_cen",
 				"text_set",
 				"sign_top",
 				"sign_left",
@@ -79,11 +81,23 @@
 			"pos": [ 135, 2 ],
 			"tooltip": "ui.fvtm.sign_editor.com_next"
 		},
-		"com_rem": {
+		"com_copy": {
 			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ 111, 2 ],
+			"tooltip": "ui.fvtm.sign_editor.com_copy"
+		},
+		"com_rem": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 99, 2 ],
 			"tooltip": "ui.fvtm.sign_editor.com_rem"
+		},
+		"text_cen": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ 127, 31 ],
+			"tooltip": "ui.fvtm.sign_editor.text_center"
 		},
 		"text_set": {
 			"absolute": true,
@@ -245,7 +259,7 @@
 	"texts": {
 		"com_sel": {
 			"absolute": true,
-			"size": [ 103, 8 ],
+			"size": [ 91, 8 ],
 			"pos": [ 4, 3 ]
 		},
 		"com_name": {
@@ -256,7 +270,7 @@
 		},
 		"text_sel": {
 			"absolute": true,
-			"size": [ 132, 8 ],
+			"size": [ 121, 8 ],
 			"pos": [ 4, 32 ]
 		},
 		"sign_sides": {
@@ -314,8 +328,7 @@
 			"absolute": true,
 			"size": [ 121, 10 ],
 			"pos": [ 4, 46 ],
-			"background": false,
-			"numberfield": true
+			"background": false
 		},
 		"scale_x": {
 			"absolute": true,

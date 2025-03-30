@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
+import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
@@ -91,6 +92,7 @@ public class Resources20 extends FvtmResources {
 		FvtmRegistry.DECORATIONS.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new DecorationItem(veh))));
 		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), () -> new RailGaugeItem(rg))));
 		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), () -> new WireItem(wire))));
+		FvtmRegistry.SIGNS.forEach(sign -> sign.setItemWrapper(wrapwrapper(sign.getID(), () -> new SignItem(sign))));
 	}
 
 	@Override

@@ -38,13 +38,16 @@ public class SignRenderer {
 				GL11.glPushMatrix();
 				GL11.glTranslated(sign.vec.vec.x - cx, sign.vec.vec.y - cy, sign.vec.vec.z - cz);
 				if(sign.components.size() == 0){
-					rencube();
+					DebugModels.CUBE_CYN.render(0.5f);
+					RGB.glColorReset();
 				}
 				else{
 					if(holding || Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof SignItem){
-						rencube();
+						DebugModels.CUBE_CYN.render(0.5f);
+						RGB.glColorReset();
 					}
 					RenderCache cache = sign.getRenderCache();
+					GL11.glRotatef(sign.yaw, 0, 1, 0);
 					for(SignData scom : sign.components){
 						if(scom.getType().getModel() == null){
 							DebugModels.CUBE_CYN.render(0.25f);
@@ -69,13 +72,6 @@ public class SignRenderer {
 			}
 		}
 		GL11.glPopMatrix();
-	}
-
-	private static void rencube(){
-		GL11.glTranslatef(0, 0.25f, 0);
-		DebugModels.CUBE_CYN.render(0.5f);
-		GL11.glTranslatef(0, -0.25f, 0);
-		RGB.glColorReset();
 	}
 
 }

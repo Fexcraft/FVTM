@@ -10,9 +10,10 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.uni.ui.ContainerInterface.SEND_TO_SERVER;
 
 /**
@@ -22,6 +23,8 @@ public class SignEditor extends UserInterface {
 
 	private SignContainer scon;
 	private static ArrayList<String> colors = new ArrayList<>();
+	public static final DecimalFormat df = new DecimalFormat("#.####");
+	static { df.setRoundingMode(RoundingMode.DOWN); }
 	protected int col_sel;
 	protected int com_sel;
 	protected SignData sign;
@@ -284,38 +287,38 @@ public class SignEditor extends UserInterface {
 	public boolean onScroll(UIButton button, String id, int mx, int my, int am) {
 		if(id.startsWith("pos")){
 			int ax = Integer.parseInt(id.substring(3));
-			float val = fields.get(id).number();
-			val += am > 0 ? -0.01f : 0.01f;
-			fields.get("pos" + ax).text(val + "");
+			double val = fields.get(id).number();
+			val += am > 0 ? -0.01 : 0.01;
+			fields.get("pos" + ax).text(df.format(val));
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.startsWith("rot")){
 			int ax = Integer.parseInt(id.substring(3));
-			float val = fields.get(id).number();
+			double val = fields.get(id).number();
 			val += am > 0 ? -1 : 1;
-			fields.get("rot" + ax).text(val + "");
+			fields.get("rot" + ax).text(df.format(val));
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.startsWith("scl")){
 			int ax = Integer.parseInt(id.substring(3));
-			float val = fields.get(id).number();
-			val += am > 0 ? -0.1f : 0.1f;
-			fields.get("scl" + ax).text(val + "");
+			double val = fields.get(id).number();
+			val += am > 0 ? -0.01 : 0.01;
+			fields.get("scl" + ax).text(df.format(val));
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.equals("sign_scale_x")){
-			float val = fields.get("scale_x").number();
-			val += am > 0 ? -0.1f : 0.1f;
-			fields.get("scale_x").text(val + "");
+			double val = fields.get(id).number();
+			val += am > 0 ? -0.1 : 0.1;
+			fields.get("scale_x").text(df.format(val));
 			onAction(button, id, mx, my, 0);
 		}
 		else if(id.equals("sign_scale_y")){
-			float val = fields.get("scale_y").number();
-			val += am > 0 ? -0.1f : 0.1f;
-			fields.get("scale_y").text(val + "");
+			double val = fields.get(id).number();
+			val += am > 0 ? -0.1 : 0.1;
+			fields.get("scale_y").text(df.format(val));
 			onAction(button, id, mx, my, 0);
 		}
 		return false;

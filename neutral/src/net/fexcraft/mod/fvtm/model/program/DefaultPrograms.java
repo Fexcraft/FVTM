@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
-import net.fexcraft.mod.fvtm.render.EffectRenderer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

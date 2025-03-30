@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
+import net.fexcraft.mod.fvtm.render.EffectRenderer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -527,8 +528,8 @@ public class DefaultPrograms {
 
 	public static class SignCorner implements Program {
 
-		public static SignBorder[] INST = new SignBorder[4];
-		static{ for(int i = 0; i < INST.length; i++) INST[i] = new SignBorder(i); }
+		public static SignCorner[] INST = new SignCorner[4];
+		static{ for(int i = 0; i < INST.length; i++) INST[i] = new SignCorner(i); }
 		private int corner;
 
 		private SignCorner(int cid){
@@ -542,10 +543,10 @@ public class DefaultPrograms {
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.sign == null) return;
 			switch(corner){
-				case 0: if(data.sign.sides[0] || data.sign.sides[1]) list.visible = false; break;
-				case 1: if(data.sign.sides[0] || data.sign.sides[2]) list.visible = false; break;
-				case 2: if(data.sign.sides[2] || data.sign.sides[3]) list.visible = false; break;
-				case 3: if(data.sign.sides[1] || data.sign.sides[3]) list.visible = false; break;
+				case 0: list.visible = !(data.sign.sides[0] || data.sign.sides[1]); break;
+				case 1: list.visible = !(data.sign.sides[0] || data.sign.sides[2]); break;
+				case 2: list.visible = !(data.sign.sides[2] || data.sign.sides[3]); break;
+				case 3: list.visible = !(data.sign.sides[1] || data.sign.sides[3]); break;
 			}
 		}
 

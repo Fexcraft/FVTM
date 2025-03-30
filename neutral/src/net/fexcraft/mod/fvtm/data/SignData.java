@@ -23,6 +23,7 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 	public float sclx = 1, scly = 1, sclz = 1;
 	//
 	public String text, form;
+	public boolean centered;
 	public boolean[] sides;
 	public float width, height;
 
@@ -74,6 +75,7 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 		if(type.isText()){
 			compound.set("text", text);
 			compound.set("form", form);
+			if(centered) compound.set("centered", true);
 		}
 		if(type.isBase()){
 			for(int i = 0; i < sides.length; i++){
@@ -105,6 +107,7 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 		if(type.isText()){
 			text = compound.getString("text");
 			form = compound.getString("form");
+			centered = compound.getBoolean("centered");
 		}
 		if(type.isBase()){
 			if(sides == null) sides = new boolean[4];

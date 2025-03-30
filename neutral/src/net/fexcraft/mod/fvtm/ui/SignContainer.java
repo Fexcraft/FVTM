@@ -1,8 +1,13 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.Sign;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
@@ -12,6 +17,11 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
 
 /**
@@ -154,15 +164,53 @@ public class SignContainer extends ContainerInterface {
 				break;
 			}
 			case "rem_all":{
-
+				inst.components.clear();
+				inst.updateClient();
+				signs.clear();
+				mirror(com, client);
 				break;
 			}
 			case "import":{
-
+				Clipboard cp = Toolkit.getDefaultToolkit().getSystemClipboard();
+				Transferable data = cp.getContents(null);
+				if(!data.isDataFlavorSupported(DataFlavor.stringFlavor)) return;
+				try{
+					String str = data.getTransferData(DataFlavor.stringFlavor).toString();
+					if(!str.startsWith("[")) return;
+					inst.components.clear();
+					JsonArray array = JsonHandler.parse(str, false).asArray();
+					for(JsonValue<?> val : array.value){
+						try{
+							JsonMap map = val.asMap();
+							Sign type = FvtmRegistry.SIGNS.get(map.get("type").string_value());
+							SignData sign = new SignData(type).parse(map);
+							inst.components.add(sign);
+						}
+						catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+					inst.updateClient();
+					player.entity.openUI(UIKeys.SIGN_EDITOR, pos);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				break;
 			}
 			case "export":{
-
+				try{
+					JsonArray array = new JsonArray();
+					for(SignData sign : signs){
+						array.add(sign.toJson());
+					}
+					Clipboard cp = Toolkit.getDefaultToolkit().getSystemClipboard();
+					StringSelection sel = new StringSelection(JsonHandler.toString(array, JsonHandler.PrintOption.FLAT));
+					cp.setContents(sel, new StringSelection("fvtm:sign"));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				break;
 			}
 		}

@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
@@ -226,6 +227,13 @@ public abstract class Packets {
 			QV3D pos = new QV3D(com, "pos");
 			if(com.getBoolean("remove")){
 				system.delSign(pos);
+			}
+			else if(com.getBoolean("item")){
+				SignData data = player.getHeldItem(true).getContent(ContentType.SIGN.item_type);
+				SignInstance inst = system.addSign(pos);
+				inst.components.add(data);
+				inst.updateClient();
+				if(!player.isCreative()) player.getHeldItem(true).decr(1);
 			}
 			else{
 				player.openUI(UIKeys.SIGN_EDITOR, pos.pos);

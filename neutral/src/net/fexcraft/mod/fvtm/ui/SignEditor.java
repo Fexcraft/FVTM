@@ -285,7 +285,7 @@ public class SignEditor extends UserInterface {
 		if(id.startsWith("pos")){
 			int ax = Integer.parseInt(id.substring(3));
 			float val = fields.get(id).number();
-			val += am > 0 ? -sixteenth : sixteenth;
+			val += am > 0 ? -0.01f : 0.01f;
 			fields.get("pos" + ax).text(val + "");
 			onAction(button, id, mx, my, 0);
 			return true;
@@ -301,20 +301,20 @@ public class SignEditor extends UserInterface {
 		else if(id.startsWith("scl")){
 			int ax = Integer.parseInt(id.substring(3));
 			float val = fields.get(id).number();
-			val += am > 0 ? -sixteenth : sixteenth;
+			val += am > 0 ? -0.1f : 0.1f;
 			fields.get("scl" + ax).text(val + "");
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.equals("sign_scale_x")){
 			float val = fields.get("scale_x").number();
-			val += am > 0 ? -sixteenth : sixteenth;
+			val += am > 0 ? -0.1f : 0.1f;
 			fields.get("scale_x").text(val + "");
 			onAction(button, id, mx, my, 0);
 		}
 		else if(id.equals("sign_scale_y")){
 			float val = fields.get("scale_y").number();
-			val += am > 0 ? -sixteenth : sixteenth;
+			val += am > 0 ? -0.1f : 0.1f;
 			fields.get("scale_y").text(val + "");
 			onAction(button, id, mx, my, 0);
 		}

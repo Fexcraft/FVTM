@@ -353,6 +353,7 @@ public class SignEditor extends UserInterface {
 		texts.get("com_name").value(sign == null ? "null" : sign.getType().getName());
 		texts.get("text_sel").value("...");
 		texts.get("sign_sides").value("...");
+		buttons.get("text_cen").ecolor.packed = RGB.WHITE.packed;
 		buttons.get("sign_top").ecolor.packed = RGB.WHITE.packed;
 		buttons.get("sign_bot").ecolor.packed = RGB.WHITE.packed;
 		buttons.get("sign_left").ecolor.packed = RGB.WHITE.packed;
@@ -364,6 +365,7 @@ public class SignEditor extends UserInterface {
 			if(sign.getType().isText()){
 				texts.get("text_sel").transval("ui.fvtm.sign_editor.text_sel");
 				fields.get("text").text(sign.form);
+				buttons.get("text_cen").ecolor.packed = sign.centered ? RGB.GREEN.packed : RGB.BLUE.packed;
 			}
 			else{
 				texts.get("text_sel").transval("ui.fvtm.sign_editor.text_none");

@@ -51,6 +51,16 @@ public class SignContainer extends ContainerInterface {
 				mirror(com, client);
 				return;
 			}
+			case "copy":{
+				SignData sign = signs.get(com.getInteger("idx"));
+				if(sign != null){
+					SignData data = new SignData(sign.getType()).read(sign.write(TagCW.create()));
+					if(!client || !SystemManager.SINGLEPLAYER) inst.components.add(data);
+					signs.add(data);
+				}
+				mirror(com, client);
+				return;
+			}
 			case "pos":{
 				SignData sign = signs.get(com.getInteger("idx"));
 				switch(com.getInteger("axis")){
@@ -96,6 +106,17 @@ public class SignContainer extends ContainerInterface {
 			case "color":{
 				SignData sign = signs.get(com.getInteger("idx"));
 				sign.getColorChannel(com.getString("channel")).packed = com.getInteger("rgb");
+				mirror(com, client);
+				break;
+			}
+			case "text_center":{
+				SignData sign = signs.get(com.getInteger("idx"));
+				if(!sign.getType().isText()) return;
+				if(client && SystemManager.SINGLEPLAYER){
+					mirror(com, client);
+					return;
+				}
+				sign.centered = !sign.centered;
 				mirror(com, client);
 				break;
 			}

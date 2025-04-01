@@ -35,17 +35,14 @@ public class SignContainer extends ContainerInterface {
 
 	public SignContainer(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
-		system = SystemManager.get(SystemManager.Systems.SIGN, player.entity.getWorld());
-		inst = system.getSign(pos);
-		signs.addAll(inst.components);
-	}
-
-	@Override
-	public Object get(String key, Object... objs){
-		switch(key){
-			//
+		try{
+			system = SystemManager.get(SystemManager.Systems.SIGN, player.entity.getWorld());
+			inst = system.getSign(pos);
+			signs.addAll(inst.components);
 		}
-		return null;
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class SignContainer extends ContainerInterface {
 				SignData sign = signs.get(com.getInteger("idx"));
 				if(sign != null){
 					SignData data = new SignData(sign.getType()).read(sign.write(TagCW.create()));
-					if(!client || !SystemManager.SINGLEPLAYER) inst.components.add(data);
+					inst.components.add(data);
 					signs.add(data);
 				}
 				mirror(com, client);
@@ -122,10 +119,6 @@ public class SignContainer extends ContainerInterface {
 			case "text_center":{
 				SignData sign = signs.get(com.getInteger("idx"));
 				if(!sign.getType().isText()) return;
-				if(client && SystemManager.SINGLEPLAYER){
-					mirror(com, client);
-					return;
-				}
 				sign.centered = !sign.centered;
 				mirror(com, client);
 				break;
@@ -140,10 +133,6 @@ public class SignContainer extends ContainerInterface {
 			case "side":{
 				SignData sign = signs.get(com.getInteger("idx"));
 				if(!sign.getType().isBase()) return;
-				if(client && SystemManager.SINGLEPLAYER){
-					mirror(com, client);
-					return;
-				}
 				int i = com.getInteger("side");
 				sign.sides[i] = !sign.sides[i];
 				mirror(com, client);

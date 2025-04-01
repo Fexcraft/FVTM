@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.SignData;
@@ -52,8 +53,9 @@ public class SignRenderer {
 	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
 	@SubscribeEvent
-	public static void renderWires(RenderLevelStageEvent event){
+	public static void renderSigns(RenderLevelStageEvent event){
 		if(DISABLE_SIGNS) return;
+		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
 		sys = SystemManager.get(SystemManager.Systems.SIGN, WrapperHolder.getWorld(event.getCamera().getEntity().level()));
 		if(sys == null) return;
 		Camera camera = event.getCamera();
@@ -64,29 +66,42 @@ public class SignRenderer {
 		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.SIGN_ADJREM.idx;
 		pose.pushPose();
+		pose.translate(-cx, -cy, -cz);
 		Renderer120.resetColor();
 		for(SignRegion reg : sys.getRegions().values()){
 			for(SignInstance sign : reg.getSigns().values()){
 				//TODO distance check
 				pose.pushPose();
-				pose.translate(sign.vec.vec.x - cx, sign.vec.vec.y - cy, sign.vec.vec.z - cz);
+				pose.translate(sign.vec.vec.x, sign.vec.vec.y, sign.vec.vec.z);
 				if(sign.components.size() == 0){
+					FvtmRenderTypes.setLines();
 					Renderer120.setColor(ORG);
+					pose.pushPose();
+					pose.scale(0.5f, 0.5f, 0.5f);
 					CUBE.render();
+					pose.popPose();
 					Renderer120.resetColor();
 				}
 				else{
 					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SignItem){
+						FvtmRenderTypes.setLines();
+						pose.pushPose();
 						Renderer120.setColor(ORG);
+						pose.scale(0.5f, 0.5f, 0.5f);
 						CUBE.render();
+						pose.popPose();
 						Renderer120.resetColor();
 					}
 					RenderCache cache = sign.getRenderCache();
 					pose.mulPoseMatrix(new Matrix4f().rotate(sign.yaw, AY));
 					for(SignData scom : sign.components){
 						if(scom.getType().getModel() == null){
+							FvtmRenderTypes.setLines();
 							Renderer120.setColor(ORG);
+							pose.pushPose();
+							pose.scale(0.5f, 0.5f, 0.5f);
 							CUBE.render();
+							pose.popPose();
 							Renderer120.resetColor();
 						}
 						else{

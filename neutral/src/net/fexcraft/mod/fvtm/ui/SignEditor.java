@@ -334,7 +334,7 @@ public class SignEditor extends UserInterface {
 		if(com_sel < 0) com_sel = scon.signs.size() - 1;
 		if(com_sel >= scon.signs.size()) com_sel = 0;
 		colors.clear();
-		sign = com_sel > scon.signs.size() ? null : scon.signs.get(com_sel);
+		sign = com_sel >= scon.signs.size() ? null : scon.signs.get(com_sel);
 		boolean miss = sign == null;
 		for(int i = 0; i < 3; i++){
 			fields.get("pos" + i).text(miss ? 0 : (i == 0 ? sign.offset.x : i == 1 ? sign.offset.y : sign.offset.z));
@@ -387,21 +387,6 @@ public class SignEditor extends UserInterface {
 				texts.get("sign_sides").transval("ui.fvtm.sign_editor.sign_nosides");
 			}
 		}
-	}
-
-	@Override
-	public void predraw(float ticks, int mx, int my){
-		//
-	}
-
-	@Override
-	public void postdraw(float ticks, int mx, int my){
-		//
-	}
-
-	@Override
-	public void scrollwheel(int a, int x, int y){
-		//
 	}
 
 }

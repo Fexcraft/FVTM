@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.io.File;
@@ -137,11 +138,11 @@ public class SignRegion {
 		return key;
 	}
 
-	public void updateClient(Passenger player){
+	public void syncClient(EntityW player){
 		if(system.getWorld().isClient() || player == null) return;
 		TagCW compound = this.write(true);
 		compound.set("XZ", key.toArray());
-		Packets.sendTo(Packet_TagListener.class, player, "sign_upd_region", compound);
+		Packets.sendTo(Packet_TagListener.class, (Passenger)player, "sign_reg", compound);
 	}
 
 	public void updateClient(V3I pos){

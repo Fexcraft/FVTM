@@ -227,12 +227,12 @@ public abstract class Packets {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
 			QV3D pos = new QV3D(com, "pos");
 			if(com.getBoolean("remove")){
-				system.delSign(pos);
+				system.delSign(pos.pos);
 			}
 			else if(com.getBoolean("item")){
 				Sign sign = player.getHeldItem(true).getContent(ContentType.SIGN.item_type);
 				SignData data = new SignData(sign).read(player.getHeldItem(true).directTag());
-				SignInstance inst = system.getSign(pos);
+				SignInstance inst = system.getSign(pos.pos);
 				inst.components.add(data);
 				inst.updateClient();
 				if(!player.isCreative()) player.getHeldItem(true).decr(1);
@@ -465,13 +465,13 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("sign_upd", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
-			QV3D pos = new QV3D(tag, "pos");
+			V3I pos = new V3I(tag.getList("pos"));
 			SignRegion region = system.getRegions().get(pos, false);
 			if(region != null) region.addSign(pos).read(tag.getCompound("sign"));
 		});
 		LIS_CLIENT.put("sign_rem", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
-			system.delSign(new QV3D(tag, "pos"));
+			system.delSign(new V3I(tag.getList("pos")));
 		});
 	}
 

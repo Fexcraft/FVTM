@@ -36,7 +36,7 @@ public class SignContainer extends ContainerInterface {
 	public SignContainer(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		system = SystemManager.get(SystemManager.Systems.SIGN, player.entity.getWorld());
-		inst = system.getSign(QV3D.exact(pos.x, pos.y, pos.z, (byte)8, (byte)8, (byte)8));
+		inst = system.getSign(pos);
 		signs.addAll(inst.components);
 	}
 

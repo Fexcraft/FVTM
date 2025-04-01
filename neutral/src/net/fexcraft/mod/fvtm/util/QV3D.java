@@ -38,6 +38,10 @@ public class QV3D implements Comparable<QV3D> {
 		this(pos.x, pos.y, pos.z);
 	}
 
+	public QV3D(V3I pos){
+		this(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5);
+	}
+
 	public QV3D(QV3D other){
 		pos = other.pos.copy();
 		x = other.x;

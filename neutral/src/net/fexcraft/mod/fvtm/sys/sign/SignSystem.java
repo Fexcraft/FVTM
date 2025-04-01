@@ -1,11 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.sign;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -122,22 +121,22 @@ public class SignSystem extends DetachedSystem {
 
 	}
 
-	public SignInstance getSign(QV3D pos){
+	public SignInstance getSign(V3I pos){
 		SignRegion region = regions.get(pos, false);
 		return region == null ? null : region.getSign(pos);
 	}
 
-	public SignInstance getSign(QV3D pos, boolean load){
+	public SignInstance getSign(V3I pos, boolean load){
 		SignRegion region = regions.get(pos, load);
 		return region.getSign(pos);
 	}
 
-	public SignInstance addSign(QV3D pos){
+	public SignInstance addSign(V3I pos){
 		SignRegion region = regions.get(pos, true);
 		return region.addSign(pos);
 	}
 
-	public void delSign(QV3D pos){
+	public void delSign(V3I pos){
 		SignRegion region = regions.get(pos, true);
 		if(region != null) region.delSign(pos);
 	}
@@ -169,10 +168,10 @@ public class SignSystem extends DetachedSystem {
 			return null;
 		}
 
-		public SignRegion get(QV3D pos, boolean load){
+		public SignRegion get(V3I pos, boolean load){
 			SignRegion region = get(RegionKey.getRegionXZ(pos));
 			if(region != null || !load) return region;
-			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new SignRegion(pos.pos, root, false));
+			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new SignRegion(pos, root, false));
 			region.load().updateClient(pos);
 			return region;
 		}

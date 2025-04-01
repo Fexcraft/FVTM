@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
@@ -59,6 +60,10 @@ public abstract class DetachedSystem {
 	
 	public void onTimerTick(){
 		//
+	}
+
+	public void syncPlayer(EntityW entity){
+
 	}
 
 }

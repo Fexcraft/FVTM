@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
@@ -27,12 +28,12 @@ import static net.fexcraft.mod.fvtm.Config.*;
 public class SystemManager {
 
 	public static boolean SINGLEPLAYER, PLAYERON;
-	private static ConcurrentHashMap<Systems, ConcurrentHashMap<Object, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
-	private static ConcurrentHashMap<Object, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
-	private static ConcurrentHashMap<Object, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Systems, ConcurrentHashMap<String, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
 	
 	public static void onServerTick(){
-		for(ConcurrentHashMap<Object, DetachedSystem> sys : SYSTEMS.values()){
+		for(ConcurrentHashMap<String, DetachedSystem> sys : SYSTEMS.values()){
 			for(DetachedSystem det : sys.values()){
 				det.onServerTick();
 			}
@@ -40,7 +41,7 @@ public class SystemManager {
 	}
 
 	public static void onClientTick(){
-		for(ConcurrentHashMap<Object, DetachedSystem> sys : SYSTEMS.values()){
+		for(ConcurrentHashMap<String, DetachedSystem> sys : SYSTEMS.values()){
 			for(DetachedSystem det : sys.values()){
 				det.onClientTick();
 			}
@@ -80,7 +81,7 @@ public class SystemManager {
 	public static void onAttachWorldCapabilities(WorldW world){
 		if(loaded(world.dimkey())) return;
 		SINGLEPLAYER = WrapperHolder.isSinglePlayer();
-		Object dim = world.dimkey();
+		String dim = world.dimkey();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
 		FvtmLogger.debug("dimension remote = " + world.isClient() + "/" + SINGLEPLAYER);
 		if(world.isClient() || SINGLEPLAYER){
@@ -122,7 +123,7 @@ public class SystemManager {
 
 	public static void onServerStarting(){
 		long mid = getDate();
-		for(Map<Object, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<String, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.setupTimer(mid);
 			}
@@ -137,7 +138,7 @@ public class SystemManager {
 	}
 
 	public static void onServerStopping(){
-		for(Map<Object, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<String, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.stopTimer();
 				sys.unload();
@@ -162,7 +163,15 @@ public class SystemManager {
 		SYSTEMS_DIM.remove(dim);
 		LOADED_DIM.remove(dim);
 	}
-	
+
+	public static void syncPlayer(String dimkey, EntityW entity){
+		ConcurrentHashMap<Systems, DetachedSystem> sys = SYSTEMS_DIM.get(dimkey);
+		if(sys == null) return;
+		for(DetachedSystem value : sys.values()){
+			value.syncPlayer(entity);
+		}
+	}
+
 	public static enum Systems {
 		
 		RAIL, ROAD, WIRE, ENTITY, SIGN

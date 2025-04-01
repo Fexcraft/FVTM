@@ -74,27 +74,6 @@ public class SignItem extends Item implements ContentItem.ContentDataItem<Sign, 
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-		if(world.isRemote) return EnumActionResult.PASS;
-		ItemStack stack = player.getHeldItem(hand);
-		EntityW ply = UniEntity.getEntity(player);
-		SignData data = getData(UniStack.getStack(stack));
-		QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
-		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
-		if(system == null){
-			ply.send("sign system not found");
-			return EnumActionResult.FAIL;
-		}
-		SignInstance inst = system.addSign(vec);
-		inst.yaw = -facing.getHorizontalAngle() - 90;
-		inst.components.add(data);
-		inst.updateClient();
-		if(!player.capabilities.isCreativeMode) stack.shrink(1);
-		//ply.openUI(UIKeys.SIGN_EDITOR, pos.getX(), pos.getY(), pos.getZ());
-		return EnumActionResult.SUCCESS;
-	}
-
-	@Override
 	public Sign getContent(){
 		return sign;
 	}

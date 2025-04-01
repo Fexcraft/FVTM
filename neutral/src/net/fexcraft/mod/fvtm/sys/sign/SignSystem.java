@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
@@ -146,6 +147,13 @@ public class SignSystem extends DetachedSystem {
 		//unused
 	}
 
+	@Override
+	public void syncPlayer(EntityW entity){
+		for(SignRegion region : regions.values()){
+			region.syncClient(entity);
+		}
+	}
+
 	public static class RegionMap extends ConcurrentHashMap<RegionKey, SignRegion> {
 
 		private SignSystem root;
@@ -207,7 +215,7 @@ public class SignSystem extends DetachedSystem {
 		}
 		else{
 			SignRegion region = regions.get(xz, true);
-			region.updateClient(player);
+			region.syncClient(player);
 		}
 	}
 

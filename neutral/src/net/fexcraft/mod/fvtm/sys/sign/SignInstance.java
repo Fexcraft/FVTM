@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.sign;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.model.RenderCache;
@@ -23,6 +24,11 @@ public class SignInstance {
 
 	public SignInstance(SignRegion reg){
 		region = reg;
+	}
+
+	public SignInstance(SignRegion reg, V3I pos){
+		this(reg);
+		vec = new QV3D(pos);
 	}
 
 	public SignInstance(SignRegion reg, QV3D pos){
@@ -66,7 +72,7 @@ public class SignInstance {
 	}
 
 	public void updateClient(){
-		region.updateClient(SignRegion.Update.SIGN, vec, this);
+		region.updateClient(SignRegion.Update.SIGN, vec.pos, this);
 	}
 
 	public RenderCache getRenderCache(){

@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.Sign;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
@@ -229,13 +230,19 @@ public abstract class Packets {
 				system.delSign(pos);
 			}
 			else if(com.getBoolean("item")){
-				SignData data = player.getHeldItem(true).getContent(ContentType.SIGN.item_type);
+				Sign sign = player.getHeldItem(true).getContent(ContentType.SIGN.item_type);
+				SignData data = new SignData(sign).read(player.getHeldItem(true).directTag());
 				SignInstance inst = system.addSign(pos);
 				inst.components.add(data);
 				inst.updateClient();
 				if(!player.isCreative()) player.getHeldItem(true).decr(1);
 			}
 			else{
+				SignInstance inst = system.getSign(pos);
+				if(inst == null || inst.components.isEmpty()){
+					player.send("sign.empty");
+					return;
+				}
 				player.openUI(UIKeys.SIGN_EDITOR, pos.pos);
 			}
 		});

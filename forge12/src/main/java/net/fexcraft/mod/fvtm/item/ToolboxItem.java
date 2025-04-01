@@ -101,10 +101,13 @@ public class ToolboxItem extends Item {
 			ply.send("sign system not found");
 			return EnumActionResult.FAIL;
 		}
-		SignInstance inst = system.addSign(vec);
-		inst.yaw = -facing.getHorizontalAngle() - 90;
-		inst.updateClient();
-		if(!player.capabilities.isCreativeMode) stack.shrink(1);
+		SignInstance inst = system.getSign(vec.pos);
+		if(inst == null){
+			inst = system.addSign(vec.pos);
+			inst.vec = vec;
+			inst.yaw = -facing.getHorizontalAngle() - 90;
+			inst.updateClient();
+		}
 		return EnumActionResult.SUCCESS;
 	}
 

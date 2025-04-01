@@ -232,17 +232,12 @@ public abstract class Packets {
 			else if(com.getBoolean("item")){
 				Sign sign = player.getHeldItem(true).getContent(ContentType.SIGN.item_type);
 				SignData data = new SignData(sign).read(player.getHeldItem(true).directTag());
-				SignInstance inst = system.addSign(pos);
+				SignInstance inst = system.getSign(pos);
 				inst.components.add(data);
 				inst.updateClient();
 				if(!player.isCreative()) player.getHeldItem(true).decr(1);
 			}
 			else{
-				SignInstance inst = system.getSign(pos);
-				if(inst == null || inst.components.isEmpty()){
-					player.send("sign.empty");
-					return;
-				}
 				player.openUI(UIKeys.SIGN_EDITOR, pos.pos);
 			}
 		});

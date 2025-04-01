@@ -93,7 +93,7 @@ public class ToolboxItem extends Item {
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
-		if(stack.getItemDamage() != ToolboxType.SIGN_ADJREM.idx) return EnumActionResult.PASS;
+		if(stack.getItemDamage() != ToolboxType.SIGN_ADJREM.idx || player.isSneaking()) return EnumActionResult.PASS;
 		EntityW ply = UniEntity.getEntity(player);
 		QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
 		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());

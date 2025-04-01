@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -12,7 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static net.fexcraft.mod.uni.ui.ContainerInterface.SEND_TO_SERVER;
 
@@ -23,8 +26,6 @@ public class SignEditor extends UserInterface {
 
 	private SignContainer scon;
 	private static ArrayList<String> colors = new ArrayList<>();
-	public static final DecimalFormat df = new DecimalFormat("#.####");
-	static { df.setRoundingMode(RoundingMode.DOWN); }
 	protected int col_sel;
 	protected int com_sel;
 	protected SignData sign;
@@ -211,7 +212,7 @@ public class SignEditor extends UserInterface {
 				TagCW com = TagCW.create();
 				com.set("task", "width");
 				com.set("idx", com_sel);
-				com.set("val", fields.get("scale_x").number());
+				com.set("val", fields.get("scale_x")._double());
 				SEND_TO_SERVER.accept(com);
 				break;
 			}
@@ -220,7 +221,7 @@ public class SignEditor extends UserInterface {
 				TagCW com = TagCW.create();
 				com.set("task", "height");
 				com.set("idx", com_sel);
-				com.set("val", fields.get("scale_y").number());
+				com.set("val", fields.get("scale_y")._double());
 				SEND_TO_SERVER.accept(com);
 				break;
 			}
@@ -255,7 +256,7 @@ public class SignEditor extends UserInterface {
 				com.set("task", "pos");
 				com.set("axis", ax);
 				com.set("idx", com_sel);
-				com.set("value", fields.get(id).number());
+				com.set("value", fields.get(id)._double());
 				SEND_TO_SERVER.accept(com);
 				return true;
 			}
@@ -265,7 +266,7 @@ public class SignEditor extends UserInterface {
 				com.set("task", "rot");
 				com.set("axis", ax);
 				com.set("idx", com_sel);
-				com.set("value", fields.get(id).number());
+				com.set("value", fields.get(id)._double());
 				SEND_TO_SERVER.accept(com);
 				return true;
 			}
@@ -275,7 +276,7 @@ public class SignEditor extends UserInterface {
 				com.set("task", "scale");
 				com.set("axis", ax);
 				com.set("idx", com_sel);
-				com.set("value", fields.get(id).number());
+				com.set("value", fields.get(id)._double());
 				SEND_TO_SERVER.accept(com);
 				return true;
 			}
@@ -287,38 +288,38 @@ public class SignEditor extends UserInterface {
 	public boolean onScroll(UIButton button, String id, int mx, int my, int am) {
 		if(id.startsWith("pos")){
 			int ax = Integer.parseInt(id.substring(3));
-			double val = fields.get(id).number();
+			double val = fields.get(id)._double();
 			val += am > 0 ? -0.01 : 0.01;
-			fields.get("pos" + ax).text(df.format(val));
+			fields.get("pos" + ax).text(val);
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.startsWith("rot")){
 			int ax = Integer.parseInt(id.substring(3));
-			double val = fields.get(id).number();
+			double val = fields.get(id)._double();
 			val += am > 0 ? -1 : 1;
-			fields.get("rot" + ax).text(df.format(val));
+			fields.get("rot" + ax).text(val);
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.startsWith("scl")){
 			int ax = Integer.parseInt(id.substring(3));
-			double val = fields.get(id).number();
+			double val = fields.get(id)._double();
 			val += am > 0 ? -0.01 : 0.01;
-			fields.get("scl" + ax).text(df.format(val));
+			fields.get("scl" + ax).text(val);
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
 		else if(id.equals("sign_scale_x")){
-			double val = fields.get("scale_x").number();
+			double val = fields.get("scale_x")._double();
 			val += am > 0 ? -0.1 : 0.1;
-			fields.get("scale_x").text(df.format(val));
+			fields.get("scale_x").text(val);
 			onAction(button, id, mx, my, 0);
 		}
 		else if(id.equals("sign_scale_y")){
-			double val = fields.get("scale_y").number();
+			double val = fields.get("scale_y")._double();
 			val += am > 0 ? -0.1 : 0.1;
-			fields.get("scale_y").text(df.format(val));
+			fields.get("scale_y").text(val);
 			onAction(button, id, mx, my, 0);
 		}
 		return false;
@@ -336,9 +337,9 @@ public class SignEditor extends UserInterface {
 		sign = scon.signs.get(com_sel);
 		boolean miss = sign == null;
 		for(int i = 0; i < 3; i++){
-			fields.get("pos" + i).text(miss ? "0" : (i == 0 ? sign.offset.x : i == 1 ? sign.offset.y : sign.offset.z) + "");
-			fields.get("rot" + i).text(miss ? "0" : (i == 0 ? sign.rotx : i == 1 ? sign.roty : sign.rotz) + "");
-			fields.get("scl" + i).text(miss ? "0" : (i == 0 ? sign.sclx : i == 1 ? sign.scly : sign.sclz) + "");
+			fields.get("pos" + i).text(miss ? 0 : (i == 0 ? sign.offset.x : i == 1 ? sign.offset.y : sign.offset.z));
+			fields.get("rot" + i).text(miss ? 0 : (i == 0 ? sign.rotx : i == 1 ? sign.roty : sign.rotz));
+			fields.get("scl" + i).text(miss ? 0 : (i == 0 ? sign.sclx : i == 1 ? sign.scly : sign.sclz));
 		}
 		texts.get("texc").value(miss ? "" : sign.getCurrentTexture().name());
 		col_sel = colidx;
@@ -362,8 +363,8 @@ public class SignEditor extends UserInterface {
 		buttons.get("sign_left").ecolor.packed = RGB.WHITE.packed;
 		buttons.get("sign_right").ecolor.packed = RGB.WHITE.packed;
 		fields.get("text").text("");
-		fields.get("scale_x").text("0");
-		fields.get("scale_y").text("0");
+		fields.get("scale_x").text(0);
+		fields.get("scale_y").text(0);
 		if(sign != null){
 			if(sign.getType().isText()){
 				texts.get("text_sel").transval("ui.fvtm.sign_editor.text_sel");
@@ -379,8 +380,8 @@ public class SignEditor extends UserInterface {
 				buttons.get("sign_left").ecolor.packed = sign.sides[1] ? RGB.WHITE.packed : RGB.GREEN.packed;
 				buttons.get("sign_right").ecolor.packed = sign.sides[2] ? RGB.WHITE.packed : RGB.GREEN.packed;
 				buttons.get("sign_bot").ecolor.packed = sign.sides[3] ? RGB.WHITE.packed : RGB.GREEN.packed;
-				fields.get("scale_x").text(sign.width + "");
-				fields.get("scale_y").text(sign.height + "");
+				fields.get("scale_x").text(sign.width);
+				fields.get("scale_y").text(sign.height);
 			}
 			else{
 				texts.get("sign_sides").transval("ui.fvtm.sign_editor.sign_nosides");

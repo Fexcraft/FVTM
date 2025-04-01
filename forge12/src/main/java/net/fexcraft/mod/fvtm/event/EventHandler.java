@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniChunk;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -212,6 +213,7 @@ public class EventHandler {
 		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player.getGameProfile().getId());
 		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = true;
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), UniEntity.getEntity(event.player));
 	}
 	
 	@SubscribeEvent

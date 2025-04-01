@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
@@ -145,11 +144,11 @@ public class SignRegion {
 		Packets.sendTo(Packet_TagListener.class, player, "sign_upd_region", compound);
 	}
 
-	public void updateClient(QV3D pos){
+	public void updateClient(V3I pos){
 		updateClient(Update.ALL, pos, null);
 	}
 
-	public void updateClient(Update kind, QV3D pos, SignInstance sign){
+	public void updateClient(Update kind, V3I pos, SignInstance sign){
 		if(system.getWorld().isClient()) return;
 		TagCW com = null;
 		String task = null;
@@ -157,21 +156,20 @@ public class SignRegion {
 			case ALL:{
 				task = "sign_reg";
 				com = write(true);
-				pos.write(com, "pos");
 				com.set("XZ", RegionKey.getRegionXZ(pos));
 				break;
 			}
 			case SIGN:{
 				task = "sign_upd";
 				com = TagCW.create();
-				pos.write(com, "pos");
+				com.set("pos", pos.toLW());
 				com.set("sign", sign.write());
 				break;
 			}
 			case SIGN_REM:{
 				task = "sign_rem";
 				com = TagCW.create();
-				pos.write(com, "pos");
+				com.set("pos", pos.toLW());
 				break;
 			}
 			default:{
@@ -180,32 +178,32 @@ public class SignRegion {
 			}
 		}
 		if(com == null) return;
-		Packets.sendInRange(Packet_TagListener.class, system.getWorld(), pos.pos, task, com);
+		Packets.sendInRange(Packet_TagListener.class, system.getWorld(), pos, task, com);
 	}
 	
 	public SignSystem getSystem(){
 		return system;
 	}
 
-	public SignInstance getSign(QV3D pos){
+	public SignInstance getSign(V3I pos){
 		if(!key.isInRegion(pos)) return system.getSign(pos);
-		return signs.get(pos.pos);
+		return signs.get(pos);
 	}
 
-	public SignInstance addSign(QV3D pos){
-		if(!signs.containsKey(pos.pos)){
+	public SignInstance addSign(V3I pos){
+		if(!signs.containsKey(pos)){
 			SignInstance sign = new SignInstance(this, pos);
-			signs.put(pos.pos, sign);
+			signs.put(pos, sign);
 			return sign;
 		}
-		else return signs.get(pos.pos);
+		else return signs.get(pos);
 	}
 
-	public void delSign(QV3D pos){
+	public void delSign(V3I pos){
 		SignInstance sign = getSign(pos);
 		if(sign == null) return;
 		sign.delete();
-		signs.remove(pos.pos);
+		signs.remove(pos);
 	}
 	
 	public ConcurrentHashMap<V3I, SignInstance> getSigns(){

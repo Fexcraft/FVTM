@@ -308,7 +308,7 @@ public class InteractionHandler {
 		return true;
 	}
 
-	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type };
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.SIGN.item_type };
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
@@ -316,7 +316,7 @@ public class InteractionHandler {
 		Passenger pass = world.getClientPassenger();
 		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
 		if((stack.isItemOf(ContentType.WIRE.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
-		if(/*stack.isItemOf(ContentType.SIGN.item_type) ||*/ is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM)) return handleSign(world, pass, key, stack);
+		if(stack.isItemOf(ContentType.SIGN.item_type) || (is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM))) return handleSign(world, pass, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass, stack)) return true;
@@ -327,7 +327,7 @@ public class InteractionHandler {
 	private static boolean handleSign(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
 		if(last.equals("sign") && Time.getDate() < cooldown) return false;
 		if(key.mouse_main()) return false;
-		//boolean si = stack.isItemOf(ContentType.SIGN.item_type);
+		boolean si = stack.isItemOf(ContentType.SIGN.item_type);
 		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, (WorldW)world);
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(5));
@@ -339,7 +339,7 @@ public class InteractionHandler {
 					TagCW com = TagCW.create();
 					sign.vec.write(com, "pos");
 					if(pass.isShiftDown()) com.set("remove", true);
-					//if(si) com.set("item", true);
+					if(si) com.set("item", true);
 					Packets.send(Packet_TagListener.class, "sign_interact", com);
 					cooldown = Time.getDate() + 20;
 					last = "sign";

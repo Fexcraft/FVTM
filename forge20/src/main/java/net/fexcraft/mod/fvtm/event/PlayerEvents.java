@@ -2,6 +2,9 @@ package net.fexcraft.mod.fvtm.event;
 
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +23,7 @@ public class PlayerEvents {
 		else{
 			RoadPlacingCache.onLogIn(event.getEntity().getGameProfile().getId());
 		}
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.getEntity().level()).dimkey(), UniEntity.getEntity(event.getEntity()));
 	}
 
 	@SubscribeEvent

@@ -59,7 +59,6 @@ public class SignItem extends Item implements ContentItem.ContentDataItem<Sign, 
 				}
 			}
 		}
-		tooltip.add(Formatter.format("&9Right-click on a block to place or upgrade a sign."));
 	}
 
 	@Override

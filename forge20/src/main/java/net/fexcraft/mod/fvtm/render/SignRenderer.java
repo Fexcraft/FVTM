@@ -98,7 +98,7 @@ public class SignRenderer {
 							if(scom.roty != 0f) GL11.glRotatef(scom.roty, 0, 1, 0);
 							if(scom.rotz != 0f) GL11.glRotatef(scom.rotz, 0, 0, 1);
 							if(scom.rotx != 0f) GL11.glRotatef(scom.rotx, 1, 0, 0);
-							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) GL11.glScalef(scom.sclx, scom.scly, scom.sclz);
+							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) pose.scale(scom.sclx, scom.scly, scom.sclz);
 							FvtmRenderTypes.setCutout(scom.getTexture().getTexture());
 							scom.getType().getModel().render(RENDERDATA.set(scom, sign, cache));
 							pose.popPose();

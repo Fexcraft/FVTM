@@ -24,7 +24,6 @@ import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
-import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.sys.wire.WireUnit;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
@@ -195,10 +194,6 @@ public abstract class Packets {
 				player.openUI(UIKeys.TOOLBOX_TEXTURE, new V3I(ref.getValue().vehicle().entity.getId(), ref.getKey().getPartIndex(part), 1));
 			}
 		});
-		LIS_SERVER.put("rail_upd_region", (com, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			system.updateRegion(com, player);
-		});
 		LIS_SERVER.put("relay_interact", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			system.onRelayInteract(com, (Passenger)player);
@@ -320,7 +315,7 @@ public abstract class Packets {
 			if(region != null && region.loaded){
 				//TODO region.spawnEntity(new RailEntity(region, tag.getLong("uid")).read(tag));
 			}
-			else Region.clientqueue.put(tag.getLong("uid"), tag.copy());
+			else RailRegion.clientqueue.put(tag.getLong("uid"), tag.copy());
 		});
 		LIS_CLIENT.put("rail_rem_ent", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());

@@ -84,13 +84,10 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 	public void updateRegion(TagCW compound, Passenger player){
 		RegionKey key = new RegionKey(compound.getIntArray("xz"));
 		if(world.isClient()){
-			SystemRegion<S, V> region = regions.get(key);
-			if(region == null)regions.put(key, region = newRegion(key));
-			region.read(compound);
+			regions.get(key, true).read(compound);
 		}
 		else{
-			SystemRegion<S, V> region = regions.get(key, true);
-			region.sendSync(player);
+			regions.get(key, true).sendSync(player);
 		}
 	}
 

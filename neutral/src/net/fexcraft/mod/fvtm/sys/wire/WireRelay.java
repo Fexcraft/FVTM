@@ -81,7 +81,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		holder.getRegion().updateClient("relay", null, holder.pos, this);
+		holder.getRegion().system.updateClient("relay", null, holder.pos, this);
 	}
 
 	public void remove(int index, boolean firstcall){

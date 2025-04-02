@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
 import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
@@ -95,9 +96,9 @@ public class SignRenderer {
 							Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;
 							pose.pushPose();
 							pose.translate(scom.offset.x, scom.offset.y, scom.offset.z);
-							if(scom.roty != 0f) GL11.glRotatef(scom.roty, 0, 1, 0);
-							if(scom.rotz != 0f) GL11.glRotatef(scom.rotz, 0, 0, 1);
-							if(scom.rotx != 0f) GL11.glRotatef(scom.rotx, 1, 0, 0);
+							if(scom.roty != 0f) RENDERER.rotate(scom.roty, 0, 1, 0);
+							if(scom.rotz != 0f) RENDERER.rotate(scom.rotz, 0, 0, 1);
+							if(scom.rotx != 0f) RENDERER.rotate(scom.rotx, 1, 0, 0);
 							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) pose.scale(scom.sclx, scom.scly, scom.sclz);
 							FvtmRenderTypes.setCutout(scom.getTexture().getTexture());
 							scom.getType().getModel().render(RENDERDATA.set(scom, sign, cache));

@@ -1,29 +1,21 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
-import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
-import net.fexcraft.mod.fvtm.sys.sign.SignRegion;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,15 +24,10 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
-import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.CUBE;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.CYNCOLOR;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -68,8 +55,8 @@ public class SignRenderer {
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		Renderer120.resetColor();
-		for(SignRegion reg : sys.getRegions().values()){
-			for(SignInstance sign : reg.getSigns().values()){
+		for(SystemRegion<?, SignInstance> reg : sys.getRegions().values()){
+			for(SignInstance sign : reg.getObjects().values()){
 				//TODO distance check
 				pose.pushPose();
 				pose.translate(sign.vec.vec.x, sign.vec.vec.y, sign.vec.vec.z);

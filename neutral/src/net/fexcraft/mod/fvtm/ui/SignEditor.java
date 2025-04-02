@@ -1,8 +1,9 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -11,11 +12,7 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 
 import javax.swing.*;
 import java.awt.*;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static net.fexcraft.mod.uni.ui.ContainerInterface.SEND_TO_SERVER;
 
@@ -235,13 +232,16 @@ public class SignEditor extends UserInterface {
 			case "import":{
 				TagCW com = TagCW.create();
 				com.set("task", "import");
+				com.set("cb", root.getClipboard());
 				SEND_TO_SERVER.accept(com);
 				break;
 			}
 			case "export":{
-				TagCW com = TagCW.create();
-				com.set("task", "export");
-				SEND_TO_SERVER.accept(com);
+				JsonArray array = new JsonArray();
+				for(SignData sign : scon.signs){
+					array.add(sign.toJson());
+				}
+				root.setClipboard(JsonHandler.toString(array, JsonHandler.PrintOption.FLAT));
 				break;
 			}
 			default:{

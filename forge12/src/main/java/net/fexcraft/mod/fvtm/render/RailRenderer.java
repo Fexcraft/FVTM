@@ -11,16 +11,12 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
-import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
-import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.Region;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -154,9 +150,9 @@ public class RailRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //GL11.glTranslated(-cx, -cy, -cz);
         //TexUtil.bindTexture(Resources.NULL_TEXTURE);
-        for(Region reg : raildata.getRegions().values()){
+        for(SystemRegion<?, Junction> reg : raildata.getRegions().values()){
         	//if(reg.READING) continue;
-        	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
+        	Junction[] junctions = reg.getObjects().values().toArray(new Junction[0]);
         	for(int i = 0; i < junctions.length; i++){
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB().local())) continue;
             	GL11.glPushMatrix();

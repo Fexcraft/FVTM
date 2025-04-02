@@ -51,7 +51,7 @@ public class RegionKey implements Comparable<RegionKey> {
 	
 	@Override
 	public String toString(){
-		return x + ", "+ z;
+		return x + ", " + z;
 	}
 
 	public int[] toArray(){

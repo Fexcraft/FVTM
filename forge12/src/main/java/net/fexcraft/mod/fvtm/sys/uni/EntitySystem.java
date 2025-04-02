@@ -37,8 +37,18 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	@Override
+	public SystemManager.Systems getType(){
+		return SystemManager.Systems.ENTITY;
+	}
+
+	@Override
 	public boolean hasTimer(){
 		return false;
+	}
+
+	@Override
+	public String getRegFolderName(){
+		return "entities";
 	}
 
 	@Override

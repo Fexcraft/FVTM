@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.sys.uni.SysObj;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -19,13 +21,13 @@ import net.fexcraft.mod.uni.world.WorldW;
  *
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Junction {
+public class Junction implements SysObj {
 
 	private QV3D vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
 	public RailSystem root;
-	public Region region;
+	public SystemRegion<RailSystem, Junction> region;
 	public SignalType signal;
 	public boolean signal0, signal1;
 	public EntryDirection signal_dir = EntryDirection.FORWARD;
@@ -45,13 +47,13 @@ public class Junction {
 	public Double bufferrot;
 
 	/** General Constructor */
-	public Junction(Region reg, QV3D pos){
+	public Junction(SystemRegion<RailSystem, Junction> reg, QV3D pos){
 		this(reg);
 		vecpos = pos;
 	}
 
 	/** Only to be used from RailRegion.class */
-	public Junction(Region region){
+	public Junction(SystemRegion<RailSystem, Junction> region){
 		this.root = region.getSystem();
 		this.region = region;
 		tracks = new ArrayList<>();
@@ -64,7 +66,7 @@ public class Junction {
 		return this;
 	}
 
-	public Junction read(TagCW compound){
+	public void read(TagCW compound){
 		this.vecpos = new QV3D(compound, "Pos");
 		this.switch0 = compound.getBoolean("Switch0");
 		this.switch1 = compound.getBoolean("Switch1");
@@ -125,11 +127,20 @@ public class Junction {
 				entities.add(new V3I(list.getList(i)));
 			}
 		}
-		return this;
 	}
 
-	public TagCW write(TagCW compound){
-		if(compound == null) compound = TagCW.create();
+	@Override
+	public void update(){
+
+	}
+
+	@Override
+	public void delete(){
+
+	}
+
+	public TagCW write(){
+		TagCW compound = TagCW.create();
 		for(int i = 0; i < tracks.size(); i++){
 			compound.set("Track" + i, tracks.get(i).write(null));
 		}

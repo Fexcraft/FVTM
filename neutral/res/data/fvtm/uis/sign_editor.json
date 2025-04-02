@@ -412,15 +412,13 @@
 			"absolute": true,
 			"size": [ 107, 8 ],
 			"pos": [ -135, 147 ],
-			"background": false,
-			"numberfield": true
+			"background": false
 		},
 		"hex": {
 			"absolute": true,
 			"size": [ 107, 8 ],
 			"pos": [ -135, 167 ],
-			"background": false,
-			"numberfield": true
+			"background": false
 		}
 	}
 }

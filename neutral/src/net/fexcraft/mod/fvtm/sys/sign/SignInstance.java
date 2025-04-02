@@ -79,7 +79,7 @@ public class SignInstance implements SysObj {
 		TagCW com = TagCW.create();
 		com.set("pos", vec.pos.toLW());
 		com.set("sign", write());
-		Packets.sendInRange(Packet_TagListener.class, region.system.getWorld(), vec.pos, "sign_upd", com);
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, region.system.getWorld(), vec.pos, "sign_upd", com);
 	}
 
 	public RenderCache getRenderCache(){

@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -80,8 +81,8 @@ public class WireRenderer {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //GL11.glTranslated(-cx, -cy, -cz);
-        for(WireRegion reg : wiredata.getRegions().values()){
-        	for(RelayHolder holder : reg.getHolders().values()){
+        for(SystemRegion<?, RelayHolder> reg : wiredata.getRegions().values()){
+        	for(RelayHolder holder : reg.getObjects().values()){
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
                 	if(Command.OTHER || holding_wire){// || relay.wires.isEmpty()){

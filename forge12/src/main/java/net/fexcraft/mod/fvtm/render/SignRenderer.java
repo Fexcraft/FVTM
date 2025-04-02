@@ -8,9 +8,9 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
-import net.fexcraft.mod.fvtm.sys.sign.SignRegion;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -32,8 +32,8 @@ public class SignRenderer {
 		holding = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ToolboxItem && Minecraft.getMinecraft().player.getHeldItemMainhand().getItemDamage() == ToolboxType.SIGN_ADJREM.idx;
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		for(SignRegion reg : sys.getRegions().values()){
-			for(SignInstance sign : reg.getSigns().values()){
+		for(SystemRegion<?, SignInstance> reg : sys.getRegions().values()){
+			for(SignInstance sign : reg.getObjects().values()){
 				//TODO distance check
 				GL11.glPushMatrix();
 				GL11.glTranslated(sign.vec.vec.x - cx, sign.vec.vec.y - cy, sign.vec.vec.z - cz);

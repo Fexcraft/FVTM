@@ -12,17 +12,19 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
-import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -34,17 +36,21 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class WireSystem extends DetachedSystem {
+public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	private long gc_sections;
 	//
-	private RegionMap regions = new RegionMap(this);
 	private WireMap wireunits = new WireMap(this);
 	private SectionMap sections = new SectionMap(this);
 	
 	public WireSystem(WorldW world){
 		super(world);
 		if(!world.isClient()) load();
+	}
+
+	@Override
+	public SystemManager.Systems getType(){
+		return SystemManager.Systems.WIRE;
 	}
 
 	public void load(){
@@ -204,71 +210,106 @@ public class WireSystem extends DetachedSystem {
 		}
 		
 	}
-	
-	public static class RegionMap extends ConcurrentHashMap<RegionKey, WireRegion> {
-		
-		private WireSystem root;
-		public RegionMap(WireSystem data){ this.root = data; }
-		
-		public WireRegion get(int x, int z){
-			for(RegionKey key : keySet()){
-				if(x == key.x && z == key.z) return get(key);
-			}
-			return null;
-		}
-		
-		public WireRegion get(int[] xz){
-			for(RegionKey key : keySet()){
-				if(xz[0] == key.x && xz[1] == key.z) return get(key);
-			}
-			return null;
-		}
-		
-		public WireRegion get(V3I pos, boolean load){
-			WireRegion region = get(RegionKey.getRegionXZ(pos));
-			if(region != null || !load) return region;
-			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new WireRegion(pos, root, false));
-			region.load().updateClient(pos);
-			return region;
-		}
 
-		public WireRegion get(int[] xz, boolean load){
-			WireRegion region = get(xz);
-			if(region != null || !load) return region;
-			put(new RegionKey(xz), region = new WireRegion(xz[0], xz[1], root, false));
-			region.load();
-			return region;
-		}
-
-		public WireRegion get(RegionKey xz, boolean load){
-			WireRegion region = get(xz);
-			if(region != null || !load) return region;
-			put(new RegionKey(xz.x, xz.z), region = new WireRegion(xz.x, xz.z, root, false));
-			region.load();
-			return region;
-		}
-		
+	@Override
+	public RelayHolder create(SystemRegion<WireSystem, RelayHolder> region, V3I pos){
+		return new RelayHolder(region, pos);
 	}
-	
-	public RegionMap getRegions(){
-		return regions;
+
+	@Override
+	public void writeRegion(SystemRegion<WireSystem, RelayHolder> region, TagCW com){
+		if(region.getObjects().isEmpty()) return;
+		TagLW list = TagLW.create();
+		for(RelayHolder holder : region.getObjects().values()){
+			list.add(holder.write());
+		}
+		com.set("RelayHolders", list);
+	}
+
+	@Override
+	public void readRegion(SystemRegion<WireSystem, RelayHolder> region, TagCW com){
+		if(!com.has("RelayHolders")) return;
+		region.getObjects().clear();
+		TagLW list = com.getList("RelayHolders");
+		for(TagCW tag : list){
+			RelayHolder holder = new RelayHolder(region);
+			holder.read(tag);
+			region.getObjects().put(holder.pos, holder);
+		}
+	}
+
+	public void updateClient(String kind, String key, V3I pos, Object obj){
+		if(world.isClient()) return;
+		TagCW compound = null;
+		String task = null;
+		switch(kind){
+			case "relay":{
+				task = "wire_upd_relay";
+				compound = TagCW.create();
+				compound.set("pos", ((WireRelay)obj).holder.pos, false);
+				((WireRelay)obj).write(compound);
+				break;
+			}
+			case "no_relay":{
+				task = "wire_rem_relay";
+				compound = TagCW.create();
+				compound.set("pos", pos, false);
+				compound.set("key", key);
+				break;
+			}
+			case "holder":{
+				RelayHolder holder = getHolder(pos);
+				if(holder == null) return;
+				compound = holder.write();
+				task = "wire_upd_holder";
+				break;
+			}
+			case "no_holder":{
+				task = "wire_rem_holder";
+				compound = TagCW.create();
+				compound.set("pos", pos, false);
+				break;
+			}
+			case "sections":{
+				task = "wire_udp_sections";
+				compound = TagCW.create();
+				TagLW list = TagLW.create();
+				for(WireUnit unit : getWireUnits().values()){
+					TagCW com = TagCW.create();
+					com.set("unit", unit.getUID());
+					com.set("section", unit.getSectionId());
+					list.add(com);
+				}
+				compound.set("units", list);
+				break;
+			}
+			default:{
+				Static.stop();
+				break;
+			}
+		}
+		if(compound == null) return;
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, world, pos, task, compound);
 	}
 
 	public WireRelay getRelay(WireKey key){
-		WireRegion region = regions.get(key.start_pos, false);
-		return region == null ? null : region.getRelay(key);
+		SystemRegion<?, RelayHolder> region = regions.get(key.start_pos, false);
+		if(region == null) return null;
+		RelayHolder holder = region.get(key.start_pos);
+		return holder == null ? null : holder.get(key.start_relay);
 	}
 
 	public WireRelay getRelay(WireKey key, boolean load){
-		WireRegion region = regions.get(key.start_pos, load);
-		return region.getRelay(key);
+		SystemRegion<?, RelayHolder> region = regions.get(key.start_pos, load);
+		RelayHolder holder = region.get(key.start_pos);
+		return holder == null ? null : holder.get(key.start_relay);
 	}
 
-	public ArrayList<WireRelay> getRelayssInChunk(int cx, int cz){
+	public ArrayList<WireRelay> getRelaysInChunk(int cx, int cz){
 		ArrayList<WireRelay> arr = new ArrayList<>();
-		WireRegion region = regions.get(RegionKey.getRegionXZ(cx, cz));
+		SystemRegion<?, RelayHolder> region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<V3I, RelayHolder> entry : region.getHolders().entrySet()){
+		for(Entry<V3I, RelayHolder> entry : region.getObjects().entrySet()){
 			if(entry.getKey().x >> 4 == cx && entry.getKey().z >> 4 == cz){
 				arr.addAll(entry.getValue().relays.values());
 			}
@@ -283,7 +324,15 @@ public class WireSystem extends DetachedSystem {
 
 	@Override
 	public void onServerTick(){
-		for(WireRegion region : regions.values()) region.updateTick();
+		for(SystemRegion<?, RelayHolder> region : regions.values()){
+			if(region.timer > 20){
+				region.timer = -1;
+				for(RelayHolder holder : region.getObjects().values()){
+					for(WireRelay relay : holder.relays.values()) relay.onUpdate();
+				}
+			}
+			region.timer++;
+		}
 	}
 
 	@Override
@@ -293,19 +342,6 @@ public class WireSystem extends DetachedSystem {
 			save();
 		}
 		regions.clear();
-	}
-
-	public void updateRegion(TagCW compound, Passenger player){
-		int[] xz = compound.getIntArray("XZ");
-		if(world.isClient()){
-			WireRegion region = regions.get(xz);
-			if(region == null) regions.put(new RegionKey(xz), region = new WireRegion(xz[0], xz[1], this, false));
-			region.read(compound);
-		}
-		else{
-			WireRegion region = regions.get(xz, true);
-			region.updateClient(player);
-		}
 	}
 
 	@Override
@@ -323,8 +359,11 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public Wire getWire(WireKey key){
-		WireRegion region = regions.get(RegionKey.getRegionXZ(key.start_pos), true);
-		return region == null ? null : region.getWire(key);
+		SystemRegion<?, RelayHolder> region = regions.get(RegionKey.getRegionXZ(key.start_pos), true);
+		RelayHolder holder = region.get(key.start_pos);
+		if(holder == null) return null;
+		WireRelay relay = holder.get(key.start_relay);
+		return relay == null ? null : relay.getWire(key);
 	}
 	
 	public WireMap getWireUnits(){
@@ -340,8 +379,8 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public void sendReload(String string, EntityW sender){
-		WireRegion region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
-		if(region != null) region.updateClient(string, null, new V3I(sender.getPos()), null);
+		SystemRegion<?, RelayHolder> region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
+		if(region != null) region.sendSync(sender);
 	}
 
 	public boolean isRemote(){
@@ -359,7 +398,12 @@ public class WireSystem extends DetachedSystem {
 	public void addTimerTask(long time){
 		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
 	}
-	
+
+	@Override
+	public String getRegFolderName(){
+		return "wireregions";
+	}
+
 	public static class TimedTask extends TimerTask {
 
 		private WireSystem wiresys;
@@ -370,13 +414,13 @@ public class WireSystem extends DetachedSystem {
 
 		@Override
 		public void run(){
-			ArrayList<WireRegion> regs = new ArrayList<>();
-			for(WireRegion region : wiresys.regions.values()){
+			ArrayList<SystemRegion<?, RelayHolder>> regs = new ArrayList<>();
+			for(SystemRegion<?, RelayHolder> region : wiresys.regions.values()){
 				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 			}
-			for(WireRegion region : regs){
+			for(SystemRegion<?, RelayHolder> region : regs){
 				region.save();
-				wiresys.regions.remove(region.getKey());
+				wiresys.regions.remove(region.key);
 			}
 		}
 
@@ -404,23 +448,23 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public RelayHolder getHolder(V3I pos){
-		WireRegion region = regions.get(pos, false);
-		return region == null ? null : region.getHolder(pos);
+		SystemRegion<?, RelayHolder> region = regions.get(pos, false);
+		return region == null ? null : region.get(pos);
 	}
 
 	public RelayHolder getHolder(V3I pos, boolean load){
-		WireRegion region = regions.get(pos, load);
-		return region.getHolder(pos);
+		SystemRegion<?, RelayHolder> region = regions.get(pos, load);
+		return region.get(pos);
 	}
 
 	private RelayHolder addHolder(V3I pos){
-		WireRegion region = regions.get(pos, true);
-		return region.addHolder(pos);
+		SystemRegion<?, RelayHolder> region = regions.get(pos, true);
+		return region.add(pos);
 	}
 
 	public void delHolder(V3I pos){
-		WireRegion region = regions.get(pos, true);
-		if(region != null) region.delHolder(pos);
+		SystemRegion<?, RelayHolder> region = regions.get(pos, true);
+		if(region != null) region.del(pos);
 	}
 
 	@Override

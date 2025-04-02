@@ -24,7 +24,6 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
-import net.fexcraft.mod.fvtm.sys.sign.SignRegion;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.wire.*;
@@ -332,8 +331,8 @@ public class InteractionHandler {
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(5));
 		float size = 0.25f;
-		for(SignRegion reg : system.getRegions().values()){
-			for(SignInstance sign : reg.getSigns().values()){
+		for(SystemRegion<?, SignInstance> reg : system.getRegions().values()){
+			for(SignInstance sign : reg.getObjects().values()){
 				aabb = AABB.create(sign.vec.vec.x - size, sign.vec.vec.y - size, sign.vec.vec.z - size, sign.vec.vec.x + size, sign.vec.vec.y + size, sign.vec.vec.z + size);
 				if(contains(evec, lvec, aabb)){
 					TagCW com = TagCW.create();
@@ -359,8 +358,8 @@ public class InteractionHandler {
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(3));
 		float size;
-		for(WireRegion reg : system.getRegions().values()){
-			for(RelayHolder holder : reg.getHolders().values()){
+		for(SystemRegion<?, RelayHolder> reg : system.getRegions().values()){
+			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){
 					size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) : 0.0125f;
 					if(slack){

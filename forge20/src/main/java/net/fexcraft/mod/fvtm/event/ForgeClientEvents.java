@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -236,9 +237,9 @@ public class ForgeClientEvents {
 		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
-		for(Region reg : railsys.getRegions().values()){
+		for(SystemRegion<?, Junction> reg : railsys.getRegions().values()){
 			juncset.clear();
-			juncset.addAll(reg.getJunctions().values());
+			juncset.addAll(reg.getObjects().values());
 			for(Junction junc : juncset){
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);

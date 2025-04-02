@@ -27,6 +27,11 @@ public class PlayerEvents {
 	}
 
 	@SubscribeEvent
+	public static void onPlayerIn(PlayerEvent.PlayerChangedDimensionEvent event){
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.getEntity().level()).dimkey(), UniEntity.getEntity(event.getEntity()));
+	}
+
+	@SubscribeEvent
 	public static void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
 		if(!event.getEntity().level().isClientSide){
 			RoadPlacingCache.onLogOut(event.getEntity().getGameProfile().getId());

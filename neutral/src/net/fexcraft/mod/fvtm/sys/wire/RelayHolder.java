@@ -9,26 +9,28 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.RelayData;
+import net.fexcraft.mod.fvtm.sys.uni.SysObj;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RelayHolder {
+public class RelayHolder implements SysObj {
 	
 	public LinkedHashMap<String, WireRelay> relays = new LinkedHashMap<>();
-	private final WireRegion region;
+	private final SystemRegion<WireSystem, RelayHolder> region;
 	protected Block blockref;
 	protected Object blocktile;
 	public V3I pos;
 	
-	public RelayHolder(WireRegion region, V3I pos){
+	public RelayHolder(SystemRegion<WireSystem, RelayHolder> region, V3I pos){
 		this(region);
 		this.pos = pos;
 	}
 
-	public RelayHolder(WireRegion region){
+	public RelayHolder(SystemRegion<WireSystem, RelayHolder> region){
 		this.region = region;
 	}
 
@@ -64,7 +66,7 @@ public class RelayHolder {
 		return (TE)blocktile;
 	}
 
-	protected void delete(){
+	public void delete(){
 		for(WireRelay relay : relays.values()){
 			while(relay.wires.size() > 0) relay.remove(0, true);
 		}
@@ -85,7 +87,7 @@ public class RelayHolder {
 		return compound;
 	}
 
-	public RelayHolder read(TagCW compound){
+	public void read(TagCW compound){
 		pos = compound.getV3I("Pos");
 		TagLW list = compound.getList("Relays");
 		for(TagCW tag : list){
@@ -95,7 +97,11 @@ public class RelayHolder {
 		if(compound.has("Block")){
 			blockref = FvtmRegistry.BLOCKS.get(compound.getString("Block"));
 		}
-		return this;
+	}
+
+	@Override
+	public void update(){
+
 	}
 
 	public WireRelay get(int index){
@@ -107,7 +113,7 @@ public class RelayHolder {
 		return null;
 	}
 
-	public WireRegion getRegion(){
+	public SystemRegion<WireSystem, RelayHolder> getRegion(){
 		return region;
 	}
 

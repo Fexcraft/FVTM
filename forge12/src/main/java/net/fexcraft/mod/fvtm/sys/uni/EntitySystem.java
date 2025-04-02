@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -37,8 +38,18 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	@Override
+	public SystemManager.Systems getType(){
+		return SystemManager.Systems.ENTITY;
+	}
+
+	@Override
 	public boolean hasTimer(){
 		return false;
+	}
+
+	@Override
+	public String getRegFolderName(){
+		return "entities";
 	}
 
 	@Override
@@ -120,6 +131,11 @@ public class EntitySystem extends DetachedSystem {
 	@Override
 	public void onClientTick(){
 		update();
+	}
+
+	@Override
+	public SysObj create(SystemRegion region, V3I pos){
+		return null;
 	}
 
 	public void add(RootVehicle vehicle){

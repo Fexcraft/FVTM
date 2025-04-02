@@ -428,7 +428,7 @@ public class VehicleInstance {
 
 	public void sendUpdatePacket(){
 		data.getAttribute("throttle").set(throttle);
-		Packets.sendInRange(Packet_VehMove.class, entity.getWorld(), entity.getPos(), entity, this);
+		Packets.sendToAllTrackingEnt(Packet_VehMove.class, entity, entity, this);
 		for(SwivelPoint point : data.getRotationPoints().values()){
 			point.sendUpdatePacket(entity);
 		}

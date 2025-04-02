@@ -27,6 +27,7 @@ public class Config extends ConfigBase {
 	public static boolean ROADTOOL_FOR_ALL;
 	public static boolean DISMOUNT_ON_LOGOUT;
 	public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
+	public static int PACKET_RANGE;
 	//client
 	public static boolean RENDER_OUT_OF_VIEW;
 	public static boolean RENDER_VEHILE_MODELS_AS_ITEMS;
@@ -105,7 +106,7 @@ public class Config extends ConfigBase {
 			.cons((con, map) -> DEFAULT_TRAFFIC_SIGN_LIBRARIES = con.getJson(map).asArray().toStringArray()));
 		entries.add(new ConfigEntry(this, catg, "update_packet_range", new JsonValue(256)).rang(64, 4096)
 			.info("Range in which ranged update packets are sent.")
-			.cons((con, map) -> Packets.RANGE = con.getInteger(map)));
+			.cons((con, map) -> PACKET_RANGE = con.getInteger(map)));
 
 		//client
 		entries.add(new ConfigEntry(this, catc, "render_out_of_view", new JsonValue(false))

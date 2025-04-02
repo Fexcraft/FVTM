@@ -5,6 +5,10 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.RenderCacheI;
+import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
+import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.uni.SysObj;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -14,24 +18,24 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class SignInstance {
+public class SignInstance implements SysObj {
 
 	public ConcurrentLinkedQueue<SignData> components = new ConcurrentLinkedQueue<>();
 	private RenderCache cache;
-	public SignRegion region;
+	public SystemRegion<SignSystem, SignInstance> region;
 	public float yaw;
 	public QV3D vec;
 
-	public SignInstance(SignRegion reg){
+	public SignInstance(SystemRegion<SignSystem, SignInstance> reg){
 		region = reg;
 	}
 
-	public SignInstance(SignRegion reg, V3I pos){
+	public SignInstance(SystemRegion<SignSystem, SignInstance> reg, V3I pos){
 		this(reg);
 		vec = new QV3D(pos);
 	}
 
-	public SignInstance(SignRegion reg, QV3D pos){
+	public SignInstance(SystemRegion<SignSystem, SignInstance> reg, QV3D pos){
 		this(reg);
 		vec = pos;
 	}
@@ -72,7 +76,10 @@ public class SignInstance {
 	}
 
 	public void updateClient(){
-		region.updateClient(SignRegion.Update.SIGN, vec.pos, this);
+		TagCW com = TagCW.create();
+		com.set("pos", vec.pos.toLW());
+		com.set("sign", write());
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, region.system.getWorld(), vec.pos, "sign_upd", com);
 	}
 
 	public RenderCache getRenderCache(){

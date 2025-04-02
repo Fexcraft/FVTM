@@ -26,7 +26,7 @@ public class Handler_SeatUpdate implements PacketHandler<Packet_SeatUpdate> {
 			seat.pelook = seat.elook.copy();
 			seat.elook.set_rotation(packet.yaw, packet.pitch, 0F, true);
 			if(!send) return;
-			Packets.sendInRange(Packet_SeatUpdate.class, player, seat);
+			Packets.sendToAllTrackingEnt(Packet_SeatUpdate.class, seat.root.entity, seat);
 		}
 	}
 

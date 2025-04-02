@@ -8,8 +8,12 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.packet.PacketHandler;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -143,11 +147,29 @@ public class Packets20F extends Packets20 {
 	@Override
 	public void sendInRange0(Class<? extends PacketBase> packet, WorldW world, V3D pos, int range, Object... data){
 		try{
-			Vec3 vec = new Vec3(pos.x, pos.y, pos.z);
-			for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()){
-				if(player.position().distanceTo(vec) > range) continue;
-				FVTM4.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet.newInstance().fill(data));
-			}
+			PacketDistributor.TargetPoint point = new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, range, ((Level)world.direct()).dimension());
+			FVTM4.CHANNEL.send(PacketDistributor.NEAR.with(() -> point), packet.newInstance().fill(data));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sendToAllTrackingPos0(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
+		try{
+			LevelChunk chunk = ((Level)world.direct()).getChunkAt(new BlockPos((int)pos.x, (int)pos.y, (int)pos.z));
+			FVTM4.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet.newInstance().fill(data));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sendToAllTrackingEnt0(Class<? extends PacketBase> packet, EntityW ent, Object... data){
+		try{
+			FVTM4.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> ent.local()), packet.newInstance().fill(data));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -167,7 +189,7 @@ public class Packets20F extends Packets20 {
 	}
 
 	@Override
-	public void sendTo0(Class<? extends PacketBase> packet, Passenger to, Object... data){
+	public void sendTo0(Class<? extends PacketBase> packet, EntityW to, Object... data){
 		try{
 			FVTM4.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)to.direct()), packet.newInstance().fill(data));
 		}

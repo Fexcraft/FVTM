@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.sys.uni.SysObj;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -19,13 +21,13 @@ import net.fexcraft.mod.uni.world.WorldW;
  *
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Junction {
+public class Junction implements SysObj {
 
 	private QV3D vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
 	public RailSystem root;
-	public Region region;
+	public SystemRegion<RailSystem, Junction> region;
 	public SignalType signal;
 	public boolean signal0, signal1;
 	public EntryDirection signal_dir = EntryDirection.FORWARD;
@@ -45,14 +47,14 @@ public class Junction {
 	public Double bufferrot;
 
 	/** General Constructor */
-	public Junction(Region reg, QV3D pos){
+	public Junction(SystemRegion<RailSystem, Junction> reg, QV3D pos){
 		this(reg);
 		vecpos = pos;
 	}
 
 	/** Only to be used from RailRegion.class */
-	public Junction(Region region){
-		this.root = region.getSystem();
+	public Junction(SystemRegion<RailSystem, Junction> region){
+		this.root = region.system;
 		this.region = region;
 		tracks = new ArrayList<>();
 		switch0 = switch1 = false;
@@ -64,7 +66,7 @@ public class Junction {
 		return this;
 	}
 
-	public Junction read(TagCW compound){
+	public void read(TagCW compound){
 		this.vecpos = new QV3D(compound, "Pos");
 		this.switch0 = compound.getBoolean("Switch0");
 		this.switch1 = compound.getBoolean("Switch1");
@@ -125,11 +127,20 @@ public class Junction {
 				entities.add(new V3I(list.getList(i)));
 			}
 		}
-		return this;
 	}
 
-	public TagCW write(TagCW compound){
-		if(compound == null) compound = TagCW.create();
+	@Override
+	public void update(){
+
+	}
+
+	@Override
+	public void delete(){
+
+	}
+
+	public TagCW write(){
+		TagCW compound = TagCW.create();
 		for(int i = 0; i < tracks.size(); i++){
 			compound.set("Track" + i, tracks.get(i).write(null));
 		}
@@ -211,7 +222,7 @@ public class Junction {
 	}
 
 	public void updateClient(){
-		region.updateClient("junction", vecpos.pos);
+		root.updateClient("junction", vecpos.pos);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -293,7 +304,7 @@ public class Junction {
 						boolean bool = eqTrack(track, 1);
 						if(switch0 != bool){
 							switch0 = bool;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 					}
@@ -308,19 +319,19 @@ public class Junction {
 						if(bool0 && !switch0){
 							switch0 = true;
 							switch1 = false;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 						else if(bool1 && (switch0 || switch1)){
 							switch0 = false;
 							switch1 = false;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 						else if(!bool1 && !switch1){
 							switch0 = false;
 							switch1 = true;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 					}
@@ -346,7 +357,7 @@ public class Junction {
 				if(eqTrack(track, 0)){
 					if(applystate && !switch1){
 						switch1 = true;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
@@ -354,7 +365,7 @@ public class Junction {
 				if(eqTrack(track, 1)){
 					if(applystate && !switch0){
 						switch0 = true;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
@@ -362,7 +373,7 @@ public class Junction {
 				if(eqTrack(track, 2)){
 					if(applystate && switch0){
 						switch0 = false;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
@@ -370,7 +381,7 @@ public class Junction {
 				if(eqTrack(track, 3)){
 					if(applystate && switch1){
 						switch1 = false;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
@@ -429,7 +440,7 @@ public class Junction {
 		}
 		//
 		if(oldsig0 != signal0 || oldsig1 != signal1){
-			this.region.updateClient("junction_signal_state", vecpos.pos);
+			root.updateClient("junction_signal_state", vecpos.pos);
 			updateLinkedTileEntities(true);
 		}
 	}
@@ -477,7 +488,7 @@ public class Junction {
 			else switch0 = !switch0;
 			player.bar("&aChanged Junction State. [" + (switch0 ? 0 : 1) + "-" + (switch1 ? 0 : 1) + "]");
 		}
-		region.updateClient("junction_state", vecpos.pos);
+		root.updateClient("junction_state", vecpos.pos);
 		updateLinkedTileEntities(false);
 		return true;
 	}
@@ -556,7 +567,7 @@ public class Junction {
 			this.signal = signal;
 			this.signal_dir = entrydir;
 		}
-		region.updateClient("junction_signal", vecpos.pos);
+		root.updateClient("junction_signal", vecpos.pos);
 	}
 
 	/** @return true, if entry dir differs junction signal dir */

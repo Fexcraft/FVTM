@@ -105,11 +105,11 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 	}
 
 	public void sendSync(V3I pos){
-		Packets.sendInRange(Packet_TagListener.class, system.getWorld(), pos, "sync_reg", write(true));
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, system.getWorld(), pos, "sync_reg", write(true));
 	}
 
 	public void sendSync(EntityW ent){
-		Packets.sendInRange(Packet_TagListener.class, ent, "sync_reg", write(true));
+		Packets.sendTo(Packet_TagListener.class, ent, "sync_reg", write(true));
 	}
 
 	//

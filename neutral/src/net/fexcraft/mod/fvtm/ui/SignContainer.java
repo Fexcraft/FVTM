@@ -37,7 +37,7 @@ public class SignContainer extends ContainerInterface {
 		super(map, player, pos);
 		try{
 			system = SystemManager.get(SystemManager.Systems.SIGN, player.entity.getWorld());
-			inst = system.getSign(pos);
+			inst = system.get(pos);
 			signs.addAll(inst.components);
 		}
 		catch(Exception e){

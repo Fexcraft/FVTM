@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.PLAYERON;
 import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.SINGLEPLAYER;
 
@@ -16,10 +17,12 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.*;
 
 /**
@@ -32,7 +35,6 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	private long gc_entities, gc_sections, gc_compounds;
 	//
-	private RegionMap regions = new RegionMap(this);
 	private TrackMap trackunits = new TrackMap(this);
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
@@ -40,6 +42,11 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	public RailSystem(WorldW world){
 		super(world);
 		if(!world.isClient()) load();
+	}
+
+	@Override
+	public RailRegion newRegion(RegionKey key){
+		return new RailRegion(this, key);
 	}
 
 	@Override
@@ -124,51 +131,6 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		}
 		
 	}
-	
-	public static class RegionMap extends ConcurrentHashMap<RegionKey, Region> {
-		
-		private RailSystem root;
-		public RegionMap(RailSystem data){ this.root = data; }
-		
-		public Region get(int x, int z){
-			for(RegionKey key : keySet()){
-				if(x == key.x && z == key.z) return get(key);
-			}
-			return null;
-		}
-		
-		public Region get(int[] xz){
-			for(RegionKey key : keySet()){
-				if(xz[0] == key.x && xz[1] == key.z) return get(key);
-			}
-			return null;
-		}
-		
-		public Region get(V3I vec, boolean load){
-			Region region = get(RegionKey.getRegionXZ(vec));
-			if(region != null || !load) return region;
-			put(new RegionKey(vec), region = new Region(vec, root, false));
-			region.load().updateClient(vec);
-			return region;
-		}
-
-		public Region get(int[] xz, boolean load){
-			Region region = get(xz);
-			if(region != null || !load) return region;
-			put(new RegionKey(xz), region = new Region(xz[0], xz[1], root, false));
-			region.load();
-			return region;
-		}
-
-		public Region get(RegionKey xz, boolean load){
-			Region region = get(xz);
-			if(region != null || !load) return region;
-			put(new RegionKey(xz.x, xz.z), region = new Region(xz.x, xz.z, root, false));
-			region.load();
-			return region;
-		}
-		
-	}
 
 	@Override
 	public Junction create(SystemRegion<RailSystem, Junction> region, V3I pos){
@@ -176,28 +138,74 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	}
 
 	@Override
-	public void writeRegion(SystemRegion<RailSystem, Junction> region, TagCW com){
-
+	public void writeRegion(SystemRegion<RailSystem, Junction> region, TagCW compound, boolean sync){
+		if(!region.getObjects().isEmpty()){
+			TagLW list = TagLW.create();
+			for(Junction junc : region.getObjects().values()){
+				list.add(junc.write());
+			}
+			compound.set("Junctions", list);
+		}
+		if(sync) return;
+		RailRegion reg = (RailRegion)region;
+		if(!reg.entities.isEmpty()){
+			TagLW list = TagLW.create();
+			for(RailEntity entity : reg.entities.values()){
+				if(entity.com.isSingular()){
+					list.add(entity.write(null));
+				}
+				else if(entity.com.isMultiple() && entity.com.isHead(entity)){
+					TagCW com = TagCW.create();
+					com.set("Compound", entity.com.uid);
+					com.set("Forward", entity.com.forward);
+					com.set("Singular", false);
+					TagLW ents = TagLW.create();
+					for(RailEntity ent : entity.com.entities){
+						ents.add(ent.write(null));
+					}
+					com.set("Entities", ents);
+					list.add(com);
+				}
+			}
+			compound.set("Entities", list);
+		}
 	}
 
 	@Override
 	public void readRegion(SystemRegion<RailSystem, Junction> region, TagCW com){
-
+		RailRegion reg = (RailRegion)region;
+		if(com.has("Junctions")){
+			region.getObjects().clear();
+			TagLW list = com.getList("Junctions");
+			list.forEach(tag -> {
+				Junction junc = new Junction(region);
+				junc.read(tag);
+				region.getObjects().put(junc.getV3I(), junc);
+			});
+		}
+		if(com.has("Entities")){
+			reg.entities.clear();
+			com.getList("Entities").forEach(tag -> {
+				reg.fillqueue.put(tag.getLong("Compound"), tag);
+			});
+		}
 	}
 
 	public Junction getJunction(V3I vec){
-		Region region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
+		RailRegion region = regions.getC(vec, false);
+		return region == null ? null : region.get(vec);
 	}
 
 	public Junction getJunction(V3I vec, boolean load){
-		Region region = regions.get(vec, load); return region.getJunction(vec);
+		RailRegion region = regions.getC(vec, load);
+		return region.get(vec);
 	}
 
 	public ArrayList<Junction> getJunctionsInChunk(int cx, int cz){
 		ArrayList<Junction> arr = new ArrayList<>();
-		Region region = regions.get(RegionKey.getRegionXZ(cx, cz));
+		SystemRegion<?, Junction> region = regions.get(RegionKey.getRegionXZ(cx, cz), false);
 		if(region == null) return arr;
-		for(Entry<V3I, Junction> entry : region.getJunctions().entrySet()){
+		for(Entry<V3I, Junction> entry : region.getObjects().entrySet()){
 			if(entry.getKey().x >> 4 == cx && entry.getKey().z >> 4 == cz){
 				arr.add(entry.getValue());
 			}
@@ -211,9 +219,9 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	public ArrayList<Junction> getJunctionsAt(V3I pos){
 		ArrayList<Junction> arr = new ArrayList<>();
-		Region region = regions.get(RegionKey.getRegionXZ(pos));
+		SystemRegion<?, Junction> region = regions.get(RegionKey.getRegionXZ(pos));
 		if(region == null) return arr;
-		for(Entry<V3I, Junction> entry : region.getJunctions().entrySet()){
+		for(Entry<V3I, Junction> entry : region.getObjects().entrySet()){
 			if(entry.getKey().equals(pos)){
 				arr.add(entry.getValue());
 			}
@@ -222,9 +230,9 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	}
 
 	public boolean delJunction(V3I vector){
-		Region region = regions.get(vector, false);
-		if(region == null || region.getJunction(vector) == null) return false;
-		Junction junc = region.getJunctions().remove(vector);
+		SystemRegion<?, Junction> region = regions.get(vector, false);
+		if(region == null || region.get(vector) == null) return false;
+		Junction junc = region.getObjects().remove(vector);
 		if(world.isClient()){
 			return junc != null;
 		}
@@ -234,7 +242,8 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				junc.unlinkLinkedTileEntities();
 				//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionRemoved(this, junc));
 			}
-			region.setAccessed().updateClient("no_junction", vector);
+			region.setAccessed();
+			updateClient("no_junction", vector);
 			return true;
 		}
 	}
@@ -250,46 +259,47 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	}*/
 
 	public void addJunction(QV3D vector){
-		Region region = regions.get(vector.pos, true);
+		SystemRegion<RailSystem, Junction> region = regions.get(vector.pos, true);
 		if(region == null) /** this rather an error */ return;
 		Junction junction = new Junction(region, vector);
-		region.getJunctions().put(vector.pos, junction);
-		region.setAccessed().updateClient("junction", vector.pos);
-		//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionAdded(this, junction));
+		region.getObjects().put(vector.pos, junction);
+		region.setAccessed();
+		updateClient("junction", vector.pos);
 		return;
 	}
 
 	public void updateJuncton(V3I vector){
-		Region region = regions.get(vector, true);
+		SystemRegion<?, Junction> region = regions.get(vector, true);
 		if(region == null) /** This is rather bad. */
 			return;
-		region.setAccessed().updateClient("junction", vector);
+		region.setAccessed();
+		updateClient("junction", vector);
 		return;
 	}
 
 	@Override
 	public void onServerTick(){
-		/*if(remote && !Region.clientqueue.isEmpty()){
-			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
+		/*if(remote && !RailRegion.clientqueue.isEmpty()){
+			Print.debug("Processing <NBT> Entities in Queue " + RailRegion.clientqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
-			for(Long uid : Region.clientqueue.keySet()){
-				TagCW compound = Region.clientqueue.get(uid);
+			for(Long uid : RailRegion.clientqueue.keySet()){
+				TagCW compound = RailRegion.clientqueue.get(uid);
 				Print.debug("Checking " + compound.getLong("uid"));
-				Region region = getRegions().get(compound.getIntArray("XZ"));
+				RailRegion region = getRegions().get(compound.getIntArray("XZ"));
 				if(region == null || !region.loaded) continue;
 				Print.debug("Processing " + compound.getLong("uid") + " - " + region.getKey().x + "/" + region.getKey().z);
 				region.spawnEntity(new RailEntity(region, compound.getLong("uid")).read(compound));
 				torem.add(uid);
-			} torem.forEach(rem -> Region.clientqueue.remove(rem)); torem.clear();
+			} torem.forEach(rem -> RailRegion.clientqueue.remove(rem)); torem.clear();
 		}*/
-		if(!Region.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
-			FvtmLogger.debug("Processing Entities in Queue " + Region.fillqueue.size());
-			ArrayList<Long> torem = new ArrayList<>(); Region region;
-			for(Long uid : Region.fillqueue.keySet()){
-				TagCW com = Region.fillqueue.get(uid);
+		if(!RailRegion.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
+			FvtmLogger.debug("Processing Entities in Queue " + RailRegion.fillqueue.size());
+			ArrayList<Long> torem = new ArrayList<>(); RailRegion region;
+			for(Long uid : RailRegion.fillqueue.keySet()){
+				TagCW com = RailRegion.fillqueue.get(uid);
 				boolean single = com.has("Singular") ? com.getBoolean("Singular") : true;
 				if(single){
-					region = getRegions().get(com.getIntArray("region"), true);
+					region = getRegions().getC(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
 					if(FvtmRegistry.VEHICLES.get(com.getString("Vehicle")) == null){
 						FvtmLogger.log("SINGULAR Rail Vehicle with id '" + com.getString("Vehicle") + "' not found, removing.");
@@ -307,7 +317,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 					boolean allregionsloaded = true;
 					for(TagCW tag : com.getList("Entities")){
 						if(tag == null || !tag.has("region")) continue;
-						region = getRegions().get(tag.getIntArray("region"), true);
+						region = getRegions().getC(tag.getIntArray("region"), true);
 						if(region == null || !region.loaded){ allregionsloaded = false; break; }
 					}
 					if(allregionsloaded){
@@ -319,10 +329,19 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 					}
 				}
 			}
-			torem.forEach(rem -> Region.fillqueue.remove(rem));
+			torem.forEach(rem -> RailRegion.fillqueue.remove(rem));
 			torem.clear();
 		}
-		for(Region region : regions.values()) region.updateTick();
+		for(SystemRegion<RailSystem, Junction> region : regions.values()){
+			RailRegion reg = (RailRegion)region;
+			if(!reg.entities.isEmpty()) reg.setAccessed();
+			for(RailEntity ent : reg.entities.values()) ent.onUpdate();
+			if(reg.timer > 20){
+				reg.timer = -1;
+				for(Junction junction : reg.getObjects().values()) junction.onUpdate();
+			}
+			reg.timer++;
+		}
 	}
 
 	@Override
@@ -334,15 +353,89 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		regions.clear();
 	}
 
-	public void updateRegion(TagCW compound, EntityW player){
-		int[] xz = compound.getIntArray("XZ");
-		if(world.isClient()){
-			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false));
-			region.read(compound);
+	public void updateClient(String kind, V3I vector){
+		if(world.isClient()) return;
+		TagCW compound = null;
+		String task = null;
+		switch(kind){
+			case "junction":{
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
+				task = "rail_upd_junc";
+				compound = junction.write();
+				break;
+			}
+			case "no_junction":{
+				task = "rail_rem_junc";
+				compound.set("pos", vector.toLW());
+				break;
+			}
+			case "junction_state":{
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
+				task = "rail_upd_junc_state";
+				compound = TagCW.create();
+				compound.set("pos", vector.toLW());
+				compound.set("switch0", junction.switch0);
+				compound.set("switch1", junction.switch1);
+				break;
+			}
+			case "junction_signal":{
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
+				task = "rail_upd_junc_signal";
+				compound = TagCW.create();
+				compound.set("pos", vector.toLW());
+				if(junction.signal == null){
+					compound.set("nosignal", true);
+				}
+				else{
+					compound.set("signal", junction.signal.ordinal());
+					compound.set("signal_dir", junction.signal_dir.ordinal());
+				}
+				break;
+			}
+			case "junction_signal_state":{
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
+				task = "rail_upd_junc_signal_state";
+				compound = TagCW.create();
+				compound.set("pos", vector.toLW());
+				compound.set("signal0", junction.signal0);
+				compound.set("signal1", junction.signal1);
+				break;
+			}
+			case "sections":{
+				task = "rail_upd_sections";
+				compound = TagCW.create();
+				TagLW list = TagLW.create();
+				for(TrackUnit unit : trackunits.values()){
+					TagCW com = TagCW.create();
+					com.set("unit", unit.getUID());
+					com.set("section", unit.getSectionId());
+					list.add(com);
+				}
+				compound.set("units", list);
+				break;
+			}
 		}
-		else{
-			Region region = regions.get(xz, true); region.updateClient(player);
+		if(compound == null) return;
+		Packets.sendInRange(PKT_TAG, world, vector, task, compound);
+	}
+
+	public void updateClient(String kind, RailEntity entity){
+		if(world.isClient()) return;
+		TagCW compound = null;
+		String task = null;
+		switch(kind){
+			case "removed":{
+				task = "rail_rem_ent";
+				compound = TagCW.create();
+				compound.set("uid", entity.uid);
+			}
 		}
+		if(compound == null) return;
+		Packets.sendInRange(PKT_TAG, world, entity.pos, task, compound);
 	}
 
 	@Override
@@ -357,18 +450,20 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	//@Deprecated
 	public void registerEntity(RailEntity entity){
-		entities.put(entity.getUID(), entity.getRegion().getKey());
+		entities.put(entity.getUID(), entity.getRegion().key);
 	}
 
 	//@Deprecated
 	public RailEntity getEntity(long uid, boolean load){
-		for(Region region : regions.values()){
-			if(region.getEntities().containsKey(uid)){
-				return region.getEntities().get(uid);
+		RailRegion reg;
+		for(RegionKey key : regions.keySet()){
+			reg = regions.getC(key, false);
+			if(reg.getEntities().containsKey(uid)){
+				return reg.getEntities().get(uid);
 			}
 		}
 		if(load && entities.containsKey(uid)){
-			Region region = regions.get(entities.get(uid), true);
+			RailRegion region = regions.getC(entities.get(uid), true);
 			if(region != null) return region.getEntities().get(uid);
 		}
 		return null;
@@ -398,11 +493,12 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	public void delEntity(RailEntity entity){
 		entity.region.getEntities().remove(entity.getUID());
-		entities.remove(entity.getUID()); entity.region.updateClient("removed", entity);
+		entities.remove(entity.getUID());
+		updateClient("removed", entity);
 	}
 
 	public Track getTrack(PathKey key){
-		Region region = regions.get(RegionKey.getRegionXZ(key), true);
+		RailRegion region = regions.getC(RegionKey.getRegionXZ(key), true);
 		return region == null ? null : region.getTrack(key);
 	}
 	
@@ -419,9 +515,9 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	}
 
 	public void sendReload(String string, EntityW sender){
-		Region region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
+		SystemRegion region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
 		if(region != null){
-			region.updateClient(string, sender.getV3I());
+			updateClient(string, sender.getV3I());
 		}
 	}
 
@@ -460,12 +556,12 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 		@Override
 		public void run(){
-			ArrayList<Region> regs = new ArrayList<>();
-			for(Region region : railsys.regions.values()){
+			ArrayList<SystemRegion> regs = new ArrayList<>();
+			for(SystemRegion region : railsys.regions.values()){
 				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 			}
-			for(Region region : regs){
-				region.save(); railsys.regions.remove(region.getKey());
+			for(SystemRegion region : regs){
+				region.save(); railsys.regions.remove(region.key);
 			}
 		}
 

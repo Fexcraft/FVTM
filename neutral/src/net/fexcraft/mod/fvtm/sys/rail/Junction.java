@@ -54,7 +54,7 @@ public class Junction implements SysObj {
 
 	/** Only to be used from RailRegion.class */
 	public Junction(SystemRegion<RailSystem, Junction> region){
-		this.root = region.getSystem();
+		this.root = region.system;
 		this.region = region;
 		tracks = new ArrayList<>();
 		switch0 = switch1 = false;
@@ -222,7 +222,7 @@ public class Junction implements SysObj {
 	}
 
 	public void updateClient(){
-		region.updateClient("junction", vecpos.pos);
+		root.updateClient("junction", vecpos.pos);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -304,7 +304,7 @@ public class Junction implements SysObj {
 						boolean bool = eqTrack(track, 1);
 						if(switch0 != bool){
 							switch0 = bool;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 					}
@@ -319,19 +319,19 @@ public class Junction implements SysObj {
 						if(bool0 && !switch0){
 							switch0 = true;
 							switch1 = false;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 						else if(bool1 && (switch0 || switch1)){
 							switch0 = false;
 							switch1 = false;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 						else if(!bool1 && !switch1){
 							switch0 = false;
 							switch1 = true;
-							region.updateClient("junction_state", vecpos.pos);
+							root.updateClient("junction_state", vecpos.pos);
 							updateLinkedTileEntities(false);
 						}
 					}
@@ -357,7 +357,7 @@ public class Junction implements SysObj {
 				if(eqTrack(track, 0)){
 					if(applystate && !switch1){
 						switch1 = true;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
@@ -365,7 +365,7 @@ public class Junction implements SysObj {
 				if(eqTrack(track, 1)){
 					if(applystate && !switch0){
 						switch0 = true;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
@@ -373,7 +373,7 @@ public class Junction implements SysObj {
 				if(eqTrack(track, 2)){
 					if(applystate && switch0){
 						switch0 = false;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
@@ -381,7 +381,7 @@ public class Junction implements SysObj {
 				if(eqTrack(track, 3)){
 					if(applystate && switch1){
 						switch1 = false;
-						region.updateClient("junction_state", vecpos.pos);
+						root.updateClient("junction_state", vecpos.pos);
 						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
@@ -440,7 +440,7 @@ public class Junction implements SysObj {
 		}
 		//
 		if(oldsig0 != signal0 || oldsig1 != signal1){
-			this.region.updateClient("junction_signal_state", vecpos.pos);
+			root.updateClient("junction_signal_state", vecpos.pos);
 			updateLinkedTileEntities(true);
 		}
 	}
@@ -488,7 +488,7 @@ public class Junction implements SysObj {
 			else switch0 = !switch0;
 			player.bar("&aChanged Junction State. [" + (switch0 ? 0 : 1) + "-" + (switch1 ? 0 : 1) + "]");
 		}
-		region.updateClient("junction_state", vecpos.pos);
+		root.updateClient("junction_state", vecpos.pos);
 		updateLinkedTileEntities(false);
 		return true;
 	}
@@ -567,7 +567,7 @@ public class Junction implements SysObj {
 			this.signal = signal;
 			this.signal_dir = entrydir;
 		}
-		region.updateClient("junction_signal", vecpos.pos);
+		root.updateClient("junction_signal", vecpos.pos);
 	}
 
 	/** @return true, if entry dir differs junction signal dir */

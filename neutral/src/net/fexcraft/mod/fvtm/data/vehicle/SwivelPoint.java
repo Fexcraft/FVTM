@@ -273,7 +273,7 @@ public class SwivelPoint {
 			}
     	}
 		if(!should) return;
-		Packets.sendInRange(Packet_SPUpdate.class, (Passenger)entity, entity, this);
+		Packets.sendToAllTrackingEnt(Packet_SPUpdate.class, entity, entity, this);
 	}
 
 }

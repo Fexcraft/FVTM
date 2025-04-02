@@ -21,11 +21,8 @@ import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
-import net.fexcraft.mod.fvtm.sys.sign.SignRegion;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
 import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -202,10 +199,6 @@ public abstract class Packets {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
 			system.updateRegion(com, player);
 		});
-		LIS_SERVER.put("wire_upd_region", (com, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.updateRegion(com, (Passenger)player);
-		});
 		LIS_SERVER.put("relay_interact", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			system.onRelayInteract(com, (Passenger)player);
@@ -227,12 +220,12 @@ public abstract class Packets {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
 			QV3D pos = new QV3D(com, "pos");
 			if(com.getBoolean("remove")){
-				system.delSign(pos.pos);
+				system.del(pos.pos);
 			}
 			else if(com.getBoolean("item")){
 				Sign sign = player.getHeldItem(true).getContent(ContentType.SIGN.item_type);
 				SignData data = new SignData(sign).read(player.getHeldItem(true).directTag());
-				SignInstance inst = system.getSign(pos.pos);
+				SignInstance inst = system.get(pos.pos);
 				inst.components.add(data);
 				inst.updateClient();
 				if(!player.isCreative()) player.getHeldItem(true).decr(1);
@@ -240,6 +233,13 @@ public abstract class Packets {
 			else{
 				player.openUI(UIKeys.SIGN_EDITOR, pos.pos);
 			}
+		});
+		LIS_SERVER.put("sync_reg", (com, player) -> {
+			SystemManager.Systems sys = SystemManager.Systems.values()[com.getInteger("sys")];
+			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
+			if(system == null) return;
+			SystemRegion<?, ?> reg = system.getRegions().get(com.getIntArray("xz"));
+			if(reg != null) reg.sendSync(player);
 		});
 		if(EnvInfo.CLIENT) initClient();
 	}
@@ -313,14 +313,10 @@ public abstract class Packets {
 			}
 			FvtmLogger.debug(tag);
 		});
-		LIS_CLIENT.put("rail_upd_region", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			system.updateRegion(tag, null);
-		});
 		LIS_CLIENT.put("rail_spawn_ent", (tag, player) -> {
 			FvtmLogger.debug("Receiving entity spawn request.");
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			Region region = system.getRegions().get(tag.getIntArray("XZ"), true);
+			SystemRegion<RailSystem, Junction> region = system.getRegions().get(tag.getIntArray("xz"), true);
 			if(region != null && region.loaded){
 				//TODO region.spawnEntity(new RailEntity(region, tag.getLong("uid")).read(tag));
 			}
@@ -337,9 +333,11 @@ public abstract class Packets {
 			Junction junction = system.getJunction(vec);
 			if(junction != null) junction.read(tag);
 			else{
-				Region region = system.getRegions().get(vec, false);
+				SystemRegion<RailSystem, Junction> region = system.getRegions().get(vec, false);
 				if(region != null){
-					region.getJunctions().put(vec, new Junction(region).read(tag));
+					Junction junc = new Junction(region);
+					junc.read(tag);
+					region.getObjects().put(vec, junc);
 				}
 			}
 		});
@@ -410,10 +408,6 @@ public abstract class Packets {
 				}
 			}
 		});
-		LIS_CLIENT.put("wire_upd_region", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.updateRegion(tag, (Passenger)player);
-		});
 		LIS_CLIENT.put("wire_upd_relay", (tag, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			RelayHolder holder = system.getHolder(tag.getV3I("pos"));
@@ -433,8 +427,11 @@ public abstract class Packets {
 			RelayHolder holder = system.getHolder(pos);
 			if(holder != null) holder.read(tag);
 			else{
-				WireRegion region = system.getRegions().get(pos, false);
-				if(region != null) holder = region.addHolder(pos).read(tag);
+				SystemRegion<?, RelayHolder> region = system.getRegions().get(pos, false);
+				if(region != null){
+					holder = region.add(pos);
+					holder.read(tag);
+				}
 			}
 			if(holder.getTile() == null){
 				Object tile = system.getWorld().getBlockEntity(pos);
@@ -459,19 +456,20 @@ public abstract class Packets {
 			WireUnit unit = system.getWireUnits().get(tag.getString("unit"));
 			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
 		});
-		LIS_CLIENT.put("sign_reg", (tag, player) -> {
-			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
-			system.updateRegion(tag, (Passenger)player);
-		});
 		LIS_CLIENT.put("sign_upd", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
 			V3I pos = new V3I(tag.getList("pos"));
-			SignRegion region = system.getRegions().get(pos, false);
-			if(region != null) region.addSign(pos).read(tag.getCompound("sign"));
+			SystemRegion region = system.getRegions().get(pos, false);
+			if(region != null) region.add(pos).read(tag.getCompound("sign"));
 		});
 		LIS_CLIENT.put("sign_rem", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
-			system.delSign(new V3I(tag.getList("pos")));
+			system.del(new V3I(tag.getList("pos")));
+		});
+		LIS_CLIENT.put("sync_reg", (tag, player) -> {
+			SystemManager.Systems sys = SystemManager.Systems.values()[tag.getInteger("sys")];
+			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
+			if(system != null) system.updateRegion(tag, (Passenger)player);
 		});
 	}
 

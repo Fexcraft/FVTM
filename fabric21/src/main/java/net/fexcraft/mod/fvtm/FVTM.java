@@ -2,7 +2,14 @@ package net.fexcraft.mod.fvtm;
 
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -20,15 +27,21 @@ import net.fexcraft.mod.fvtm.impl.Packets21;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
+import net.fexcraft.mod.uni.UniChunk;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -98,6 +111,7 @@ public class FVTM implements ModInitializer {
 		/*StackWrapper.ITEM_TYPES.put(ContentType.BLOCK.item_type, item -> item instanceof BlockItem);*/
 		StackWrapper.ITEM_TYPES.put(ContentType.TOOLBOX.item_type, item -> item instanceof ToolboxItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.WIRE.item_type, item -> item instanceof WireItem);
+		StackWrapper.ITEM_TYPES.put(ContentType.SIGN.item_type, item -> item instanceof SignItem);
 		StackWrapper.CONTENT_TYPES.put(ContentType.PART.item_type, stack -> ((PartItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.VEHICLE.item_type, stack -> ((VehicleItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.MATERIAL.item_type, stack -> {
@@ -107,6 +121,7 @@ public class FVTM implements ModInitializer {
 		/*StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem)stack.getItem().direct()).getData(stack));*/
 		StackWrapper.CONTENT_TYPES.put(ContentType.RAILGAUGE.item_type, stack -> ((RailGaugeItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.WIRE.item_type, stack -> ((WireItem)stack.getItem().direct()).getContent());
+		StackWrapper.CONTENT_TYPES.put(ContentType.SIGN.item_type, stack -> ((SignItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);
 		AABB.SUPPLIER = () -> new AABBI();
 		/*BlockType.BLOCK_IMPL = BlockTypeImpl::get;*/
@@ -185,6 +200,48 @@ public class FVTM implements ModInitializer {
 			if(regrecipe) return;
 			FvtmResources.INSTANCE.registerRecipes();
 			regrecipe = true;
+		});
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			SystemManager.onServerStarting();
+		});
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			SystemManager.onServerStopping();
+		});
+		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+			SystemManager.onChunkLoad(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
+		});
+		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
+			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
+		});
+		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+			SystemManager.onChunkLoad(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
+		});
+		ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
+			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
+		});
+		ServerWorldEvents.LOAD.register((server, level) -> {
+			SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(level));
+			SystemManager.onWorldLoad(WrapperHolder.getWorld(level));
+		});
+		ServerWorldEvents.UNLOAD.register((server, level) -> {
+			SystemManager.onWorldUnload(WrapperHolder.getWorld(level));
+		});
+		ServerPlayConnectionEvents.JOIN.register((handler, player, server) -> {
+			if(server.overworld().isClientSide){
+				RoadPlacingUtil.CL_CURRENT = null;
+			}
+			else{
+				RoadPlacingCache.onLogIn(handler.player.getGameProfile().getId());
+			}
+			SystemManager.syncPlayer(WrapperHolder.getWorld(handler.player.level()).dimkey(), UniEntity.getEntity(handler.player));
+		});
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			if(!handler.player.level().isClientSide){
+				RoadPlacingCache.onLogOut(handler.player.getGameProfile().getId());
+			}
+		});
+		ServerPlayerEvents.AFTER_RESPAWN.register((old, neo, dim) -> {
+			if(dim) SystemManager.syncPlayer(WrapperHolder.getWorld(neo.level()).dimkey(), UniEntity.getEntity(neo));
 		});
 	}
 

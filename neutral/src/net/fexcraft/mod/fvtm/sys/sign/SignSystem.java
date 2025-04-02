@@ -2,12 +2,10 @@ package net.fexcraft.mod.fvtm.sys.sign;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
@@ -15,7 +13,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
 
@@ -24,14 +21,18 @@ import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
  *
  * @author Ferdinand Calo' (FEX___96)
  */
-public class SignSystem extends DetachedSystem {
+public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
-	private RegionMap regions = new RegionMap(this);
 	private long gc_trafficsigns;
 
 	public SignSystem(WorldW world){
 		super(world);
 		if(!world.isClient()) load();
+	}
+
+	@Override
+	public SystemManager.Systems getType(){
+		return SystemManager.Systems.SIGN;
 	}
 
 	public void load(){
@@ -62,7 +63,9 @@ public class SignSystem extends DetachedSystem {
 
 	@Override
 	public void onServerTick(){
-		for(SignRegion reg : regions.values()) reg.updateTick();
+		for(SystemRegion reg : regions.values()){
+			//TODO
+		}
 	}
 
 	@Override
@@ -99,7 +102,12 @@ public class SignSystem extends DetachedSystem {
 	public void addTimerTask(long time){
 		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
 	}
-	
+
+	@Override
+	public String getRegFolderName(){
+		return "signregions";
+	}
+
 	public static class TimedTask extends TimerTask {
 
 		private SignSystem signsys;
@@ -110,36 +118,16 @@ public class SignSystem extends DetachedSystem {
 
 		@Override
 		public void run(){
-			ArrayList<SignRegion> regs = new ArrayList<>();
-			for(SignRegion region : signsys.regions.values()){
+			ArrayList<SystemRegion> regs = new ArrayList<>();
+			for(SystemRegion region : signsys.regions.values()){
 				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 			}
-			for(SignRegion region : regs){
+			for(SystemRegion region : regs){
 				region.save();
-				signsys.regions.remove(region.getKey());
+				signsys.regions.remove(region.key);
 			}
 		}
 
-	}
-
-	public SignInstance getSign(V3I pos){
-		SignRegion region = regions.get(pos, false);
-		return region == null ? null : region.getSign(pos);
-	}
-
-	public SignInstance getSign(V3I pos, boolean load){
-		SignRegion region = regions.get(pos, load);
-		return region.getSign(pos);
-	}
-
-	public SignInstance addSign(V3I pos){
-		SignRegion region = regions.get(pos, true);
-		return region.addSign(pos);
-	}
-
-	public void delSign(V3I pos){
-		SignRegion region = regions.get(pos, true);
-		if(region != null) region.delSign(pos);
 	}
 
 	@Override
@@ -148,74 +136,30 @@ public class SignSystem extends DetachedSystem {
 	}
 
 	@Override
-	public void syncPlayer(EntityW entity){
-		for(SignRegion region : regions.values()){
-			region.syncClient(entity);
-		}
+	public SignInstance create(SystemRegion<SignSystem, SignInstance> region, V3I pos){
+		return new SignInstance(region, pos);
 	}
 
-	public static class RegionMap extends ConcurrentHashMap<RegionKey, SignRegion> {
-
-		private SignSystem root;
-
-		public RegionMap(SignSystem data){
-			root = data;
-		}
-
-		public SignRegion get(int x, int z){
-			for(RegionKey key : keySet()){
-				if(x == key.x && z == key.z) return get(key);
+	@Override
+	public void writeRegion(SystemRegion<SignSystem, SignInstance> region, TagCW com){
+		if(!region.getObjects().isEmpty()){
+			TagLW list = TagLW.create();
+			for(SignInstance sign : region.getObjects().values()){
+				list.add(sign.write());
 			}
-			return null;
+			com.set("Signs", list);
 		}
-
-		public SignRegion get(int[] xz){
-			for(RegionKey key : keySet()){
-				if(xz[0] == key.x && xz[1] == key.z) return get(key);
-			}
-			return null;
-		}
-
-		public SignRegion get(V3I pos, boolean load){
-			SignRegion region = get(RegionKey.getRegionXZ(pos));
-			if(region != null || !load) return region;
-			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new SignRegion(pos, root, false));
-			region.load().updateClient(pos);
-			return region;
-		}
-
-		public SignRegion get(int[] xz, boolean load){
-			SignRegion region = get(xz);
-			if(region != null || !load) return region;
-			put(new RegionKey(xz), region = new SignRegion(xz[0], xz[1], root, false));
-			region.load();
-			return region;
-		}
-
-		public SignRegion get(RegionKey xz, boolean load){
-			SignRegion region = get(xz);
-			if(region != null || !load) return region;
-			put(new RegionKey(xz.x, xz.z), region = new SignRegion(xz.x, xz.z, root, false));
-			region.load();
-			return region;
-		}
-
 	}
 
-	public RegionMap getRegions(){
-		return regions;
-	}
-
-	public void updateRegion(TagCW compound, Passenger player){
-		int[] xz = compound.getIntArray("XZ");
-		if(world.isClient()){
-			SignRegion region = regions.get(xz);
-			if(region == null) regions.put(new RegionKey(xz), region = new SignRegion(xz[0], xz[1], this, false));
-			region.read(compound);
-		}
-		else{
-			SignRegion region = regions.get(xz, true);
-			region.syncClient(player);
+	@Override
+	public void readRegion(SystemRegion<SignSystem, SignInstance> region, TagCW com){
+		if(!com.has("Signs")) return;;
+		region.getObjects().clear();
+		TagLW list = com.getList("Signs");
+		for(TagCW tag : list){
+			SignInstance sign = new SignInstance(region);
+			sign.read(tag);
+			region.getObjects().put(sign.vec.pos, sign);
 		}
 	}
 

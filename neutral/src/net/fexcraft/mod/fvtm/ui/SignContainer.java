@@ -12,16 +12,10 @@ import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
 
 /**
@@ -160,14 +154,11 @@ public class SignContainer extends ContainerInterface {
 				break;
 			}
 			case "import":{
-				Clipboard cp = Toolkit.getDefaultToolkit().getSystemClipboard();
-				Transferable data = cp.getContents(null);
-				if(!data.isDataFlavorSupported(DataFlavor.stringFlavor)) return;
 				try{
-					String str = data.getTransferData(DataFlavor.stringFlavor).toString();
-					if(!str.startsWith("[")) return;
+					String cb = com.getString("cb");
+					if(!cb.startsWith("[")) return;
 					inst.components.clear();
-					JsonArray array = JsonHandler.parse(str, false).asArray();
+					JsonArray array = JsonHandler.parse(cb, false).asArray();
 					for(JsonValue<?> val : array.value){
 						try{
 							JsonMap map = val.asMap();
@@ -181,21 +172,6 @@ public class SignContainer extends ContainerInterface {
 					}
 					inst.updateClient();
 					player.entity.openUI(UIKeys.SIGN_EDITOR, pos);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-				break;
-			}
-			case "export":{
-				try{
-					JsonArray array = new JsonArray();
-					for(SignData sign : signs){
-						array.add(sign.toJson());
-					}
-					Clipboard cp = Toolkit.getDefaultToolkit().getSystemClipboard();
-					StringSelection sel = new StringSelection(JsonHandler.toString(array, JsonHandler.PrintOption.FLAT));
-					cp.setContents(sel, new StringSelection("fvtm:sign"));
 				}
 				catch(Exception e){
 					e.printStackTrace();

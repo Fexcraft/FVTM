@@ -289,7 +289,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendInRange(Packet_TagListener.class, world, pos, task, compound);
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, world, pos, task, compound);
 	}
 
 	public WireRelay getRelay(WireKey key){

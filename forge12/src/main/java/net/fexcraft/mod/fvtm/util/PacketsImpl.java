@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -130,7 +132,7 @@ public class PacketsImpl extends Packets {
 			send0(Packet_TagListener.class, "vehicle", com);
 		}
 		else{
-			sendInRange0(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), RANGE, "vehicle", com);
+			sendInRange0(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.PACKET_RANGE, "vehicle", com);
 		}
 	}
 
@@ -158,6 +160,26 @@ public class PacketsImpl extends Packets {
 	}
 
 	@Override
+	public void sendToAllTrackingPos0(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
+		try{
+			instance.sendToAllTracking((IMessage)PACKETS.get(packet).newInstance().fill(data), new TargetPoint(world.dim(), pos.x, pos.y, pos.z, Config.PACKET_RANGE));
+		}
+		catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void sendToAllTrackingEnt0(Class<? extends PacketBase> packet, EntityW ent, Object... data){
+		try{
+			instance.sendToAllTracking((IMessage)PACKETS.get(packet).newInstance().fill(data), (Entity)ent.direct());
+		}
+		catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
 	public void sendToAll0(Class<? extends PacketBase> packet, Object... data){
 		try{
 			instance.sendToAll((IMessage)PACKETS.get(packet).newInstance().fill(data));
@@ -171,7 +193,7 @@ public class PacketsImpl extends Packets {
 	}
 
 	@Override
-	public void sendTo0(Class<? extends PacketBase> packet, Passenger to, Object... data){
+	public void sendTo0(Class<? extends PacketBase> packet, EntityW to, Object... data){
 		try{
 			instance.sendTo((IMessage)PACKETS.get(packet).newInstance().fill(data), to.local());
 		}
@@ -204,15 +226,15 @@ public class PacketsImpl extends Packets {
 	}
 
 	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
-		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, RANGE);
+		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.PACKET_RANGE);
 	}
 
 	public static TargetPoint getTargetPoint(int dim, BlockPos pos){
-		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), RANGE);
+		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.PACKET_RANGE);
 	}
 
 	public static TargetPoint getTargetPoint(int dim, V3I pos){
-		return new NetworkRegistry.TargetPoint(dim, pos.x, pos.y, pos.z, RANGE);
+		return new NetworkRegistry.TargetPoint(dim, pos.x, pos.y, pos.z, Config.PACKET_RANGE);
 	}
 
 }

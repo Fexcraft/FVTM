@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.CallbackContainer;
 import net.fexcraft.mod.fcl.FCL;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
@@ -20,6 +21,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.packet.PacketHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -276,6 +278,16 @@ public class Packets21 extends Packets {
 	}
 
 	@Override
+	public void sendToAllTrackingPos0(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
+		sendInRange0(packet, world, pos, Config.PACKET_RANGE * 2, data);
+	}
+
+	@Override
+	public void sendToAllTrackingEnt0(Class<? extends PacketBase> packet, EntityW ent, Object... data){
+		sendInRange0(packet, ent.getWorld(), ent.getPos(), Config.PACKET_RANGE * 2, data);
+	}
+
+	@Override
 	public void sendToAll0(Class<? extends PacketBase> packet, Object... data){
 		try{
 			for(ServerPlayer player : FCL.SERVER.get().getPlayerList().getPlayers()){
@@ -288,7 +300,7 @@ public class Packets21 extends Packets {
 	}
 
 	@Override
-	public void sendTo0(Class<? extends PacketBase> packet, Passenger to, Object... data){
+	public void sendTo0(Class<? extends PacketBase> packet, EntityW to, Object... data){
 		try{
 			ServerPlayNetworking.getSender((ServerPlayer)to.direct()).sendPacket((CustomPacketPayload)PACKETS.get(packet).newInstance().fill(data));
 		}

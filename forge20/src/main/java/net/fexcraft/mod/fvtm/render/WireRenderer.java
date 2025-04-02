@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -62,8 +63,8 @@ public class WireRenderer {
 		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
-		for(WireRegion reg : wiredata.getRegions().values()){
-			for(RelayHolder holder : reg.getHolders().values()){
+		for(SystemRegion<?, RelayHolder> reg : wiredata.getRegions().values()){
+			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){
 					Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check

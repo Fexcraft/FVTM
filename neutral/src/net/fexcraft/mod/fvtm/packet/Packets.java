@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.packet;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -49,7 +50,6 @@ public abstract class Packets {
 
 	public static HashMap<String, PacketListener> LIS_CLIENT = new HashMap<>();
 	public static HashMap<String, PacketListener> LIS_SERVER = new HashMap<>();
-	public static int RANGE = 256;
 	public static Packets INSTANCE = null;
 	//
 	public static Class<? extends PacketBase> PKT_TAG = Packet_TagListener.class;
@@ -496,17 +496,38 @@ public abstract class Packets {
 
 	/** Sends a Packet to all in range. */
 	public static void sendInRange(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
-		INSTANCE.sendInRange0(packet, world, pos, RANGE, data);
+		INSTANCE.sendInRange0(packet, world, pos, Config.PACKET_RANGE, data);
 	}
 
 	/** Sends a Packet to all in range. */
 	public static void sendInRange(Class<? extends PacketBase> packet, WorldW world, V3I pos, Object... data){
-		INSTANCE.sendInRange0(packet, world, new V3D(pos), RANGE, data);
+		INSTANCE.sendInRange0(packet, world, new V3D(pos), Config.PACKET_RANGE, data);
 	}
 
 	/** Sends a Packet to all in range. */
 	public static void sendInRange(Class<? extends PacketBase> packet, EntityW pass, Object... data){
 		sendInRange(packet, pass.getWorld(), pass.getPos(), data);
+	}
+
+	/** Sends a Packet to all tracking a certain position. */
+	public abstract void sendToAllTrackingPos0(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data);
+
+	/** Sends a Packet to all tracking a certain position. */
+	public static void sendToAllTrackingPos(Class<? extends PacketBase> packet, WorldW world, V3I pos, Object... data){
+		INSTANCE.sendToAllTrackingPos0(packet, world, new V3D(pos), data);
+	}
+
+	/** Sends a Packet to all tracking a certain position. */
+	public static void sendToAllTrackingPos(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
+		INSTANCE.sendToAllTrackingPos0(packet, world, pos, data);
+	}
+
+	/** Sends a Packet to all tracking a certain entity. */
+	public abstract void sendToAllTrackingEnt0(Class<? extends PacketBase> packet, EntityW ent, Object... data);
+
+	/** Sends a Packet to all tracking a certain position. */
+	public static void sendToAllTrackingEnt(Class<? extends PacketBase> packet, EntityW ent, Object... data){
+		INSTANCE.sendToAllTrackingEnt0(packet, ent, data);
 	}
 
 	/** Sends a Packet to all. */
@@ -518,10 +539,10 @@ public abstract class Packets {
 	}
 
 	/** Sends a Packet to the Server. */
-	public abstract void sendTo0(Class<? extends PacketBase> packet, Passenger to, Object... data);
+	public abstract void sendTo0(Class<? extends PacketBase> packet, EntityW to, Object... data);
 
 	/** Sends a Packet to the Server. */
-	public static void sendTo(Class<? extends PacketBase> packet, Passenger to, Object... data){
+	public static void sendTo(Class<? extends PacketBase> packet, EntityW to, Object... data){
 		INSTANCE.sendTo0(packet, to, data);
 	}
 

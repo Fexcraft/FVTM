@@ -39,7 +39,7 @@ public abstract class Compound {
 			COMPOUNDS.put(uid, this);
 		}
 
-		public Singular(Region region, long uid, TagCW compound){
+		public Singular(RailRegion region, long uid, TagCW compound){
 			super(uid);
 			RailEntity root = new RailEntity(region, this);
 			root = root.read(compound);
@@ -116,7 +116,7 @@ public abstract class Compound {
 			COMPOUNDS.put(uid, this);
 		}
 
-		public Multiple(RailSystem system, Region region, Long id, TagLW list){
+		public Multiple(RailSystem system, RailRegion region, Long id, TagLW list){
 			super(id);
 			RailEntity prev = null, curr;
 			for(TagCW compound : list){
@@ -127,7 +127,7 @@ public abstract class Compound {
 					FvtmLogger.log("NBT:" + compound);
 					continue;
 				}
-				curr = new RailEntity(region == null ? system.getRegions().get(compound.getIntArray("region")) : region, this).read(compound);
+				curr = new RailEntity(region == null ? system.getRegions().getC(compound.getIntArray("region"), false) : region, this).read(compound);
 				if(curr == null) continue;
 				if(prev != null){
 					if(compound.has("front_coupled") && compound.getLong("front_coupled") == prev.uid){

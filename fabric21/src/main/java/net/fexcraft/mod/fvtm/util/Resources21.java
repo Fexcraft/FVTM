@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
+import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms21;
@@ -28,7 +29,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -114,6 +114,7 @@ public class Resources21 extends FvtmResources {
 		FvtmRegistry.DECORATIONS.forEach(dec -> dec.setItemWrapper(wrapwrapper(dec.getID(), FVTM.regItem(dec.getIDS(), prop -> new DecorationItem(prop, dec)))));
 		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), FVTM.regItem(rg.getIDS(), prop -> new RailGaugeItem(prop, rg)))));
 		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), FVTM.regItem(wire.getIDS(), prop -> new WireItem(prop, wire)))));
+		FvtmRegistry.SIGNS.forEach(sign -> sign.setItemWrapper(wrapwrapper(sign.getID(), FVTM.regItem(sign.getIDS(), prop -> new SignItem(prop, sign)))));
 	}
 
 	@Override

@@ -129,6 +129,31 @@ public class Renderer21 extends Renderer<GLObject> {
 		//
 	}
 
+	@Override
+	public void push(){
+		pose.pushPose();
+	}
+
+	@Override
+	public void pop(){
+		pose.popPose();
+	}
+
+	@Override
+	public void translate(double x, double y, double z){
+		pose.translate(x, y, z);
+	}
+
+	@Override
+	public void rotate(float deg, int x, int y, int z){
+		pose.mulPose(new Matrix4f().rotate(deg * Static.rad1, x, y, z));
+	}
+
+	@Override
+	public void scale(double x, double y, double z){
+		pose.scale((float)x, (float)y, (float)z);
+	}
+
 	public static void set(PoseStack ps, MultiBufferSource mbs, int lgt, int ol){
 		pose = ps;
 		buffer = mbs;

@@ -420,7 +420,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendInRange(PKT_TAG, world, vector, task, compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, world, vector, task, compound);
 	}
 
 	public void updateClient(String kind, RailEntity entity){
@@ -435,7 +435,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendInRange(PKT_TAG, world, entity.pos, task, compound);
+		Packets.sendToAll(PKT_TAG, world, entity.pos, task, compound);
 	}
 
 	@Override

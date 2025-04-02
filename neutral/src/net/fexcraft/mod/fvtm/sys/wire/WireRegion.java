@@ -36,88 +36,11 @@ public class WireRegion {
 	public WireRegion(int i, int j, WireSystem root, boolean load){
 		key = new RegionKey(i, j);
 		system = root;
-		if(load) load();
 	}
 
 	public WireRegion(V3I pos, WireSystem root, boolean load){
 		key = new RegionKey(RegionKey.getRegionXZ(pos));
 		system = root;
-		if(load) load();
-	}
-
-	public WireRegion load(){
-		if(system.getWorld().isClient()){
-			TagCW compound = TagCW.create();
-			compound.set("XZ", key.toArray());
-			Packets.send(Packet_TagListener.class, "wire_upd_region", compound);
-			return this;
-		}
-		File file = new File(system.getSaveRoot(), "/wireregions/" + key.x + "_" + key.z + ".dat");
-		TagCW compound = null;
-		boolean failed = false;
-		if(file.exists()){
-			try{
-				compound = WrapperHolder.read(file);
-			}
-			catch(Throwable e){
-				failed = true;
-				e.printStackTrace();
-				FvtmLogger.log("FAILED TO LOAD WIRE REGION [ " + key.x +  ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
-				try{
-					File newfile = new File(system.getSaveRoot(), "/wireregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
-					Files.copy(file.toPath(), newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					FvtmLogger.log("If things gone well, created a backup copy of the 'broken' file!");
-				}
-				catch(Throwable thr){
-					thr.printStackTrace();
-					FvtmLogger.log("FAILED TO CREATE BACKUP OF BROKEN WIRE REGION");
-				}
-			}
-		}
-		if(!file.exists() || failed) compound = TagCW.create();
-		//
-		return this.read(compound).setAccessed();
-	}
-
-	public WireRegion read(TagCW compound){
-		if(compound.has("RelayHolders")){
-			if(!holders.isEmpty()) holders.clear();
-			TagLW list = compound.getList("RelayHolders");
-			for(TagCW tag : list){
-				RelayHolder holder = new RelayHolder(this);
-				holder.read(tag);
-				holders.put(holder.pos, holder);
-			}
-		}
-		loaded = true;
-		return this;
-	}
-	
-	public WireRegion save(){
-		File file = new File(system.getSaveRoot(), "/wireregions/" + key.x + "_" + key.z + ".dat");
-		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		TagCW compound = write(false);
-		if(compound.empty()){
-			FvtmLogger.debug("WireRegion [" + key.toString() + "] has no data to save, skipping.");
-			return this;
-		}
-		compound.set("Saved", Time.getDate());
-		WrapperHolder.write(compound, file);
-		FvtmLogger.debug("Saved WireRegion [" + key.toString() + "].");
-		return this;
-	}
-
-	private TagCW write(boolean clientpacket){
-		TagCW compound = TagCW.create();
-		if(!holders.isEmpty()){
-			TagLW list = TagLW.create();
-			for(RelayHolder holder : holders.values()){
-				list.add(holder.write());
-			}
-			compound.set("RelayHolders", list);
-		}
-		if(clientpacket) return compound;
-		return compound;
 	}
 
 	public WireRelay getRelay(WireKey wkey){

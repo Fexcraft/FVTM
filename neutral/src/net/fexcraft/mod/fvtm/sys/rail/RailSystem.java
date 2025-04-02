@@ -17,9 +17,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
-import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.*;
@@ -30,7 +28,7 @@ import net.fexcraft.mod.uni.world.*;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class RailSystem extends DetachedSystem {
+public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	private long gc_entities, gc_sections, gc_compounds;
 	//
@@ -42,6 +40,11 @@ public class RailSystem extends DetachedSystem {
 	public RailSystem(WorldW world){
 		super(world);
 		if(!world.isClient()) load();
+	}
+
+	@Override
+	public SystemManager.Systems getType(){
+		return SystemManager.Systems.RAIL;
 	}
 
 	public void load(){
@@ -166,9 +169,20 @@ public class RailSystem extends DetachedSystem {
 		}
 		
 	}
-	
-	public RegionMap getRegions(){
-		return regions;
+
+	@Override
+	public Junction create(SystemRegion<RailSystem, Junction> region, V3I pos){
+		return new Junction(region);
+	}
+
+	@Override
+	public void writeRegion(SystemRegion<RailSystem, Junction> region, TagCW com){
+
+	}
+
+	@Override
+	public void readRegion(SystemRegion<RailSystem, Junction> region, TagCW com){
+
 	}
 
 	public Junction getJunction(V3I vec){
@@ -430,7 +444,12 @@ public class RailSystem extends DetachedSystem {
 	public void addTimerTask(long time){
 		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
 	}
-	
+
+	@Override
+	public String getRegFolderName(){
+		return "railregions";
+	}
+
 	public static class TimedTask extends TimerTask {
 
 		private RailSystem railsys;

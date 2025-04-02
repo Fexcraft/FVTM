@@ -34,12 +34,6 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 		key = rk;
 	}
 
-	public SystemRegion(R root, RegionKey rk, boolean load){
-		system = root;
-		key = rk;
-		if(load) load();
-	}
-
 	public SystemRegion<R, V> load(){
 		if(system.getWorld().isClient()){
 			TagCW compound = TagCW.create();
@@ -91,18 +85,18 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		TagCW compound = write(false);
 		if(compound.empty()){
-			FvtmLogger.debug(system.getType() + "-Region [" + key + "] has no data to save, skipping.");
+			FvtmLogger.debug(system.getType() + "-RailRegion [" + key + "] has no data to save, skipping.");
 			return this;
 		}
 		compound.set("Saved", Time.getDate());
 		WrapperHolder.write(compound, file);
-		FvtmLogger.debug("Saved " + system.getType() + "-Region [" + key + "].");
+		FvtmLogger.debug("Saved " + system.getType() + "-RailRegion [" + key + "].");
 		return this;
 	}
 
 	private TagCW write(boolean syncpkt){
 		TagCW compound = TagCW.create();
-		system.writeRegion(this, compound);
+		system.writeRegion(this, compound, syncpkt);
 		if(syncpkt){
 			compound.set("xz", key.toArray());
 			compound.set("sys", system.getType().ordinal());

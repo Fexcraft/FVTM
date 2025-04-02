@@ -215,6 +215,11 @@ public class EventHandler {
 		SystemManager.PLAYERON = true;
 		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), UniEntity.getEntity(event.player));
 	}
+
+	@SubscribeEvent
+	public void onPlayerOut(PlayerEvent.PlayerChangedDimensionEvent event){
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), UniEntity.getEntity(event.player));
+	}
 	
 	@SubscribeEvent
 	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){

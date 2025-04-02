@@ -34,7 +34,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public Track current, last;
 	public VehicleInstance vehicle;
 	public long uid;
-	public Region region;
+	public RailRegion region;
 	//protected boolean forward = true;
 	public double passed;
 	public V3D pos = new V3D();
@@ -66,10 +66,10 @@ public class RailEntity implements Comparable<RailEntity>{
 	public RailEntity(RailSystem data, VehicleInstance veh, Track track, UUID placer){
 		setveh(veh);
 		current = track;
-		region = data.getRegions().get(track.start.pos, true);
+		region = data.getRegions().getC(track.start.pos, true);
 		if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId();
-		data.updateEntityEntry(uid, region.getKey());
+		data.updateEntityEntry(uid, region.key);
 		frbogiedis = -veh.data.getWheelPositions().get("bogie_front").z;
 		rrbogiedis = veh.data.getWheelPositions().get("bogie_rear").z;
 		frconndis = -veh.data.getConnectorFor("front").z;
@@ -97,14 +97,14 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	/** only to use with read() afterward
 	 * @param compound */
-	public RailEntity(Region railregion, Compound compound){
+	public RailEntity(RailRegion railregion, Compound compound){
 		region = railregion;
 		com = compound;
 		setveh(new VehicleInstance(null, null));
 	}
 	
 	/** only to use with read() afterward || CLIENT SIDE METHOD */
-	public RailEntity(Region railregion, long uid){
+	public RailEntity(RailRegion railregion, long uid){
 		region = railregion; this.uid = uid;
 		com = Compound.getNewClientCompound(this);
 	}
@@ -113,7 +113,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		return uid;
 	}
 
-	public Region getRegion(){
+	public RailRegion getRegion(){
 		return region;
 	}
 	
@@ -178,7 +178,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			passed = tro.passed;
 			if(!last.equals(current)) this.updateClient("track");
 			this.updateClient("passed");
-			if(!region.getKey().isInRegion(current.start)) this.updateRegion(current.start);
+			if(!region.key.isInRegion(current.start)) this.updateRegion(current.start);
 			updatePosition();
 			//
 			if(!hascoupled && isCoupled()){
@@ -196,7 +196,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		//
-		region.getSystem().updateEntityEntry(uid, region.getKey());
+		region.getSystem().updateEntityEntry(uid, region.key);
 	}
 
 	private boolean CMODE(){
@@ -337,14 +337,14 @@ public class RailEntity implements Comparable<RailEntity>{
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track){
 		railentlist.clear();
 		railentlist.addAll(track.unit.getEntities());
-		Junction junction = region.getJunction(track.start.pos);
+		Junction junction = region.get(track.start.pos);
 		Track track0;
 		//TODO alternative for when a specific path is followed
 		if(junction != null){
 			track0 = junction.getNext(null, track.getId(), false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		}
-		junction = region.getJunction(track.end.pos);
+		junction = region.get(track.end.pos);
 		if(junction != null){
 			track0 = junction.getNext(null, track.getOppositeId(), false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
@@ -392,7 +392,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void updateRegion(QV3D start){
 		region.getEntities().remove(uid);
-		region = region.getSystem().getRegions().get(RegionKey.getRegionXZ(start), true);
+		region = region.getSystem().getRegions().getC(RegionKey.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
 	}
 
@@ -415,7 +415,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private TRO getTrack(Track track, double passed, boolean apply, boolean signal){
 		while(passed > track.length){
-			Junction junc = region.getJunction(track.end.pos);
+			Junction junc = region.get(track.end.pos);
 			if(junc == null){
 				com.stop(track, track.length);
 				return new TRO(track, track.length);
@@ -439,7 +439,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		while(passed < 0){
-			Junction junc = region.getJunction(track.start.pos);
+			Junction junc = region.get(track.start.pos);
 			if(junc == null){
 				com.stop(track, 0);
 				return new TRO(track, 0);
@@ -523,8 +523,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	public TagCW write(TagCW compound){
 		if(compound == null) compound = TagCW.create();
 		compound.set("uid", uid);
-		compound.set("region", region.getKey().toArray());
-		current.getId().write(compound);
+		compound.set("region", region.key.toArray());
+		if(current != null) current.getId().write(compound);
 		compound.set("pos", SaveUtils.saveV3D(pos));
 		compound.set("prev", SaveUtils.saveV3D(prev));
 		compound.set("cfront", SaveUtils.saveV3D(cfront));

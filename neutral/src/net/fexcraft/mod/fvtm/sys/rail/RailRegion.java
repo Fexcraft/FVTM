@@ -36,7 +36,7 @@ public class RailRegion extends SystemRegion<RailSystem, Junction> {
 			if(system.getWorld().isClient()) return;
 			TagCW compound = ent.write(null);
 			compound.set("XZ", key.toArray());
-			Packets.sendInRange(PKT_TAG, system.getWorld(), ent.pos, "rail_spawn_ent", compound);
+			Packets.sendToAllTrackingPos(PKT_TAG, system.getWorld(), ent.pos, "rail_spawn_ent", compound);
 		}
 		catch(Exception e){
 			e.printStackTrace();

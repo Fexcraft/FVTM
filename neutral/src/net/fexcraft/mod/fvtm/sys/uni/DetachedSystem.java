@@ -24,9 +24,13 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 	public DetachedSystem(WorldW world){
 		this.world = world;
 		root = WrapperHolder.getWorldFolder(world, "fvtm");
-		regions = new SystemRegMap<>((S)this);
+		regions = new SystemRegMap<>((S)this, this::newRegion);
 	}
-	
+
+	public SystemRegion<S,V> newRegion(RegionKey key){
+		return new SystemRegion<>((S)this, key);
+	}
+
 	public WorldW getWorld(){
 		return world;
 	}
@@ -81,7 +85,7 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 		RegionKey key = new RegionKey(compound.getIntArray("xz"));
 		if(world.isClient()){
 			SystemRegion<S, V> region = regions.get(key);
-			if(region == null)regions.put(key, region = new SystemRegion(this, key, false));
+			if(region == null)regions.put(key, region = newRegion(key));
 			region.read(compound);
 		}
 		else{
@@ -116,8 +120,12 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 
 	//
 
-	public abstract void writeRegion(SystemRegion<S, V> region, TagCW com);
+	public void writeRegion(SystemRegion<S, V> region, TagCW com, boolean syncpkt){
+		writeRegion(region, com);
+	}
 
-	public abstract void readRegion(SystemRegion<S, V> region, TagCW com);
+	public void writeRegion(SystemRegion<S, V> region, TagCW com){}
+
+	public void readRegion(SystemRegion<S, V> region, TagCW com){}
 
 }

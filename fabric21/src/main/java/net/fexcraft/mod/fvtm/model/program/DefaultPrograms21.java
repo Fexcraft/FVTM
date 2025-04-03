@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model.program;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
@@ -15,6 +16,8 @@ import net.fexcraft.mod.fvtm.render.Renderer21;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -185,6 +188,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
+		ModelGroup.PROGRAMS.add(new SignText());
 	}
 
 	public static class RGBCustom implements Program {
@@ -482,6 +486,37 @@ public class DefaultPrograms21 extends DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new TextureBinder(args[0]);
+		}
+
+	}
+
+	public static class SignText implements Program {
+
+		@Override
+		public String id(){ return "fvtm:sign_text"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.sign == null || data.sign.text == null || data.sign.text.length() == 0) return;
+			RENDERER.push();
+			RENDERER.scale(-0.025F, -0.025F, 0.025F);
+			RENDERER.rotate(90, 0, 1, 0);
+			Minecraft.getInstance().font.drawInBatch(data.sign.text, data.sign.centered ? -Minecraft.getInstance().font.width(data.sign.text) / 2 : 0, 0,
+				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer21.buffer(),
+				Font.DisplayMode.SEE_THROUGH, light, Renderer21.overlay
+			);
+			Renderer21.resetColor();
+			RENDERER.pop();
+		}
+
+		@Override
+		public boolean post(){
+			return false;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return this;
 		}
 
 	}

@@ -37,7 +37,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	private static MultiBufferSource buffer;
 	private static VertexConsumer cons;
 	protected static RenderType rentype;
-	protected static int overlay = OverlayTexture.NO_OVERLAY;
+	public static int overlay = OverlayTexture.NO_OVERLAY;
 	public static int light;
 
 	public static void setColor(RGB col){
@@ -81,6 +81,10 @@ public class Renderer120 extends Renderer<GLObject> {
 
 	public static RenderType rentype(){
 		return rentype;
+	}
+
+	public static MultiBufferSource buffer(){
+		return buffer;
 	}
 
 	public void render(Polyhedron<GLObject> poly){

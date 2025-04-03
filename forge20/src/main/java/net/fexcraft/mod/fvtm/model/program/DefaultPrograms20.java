@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
@@ -498,7 +499,15 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.sign == null || data.sign.text == null || data.sign.text.length() == 0) return;
-			//TODO
+			RENDERER.push();
+			RENDERER.scale(-0.025F, -0.025F, 0.025F);
+			RENDERER.rotate(90, 0, 1, 0);
+			Minecraft.getInstance().font.drawInBatch(data.sign.text, data.sign.centered ? -Minecraft.getInstance().font.width(data.sign.text) / 2 : 0, 0,
+				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer120.buffer(),
+				Font.DisplayMode.SEE_THROUGH, light, Renderer120.overlay
+			);
+			Renderer120.resetColor();
+			RENDERER.pop();
 		}
 
 		@Override

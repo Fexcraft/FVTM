@@ -2,10 +2,12 @@ package net.fexcraft.mod.fvtm;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -31,6 +33,7 @@ import net.fexcraft.mod.uni.packet.PacketHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.telemetry.events.WorldLoadEvent;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -43,7 +46,6 @@ import static net.fexcraft.mod.fvtm.impl.Packets21.*;
  */
 public class FVTMC implements ClientModInitializer {
 
-	private static boolean modelsloaded;
 	public static KeyMapping engine_toggle;
 	public static KeyMapping inventory_open;
 	public static KeyMapping toggables;
@@ -66,13 +68,11 @@ public class FVTMC implements ClientModInitializer {
 		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 		Renderer.RENDERER = new Renderer21();
 		GLO.SUPPLIER = (() -> new GLObject());
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-			if(modelsloaded) return;
+		ClientLifecycleEvents.CLIENT_STARTED.register(server -> {
 			FvtmResources.initModelSystem();
 			if(DefaultPrograms.SIGNAL_TIMER[0] == null){
 				DefaultPrograms.setupSignalTimer();
 			}
-			modelsloaded = true;
 		});
 		BlockEntityRenderers.register(Resources21.LIFT_ENTITY, context -> new VehicleLiftRenderer());
 		BlockEntityRenderers.register(Resources21.CONST_ENTITY, context -> new ConstRenderer());
@@ -132,6 +132,7 @@ public class FVTMC implements ClientModInitializer {
 			}
 			return InteractionResult.PASS;
 		});
+		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){

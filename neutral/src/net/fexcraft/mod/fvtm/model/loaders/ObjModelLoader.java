@@ -22,7 +22,7 @@ import net.fexcraft.mod.uni.IDLManager;
  */
 public class ObjModelLoader implements ModelLoader {
 
-	private static TreeMap<IDL, Map<String, ArrayList<Polyhedron>>> DATA_CACHE = new TreeMap<>();
+	private static LinkedHashMap<IDL, Map<String, ArrayList<Polyhedron>>> DATA_CACHE = new LinkedHashMap<>();
 
 	@Override
 	public boolean accepts(String name, String suffix){

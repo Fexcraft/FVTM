@@ -26,6 +26,10 @@ public class Renderer21 extends Renderer<GLObject> {
 	public static final Vector3f AZ = new Vector3f(0, 0, 1);
 	public static final Vector3f NULLVEC = new Vector3f(0, 0, 0);
 	//
+	public static Vec3f BLUE = new Vec3f(0, 0, 1);
+	public static Vec3f CYAN = new Vec3f(0, 1, 1);
+	public static Vec3f ORG = new Vec3f(1, 0.75f, 0);
+	//
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static int color = 0xffffffff;
 	//
@@ -33,7 +37,7 @@ public class Renderer21 extends Renderer<GLObject> {
 	private static MultiBufferSource buffer;
 	private static VertexConsumer cons;
 	protected static RenderType rentype;
-	protected static int overlay = OverlayTexture.NO_OVERLAY;
+	public static int overlay = OverlayTexture.NO_OVERLAY;
 	public static int light;
 
 	public static void setColor(RGB col){
@@ -75,6 +79,10 @@ public class Renderer21 extends Renderer<GLObject> {
 
 	public static RenderType rentype(){
 		return rentype;
+	}
+
+	public static MultiBufferSource buffer(){
+		return buffer;
 	}
 
 	public void render(Polyhedron<GLObject> poly){

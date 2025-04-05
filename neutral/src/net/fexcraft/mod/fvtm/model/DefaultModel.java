@@ -84,7 +84,7 @@ public class DefaultModel implements Model {
 						try{
 							ConditionalProgram prog = null;
 							if(COND_PROGRAMS.containsKey(split[1])){
-								prog = COND_PROGRAMS.get(split[1]).getConstructor().newInstance();
+								prog = COND_PROGRAMS.get(split[1]).copy();
 							}
 							else prog = new ConditionBased(split[1]);
 							if(split.length > 2){
@@ -144,7 +144,7 @@ public class DefaultModel implements Model {
 						String progid = json.get("id").string_value();
 						ConditionalProgram prog = null;
 						if(COND_PROGRAMS.containsKey(progid)){
-							prog = COND_PROGRAMS.get(progid).getConstructor().newInstance();
+							prog = COND_PROGRAMS.get(progid).copy();
 						}
 						else prog = new ConditionBased(progid);
 						if(json.has("ifmet")){
@@ -175,7 +175,7 @@ public class DefaultModel implements Model {
 				try{
 					ConditionalProgram prog = null;
 					if(COND_PROGRAMS.containsKey(args[1])){
-						prog = COND_PROGRAMS.get(args[1]).getConstructor().newInstance();
+						prog = COND_PROGRAMS.get(args[1]).copy();
 					}
 					else prog = new ConditionBased(args[1]);
 					String[] sub = args[2].split("|");

@@ -15,7 +15,7 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 
 	public static final ProgramRegistry PROGRAMS = new ProgramRegistry();
 	public static final ModelGroup EMPTY = new ModelGroup("empty");
-	public static final HashMap<String, Class<? extends ConditionalProgram>> COND_PROGRAMS = new HashMap<>();
+	public static final HashMap<String, ConditionalProgram> COND_PROGRAMS = new HashMap<>();
 	
 	private ArrayList<Program> all_programs = new ArrayList<>();
 	protected ArrayList<Program> pre_programs = new ArrayList<>();

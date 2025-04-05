@@ -33,16 +33,16 @@ import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 public class BlockCondPrograms {
 
     public static void init(){
-		COND_PROGRAMS.put("fvtm:signal_state", SignalState.class);
-		COND_PROGRAMS.put("fvtm:basic_signal", SignalState.class);
-		COND_PROGRAMS.put("fvtm:switch_fork2_state", SwitchFork2State.class);
-		COND_PROGRAMS.put("fvtm:switch_fork3_state", SwitchFork3State.class);
-		COND_PROGRAMS.put("fvtm:switch_double_state", SwitchDoubleState.class);
-		COND_PROGRAMS.put("fvtm:switch_double_state_side", SwitchDoubleStateSide.class);
-		COND_PROGRAMS.put("fvtm:block_bool_value", BlockBoolValue.class);
-		COND_PROGRAMS.put("fvtm:block_facing", BlockFacing.class);
-		COND_PROGRAMS.put("fvtm:block_rotation", BlockRotation.class);
-		COND_PROGRAMS.put("fvtm:block_state_property", BlockStateProperty.class);
+		COND_PROGRAMS.put("fvtm:signal_state", new SignalState());
+		COND_PROGRAMS.put("fvtm:basic_signal", new SignalState());
+		COND_PROGRAMS.put("fvtm:switch_fork2_state", new SwitchFork2State());
+		COND_PROGRAMS.put("fvtm:switch_fork3_state", new SwitchFork3State());
+		COND_PROGRAMS.put("fvtm:switch_double_state", new SwitchDoubleState());
+		COND_PROGRAMS.put("fvtm:switch_double_state_side", new SwitchDoubleStateSide());
+		COND_PROGRAMS.put("fvtm:block_bool_value", new BlockBoolValue());
+		COND_PROGRAMS.put("fvtm:block_facing", new BlockFacing());
+		COND_PROGRAMS.put("fvtm:block_rotation", new BlockRotation());
+		COND_PROGRAMS.put("fvtm:block_state_property", new BlockStateProperty());
     }
 
 	public static class SignalState extends Program.ConditionalProgram {

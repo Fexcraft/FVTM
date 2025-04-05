@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.model;
 
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+
 import static net.fexcraft.mod.fvtm.model.ModelGroup.PROGRAMS;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.function.BiPredicate;
 
@@ -105,6 +108,16 @@ public interface Program {
 			other.programs.clear();
 			other.opposite.clear();
 			return this;
+		}
+
+		public ConditionalProgram copy(){
+			try{
+				return this.getClass().getConstructor().newInstance();
+			}
+			catch(InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+				e.printStackTrace();
+				return null;
+			}
 		}
 
 	}

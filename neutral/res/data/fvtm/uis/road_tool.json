@@ -30,12 +30,12 @@
 	},
 	"buttons": {
 		"add_width": {
-			"pos": [ 27, 7 ],
+			"pos": [ 47, 7 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.add_width"
 		},
 		"sub_width": {
-			"pos": [ 27, 17 ],
+			"pos": [ 47, 17 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.sub_width"
 		},
@@ -122,14 +122,14 @@
 	},
 	"texts": {
 		"road_fill": {
-			"pos": [ 39, 8 ],
+			"pos": [ 59, 8 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
 		"road_width": {
-			"pos": [ 39, 16 ],
+			"pos": [ 59, 16 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,

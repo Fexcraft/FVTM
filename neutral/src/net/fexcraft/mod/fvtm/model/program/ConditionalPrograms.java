@@ -10,28 +10,34 @@ import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class ConditionalPrograms {
 	
 	public static void init(){
-		COND_PROGRAMS.put("fvtm:lights", Lights.class);
-		COND_PROGRAMS.put("fvtm:front_lights", FrontLights.class);
-		COND_PROGRAMS.put("fvtm:back_lights", BackLights.class);
-		COND_PROGRAMS.put("fvtm:brake_lights", BrakeLights.class);
-		COND_PROGRAMS.put("fvtm:fog_lights", FogLights.class);
-		COND_PROGRAMS.put("fvtm:long_lights", LongLights.class);
-		COND_PROGRAMS.put("fvtm:reverse_lights", ReverseLights.class);
-		COND_PROGRAMS.put("fvtm:lights_rail_forward", LightsForward.class);
-		COND_PROGRAMS.put("fvtm:lights_rail_backward", LightsBackward.class);
-		COND_PROGRAMS.put("fvtm:turn_signal_left", TurnSignalLeft.class);
-		COND_PROGRAMS.put("fvtm:turn_signal_right", TurnSignalRight.class);
-		COND_PROGRAMS.put("fvtm:warning_lights", WarningLights.class);
-		COND_PROGRAMS.put("fvtm:back_lights_signal_left", BackLightsSignalLeft.class);
-		COND_PROGRAMS.put("fvtm:back_lights_signal_right", BackLightsSignalRight.class);
-		COND_PROGRAMS.put("fvtm:category_specific", IDSpecific.class);
-		COND_PROGRAMS.put("fvtm:category_specific_array", IDSpecificArray.class);
+		COND_PROGRAMS.put("fvtm:lights", new Lights());
+		COND_PROGRAMS.put("fvtm:front_lights", new FrontLights());
+		COND_PROGRAMS.put("fvtm:back_lights", new BackLights());
+		COND_PROGRAMS.put("fvtm:brake_lights", new BrakeLights());
+		COND_PROGRAMS.put("fvtm:fog_lights", new FogLights());
+		COND_PROGRAMS.put("fvtm:long_lights", new LongLights());
+		COND_PROGRAMS.put("fvtm:reverse_lights", new ReverseLights());
+		COND_PROGRAMS.put("fvtm:lights_rail_forward", new LightsForward());
+		COND_PROGRAMS.put("fvtm:lights_rail_backward", new LightsBackward());
+		COND_PROGRAMS.put("fvtm:turn_signal_left", new TurnSignalLeft());
+		COND_PROGRAMS.put("fvtm:turn_signal_right", new TurnSignalRight());
+		COND_PROGRAMS.put("fvtm:warning_lights", new WarningLights());
+		COND_PROGRAMS.put("fvtm:back_lights_signal_left", new BackLightsSignalLeft());
+		COND_PROGRAMS.put("fvtm:back_lights_signal_right", new BackLightsSignalRight());
+		COND_PROGRAMS.put("fvtm:category_specific", new IDSpecific());
+		COND_PROGRAMS.put("fvtm:category_specific_array", new IDSpecificArray());
+		COND_PROGRAMS.put("fvtm:signal_lights_0", new SignalLights(0));
+		COND_PROGRAMS.put("fvtm:signal_lights_1", new SignalLights(1));
+		COND_PROGRAMS.put("fvtm:signal_lights_2", new SignalLights(2));
+		COND_PROGRAMS.put("fvtm:signal_lights_3", new SignalLights(3));
 	}
 
 	public static class ConditionBased extends Program.ConditionalProgram {
@@ -218,6 +224,30 @@ public class ConditionalPrograms {
 			return new IDSpecificArray(args).transfer(this);
 		}
 		
+	}
+
+	public static class SignalLights extends ConditionalProgram {
+
+		private int signal;
+
+		public SignalLights(int sig){
+			signal = sig;
+		}
+
+		@Override
+		public boolean test(ModelGroup list, ModelRenderData data){
+			return SIGNAL_TOGGLE[signal];
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new SignalLights(signal).transfer(this);
+		}
+
+		public ConditionalProgram copy(){
+			return new SignalLights(signal);
+		}
+
 	}
 
 }

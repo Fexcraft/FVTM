@@ -9,7 +9,9 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.ui.UIField;
 
+import java.text.ParseException;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -124,10 +126,13 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 
 	@Override
 	public SignData parse(JsonMap map){
-		JsonArray arr = map.getArray("off");
-		offset.x = arr.get(0).float_value();
-		offset.y = arr.get(1).float_value();
-		offset.z = arr.get(2).float_value();
+		JsonArray arr = null;
+		if(map.has("off")){
+			arr = map.getArray("off");
+			offset.x = arr.get(0).float_value();
+			offset.y = arr.get(1).float_value();
+			offset.z = arr.get(2).float_value();
+		}
 		if(map.has("rot")){
 			arr = map.getArray("rot");
 			rotx = arr.get(0).float_value();
@@ -152,8 +157,8 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 			}
 		}
 		if(type.isText()){
-			text = map.getString("text", text);
 			form = map.getString("form", form);
+			text = map.getString("text", form);
 			centered = map.getBoolean("center", false);
 		}
 		if(type.isBase()){
@@ -171,31 +176,43 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 	public JsonMap toJson(){
 		JsonMap map = new JsonMap();
 		map.add("type", type.getIDS());
-		map.add("off", new JsonArray.Flat(offset.x, offset.y, offset.z));
-		if(rotx != 1f || roty != 1f || rotz != 1f) map.add("rot", new JsonArray.Flat(rotx, roty, rotz));
-		if(sclx != 1f || scly != 1f || sclz != 1f) map.add("scl", new JsonArray.Flat(sclx, scly, sclz));
+		if(!offset.isNull()) map.add("off", new JsonArray.Flat(f(offset.x), f(offset.y), f(offset.z)));
+		if(rotx != 0f || roty != 0f || rotz != 0f) map.add("rot", new JsonArray.Flat(f(rotx), f(roty), f(rotz)));
+		if(sclx != 1f || scly != 1f || sclz != 1f) map.add("scl", new JsonArray.Flat(f(sclx), f(scly), f(sclz)));
 		JsonMap sub = texture.save();
 		if(!sub.empty()) map.add("tex", sub);
 		sub = new JsonMap();
 		for(String str : channels.keySet()){
+			if(channels.get(str).packed == type.getDefaultColorChannels().get(str).packed) continue;
 			sub.add(str, Integer.toHexString(channels.get(str).packed));
 		}
 		if(!sub.empty()) map.add("rgb", sub);
 		if(type.isText()){
-			map.add("text", text);
+			if(!text.equals(form)) map.add("text", text);
 			map.add("form", form);
 			if(centered) map.add("center", true);
 		}
 		if(type.isBase()){
+			boolean any = false;
 			StringBuilder sb = new StringBuilder();
 			for(int i = 0; i < sides.length; i++){
 				sb.append(sides[i] ? "1" : "0");
+				if(sides[i]) any = true;
 			}
-			map.add("sides", sb.toString());
+			if(any) map.add("sides", sb.toString());
 			if(width != 1f) map.add("width", width);
 			if(height != 1f) map.add("height", height);
 		}
 		return map;
+	}
+
+	private float f(Number v){
+		try{
+			return UIField.nf.parse(UIField.df.format(v)).floatValue();
+		}
+		catch(ParseException e){
+			return v.floatValue();
+		}
 	}
 
 	@Override

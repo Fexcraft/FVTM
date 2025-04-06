@@ -212,6 +212,11 @@
 			"player": false,
 			"index": 0
 		},
+		"road_": {
+			"pos": [ 28, 8 ],
+			"player": false,
+			"index": 6
+		},
 		"ground": {
 			"pos": [ 8, 28 ],
 			"player": false,

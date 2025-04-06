@@ -146,6 +146,8 @@ ui.fvtm.road_tool.road_slot_info2=&7-> Asphalt Blocks
 ui.fvtm.road_tool.road_slot_info3=&7-> Addon Blocks of the ROAD type
 ui.fvtm.road_tool.road_slot_info4=&b- Fureniku's Roads
 ui.fvtm.road_tool.road_slot_info5=&7-> road and sidewalk blocks with varying height (1-16mb)
+ui.fvtm.road_tool.road_slot_info6=&b- Vanilla Blocks
+ui.fvtm.road_tool.road_slot_info7=&7-> along with a slab for half-heights
 //
 ui.fvtm.road_tool_custom.scroll_left=Scroll Left
 ui.fvtm.road_tool_custom.scroll_right=Scroll Right
@@ -281,6 +283,7 @@ tooltip.fvtm.road_tool.toolbox=&aRoad Placing Toolbox
 tooltip.fvtm.road_tool.empty=No compound data.
 tooltip.fvtm.road_tool.road_fill=&6Road Fill: &b%s &7x%s
 tooltip.fvtm.road_tool.road_fill_custom=&6Road Fill: &bCUSTOM &7x%s
+tooltip.fvtm.road_tool.slab_fill=&6Slab Fill: &b%s &7x%s
 tooltip.fvtm.road_tool.ground_fill=&9Ground Fill: &7%s
 tooltip.fvtm.road_tool.left_fill=&9Left Wall: &7%s &ex%s
 tooltip.fvtm.road_tool.right_fill=&9Right Wall: &7%s &ex%s

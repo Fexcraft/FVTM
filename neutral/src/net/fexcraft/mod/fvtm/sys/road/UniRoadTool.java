@@ -5,6 +5,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
@@ -27,6 +28,7 @@ import java.util.function.BiFunction;
 
 import static net.fexcraft.lib.common.utils.Formatter.format;
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.is112;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -331,7 +333,7 @@ public class UniRoadTool {
 				if(isRoad(world, world.getStateAt(pos.add(0, 1, 0)))) height = 0;
 				insert(map, pos, state);
 				if(vani){
-					sslab = StateWrapper.from(height < 9 && height != 0 ? slab : stack, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true));
+					sslab = StateWrapper.from(height < 9 && height != 0 ? slab : stack, new StateWrapper.PlacingContext(world, !is112 ? pos.add(0, 1, 0) : pos, HCENTER, null, pass, true));
 					world.setBlockState(pos, sslab);
 				}
 				else{

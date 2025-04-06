@@ -121,9 +121,10 @@ public class Textureable implements Saveable {
 
 	public JsonMap save(){
 		JsonMap map = new JsonMap();
+		if(selected == 0 && !external) return map;
 		map.add("sel", selected);
-		map.add("ext", external);
-		map.add("tex", external ? custom : current.toString());
+		if(external) map.add("ext", external);
+		if(selected != 0) map.add("tex", external ? custom : current.toString());
 		return map;
 	}
 

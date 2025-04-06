@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
@@ -56,6 +57,10 @@ public class UniRoadTool {
 			else{
 				stack = UniStack.createStack(com.getCompound("RoadFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.road_fill", new Object[]{ stack.getName(), stack.count() })));
+			}
+			if(com.has("SlabFill")){
+				stack = UniStack.createStack(com.getCompound("SlabFill"));
+				list.add(format(translator.apply("tooltip.fvtm.road_tool.slab_fill", new Object[]{ stack.getName(), stack.count() })));
 			}
 			if(com.has("BottomFill") && layers[1] > 0){
 				stack = UniStack.createStack(com.getCompound("BottomFill"));
@@ -115,6 +120,7 @@ public class UniRoadTool {
 		StackWrapper righ = null;
 		StackWrapper line_b = null;
 		StackWrapper road_b = null;
+		StackWrapper slab_b = null;
 		ArrayList<QV3D> roof;
 		ArrayList<QV3D> ground = null;
 		ArrayList<QV3D> border_l = null;
@@ -128,9 +134,14 @@ public class UniRoadTool {
 		ArrayList<ArrayList<QV3D>> linefill = null;
 		ArrayList<ArrayList<QV3D>> roadfill = null;
 		boolean flnk = false;
+		boolean vani = false;
 		if(tag.has("RoadFill")){
 			road_b = UniStack.createStack(tag.getCompound("RoadFill"));
 			flnk = CompatUtil.isValidFurenikus(road_b.getIDL());
+			vani = !road_b.getID().equals("fvtm:asphalt") && !road_b.isItemOf(ContentType.BLOCK.item_type);
+		}
+		if(tag.has("SlabFill")){
+			slab_b = UniStack.createStack(tag.getCompound("SlabFill"));
 		}
 		if(layers[1] > 0 && tag.has("BottomFill")){
 			bot = UniStack.createStack(tag.getCompound("BottomFill"));
@@ -225,14 +236,14 @@ public class UniRoadTool {
 		WorldW world = pass.getWorld();
 		JsonMap map = new JsonMap();
 		if(road != null){
-			roadFill(world, pass, road, pos, road_b, top_h, flnk, map);
+			roadFill(world, pass, road, pos, road_b, slab_b, top_h, flnk, vani, map);
 		}
 		StackWrapper block = null;
 		if(roadfill != null){
 			for(int i = 0; i < roadfill.size(); i++){
 				block = roadfill_b.get(i);
 				flnk = CompatUtil.isValidFurenikus(block.getIDL());
-				roadFill(world, pass, roadfill.get(i), pos, block, top_h, flnk, map);
+				roadFill(world, pass, roadfill.get(i), pos, block, block, top_h, flnk, vani, map);
 			}
 		}
 		if(linefill != null){
@@ -306,10 +317,11 @@ public class UniRoadTool {
 		}
 	}
 
-	private static void roadFill(WorldW world, Passenger pass, ArrayList<QV3D> road, V3I pos, StackWrapper stack, int th, boolean flnk, JsonMap map){
+	private static void roadFill(WorldW world, Passenger pass, ArrayList<QV3D> road, V3I pos, StackWrapper stack, StackWrapper slab, int th, boolean flnk, boolean vani, JsonMap map){
 		int height;
 		StateWrapper state;
 		StateWrapper block;
+		StateWrapper sslab;
 		for(QV3D vec : road){
 			height = vec.y;
 			pos.set(vec.pos.x, vec.pos.y + (vec.y > 0 ? 1 : 0), vec.pos.z);
@@ -318,12 +330,24 @@ public class UniRoadTool {
 			if(!isRoad(world, state, block) || isLower(world, state, height)){
 				if(isRoad(world, world.getStateAt(pos.add(0, 1, 0)))) height = 0;
 				insert(map, pos, state);
-				world.setBlockState(pos, ((FvtmWorld)world).getRoadWithHeight(block, CompatUtil.getRoadHeight(height, flnk)));
+				if(vani){
+					sslab = StateWrapper.from(height < 9 && height != 0 ? slab : stack, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true));
+					world.setBlockState(pos, sslab);
+				}
+				else{
+					world.setBlockState(pos, ((FvtmWorld)world).getRoadWithHeight(block, CompatUtil.getRoadHeight(height, flnk)));
+				}
 			}
 			if((height < 9 && height != 0) || isRoad(world, world.getStateAt(pos.add(0, -1, 0)))){
 				V3I down = pos.add(0, -1, 0);
 				insert(map, down, world.getStateAt(down));
-				world.setBlockState(down, ((FvtmWorld)world).getRoadWithHeight(block, CompatUtil.getRoadHeight(0, flnk)));
+				if(vani){
+					sslab = StateWrapper.from(stack, new StateWrapper.PlacingContext(world, down, HCENTER, null, pass, true));
+					world.setBlockState(down, sslab);
+				}
+				else{
+					world.setBlockState(down, ((FvtmWorld)world).getRoadWithHeight(block, CompatUtil.getRoadHeight(0, flnk)));
+				}
 			}
 			int c = th < 4 ? 4 : th;
 			for(int i = 1; i < c; i++){

@@ -232,7 +232,7 @@ public class RoadToolUI extends UserInterface {
 	@Override
 	public void getTooltip(int mx, int my, List<String> list){
 		if(rtc.inventory.empty(0) && slots.get("road").hovered(gLeft, gTop, mx, my)){
-			for(int i = 0; i < 6; i++){
+			for(int i = 0; i < 8; i++){
 				list.add(container.TRANSLATOR.apply("ui.fvtm.road_tool.road_slot_info" + i));
 			}
 		}

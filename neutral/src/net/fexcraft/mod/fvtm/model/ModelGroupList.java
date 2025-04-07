@@ -1,7 +1,8 @@
 package net.fexcraft.mod.fvtm.model;
 
+import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
+
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -62,6 +63,31 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 
 	}
 
-	public static Supplier<ModelGroupList> SEPARATE_GROUP_LIST = null;
+	public static class SeparateModelGroupList extends DefaultModelGroupList {
+
+		public SeparateModelGroupList(ArrayList<ModelGroup> groups) {
+			super(groups);
+		}
+
+		@Override
+		public void render(ModelRenderData data){
+			if(data.separaterender){
+				for(ModelGroup group : this) group.render(data);
+				return;
+			}
+			if(data.entity == null){
+				if(data.tile == null || data.block == null) return;
+				SeparateRenderCache.SORTED_BLK_QUEUE.add(this);
+				SeparateRenderCache.SORTED_BLK_DATA.add(data.block);
+				SeparateRenderCache.SORTED_BLK_ENTITY.add(data.tile);
+			}
+			else{
+				SeparateRenderCache.SORTED_VEH_QUEUE.add(this);
+				SeparateRenderCache.SORTED_VEH_DATA.add(data.vehicle);
+				SeparateRenderCache.SORTED_VEH_ENTITY.add(data.vehent);
+			}
+		}
+
+	}
 
 }

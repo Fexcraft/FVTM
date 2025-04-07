@@ -11,6 +11,7 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.DefaultModelGroupList;
+import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.program.AnimationPrograms.AnimationRoot;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms.ConditionBased;
@@ -21,7 +22,6 @@ import org.lwjgl.opengl.GL11;
 import java.util.*;
 
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
-import static net.fexcraft.mod.fvtm.model.ModelGroupList.SEPARATE_GROUP_LIST;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -303,11 +303,7 @@ public class DefaultModel implements Model {
 		if(nor.size() > 0) sorted.put(RenderOrder.NORMAL, new DefaultModelGroupList(nor));
 		if(bln.size() > 0) sorted.put(RenderOrder.BLENDED, new DefaultModelGroupList(bln));
 		if(las.size() > 0) sorted.put(RenderOrder.LAST, new DefaultModelGroupList(las));
-		if(sep.size() > 0){
-			ModelGroupList list = SEPARATE_GROUP_LIST.get();
-			list.addAll(sep);
-			sorted.put(RenderOrder.SEPARATE, list);
-		}
+		if(sep.size() > 0) sorted.put(RenderOrder.SEPARATE, new SeparateModelGroupList(sep));
 	}
 
 	@Override

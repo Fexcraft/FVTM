@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
@@ -35,7 +34,7 @@ public class VehicleLiftRenderer extends TileEntitySpecialRenderer<VehicleLiftEn
 			GL11.glTranslated(0, tile.liftstate + 0.3125, 0);
 			if(data.getType().getModel() != null){
 				TexUtil.bindTexture(data.getCurrentTexture());
-				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, null, false, ticks));
+				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, ticks));
 			}
 			if(data.getParts().size() > 0){
 				VehicleRenderer.renderPoint(data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);

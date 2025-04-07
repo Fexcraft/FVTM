@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.event;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.world.EntityW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -15,7 +16,7 @@ public class EventData {
 	public EventHolder rootholder;
 	public EventHolder holder;
 	//
-	public Object entity;
+	public EntityW entity;
 	public Object tile;
 
 	public EventData set(VehicleInstance inst, Passenger passenger, EventHolder root, EventHolder hol){

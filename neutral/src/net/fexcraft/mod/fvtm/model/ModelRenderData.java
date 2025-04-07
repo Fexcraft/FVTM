@@ -1,18 +1,21 @@
 package net.fexcraft.mod.fvtm.model;
 
-import java.util.ArrayList;
-
+import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.event.EventData;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.world.EntityW;
+
+import java.util.ArrayList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -22,7 +25,7 @@ public class ModelRenderData extends EventData {
 
 	public Object blockstate;
 	public float partialticks;
-
+	//
 	public ContainerData container;
 	public BlockData block;
 	public Colorable color;
@@ -32,103 +35,108 @@ public class ModelRenderData extends EventData {
 	public DecorationData decoration;
 	public SignData sign;
 	public SignInstance sign_inst;
-	public Object cloth_item;
+	public TextureableItem<Cloth> cloth_item;
 	public ArrayList<String> cloth_groups;
-	public boolean itemrender;
 	public boolean separaterender;
-
+	//
 	public RenderCache cache;
 
-	public ModelRenderData set(VehicleData data, VehicleInstance ent, RenderCache renca, boolean item, float ticks) {
-		entity = ent == null ? null : ent.entity.direct();
+
+	public ModelRenderData set(VehicleInstance ent, float ticks){
+		return set(ent.data, ent, ticks);
+	}
+	public ModelRenderData set(VehicleData data, VehicleInstance ent, float ticks){
+		entity = ent == null ? null : ent.entity;
 		vehent = ent;
 		vehicle = data;
 		color = data;
 		texture = data;
 		part = null;
 		part_category = null;
-		cache = renca;
-		itemrender = item;
 		separaterender = false;
 		partialticks = ticks;
 		return this;
 	}
 
-	public ModelRenderData set(VehicleInstance ent, RenderCache renca, boolean item, float ticks) {
-		return set(ent.data, ent, renca, item, ticks);
+	public ModelRenderData set(VehicleInstance ent, PartData data, String key, float ticks){
+		return set(ent.data, ent, data, key, ticks);
 	}
 
-	public ModelRenderData set(VehicleData data, VehicleInstance ent, RenderCache renca, PartData partdata, String key, boolean item, float ticks) {
-		entity = ent == null ? null : ent.entity.direct();
+	public ModelRenderData set(VehicleData data, VehicleInstance ent, PartData partdata, String key, float ticks){
+		entity = ent == null ? null : ent.entity;
 		vehent = ent;
 		vehicle = data;
 		color = data;
 		texture = partdata;
 		part = partdata;
 		part_category = key;
-		cache = renca;
-		itemrender = item;
 		separaterender = false;
 		partialticks = ticks;
 		return this;
 	}
 
 
-	public ModelRenderData set(ContainerData data, Object tileent, RenderCache renca, boolean item) {
+	public ModelRenderData set(ContainerData data, Object tileent){
 		container = data;
 		tile = tileent;
-		cache = renca;
-		color = (Colorable)data;
-		texture = (TextureUser)data;
-		itemrender = item;
+		color = data;
+		texture = data;
 		return this;
 	}
 
 
-	public ModelRenderData set(BlockData data, Object tileent, RenderCache renca, Object state, boolean item) {
+	public ModelRenderData set(BlockData data, Object tileent, Object state){
 		entity = null;
 		block = data;
 		tile = tileent;
-		cache = renca;
 		color = data;
 		texture = data;
-		itemrender = item;
 		blockstate = state;
 		separaterender = false;
 		return this;
 	}
 
 
-	public ModelRenderData set(DecorationData data, Object ent, RenderCache renca) {
+	public ModelRenderData set(DecorationData data, EntityW ent){
 		decoration = data;
 		entity = ent;
-		cache = renca;
 		color = data;
-		itemrender = false;
 		return this;
 	}
 
 
-	public ModelRenderData set(SignData data, SignInstance inst, RenderCache renca) {
+	public ModelRenderData set(SignData data, SignInstance inst){
 		sign = data;
 		sign_inst = inst;
-		cache = renca;
 		color = data;
-		itemrender = false;
 		return this;
 	}
 
 
-	public ModelRenderData set(Object item, ArrayList<String> list, Object ent, RenderCache renca) {
+	public ModelRenderData set(TextureableItem<Cloth> item, ArrayList<String> list, EntityW ent){
 		cloth_item = item;
 		cloth_groups = list;
 		entity = ent;
-		cache = renca;
-		itemrender = false;
 		return this;
 	}
 
-	public ModelRenderData clear() {
+	public ModelRenderData rc(RenderCache renca){
+		cache = renca;
+		return this;
+	}
+
+	public ModelRenderData rcs(RenderCache renca){
+		cache = renca;
+		separaterender = true;
+		return this;
+	}
+
+	public ModelRenderData sep(){
+		separaterender = true;
+		return this;
+	}
+
+	public ModelRenderData clear(){
 		entity = null;
 		vehicle = null;
 		color = null;
@@ -136,13 +144,7 @@ public class ModelRenderData extends EventData {
 		part = null;
 		part_category = null;
 		cache = null;
-		itemrender = false;
 		separaterender = false;
-		return this;
-	}
-
-	public ModelRenderData sep() {
-		separaterender = true;
 		return this;
 	}
 

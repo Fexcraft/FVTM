@@ -3,8 +3,10 @@ package net.fexcraft.mod.fvtm.render.block;
 import net.fexcraft.lib.common.math.AxisRotator;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Axis3DL;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
@@ -21,7 +23,7 @@ public class BakedModelLoader {
         ArrayList<ModelGroup> list = new ArrayList<>();
 		for(ModelGroup group : model.groups){
             if(group.has_pre_prog){
-                for(Program program : group.getPrePrograms()) program.pre(group, DefaultModel.RENDERDATA.set(null, null, null, state, false));
+                for(Program program : group.getPrePrograms()) program.pre(group, DefaultModel.RENDERDATA.set(null, null, state));
             }
             if(!group.visible) continue;
             list.add(group);
@@ -32,7 +34,7 @@ public class BakedModelLoader {
     public static void reset(BlockModel model, IBlockState state, EnumFacing side, long rand){
         for(ModelGroup group : model.groups){
             if(group.has_pst_prog){
-                for(Program program : group.getPstPrograms()) program.post(group, DefaultModel.RENDERDATA.set((BlockData)null, null, null, state, false));
+                for(Program program : group.getPstPrograms()) program.post(group, DefaultModel.RENDERDATA.set(null, null, state));
             }
         }
         model.bk = null;

@@ -1,16 +1,15 @@
 package net.fexcraft.mod.fvtm;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.uni.ConfigBase;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * FVTM Config File
@@ -30,7 +29,6 @@ public class Config extends ConfigBase {
 	public static int PACKET_RANGE;
 	//client
 	public static boolean RENDER_OUT_OF_VIEW;
-	public static boolean RENDER_VEHILE_MODELS_AS_ITEMS;
 	public static boolean DISABLE_LIGHT_BEAMS;
 	public static boolean RENDER_VEHICLES_SEPARATELY;
 	public static boolean RENDER_BLOCKS_SEPARATELY;
@@ -112,12 +110,6 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catc, "render_out_of_view", new JsonValue(false))
 			.info("If vehicles should be rendered out of default view.")
 			.cons((con, map) -> RENDER_OUT_OF_VIEW = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catc, "render_vehicle_models_as_items", new JsonValue(true))
-			.info("If the Vehicle's model should be rendered as Item. Could cause lags.")
-			.cons((con, map) -> RENDER_VEHILE_MODELS_AS_ITEMS = con.getBoolean(map)));
-		/*entries.add(new ConfigEntry(this, catc, "render_block_models_as_items", new JsonValue(true))
-			.info("If the (non-vanilla) Block models should be rendered as Item.")
-			.cons((con, map) -> RENDER_BLOCK_MODELS_AS_ITEMS = con.getBoolean(map)));*/
 		entries.add(new ConfigEntry(this, catc, "disable_light_beams", new JsonValue(false))
 			.info("If light beam rendering should be disabled.")
 			.cons((con, map) -> DISABLE_LIGHT_BEAMS = con.getBoolean(map)));

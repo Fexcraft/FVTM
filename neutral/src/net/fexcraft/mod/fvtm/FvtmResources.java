@@ -228,7 +228,6 @@ public abstract class FvtmResources {
 							continue;
 						}
 						contype.register(content);
-						if(EnvInfo.CLIENT) checkForCustomModel(addon.getLocation(), contype, content);
 					}
 					catch(Exception e){
 						FvtmLogger.log(e, "while loading config file: " + file);
@@ -258,7 +257,6 @@ public abstract class FvtmResources {
 									continue;
 								}
 								contype.register(content);
-								if(EnvInfo.CLIENT) checkForCustomModel(addon.getLocation(), contype, content);
 							}
 							catch(Exception e){
 								FvtmLogger.log(e, "config parsing of " + entry.getName());
@@ -284,8 +282,6 @@ public abstract class FvtmResources {
 		else if(file.getName().endsWith(suffix)) result.add(file);
 		return result;
 	}
-
-	public abstract void checkForCustomModel(AddonLocation loc, ContentType contype, Content<?> content);
 
 	public abstract void createContentBlocks();
 

@@ -76,7 +76,7 @@ public class EffectRenderer {
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
 	private static ArrayList<V3D> toggpos = new ArrayList<>();
 	private static ContainerHolder tempholder;
-	
+
     @SubscribeEvent
     public void renderLights(RenderWorldLastEvent event){
     	if(SORTED_VEH_QUEUE.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;
@@ -90,18 +90,18 @@ public class EffectRenderer {
             GL11.glTranslated(-cx, -cy, -cz);
             for(int i = 0; i < SORTED_VEH_QUEUE.size(); i++){
 				SeparateModelGroupList sroup = SORTED_VEH_QUEUE.get(i);
-            	RootVehicle veh = SORTED_VEH_ENTITY.get(i).entity.local();
+				VehicleInstance inst = SORTED_VEH_ENTITY.get(i);
+				if(inst.entity == null) continue;
+            	RootVehicle veh = inst.entity.local();
             	double[] vehpos = SORTED_VEH_POS.get(veh.getEntityId());
             	if(vehpos == null) continue;
                 GL11.glPushMatrix();
                 GL11.glTranslated(vehpos[0], vehpos[1], vehpos[2]);
-                //
                 V3D vehrot = SORTED_VEH_ROT.get(veh.getEntityId());
-                GL11.glRotated(vehrot.x, 0, 1, 0);
-                GL11.glRotated(vehrot.y, 0, 0, 1);
-                GL11.glRotated(vehrot.z, 1, 0, 0);
-                GL11.glRotatef(180f, 0f, 0f, 1f);
-				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.vehicle, veh.getCapability(RENDERCACHE, null), null, null, false, event.getPartialTicks()).sep());
+				GL11.glRotated(-vehrot.x, 0f, 1f, 0f);
+				GL11.glRotated(vehrot.y, 1f, 0f, 0f);
+				GL11.glRotated(vehrot.z, 0f, 0f, 1f);
+				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.vehicle, null, null, event.getPartialTicks()).rcs(veh.getCapability(RENDERCACHE, null)));
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();
@@ -117,7 +117,7 @@ public class EffectRenderer {
                 GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);
                 GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);
                 //GL11.glRotatef(180f, 0f, 0f, 1f);
-                sgroup.render(RENDERDATA.set(data, tile, tile.getCapability(RENDERCACHE, null), null, false).sep());
+                sgroup.render(RENDERDATA.set(data, tile, null).rcs(tile.getCapability(RENDERCACHE, null)));
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();

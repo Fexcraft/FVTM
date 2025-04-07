@@ -8,10 +8,11 @@ import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -29,6 +30,7 @@ public class DecorationRenderer {
 			if(ent instanceof DecorationEntity == false) continue;
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;
 			DecorationEntity deco = (DecorationEntity)ent;
+			EntityW ew = UniEntity.getEntity(ent);
 			GL11.glPushMatrix();
 			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
 			if(deco.decos.size() == 0){
@@ -54,7 +56,7 @@ public class DecorationRenderer {
 			            if(data.rotx != 0f) GL11.glRotatef(data.rotx, 1, 0, 0);
 			            if(data.sclx != 1f || data.scly != 1f || data.sclz != 1f) GL11.glScalef(data.sclx, data.scly, data.sclz);
 						TexUtil.bindTexture(data.getTexture().getTexture());
-						data.getType().getModel().render(RENDERDATA.set(data, ent, cache));
+						data.getType().getModel().render(RENDERDATA.set(data, ew).rc(cache));
 						GL11.glPopMatrix();
 					}
 				}

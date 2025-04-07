@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.content.VehicleModel;
-import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.render.VehicleRenderer;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
@@ -65,7 +64,7 @@ public class VehicleItemModel implements FCLItemModel {
 			if(modVehicle != null){
 				GL11.glPushMatrix();
 				TexUtil.bindTexture(data.getCurrentTexture());
-				modVehicle.render(DefaultModel.RENDERDATA.set(data, null, null, false, Minecraft.getMinecraft().getRenderPartialTicks()));
+				modVehicle.render(DefaultModel.RENDERDATA.set(data, null, Minecraft.getMinecraft().getRenderPartialTicks()));
 				GL11.glPopMatrix();
 			}
 			else {

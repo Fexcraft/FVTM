@@ -1,22 +1,14 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.util.GLUtils112.translate;
-import static net.fexcraft.mod.fvtm.util.GLUtils112.translateR;
-
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -28,6 +20,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.util.GLUtils112.translate;
+import static net.fexcraft.mod.fvtm.util.GLUtils112.translateR;
 
 public class VehicleRenderer {
 	
@@ -81,7 +81,7 @@ public class VehicleRenderer {
 	            if(modVehicle != null){
 					GL11.glPushMatrix();
 	                TexUtil.bindTexture(vehicle.vehicle.data.getCurrentTexture());
-	                modVehicle.render(RENDERDATA.set(vehicle.vehicle.data, null/*vehicle*/, cache, false, ticks));
+	                modVehicle.render(RENDERDATA.set(vehicle.vehicle, ticks).rc(cache));
 					GL11.glPopMatrix();
 	            }
 				else {
@@ -151,7 +151,7 @@ public class VehicleRenderer {
 			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
 			translate(entry.getValue().getInstalledPos());
 			entry.getValue().getInstalledRot().rotate112();
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
+			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
 			entry.getValue().getInstalledRot().rotate112R();
 			translateR(entry.getValue().getInstalledPos());
 		}

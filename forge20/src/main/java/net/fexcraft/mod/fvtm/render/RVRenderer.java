@@ -74,7 +74,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		RenderCache cache = FVTM4.getRenderCache(veh);
 		if(vehmod != null){
 			pose.pushPose();
-			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh.vehicle, cache, false, tick));
+			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh.vehicle, tick).rc(cache));
 			pose.popPose();
 		}
 		else{
@@ -334,7 +334,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
+			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
 			pose.popPose();
 		}
 		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);

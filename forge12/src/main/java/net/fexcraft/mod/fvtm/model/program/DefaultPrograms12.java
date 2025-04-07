@@ -6,7 +6,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
@@ -38,10 +37,8 @@ import org.lwjgl.opengl.GL12;
 import java.util.HashMap;
 import java.util.function.Predicate;
 
-import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.*;
-import static net.fexcraft.mod.fvtm.util.AnotherUtil.toV3;
 
 /**
  * 
@@ -867,9 +864,9 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.itemrender || !data.separaterender || DISABLE_LIGHT_BEAMS) return;
+			if(!data.separaterender || DISABLE_LIGHT_BEAMS) return;
 			skipped = false;
-			if(!predicate.test(data)){
+			if(predicate != null && !predicate.test(data)){
 				skipped = true;
 				return;
 			}
@@ -911,7 +908,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			if(data.itemrender || !data.separaterender || DISABLE_LIGHT_BEAMS) return;
+			if(!data.separaterender || DISABLE_LIGHT_BEAMS) return;
 			if(skipped){
 				skipped = false;
 				return;
@@ -945,14 +942,14 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		public RectLightBeam init(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
 			RectLightBeam beam = new RectLightBeam(id);
 			beam.init(new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
-				.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sx, sy, sz)
+				.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sz, sy, sz)
 				.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
 				.removePolygons(0, 1)
 				.setPolygonUV(2, new float[]{ 16.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 16.0f, 4.0f })
 				.setPolygonUV(3, new float[]{ 16.0f, 4.0f, 0.0f, 4.0f, 0.0f, 8.0f, 16.0f, 8.0f })
 				.setPolygonUV(4, new float[]{ 16.0f, 8.0f, 0.0f, 8.0f, 0.0f, 12.0f, 16.0f, 12.0f })
 				.setPolygonUV(5, new float[]{ 0.0f, 12.0f, 16.0f, 12.0f, 16.0f, 16.0f, 0.0f, 16.0f })
-				.build().setRotationAngle(rx, ry, rz).addChild(
+				.build().setRotationAngle(rx, ry + 90, rz).addChild(
 					new ModelRendererTurbo(null, 0, 0, 16, 16).setFlipped(true).newBoxBuilder()
 					.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sx, sy, sz)
 					.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
@@ -963,7 +960,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 					.setPolygonUV(5, new float[]{ 0.0f, 12.0f, 16.0f, 12.0f, 16.0f, 16.0f, 0.0f, 16.0f })
 					.build()
 				),
-				toV3(new Pos(x, y, z)), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
+				new Vec3d(x, y, z), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
 			);
 			beam.setPredicate(predicate);
 			return beam;
@@ -971,11 +968,11 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			float sx = Float.parseFloat(args[0]);
-			float sy = Float.parseFloat(args[1]);
-			float sz = Float.parseFloat(args[2]);
-			float expw = Float.parseFloat(args[3]);
-			float exph = Float.parseFloat(args[4]);
+			float sx = Float.parseFloat(args[0]) * 16;
+			float sy = Float.parseFloat(args[1]) * 16;
+			float sz = Float.parseFloat(args[2]) * 16;
+			float expw = Float.parseFloat(args[3]) * 16;
+			float exph = Float.parseFloat(args[4]) * 16;
 			float x = Float.parseFloat(args[5]);
 			float y = Float.parseFloat(args[6]);
 			float z = Float.parseFloat(args[7]);

@@ -4,10 +4,8 @@ import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.minecraftforge.fml.common.ICrashCallable;
 
-import java.io.File;
 import java.util.Map;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 /**
@@ -27,7 +25,7 @@ public class CrashCallableModels implements ICrashCallable {
 		if(RENDERDATA.blockstate != null) string += "\t\tBLK=" + block() + "\n";
 		if(RENDERDATA.part != null) string += "\t\tPRT=" + part() + " / " + RENDERDATA.part_category + "\n";
 		if(RENDERDATA.decoration != null) string += "\t\tDEC=" + RENDERDATA.decoration + "\n";
-		string += "\t\tIR=" + RENDERDATA.itemrender + " SR=" + RENDERDATA.separaterender + "\n";
+		string += "\t\tSR=" + RENDERDATA.separaterender + "\n";
 		string += "\tRenderCache: \n";
 		if(RENDERDATA.cache == null){
 			string += "\t\tnull\n";

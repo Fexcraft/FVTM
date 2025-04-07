@@ -75,7 +75,7 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 				for(ModelGroup group : this) group.render(data);
 				return;
 			}
-			if(data.entity == null){
+			if(data.vehicle == null){
 				if(data.tile == null || data.block == null) return;
 				SeparateRenderCache.SORTED_BLK_QUEUE.add(this);
 				SeparateRenderCache.SORTED_BLK_DATA.add(data.block);

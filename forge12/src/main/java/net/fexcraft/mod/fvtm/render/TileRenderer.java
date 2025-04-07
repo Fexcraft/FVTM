@@ -49,7 +49,7 @@ public class TileRenderer {
 			if(modVehicle != null){
 				GL11.glPushMatrix();
 				TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-				modVehicle.render(RENDERDATA.set(tile.getBlockData(), null, cache, null, false));
+				modVehicle.render(RENDERDATA.set(tile.getBlockData(), null, null).rc(cache));
 				GL11.glPopMatrix();
 			}
 			else{

@@ -21,16 +21,18 @@ import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
-import net.fexcraft.mod.fvtm.model.SortedModelGroup.SeparateSortedModelGroup;
+import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12.LightBeam;
-import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
-import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
@@ -87,8 +89,8 @@ public class EffectRenderer {
             GL11.glPushMatrix();
             GL11.glTranslated(-cx, -cy, -cz);
             for(int i = 0; i < SORTED_VEH_QUEUE.size(); i++){
-            	SeparateSortedModelGroup sroup = SORTED_VEH_QUEUE.get(i);
-            	RootVehicle veh = SORTED_VEH_ENTITY.get(i);
+				SeparateModelGroupList sroup = SORTED_VEH_QUEUE.get(i);
+            	RootVehicle veh = SORTED_VEH_ENTITY.get(i).entity.local();
             	double[] vehpos = SORTED_VEH_POS.get(veh.getEntityId());
             	if(vehpos == null) continue;
                 GL11.glPushMatrix();
@@ -108,9 +110,9 @@ public class EffectRenderer {
             GL11.glPushMatrix();
             GL11.glTranslated(-cx, -cy, -cz);
             for(int i = 0; i < SORTED_BLK_QUEUE.size(); i++){
-            	SeparateSortedModelGroup sgroup = SORTED_BLK_QUEUE.get(i);
+				SeparateModelGroupList sgroup = SORTED_BLK_QUEUE.get(i);
             	BlockData data = SORTED_BLK_DATA.get(i);
-            	TileEntity tile = SORTED_BLK_ENTITY.get(i);
+            	TileEntity tile = (TileEntity)SORTED_BLK_ENTITY.get(i);
                 GL11.glPushMatrix();
                 GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);
                 GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);

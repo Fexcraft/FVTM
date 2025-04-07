@@ -58,12 +58,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		if(veh.vehicle == null || veh.vehicle.data == null) return;
 		pose.pushPose();
 		//pose.translate(0, 0, 0);
+		SeparateRenderCache.SORTED_VEH_POS.put(veh.getId(), new double[]{ veh.position().x, veh.position().y, veh.position().z });
 		V3D rot = getRotations(veh, tick);
 		pose.mulPose(new Quaternionf()
 			.rotateAxis((float)Static.toRadians(-rot.x), AY)
 			.rotateAxis((float)Static.toRadians(rot.y), AX)
 			.rotateAxis((float)Static.toRadians(rot.z), AZ)
 		);
+		SeparateRenderCache.SORTED_VEH_ROT.put(veh.getId(), rot);
 		Renderer120.set(pose, buffer, light);
 		//
 		pose.pushPose();

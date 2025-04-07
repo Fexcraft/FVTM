@@ -78,7 +78,7 @@ public class BlockItemModel implements FCLItemModel {
         }
         GL11.glScalef(scal[0], scal[1], scal[2]);
         bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
-        model.render(RENDERDATA.set(data, null, null, null, true));
+        model.render(RENDERDATA.set(data, null, null));
         Block block = ((ItemBlock)item.getItem()).getBlock();
         for(IProperty<?> property : block.getBlockState().getProperties()){
             ArrayList<BlockModel> models = model.state_models.get(property.getName() + "=" + block.getStateFromMeta(item.getMetadata()).getValue(property));

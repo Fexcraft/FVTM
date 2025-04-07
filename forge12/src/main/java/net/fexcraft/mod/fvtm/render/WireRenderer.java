@@ -16,7 +16,10 @@ import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
-import net.fexcraft.mod.fvtm.sys.wire.*;
+import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
+import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -172,7 +175,7 @@ public class WireRenderer {
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotated(wire.model_start_angle, 0, 1, 0);
     	        		TexUtil.bindTexture(wire.deco_s.getTexture());
-            			wire.deco_s.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
+            			wire.deco_s.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
         			}
@@ -187,7 +190,7 @@ public class WireRenderer {
             			GL11.glRotated(wire.model_end_angle, 0, 1, 0);
             			//RGB.RED.glColorApply();
     	        		TexUtil.bindTexture(wire.deco_e.getTexture());
-            			wire.deco_e.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
+            			wire.deco_e.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
@@ -208,7 +211,7 @@ public class WireRenderer {
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
                     	        		TexUtil.bindTexture(dm.getValue().getTexture());
-                    					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
+                    					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
                     					if(tlist != null){
                     		        		TexUtil.bindTexture(wire.getWireType().getTexture());
                     						tlist.get(didx++).render();
@@ -224,7 +227,7 @@ public class WireRenderer {
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
                 	        		TexUtil.bindTexture(dm.getValue().getTexture());
-                					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null, null, false));
+                					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();
                 				}

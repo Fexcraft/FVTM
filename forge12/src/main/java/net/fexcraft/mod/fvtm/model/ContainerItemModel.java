@@ -1,9 +1,5 @@
 package net.fexcraft.mod.fvtm.model;
 
-import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
-
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -12,6 +8,9 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
+
+import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 /**
  * @author Ferdinand Calo' (FEX__96)
@@ -73,7 +72,7 @@ public class ContainerItemModel extends DefaultModel implements FCLItemModel {
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
                 bindTexture(data.getCurrentTexture());
-                model.render(RENDERDATA.set(data, null, null, true));
+                model.render(RENDERDATA.set(data, null));
                 //
                 GL11.glPopMatrix();
             }

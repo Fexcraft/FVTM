@@ -1,18 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.RENDER_VEHILE_MODELS_AS_ITEMS;
-import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.UUID;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
@@ -22,19 +9,16 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.Asphalt.AsphaltItem;
-import net.fexcraft.mod.fvtm.data.Content;
-import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
-import net.fexcraft.mod.fvtm.data.container.Container;
-import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Scale;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
@@ -68,6 +52,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.UUID;
+
+import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -174,62 +170,6 @@ public class ResourcesImpl extends FvtmResources {
 			else{
 				TexUtil.searchInZip(addon);
 			}
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void checkForCustomModel(AddonLocation loc, ContentType contype, Content<?> content){
-		switch(contype){
-			/*case BLOCK:{
-				Block block = (Block)content;
-				if(!block.hasPlainModel() && RENDER_BLOCK_MODELS_AS_ITEMS && !block.noCustomItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), BlockItemModel.INSTANCE);
-					return;
-				}
-				break;
-			}*/
-			case CONTAINER:{
-				Container con = null;//TODO
-				if(!con.noCustomItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ContainerItemModel.INSTANCE);
-					return;
-				}
-				break;
-			}
-			case PART:{
-				/*Part part = (Part)content;
-				if(!part.noCustomItemModel() && part.getDefaultFunctions().stream().filter(pre -> pre instanceof WheelFunction || pre instanceof TireFunction).count() > 0){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), PartItemModel.INSTANCE);
-					return;
-				}*/
-				break;
-			}
-			case VEHICLE:{
-				Vehicle veh = (Vehicle)content;
-				if(RENDER_VEHILE_MODELS_AS_ITEMS && !veh.noCustomItemModel()){
-					net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), VehicleItemModel.INSTANCE);
-					return;
-				}
-				break;
-			}
-			default:
-				break;
-		}
-		/*if(loc.isConfigPack() || isItemModelMissing(content)){
-			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(content.getID().local(), ItemPlaceholderModel.INSTANCE);
-		}*/
-	}
-
-	@SideOnly(Side.CLIENT)
-	private boolean isItemModelMissing(Content<?> type){
-		try{
-			net.minecraft.client.resources.IResource res = net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(type.getID().space(), "models/item/" + type.getID().id() + ".json"));
-			return res == null;
-		}
-		catch(IOException e){
-			//e.printStackTrace();
-			return true;
 		}
 	}
 
@@ -497,23 +437,19 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	private void regItemModelLoc(Item item){
-		if(item instanceof BlockItem){
+		if(item instanceof BlockItem && ((BlockItem)item).getContent().getBlockType().getMetaVariants() > 1){
 			try{
 				int var = ((BlockItem)item).getContent().getBlockType().getMetaVariants();
-				if(var < 2){
-					net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+				for(int v = 0; v < var; v++){
+					net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName() + "_" + v), "inventory"));
 				}
-				else{
-					for(int v = 0; v < var; v++){
-						net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName() + "_" + v), "inventory"));
-					}
-				}
+				return;
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 		}
-		else net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+		net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 
 }

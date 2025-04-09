@@ -14,6 +14,7 @@ import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.lib.common.Static.rad180;
@@ -28,7 +29,7 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 	private VehicleData data;
 
 	@Override
-	public void render(VehicleLiftEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
+	public void render(VehicleLiftEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay, Vec3 pos){
 		Renderer21.pose = pose;
 		Renderer21.set(pose, buffer, light, overlay);
 		FvtmRenderTypes.setCutout(TEXTURE);
@@ -44,7 +45,7 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 			pose.translate(0, tile.liftstate + 0.3125, 0);
 			if(data.getType().getModel() != null){
 				FvtmRenderTypes.setCutout(data.getCurrentTexture());
-				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, null, false, ticks));
+				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, ticks));
 			}
 			if(data.getParts().size() > 0){
 				RVRenderer.renderPoint(pose, data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);

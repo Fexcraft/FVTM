@@ -36,7 +36,7 @@ public class RailMarker extends Entity {
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag){
 		if(tag.contains("uuid0")){
-			queueid = new UUID(tag.getLong("uuid0"), tag.getLong("uuid1"));
+			queueid = new UUID(tag.getLongOr("uuid0", 0l), tag.getLongOr("uuid1", 0l));
 		}
 		if(tag.contains("position")){
 			position = new QV3D(TagCW.wrap(tag), "position");

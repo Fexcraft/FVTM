@@ -13,8 +13,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static net.fexcraft.mod.fvtm.item.VehicleItem.getTexTitle;
 
@@ -31,20 +32,20 @@ public class SignItem extends Item implements ContentItem.ContentDataItem<Sign, 
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		tooltip.add(GenericUtils.format("&9Name: &7" + sign.getName()));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
+		cons.accept(GenericUtils.format("&9Name: &7" + sign.getName()));
 		for(String s : sign.getDescription()){
-			tooltip.add(GenericUtils.format(s));
+			cons.accept(GenericUtils.format(s));
 		}
 		UniStack uni = UniStack.get(stack);
 		if(uni == null) return;
 		SignData data = getData(uni.stack);
 		if(data != null){
-			tooltip.add(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
+			cons.accept(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
 			if(sign.getModel() != null && sign.getModel().getCreators().size() > 0){
-				tooltip.add(GenericUtils.format("&9Model by:"));
+				cons.accept(GenericUtils.format("&9Model by:"));
 				for(String str : sign.getModel().getCreators()){
-					tooltip.add(GenericUtils.format("&7- " + str));
+					cons.accept(GenericUtils.format("&7- " + str));
 				}
 			}
 		}

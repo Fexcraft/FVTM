@@ -13,10 +13,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -28,10 +30,10 @@ public class RoadToolItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
 		ArrayList<String> list = new ArrayList<>();
 		UniRoadTool.addTooltip(UniStack.getStack(stack).directTag(), list, (str, objs) -> I18n.get(str, objs));
-		for(String str : list) tooltip.add(Component.literal(str));
+		for(String str : list) cons.accept(Component.literal(str));
 	}
 
 	@Override

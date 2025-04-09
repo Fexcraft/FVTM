@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.Util;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.TriState;
@@ -21,23 +22,19 @@ public class FvtmRenderTypes {
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setShaderState(RenderType.RENDERTYPE_ENTITY_CUTOUT_SHADER)
 			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
-			.setTransparencyState(RenderType.NO_TRANSPARENCY)
-			.setLightmapState(RenderStateShard.LIGHTMAP)
-			.setOverlayState(RenderStateShard.OVERLAY)
-			.createCompositeState(true);
-		return RenderType.create("fvtm:entity_cutout", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, state);
-	});
-	private static final Function<IDL, RenderType> GLOW = Util.memoize(idl -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setShaderState(RenderType.RENDERTYPE_EYES_SHADER)
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
-			.setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
 			.setLightmapState(RenderStateShard.LIGHTMAP)
 			.setOverlayState(RenderStateShard.OVERLAY)
 			.createCompositeState(false);
-		return RenderType.create("fvtm:glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+		return RenderType.create("fvtm:entity_cutout", 1536, true, false, RenderPipelines.ENTITY_CUTOUT, state);
+	});
+	private static final Function<IDL, RenderType> GLOW = Util.memoize(idl -> {
+		RenderType.CompositeState state = RenderType.CompositeState.builder()
+			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
+			.setLightmapState(RenderStateShard.LIGHTMAP)
+			.setOverlayState(RenderStateShard.OVERLAY)
+			.createCompositeState(false);
+		return RenderType.create("fvtm:glow", 1536, false, true, RenderPipelines.EYES, state);
 	});
 
 	public static void setCutout(IDL tex){

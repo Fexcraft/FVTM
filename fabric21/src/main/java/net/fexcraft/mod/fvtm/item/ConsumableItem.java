@@ -10,8 +10,10 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -35,20 +37,20 @@ public class ConsumableItem extends Item implements ContentItem<Consumable> {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){;
-		tooltip.add(GenericUtils.format("&9Name: &7" + consumable.getName()));
-		for(String s : consumable.getDescription()) tooltip.add(GenericUtils.format(I18n.get(s)));
-		tooltip.add(GenericUtils.format("&9Type: &7" + (consumable.isDrinkable() ? "drink/beverage" : "food")));
-		tooltip.add(GenericUtils.format("&9Heal Amout: &7" + consumable.getHealAmount()));
-		tooltip.add(GenericUtils.format("&9Saturation: &7" + consumable.getSaturation()));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){;
+		cons.accept(GenericUtils.format("&9Name: &7" + consumable.getName()));
+		for(String s : consumable.getDescription()) cons.accept(GenericUtils.format(I18n.get(s)));
+		cons.accept(GenericUtils.format("&9Type: &7" + (consumable.isDrinkable() ? "drink/beverage" : "food")));
+		cons.accept(GenericUtils.format("&9Heal Amout: &7" + consumable.getHealAmount()));
+		cons.accept(GenericUtils.format("&9Saturation: &7" + consumable.getSaturation()));
 		if(consumable.isWolfFood()){
-			tooltip.add(GenericUtils.format("&9&oLiked by wolves."));
+			cons.accept(GenericUtils.format("&9&oLiked by wolves."));
 		}
 		if(consumable.isAlwaysEdible()){
-			tooltip.add(GenericUtils.format("&8&oAlways " + (consumable.isDrinkable() ? "drinkable" : "edible") + "."));
+			cons.accept(GenericUtils.format("&8&oAlways " + (consumable.isDrinkable() ? "drinkable" : "edible") + "."));
 		}
 		if(consumable.getOreDictId() != null){
-			tooltip.add(GenericUtils.format("&9OreDict: &7" + consumable.getOreDictId()));
+			cons.accept(GenericUtils.format("&9OreDict: &7" + consumable.getOreDictId()));
 		}
 	}
 

@@ -19,9 +19,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 
@@ -39,26 +41,26 @@ public class WireItem extends Item implements ContentItem<WireType> {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		tooltip.add(GenericUtils.format("&9Name: &7" + wire.getName()));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
+		cons.accept(GenericUtils.format("&9Name: &7" + wire.getName()));
 		for(String s : wire.getDescription())
-			tooltip.add(GenericUtils.format(I18n.get(s)));
-		tooltip.add(GenericUtils.format("&9Def. Slack: &7" + wire.getDefaultSlack()));
-		tooltip.add(GenericUtils.format("&9Customisable: &7" + wire.isCustomisable()));
-		tooltip.add(GenericUtils.format("&9- &6- &9- - - - &6-"));
+			cons.accept(GenericUtils.format(I18n.get(s)));
+		cons.accept(GenericUtils.format("&9Def. Slack: &7" + wire.getDefaultSlack()));
+		cons.accept(GenericUtils.format("&9Customisable: &7" + wire.isCustomisable()));
+		cons.accept(GenericUtils.format("&9- &6- &9- - - - &6-"));
 		TagCW com = UniStack.getStack(stack).directTag();
 		if(com.has("fvtm:wirepoint")){
-			tooltip.add(GenericUtils.format("&9Block: &7" + com.getIntArray("fvtm:wirepoint")));
-			tooltip.add(GenericUtils.format("&9Relay: &7" + com.getString("fvtm:wirepoint_key")));
+			cons.accept(GenericUtils.format("&9Block: &7" + com.getIntArray("fvtm:wirepoint")));
+			cons.accept(GenericUtils.format("&9Relay: &7" + com.getString("fvtm:wirepoint_key")));
 		}
 		else{
-			tooltip.add(Component.literal("No Connection data."));
+			cons.accept(Component.literal("No Connection data."));
 		}
-		tooltip.add(GenericUtils.format("&9- &6- &9- - - - &6-"));
-		tooltip.add(GenericUtils.format("&6Usage:"));
-		tooltip.add(GenericUtils.format("&b- Rightclick on a relay to select."));
-		tooltip.add(GenericUtils.format("&b- Rightclick 2 relays in sequence to create a wire. "));
-		tooltip.add(GenericUtils.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
+		cons.accept(GenericUtils.format("&9- &6- &9- - - - &6-"));
+		cons.accept(GenericUtils.format("&6Usage:"));
+		cons.accept(GenericUtils.format("&b- Rightclick on a relay to select."));
+		cons.accept(GenericUtils.format("&b- Rightclick 2 relays in sequence to create a wire. "));
+		cons.accept(GenericUtils.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
 	}
 
 	@Override

@@ -22,9 +22,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -39,32 +41,32 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		tooltip.add(GenericUtils.format("&9Name: &7" + vehicle.getName()));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
+		cons.accept(GenericUtils.format("&9Name: &7" + vehicle.getName()));
 		for(String s : vehicle.getDescription()){
-			tooltip.add(GenericUtils.format(I18n.get(s)));
+			cons.accept(GenericUtils.format(I18n.get(s)));
 		}
 		StackWrapper wrapper = UniStack.getStack(stack);
 		if(wrapper == null) return;
 		VehicleData data = wrapper.getContent(ContentType.VEHICLE.item_type);
 		if(data == null) return;
-		tooltip.add(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
+		cons.accept(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
 		if(data.hasPart("engine")){
-			tooltip.add(GenericUtils.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
-			tooltip.add(GenericUtils.format("&9Fuel Group: &7" + data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup()[0]));
-			tooltip.add(GenericUtils.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").asInteger() + "mB"));
+			cons.accept(GenericUtils.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
+			cons.accept(GenericUtils.format("&9Fuel Group: &7" + data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup()[0]));
+			cons.accept(GenericUtils.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").asInteger() + "mB"));
 		}
 		if(data.hasPart("transmission")){
 			TransmissionFunction func = data.getFunctionInPart("transmission", "fvtm:transmission");
-			tooltip.add(GenericUtils.format("&9Transmission: &7" + (func == null ? "disfunctional" : func.isAutomatic() ? "automatic" : "manual")));
+			cons.accept(GenericUtils.format("&9Transmission: &7" + (func == null ? "disfunctional" : func.isAutomatic() ? "automatic" : "manual")));
 		}
-		tooltip.add(GenericUtils.format("&9Weight: &7" + data.getAttribute("weight").asFloat() + "kg"));
-		tooltip.add(GenericUtils.format("&9Seats: &7" + data.getSeats().size()));
-		tooltip.add(GenericUtils.format("&9LockCode: &7" + data.getLock().getCode()));
+		cons.accept(GenericUtils.format("&9Weight: &7" + data.getAttribute("weight").asFloat() + "kg"));
+		cons.accept(GenericUtils.format("&9Seats: &7" + data.getSeats().size()));
+		cons.accept(GenericUtils.format("&9LockCode: &7" + data.getLock().getCode()));
 		if(vehicle.getModel() != null && vehicle.getModel().getCreators().size() > 0){
-			tooltip.add(GenericUtils.format("&9Model by:"));
+			cons.accept(GenericUtils.format("&9Model by:"));
 			for(String str : vehicle.getModel().getCreators()){
-				tooltip.add(GenericUtils.format("&7- " + str));
+				cons.accept(GenericUtils.format("&7- " + str));
 			}
 		}
 		//TODO other data

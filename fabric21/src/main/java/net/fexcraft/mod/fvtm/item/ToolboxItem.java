@@ -14,10 +14,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,30 +34,30 @@ public class ToolboxItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flag){
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
 		switch(var){
 			case 0:{
-				tooltip.add(Component.literal("Part Removal and Maintenance Toolbox"));
+				cons.accept(Component.literal("Part Removal and Maintenance Toolbox"));
 				break;
 			}
 			case 1:{
-				tooltip.add(Component.literal("Livery/Texture Management Toolbox"));
+				cons.accept(Component.literal("Livery/Texture Management Toolbox"));
 				break;
 			}
 			case 2:{
-				tooltip.add(Component.literal("Color Channel Painting Toolbox"));
+				cons.accept(Component.literal("Color Channel Painting Toolbox"));
 				break;
 			}
 			case 3:{
-				tooltip.add(Component.literal("Wire removal Toolbox"));
+				cons.accept(Component.literal("Wire removal Toolbox"));
 				break;
 			}
 			case 4:{
-				tooltip.add(Component.literal("Wire Slack Adjustment Toolbox"));
+				cons.accept(Component.literal("Wire Slack Adjustment Toolbox"));
 				break;
 			}
 			case 5:{
-				tooltip.add(Component.literal("Sign Adjustment and Removal Toolbox"));
+				cons.accept(Component.literal("Sign Adjustment and Removal Toolbox"));
 				break;
 			}
 		}

@@ -72,7 +72,7 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag){
-		wheelid = tag.getString("wheelid");
+		wheelid = tag.getStringOr("wheelid", "no-wheel-id");
 		remtimer = 100;
 	}
 

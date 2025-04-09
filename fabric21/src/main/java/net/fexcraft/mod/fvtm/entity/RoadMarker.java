@@ -7,9 +7,6 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -37,7 +34,7 @@ public class RoadMarker extends Entity {
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag){
 		if(tag.contains("uuid0")){
-			queueid = new UUID(tag.getLong("uuid0"), tag.getLong("uuid1"));
+			queueid = new UUID(tag.getLongOr("uuid0", 0l), tag.getLongOr("uuid1", 0l));
 		}
 		if(tag.contains("position")){
 			position = new QV3D(TagCW.wrap(tag), "position");

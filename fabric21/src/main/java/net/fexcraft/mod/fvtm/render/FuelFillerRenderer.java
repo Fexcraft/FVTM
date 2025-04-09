@@ -13,6 +13,7 @@ import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
@@ -27,7 +28,7 @@ public class FuelFillerRenderer implements BlockEntityRenderer<FuelFillerEntity>
 	private static BlockModel MODEL;
 
 	@Override
-	public void render(FuelFillerEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
+	public void render(FuelFillerEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay, Vec3 pos){
 		Renderer21.pose = pose;
 		Renderer21.set(pose, buffer, light, overlay);
 		FvtmRenderTypes.setCutout(TEXTURE);

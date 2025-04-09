@@ -14,9 +14,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.uni.ui.ContainerInterface.translate;
@@ -32,8 +34,8 @@ public class JunctionTool extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		tooltip.add(literal(translate("&9Junction Editing Toolbox")));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
+		cons.accept(literal(translate("&9Junction Editing Toolbox")));
 		/*tooltip.add(literal(translate("&9- - - - - - &7-")));
 		if(stack.getTag() != null && stack.getTag().contains("fvtm:junction")){
 			tooltip.add(literal(translate("&9Junction Selected: &7" + new QV3D(TagCW.wrap(stack.getTag()), "fvtm:junction"))));

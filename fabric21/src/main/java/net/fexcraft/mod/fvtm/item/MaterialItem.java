@@ -12,9 +12,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -33,17 +35,17 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
-		tooltip.add(GenericUtils.format("&9Name: &7" + material.getName()));
-		for(String s : material.getDescription()) tooltip.add(GenericUtils.format(I18n.get(s)));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
+		cons.accept(GenericUtils.format("&9Name: &7" + material.getName()));
+		for(String s : material.getDescription()) cons.accept(GenericUtils.format(I18n.get(s)));
 		if(material.isVehicleKey()){
-			tooltip.add(GenericUtils.format("&9LockCode: &7" + getLockCode(stack)));
+			cons.accept(GenericUtils.format("&9LockCode: &7" + getLockCode(stack)));
 		}
 		unistack = UniStack.get(stack);
 		if(unistack != null && material.isFuelContainer()){
-			tooltip.add(GenericUtils.format("&9Container: &7" + (material.isUniversalFuelContainer() ? "universal" : ((material.getFuelType() == null) ? material.getFuelGroup() : material.getFuelType().getName()))));
-			tooltip.add(GenericUtils.format("&9Fuel Stored: &7" + Fuel.getStoredName(unistack.stack)));
-			tooltip.add(GenericUtils.format("&9Fuel Amount: &7" + Fuel.getStoredAmount(unistack.stack) + "mB"));
+			cons.accept(GenericUtils.format("&9Container: &7" + (material.isUniversalFuelContainer() ? "universal" : ((material.getFuelType() == null) ? material.getFuelGroup() : material.getFuelType().getName()))));
+			cons.accept(GenericUtils.format("&9Fuel Stored: &7" + Fuel.getStoredName(unistack.stack)));
+			cons.accept(GenericUtils.format("&9Fuel Amount: &7" + Fuel.getStoredAmount(unistack.stack) + "mB"));
 		}
 	}
 

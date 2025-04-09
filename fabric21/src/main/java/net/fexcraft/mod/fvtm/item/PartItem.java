@@ -18,9 +18,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -35,22 +37,22 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 	}
 
     @Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag){
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
 		PartData data = UniStack.getStack(stack).getContent(ContentType.PART.item_type);
-    	tooltip.add(GenericUtils.format("&9Name: &7" + part.getName()));
-        tooltip.add(GenericUtils.format("&9Type: &7" + part.getCategory()));
+    	cons.accept(GenericUtils.format("&9Name: &7" + part.getName()));
+        cons.accept(GenericUtils.format("&9Type: &7" + part.getCategory()));
         for(String s : part.getDescription()){
-            tooltip.add(GenericUtils.format(I18n.get(s)));
+            cons.accept(GenericUtils.format(I18n.get(s)));
         }
         if(data == null) return;
-        tooltip.add(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
+        cons.accept(GenericUtils.format("&9Texture: &7" + getTexTitle(data)));
         if(part.getInstallHandlerData() != null && part.getInstallHandlerData() instanceof DPIHData){
 			DPIHData idata = part.getInstallHandlerData();
 			if(!idata.removable){
-				tooltip.add(GenericUtils.format(idata.swappable ? "&c&oPermanent, &a&oSwappable" : "&c&oPermanent"));
+				cons.accept(GenericUtils.format(idata.swappable ? "&c&oPermanent, &a&oSwappable" : "&c&oPermanent"));
 			}
 			else{
-				tooltip.add(GenericUtils.format(idata.swappable ? "&a&oSwappable" : "&e&oNot Swappable"));
+				cons.accept(GenericUtils.format(idata.swappable ? "&a&oSwappable" : "&e&oNot Swappable"));
 			}
         }
 		UniStack uni = UniStack.get(stack);
@@ -59,22 +61,22 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 			for(PartFunction func : data.getFunctions().values()){
 				func.addInformation(uni.stack, WrapperHolder.getClientWorld(), data, tips, flag.isAdvanced());
 			}
-			for(String tip : tips) tooltip.add(GenericUtils.format(tip));
-			tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
+			for(String tip : tips) cons.accept(GenericUtils.format(tip));
+			cons.accept(GenericUtils.format("&9- - - - - - &7-"));
         }
         if(part.getDefaultAttributes().size() > 0){
-        	tooltip.add(GenericUtils.format("&0&9This part has &7%s &9Attribute/s.", part.getDefaultAttributes().size()));
+        	cons.accept(GenericUtils.format("&0&9This part has &7%s &9Attribute/s.", part.getDefaultAttributes().size()));
         }
         if(part.getStaticModifiers().size() > 0){
-        	tooltip.add(GenericUtils.format("&0&3This part has &7%s &3Modifier/s.", part.getStaticModifiers().size()));
+        	cons.accept(GenericUtils.format("&0&3This part has &7%s &3Modifier/s.", part.getStaticModifiers().size()));
         }
         if(part.getDefaultFunctions().size() > 0){
-        	tooltip.add(GenericUtils.format("&0&bThis part has &7%s &bFunction/s.", part.getDefaultFunctions().size()));
+        	cons.accept(GenericUtils.format("&0&bThis part has &7%s &bFunction/s.", part.getDefaultFunctions().size()));
         }
         if(part.getModel() != null && part.getModel().getCreators().size() > 0){
-            tooltip.add(GenericUtils.format("&9Model by:"));
+            cons.accept(GenericUtils.format("&9Model by:"));
             for(String str : part.getModel().getCreators()){
-            	tooltip.add(GenericUtils.format("&7- " + str));
+            	cons.accept(GenericUtils.format("&7- " + str));
             }
         }
     }

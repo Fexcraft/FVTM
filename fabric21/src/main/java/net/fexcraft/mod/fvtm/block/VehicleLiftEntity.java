@@ -64,12 +64,12 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener, In
 	@Override
 	public void loadAdditional(CompoundTag com, HolderLookup.Provider prov){
 		super.loadAdditional(com, prov);
-		rot = com.getInt("Rot");
+		rot = com.getIntOr("Rot", 0);
 		if(com.contains("VehicleData")){
 			data = FvtmResources.getVehicleData(com.getCompound("VehicleData"));
 			data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(rot), true);
 		}
-		liftstate = com.getDouble("LiftState");
+		liftstate = com.getDoubleOr("LiftState", 0);
 		updateState();
 	}
 

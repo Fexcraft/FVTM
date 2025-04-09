@@ -37,7 +37,6 @@ import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
@@ -285,7 +284,17 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	}
 
 	@Override
-	public void lerpTo(double x, double y, double z, float yr, float xr, int s){
+	public void lerpMotion(double x, double y, double z){
+		//
+	}
+
+	@Override
+	public void lerpHeadTo(float y, int x){
+		//
+	}
+
+	@Override
+	public void lerpPositionAndRotationStep(int sm, double x, double y, double z, double yr, double xr){
         //
     }
 

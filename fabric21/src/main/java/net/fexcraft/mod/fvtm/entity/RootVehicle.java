@@ -37,6 +37,7 @@ import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -297,6 +298,11 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	public void lerpPositionAndRotationStep(int sm, double x, double y, double z, double yr, double xr){
         //
     }
+
+	@Override
+	public void moveOrInterpolateTo(Vec3 vec3, float f, float g){
+		//
+	}
 
 	public boolean processSeatInteract(int seatidx, ServerPlayer player, InteractionHand hand){
 		if(level().isClientSide || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;

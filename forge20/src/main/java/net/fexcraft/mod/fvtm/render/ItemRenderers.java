@@ -54,7 +54,7 @@ public class ItemRenderers {
 				//
 				pose.pushPose();
 				pose.mulPose(new Quaternionf().rotateAxis(-Static.rad90, AY));
-				model.render(DefaultModel.RENDERDATA.set(via.data, null, null, false, 0));
+				model.render(DefaultModel.RENDERDATA.set(via.data, null, 0));
 				if(via.data.getParts().size() > 0){
 					RVRenderer.renderPoint(pose, via.data.getRotationPoint("vehicle"), null, via.data, null, 0);
 				}

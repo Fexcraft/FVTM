@@ -44,7 +44,7 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 			pose.translate(0, tile.liftstate + 0.3125, 0);
 			if(data.getType().getModel() != null){
 				FvtmRenderTypes.setCutout(data.getCurrentTexture());
-				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, null, false, ticks));
+				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, ticks));
 			}
 			if(data.getParts().size() > 0){
 				RVRenderer.renderPoint(pose, data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);

@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -32,6 +34,7 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity> {
 	public void render(DecorationEntity deco, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		pose.pushPose();
 		Renderer120.set(pose, buffer, light);
+		EntityW ent = UniEntity.getEntity(deco);
 		for(DecorationData data : deco.decos){
 			if(data.getType().getModel() == null){
 				//FvtmLogger.LOGGER.debug(data.modelid);
@@ -48,7 +51,7 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity> {
 				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
-			data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, deco, FVTM4.getRenderCache(deco)));
+			data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, ent).rc(FVTM4.getRenderCache(deco)));
 			pose.popPose();
 		}
 		if(deco.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){

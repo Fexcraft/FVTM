@@ -101,7 +101,7 @@ public class SignRenderer {
 							if(scom.rotx != 0f) RENDERER.rotate(scom.rotx, 1, 0, 0);
 							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) pose.scale(scom.sclx, scom.scly, scom.sclz);
 							FvtmRenderTypes.setCutout(scom.getTexture().getTexture());
-							scom.getType().getModel().render(RENDERDATA.set(scom, sign, cache));
+							scom.getType().getModel().render(RENDERDATA.set(scom, sign).rc(cache));
 							pose.popPose();
 						}
 					}

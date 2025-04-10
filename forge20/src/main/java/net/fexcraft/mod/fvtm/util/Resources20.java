@@ -70,9 +70,6 @@ public class Resources20 extends FvtmResources {
 	public void loadPackTextures(){}
 
 	@Override
-	public void checkForCustomModel(AddonLocation loc, ContentType contype, Content<?> content){}
-
-	@Override
 	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
 			FVTM4.BLOCK_REGISTRY.get(block.getID().space()).register(block.getID().id(), () -> block.genBlock());

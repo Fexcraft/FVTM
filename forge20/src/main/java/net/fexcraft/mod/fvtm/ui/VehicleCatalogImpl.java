@@ -43,7 +43,7 @@ public class VehicleCatalogImpl extends VehicleCatalog {
         RenderSystem.runAsFancy(() -> {
             Renderer120.set(gg.pose(), gg.bufferSource(), 15728880);
             FvtmRenderTypes.setCutout(data.getCurrentTexture());
-            veh.getModel().render(DefaultModel.RENDERDATA.set(data, null, null, null, null, false, ticks));
+            veh.getModel().render(DefaultModel.RENDERDATA.set(data, null, null, null, ticks));
             RVRenderer.renderPoint(gg.pose(), data.getRotationPoint("vehicle"), null, data, null, ticks);
         });
         gg.flush();

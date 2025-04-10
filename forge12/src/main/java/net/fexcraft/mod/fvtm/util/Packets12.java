@@ -174,8 +174,13 @@ public class Packets12 {
 
 		@Override
 		public IMessage onMessage(PI_TagListener message, MessageContext ctx){
-			FMLCommonHandler.instance().getMinecraftServerInstance()
-				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			try{
+				FMLCommonHandler.instance().getMinecraftServerInstance()
+					.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			return null;
 		}
 
@@ -185,8 +190,13 @@ public class Packets12 {
 
 		@Override
 		public IMessage onMessage(PI_TagListener message, MessageContext ctx){
-			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			try{
+				Minecraft.getMinecraft()
+					.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			return null;
 		}
 

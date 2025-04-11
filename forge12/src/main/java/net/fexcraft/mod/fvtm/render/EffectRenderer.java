@@ -27,7 +27,6 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
-import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12.LightBeam;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -123,7 +122,6 @@ public class EffectRenderer {
             GL11.glPopMatrix();
         }
 		clear();
-        LightBeam.last = null;
     }
 
 	private static int isImpact(){

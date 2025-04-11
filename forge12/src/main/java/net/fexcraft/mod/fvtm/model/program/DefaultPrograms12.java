@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.model.program;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -29,16 +28,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.util.HashMap;
-import java.util.function.Predicate;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.*;
+import static net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam.*;
 
 /**
  * 
@@ -323,6 +321,40 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		OpenGlPrograms.init();
 		BlockPrograms.init();
 		BakedPrograms.init();
+		//
+		LBR = new LBRender(){
+			@Override
+			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){TexUtil.bindTexture(EffectRenderer.LIGHT_TEXTURE);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glDepthMask(false);
+				GL11.glEnable(GL11.GL_ALPHA_TEST);
+				GlStateManager.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.SRC_ALPHA);
+				GL11.glPushMatrix();
+				if(beam.swivel == null || beam.swivel.equals("vehicle")){
+					RENDERER.translate(beam.pos);
+				}
+				else{
+					SwivelPoint point = data.vehicle.getRotationPoint(beam.swivel);
+					V3D pos = point.getRelativeVector(beam.pos);
+					GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+					GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+					GL11.glTranslated(pos.x, pos.y, pos.z);
+					GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+					GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+				}
+				GL11.glColor4f(1, 1, 1, 0.5F);
+				GL11.glColor4f(1, 1, 1, 0.5F);
+			}
+
+			@Override
+			public void post(LightBeam beam, ModelGroup list, ModelRenderData data){
+				GL11.glPopMatrix();
+				GL11.glDisable(GL11.GL_ALPHA_TEST);
+				GL11.glDepthMask(true);
+				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+				GL11.glDisable(GL11.GL_BLEND);
+			}
+		};
 		//
 		DIDLOAD = true;
 	}
@@ -829,103 +861,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 	}
 	
-	public static abstract class LightBeam implements Program {
-
-		public Vec3d pos;
-		public ModelRendererTurbo shape;
-		public String swivel;
-		public ResourceLocation tex;
-		protected Predicate<ModelRenderData> predicate;
-		public static ResourceLocation last;
-		private boolean skipped;
-		
-		public LightBeam(){}
-		
-		public LightBeam init(ModelRendererTurbo turboobj, Vec3d pos, String swivelpoint, ResourceLocation texture, Predicate<ModelRenderData> predicate){
-			this.shape = turboobj;
-			this.pos = pos;
-			this.tex = texture;
-			this.predicate = predicate;
-			return this;
-		}
-		
-		public LightBeam init(ModelRendererTurbo turboobj, Vec3d pos, ResourceLocation texture, Predicate<ModelRenderData> predicate){
-			this.shape = turboobj;
-			this.pos = pos;
-			this.tex = texture;
-			this.predicate = predicate;
-			return this;
-		}
-		
-		public LightBeam setPredicate(Predicate<ModelRenderData> predicate){
-			this.predicate = predicate;
-			return this;
-		}
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if(!data.separaterender || DISABLE_LIGHT_BEAMS) return;
-			skipped = false;
-			if(predicate != null && !predicate.test(data)){
-				skipped = true;
-				return;
-			}
-			else{
-				TexUtil.bindTexture(EffectRenderer.LIGHT_TEXTURE);
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glDepthMask(false);
-				GL11.glEnable(GL11.GL_ALPHA_TEST);
-				GlStateManager.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.SRC_ALPHA);
-				if(tex != null){
-					if(last == null || !last.equals(tex)){
-						TexUtil.bindTexture(last = tex);
-					}
-				}
-				else if(last != null){
-					last = null;
-					TexUtil.bindTexture(EffectRenderer.LIGHT_TEXTURE);
-				}
-				GL11.glPushMatrix();
-				if(swivel == null || swivel.equals("vehicle")){
-					GL11.glTranslated(pos.x, pos.y, pos.z);
-				}
-				else{
-					SwivelPoint point = data.vehicle.getRotationPoint(swivel);
-					V3D pos = point.getRelativeVector(this.pos.x, this.pos.y, this.pos.z);
-					GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
-					GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
-					GL11.glTranslated(pos.x, pos.y, pos.z);
-					GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
-					GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-				}
-				GL11.glColor4f(1, 1, 1, 0.5F);
-				shape.render();
-				GL11.glColor4f(1, 1, 1, 0.5F);
-				shape.render();
-				GL11.glPopMatrix();
-			}
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			if(!data.separaterender || DISABLE_LIGHT_BEAMS) return;
-			if(skipped){
-				skipped = false;
-				return;
-			}
-			GL11.glDisable(GL11.GL_ALPHA_TEST);
-			GL11.glDepthMask(true);
-			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			GL11.glDisable(GL11.GL_BLEND);
-		}
-
-		@Override
-		public RenderOrder order(){
-			return RenderOrder.SEPARATE;
-		}
-		
-	}
-	
 	public static class RectLightBeam extends LightBeam {
 		
 		private String id;
@@ -941,7 +876,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		public RectLightBeam init(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
 			RectLightBeam beam = new RectLightBeam(id);
-			beam.init(new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
+			beam.init(/*new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
 				.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sz, sy, sz)
 				.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
 				.removePolygons(0, 1)
@@ -959,8 +894,8 @@ public class DefaultPrograms12 extends DefaultPrograms {
 					.setPolygonUV(4, new float[]{ 16.0f, 8.0f, 0.0f, 8.0f, 0.0f, 12.0f, 16.0f, 12.0f })
 					.setPolygonUV(5, new float[]{ 0.0f, 12.0f, 16.0f, 12.0f, 16.0f, 16.0f, 0.0f, 16.0f })
 					.build()
-				),
-				new Vec3d(x, y, z), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
+				),*/
+				new V3D(x, y, z), swivelpoint/*, resloc == null ? null : new ResourceLocation(resloc)*/, null
 			);
 			beam.setPredicate(predicate);
 			return beam;

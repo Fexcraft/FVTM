@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
@@ -15,8 +16,10 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Predicate;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
 import static net.fexcraft.mod.fvtm.Config.SIGNAL_INTERVAL;
 
 /**
@@ -557,6 +560,62 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return INST[args.length > 0 ? Integer.parseInt(args[0]) : 0];
+		}
+
+	}
+
+	public static abstract class LightBeam implements Program {
+
+		public static LBRender LBR;
+		protected Predicate<ModelRenderData> predicate;
+		public String swivel;
+		public V3D pos;
+		public boolean skipped;
+
+		public LightBeam(){}
+
+		public LightBeam init(V3D pos, String point, Predicate<ModelRenderData> predicate){
+			this.pos = pos;
+			this.swivel = point;
+			this.predicate = predicate;
+			return this;
+		}
+
+		public LightBeam init(V3D pos, Predicate<ModelRenderData> predicate){
+			this.pos = pos;
+			this.predicate = predicate;
+			return this;
+		}
+
+		public LightBeam setPredicate(Predicate<ModelRenderData> predicate){
+			this.predicate = predicate;
+			return this;
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(!data.separaterender || DISABLE_LIGHT_BEAMS) return;
+			skipped = predicate != null && !predicate.test(data);
+			if(!skipped) LBR.pre(this, list, data);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			if(!data.separaterender || DISABLE_LIGHT_BEAMS) return;
+			if(!skipped) LBR.post(this, list, data);
+			skipped = false;
+		}
+
+		@Override
+		public RenderOrder order(){
+			return RenderOrder.SEPARATE;
+		}
+
+		public static abstract class LBRender {
+
+			public abstract void pre(LightBeam beam, ModelGroup list, ModelRenderData data);
+
+			public abstract void post(LightBeam beam, ModelGroup list, ModelRenderData data);
 		}
 
 	}

@@ -193,7 +193,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
 		ModelGroup.PROGRAMS.add(new SignText());
-		LightBeam.LBR = new LightBeam.LBRender() {
+		LightBeam.LBR = new LightBeam.LBRender(){
 			@Override
 			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){
 				FvtmRenderTypes.setLB(data.texture.getCurrentTexture());

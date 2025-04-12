@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.model.program;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
@@ -190,6 +193,27 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
 		ModelGroup.PROGRAMS.add(new SignText());
+		LightBeam.LBR = new LightBeam.LBRender() {
+			@Override
+			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){
+				FvtmRenderTypes.setLB(data.texture.getCurrentTexture());
+				pose.pushPose();
+				if(beam.swivel == null || beam.swivel.equals("vehicle")){
+					RENDERER.translate(beam.pos);
+				}
+				else{
+					SwivelPoint point = data.vehicle.getRotationPoint(beam.swivel);
+					V3D pos = point.getRelativeVector(beam.pos);
+					pose.translate(pos.x, pos.y, pos.z);
+				}
+				setColor(RGB.WHITE, 0.5f);
+			}
+
+			@Override
+			public void post(LightBeam beam, ModelGroup list, ModelRenderData data){
+				pose.popPose();
+			}
+		};
 	}
 
 	public static class RGBCustom implements Program {

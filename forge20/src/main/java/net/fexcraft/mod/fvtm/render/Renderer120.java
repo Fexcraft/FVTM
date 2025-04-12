@@ -32,6 +32,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	//
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static Vec3f color = new Vec3f();
+	private static float alpha;
 	//
 	public static PoseStack pose;
 	private static MultiBufferSource buffer;
@@ -45,6 +46,12 @@ public class Renderer120 extends Renderer<GLObject> {
 		color.x = arr[0];
 		color.y = arr[1];
 		color.z = arr[2];
+		alpha = col.alpha;
+	}
+
+	public static void setColor(RGB col, float al){
+		setColor(col);
+		alpha = al;
 	}
 
 	public static void setColor(Vec3f col){
@@ -132,7 +139,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	private void fillVert(Matrix4f verma, Matrix3f norma, Vertex vert){
 		Vector4f vec = verma.transform(new Vector4f(vert.vector.x, vert.vector.y, vert.vector.z, 1.0F));
 		Vector3f norm = norma.transform(vert.norm == null ? NULLVEC : new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
-		cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, overlay, light, norm.x, norm.y, norm.z);
+		cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, alpha, vert.u, vert.v, overlay, light, norm.x, norm.y, norm.z);
 	}
 
 	public void delete(Polyhedron<GLObject> poly){

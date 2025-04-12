@@ -343,7 +343,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 					GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
 				}
 				GL11.glColor4f(1, 1, 1, 0.5F);
-				GL11.glColor4f(1, 1, 1, 0.5F);
 			}
 
 			@Override

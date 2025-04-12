@@ -172,6 +172,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new SignOffset(0, 0));
 		ModelGroup.PROGRAMS.add(SignBorder.INST[0]);
 		ModelGroup.PROGRAMS.add(SignCorner.INST[0]);
+		ModelGroup.PROGRAMS.add(new LightBeam());
 	}
 
 	public static void setupSignalTimer(){
@@ -564,12 +565,12 @@ public class DefaultPrograms {
 
 	}
 
-	public static abstract class LightBeam implements Program {
+	public static class LightBeam implements Program {
 
 		public static LBRender LBR;
 		protected Predicate<ModelRenderData> predicate;
 		public String swivel;
-		public V3D pos;
+		public V3D pos = new V3D();
 		public boolean skipped;
 
 		public LightBeam(){}
@@ -590,6 +591,11 @@ public class DefaultPrograms {
 		public LightBeam setPredicate(Predicate<ModelRenderData> predicate){
 			this.predicate = predicate;
 			return this;
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:light_beam";
 		}
 
 		@Override

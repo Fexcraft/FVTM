@@ -45,6 +45,7 @@ public class ModelRenderData extends EventData {
 	public ModelRenderData set(VehicleInstance ent, float ticks){
 		return set(ent.data, ent, ticks);
 	}
+
 	public ModelRenderData set(VehicleData data, VehicleInstance ent, float ticks){
 		entity = ent == null ? null : ent.entity;
 		vehent = ent;

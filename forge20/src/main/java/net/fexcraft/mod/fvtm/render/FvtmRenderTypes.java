@@ -18,6 +18,7 @@ public class FvtmRenderTypes {
 
 	protected static final HashMap<IDL, RenderType> CUTOUTS = new HashMap<>();
 	protected static final HashMap<IDL, RenderType> GLOWS = new HashMap<>();
+	protected static final HashMap<IDL, RenderType> LBS = new HashMap<>();
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
@@ -39,6 +40,16 @@ public class FvtmRenderTypes {
 			.createCompositeState(false);
 		return RenderType.create("fvtm:glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, state);
 	});
+	private static final Function<IDL, RenderType> LIGHTBEAM = Util.memoize(idl -> {
+		RenderType.CompositeState state = RenderType.CompositeState.builder()
+			.setShaderState(RenderType.RENDERTYPE_EYES_SHADER)
+			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false, false))
+			.setTransparencyState(RenderType.ADDITIVE_TRANSPARENCY)
+			.setLightmapState(RenderStateShard.NO_LIGHTMAP)
+			.setOverlayState(RenderStateShard.NO_OVERLAY)
+			.createCompositeState(false);
+		return RenderType.create("fvtm:lb", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+	});
 
 	public static void setCutout(IDL tex){
 		RenderType type = CUTOUTS.get(tex);
@@ -59,6 +70,17 @@ public class FvtmRenderTypes {
 		}
 		type = GLOW.apply(tex.local());
 		GLOWS.put(tex, type);
+		Renderer120.rentype = type;
+	}
+
+	public static void setLB(IDL tex){
+		RenderType type = LBS.get(tex);
+		if(type != null){
+			Renderer120.rentype = type;
+			return;
+		}
+		type = LIGHTBEAM.apply(tex.local());
+		LBS.put(tex, type);
 		Renderer120.rentype = type;
 	}
 

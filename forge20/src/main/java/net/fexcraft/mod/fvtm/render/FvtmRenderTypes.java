@@ -42,9 +42,9 @@ public class FvtmRenderTypes {
 	});
 	private static final Function<IDL, RenderType> LIGHTBEAM = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setShaderState(RenderType.RENDERTYPE_EYES_SHADER)
+			.setShaderState(RenderType.RENDERTYPE_ENTITY_ALPHA_SHADER)
 			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false, false))
-			.setTransparencyState(RenderType.ADDITIVE_TRANSPARENCY)
+			.setTransparencyState(RenderType.CRUMBLING_TRANSPARENCY)
 			.setLightmapState(RenderStateShard.NO_LIGHTMAP)
 			.setOverlayState(RenderStateShard.NO_OVERLAY)
 			.createCompositeState(false);

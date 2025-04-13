@@ -30,7 +30,7 @@ public class DecorationRenderer {
 			if(ent instanceof DecorationEntity == false) continue;
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(ent.getEntityBoundingBox())) continue;
 			DecorationEntity deco = (DecorationEntity)ent;
-			EntityW ew = UniEntity.getEntity(ent);
+			EntityW ew = UniEntity.getEntityN(ent);
 			GL11.glPushMatrix();
 			GL11.glTranslated(ent.posX - cx, ent.posY - cy, ent.posZ - cz);
 			if(deco.decos.size() == 0){

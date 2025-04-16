@@ -142,7 +142,7 @@ public class FVTM {
 		StackWrapper.CONTENT_TYPES.put(ContentType.SIGN.item_type, stack -> ((SignItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ItemStack)stack.direct()).getMetadata());
 		//UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
-		ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
+		//ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
 		AABB.SUPPLIER = () -> new AABBI();
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;
 		InvHandlerFluid.IMPL = InvHandlerFluidImpl.class;
@@ -305,18 +305,9 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		FvtmRegistry.MATERIALS.forEach(mat -> {
-			mat.getItemWrapper().linkContainer();
-			mat.getItemWrapper().regToDict();
-		});
-		FvtmRegistry.CONSUMABLES.forEach(con -> {
-			con.getItemWrapper().linkContainer();
-			con.getItemWrapper().regToDict();
-		});
-		FvtmRegistry.BLOCKS.forEach(blk -> {
-			blk.getItemWrapper().linkContainer();
-			blk.getItemWrapper().regToDict();
-		});
+		FvtmRegistry.MATERIALS.forEach(mat -> FvtmResources.INSTANCE.linkItemContainer(mat.getItemWrapper().local()));
+		FvtmRegistry.CONSUMABLES.forEach(con -> FvtmResources.INSTANCE.linkItemContainer(con.getItemWrapper().local()));
+		FvtmRegistry.BLOCKS.forEach(blk -> FvtmResources.INSTANCE.linkItemContainer(blk.getItemWrapper().local()));
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}

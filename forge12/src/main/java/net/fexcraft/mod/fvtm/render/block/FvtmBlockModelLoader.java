@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -21,6 +22,7 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 
 	protected static final FvtmBlockModelLoader INSTANCE = new FvtmBlockModelLoader();
 	protected static final Map<ResourceLocation, ModelImpl> MODELS = new HashMap<>();
+	public static final Map<String, Block> BLOCKS = new HashMap<>();
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourcemanager){
@@ -31,19 +33,7 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 
 	@Override
 	public boolean accepts(ResourceLocation rl){
-		if(rl.toString().contains("#inventory")) return false;
-		Block block = FvtmRegistry.BLOCKS.get(getBlockIdFromResLoc(rl));
-		if(block == null) return false;
-		if(block.getModel() instanceof BlockModel == false){
-			Print.log("ERROR --- BLOCK MODEL IS NOT A BLOCK MODEL --- " + block.getIDS());
-			return false;
-		}
-		return block.getModelData().getBoolean("Baked", false);
-	}
-
-	public static String getBlockIdFromResLoc(ResourceLocation rl){
-		String str = rl.getNamespace() + ":" + rl.getPath().substring(rl.getPath().lastIndexOf("/") + 1);
-		return str.endsWith(".fmf") || str.endsWith(".fmf") ? str.substring(0, str.length() - 4) : str;
+		return BLOCKS.containsKey(rl.toString());
 	}
 
 	@Override

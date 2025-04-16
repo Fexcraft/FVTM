@@ -9,10 +9,13 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.Asphalt.AsphaltItem;
+import net.fexcraft.mod.fvtm.data.Consumable;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
+import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
@@ -50,6 +53,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -401,6 +405,38 @@ public class ResourcesImpl extends FvtmResources {
 		marker.position = vector;
 		marker.setPosition(vector.vec.x, vector.vec.y, vector.vec.z);
 		((World)world.direct()).spawnEntity(marker);
+	}
+
+	@Override
+	public void linkItemContainer(ItemWrapper wrap){
+		Item item = wrap.local();
+		if(item instanceof MaterialItem){
+			Material mat = ((MaterialItem)item).getContent();
+			if(mat.getItemContainer() != null){
+				item.setContainerItem(Item.getByNameOrId(mat.getItemContainer()));
+			}
+			if(mat.getOreDictId() != null){
+				OreDictionary.registerOre(mat.getOreDictId(), (Item)mat.getItemWrapper().direct());
+			}
+		}
+		if(item instanceof ConsumableItem){
+			Consumable con = ((ConsumableItem)item).getContent();
+			if(con.getItemContainer() != null){
+				item.setContainerItem(Item.getByNameOrId(con.getItemContainer()));
+			}
+			if(con.getOreDictId() != null){
+				OreDictionary.registerOre(con.getOreDictId(), (Item)con.getItemWrapper().direct());
+			}
+		}
+		if(item instanceof BlockItem){
+			Block blk = ((BlockItem)item).getContent();
+			if(blk.getItemContainer() != null){
+				item.setContainerItem(Item.getByNameOrId(blk.getItemContainer()));
+			}
+			if(blk.getOreDictId() != null){
+				OreDictionary.registerOre(blk.getOreDictId(), (Item)blk.getItemWrapper().direct());
+			}
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

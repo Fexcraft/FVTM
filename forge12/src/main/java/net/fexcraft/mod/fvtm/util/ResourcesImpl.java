@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockUtil;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
+import net.fexcraft.mod.fvtm.render.block.BlkItemModel12;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.Transforms.TF_Rotate;
@@ -29,6 +30,7 @@ import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
+import net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
@@ -473,17 +475,22 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	private void regItemModelLoc(Item item){
-		if(item instanceof BlockItem && ((BlockItem)item).getContent().getBlockType().getMetaVariants() > 1){
-			try{
-				int var = ((BlockItem)item).getContent().getBlockType().getMetaVariants();
-				for(int v = 0; v < var; v++){
-					net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName() + "_" + v), "inventory"));
-				}
-				return;
+		if(item instanceof BlockItem){
+			Block block = ((BlockItem)item).getContent();
+			if(!block.hasPlainModel() && !block.noCustomItemModel()){
+				net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(block.getID().local(), BlkItemModel12.INSTANCE);
 			}
-			catch(Exception e){
-				e.printStackTrace();
+			if(block.getModelData().getBoolean("Baked", false)){
+				FvtmBlockModelLoader.BLOCKS.put(block.getID().space() + ":models/block/" + block.getID().id(), block);
 			}
+			int var = block.getBlockType().getMetaVariants();
+			for(int v = 0; v < var; v++){
+				net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, v, new net.minecraft.client.renderer.block.model.ModelResourceLocation(new ResourceLocation(item.getRegistryName() + "_" + v), "inventory"));
+			}
+			if(var == 0){
+				net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+			}
+			return;
 		}
 		net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}

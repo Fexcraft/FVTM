@@ -145,7 +145,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){
-		SystemManager.onChunkLoad(WrapperHolder.getWorld(event.getWorld()), UniChunk.getChunk(event.getChunk()));
+		SystemManager.onChunkLoad(WrapperHolder.getWorld(event.getWorld()), UniChunk.getChunkN(event.getChunk()));
 		event.getChunk().getTileEntityMap().values().forEach(tile -> {
 			if(tile instanceof MultiblockTileEntity){
 				((MultiblockTileEntity)tile).setup();

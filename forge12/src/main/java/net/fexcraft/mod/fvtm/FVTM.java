@@ -305,9 +305,9 @@ public class FVTM {
 				Static.stop();
 			}
 		}
-		FvtmRegistry.MATERIALS.forEach(mat -> FvtmResources.INSTANCE.linkItemContainer(mat.getItemWrapper().local()));
-		FvtmRegistry.CONSUMABLES.forEach(con -> FvtmResources.INSTANCE.linkItemContainer(con.getItemWrapper().local()));
-		FvtmRegistry.BLOCKS.forEach(blk -> FvtmResources.INSTANCE.linkItemContainer(blk.getItemWrapper().local()));
+		FvtmRegistry.MATERIALS.forEach(mat -> FvtmResources.INSTANCE.linkItemContainer(mat.getItemWrapper()));
+		FvtmRegistry.CONSUMABLES.forEach(con -> FvtmResources.INSTANCE.linkItemContainer(con.getItemWrapper()));
+		FvtmRegistry.BLOCKS.forEach(blk -> FvtmResources.INSTANCE.linkItemContainer(blk.getItemWrapper()));
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}

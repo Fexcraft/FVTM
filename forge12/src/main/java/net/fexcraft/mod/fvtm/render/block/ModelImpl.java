@@ -42,7 +42,7 @@ class ModelImpl implements IModel {
     public ModelImpl(ResourceLocation rs){
         modelloc = rs;
         MODELS.put(rs, this);
-        block = FvtmRegistry.BLOCKS.get(FvtmBlockModelLoader.getInstance().getBlockIdFromResLoc(rs));
+        block = FvtmBlockModelLoader.BLOCKS.get(rs.toString());
         model = (BlockModel)block.getModel();
         ambocl = block.getModelData().getBoolean("AmbientOcclusion", false);
         getTexturesFromBlock();

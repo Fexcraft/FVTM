@@ -596,4 +596,6 @@ public abstract class FvtmResources {
 
 	public abstract void spawnRailMarker(WorldW world, QV3D vector, UUID nid);
 
+	public abstract void linkItemContainer(ItemWrapper item);
+
 }

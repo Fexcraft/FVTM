@@ -9,6 +9,7 @@ import net.fexcraft.lib.frl.Material;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.DefaultModelGroupList;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
@@ -101,7 +102,7 @@ public class DefaultModel implements Model {
 							groups.get(split[0]).addProgram(prog);
 						}
 						catch(Exception e){
-							e.printStackTrace();
+							FvtmLogger.log(e, "cond-program parsing | " + prarr.get(0).string_value());
 						}
 					}
 					else{//animation
@@ -118,7 +119,7 @@ public class DefaultModel implements Model {
 							groups.get(split[0]).addProgram((Program)root);
 						}
 						catch(Exception e){
-							e.printStackTrace();
+							FvtmLogger.log(e, "program parsing | " + prarr.get(0).string_value());
 						}
 					}
 					continue;
@@ -129,7 +130,7 @@ public class DefaultModel implements Model {
 					groups.get(split[0]).addProgram(parseProgram(split));
 				}
 				catch(Exception e){
-					if(EnvInfo.DEV) e.printStackTrace();
+					FvtmLogger.log(e, "adding program to " + split[0]);
 				}
 			}
 		}
@@ -165,7 +166,7 @@ public class DefaultModel implements Model {
 						groups.get(group).addProgram(prog);
 					}
 					catch(Exception e){
-						e.printStackTrace();
+						FvtmLogger.log(e, "cond program parsing | " + val);
 					}
 					continue;
 				}
@@ -194,7 +195,7 @@ public class DefaultModel implements Model {
 					groups.get(args[0]).addProgram(prog);
 				}
 				catch(Exception e){
-					e.printStackTrace();
+					FvtmLogger.log(e, "cond program parsing | " + val);
 				}
 			}
 		}
@@ -226,7 +227,7 @@ public class DefaultModel implements Model {
 					}
 				}
 				catch(Exception e){
-					e.printStackTrace();
+					FvtmLogger.log(e, "pivot parsing | " + val.string_value());
 				}
 			}
 		}
@@ -246,7 +247,7 @@ public class DefaultModel implements Model {
 					}
 				}
 				catch(Exception e){
-					e.printStackTrace();
+					FvtmLogger.log(e, "offset parsing | " + val.string_value());
 				}
 			}
 		}

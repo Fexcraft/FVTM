@@ -50,6 +50,7 @@ public class SystemManager {
 
 	public static void onChunkLoad(WorldW world, ChunkW chunk){
 		if(!loaded(world.dimkey())) onAttachWorldCapabilities(world);
+		if(chunk == null) return;
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
 			sys.onChunkLoad(chunk);
 		}

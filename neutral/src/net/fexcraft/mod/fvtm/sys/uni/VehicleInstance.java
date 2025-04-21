@@ -29,6 +29,7 @@ import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -62,6 +63,7 @@ public class VehicleInstance {
 	public VehicleInstance front, rear;
 	public SwivelPoint point;
 	private InteractRef ref;
+	public RenderCache cache;
 	//
 	public double[] serv_pos = new double[3];
 	public double[] serv_rot = new double[3];

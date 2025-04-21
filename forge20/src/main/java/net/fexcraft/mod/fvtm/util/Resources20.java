@@ -256,4 +256,9 @@ public class Resources20 extends FvtmResources {
 		((Level)world.direct()).addFreshEntity(marker);
 	}
 
+	@Override
+	public void linkItemContainer(ItemWrapper item){
+
+	}
+
 }

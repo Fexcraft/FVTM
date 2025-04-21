@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.model;
 
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-
 import static net.fexcraft.mod.fvtm.model.ModelGroup.PROGRAMS;
 
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +47,20 @@ public interface Program {
 	}
 
 	//
+
+	public static class BlankProgram implements Program {
+
+		private String id;
+
+		public BlankProgram(String pid){
+			id = pid;
+		}
+
+		@Override
+		public String id(){
+			return id;
+		}
+	}
 
 	public static class ConditionalProgram implements Program {
 

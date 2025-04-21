@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -38,6 +39,7 @@ import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPointSep;
 import static net.fexcraft.mod.fvtm.render.Renderer120.pose;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.CUBE;
@@ -50,29 +52,33 @@ public class SepRenderer {
 
 	@SubscribeEvent
 	public static void renderSeparate(RenderLevelStageEvent event){
-		if(SORTED_VEH_QUEUE.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;Camera camera = event.getCamera();
+		if(VEHICLES.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;Camera camera = event.getCamera();
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		Renderer120.setColor(RGB.WHITE);
-		if(SORTED_VEH_QUEUE.size() > 0){
+		if(VEHICLES.size() > 0){
 			pose.pushPose();
 			pose.translate(-cx, -cy, -cz);
-			for(int i = 0; i < SORTED_VEH_QUEUE.size(); i++){
-				ModelGroupList.SeparateModelGroupList sroup = SORTED_VEH_QUEUE.get(i);
-				VehicleInstance inst = SORTED_VEH_ENTITY.get(i);
+			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
-				RootVehicle veh = inst.entity.local();
-				double[] vehpos = SORTED_VEH_POS.get(veh.getId());
-				if(vehpos == null) continue;
+				if(inst.cache == null) inst.cache = FVTM4.getRenderCache(inst.entity.local());
+				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 				pose.pushPose();
-				pose.translate(vehpos[0], vehpos[1], vehpos[2]);
-				V3D vehrot = SORTED_VEH_ROT.get(veh.getId());
-				RENDERER.rotate((float)-vehrot.x, 0, 1, 0);
-				RENDERER.rotate((float)vehrot.y, 1, 0, 0);
-				RENDERER.rotate((float)vehrot.z, 0, 0, 1);
-				FvtmRenderTypes.setCutout(veh.vehicle.data.getCurrentTexture());
-				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.vehicle, event.getPartialTick()).rcs(FVTM4.getRenderCache(veh)));
+				pose.translate(cache.pos[0], cache.pos[1], cache.pos[2]);
+				RENDERER.rotate((float)-cache.rot.x, 0, 1, 0);
+				RENDERER.rotate((float)cache.rot.y, 1, 0, 0);
+				RENDERER.rotate((float)cache.rot.z, 0, 0, 1);
+				Model vehmod = inst.data.getType().getModel();
+				if(vehmod != null && vehmod.getSeparateGroups() != null){
+					pose.pushPose();
+					FvtmRenderTypes.setCutout(inst.data.getCurrentTexture());
+					vehmod.getSeparateGroups().render(RENDERDATA.set(inst, event.getPartialTick()).rc(inst.cache).sep());
+					pose.popPose();
+				}
+				if(cache.parts.size() > 0){
+					renderPointSep(pose, inst.point, inst, cache.parts, event.getPartialTick());
+				}
 				pose.popPose();
 			}
 			pose.popPose();

@@ -131,6 +131,10 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	public boolean isInstalledOnSwivelPoint(){
 		return rotpoint != null;
 	}
+
+	public boolean isInstalledOnSwivelPoint(String point){
+		return rotpoint == null ? point.equals(SwivelPoint.DEFAULT) : rotpoint.equals(point);
+	}
 	
 	public Map<String, PartFunction> getFunctions(){
 		return functions;

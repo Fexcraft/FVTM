@@ -155,15 +155,15 @@ public class VehicleRenderer {
 			GL11.glRotated(-rot.y, 1, 0, 0);
 			GL11.glRotated(-rot.z, 0, 0, 1);
 		}
-		for(String part : parts){
-			PartData data = inst.data.getPart(part);
-			if(!data.getSwivelPointInstalledOn().equals(point.id)) continue;
-			TexUtil.bindTexture(data.getCurrentTexture());
-			translate(data.getInstalledPos());
-			data.getInstalledRot().rotate112();
-			data.getType().getModel().getSeparateGroups().render(RENDERDATA.set(inst.data, inst, data, part, ticks).rc(inst.cache).sep());
-			data.getInstalledRot().rotate112R();
-			translateR(data.getInstalledPos());
+		for(Entry<String, PartData> entry : inst.data.getParts().entrySet()){
+			if(!parts.contains(entry.getKey())) continue;
+			if(!entry.getValue().isInstalledOnSwivelPoint(point.id)) continue;
+			TexUtil.bindTexture(entry.getValue().getCurrentTexture());
+			translate(entry.getValue().getInstalledPos());
+			entry.getValue().getInstalledRot().rotate112();
+			entry.getValue().getType().getModel().getSeparateGroups().render(RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());
+			entry.getValue().getInstalledRot().rotate112R();
+			translateR(entry.getValue().getInstalledPos());
 		}
 		for(SwivelPoint sub : point.subs) renderPointSep(sub, inst, parts, ticks);
 		GL11.glPopMatrix();

@@ -75,6 +75,7 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 				for(ModelGroup group : this) group.render(data);
 				return;
 			}
+			if(data.cache == null) return;
 			if(data.vehicle == null){
 				if(data.tile == null || data.block == null) return;
 				SeparateRenderCache.SORTED_BLK_QUEUE.add(this);
@@ -82,9 +83,7 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 				SeparateRenderCache.SORTED_BLK_ENTITY.add(data.tile);
 			}
 			else{
-				SeparateRenderCache.SORTED_VEH_QUEUE.add(this);
-				SeparateRenderCache.SORTED_VEH_DATA.add(data.vehicle);
-				SeparateRenderCache.SORTED_VEH_ENTITY.add(data.vehent);
+				SeparateRenderCache.add(data.vehent, data.part_category);
 			}
 		}
 

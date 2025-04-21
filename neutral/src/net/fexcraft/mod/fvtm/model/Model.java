@@ -43,4 +43,7 @@ public interface Model {
 	public void sort();
 
 	public void clearGLData();
+
+	public ModelGroupList getSeparateGroups();
+
 }

@@ -317,6 +317,11 @@ public class DefaultModel implements Model {
 		}
 	}
 
+	@Override
+	public ModelGroupList getSeparateGroups(){
+		return sorted.get(RenderOrder.SEPARATE);
+	}
+
 	private static Program parseProgram(String[] args) throws Exception {
 		return parseProgram(args, 1);
 	}

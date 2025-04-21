@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -172,7 +173,26 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new SignOffset(0, 0));
 		ModelGroup.PROGRAMS.add(SignBorder.INST[0]);
 		ModelGroup.PROGRAMS.add(SignCorner.INST[0]);
+		//
 		ModelGroup.PROGRAMS.add(new LightBeam());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_lights").setPredicate(data -> data.vehicle.getLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_front_lights").setPredicate(data -> data.vehicle.getLightsState() && !data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> (data.entity != null && ((RootVehicle)data.entity).isBraking())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_long_lights").setPredicate(data -> data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_fog_lights").setPredicate(data -> data.vehicle.getFogLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_reverse_lights").setPredicate(data -> data.vehicle.getThrottle() < -0.01).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_signal_left").setPredicate(data -> SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_signal_right").setPredicate(data -> SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_warning_lights").setPredicate(data -> SIGNAL_TOGGLE[0] && data.vehicle.getWarningLights()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights_signal_left").setPredicate(data -> {
+			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
+			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+		}).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights_signal_right").setPredicate(data -> {
+			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
+			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+		}).register());
 	}
 
 	public static void setupSignalTimer(){
@@ -569,11 +589,16 @@ public class DefaultPrograms {
 
 		public static LBRender LBR;
 		protected Predicate<ModelRenderData> predicate;
+		protected String id = "fvtm:light_beam";
 		public String swivel;
 		public V3D pos = new V3D();
 		public boolean skipped;
 
 		public LightBeam(){}
+
+		public LightBeam(String lbid){
+			id = lbid;
+		}
 
 		public LightBeam init(V3D pos, String point, Predicate<ModelRenderData> predicate){
 			this.pos = pos;
@@ -595,7 +620,7 @@ public class DefaultPrograms {
 
 		@Override
 		public String id(){
-			return "fvtm:light_beam";
+			return id;
 		}
 
 		@Override

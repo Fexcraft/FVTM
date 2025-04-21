@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.MRWrapper;
+import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -68,6 +69,7 @@ import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.model.DebugModels.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
+import static net.fexcraft.mod.fvtm.render.VehicleRenderer.renderPointSep;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 
 public class EffectRenderer {
@@ -78,31 +80,38 @@ public class EffectRenderer {
 
     @SubscribeEvent
     public void renderLights(RenderWorldLastEvent event){
-    	if(SORTED_VEH_QUEUE.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;
+    	if(VEHICLES.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double cx = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
         double cy = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * event.getPartialTicks();
         double cz = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * event.getPartialTicks();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        if(SORTED_VEH_QUEUE.size() > 0){
+        if(VEHICLES.size() > 0){
             GL11.glPushMatrix();
             GL11.glTranslated(-cx, -cy, -cz);
-            for(int i = 0; i < SORTED_VEH_QUEUE.size(); i++){
-				SeparateModelGroupList sroup = SORTED_VEH_QUEUE.get(i);
-				VehicleInstance inst = SORTED_VEH_ENTITY.get(i);
+			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
-            	RootVehicle veh = inst.entity.local();
-            	double[] vehpos = SORTED_VEH_POS.get(veh.getEntityId());
-            	if(vehpos == null) continue;
-                GL11.glPushMatrix();
-                GL11.glTranslated(vehpos[0], vehpos[1], vehpos[2]);
-                V3D vehrot = SORTED_VEH_ROT.get(veh.getEntityId());
-				GL11.glRotated(-vehrot.x, 0f, 1f, 0f);
-				GL11.glRotated(vehrot.y, 1f, 0f, 0f);
-				GL11.glRotated(vehrot.z, 0f, 0f, 1f);
-				sroup.render(RENDERDATA.set(SORTED_VEH_DATA.get(i), veh.vehicle, null, null, event.getPartialTicks()).rcs(veh.getCapability(RENDERCACHE, null)));
-            	GL11.glPopMatrix();
-            }
+				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
+				GL11.glPushMatrix();
+				GL11.glTranslated(cache.pos[0], cache.pos[1], cache.pos[2]);
+				GL11.glRotated(-cache.rot.x, 0f, 1f, 0f);
+				GL11.glRotated(cache.rot.y, 1f, 0f, 0f);
+				GL11.glRotated(cache.rot.z, 0f, 0f, 1f);
+				//
+				if(inst.cache == null) inst.cache = ((Entity)inst.entity.direct()).getCapability(Capabilities.RENDERCACHE, null);
+				Model vehmod = inst.data.getType().getModel();
+				if(vehmod != null && vehmod.getSeparateGroups() != null){
+					GL11.glPushMatrix();
+					TexUtil.bindTexture(inst.data.getCurrentTexture());
+					vehmod.getSeparateGroups().render(RENDERDATA.set(inst, event.getPartialTicks()).rc(inst.cache).sep());
+					GL11.glPopMatrix();
+				}
+				if(cache.parts.size() > 0){
+					renderPointSep(inst.point, inst, cache.parts, event.getPartialTicks());
+				}
+				//
+				GL11.glPopMatrix();
+			}
             GL11.glPopMatrix();
         }
         if(SORTED_BLK_QUEUE.size() > 0){

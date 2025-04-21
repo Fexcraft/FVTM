@@ -91,6 +91,7 @@ public class EffectRenderer {
             GL11.glTranslated(-cx, -cy, -cz);
 			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
+				if(inst.cache == null) inst.cache = ((Entity)inst.entity.direct()).getCapability(Capabilities.RENDERCACHE, null);
 				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 				GL11.glPushMatrix();
 				GL11.glTranslated(cache.pos[0], cache.pos[1], cache.pos[2]);
@@ -98,7 +99,6 @@ public class EffectRenderer {
 				GL11.glRotated(cache.rot.y, 1f, 0f, 0f);
 				GL11.glRotated(cache.rot.z, 0f, 0f, 1f);
 				//
-				if(inst.cache == null) inst.cache = ((Entity)inst.entity.direct()).getCapability(Capabilities.RENDERCACHE, null);
 				Model vehmod = inst.data.getType().getModel();
 				if(vehmod != null && vehmod.getSeparateGroups() != null){
 					GL11.glPushMatrix();

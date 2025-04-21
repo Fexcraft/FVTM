@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
-import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -178,7 +177,7 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_lights").setPredicate(data -> data.vehicle.getLightsState()).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_front_lights").setPredicate(data -> data.vehicle.getLightsState() && !data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> (data.entity != null && ((RootVehicle)data.entity).isBraking())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> (data.vehent != null && data.vehent.isBraking())).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_long_lights").setPredicate(data -> data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_fog_lights").setPredicate(data -> data.vehicle.getFogLightsState()).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_reverse_lights").setPredicate(data -> data.vehicle.getThrottle() < -0.01).register());

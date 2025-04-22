@@ -58,8 +58,8 @@ public class Packet_SPUpdate implements PacketBase<Packet_SPUpdate> {
 		yaw = buffer.readFloat();
 		pitch = buffer.readFloat();
 		roll = buffer.readFloat();
-		int index = buffer.readInt();
-		pointid = buffer.toString(buffer.readerIndex(), index, StandardCharsets.UTF_8);
+		int length = buffer.readInt();
+		pointid = buffer.readCharSequence(length, StandardCharsets.UTF_8).toString();
     }
 
 }

@@ -91,8 +91,8 @@ public class InputEvents {
 		if(inventory_open.isDown()){
 			seat.onKeyPress(KeyPress.INVENTORY, player);
 		}
-		if(toggables.isDown()){
-			seat.onKeyPress(KeyPress.TOGGABLES, player);
+		if(control.isDown()){
+			seat.onKeyPress(KeyPress.CONTROL, player);
 		}
 		if(script_ui.isDown()){
 			seat.onKeyPress(KeyPress.SCRIPTS, player);

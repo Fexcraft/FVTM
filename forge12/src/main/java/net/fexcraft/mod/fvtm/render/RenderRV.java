@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
@@ -65,8 +68,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 			GL11.glPopMatrix();
 		}
 		else{
-			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
-			DebugModels.SPHERE_RED.render(0.5f);
+			DebugUtils.renderBB(0.5f, RGB.RED.packed);
 		}
 		if(rv.vehicle.data.getParts().size() > 0){
 			VehicleRenderer.renderPoint(rv.vehicle.point, rv, rv.vehicle.data, rv.vehicle.cache, ticks);

@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -33,7 +32,6 @@ import net.fexcraft.mod.uni.packet.PacketHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.telemetry.events.WorldLoadEvent;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -48,7 +46,7 @@ public class FVTMC implements ClientModInitializer {
 
 	public static KeyMapping engine_toggle;
 	public static KeyMapping inventory_open;
-	public static KeyMapping toggables;
+	public static KeyMapping control;
 	public static KeyMapping script_ui;
 	public static KeyMapping lights_toggle;
 	public static KeyMapping trailer_toggle;
@@ -100,7 +98,7 @@ public class FVTMC implements ClientModInitializer {
 		//
 		KeyBindingHelper.registerKeyBinding(engine_toggle = new KeyMapping("key.fvtm.engine", InputConstants.Type.KEYSYM, InputConstants.KEY_I, category));
 		KeyBindingHelper.registerKeyBinding(inventory_open = new KeyMapping("key.fvtm.vehicle_inventory", InputConstants.Type.KEYSYM, InputConstants.KEY_R, category));
-		KeyBindingHelper.registerKeyBinding(toggables = new KeyMapping("key.fvtm.vehicle_toggle", InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
+		KeyBindingHelper.registerKeyBinding(control = new KeyMapping("key.fvtm.vehicle_control", InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
 		KeyBindingHelper.registerKeyBinding(script_ui = new KeyMapping("key.fvtm.vehicle_scripts", InputConstants.Type.KEYSYM, InputConstants.KEY_G, category));
 		KeyBindingHelper.registerKeyBinding(lights_toggle = new KeyMapping("key.fvtm.vehicle_lights", InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
 		KeyBindingHelper.registerKeyBinding(trailer_toggle = new KeyMapping("key.fvtm.vehicle_trailer", InputConstants.Type.KEYSYM, InputConstants.KEY_0, category));
@@ -192,8 +190,8 @@ public class FVTMC implements ClientModInitializer {
 		if(inventory_open.isDown()){
 			seat.onKeyPress(KeyPress.INVENTORY, player);
 		}
-		if(toggables.isDown()){
-			seat.onKeyPress(KeyPress.TOGGABLES, player);
+		if(control.isDown()){
+			seat.onKeyPress(KeyPress.CONTROL, player);
 		}
 		if(script_ui.isDown()){
 			seat.onKeyPress(KeyPress.SCRIPTS, player);

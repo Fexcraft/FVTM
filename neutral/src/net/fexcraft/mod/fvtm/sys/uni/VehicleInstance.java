@@ -39,9 +39,7 @@ import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
-import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
-import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 
@@ -149,7 +147,7 @@ public class VehicleInstance {
 	public boolean onKeyPress(KeyPress key, Seat seat, Passenger player, boolean state, boolean sync){
 		//TODO script key press event
 		if(!seat.driver && key.driver_only()) return false;
-		if(entity.isOnClient() && !key.toggables() && !sync){
+		if(entity.isOnClient() && !key.control() && !sync){
 			if(key.synced() && key.sync_state()){
 				Packets.send(Packet_VehKeyPressState.class, key, state, entity.getId(), player.getId());
 			}
@@ -235,11 +233,6 @@ public class VehicleInstance {
 			case INVENTORY:{
 				player.openUI(UIKeys.VEHICLE_MAIN, new V3I(entity.getId(), 0, 0));
 				return true;
-			}
-			case TOGGABLES:{
-				if(toggable_timer > 0) return true;
-				//TODO toggle action
-				toggable_timer = 10;
 			}
 			case SCRIPTS:{
 				//TODO scripts ui

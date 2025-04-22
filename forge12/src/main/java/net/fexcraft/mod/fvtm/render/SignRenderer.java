@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -20,6 +21,8 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
 public class SignRenderer {
 
@@ -38,20 +41,17 @@ public class SignRenderer {
 				GL11.glPushMatrix();
 				GL11.glTranslated(sign.vec.vec.x - cx, sign.vec.vec.y - cy, sign.vec.vec.z - cz);
 				if(sign.components.size() == 0){
-					DebugModels.CUBE_CYN.render(0.5f);
-					RGB.glColorReset();
+					DebugUtils.renderBB(0.5f, COL_CYN);
 				}
 				else{
 					if(holding || Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof SignItem){
-						DebugModels.CUBE_CYN.render(0.5f);
-						RGB.glColorReset();
+						DebugUtils.renderBB(0.5f, COL_CYN);
 					}
 					RenderCache cache = sign.getRenderCache();
 					GL11.glRotatef(sign.yaw, 0, 1, 0);
 					for(SignData scom : sign.components){
 						if(scom.getType().getModel() == null){
-							DebugModels.CUBE_CYN.render(0.25f);
-							RGB.glColorReset();
+							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
 							int i = DecorationRenderer.getBrightness(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z), j = i % 65536, k = i / 65536;

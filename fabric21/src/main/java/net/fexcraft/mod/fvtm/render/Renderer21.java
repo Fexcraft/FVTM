@@ -41,7 +41,10 @@ public class Renderer21 extends Renderer<GLObject> {
 	public static int light;
 
 	public static void setColor(RGB col){
-		float[] arr = col.toFloatArray();
+		color = col.packed;
+	}
+
+	public static void setColor(RGB col, float al){
 		color = col.packed;
 	}
 

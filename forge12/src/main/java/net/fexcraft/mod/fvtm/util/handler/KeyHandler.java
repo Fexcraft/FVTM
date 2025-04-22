@@ -22,7 +22,7 @@ public class KeyHandler {
 
     private static Minecraft minecraft;
     public static KeyBinding engineToggle, openInventory;
-    public static KeyBinding doorToggle, scriptsGUI, lightsToggle;
+    public static KeyBinding control, scriptsGUI, lightsToggle;
     public static KeyBinding trailerToggle, wagonToggle, reset, brake, pbrake;
     public static KeyBinding arrow_up, arrow_down, arrow_left, arrow_right;
     public static final String category = "keycompound.fvtm.controls";
@@ -32,7 +32,7 @@ public class KeyHandler {
         minecraft = Minecraft.getMinecraft();
         ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("key.fvtm.engine", KeyConflictContext.VEHICLE, Keyboard.KEY_LCONTROL, category));
         ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("key.fvtm.vehicle_inventory", KeyConflictContext.VEHICLE, Keyboard.KEY_R, category));
-        ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("key.fvtm.vehicle_doors", KeyConflictContext.VEHICLE, Keyboard.KEY_K, category));
+        ClientRegistry.registerKeyBinding(control = new KeyBinding("key.fvtm.vehicle_control", KeyConflictContext.VEHICLE, Keyboard.KEY_K, category));
         ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("key.fvtm.vehicle_scripts", KeyConflictContext.VEHICLE, Keyboard.KEY_G, category));
         ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("key.fvtm.vehicle_lights", KeyConflictContext.VEHICLE, Keyboard.KEY_L, category));
         ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("key.fvtm.vehicle_trailer", KeyConflictContext.VEHICLE, Keyboard.KEY_0, category));
@@ -149,8 +149,8 @@ public class KeyHandler {
             //root.resetview = false;
             seat.onKeyPress(KeyPress.INVENTORY, player);
         }
-        if(isKeyDown(KeyHandler.doorToggle.getKeyCode())){
-            seat.onKeyPress(KeyPress.TOGGABLES, player);
+        if(isKeyDown(KeyHandler.control.getKeyCode())){
+            seat.onKeyPress(KeyPress.CONTROL, player);
         }
         if(isKeyDown(KeyHandler.scriptsGUI.getKeyCode())){
             //root.resetview = false;

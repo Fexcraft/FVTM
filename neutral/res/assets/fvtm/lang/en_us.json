@@ -248,7 +248,7 @@
     "keycompound.fvtm.controls": "FVTM Controls",
     "key.fvtm.engine": "Engine Toggle",
     "key.fvtm.vehicle_inventory": "Vehicle Inventory Toggle",
-    "key.fvtm.vehicle_doors": "Door/Attribute Toggle",
+    "key.fvtm.vehicle_control": "Control Mode Toggle",
     "key.fvtm.vehicle_scripts": "Scripts Toggle",
     "key.fvtm.vehicle_lights": "Lights Toggle",
     "key.fvtm.vehicle_trailer": "A/D Trailer or Wagon Rear",
@@ -262,6 +262,8 @@
     "key.fvtm.pbrake": "(Hand/Parking) Brake",
 
 	"fvtm.seat.controls_info": "\u00A73Vehicle controls and instructions can be found in the \u00A7nwiki.",
+	"fvtm.seat.control_mode.on": "\u00A76Control mode is now \u00A7aon.",
+	"fvtm.seat.control_mode.off": "\u00A76Control mode is now \u00A7eoff.",
 	"fvtm.rail.decrease_throttle": "\u00A7cDecrease the throttle before switching direction.",
 
 	"fvtm.spawn.rail.no_system": "\u00A7cRailSystem not found on this Level.",

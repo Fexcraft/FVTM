@@ -19,6 +19,7 @@ public class FvtmRenderTypes {
 
 	protected static final HashMap<IDL, RenderType> CUTOUTS = new HashMap<>();
 	protected static final HashMap<IDL, RenderType> GLOWS = new HashMap<>();
+	protected static final HashMap<IDL, RenderType> LBS = new HashMap<>();
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
@@ -35,6 +36,14 @@ public class FvtmRenderTypes {
 			.setOverlayState(RenderStateShard.OVERLAY)
 			.createCompositeState(false);
 		return RenderType.create("fvtm:glow", 1536, false, true, RenderPipelines.EYES, state);
+	});
+	private static final Function<IDL, RenderType> LIGHTBEAM = Util.memoize(idl -> {
+		RenderType.CompositeState state = RenderType.CompositeState.builder()
+			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
+			.setLightmapState(RenderStateShard.NO_LIGHTMAP)
+			.setOverlayState(RenderStateShard.NO_OVERLAY)
+			.createCompositeState(false);
+		return RenderType.create("fvtm:lb", 1536, false, true, RenderPipelines.EYES, state);
 	});
 
 	public static void setCutout(IDL tex){
@@ -56,6 +65,17 @@ public class FvtmRenderTypes {
 		}
 		type = GLOW.apply(tex);
 		GLOWS.put(tex, type);
+		Renderer21.rentype = type;
+	}
+
+	public static void setLB(IDL tex){
+		RenderType type = LBS.get(tex);
+		if(type != null){
+			Renderer21.rentype = type;
+			return;
+		}
+		type = LIGHTBEAM.apply(tex.local());
+		LBS.put(tex, type);
 		Renderer21.rentype = type;
 	}
 

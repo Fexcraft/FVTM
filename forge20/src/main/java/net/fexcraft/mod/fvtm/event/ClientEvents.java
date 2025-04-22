@@ -27,7 +27,7 @@ public class ClientEvents {
 	//
 	public static KeyMapping engine_toggle;
 	public static KeyMapping inventory_open;
-	public static KeyMapping toggables;
+	public static KeyMapping control;
 	public static KeyMapping script_ui;
 	public static KeyMapping lights_toggle;
 	public static KeyMapping trailer_toggle;
@@ -65,7 +65,7 @@ public class ClientEvents {
 	public static void registerKeys(RegisterKeyMappingsEvent event){
 		event.register(engine_toggle = new KeyMapping("key.fvtm.engine", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_I, category));
 		event.register(inventory_open = new KeyMapping("key.fvtm.vehicle_inventory", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_R, category));
-		event.register(toggables = new KeyMapping("key.fvtm.vehicle_toggle", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
+		event.register(control = new KeyMapping("key.fvtm.vehicle_control", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
 		event.register(script_ui = new KeyMapping("key.fvtm.vehicle_scripts", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_G, category));
 		event.register(lights_toggle = new KeyMapping("key.fvtm.vehicle_lights", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
 		event.register(trailer_toggle = new KeyMapping("key.fvtm.vehicle_trailer", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_0, category));
@@ -85,17 +85,6 @@ public class ClientEvents {
 			@Override
 			public boolean isActive(){
 				return minecraft.player != null && minecraft.player.getVehicle() instanceof RootVehicle;
-			}
-
-			@Override
-			public boolean conflicts(IKeyConflictContext other){
-				return other == this;
-			}
-		},
-		TOGGABLE {
-			@Override
-			public boolean isActive(){
-				return false;//TODO
 			}
 
 			@Override

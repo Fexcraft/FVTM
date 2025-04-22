@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -70,6 +71,7 @@ import static net.fexcraft.mod.fvtm.model.DebugModels.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 import static net.fexcraft.mod.fvtm.render.VehicleRenderer.renderPointSep;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 
 public class EffectRenderer {
@@ -200,10 +202,7 @@ public class EffectRenderer {
 						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
 						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
 					}
-					GL11.glPushMatrix();
-					GL11.glScalef(value.radius, value.radius, value.radius);
-					CUBE_CYN.render(1f);
-					GL11.glPopMatrix();
+					DebugUtils.renderBB(value.radius, COL_CYN);
 					if(!point.isVehicle()) GL11.glPopMatrix();
 					else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 				}
@@ -237,10 +236,7 @@ public class EffectRenderer {
 									GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
 									GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
 								}
-								GL11.glPushMatrix();
-								GL11.glScalef(value.radius, value.radius, value.radius);
-								(red ? CUBE_RED : CUBE_CYN).render(1f);
-								GL11.glPopMatrix();
+								DebugUtils.renderBB(value.radius, red ? COL_RED : COL_CYN);
 								if(!point.isVehicle()) GL11.glPopMatrix();
 								else GL11.glTranslated(-pes.x, -pes.y, -pes.z);
 							}
@@ -253,12 +249,7 @@ public class EffectRenderer {
 			if(tool > -1){
 				red = data.getType().getImpactWrenchLevel() > tool ;
 				for(WheelSlot slot : data.getWheelSlots().values()){
-					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
-					GL11.glPushMatrix();
-					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
-					(red ? CUBE_RED : CUBE_CYN).render(1f);
-					GL11.glPopMatrix();
-					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
+					DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : COL_CYN);
 				}
 			}
 			part = isWheelOrTire();
@@ -277,17 +268,12 @@ public class EffectRenderer {
 						if(!red) red = data.hasPart(entry.getKey() + ":tire");
 					}
 					slot = entry.getValue();
-					GL11.glTranslated(slot.position.x, slot.position.y, slot.position.z);
-					GL11.glPushMatrix();
-					GL11.glScalef(slot.max_radius, slot.max_radius, slot.max_radius);
-					(red ? CUBE_RED : green ? CUBE_GRN : CUBE_CYN).render(1f);
-					GL11.glPopMatrix();
-					GL11.glTranslated(-slot.position.x, -slot.position.y, -slot.position.z);
+					DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 				}
 			}
 			//
 			tool = isToolbox();
-			if(tool > 0) CUBE_ORG.render(1f);
+			if(tool > 0) DebugUtils.renderBB(1, COL_ORG);
 			if(tool > -1 && tool < 2){
 				V3D pos;
 				for(Entry<String, PartData> entry : data.getParts().entrySet()){
@@ -306,16 +292,7 @@ public class EffectRenderer {
 						GL11.glRotatef(point.getPivot().deg_pitch(), 1, 0, 0);
 						GL11.glRotatef(point.getPivot().deg_roll(), 0, 0, 1);
 					}
-					GL11.glPushMatrix();
-					if(red){
-						GL11.glScalef(.25f, .25f, .25f);
-						CUBE_YLW.render(1f);
-					}
-					else{
-						GL11.glScalef(.125f, .125f, .125f);
-						CUBE_RED.render(1f);
-					}
-					GL11.glPopMatrix();
+					DebugUtils.renderBB(red ? 0.25f : 0.125f, red ? COL_YLW : COL_RED);
 					if(!point.isVehicle()) GL11.glPopMatrix();
 					else GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 				}
@@ -364,10 +341,7 @@ public class EffectRenderer {
 				V3D temp = point.getRelativeVector(part == null ? box.pos : box.pos.add(part.getInstalledPos()));
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
             	scal = box.size;
-            	GL11.glPushMatrix();
-            	GL11.glScalef(scal, scal, scal);
-				CUBE_ATTR.render(2f);
-            	GL11.glPopMatrix();
+				DebugUtils.renderBB(scal, COL_GRN);
 				if(Command.TOGG_LABEL){
 					boolean depth = temp.add(vehicle.posX, vehicle.posY, vehicle.posZ).dis(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ) < 4;
 					postMeshCalls();
@@ -442,15 +416,12 @@ public class EffectRenderer {
 				GL11.glRotatef(seat.point.getPivot().deg_pitch(), 1, 0, 0);
 				GL11.glRotatef(seat.point.getPivot().deg_roll(), 0, 0, 1);
 			}
-			(seat.passenger() != null ? SEAT_CUBE_OCCUPIED : seat.seat.sitting ? SEAT_CUBE_SITTING : SEAT_CUBE_STANDING).render(0.5f * seat.seat.scale());
+			DebugUtils.renderBB(seat.seat.scale() * .5f, seat.passenger() == null ? seat.seat.sitting ? COL_ORG : COL_YLW : COL_BLU);
 			GL11.glPopMatrix();
 		}
 		for(int i = 0; i < vehicle.data.getVehInvKeys().size(); i++){
 			FvtmInv inv = vehicle.data.getVehInventories().get(i);
-			GL11.glPushMatrix();
-			GLUtils112.translate(vehicle.pivot().get_vector(inv.pos));
-			CUBE_YLW.render(inv.scale);
-			GL11.glPopMatrix();
+			DebugUtils.renderBB(vehicle.pivot().get_vector(inv.pos), inv.scale, COL_YLW);
 		}
 		GL11.glPopMatrix();
 		postMeshCalls();

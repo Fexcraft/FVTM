@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -19,6 +20,7 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 
 public class DecorationRenderer {
 
@@ -43,8 +45,7 @@ public class DecorationRenderer {
 				RenderCache cache = ent.getCapability(Capabilities.RENDERCACHE, null);
 				for(DecorationData data : deco.decos){
 					if(data.getType().getModel() == null){
-						DebugModels.CUBE_CYN.render(0.25f);
-						RGB.glColorReset();
+						DebugUtils.renderBB(0.25f, COL_CYN);
 					}
 					else{
 						int i = getBrightness(ent.posX, ent.posY, ent.posZ), j = i % 65536, k = i / 65536;
@@ -68,7 +69,7 @@ public class DecorationRenderer {
 
 	private static void rencube(){
 		GL11.glTranslatef(0, 0.25f, 0);
-		DebugModels.CUBE_CYN.render(0.5f);
+		DebugUtils.renderBB(0.5f, COL_CYN);
 		GL11.glTranslatef(0, -0.25f, 0);
 		RGB.glColorReset();
 	}

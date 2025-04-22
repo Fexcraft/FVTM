@@ -258,6 +258,8 @@ handler.deinstall.fvtm.bogie.success=Part uninstalled and position reset.
 
 # Entities
 fvtm.seat.controls_info=&3Vehicle controls and instructions can be found in the &nwiki.
+fvtm.seat.control_mode.on=&6Control mode is now &aon.
+fvtm.seat.control_mode.off=&6Control mode is now &eoff.
 fvtm.rail.decrease_throttle=&cDecrease the throttle before switching direction.
 
 # Entity Spawn
@@ -304,7 +306,7 @@ fvtm.recipes.blocks=FVTM Blocks
 keycompound.fvtm.controls=FVTM Controls
 key.fvtm.engine=Engine Toggle
 key.fvtm.vehicle_inventory=Vehicle Inventory Toggle
-key.fvtm.vehicle_doors=Door/Attribute Toggle
+key.fvtm.vehicle_control=Control Mode Toggle
 key.fvtm.vehicle_scripts=Scripts Toggle
 key.fvtm.vehicle_lights=Lights Toggle
 key.fvtm.vehicle_trailer=A/D Trailer or Wagon Rear

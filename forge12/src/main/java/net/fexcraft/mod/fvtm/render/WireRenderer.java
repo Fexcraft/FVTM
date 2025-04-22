@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
@@ -39,10 +40,9 @@ import java.util.Map.Entry;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
-import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_CYN;
-import static net.fexcraft.mod.fvtm.model.DebugModels.CUBE_ORG;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 
 public class WireRenderer {
     
@@ -71,7 +71,6 @@ public class WireRenderer {
 	private static boolean holding_wire;
 	private static boolean holding_slack;
 	private static V3D cubepos;
-	private static float size;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(DISABLE_WIRES) return;
@@ -91,9 +90,7 @@ public class WireRenderer {
                 	if(Command.OTHER || holding_wire){// || relay.wires.isEmpty()){
 						GL11.glPushMatrix();
 						GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
-						size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
-						GL11.glScalef(size, size, size);
-						CUBE_CYN.render(1f);
+						DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 						GL11.glPopMatrix();
                 	}
 					if((Command.OTHER || holding_slack) && relay.wires.size() > 0){
@@ -102,9 +99,7 @@ public class WireRenderer {
 							cubepos = wire.getVectorPosition(wire.length * 0.5, false);
 							GL11.glPushMatrix();
 							GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
-							size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
-							GL11.glScalef(size, size, size);
-							CUBE_ORG.render(1f);
+							DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 							GL11.glPopMatrix();
 						}
 					}

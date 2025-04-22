@@ -266,7 +266,7 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void spawnRoadMarker(WorldW world, QV3D vector, UUID nid){
-		RoadMarker marker = (RoadMarker)ROAD_MARKER_ENTITY.create(world.local(), EntitySpawnReason.SPAWN_ITEM_USE);
+		RoadMarker marker = ROAD_MARKER_ENTITY.create(world.local(), EntitySpawnReason.SPAWN_ITEM_USE);
 		marker.queueid = nid;
 		marker.position = vector;
 		marker.setPos(vector.vec.x, vector.vec.y + 1, vector.vec.z);
@@ -275,11 +275,16 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void spawnRailMarker(WorldW world, QV3D vector, UUID nid){
-		RailMarker marker = (RailMarker)RAIL_MARKER_ENTITY.create(world.local(), EntitySpawnReason.SPAWN_ITEM_USE);
+		RailMarker marker = RAIL_MARKER_ENTITY.create(world.local(), EntitySpawnReason.SPAWN_ITEM_USE);
 		marker.queueid = nid;
 		marker.position = vector;
 		marker.setPos(vector.vec.x, vector.vec.y, vector.vec.z);
 		((Level)world.direct()).addFreshEntity(marker);
+	}
+
+	@Override
+	public void linkItemContainer(ItemWrapper item){
+
 	}
 
 }

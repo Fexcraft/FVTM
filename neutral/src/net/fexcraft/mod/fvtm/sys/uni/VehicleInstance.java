@@ -647,7 +647,7 @@ public class VehicleInstance {
 		serv_rot = packet.rot;
 		serv_steer = packet.steering;
 		throttle = packet.throttle;
-		data.getAttribute("fuel_stored").set(packet.fuel);
+		if(data != null) data.getAttribute("fuel_stored").set(packet.fuel);
 		serv_sync = Config.VEHICLE_SYNC_RATE;
 	}
 

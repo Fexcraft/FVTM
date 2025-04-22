@@ -23,6 +23,7 @@ public class SeatInstance {
 	public final SwivelPoint point;
 	public final Seat seat;
 	private EntityW passenger;
+	public boolean controlmode;
 	//
 	public Pivot slook;
 	public Pivot pslook;
@@ -118,17 +119,26 @@ public class SeatInstance {
 
 	public boolean onKeyPress(KeyPress key, Passenger player, boolean state){
 		if(key == null) return false;
+		if(key.control() && seat.driver){
+			if(clicktimer > 0) return false;
+			controlmode = !controlmode;
+			player.bar("fvtm.seat.control_mode." + (controlmode ? "on" : "off"));
+			clicktimer += 10;
+			return true;
+		}
 		else if(key.toggable_input() && root.entity.isOnClient()){
 			if(clicktimer > 0) return false;
 			boolean bool = InteractionHandler.handle(key, root.data, root.iref(), this, player, StackWrapper.EMPTY);
 			clicktimer += 10;
 			return bool;
 		}
-		else if(!seat.driver && root.entity.isOnClient()){
+		else if((controlmode || !seat.driver) && root.entity.isOnClient()){
 			if(attrKeyPress(key, player)) return true;
+			if(controlmode) return true;
 		}
 		else if(key.dismount() && root.entity.isOnClient() && passenger != null){
 			passenger.dismount();
+			return true;
 		}
 		return root.onKeyPress(key, seat, player, state, false);
 	}

@@ -119,15 +119,12 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		pose.pushPose();
 		float scale;
 		for(SeatInstance seat : vehicle.seats){
-			pose.pushPose();
 			scale = seat.seat.scale() * 0.5f;
 			V3D pos = seat.seat.pos;
 			if(!seat.point.isVehicle()){
 				pos = seat.point.getRelativeVector(pos);
 			}
-			pose.translate(pos.x, pos.y, pos.z);
-			DebugUtils.renderBB(scale, COL_YLW);
-			pose.popPose();
+			DebugUtils.renderBB(pos, scale, COL_YLW);
 		}
 		Renderer120.resetColor();
 		pose.popPose();

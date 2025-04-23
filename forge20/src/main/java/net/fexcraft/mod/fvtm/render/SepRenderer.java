@@ -1,48 +1,23 @@
 package net.fexcraft.mod.fvtm.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
-import net.fexcraft.mod.fvtm.model.content.WireModel;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
-import net.fexcraft.mod.fvtm.sys.wire.Wire;
-import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
-import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
-import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
-import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPointSep;
 import static net.fexcraft.mod.fvtm.render.Renderer120.pose;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.CUBE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

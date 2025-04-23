@@ -24,7 +24,6 @@ public class DebugUtils {
 	public static Vec3f YLWCOLOR = new Vec3f(1, 1, 0);
 	public static Vec3f GRYCOLOR = new Vec3f(.8, .8, .8);
 	public static Vec3f ORGCOLOR = new Vec3f(.92, .52, 0);
-	public static Vec3f SEATCOLOR = new Vec3f(1, 1, 0);
 	//
 	public static int COL_RED = 0xff0000;
 	public static int COL_GRN = 0x00ff00;
@@ -35,13 +34,13 @@ public class DebugUtils {
 	public static int COL_ORG = 0xeb8500;
 	//
 	public static Polyhedron SPHERE = new Polyhedron();
-	public static Polyhedron CUBE = new Polyhedron();
+	//public static Polyhedron CUBE = new Polyhedron();
 	public static Polyhedron LLBB0 = new Polyhedron();
 	public static Polyhedron LLBB1 = new Polyhedron();
 	public static Polyhedron LLBB2 = new Polyhedron();
 	public static Polyhedron JUNC_CORE = new Polyhedron();
 	static{
-		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
+		/*CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 0, 1) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 0), new Vertex(1, 0, 1) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 1), new Vertex(1, 0, 1) }));
@@ -53,7 +52,7 @@ public class DebugUtils {
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 0), new Vertex(1, 1, 0) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 1), new Vertex(0, 1, 1) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 1), new Vertex(1, 1, 1) }));
-		CUBE.pos(-.5f, -.5f, -.5f);
+		CUBE.pos(-.5f, -.5f, -.5f);*/
 		LLBB0.importMRT(new ModelRendererTurbo(LLBB0, 0, 0, 1, 1).addBox(-8, -0.1f, -0.1f, 16, 0.2f, 0.2f), false, sixteenth);
 		LLBB1.importMRT(new ModelRendererTurbo(LLBB1, 0, 0, 1, 1).addBox(-0.1f, -8, -0.1f, 0.2f, 16, 0.2f), false, sixteenth);
 		LLBB2.importMRT(new ModelRendererTurbo(LLBB2, 0, 0, 1, 1).addBox(-0.1f, -0.1f, -8, 0.2f, 0.2f, 16), false, sixteenth);

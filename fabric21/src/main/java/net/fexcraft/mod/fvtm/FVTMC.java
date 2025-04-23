@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -22,13 +23,16 @@ import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.packet.PacketHandler;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -129,6 +133,12 @@ public class FVTMC implements ClientModInitializer {
 				return InteractionResult.SUCCESS;
 			}
 			return InteractionResult.PASS;
+		});
+		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+			SystemManager.onChunkLoad(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
+		});
+		ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
+			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
 		});
 		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
 	}

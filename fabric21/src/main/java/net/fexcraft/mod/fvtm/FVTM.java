@@ -213,12 +213,6 @@ public class FVTM implements ModInitializer {
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
 			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
 		});
-		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
-			SystemManager.onChunkLoad(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
-		});
-		ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
-			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
-		});
 		ServerWorldEvents.LOAD.register((server, level) -> {
 			SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(level));
 			SystemManager.onWorldLoad(WrapperHolder.getWorld(level));

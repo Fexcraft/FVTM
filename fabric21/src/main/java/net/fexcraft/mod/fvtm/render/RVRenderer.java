@@ -131,17 +131,12 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		FvtmRenderTypes.setLines();
 		float scale;
 		for(SeatInstance seat : vehicle.seats){
-			pose.pushPose();
 			scale = seat.seat.scale() * 0.5f;
 			V3D pos = seat.seat.pos;
 			if(!seat.point.isVehicle()){
 				pos = seat.point.getRelativeVector(pos);
 			}
-			pose.translate(pos.x, pos.y, pos.z);
-			Renderer21.pose.scale(scale, scale, scale);
-			Renderer21.setColor(SEATCOLOR);
-			CUBE.render();
-			pose.popPose();
+			DebugUtils.renderBB(pos, scale, COL_YLW);
 		}
 		Renderer21.resetColor();
 		pose.popPose();
@@ -199,11 +194,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 								rotateRad(point.getPivot().pitch(), AX);
 								rotateRad(point.getPivot().roll(), AZ);
 							}
-							pose.pushPose();
-							pose.scale(value.radius, value.radius, value.radius);
-							Renderer21.setColor(red ? REDCOLOR : CYNCOLOR);
-							CUBE.render();
-							pose.popPose();
+							DebugUtils.renderBB(value.radius, red ? COL_RED : COL_CYN);
 							if(!point.isVehicle()) pose.popPose();
 							else pose.translate(-pes.x, -pes.y, -pes.z);
 						}
@@ -217,12 +208,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		if(tool > -1){
 			red = data.getType().getImpactWrenchLevel() > tool ;
 			for(WheelSlot slot : data.getWheelSlots().values()){
-				pose.pushPose();
-				pose.translate(slot.position.x, slot.position.y, slot.position.z);
-				pose.scale(slot.max_radius, slot.max_radius, slot.max_radius);
-				Renderer21.setColor(red ? REDCOLOR : CYNCOLOR);
-				CUBE.render();
-				pose.popPose();
+				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : COL_CYN);
 			}
 		}
 		part = isWheelOrTire();
@@ -241,19 +227,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 					if(!red) red = data.hasPart(entry.getKey() + ":tire");
 				}
 				slot = entry.getValue();
-				pose.pushPose();
-				pose.translate(slot.position.x, slot.position.y, slot.position.z);
-				pose.scale(slot.max_radius, slot.max_radius, slot.max_radius);
-				Renderer21.setColor(red ? REDCOLOR : green ? GRNCOLOR : CYNCOLOR);
-				CUBE.render();
-				pose.popPose();
+				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 			}
 		}
 		//
 		tool = isToolbox();
 		if(tool > 0){
-			Renderer21.setColor(ORGCOLOR);
-			CUBE.render();
+			DebugUtils.renderBB(1, COL_ORG);
 		}
 		if(tool > -1 && tool < 2){
 			V3D pos;
@@ -273,17 +253,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 					rotateDeg(pose, point.getPivot().deg_pitch(), AX);
 					rotateDeg(pose, point.getPivot().deg_roll(), AZ);
 				}
-				pose.pushPose();
-				if(red){
-					pose.scale(.25f, .25f, .25f);
-					Renderer21.setColor(YLWCOLOR);
-				}
-				else{
-					pose.scale(.125f, .125f, .125f);
-					Renderer21.setColor(REDCOLOR);
-				}
-				CUBE.render();
-				pose.popPose();
+				DebugUtils.renderBB(red ? .25f : .125f, red ? COL_RED : COL_YLW);
 				if(!point.isVehicle()) pose.popPose();
 				else pose.translate(-pos.x, -pos.y, -pos.z);
 			}

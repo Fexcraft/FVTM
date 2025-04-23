@@ -11,6 +11,7 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.model.GLObject;
+import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -163,6 +164,16 @@ public class Renderer21 extends Renderer<GLObject> {
 	@Override
 	public void scale(double x, double y, double z){
 		pose.scale((float)x, (float)y, (float)z);
+	}
+
+	@Override
+	public void bind(IDL tex){
+		FvtmRenderTypes.setCutout(tex);
+	}
+
+	@Override
+	public void color(int rgb){
+		color = rgb;
 	}
 
 	public static void set(PoseStack ps, MultiBufferSource mbs, int lgt, int ol){

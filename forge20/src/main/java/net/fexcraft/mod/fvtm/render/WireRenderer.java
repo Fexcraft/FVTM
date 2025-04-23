@@ -25,7 +25,8 @@ import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.CUBE;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -41,8 +42,6 @@ public class WireRenderer {
 	private static ItemStack held;
 	private static boolean holding_wire;
 	private static boolean holding_slack;
-	private static V3D cubepos;
-	private static float size;
 
 	@SubscribeEvent
 	public static void renderWires(RenderLevelStageEvent event){
@@ -69,29 +68,13 @@ public class WireRenderer {
 					Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check
 					if(DebugUtils.ACTIVE || holding_wire){
-						FvtmRenderTypes.setLines();
-						pose.pushPose();
-						pose.translate(relay.pos.x, relay.pos.y, relay.pos.z);
-						size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
-						pose.scale(size, size, size);
-						Renderer120.setColor(CYAN);
-						CUBE.render();
-						Renderer120.resetColor();
-						pose.popPose();
+						DebugUtils.renderBB(relay.pos, holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 					}
 					if((DebugUtils.ACTIVE || holding_slack) && relay.wires.size() > 0){
 						for(Wire wire : relay.wires){
 							if(wire.copy) continue;
-							FvtmRenderTypes.setLines();
-							cubepos = wire.getVectorPosition(wire.length * 0.5, false);
-							pose.pushPose();
-							pose.translate(cubepos.x, cubepos.y, cubepos.z);
-							size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f;
-							pose.scale(size, size, size);
-							Renderer120.setColor(ORG);
-							CUBE.render();
-							Renderer120.resetColor();
-							pose.popPose();
+							DebugUtils.renderBB(wire.getVectorPosition(wire.length * 0.5, false),
+								holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f,COL_ORG);
 						}
 					}
 					renderWires(pose, relay);

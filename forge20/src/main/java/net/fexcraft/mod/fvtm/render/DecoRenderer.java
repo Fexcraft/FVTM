@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
@@ -55,12 +56,8 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity> {
 			pose.popPose();
 		}
 		if(deco.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
-			FvtmRenderTypes.setLines();
-			Renderer120.setColor(CYNCOLOR);
 			pose.translate(0, 0.125f, 0.);
-			pose.scale(0.25f, 0.25f, 0.25f);
-			CUBE.render();
-			Renderer120.resetColor();
+			DebugUtils.renderBB(0.25f, COL_CYN);
 		}
 		pose.popPose();
 	}

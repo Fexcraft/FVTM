@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -21,14 +22,14 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
 import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.CUBE;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -62,35 +63,17 @@ public class SignRenderer {
 				pose.pushPose();
 				pose.translate(sign.vec.vec.x, sign.vec.vec.y, sign.vec.vec.z);
 				if(sign.components.size() == 0){
-					FvtmRenderTypes.setLines();
-					Renderer120.setColor(ORG);
-					pose.pushPose();
-					pose.scale(0.5f, 0.5f, 0.5f);
-					CUBE.render();
-					pose.popPose();
-					Renderer120.resetColor();
+					DebugUtils.renderBB(0.5f, COL_ORG);
 				}
 				else{
 					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SignItem){
-						FvtmRenderTypes.setLines();
-						pose.pushPose();
-						Renderer120.setColor(ORG);
-						pose.scale(0.5f, 0.5f, 0.5f);
-						CUBE.render();
-						pose.popPose();
-						Renderer120.resetColor();
+						DebugUtils.renderBB(0.5f, COL_ORG);
 					}
 					RenderCache cache = sign.getRenderCache();
 					pose.mulPoseMatrix(new Matrix4f().rotate(sign.yaw, AY));
 					for(SignData scom : sign.components){
 						if(scom.getType().getModel() == null){
-							FvtmRenderTypes.setLines();
-							Renderer120.setColor(ORG);
-							pose.pushPose();
-							pose.scale(0.5f, 0.5f, 0.5f);
-							CUBE.render();
-							pose.popPose();
-							Renderer120.resetColor();
+							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
 							Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;

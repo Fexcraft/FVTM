@@ -37,21 +37,21 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.PARTS;
 public class VehicleData extends ContentData<Vehicle, VehicleData> implements Colorable, Soundable, TextureUser {
 
 	public HashMap<String, ArrayList<Entry<String, PartData>>> sorted_parts = new HashMap<>();
-	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
-	protected TreeMap<String, PartData> parts = new TreeMap<>();
-	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
-	protected TreeMap<String, V3D> wheelpos = new TreeMap<>();
-	protected TreeMap<String, Sound> sounds = new TreeMap<>();
-	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
-	protected TreeMap<String, PartSlots> partproviders = new TreeMap<>();
-	protected TreeMap<String, InteractZone> interact_zones = new TreeMap<>();
+	protected Map<String, Attribute<?>> attributes = new LinkedHashMap<>();
+	protected Map<String, PartData> parts = new LinkedHashMap<>();
+	protected Map<String, RGB> channels = new LinkedHashMap<>();
+	protected Map<String, WheelSlot> wheels = new LinkedHashMap<>();
+	protected Map<String, V3D> wheelpos = new LinkedHashMap<>();
+	protected Map<String, Sound> sounds = new LinkedHashMap<>();
+	protected Map<String, SwivelPoint> rotpoints = new LinkedHashMap<>();
+	protected Map<String, PartSlots> partproviders = new LinkedHashMap<>();
+	protected Map<String, InteractZone> interact_zones = new LinkedHashMap<>();
 	protected ArrayList<String> vehinvkeys = new ArrayList<>();
 	protected ArrayList<FvtmInv> vehinvs = new ArrayList<>();
 	//protected ArrayList<VehicleScript> scripts = new ArrayList<>();
 	protected ArrayList<String> inventories = new ArrayList<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
-	protected TreeMap<String, V3D> conns = new TreeMap<>();
+	protected Map<String, V3D> conns = new LinkedHashMap<>();
 	protected SwivelPoint rootpoint;
 	protected Textureable texture;
 	protected Lockable lock;
@@ -386,7 +386,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return (Attribute<VAL>)attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute<?>> getAttributes(){
+	public Map<String, Attribute<?>> getAttributes(){
 		return attributes;
 	}
 
@@ -558,7 +558,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	}
 
 	@Override
-	public TreeMap<String, RGB> getColorChannels(){
+	public Map<String, RGB> getColorChannels(){
 		return channels;
 	}
 
@@ -568,11 +568,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return stack;
 	}
 	
-	public TreeMap<String, WheelSlot> getWheelSlots(){
+	public Map<String, WheelSlot> getWheelSlots(){
 		return wheels;
 	}
 	
-	public TreeMap<String, V3D> getWheelPositions(){
+	public Map<String, V3D> getWheelPositions(){
 		return wheelpos;
 	}
 
@@ -688,7 +688,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		at.playSound(sound.event, sound.volume, sound.pitch);
 	}
 	
-	public TreeMap<String, SwivelPoint> getRotationPoints(){
+	public Map<String, SwivelPoint> getRotationPoints(){
 		return rotpoints;
 	}
 	
@@ -730,7 +730,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return attributes.values().stream().filter(attr -> attr.group != null && attr.group.equals(group)).collect(Collectors.toList());
 	}
 
-	public TreeMap<String, PartSlots> getPartSlotProviders(){
+	public Map<String, PartSlots> getPartSlotProviders(){
 		return partproviders;
 	}
 
@@ -801,11 +801,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		return V3D.NULL;
 	}
 
-	public TreeMap<String, V3D> getConnectors(){
+	public Map<String, V3D> getConnectors(){
 		return conns;
 	}
 
-	public TreeMap<String, InteractZone> getInteractZones(){
+	public Map<String, InteractZone> getInteractZones(){
 		return interact_zones;
 	}
 

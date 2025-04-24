@@ -34,11 +34,6 @@ public class VehicleAttributesCon extends ContainerInterface {
 		if(com.getString("cargo").equals("toggle")){
 			AttributeUtil.processToggle(vehicle, com, (Passenger)player.entity);
 		}
-		else if(com.getString("cargo").equals("editor")){
-			int idx = vehicle.data.getAttributeIndex(vehicle.data.getAttribute(com.getString("attr")));
-			if(idx < 0) return;
-			player.entity.openUI(UIKeys.VEHICLE_ATTR_EDITOR, pos.add(0, idx, 0));
-		}
 	}
 
 }

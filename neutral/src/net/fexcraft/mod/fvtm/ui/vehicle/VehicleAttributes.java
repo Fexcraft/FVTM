@@ -53,6 +53,7 @@ public class VehicleAttributes extends UserInterface {
 		texts.get("page").transval("ui.fvtm.vehicle_attributes.page", page + 1 + "/" + max, sel + 1 + "/" + attributes.size());
 		if(sel >= attributes.size()){
 			for(int i = 0; i < 4; i++) texts.get("info_" + i).value("");
+			return;
 		}
 		Attribute<?> attr = attributes.get(sel);
 		texts.get("info_0").transval("ui.fvtm.vehicle_attributes.info_id", attr.id);

@@ -78,6 +78,7 @@ public class VehicleAttributes extends UserInterface {
 			case "list":{
 				attributes.clear();
 				veh.data.getAttributes().values().forEach(attr -> attributes.add(attr));
+				sel = 0;
 				updatePage(0);
 				return true;
 			}
@@ -86,6 +87,7 @@ public class VehicleAttributes extends UserInterface {
 				veh.data.getAttributes().values().forEach(attr -> {
 					if(seat != null && attr.access.contains(seat.seat.name)) attributes.add(attr);
 				});
+				sel = 0;
 				updatePage(0);
 				return true;
 			}
@@ -94,6 +96,7 @@ public class VehicleAttributes extends UserInterface {
 				veh.data.getAttributes().values().forEach(attr -> {
 					if(attr.external) attributes.add(attr);
 				});
+				sel = 0;
 				updatePage(0);
 				return true;
 			}
@@ -116,7 +119,7 @@ public class VehicleAttributes extends UserInterface {
 				com.set("cargo", "toggle");
 				com.set("attr", attr.id);
 				com.set("reset", true);
-				if(attr.valuetype.isBoolean()) com.set("bool", (boolean)attr.initial);
+				if(attr.valuetype.isBoolean()) com.set("bool", (Boolean)attr.initial);
 				container.SEND_TO_SERVER.accept(com);
 				return true;
 			}
@@ -163,7 +166,7 @@ public class VehicleAttributes extends UserInterface {
 				if(attr.valuetype.isTristate()){
 					if(field.text().equals("null")){
 						com.set("reset", true);
-						com.set("bool", (boolean)attr.initial);
+						com.set("bool", (Boolean)attr.initial);
 					}
 					else com.set("bool", Boolean.parseBoolean(field.text()));
 				}
@@ -184,17 +187,21 @@ public class VehicleAttributes extends UserInterface {
 	}
 
 	private void updatePage(int by){
-		/*if(by != 0){
-			scroll += by;
-			if(scroll < 0) scroll = 0;
-			if(scroll + 14 >= attributes.size()) scroll = attributes.size() - 14;
+		int max = attributes.size() / 48 + 1;
+		if(by != 0){
+			page += by;
+			if(page < 0) page = 0;
 		}
-		UIText text = texts.get("scroll");
-		text.value("ui.fvtm.vehicle_attributes.scroll");
-		text.translate();
-		int m = scroll + 14;
-		if(m > attributes.size()) m = attributes.size();
-		text.value(text.value() + " " + (scroll + 1) + "-" + m + "/" + attributes.size());*/
+		texts.get("page").transval("ui.fvtm.vehicle_attributes.page", page + 1 + "/" + max, sel + 1 + "/" + attributes.size());
+		if(sel >= attributes.size()){
+			for(int i = 0; i < 4; i++) texts.get("info_" + i).value("");
+		}
+		Attribute<?> attr = attributes.get(sel);
+		texts.get("info_0").transval("ui.fvtm.vehicle_attributes.info_id", attr.id);
+		texts.get("info_1").transval("ui.fvtm.vehicle_attributes.info_status", attr.editable, attr.external);
+		texts.get("info_2").transval("ui.fvtm.vehicle_attributes.info_origin", attr.origin == null ? "vehicle" : attr.origin);
+		texts.get("info_3").transval("ui.fvtm.vehicle_attributes.info_value", attr.value, attr.initial);
+		fields.get("editor").text(attr.asString());
 	}
 
 	@Override

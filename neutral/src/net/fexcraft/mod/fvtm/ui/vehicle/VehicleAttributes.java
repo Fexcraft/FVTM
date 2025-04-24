@@ -10,6 +10,7 @@ import net.fexcraft.mod.uni.ui.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.fexcraft.mod.uni.ui.ContainerInterface.TRANSFORMAT;
 import static net.fexcraft.mod.uni.ui.ContainerInterface.TRANSLATOR;
 
 /**
@@ -18,6 +19,7 @@ import static net.fexcraft.mod.uni.ui.ContainerInterface.TRANSLATOR;
 public class VehicleAttributes extends UserInterface {
 
 	private ArrayList<Attribute<?>> attributes = new ArrayList<>();
+	private static final int ROWS = 4, COLS = 12;
 	private VehicleInstance veh;
 	private SeatInstance seat;
 	private int lastveh;
@@ -38,30 +40,40 @@ public class VehicleAttributes extends UserInterface {
 		});
 		if(lastveh != con.pos.x) page = 0;
 		lastveh = con.pos.x;
-		sel = 0;
-		updatePage(0);
+	}
+
+	@Override
+	public void init(){
+		fields.get("editor").text(attributes.size() > 0 ? attributes.get(0).asString() : "");
 	}
 
 	@Override
 	public void predraw(float ticks, int mx, int my){
-		/*UIText temp = null;
-		for(int k = 0; k < 14; k++){
-			int l = scroll + k;
-			if(l < 0) break;
-			if(l >= attributes.size()){
-				texts.get("attr_" + k).visible(false);
-				buttons.get("toggle_" + k).visible(false);
-				buttons.get("edit_" + k).visible(false);
-			}
-			else{
+		int max = attributes.size() / 48 + 1;
+		texts.get("page").transval("ui.fvtm.vehicle_attributes.page", page + 1 + "/" + max, sel + 1 + "/" + attributes.size());
+		if(sel >= attributes.size()){
+			for(int i = 0; i < 4; i++) texts.get("info_" + i).value("");
+		}
+		Attribute<?> attr = attributes.get(sel);
+		texts.get("info_0").transval("ui.fvtm.vehicle_attributes.info_id", attr.id);
+		texts.get("info_1").transval("ui.fvtm.vehicle_attributes.info_status", attr.editable, attr.external);
+		texts.get("info_2").transval("ui.fvtm.vehicle_attributes.info_origin", attr.origin == null ? "vehicle" : attr.origin);
+		texts.get("info_3").transval("ui.fvtm.vehicle_attributes.info_value", attr.value, attr.initial);
+	}
 
-				temp = texts.get("attr_" + k);
-				temp.visible(true);
-				temp.value(attributes.get(l).id);
-				buttons.get("toggle_" + k).visible(attributes.get(l).valuetype.isTristate());
-				buttons.get("edit_" + k).visible(true);
+	@Override
+	public void postdraw(float ticks, int mx, int my){
+		drawer.bind(tabs.get("main").texture);
+		drawer.draw(gLeft + 7 + (sel % COLS) * 18, gTop + 7 + (sel / COLS) * 18, 0, 238, 18, 18);
+		int idx;
+		for(int row = 0; row < ROWS; row++){
+			for(int col = 0; col < COLS; col++){
+				idx = col + row * COLS;
+				if(idx >= attributes.size()) continue;
+				drawer.bind(attributes.get(idx).getCurrentIcon());
+				drawer.drawFull(gLeft + 8 + col * 18, gTop + 8 + row * 18,16, 16);
 			}
-		}*/
+		}
 	}
 
 	@Override
@@ -78,8 +90,8 @@ public class VehicleAttributes extends UserInterface {
 			case "list":{
 				attributes.clear();
 				veh.data.getAttributes().values().forEach(attr -> attributes.add(attr));
+				fields.get("editor").text(attributes.size() > 0 ? attributes.get(0).asString() : "");
 				sel = 0;
-				updatePage(0);
 				return true;
 			}
 			case "seat":{
@@ -87,8 +99,8 @@ public class VehicleAttributes extends UserInterface {
 				veh.data.getAttributes().values().forEach(attr -> {
 					if(seat != null && attr.access.contains(seat.seat.name)) attributes.add(attr);
 				});
+				fields.get("editor").text(attributes.size() > 0 ? attributes.get(0).asString() : "");
 				sel = 0;
-				updatePage(0);
 				return true;
 			}
 			case "ext":{
@@ -96,8 +108,8 @@ public class VehicleAttributes extends UserInterface {
 				veh.data.getAttributes().values().forEach(attr -> {
 					if(attr.external) attributes.add(attr);
 				});
+				fields.get("editor").text(attributes.size() > 0 ? attributes.get(0).asString() : "");
 				sel = 0;
-				updatePage(0);
 				return true;
 			}
 			case "toggle":{
@@ -182,26 +194,24 @@ public class VehicleAttributes extends UserInterface {
 				container.SEND_TO_SERVER.accept(com);
 				return true;
 			}
+			case "attrs":{
+				int col = (x - gLeft - 7) / 18;
+				int row = (y - gTop - 7) / 18;
+				int idx = col + row * COLS;
+				if(idx < 0 || idx >= attributes.size()) return true;
+				sel = idx;
+				fields.get("editor").text(attributes.get(idx).asString());
+				return true;
+			}
 		}
 		return false;
 	}
 
 	private void updatePage(int by){
-		int max = attributes.size() / 48 + 1;
 		if(by != 0){
 			page += by;
 			if(page < 0) page = 0;
 		}
-		texts.get("page").transval("ui.fvtm.vehicle_attributes.page", page + 1 + "/" + max, sel + 1 + "/" + attributes.size());
-		if(sel >= attributes.size()){
-			for(int i = 0; i < 4; i++) texts.get("info_" + i).value("");
-		}
-		Attribute<?> attr = attributes.get(sel);
-		texts.get("info_0").transval("ui.fvtm.vehicle_attributes.info_id", attr.id);
-		texts.get("info_1").transval("ui.fvtm.vehicle_attributes.info_status", attr.editable, attr.external);
-		texts.get("info_2").transval("ui.fvtm.vehicle_attributes.info_origin", attr.origin == null ? "vehicle" : attr.origin);
-		texts.get("info_3").transval("ui.fvtm.vehicle_attributes.info_value", attr.value, attr.initial);
-		fields.get("editor").text(attr.asString());
 	}
 
 	@Override
@@ -223,6 +233,10 @@ public class VehicleAttributes extends UserInterface {
 			text = texts.get("info_" + i);
 			if(text.hovered()) list.add(text.value());
 		}
+		int idx = ((mx - gLeft - 7) / 18) + ((my - gTop - 7) / 18) * COLS;
+		if(idx < 0 || idx >= attributes.size()) return;
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_id", new Object[]{ attributes.get(idx).id }));
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_hover", new Object[]{ attributes.get(idx).asString() }));
 	}
 
 }

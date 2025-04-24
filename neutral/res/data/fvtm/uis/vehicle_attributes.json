@@ -35,32 +35,31 @@
 		"page": {
 			"size": [ 142, 8 ],
 			"pos": [ 23, 83 ],
-			"autoscale": true,
-			"color": "242424"
+			"autoscale": true
 		},
 		"info_0": {
 			"size": [ 212, 8 ],
 			"pos": [ 9, 97 ],
 			"autoscale": true,
-			"color": "242424"
+			"color": "3d3d3d"
 		},
 		"info_1": {
 			"size": [ 212, 8 ],
 			"pos": [ 9, 111 ],
 			"autoscale": true,
-			"color": "242424"
+			"color": "3d3d3d"
 		},
 		"info_2": {
 			"size": [ 212, 8 ],
 			"pos": [ 9, 125 ],
 			"autoscale": true,
-			"color": "242424"
+			"color": "3d3d3d"
 		},
 		"info_3": {
 			"size": [ 212, 8 ],
 			"pos": [ 9, 139 ],
 			"autoscale": true,
-			"color": "242424"
+			"color": "3d3d3d"
 		}
 	},
 	"buttons": {

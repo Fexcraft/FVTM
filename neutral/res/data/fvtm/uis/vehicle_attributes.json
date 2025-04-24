@@ -24,7 +24,8 @@
 				"reset",
 				"decr",
 				"incr",
-				"toggle"
+				"toggle",
+				"attrs"
 			],
 			"fields": [
 				"editor"
@@ -112,6 +113,11 @@
 			"size": [ 12, 12 ],
 			"pos": [ 211, 151 ],
 			"tooltip": "ui.fvtm.vehicle_attributes.toggle"
+		},
+		"attrs": {
+			"size": [ 216, 72 ],
+			"pos": [ 7, 7 ],
+			"h_color": "ffffff"
 		}
 	},
 	"fields": {

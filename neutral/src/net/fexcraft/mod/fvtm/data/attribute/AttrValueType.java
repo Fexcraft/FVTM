@@ -5,22 +5,27 @@ package net.fexcraft.mod.fvtm.data.attribute;
  */
 public class AttrValueType {
 	
-	public static final AttrValueType STRING = new Builder().setString().build();
-	public static final AttrValueType BOOLEAN = new Builder().setBoolean().build();
-	public static final AttrValueType TRISTATE = new Builder().setTristate().build();
-	public static final AttrValueType INTEGER = new Builder().setInteger().build();
-	public static final AttrValueType FLOAT = new Builder().setFloat().build();
-	public static final AttrValueType LONG = new Builder().setLong().build();
-	public static final AttrValueType VECTOR = new Builder().setVector().build();
-	public static final AttrValueType OBJECT = new Builder().setObject().build();
+	public static final AttrValueType STRING = new Builder("string").setString().build();
+	public static final AttrValueType BOOLEAN = new Builder("boolean").setBoolean().build();
+	public static final AttrValueType TRISTATE = new Builder("tri-state").setTristate().build();
+	public static final AttrValueType INTEGER = new Builder("integer").setInteger().build();
+	public static final AttrValueType FLOAT = new Builder("float").setFloat().build();
+	public static final AttrValueType LONG = new Builder("long").setLong().build();
+	public static final AttrValueType VECTOR = new Builder("vector").setVector().build();
+	public static final AttrValueType OBJECT = new Builder("object").setObject().build();
 	//
-	public static final AttrValueType STRING_ARRAY = new Builder().setString().setArray().build();
-	public static final AttrValueType BOOLEAN_ARRAY = new Builder().setBoolean().setArray().build();
-	public static final AttrValueType INTEGER_ARRAY = new Builder().setInteger().setArray().build();
-	public static final AttrValueType FLOAT_ARRAY = new Builder().setFloat().setArray().build();
-	public static final AttrValueType OBJECT_ARRAY = new Builder().setObject().setArray().build();
+	public static final AttrValueType STRING_ARRAY = new Builder("string_array").setString().setArray().build();
+	public static final AttrValueType BOOLEAN_ARRAY = new Builder("boolean_array").setBoolean().setArray().build();
+	public static final AttrValueType INTEGER_ARRAY = new Builder("integer_array").setInteger().setArray().build();
+	public static final AttrValueType FLOAT_ARRAY = new Builder("float_array").setFloat().setArray().build();
+	public static final AttrValueType OBJECT_ARRAY = new Builder("object_array").setObject().setArray().build();
 	
 	private boolean string, bool, tristate, integer, float_, long_, vector, array, object;
+	public final String name;
+
+	private AttrValueType(String id){
+		name = id;
+	}
 	
 	public boolean isString(){
 		return string;
@@ -66,8 +71,8 @@ public class AttrValueType {
 		
 		private AttrValueType valtype;
 		
-		public Builder(){
-			valtype = new AttrValueType();
+		public Builder(String name){
+			valtype = new AttrValueType(name);
 		}
 		
 		public Builder setString(){

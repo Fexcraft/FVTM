@@ -58,8 +58,9 @@ public class VehicleAttributes extends UserInterface {
 		Attribute<?> attr = attributes.get(sel);
 		texts.get("info_0").transval("ui.fvtm.vehicle_attributes.info_id", attr.id);
 		texts.get("info_1").transval("ui.fvtm.vehicle_attributes.info_status", attr.editable, attr.external);
-		texts.get("info_2").transval("ui.fvtm.vehicle_attributes.info_origin", attr.origin == null ? "vehicle" : attr.origin);
-		texts.get("info_3").transval("ui.fvtm.vehicle_attributes.info_value", attr.value, attr.initial);
+		texts.get("info_2").transval("ui.fvtm.vehicle_attributes.info_origin", attr.valuetype.name, attr.origin == null ? "vehicle" : attr.origin);
+		texts.get("info_3").transval("ui.fvtm.vehicle_attributes.info_bound", attr.value, attr.initial,
+			attr.min == Integer.MIN_VALUE ? "-" : attr.min, attr.max == Integer.MAX_VALUE ? "-" : attr.max);
 	}
 
 	@Override
@@ -245,7 +246,8 @@ public class VehicleAttributes extends UserInterface {
 		int idx = ((mx - gLeft - 7) / 18) + ((my - gTop - 7) / 18) * COLS;
 		if(idx < 0 || idx >= attributes.size()) return;
 		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_id", new Object[]{ attributes.get(idx).id }));
-		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_hover", new Object[]{ attributes.get(idx).asString() }));
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_value", new Object[]{ attributes.get(idx).asString() }));
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_type", new Object[]{ attributes.get(idx).valuetype.name }));
 	}
 
 }

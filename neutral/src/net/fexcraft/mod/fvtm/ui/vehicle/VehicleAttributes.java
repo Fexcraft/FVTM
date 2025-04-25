@@ -200,8 +200,16 @@ public class VehicleAttributes extends UserInterface {
 				int row = (y - gTop - 7) / 18;
 				int idx = col + row * COLS;
 				if(idx < 0 || idx >= attributes.size()) return true;
-				sel = idx;
-				fields.get("editor").text(attributes.get(idx).asString());
+				if(b > 0){
+					int os = sel;
+					sel = idx;
+					onAction(buttons.get("toggle"), "toggle", x, y, b);
+					sel = os;
+				}
+				else{
+					sel = idx;
+					fields.get("editor").text(attributes.get(idx).asString());
+				}
 				return true;
 			}
 		}

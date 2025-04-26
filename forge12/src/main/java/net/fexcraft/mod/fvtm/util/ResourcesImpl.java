@@ -482,6 +482,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			if(block.getModelData().getBoolean("Baked", false)){
 				FvtmBlockModelLoader.BLOCKS.put(block.getID().space() + ":models/block/" + block.getID().id(), block);
+				FvtmBlockModelLoader.BLOCKS.put(block.getIDS(), block);
 			}
 			int var = block.getBlockType().getMetaVariants();
 			for(int v = 0; v < var; v++){

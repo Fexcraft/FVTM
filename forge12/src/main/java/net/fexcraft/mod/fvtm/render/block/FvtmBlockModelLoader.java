@@ -1,11 +1,7 @@
 package net.fexcraft.mod.fvtm.render.block;
 
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -33,7 +29,11 @@ public class FvtmBlockModelLoader implements ICustomModelLoader {
 
 	@Override
 	public boolean accepts(ResourceLocation rl){
-		return BLOCKS.containsKey(rl.toString());
+		String str = rl.toString();
+		if(!str.contains("/") && !str.endsWith("#inventory")){
+			return BLOCKS.containsKey(str.split("#")[0]);
+		}
+		return BLOCKS.containsKey(str);
 	}
 
 	@Override

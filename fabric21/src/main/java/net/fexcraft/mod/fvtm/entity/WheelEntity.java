@@ -12,17 +12,21 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.Optional;
 
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketEntity {
+public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.PacketEntity {
 
 	public RootVehicle root;
 	private boolean found;
@@ -67,7 +71,7 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 	private void setStepHeight(){
 		WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 		stepheight = wtd == null ? root.vehicle.spdata == null ? 1f : root.vehicle.spdata.wheel_step_height : wtd.function.step_height;
-		//getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
+		getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
 	}
 
 	@Override
@@ -113,6 +117,11 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 	}
 
 	@Override
+	public HumanoidArm getMainArm(){
+		return HumanoidArm.LEFT;
+	}
+
+	@Override
 	public boolean canBeCollidedWith(){
 		return false;
 	}
@@ -137,7 +146,7 @@ public class WheelEntity extends Entity implements UniWheel, SpawnPacket.PacketE
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
-		//
+		super.defineSynchedData(builder);
 	}
 
 	@Override

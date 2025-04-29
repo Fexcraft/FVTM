@@ -56,7 +56,7 @@ public class UniRoadTool {
 			if(com.has("CustomRoadFill")){
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.road_fill_custom", new Object[]{ layers[0] })));
 			}
-			else{
+			else if(com.has("RoadFill")){
 				stack = UniStack.createStack(com.getCompound("RoadFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.road_fill", new Object[]{ stack.getName(), stack.count() })));
 			}

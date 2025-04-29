@@ -2,8 +2,6 @@ package net.fexcraft.mod.fvtm;
 
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -163,6 +161,7 @@ public class FVTM implements ModInitializer {
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
 			0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
+		FabricDefaultAttributeRegistry.register(Resources21.WHEEL_ENTITY, LivingEntity.createLivingAttributes());
 		//
 		FvtmResources.INSTANCE.init();
 		for(Addon addon : FvtmRegistry.ADDONS){

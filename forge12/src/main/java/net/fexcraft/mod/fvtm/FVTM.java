@@ -53,7 +53,6 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.impl.*;
 import net.fexcraft.mod.uni.inv.ClothMaterial;
-import net.fexcraft.mod.uni.inv.ItemWrapper;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.*;
@@ -180,7 +179,7 @@ public class FVTM {
 			GLO.SUPPLIER = () -> new GLObject();
 		}
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
-		FvtmResources.INSTANCE = new ResourcesImpl(event.getAsmData());
+		FvtmResources.INSTANCE = new Resources12(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);
 		CONFIG.addListener(() -> {
 			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);

@@ -82,6 +82,8 @@ public class FVTMC implements ClientModInitializer {
 		EntityRendererRegistry.register(Resources21.WHEEL_ENTITY, context -> new EmptyRenderer(context));
 		EntityRendererRegistry.register(Resources21.VEHICLE_ENTITY, context -> new RVRenderer(context));
 		EntityRendererRegistry.register(Resources21.RAIL_ENTITY, context -> new RVRenderer(context));
+		EntityRendererRegistry.register(Resources21.ROAD_MARKER_ENTITY, context -> new RoadMarkerRenderer(context));
+		EntityRendererRegistry.register(Resources21.RAIL_MARKER_ENTITY, context -> new RailMarkerRenderer(context));
 		Packets21.PACKET_HANDLERS.add(() -> {
 			ClientPlayNetworking.registerGlobalReceiver(SPAWN_PACKET_TYPE, (packet, context) -> {
 				context.client().execute(() -> {

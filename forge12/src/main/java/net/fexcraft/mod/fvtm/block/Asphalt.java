@@ -109,14 +109,25 @@ public class Asphalt extends Block {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
     	if(world.isRemote) return player.getHeldItem(hand).getItem() instanceof AsphaltItem;
     	ItemStack stack = player.getHeldItem(hand);
-    	if(stack.getItem() instanceof AsphaltItem && state.getValue(HEIGHT) > 0){
-    		int height = state.getValue(HEIGHT) + stack.getMetadata();
+		int hei = state.getValue(HEIGHT);
+    	if(stack.getItem() instanceof AsphaltItem && hei > 0){
+    		int height = hei + stack.getMetadata();
 			if(height >= 16) height = 0;
 			if(height < 0) height = 0;
     		world.setBlockState(pos, state.withProperty(HEIGHT, height), 2);
     		if(!player.capabilities.isCreativeMode) stack.shrink(1);
     		return true;
     	}
+		int lvl = stack.getItem().getHarvestLevel(stack, "pickaxe", player, state);
+		if(lvl > 1){
+			if(hei == 0) hei = 15;
+			else if(hei == 1) return false;
+			else hei--;
+			world.setBlockState(pos, state.withProperty(HEIGHT, hei), 2);
+			if(!player.capabilities.isCreativeMode) stack.damageItem(1, player);
+			player.addItemStackToInventory(new ItemStack(INSTANCE, 1, 1));
+			return true;
+		}
 		return false;
     }
     

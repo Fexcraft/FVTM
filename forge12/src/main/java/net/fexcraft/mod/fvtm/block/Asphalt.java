@@ -1,10 +1,5 @@
 package net.fexcraft.mod.fvtm.block;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
@@ -18,7 +13,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -33,6 +27,10 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -46,7 +44,7 @@ public class Asphalt extends Block {
 		setRegistryName("fvtm:asphalt");
 		setTranslationKey(getRegistryName().toString());
 		setHarvestLevel("pickaxe", 0);
-		setHardness(8.0F);
+		setHardness(3);
 		setResistance(2000.0F);
 		setSoundType(SoundType.STONE);
         setDefaultState(blockState.getBaseState().withProperty(HEIGHT, 0));

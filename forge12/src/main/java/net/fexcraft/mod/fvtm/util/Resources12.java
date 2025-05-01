@@ -45,6 +45,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
@@ -246,7 +250,6 @@ public class Resources12 extends FvtmResources {
 			.add(new ItemStack(Items.GLASS_BOTTLE, 2))
 			.register();*/
 	}
-
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
 		ItemWrapper wrapper = new IWI(item);
@@ -494,6 +497,29 @@ public class Resources12 extends FvtmResources {
 			return;
 		}
 		net.minecraftforge.client.model.ModelLoader.setCustomModelResourceLocation(item, 0, new net.minecraft.client.renderer.block.model.ModelResourceLocation(item.getRegistryName(), "inventory"));
+	}
+
+	@SubscribeEvent
+	public void registerRecipes(RegistryEvent.Register<IRecipe> event){
+		Ingredient a1 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 1));
+		Ingredient a2 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 2));
+		Ingredient a4 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 4));
+		Ingredient a8 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 8));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_88_16", new ItemStack(Asphalt.INSTANCE, 1, 0), a8, a8));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_44_8", new ItemStack(Asphalt.INSTANCE, 1, 8), a4, a4));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_22_4", new ItemStack(Asphalt.INSTANCE, 1, 4), a2, a2));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_11_2", new ItemStack(Asphalt.INSTANCE, 1, 2), a1, a1));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_4444_16", new ItemStack(Asphalt.INSTANCE, 1, 0), a4, a4, a4, a4));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_2222_8", new ItemStack(Asphalt.INSTANCE, 1, 8), a2, a2, a2, a2));
+		event.getRegistry().register(newRecipe("fvtm:asphalt_1111_4", new ItemStack(Asphalt.INSTANCE, 1, 4), a1, a1, a1, a1));
+	}
+
+	private IRecipe newRecipe(String str, ItemStack stack, Ingredient... ings){
+		NonNullList<Ingredient> list = NonNullList.create();
+		for(Ingredient ing : ings) list.add(ing);
+		IRecipe rec = new ShapelessRecipes("fvtm:asphalt", stack, list);
+		rec.setRegistryName(new ResourceLocation(str));
+		return rec;
 	}
 
 }

@@ -74,13 +74,13 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ResourcesImpl extends FvtmResources {
+public class Resources12 extends FvtmResources {
 
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	private final ASMDataTable asmdata;
 	private Field respackfile = null;
 
-	public ResourcesImpl(ASMDataTable asmdata){
+	public Resources12(ASMDataTable asmdata){
 		this.asmdata = asmdata;
 	}
 

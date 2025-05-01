@@ -28,7 +28,7 @@ public class Asphalt extends Block {
 	public final int height;
 
 	public Asphalt(int height){
-		super(Properties.of().noOcclusion().explosionResistance(2000).strength(8));
+		super(Properties.of().noOcclusion().explosionResistance(2000).strength(height == 0 ? 3 : 3f - 3f / height));
 		this.height = height;
 		if(SHAPES[0] == null){
 			SHAPES[0] = Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);

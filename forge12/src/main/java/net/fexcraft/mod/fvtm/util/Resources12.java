@@ -512,6 +512,11 @@ public class Resources12 extends FvtmResources {
 		event.getRegistry().register(newRecipe("fvtm:asphalt_4444_16", new ItemStack(Asphalt.INSTANCE, 1, 0), a4, a4, a4, a4));
 		event.getRegistry().register(newRecipe("fvtm:asphalt_2222_8", new ItemStack(Asphalt.INSTANCE, 1, 8), a2, a2, a2, a2));
 		event.getRegistry().register(newRecipe("fvtm:asphalt_1111_4", new ItemStack(Asphalt.INSTANCE, 1, 4), a1, a1, a1, a1));
+		event.getRegistry().register(newRecipe("fvtm:asphalt", new ItemStack(Asphalt.INSTANCE, 4, 0),
+			Ingredient.fromStacks(new ItemStack(Blocks.SAND, 1, 0), new ItemStack(Blocks.SAND, 1, 1)),
+			Ingredient.fromStacks(new ItemStack(Blocks.SAND, 1, 0), new ItemStack(Blocks.SAND, 1, 1)),
+			Ingredient.fromStacks(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.COBBLESTONE)),
+			Ingredient.fromStacks(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.COBBLESTONE))));
 	}
 
 	private IRecipe newRecipe(String str, ItemStack stack, Ingredient... ings){

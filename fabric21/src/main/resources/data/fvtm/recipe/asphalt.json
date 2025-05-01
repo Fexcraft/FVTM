@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "fvtm:asphalt",
+  "category": "building",
+  "ingredients": [
+    [
+      "minecraft:red_sand",
+      "minecraft:sand"
+    ],
+    [
+      "minecraft:sand",
+      "minecraft:red_sand"
+    ],
+    [
+      "minecraft:gravel",
+      "minecraft:cobblestone"
+    ],
+    [
+      "minecraft:gravel",
+      "minecraft:cobblestone"
+    ]
+  ],
+  "result": {
+    "id": "fvtm:asphalt_0"
+  }
+}

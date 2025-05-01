@@ -20,6 +20,13 @@ tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt
 
+cmd.fvtm.get-key.is-locked=&cPlease unlock the Vehicle first.
+cmd.fvtm.get-key.not-driver=&eYou need to be the driver to get a key.
+cmd.fvtm.get-key.max-keys=&cMax amount of keys for this vehicle has been given already.
+cmd.fvtm.get-key.not-found=&cKey item and replacement not found.
+cmd.fvtm.get-key.check-gep=&ePlease make sure you have at least GEP installed.
+cmd.fvtm.get-key.success=&aKey added to inventory.
+
 # Interact
 interact.fvtm.constructor.nolift=No Lift connected. Starting scan...
 interact.fvtm.constructor.liftfound=Connected to Lift at %s, %s, %s

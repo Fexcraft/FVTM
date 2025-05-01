@@ -150,7 +150,7 @@ public class FVTMC implements ClientModInitializer {
 	}
 
 	private static void handleKeyboardInput(Minecraft minecraft){
-		if(minecraft.player == null || minecraft.player.getVehicle() == null) return;
+		if(minecraft.player == null || minecraft.player.getVehicle() instanceof RootVehicle == false) return;
 		Passenger player = UniEntity.getCasted(minecraft.player);
 		SeatInstance seat = ((RootVehicle)minecraft.player.getVehicle()).getSeatOf(minecraft.player);
 		if(seat == null) return;

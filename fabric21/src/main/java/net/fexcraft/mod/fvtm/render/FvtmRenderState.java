@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.entity.RailMarker;
+import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -10,6 +12,8 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 public class FvtmRenderState extends EntityRenderState {
 
 	public RootVehicle entity;
+	public RoadMarker road_marker;
+	public RailMarker rail_marker;
 	public VehicleInstance vehicle;
 	public float f;
 

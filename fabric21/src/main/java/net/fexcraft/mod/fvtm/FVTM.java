@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -11,13 +13,20 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.EntityWIE;
@@ -27,20 +36,28 @@ import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
 import net.fexcraft.mod.fvtm.util.CTab;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -59,6 +76,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -236,6 +254,7 @@ public class FVTM implements ModInitializer {
 		ServerPlayerEvents.AFTER_RESPAWN.register((old, neo, dim) -> {
 			if(dim) SystemManager.syncPlayer(WrapperHolder.getWorld(neo.level()).dimkey(), UniEntity.getEntity(neo));
 		});
+		CommandRegistrationCallback.EVENT.register((dis, reg, env) -> dis.register(genCommand()));
 	}
 
 	public static <I extends Item> I regItem(String idl, Function<Item.Properties, Item> func){
@@ -259,6 +278,90 @@ public class FVTM implements ModInitializer {
 
 	public static <T extends BlockEntity> BlockEntityType<T> regBlockEntity(String idl, FabricBlockEntityTypeBuilder.Factory<BlockEntity> supp, Block... blocks){
 		return (BlockEntityType<T>)Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, idl, FabricBlockEntityTypeBuilder.create(supp, blocks).build());
+	}
+
+	public static LiteralArgumentBuilder<CommandSourceStack> genCommand(){
+		return Commands.literal("fvtm")
+			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
+				Player player = ctx.getSource().getPlayerOrException();
+				Passenger pass = UniEntity.getCasted(player);
+				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+				if(map == null || map.empty()){
+					pass.send("No last road data in item.");
+					return 0;
+				}
+				String dim = map.getString("LastRoadDim", "minecraft:overworld");
+				if(!dim.equals(player.level().dimension().location().toString())){
+					pass.send("Last road was placed in &6DIM" + map.getString("LastRoadDim", "unknown"));
+					pass.send("You are currenctly in &6DIM" + player.level().dimension().location());
+					return 0;
+				}
+				map.rem("LastRoadDim");
+				pass.send("&oUndo-ing last placed road...");
+				for(String str : map.value.keySet()){
+					JsonArray array = map.getArray(str);
+					V3I vec = V3I.fromString(str);
+					BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+					Optional<Holder.Reference<Block>> block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(array.get(0).string_value()));
+					player.level().setBlock(pos, block.isPresent() ? block.get().value().defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
+				}
+				RoadPlacingCache.remLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+				pass.send("&7Last road undone.");
+				return 0;
+			})))
+			.then(Commands.literal("debug").executes(ctx -> {
+				DebugUtils.ACTIVE = !DebugUtils.ACTIVE;
+				return 0;
+			}))
+			.then(Commands.literal("catalog").executes(ctx -> {
+				UniEntity.getEntity(ctx.getSource().getPlayer()).openUI(UIKeys.VEHICLE_CATALOG, V3I.NULL);
+				return 0;
+			}))
+			.then(Commands.literal("reload").executes(ctx -> {
+				if(EnvInfo.DEV){
+					ctx.getSource().sendSystemMessage(Component.literal("Reloading Config..."));
+					FvtmRegistry.CONFIG.reload();
+				}
+				else{
+					ctx.getSource().sendSystemMessage(Component.literal("Runtime reloading only available in dev-mode."));
+				}
+				return 0;
+			}))
+			.then(Commands.literal("get-key").executes(ctx -> {
+				Player player = ctx.getSource().getPlayer();
+				EntityW pass = UniEntity.getEntity(player);
+				if(player.getVehicle() instanceof RootVehicle){
+					RootVehicle ent = (RootVehicle)player.getVehicle();
+					VehicleData data = ent.vehicle.data;
+					if(data.getLock().isLocked()){
+						pass.send("cmd.fvtm.get-key.is-locked");
+					}
+					else if(!ent.getSeatOf(player).seat.driver){
+						pass.send("cmd.fvtm.get-key.not-driver");
+					}
+					else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){
+						pass.send("cmd.fvtm.get-key.max-keys");
+					}
+					else{
+						Material km = FvtmRegistry.MATERIALS.get(data.getType().getKeyType());
+						if(km == null) km = FvtmRegistry.MATERIALS.get(Lockable.DEFAULT_KEY);
+						if(km == null){
+							pass.send("cmd.fvtm.get-key.not-found");
+							pass.send("cmd.fvtm.get-key.check-gep");
+						}
+						else{
+							StackWrapper keystack = km.getNewStack();
+							keystack.updateTag(com -> com.set("LockCode", data.getLock().getCode()));
+							pass.addStack(keystack);
+							pass.send("cmd.fvtm.get-key.success");
+						}
+						Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
+						attr.set(attr.asInteger() + 1);
+					}
+				}
+				return 0;
+			}))
+			;
 	}
 
 }

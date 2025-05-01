@@ -1,26 +1,19 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
-import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
-
-import java.util.HashMap;
-import java.util.UUID;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
@@ -29,22 +22,28 @@ import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
+
+import java.util.HashMap;
+import java.util.UUID;
+
+import static net.fexcraft.mod.fvtm.FvtmRegistry.ADDONS;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getAddon;
+import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
 
 @SuppressWarnings("deprecation")
 @fCommand
@@ -84,7 +83,7 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&9Command arguments");
         		Print.chat(sender, "&7- /fvtm packs");
         		Print.chat(sender, "&7- /fvtm pack-info <pack_id>");
-        		Print.chat(sender, "&7- /fvtm get-key <vehicle/container>");
+        		Print.chat(sender, "&7- /fvtm get-key");
         		Print.chat(sender, "&7- /fvtm preset <args>");
         		Print.chat(sender, "&7- /fvtm attr <args>");
         		Print.chat(sender, "&7- /fvtm debug <args>");
@@ -134,7 +133,38 @@ public class Command extends CommandBase {
             	break;
             }
             case "get-key": {
-            	EntityPlayer player = (EntityPlayer)sender.getCommandSenderEntity();
+				EntityPlayer player = (EntityPlayer)sender.getCommandSenderEntity();
+				EntityW pass = UniEntity.getEntity(sender.getCommandSenderEntity());
+				if(player.isRiding() && player.getRidingEntity() instanceof RootVehicle){
+					RootVehicle ent = (RootVehicle)player.getRidingEntity();
+					VehicleData data = ent.vehicle.data;
+					if(data.getLock().isLocked()){
+						pass.send("cmd.fvtm.get-key.is-locked");
+					}
+					else if(!ent.getSeatOf(player).seat.driver){
+						pass.send("cmd.fvtm.get-key.not-driver");
+					}
+					else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){
+						pass.send("cmd.fvtm.get-key.max-keys");
+					}
+					else{
+						Material km = FvtmRegistry.MATERIALS.get(data.getType().getKeyType());
+						if(km == null) km = FvtmRegistry.MATERIALS.get(Lockable.DEFAULT_KEY);
+						if(km == null){
+							pass.send("cmd.fvtm.get-key.not-found");
+							pass.send("cmd.fvtm.get-key.check-gep");
+						}
+						else{
+							StackWrapper keystack = km.getNewStack();
+							keystack.updateTag(com -> com.set("LockCode", data.getLock().getCode()));
+							pass.addStack(keystack);
+							pass.send("cmd.fvtm.get-key.success");
+						}
+						Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
+						attr.set(attr.asInteger() + 1);
+					}
+				}
+            	/*EntityPlayer player = (EntityPlayer)sender.getCommandSenderEntity();
             	if(args.length < 2){
             		Print.chat(sender, "&cPlease select a key type! &7(vehicle or container)");
             	}
@@ -193,7 +223,7 @@ public class Command extends CommandBase {
             	}
             	else{
             		Print.chat(sender, "&cKey type not found.");
-            	}
+            	}*/
             	break;
             }
             case "debug":{
@@ -462,24 +492,24 @@ public class Command extends CommandBase {
 			//e.printStackTrace();
 			return null;
 		}
-	}
+	}/*
 
-	private Item giveKeyItem(EntityPlayer player, IDL keytype, String lockcode){
+	private Item giveKeyItem(EntityW pass, EntityPlayer player, IDL keytype, String lockcode){
 		Item ki = Item.REGISTRY.getObject(keytype.local());
 		if(ki == null) ki = Item.REGISTRY.getObject(Lockable.DEFAULT_KEY.local());
 		if(ki == null){
-			Print.chat(player, "&cKey item and replacement not found.");
-			Print.chat(player, "&ePlease make sure you have at least GEP installed.");
+			pass.send("cmd.fvtm.get-key.not-found");
+			pass.send("cmd.fvtm.get-key.check-gep");
 		}
 		else{
 			ItemStack keystack = new ItemStack(ki, 1);
 			if(keystack.getTagCompound() == null) keystack.setTagCompound(new NBTTagCompound());
 			keystack.getTagCompound().setString("LockCode", lockcode);
 			player.addItemStackToInventory(keystack);
-			Print.chat(player, "&aKey added to inventory.");
+			pass.send("cmd.fvtm.get-key.success");
 		}
 		return null;
-	}
+	}*/
 
 	public static String getValS(String string){
 		return VALS.get(string);

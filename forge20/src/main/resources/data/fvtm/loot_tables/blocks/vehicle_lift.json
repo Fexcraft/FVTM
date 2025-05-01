@@ -1,0 +1,10 @@
+{
+    "type": "minecraft:block",
+    "pools": [
+        {
+            "conditions": [ { "condition":  "minecraft:survives_explosion" } ],
+            "entries": [ { "type": "minecraft:item", "name": "fvtm:vehicle_lift" } ],
+            "rolls": 1
+        }
+    ]
+}

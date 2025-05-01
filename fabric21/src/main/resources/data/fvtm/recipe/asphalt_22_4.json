@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "fvtm:asphalt",
+  "category": "building",
+  "ingredients": [
+    [
+      "fvtm:asphalt_2"
+    ],
+    [
+      "fvtm:asphalt_2"
+    ]
+  ],
+  "result": {
+    "id": "fvtm:asphalt_4"
+  }
+}

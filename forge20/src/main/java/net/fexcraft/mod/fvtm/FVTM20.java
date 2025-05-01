@@ -9,9 +9,14 @@ import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.uni.UniEntity;
@@ -23,8 +28,10 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.inv.ItemWrapper;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -33,6 +40,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -146,6 +155,40 @@ public class FVTM20 {
 				}
 				else{
 					ctx.getSource().sendSystemMessage(Component.literal("Runtime reloading only available in dev-mode."));
+				}
+				return 0;
+			}))
+			.then(Commands.literal("get-key").executes(ctx -> {
+				Player player = ctx.getSource().getPlayer();
+				EntityW pass = UniEntity.getEntity(player);
+				if(player.getVehicle() instanceof RootVehicle){
+					RootVehicle ent = (RootVehicle)player.getVehicle();
+					VehicleData data = ent.vehicle.data;
+					if(data.getLock().isLocked()){
+						pass.send("cmd.fvtm.get-key.is-locked");
+					}
+					else if(!ent.getSeatOf(player).seat.driver){
+						pass.send("cmd.fvtm.get-key.not-driver");
+					}
+					else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){
+						pass.send("cmd.fvtm.get-key.max-keys");
+					}
+					else{
+						Material km = FvtmRegistry.MATERIALS.get(data.getType().getKeyType());
+						if(km == null) km = FvtmRegistry.MATERIALS.get(Lockable.DEFAULT_KEY);
+						if(km == null){
+							pass.send("cmd.fvtm.get-key.not-found");
+							pass.send("cmd.fvtm.get-key.check-gep");
+						}
+						else{
+							StackWrapper keystack = km.getNewStack();
+							keystack.updateTag(com -> com.set("LockCode", data.getLock().getCode()));
+							pass.addStack(keystack);
+							pass.send("cmd.fvtm.get-key.success");
+						}
+						Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
+						attr.set(attr.asInteger() + 1);
+					}
 				}
 				return 0;
 			}))

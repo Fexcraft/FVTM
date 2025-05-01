@@ -18,6 +18,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -118,7 +119,7 @@ public class Asphalt extends Block {
     		if(!player.capabilities.isCreativeMode) stack.shrink(1);
     		return true;
     	}
-		int lvl = stack.getItem().getHarvestLevel(stack, "pickaxe", player, state);
+		int lvl = Math.max(stack.getItem().getHarvestLevel(stack, "shovel", player, state), stack.getItem().getHarvestLevel(stack, "pickaxe", player, state));
 		if(lvl > 1){
 			if(hei == 0) hei = 15;
 			else if(hei == 1) return false;

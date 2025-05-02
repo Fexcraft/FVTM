@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
@@ -21,9 +20,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
+import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
-import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
@@ -58,7 +57,7 @@ public class WireRenderer {
 		double cz = camera.getPosition().z;
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		PoseStack pose = event.getPoseStack();
-		FvtmRenderTypes.setCutout(JUNCTEX);
+		FvtmRenderTypes.setCutout(WHITE_TEXTURE);
 		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);

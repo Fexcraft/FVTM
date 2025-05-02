@@ -145,6 +145,7 @@ public class FVTMC implements ClientModInitializer {
 		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
 		WorldRenderEvents.AFTER_ENTITIES.register(SepRenderer::renderSeparate);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(RailRenderer::renderRails);
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){

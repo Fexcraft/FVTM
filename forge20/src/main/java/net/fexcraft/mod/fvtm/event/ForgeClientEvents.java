@@ -11,22 +11,15 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.PathModelGenerator;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,9 +30,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -211,63 +202,6 @@ public class ForgeClientEvents {
 				POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
 				LINE.render();
 			}
-		}
-		pose.popPose();
-	}
-
-	public static final IDL JUNCTEX = IDLManager.getIDLCached("minecraft:textures/block/stone.png");
-	private static RailSystem railsys;
-	private static HashSet<Junction> juncset = new HashSet<>();
-
-	@SubscribeEvent
-	public static void renderRail1(RenderLevelStageEvent event){
-		if(DISABLE_RAILS) return;
-		railsys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.getCamera().getEntity().level()), RailSystem.class);
-		if(railsys == null || railsys.getRegions() == null) return;
-		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
-		Camera camera = event.getCamera();
-		//float ticks = event.getPartialTick();
-		double cx = camera.getPosition().x;//.xOld + (camera.getX() - camera.xOld) * ticks;
-		double cy = camera.getPosition().y;//.yOld + (camera.getY() - camera.yOld) * ticks;
-		double cz = camera.getPosition().z;//.zOld + (camera.getZ() - camera.zOld) * ticks;
-		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		PoseStack pose = event.getPoseStack();
-		//VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
-		FvtmRenderTypes.setCutout(JUNCTEX);
-		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
-		pose.pushPose();
-		pose.translate(-cx, -cy, -cz);
-		for(SystemRegion<?, Junction> reg : railsys.getRegions().values()){
-			juncset.clear();
-			juncset.addAll(reg.getObjects().values());
-			for(Junction junc : juncset){
-				pose.pushPose();
-				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);
-				Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));
-				JUNC_CORE.render();
-				pose.popPose();
-				renderRails(pose, junc);
-			}
-		}
-		pose.popPose();
-	}
-
-	private static void renderRails(PoseStack pose, Junction junc){
-		pose.pushPose();
-		Renderer120.resetColor();
-		for(int i = 0; i < junc.size(); i++){
-			if(i > 2) pose.translate(0, -0.02, 0);
-			if(junc.tracks.get(i).isOppositeCopy()) continue;
-			pose.pushPose();
-			Track track = junc.tracks.get(i);
-			pose.translate(track.vecpath[0].x, track.vecpath[0].y, track.vecpath[0].z);
-			RailGaugeModel model = track.gauge.getModel();
-			if(track.railmodel == null) PathModelGenerator.generateTrackModel(track, model);
-			FvtmRenderTypes.setCutout(track.gauge.getRailTexture());
-			track.railmodel.render();
-			FvtmRenderTypes.setCutout(track.gauge.getTiesTexture());
-			track.restmodel.render();
-			pose.popPose();
 		}
 		pose.popPose();
 	}

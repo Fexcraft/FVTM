@@ -143,6 +143,8 @@ public class FVTMC implements ClientModInitializer {
 			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
 		});
 		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
+		WorldRenderEvents.AFTER_ENTITIES.register(SepRenderer::renderSeparate);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){

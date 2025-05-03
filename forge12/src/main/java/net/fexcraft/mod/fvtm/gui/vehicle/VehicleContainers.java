@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.VEHICLE_CONTAINER;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;

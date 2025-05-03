@@ -1,49 +1,13 @@
 package net.fexcraft.mod.fvtm.gui.rail;
 
-import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.gui.ClientReceiver;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.item.RailGaugeItem;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.opengl.GL11;
 
 public class RailPlacer extends GenericGui<RailPlacerContainer> {
-	
+
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/rail_main.png");
-	private static RGB[][] GRID;
+	/*private static RGB[][] GRID;
 	private static BlockPos[][] POSGRID;
 	private static IBlockState[][] STATEGRID;
 	private static ArrayList<Junction> junctions = new ArrayList<>();
@@ -60,12 +24,12 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	//
 	//private FieldButton fieldbutton;
 	private OrientButton orientbutton;
-	private ArrayList<String> ttip = new ArrayList<String>();
+	private ArrayList<String> ttip = new ArrayList<String>();*/
 	
 	public RailPlacer(EntityPlayer player, int x, int y, int z){
 		super(texture, new RailPlacerContainer(player, x, y, z), player);
 		//if(!Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
-		zoom = y < 0 || y >= Zoom.values().length ? Zoom.NONE :  Zoom.values()[y];
+		/*zoom = y < 0 || y >= Zoom.values().length ? Zoom.NONE :  Zoom.values()[y];
 		if(orient == null) orient = Orient.C;
 		itemslot = x;
         cx = (player.getPosition().getX() >> 4) - zoom.co;
@@ -113,10 +77,10 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				}
 				GRID[i][j] = new RGB(STATEGRID[i][j].getMapColor(player.world, POSGRID[i][j]).getMapColor(m));
 			}
-		}
+		}*/
 	}
 
-	public static final BlockPos getPos(World world, int x, int z){
+	/*public static final BlockPos getPos(World world, int x, int z){
 		for(int i = 255; i > 0; i--){
 			BlockPos pos = new BlockPos(x, i, z);
 			IBlockState state = world.getBlockState(pos);
@@ -141,7 +105,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		this.buttons.put("zoom-", new BasicButton("z-", guiLeft + 223, guiTop + 7, 223, 7, 12, 12, zoom.ordinal() > 0));
 		this.buttons.put("zoom+", new BasicButton("z+", guiLeft + 237, guiTop + 7, 237, 7, 12, 12, zoom.ordinal() < 2));
 		this.buttons.put("orient", orientbutton = new OrientButton(guiLeft, guiTop));
-		this.buttons.put("field", /*fieldbutton =*/ new FieldButton(guiLeft, guiTop));
+		this.buttons.put("field", *//*fieldbutton =*//* new FieldButton(guiLeft, guiTop));
 		for(Junction junc : junctions){
 			this.buttons.put("j" + junc.getPos().asIDString(), new JunctionButton(junc));
 		}
@@ -159,12 +123,12 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			}
 		});
 		for(int i = 0; i < 12; i++){
-			/*this.buttons.put("field" + i, new BasicButton("field" + i, guiLeft + 201, guiTop + 21 + (i * 12), 201, 21, 47, 12, true){
+			*//*this.buttons.put("field" + i, new BasicButton("field" + i, guiLeft + 201, guiTop + 21 + (i * 12), 201, 21, 47, 12, true){
 				@Override
 				public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 					return;
 				}
-			});*/
+			});*//*
 			if(i != 11) this.buttons.put("ad" + i, new B88("d" + i, guiLeft + 221, guiTop + 23 + (i * 12), 56, 240, 8, 8));
 			if(i != 0) this.buttons.put("au" + i, new B88("u" + i, guiLeft + 230, guiTop + 23 + (i * 12), 64, 240, 8, 8));
 			this.buttons.put("ar" + i, new B88("r" + i, guiLeft + 239, guiTop + 23 + (i * 12), 72, 240, 8, 8));
@@ -550,7 +514,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
             gui.drawTexturedModalRect(x, y, tx, ty - (hovered ? 8 : 0), sizex, sizey);
 		}
 		
-	}
+	}*/
 	
 }
 

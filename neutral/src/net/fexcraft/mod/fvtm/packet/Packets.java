@@ -38,6 +38,7 @@ import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -235,6 +236,13 @@ public abstract class Packets {
 			if(system == null) return;
 			SystemRegion<?, ?> reg = system.getRegions().get(com.getIntArray("xz"));
 			if(reg != null) reg.sendSync(player);
+		});
+		LIS_CLIENT.put("upd_pass", (tag, player) -> {
+			EntityW ent = player.getWorld().getEntity(tag.getInteger("ent"));
+			if(ent instanceof Passenger){
+				Passenger pass = (Passenger)ent;
+				pass.sendPassUpdate(pass.getId(), pass.vehicle(), pass.seat());
+			}
 		});
 		if(EnvInfo.CLIENT) initClient();
 	}
@@ -466,6 +474,13 @@ public abstract class Packets {
 			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
 			if(system != null) system.updateRegion(tag, (Passenger)player);
 		});
+		LIS_CLIENT.put("sync_conf", (tag, player) -> {
+			Config.VEHICLE_SYNC_RATE = tag.getByte("sync_rate");
+		});
+		LIS_CLIENT.put("upd_pass", (tag, player) -> {
+			EntityW ent = player.getWorld().getEntity(tag.getInteger("ent"));
+			if(ent instanceof Passenger) ((Passenger)ent).set(tag.getInteger("veh"), tag.getInteger("seat"));
+		});
 	}
 
 	public abstract void writeTag(ByteBuf buffer, TagCW tag);
@@ -474,7 +489,7 @@ public abstract class Packets {
 
 	@Deprecated
 	/** Send BlockData Update Packet to all around. */
-	public abstract void send(BlockData blockdata, V3I pos, int dim);
+	public abstract void send(BlockData blockdata, WorldW world, V3I pos);
 
 	@Deprecated
 	/** Send BlockData Update Packet to all around. */

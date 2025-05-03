@@ -2,14 +2,11 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.frl.GLO;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.PassCap;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
@@ -25,9 +22,7 @@ import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.event.Registerer12;
 import net.fexcraft.mod.fvtm.event.RenderViewHandler;
 import net.fexcraft.mod.fvtm.event.ResizeHandler;
-import net.fexcraft.mod.fvtm.gui.ClientReceiver;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.util.GuiHandler;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.RenderCache;
@@ -44,8 +39,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.util.*;
-import net.fexcraft.mod.fvtm.util.cap.pass.PassengerCallable;
-import net.fexcraft.mod.fvtm.util.cap.pass.PassengerStorage;
 import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
@@ -80,7 +73,6 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
 import java.io.FileNotFoundException;
@@ -207,7 +199,6 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
-		CapabilityManager.INSTANCE.register(PassCap.class, new PassengerStorage(), new PassengerCallable());
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:simple_vehicle"), NLandVehicle.class, "fvtm.simple_vehicle", 0, this, 256, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), NWheelEntity.class, "fvtm.wheel", 100, this, 256, 1, true);
@@ -315,11 +306,7 @@ public class FVTM {
 	public void initPost(FMLPostInitializationEvent event){
 		(Packets.INSTANCE = new PacketsImpl()).init();
 		FvtmResources.INSTANCE.registerRecipes();
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ListenerServer());
 		if(event.getSide().isClient()){
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ListenerClient());
 			MinecraftForge.EVENT_BUS.register(new RailRenderer());
 			MinecraftForge.EVENT_BUS.register(new EffectRenderer());
 		}

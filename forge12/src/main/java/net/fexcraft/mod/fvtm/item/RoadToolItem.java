@@ -5,8 +5,10 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
@@ -45,7 +47,8 @@ public class RoadToolItem extends Item {
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        int result = UniRoadTool.onUse(player.getCapability(Capabilities.PASSENGER, null).asWrapper(), hand == EnumHand.MAIN_HAND);
+		Passenger ent = UniEntity.getCasted(player);
+		int result = UniRoadTool.onUse(ent, hand == EnumHand.MAIN_HAND);
 		switch(result){
 			case 1: return EnumActionResult.FAIL;
 			case 2: return EnumActionResult.SUCCESS;
@@ -55,8 +58,7 @@ public class RoadToolItem extends Item {
 					return EnumActionResult.FAIL;
 				}
 				pos = pos.down();
-				RoadPlacingUtil.place(WrapperHolder.getWorld(world),
-					player.getCapability(Capabilities.PASSENGER, null).asWrapper(),
+				RoadPlacingUtil.place(WrapperHolder.getWorld(world), ent,
 					TagCW.wrap(player.getHeldItem(hand).getTagCompound()),
 					new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ));
 				return EnumActionResult.SUCCESS;

@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.ITileEntityProvider;
@@ -55,7 +56,7 @@ public abstract class BlockBase extends PlainBase implements ITileEntityProvider
         if(!player.isSneaking() && type.getFunctions().size() > 0){
             BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
             for(BlockFunction func : tile.data.getFunctions()){
-                if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), StateWrapper.of(state), getSide(side), player.getCapability(Capabilities.PASSENGER, null).asWrapper(), hand == EnumHand.MAIN_HAND)) return true;
+                if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), StateWrapper.of(state), getSide(side), UniEntity.getCasted(player), hand == EnumHand.MAIN_HAND)) return true;
             }
         }
         ItemStack held = player.getHeldItem(hand);

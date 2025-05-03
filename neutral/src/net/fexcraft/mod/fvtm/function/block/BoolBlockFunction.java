@@ -89,6 +89,7 @@ public class BoolBlockFunction extends BlockFunction {
 		if(key == null) key = this.key;
 		bools.put(key, to == null ? !bools.get(key) : to);
 		if(tile == null) return;
-		sendClientUpdate(tile.getBlockData(), tile.getV3I(), tile.getDim());
+		sendClientUpdate(tile.getBlockData(), tile.getWorldW(), tile.getV3I());
 	}
+
 }

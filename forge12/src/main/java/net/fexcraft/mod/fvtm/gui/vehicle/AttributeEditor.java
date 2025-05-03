@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 
 import static net.fexcraft.lib.common.utils.Formatter.PARAGRAPH_SIGN;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.LISTENERID;
 
 public class AttributeEditor extends GenericGui<VehicleContainer> {
 

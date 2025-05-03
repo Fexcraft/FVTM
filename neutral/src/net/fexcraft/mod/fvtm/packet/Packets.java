@@ -32,7 +32,7 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.packet.PacketBase;
-import net.fexcraft.mod.uni.packet.PacketListener;
+import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
@@ -48,8 +48,8 @@ import java.util.UUID;
  */
 public abstract class Packets {
 
-	public static HashMap<String, PacketListener> LIS_CLIENT = new HashMap<>();
-	public static HashMap<String, PacketListener> LIS_SERVER = new HashMap<>();
+	public static HashMap<String, PacketTagListener> LIS_CLIENT = new HashMap<>();
+	public static HashMap<String, PacketTagListener> LIS_SERVER = new HashMap<>();
 	public static Packets INSTANCE = null;
 	//
 	public static Class<? extends PacketBase> PKT_TAG = Packet_TagListener.class;

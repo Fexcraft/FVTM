@@ -12,10 +12,9 @@ import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRefHolder;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.uni.packet.PacketListener;
+import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.item.EntityItem;
@@ -31,7 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleLiftEntity extends TileEntity implements PacketListener, InteractRefHolder {
+public class VehicleLiftEntity extends TileEntity implements PacketTagListener, InteractRefHolder {
 
 	public static final AxisAlignedBB RENDER_AABB = new AxisAlignedBB(-16, -16, -16, 16, 16, 16);
 	private InteractRef ref = new InteractRef(this);

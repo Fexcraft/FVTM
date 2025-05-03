@@ -25,8 +25,4 @@ public class Capabilities {
 	@CapabilityInject(MultiBlockCache.class)
 	public static final Capability<MultiBlockCache> MULTIBLOCKS = null;
 	
-	/** Optional Passenger Capability */
-	@CapabilityInject(PassCap.class)
-	public static final Capability<PassCap> PASSENGER = null;
-	
 }

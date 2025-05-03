@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 public class M_4ROT_TE extends BlockBase {

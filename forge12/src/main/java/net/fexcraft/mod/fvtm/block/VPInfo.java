@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.block;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.util.GuiHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;

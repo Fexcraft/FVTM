@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.VEHICLE_CONTAINER;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;

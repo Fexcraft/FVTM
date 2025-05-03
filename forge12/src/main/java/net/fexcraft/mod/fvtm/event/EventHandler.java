@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.event;
 
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
@@ -22,24 +20,25 @@ import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.util.cap.pass.PassengerSerializer;
 import net.fexcraft.mod.fvtm.util.caps.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -71,7 +70,7 @@ import java.util.zip.ZipInputStream;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.FvtmRegistry.*;
-import static net.fexcraft.mod.fvtm.util.PacketsImpl.UTIL_LISTENER;
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -113,9 +112,6 @@ public class EventHandler {
 			if(event.getObject().world.isRemote){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 			}
-		}
-		if(event.getObject() instanceof EntityLivingBase){
-			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerSerializer(event.getObject()));
 		}
 		if(event.getObject().world.isRemote && event.getObject() instanceof DecorationEntity){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
@@ -199,21 +195,20 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onPlayerIn(PlayerEvent.PlayerLoggedInEvent event){
+		EntityW ent = UniEntity.getEntity(event.player);
 		if(event.player.world.isRemote){
 			RailPlacingUtil.CL_CURRENT = null;
 			RoadPlacingUtil.CL_CURRENT = null;
 		}
 		if(event.player.world != null && !event.player.world.isRemote){
-			NBTTagCompound cfgsync = new NBTTagCompound();
-			cfgsync.setInteger("u12_sync_rate", VEHICLE_SYNC_RATE);
-			cfgsync.setString("task", "config_sync");
-			cfgsync.setString("target_listener", UTIL_LISTENER);
-			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
+			TagCW cfgsync = TagCW.create();
+			cfgsync.set("sync_rate", VEHICLE_SYNC_RATE);
+			Packets.sendTo(PKT_TAG, ent, "sync_conf", cfgsync);
 		}
 		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player.getGameProfile().getId());
 		if(!Static.getServer().isSinglePlayer()) return;
 		SystemManager.PLAYERON = true;
-		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), UniEntity.getEntity(event.player));
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), ent);
 	}
 
 	@SubscribeEvent

@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
@@ -70,7 +71,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	public Passenger getPassenger(int id){
 		Entity ent = world.getEntityByID(id);
 		if(ent == null) return null;
-		return ent.getCapability(Capabilities.PASSENGER, null).asWrapper();
+		return UniEntity.getCasted(ent);
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+		return UniEntity.getCasted(Minecraft.getMinecraft().player);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,13 +46,13 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
     }
 
     @Override
-    public int getDim(){
-        return world.provider.getDimension();
+    public int getMeta(){
+        return meta;//getBlockMetadata();
     }
 
     @Override
-    public int getMeta(){
-        return meta;//getBlockMetadata();
+    public WorldW getWorldW(){
+        return WrapperHolder.getWorld(world);
     }
 
     public final void sendUpdate(){

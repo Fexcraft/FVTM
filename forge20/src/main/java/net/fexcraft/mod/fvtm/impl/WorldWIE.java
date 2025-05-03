@@ -18,7 +18,7 @@ import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.Resources20;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.WorldWI;
-import net.fexcraft.mod.uni.packet.PacketListener;
+import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
@@ -173,8 +173,8 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	public void handleBlockEntityPacket(TagCW com, Passenger player){
 		BlockPos pos = BlockPos.of(com.getLong("pos"));
 		BlockEntity tile = level.getBlockEntity(pos);
-		if(tile instanceof PacketListener){
-			((PacketListener)tile).handle(com, player);
+		if(tile instanceof PacketTagListener){
+			((PacketTagListener)tile).handle(com, player);
 		}
 		else{
 			FvtmLogger.debug("No receiver for packet '" + com + "' found. Dest: " + pos);

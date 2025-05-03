@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -84,13 +85,13 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 	}
 
 	@Override
-	public int getDim(){
-		return 0;
+	public int getMeta(){
+		return getBlockState().getValue(PROP_ROT16);
 	}
 
 	@Override
-	public int getMeta(){
-		return getBlockState().getValue(PROP_ROT16);
+	public WorldW getWorldW(){
+		return WrapperHolder.getWorld(level);
 	}
 
 	@Override

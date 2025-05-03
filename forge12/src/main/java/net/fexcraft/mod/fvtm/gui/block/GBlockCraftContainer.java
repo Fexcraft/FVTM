@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
 
 import java.util.Map.Entry;
 

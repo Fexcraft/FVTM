@@ -51,8 +51,8 @@ public abstract class BlockFunction {
         return false;
     }
 
-    public static void sendClientUpdate(BlockData blockdata, V3I pos, int dim){
-        Packets.INSTANCE.send(blockdata, pos, dim);
+    public static void sendClientUpdate(BlockData blockdata, WorldW world, V3I pos){
+        Packets.INSTANCE.send(blockdata, world, pos);
     }
 
     public static void sendClientUpdate(WorldW world, V3I pos){

@@ -41,7 +41,6 @@ import java.util.LinkedHashMap;
 public class PacketsImpl extends Packets {
 
 	private static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel("fvtm");
-	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final HashMap<Class<? extends PacketBase>, Class<? extends PacketBase>> PACKETS = new LinkedHashMap<>();
 
 	public void init(){
@@ -84,6 +83,15 @@ public class PacketsImpl extends Packets {
 					((DecorationEntity)ent).readEntityFromNBT(tag.local());
 				}
 			});
+			LIS_CLIENT.put("block_func_sync", (tag, player) -> {
+				World world = player.getWorld().local();
+				BlockPos pos = BlockPos.fromLong(tag.getLong("pos"));
+				BlockTileEntity tile = (BlockTileEntity)world.getTileEntity(pos);
+				if(tile != null){
+					TagCW data = tag.getCompound("data");
+					for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(data);
+				}
+			});
 		}
 		FvtmLogger.LOGGER.log("Completed Packet Listener registration.");
 	}
@@ -99,16 +107,12 @@ public class PacketsImpl extends Packets {
 	}
 
 	@Override
-	public void send(BlockData blockdata, V3I vec, int dim){
-		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
-		TagCW com = getBlockFuncData(blockdata, pos);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(dim, pos));
+	public void send(BlockData blockdata, WorldW world, V3I vec){
+		Packets.sendToAllTrackingPos(PKT_TAG, world, vec, "block_func_sync", getBlockFuncData(blockdata, new BlockPos(vec.x, vec.y, vec.z)));
 	}
 
 	private TagCW getBlockFuncData(BlockData blockdata, BlockPos pos){
 		TagCW com = TagCW.create();
-		com.set("target_listener", UTIL_LISTENER);
-		com.set("task", "block_func_sync");
 		com.set("pos", pos.toLong());
 		TagCW data = TagCW.create();
 		for(BlockFunction func : blockdata.getFunctions()) func.save(data);
@@ -121,8 +125,7 @@ public class PacketsImpl extends Packets {
 		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
 		BlockTileEntity tile = (BlockTileEntity)((World)world.direct()).getTileEntity(pos);
 		if(tile == null) return;
-		TagCW com = getBlockFuncData(tile.getBlockData(), pos);
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(com.local()), getTargetPoint(tile.getDim(), pos));
+		send(tile.getBlockData(), world, vec);
 	}
 
 	@Override

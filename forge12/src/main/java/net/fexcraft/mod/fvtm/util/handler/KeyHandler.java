@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
@@ -93,7 +94,7 @@ public class KeyHandler {
     }
 
     public void handleKeyboardInput(){
-        Passenger player = minecraft.player.getCapability(Capabilities.PASSENGER, null).asWrapper();
+        Passenger player = UniEntity.getCasted(minecraft.player);
         SeatInstance seat = ((RootVehicle)minecraft.player.getRidingEntity()).getSeatOf(minecraft.player);
         if(seat == null) return;
         boolean uni12 = minecraft.player.getRidingEntity() instanceof ULandVehicle;

@@ -16,7 +16,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.uni.inv.UniStack;
-import net.fexcraft.mod.uni.packet.PacketListener;
+import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleLiftEntity extends BlockEntity implements PacketListener, InteractRefHolder {
+public class VehicleLiftEntity extends BlockEntity implements PacketTagListener, InteractRefHolder {
 
 	private InteractRef ref = new InteractRef(this);
 	private VehicleData data;

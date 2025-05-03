@@ -33,8 +33,8 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
+import static net.fexcraft.mod.fvtm.util.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
 
 /**
  * Base class for Crafter-Type MultiBlock Scripts.

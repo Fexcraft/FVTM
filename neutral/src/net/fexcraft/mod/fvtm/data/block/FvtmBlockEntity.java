@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.uni.world.WorldW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -11,8 +12,7 @@ public interface FvtmBlockEntity {
 
     public V3I getV3I();
 
-    public int getDim();
-
     public int getMeta();
 
+	public WorldW getWorldW();
 }

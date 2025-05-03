@@ -13,8 +13,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
-import net.fexcraft.mod.uni.packet.PacketListener;
-import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
+import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -164,8 +163,8 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	public void handleBlockEntityPacket(TagCW com, Passenger player){
 		BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof PacketListener){
-			((PacketListener)tile).handle(com, player);
+		if(tile instanceof PacketTagListener){
+			((PacketTagListener)tile).handle(com, player);
 		}
 		else{
 			FvtmLogger.debug("No receiver for packet '" + com + "' found. Dest: " + pos);

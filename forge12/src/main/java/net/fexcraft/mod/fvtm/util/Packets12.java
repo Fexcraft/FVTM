@@ -4,6 +4,7 @@ package net.fexcraft.mod.fvtm.util;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.packet.*;
+import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -34,7 +35,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_VehKeyPress message, MessageContext ctx){
 			FMLCommonHandler.instance().getMinecraftServerInstance()
-				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleServer(message, UniEntity.getEntity(ctx.getServerHandler().player)));
 			return null;
 		}
 
@@ -61,7 +62,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_SeatUpdate message, MessageContext ctx){
 			FMLCommonHandler.instance().getMinecraftServerInstance()
-				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleServer(message, UniEntity.getEntity(ctx.getServerHandler().player)));
 			return null;
 		}
 
@@ -72,7 +73,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_SeatUpdate message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, UniEntity.getEntity(Minecraft.getMinecraft().player)));
 			return null;
 		}
 
@@ -99,7 +100,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_SPUpdate message, MessageContext ctx){
 			FMLCommonHandler.instance().getMinecraftServerInstance()
-				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleServer(message, UniEntity.getEntity(ctx.getServerHandler().player)));
 			return null;
 		}
 
@@ -110,7 +111,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_SPUpdate message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, UniEntity.getEntity(Minecraft.getMinecraft().player)));
 			return null;
 		}
 
@@ -137,7 +138,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_VehKeyPressState message, MessageContext ctx){
 			FMLCommonHandler.instance().getMinecraftServerInstance()
-				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleServer(message, UniEntity.getEntity(ctx.getServerHandler().player)));
 			return null;
 		}
 
@@ -148,7 +149,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_VehKeyPressState message, MessageContext ctx){
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, UniEntity.getEntity(Minecraft.getMinecraft().player)));
 			return null;
 		}
 
@@ -176,7 +177,7 @@ public class Packets12 {
 		public IMessage onMessage(PI_TagListener message, MessageContext ctx){
 			try{
 				FMLCommonHandler.instance().getMinecraftServerInstance()
-					.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+					.addScheduledTask(handleServer(message, UniEntity.getEntity(ctx.getServerHandler().player)));
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -192,7 +193,7 @@ public class Packets12 {
 		public IMessage onMessage(PI_TagListener message, MessageContext ctx){
 			try{
 				Minecraft.getMinecraft()
-					.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+					.addScheduledTask(handleClient(message, UniEntity.getEntity(Minecraft.getMinecraft().player)));
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -223,7 +224,7 @@ public class Packets12 {
 		@Override
 		public IMessage onMessage(PI_VehMove message, MessageContext ctx){
 			FMLCommonHandler.instance().getMinecraftServerInstance()
-				.addScheduledTask(handleServer(message, ctx.getServerHandler().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleServer(message, UniEntity.getEntity(ctx.getServerHandler().player)));
 			return null;
 		}
 
@@ -235,7 +236,7 @@ public class Packets12 {
 		public IMessage onMessage(PI_VehMove message, MessageContext ctx){
 			if(Minecraft.getMinecraft().player == null) return null;
 			Minecraft.getMinecraft()
-				.addScheduledTask(handleClient(message, Minecraft.getMinecraft().player.getCapability(Capabilities.PASSENGER, null).asWrapper()));
+				.addScheduledTask(handleClient(message, UniEntity.getEntity(Minecraft.getMinecraft().player)));
 			return null;
 		}
 

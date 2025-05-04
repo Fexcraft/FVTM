@@ -48,7 +48,7 @@ public class FuelFillerEntity extends BlockEntity implements FuelFiller.FuelFill
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider prov){
         super.loadAdditional(compound, prov);
         if(compound.contains("filler")){
-            filler.load(TagCW.wrap(compound.getCompound("filler")));
+            filler.load(TagCW.wrap(compound.getCompoundOrEmpty("filler")));
         }
     }
 

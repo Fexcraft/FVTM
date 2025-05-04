@@ -30,18 +30,20 @@ public interface Passenger extends EntityW {
 
 	public boolean isShiftDown();
 
+	/** Towards Clients */
 	public default void sendPassUpdate(int ent, int veh, int seat){
 		TagCW com = TagCW.create();
 		com.set("ent", ent);
 		com.set("veh", veh);
 		com.set("seat", seat);
-		Packets.sendToAllTrackingEnt(PKT_TAG, this, "upd_pass", com);
+		Packets.sendInRange(PKT_TAG, this, "upd_pass", com);
 	}
 
+	/** Towards Server */
 	public default void reqPassUpdate(){
 		TagCW com = TagCW.create();
 		com.set("ent", getId());
-		Packets.sendTo(PKT_TAG, this, "upd_pass", com);
+		Packets.send(PKT_TAG, "upd_pass", com);
 	}
 
 }

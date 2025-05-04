@@ -38,7 +38,6 @@ import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -237,8 +236,8 @@ public abstract class Packets {
 			SystemRegion<?, ?> reg = system.getRegions().get(com.getIntArray("xz"));
 			if(reg != null) reg.sendSync(player);
 		});
-		LIS_CLIENT.put("upd_pass", (tag, player) -> {
-			EntityW ent = player.getWorld().getEntity(tag.getInteger("ent"));
+		LIS_SERVER.put("upd_pass", (com, player) -> {
+			EntityW ent = player.getWorld().getEntity(com.getInteger("ent"));
 			if(ent instanceof Passenger){
 				Passenger pass = (Passenger)ent;
 				pass.sendPassUpdate(pass.getId(), pass.vehicle(), pass.seat());

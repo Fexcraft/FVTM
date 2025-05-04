@@ -64,6 +64,9 @@
 
 	"ui.fvtm.toolbox.painter.info": "Here you can edit your vehicle/block/container's color.",
 	"ui.fvtm.toolbox.texture.info": "Here you can select your vehicle/block/container's texture.",
+	"ui.fvtm.toolbox.texture.title": "Texture Toolbox",
+	"ui.fvtm.toolbox.texture.no_url": "URL Textures are disabled on this World/Server.",
+	"ui.fvtm.toolbox.texture.server": "Server textures must be prefixed with 'server:'!",
 
 	"ui.fvtm.fuel_filler.prev": "Previous Fuel Type",
 	"ui.fvtm.fuel_filler.next": "Next Fuel Type",

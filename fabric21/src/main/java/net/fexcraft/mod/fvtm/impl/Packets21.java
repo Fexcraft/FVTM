@@ -145,7 +145,7 @@ public class Packets21 extends Packets {
 	}
 
 	@Override
-	public void send(BlockData blockdata, V3I pos, int dim){
+	public void send(BlockData blockdata, WorldW world, V3I pos){
 
 	}
 

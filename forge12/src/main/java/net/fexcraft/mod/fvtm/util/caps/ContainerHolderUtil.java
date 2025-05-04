@@ -4,8 +4,6 @@ import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_CONTAINERS;
 import static net.fexcraft.mod.fvtm.util.PacketsImpl.getTargetPoint;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -177,12 +175,12 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public void sync(boolean fromside){
-			NBTTagCompound compound = fromside ? new NBTTagCompound() : write(null);
+			/*NBTTagCompound compound = fromside ? new NBTTagCompound() : write(null);
 			compound.setString("target_listener", "fvtm:gui");
 			compound.setString("task", "update_container_holder");
 			compound.setInteger("entity", entity.getEntityId());
 			if(fromside){ PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound)); }
-			else{ PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(entity)); }
+			else{ PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), getTargetPoint(entity)); }*/
 		}
 
 		@Override

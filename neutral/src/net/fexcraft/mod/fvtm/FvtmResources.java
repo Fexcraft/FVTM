@@ -5,6 +5,7 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
@@ -497,7 +498,14 @@ public abstract class FvtmResources {
 
 	public abstract boolean isModPresent(String s);
 
-	public abstract IDL getExternalTexture(String custom);
+	public IDL getExternalTexture(String custom){
+		if(custom.startsWith("server:")){
+			return UniFCL.requestServerFile(null, custom);
+		}
+		return getExternalTexture0(custom);
+	}
+
+	public abstract IDL getExternalTexture0(String custom);
 
 	public static PartFunction getFunction(String key){
 		try{

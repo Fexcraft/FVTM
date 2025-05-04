@@ -197,7 +197,7 @@ public class Resources20 extends FvtmResources {
 	}
 
 	@Override
-	public IDL getExternalTexture(String custom){
+	public IDL getExternalTexture0(String custom){
 		return ExternalTextures.get("fvtm", custom);
 	}
 

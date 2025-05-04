@@ -339,7 +339,7 @@ public class Resources12 extends FvtmResources {
 	}
 
 	@Override
-	public IDL getExternalTexture(String custom){
+	public IDL getExternalTexture0(String custom){
 		return ExternalTextureLoader.get(custom);
 	}
 

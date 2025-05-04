@@ -394,7 +394,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				Print.bar(player, "&eSeat does not accept players as passengers.");
 				return false;
 			}
-			if(player.isRiding() && player.getRidingEntity().equals(vehicle)){
+			if(player.isRiding() && player.getRidingEntity().equals(this)){
 				SeatInstance oseat = vehicle.getSeatOf(player);
 				oseat.passenger(null);
 				pass.set(getEntityId(), seatidx);

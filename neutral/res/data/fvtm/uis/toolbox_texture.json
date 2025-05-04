@@ -67,7 +67,8 @@
 			"pos": [ 25, 2 ],
 			"autoscale": true,
 			"color": "242424",
-			"value": "Texture Toolbox"
+			"value": "ui.fvtm.toolbox.texture.title",
+			"translate": true
 		},
 		"selected": {
 			"absolute": true,

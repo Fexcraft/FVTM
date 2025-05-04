@@ -18,7 +18,6 @@ import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 public class EntityWIE extends EntityWI implements Passenger {
 
 	private int vehicle = -1, seat = -1;
-	private byte check;
 	private boolean notified;
 
 	public EntityWIE(Entity ent){
@@ -44,11 +43,11 @@ public class EntityWIE extends EntityWI implements Passenger {
 		if(!entity.world.isRemote){
 			sendPassUpdate(entity.getEntityId(), vehicle, seat);
 			if(entity instanceof EntityPlayer && !notified) {
-				try {
+				try{
 					Print.link(entity, I19U.trss("fvtm.seat.controls_info"), "https://fexcraft.net/wiki/mod/fvtm/controls");
 					notified = true;
 				}
-				catch (Exception e) {
+				catch(Exception e){
 					//
 				}
 			}

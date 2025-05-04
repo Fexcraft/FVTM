@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -57,7 +58,14 @@ public class ToolboxTextureContainer extends ContainerInterface {
 		String task = com.getString("task");
 		switch(task){
 			case "select":{
-				textureable.setSelectedTexture(com.getInteger("sel"), com.getString("tex"), com.getBoolean("ext"));
+				String tex = com.getString("tex");
+				boolean ext = com.getBoolean("ext");
+				if(ext && !UniFCL.URL_TEXTURES && !tex.startsWith("server:")){
+					player.entity.send("ui.fvtm.toolbox.texture.no_url");
+					player.entity.send("ui.fvtm.toolbox.texture.server");
+					break;
+				}
+				textureable.setSelectedTexture(com.getInteger("sel"), tex, ext);
 				if(client){
 					((ToolboxTexture)ui).updateStatus();
 					break;

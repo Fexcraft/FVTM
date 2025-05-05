@@ -331,7 +331,7 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			V3I vec = new V3I(tag.getList("pos"));
+			V3I vec = tag.getV3I("pos");
 			Junction junction = system.getJunction(vec);
 			if(junction != null) junction.read(tag);
 			else{
@@ -345,11 +345,11 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("rail_rem_junc", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			system.delJunction(new V3I(tag.getList("pos")));
+			system.delJunction(tag.getV3I("pos"));
 		});
 		LIS_CLIENT.put("rail_upd_junc_state", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			Junction junction = system.getJunction(new V3I(tag.getList("pos")));
+			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
 				junction.switch0 = tag.getBoolean("switch0");
 				junction.switch1 = tag.getBoolean("switch1");
@@ -357,7 +357,7 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("rail_upd_junc_signal", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			Junction junction = system.getJunction(new V3I(tag.getList("pos")));
+			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
 				if(tag.has("nosignal") && tag.getBoolean("nosignal")){
 					junction.signal = null;
@@ -372,7 +372,7 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("rail_upd_junc_signal_state", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			Junction junction = system.getJunction(new V3I(tag.getList("pos")));
+			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
 				junction.signal0 = tag.getBoolean("signal0");
 				junction.signal1 = tag.getBoolean("signal1");

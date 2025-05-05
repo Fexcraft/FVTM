@@ -40,8 +40,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 		DefaultModel.RENDERDATA.texture = null;
 		FvtmRenderTypes.setGlow(texture);
 		RailMarkerModel.INST.glow.render();
-		FvtmRenderTypes.setCutout(texture);
-		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+		FvtmRenderTypes.setGlow(texture);
 		if(marker.queueid == null){
 			Renderer120.setColor(RGB.BLACK);
 			RailMarkerModel.INST.arrow.render();

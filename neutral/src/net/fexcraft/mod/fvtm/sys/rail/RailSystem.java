@@ -363,11 +363,12 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				if(junction == null) return;
 				task = "rail_upd_junc";
 				compound = junction.write();
+				compound.set("pos", vector);
 				break;
 			}
 			case "no_junction":{
 				task = "rail_rem_junc";
-				compound.set("pos", vector.toLW());
+				compound.set("pos", vector);
 				break;
 			}
 			case "junction_state":{
@@ -375,7 +376,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				if(junction == null) return;
 				task = "rail_upd_junc_state";
 				compound = TagCW.create();
-				compound.set("pos", vector.toLW());
+				compound.set("pos", vector);
 				compound.set("switch0", junction.switch0);
 				compound.set("switch1", junction.switch1);
 				break;
@@ -385,7 +386,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				if(junction == null) return;
 				task = "rail_upd_junc_signal";
 				compound = TagCW.create();
-				compound.set("pos", vector.toLW());
+				compound.set("pos", vector);
 				if(junction.signal == null){
 					compound.set("nosignal", true);
 				}
@@ -400,7 +401,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				if(junction == null) return;
 				task = "rail_upd_junc_signal_state";
 				compound = TagCW.create();
-				compound.set("pos", vector.toLW());
+				compound.set("pos", vector);
 				compound.set("signal0", junction.signal0);
 				compound.set("signal1", junction.signal1);
 				break;

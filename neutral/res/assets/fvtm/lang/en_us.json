@@ -1,5 +1,6 @@
 {
 	"recipe.fvtm.blocks": "FVTM Blocks",
+	"recipe.fvtm.items": "FVTM Items",
 
 	"block.fvtm.vehicle_lift": "Vehicle Maintenance Lift",
 	"block.fvtm.constructor": "Constructor",

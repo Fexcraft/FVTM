@@ -5,10 +5,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
-import net.fexcraft.mod.fvtm.data.Content;
-import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.item.SignItem;
@@ -50,7 +47,7 @@ public class Resources21 extends FvtmResources {
 	public static LinkedHashMap<String, LinkedHashMap<String, Item>> ITEMS = new LinkedHashMap<>();
 	public static RoadToolItem ROAD_TOOL_ITEM;
 	public static ToolboxItem[] TOOLBOX = new ToolboxItem[ToolboxType.values().length];
-	public static JunctionTool JUNCTION_TOOl;
+	public static JunctionTool JUNCTION_TOOL;
 	//
 	public static Asphalt[] ASPHALT = new Asphalt[16];
 	public static BlockItem[] ASPHALT_ITEM = new BlockItem[16];
@@ -139,6 +136,20 @@ public class Resources21 extends FvtmResources {
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Blocks.HOPPER, 2))
 			.add(new ItemStack(Blocks.STONE_BUTTON,4))
+			.register();
+		//
+		String itemcat = "recipe.fvtm.items";
+		for(int i = 0; i < TOOLBOX.length; i++){
+			FclRecipe.newBuilder(itemcat).output(new ItemStack(TOOLBOX[i]))
+				.add(new ItemStack(Items.IRON_INGOT, 4))
+				.add(new ItemStack(Items.COPPER_INGOT, 2))
+				.register();
+		}
+		FclRecipe.newBuilder(itemcat).output(new ItemStack(JUNCTION_TOOL))
+			.add(new ItemStack(Items.IRON_INGOT, 2))
+			.add(new ItemStack(Items.COPPER_INGOT, 2))
+			.add(new ItemStack(Items.REDSTONE, 2))
+			.add(new ItemStack(Items.LEVER, 2))
 			.register();
 	}
 
@@ -251,7 +262,7 @@ public class Resources21 extends FvtmResources {
 		for(ToolboxType val : ToolboxType.values()){
 			TOOLBOX[val.idx] = (ToolboxItem)FVTM.regItem("fvtm:toolbox_" + val.idx, prop -> new ToolboxItem(prop, val.idx));
 		}
-		JUNCTION_TOOl = FVTM.regItem("fvtm:junction_tool", prop -> new JunctionTool(prop));
+		JUNCTION_TOOL = FVTM.regItem("fvtm:junction_tool", prop -> new JunctionTool(prop));
 	}
 
 	@Override

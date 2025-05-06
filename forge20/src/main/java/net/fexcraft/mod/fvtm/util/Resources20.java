@@ -6,10 +6,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.FuelFillerBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
-import net.fexcraft.mod.fvtm.data.Content;
-import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
@@ -48,7 +45,7 @@ public class Resources20 extends FvtmResources {
 
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
 	public static Supplier<ToolboxItem>[] TOOLBOX = new Supplier[ToolboxType.values().length];
-	public static Supplier<JunctionTool> JUNCTION_TOOl;
+	public static Supplier<JunctionTool> JUNCTION_TOOL;
 	public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
 	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
 	public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
@@ -118,6 +115,20 @@ public class Resources20 extends FvtmResources {
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Blocks.HOPPER, 2))
 			.add(new ItemStack(Blocks.STONE_BUTTON,4))
+			.register();
+		//
+		String itemcat = "recipe.fvtm.items";
+		for(int i = 0; i < TOOLBOX.length; i++){
+			FclRecipe.newBuilder(itemcat).output(new ItemStack(TOOLBOX[i].get()))
+				.add(new ItemStack(Items.IRON_INGOT, 4))
+				.add(new ItemStack(Items.COPPER_INGOT, 2))
+				.register();
+		}
+		FclRecipe.newBuilder(itemcat).output(new ItemStack(JUNCTION_TOOL.get()))
+			.add(new ItemStack(Items.IRON_INGOT, 2))
+			.add(new ItemStack(Items.COPPER_INGOT, 2))
+			.add(new ItemStack(Items.REDSTONE, 2))
+			.add(new ItemStack(Items.LEVER, 2))
 			.register();
 	}
 
@@ -218,7 +229,7 @@ public class Resources20 extends FvtmResources {
 		for(ToolboxType val : ToolboxType.values()){
 			TOOLBOX[val.idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_" + val.idx, () -> new ToolboxItem(val.idx));
 		}
-		JUNCTION_TOOl = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
+		JUNCTION_TOOL = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
 		for(int idx = 0; idx < ASPHALT.length; idx++){
 			int index = idx;
 			ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(ASPHALT[index].get(), new Item.Properties()));

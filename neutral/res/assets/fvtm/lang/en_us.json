@@ -21,6 +21,16 @@
 	"block.fvtm.asphalt_14": "7/8 Asphalt",
 	"block.fvtm.asphalt_15": "15/16 Asphalt",
 
+	"item.fvtm.junction_tool": "Junction Adjustment Toolbox",
+	"item.fvtm.junction_tool.selected": "\u00A79Junction Selected: \u00A77%s",
+	"item.fvtm.junction_tool.none": "\u00A7aNo Junction Position Cached.",
+	"item.fvtm.junction_tool.nosys": "\u00A7aRailSystem not found on this Level.",
+	"item.fvtm.junction_tool.nojunc": "\u00A7cNo junction at this position.",
+	"item.fvtm.junction_tool.fulljunc": "\u00A7cDisconnect all tracks before removing a Junction.",
+	"item.fvtm.junction_tool.remjunc": "\u00A7c\u00A7oRemoving Junction...",
+	"item.fvtm.junction_tool.reset": "\u00A77\u00A7oResetting previous Cached Position.",
+	"item.fvtm.junction_tool.cached": "\u00A7a\u00A7lJunction Position Cached.",
+
 	"cmd.fvtm.get-key.is-locked": "\u00A7cPlease unlock the Vehicle first.",
 	"cmd.fvtm.get-key.not-driver": "\u00A7eYou need to be the driver to get a key.",
 	"cmd.fvtm.get-key.max-keys": "\u00A7cMax amount of keys for this vehicle has been given already.",

@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt.AsphaltItem;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
@@ -249,6 +250,18 @@ public class Resources12 extends FvtmResources {
 			.add(new ItemStack(Blocks.LEVER, 4))
 			.add(new ItemStack(Items.GLASS_BOTTLE, 2))
 			.register();*/
+		//
+		String itemcat = "recipe.fvtm.items";
+		for(int i = 0; i < ToolboxType.values().length; i++){
+			FclRecipe.newBuilder(itemcat).output(new ItemStack(ToolboxItem.INSTANCE, 1, i))
+				.add(new ItemStack(Items.IRON_INGOT, 6))
+				.register();
+		}
+		FclRecipe.newBuilder(itemcat).output(new ItemStack(JunctionToolItem.INSTANCE))
+			.add(new ItemStack(Items.IRON_INGOT, 4))
+			.add(new ItemStack(Items.REDSTONE, 2))
+			.add(new ItemStack(Blocks.LEVER, 2))
+			.register();
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){

@@ -2,21 +2,15 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.sys.rail.JuncType;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 import java.util.Collections;
-
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_VEHICLEDATA;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -50,6 +44,10 @@ public class RailJunctionContainer extends ContainerInterface {
 
 	@Override
 	public void packet(TagCW com, boolean client){
+		if(client){
+			((RailJunction)ui).updateGrid();
+			return;
+		}
 		String task = com.getString("task");
 		switch(task){
 			case "switch0":{
@@ -134,7 +132,7 @@ public class RailJunctionContainer extends ContainerInterface {
 				break;
 			}
 		}
-
+		SEND_TO_CLIENT.accept(com, player);
 	}
 
 	private void move(int idx, int dir){

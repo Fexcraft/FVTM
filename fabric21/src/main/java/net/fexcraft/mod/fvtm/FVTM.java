@@ -5,10 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -236,6 +233,9 @@ public class FVTM implements ModInitializer {
 		});
 		ServerWorldEvents.UNLOAD.register((server, level) -> {
 			SystemManager.onWorldUnload(WrapperHolder.getWorld(level));
+		});
+		ServerTickEvents.START_SERVER_TICK.register(serv -> {
+			SystemManager.onServerTick();
 		});
 		ServerPlayConnectionEvents.JOIN.register((handler, player, server) -> {
 			if(server.overworld().isClientSide){

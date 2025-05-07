@@ -124,38 +124,43 @@ public class ForgeClientEvents {
 	@SubscribeEvent
 	public static void renderGrid(RenderHighlightEvent event){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return;
+		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return;
 		PoseStack pose = event.getPoseStack();
-		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
-		Renderer120.set(pose, cons, 0);
+		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
 		FvtmRenderTypes.setLines();
 		QV3D vec = new QV3D(event.getTarget().getLocation().x, event.getTarget().getLocation().y, event.getTarget().getLocation().z);
 		BlockPos pos = BlockPos.containing(event.getTarget().getLocation());
-		Renderer120.setColor(RGB.WHITE);
-		double x = event.getCamera().getPosition().x;
-		double y = event.getCamera().getPosition().y;
-		double z = event.getCamera().getPosition().z;
+		double cx = event.getCamera().getPosition().x;
+		double cy = event.getCamera().getPosition().y;
+		double cz = event.getCamera().getPosition().z;
 		double yy = vec.y * 0.0625f;
+		Renderer120.setColor(RGB.WHITE);
+		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
 		pose.pushPose();
+		pose.translate(-cx, -cy, -cz);
 		for(int i = 0; i < 4; i++){
-			POLY.vertices[0].pos(pos.getX() + (i * 0.25 + 0.125) - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z);
-			POLY.vertices[1].pos(pos.getX() + (i * 0.25 + 0.125) - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z);
-			LINE.render();
-			POLY.vertices[0].pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (i * 0.25 + 0.125) - z);
-			POLY.vertices[1].pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + (i * 0.25 + 0.125) - z);
-			LINE.render();
+			pose.pushPose();
+			pose.translate(pos.getX() + (i * 0.25 + 0.125), pos.getY() + yy + 0.01, pos.getZ() + 0.5);
+			LLBB2.render();
+			pose.popPose();
+			pose.pushPose();
+			pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + (i * 0.25 + 0.125));
+			LLBB0.render();
+			pose.popPose();
 		}
 		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
 		Renderer120.setColor(CYAN);
-		POLY.vertices[0].pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() - z);
-		POLY.vertices[1].pos(pos.getX() + v - x, pos.getY() + yy + 0.01 - y, pos.getZ() + 1 - z);
-		LINE.render();
+		pose.pushPose();
+		pose.translate(pos.getX() + v, pos.getY() + yy + 0.01, pos.getZ() + 0.5);
+		LLBB2.render();
+		pose.popPose();
 		v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
-		POLY.vertices[0].pos(pos.getX() - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z);
-		POLY.vertices[1].pos(pos.getX() + 1 - x, pos.getY() + yy + 0.01 - y, pos.getZ() + v - z);
-		LINE.render();
-		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
+		pose.pushPose();
+		pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + v);
+		LLBB0.render();
+		pose.popPose();
 		Renderer120.setColor(ORG);
-		pose.translate(vec.vec.x - x, vec.vec.y - y, vec.vec.z - z);
+		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		sphere.render();
 		pose.popPose();
 	}

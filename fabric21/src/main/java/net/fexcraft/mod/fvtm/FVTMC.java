@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -141,6 +142,9 @@ public class FVTMC implements ClientModInitializer {
 		});
 		ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
 			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
+		});
+		ClientTickEvents.START_CLIENT_TICK.register(serv -> {
+			SystemManager.onClientTick();
 		});
 		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
 		WorldRenderEvents.AFTER_ENTITIES.register(SepRenderer::renderSeparate);

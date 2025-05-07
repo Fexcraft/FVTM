@@ -449,12 +449,10 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		regions.get(RegionKey.getRegionXZ(chunk.x(), chunk.z()), true).chucks.values().removeIf(pre -> pre.x() == chunk.x() && pre.z() == chunk.z());
 	}
 
-	//@Deprecated
 	public void registerEntity(RailEntity entity){
 		entities.put(entity.getUID(), entity.getRegion().key);
 	}
 
-	//@Deprecated
 	public RailEntity getEntity(long uid, boolean load){
 		RailRegion reg;
 		for(RegionKey key : regions.keySet()){

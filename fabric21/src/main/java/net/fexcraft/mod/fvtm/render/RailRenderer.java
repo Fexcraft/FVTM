@@ -2,39 +2,29 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.data.SignData;
-import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.JunctionTool;
-import net.fexcraft.mod.fvtm.item.SignItem;
-import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
-import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import org.joml.Matrix4f;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.HashSet;
 
-import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -98,6 +88,50 @@ public class RailRenderer {
 			pose.popPose();
 		}
 		pose.popPose();
+	}
+
+	public static boolean renderGrid(WorldRenderContext event, HitResult res){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
+		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return true;
+		PoseStack pose = event.matrixStack();
+		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
+		QV3D vec = new QV3D(res.getLocation().x, res.getLocation().y, res.getLocation().z);
+		BlockPos pos = BlockPos.containing(res.getLocation());
+		double cx = event.camera().getPosition().x;
+		double cy = event.camera().getPosition().y;
+		double cz = event.camera().getPosition().z;
+		double yy = vec.y * 0.0625f;
+		Renderer21.setColor(RGB.WHITE);
+		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
+		pose.pushPose();
+		pose.translate(-cx, -cy, -cz);
+		for(int i = 0; i < 4; i++){
+			pose.pushPose();
+			pose.translate(pos.getX() + (i * 0.25 + 0.125), pos.getY() + yy + 0.01, pos.getZ() + 0.5);
+			LLBB2.render();
+			pose.popPose();
+			pose.pushPose();
+			pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + (i * 0.25 + 0.125));
+			LLBB0.render();
+			pose.popPose();
+		}
+		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
+		Renderer21.setColor(COL_CYN);
+		pose.pushPose();
+		pose.translate(pos.getX() + v, pos.getY() + yy + 0.01, pos.getZ() + 0.5);
+		LLBB2.render();
+		pose.popPose();
+		v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
+		pose.pushPose();
+		pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + v);
+		LLBB0.render();
+		pose.popPose();
+		Renderer21.setColor(COL_ORG);
+		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
+		pose.scale(0.0625f, 0.0625f, 0.0625f);
+		SPHERE.render();
+		pose.popPose();
+		return true;
 	}
 
 }

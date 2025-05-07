@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.item;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
@@ -31,7 +32,7 @@ import java.util.function.Consumer;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleItem extends Item implements ContentDataItem<Vehicle, VehicleData>, TextureableItem<Vehicle> {
+public class VehicleItem extends Item implements ContentDataItem<Vehicle, VehicleData>, TextureableItem<Vehicle>, JunctionGridItem {
 
 	private Vehicle vehicle;
 
@@ -107,6 +108,11 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 	@Override
 	public ContentType getType(){
 		return ContentType.VEHICLE;
+	}
+
+	@Override
+	public boolean showJunctionGrid(){
+		return vehicle.getVehicleType().isRailVehicle();
 	}
 
 }

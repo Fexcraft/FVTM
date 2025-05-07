@@ -670,7 +670,7 @@ public class VehicleInstance {
 		for(int i = 0; i < data.getSeats().size(); i++){
 			seats.add(new SeatInstance(this, i));
 		}
-		if(!entity.isOnClient()){
+		if(entity != null && !entity.isOnClient()){
 			if(front != null) sendUpdate(PKT_UPD_CONNECTOR);
 		}
 		else{
@@ -790,7 +790,7 @@ public class VehicleInstance {
 
 	public void onUpdate(){
 		boolean remote = entity.isOnClient();
-		if(!remote){
+		if(!remote && !type.isRailVehicle()){
 			checkWheelPresence(w_front_l.id);
 			checkWheelPresence(w_front_r.id);
 			checkWheelPresence(w_rear_l.id);

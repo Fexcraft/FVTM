@@ -31,7 +31,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
@@ -153,7 +152,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			}
 			if(DebugUtils.ACTIVE){
 				pose.pushPose();
-				Renderer21.setColor(zone.inRange(data, vehpos, ply) ? GRNCOLOR : GRYCOLOR);
+				Renderer21.setColor(zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
 				pose.scale(zone.range, zone.range, zone.range);
 				DebugUtils.SPHERE.render();
 				Renderer21.resetColor();

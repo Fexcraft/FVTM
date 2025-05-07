@@ -89,7 +89,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		region.spawnEntity(this.start());
 	}
 
-	private void setveh(VehicleInstance veh){
+	public void setveh(VehicleInstance veh){
 		vehicle = veh;
 		vehicle.railent = this;
 		vehicle.iref().update();
@@ -105,8 +105,10 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	/** only to use with read() afterward || CLIENT SIDE METHOD */
 	public RailEntity(RailRegion railregion, long uid){
-		region = railregion; this.uid = uid;
+		region = railregion;
+		this.uid = uid;
 		com = Compound.getNewClientCompound(this);
+		setveh(new VehicleInstance(null, null));
 	}
 
 	public long getUID(){
@@ -120,7 +122,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void onUpdate(){
 		if(region.getSystem().isRemote()){
 			this.updatePosition();
-			FvtmLogger.debug(current, current.unit);
+			//FvtmLogger.debug(current, current.unit);
 			return;
 		}
 		//

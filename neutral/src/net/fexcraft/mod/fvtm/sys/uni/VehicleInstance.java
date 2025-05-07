@@ -821,7 +821,7 @@ public class VehicleInstance {
 			}
 			prev = entity.getPrevPos();
 			if(type.isRailVehicle()){
-				if(railent.current == null) return;
+				if(railent == null || railent.current == null) return;
 				V3D bf0 = railent.moveOnly((float)(railent.passed + 0.1));
 				V3D bf1 = railent.moveOnly((float)(railent.passed - 0.1));
 				V3D br0 = railent.moveOnly((float)(railent.passed - railent.frbogiedis - railent.rrbogiedis + 0.1));

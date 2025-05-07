@@ -3,8 +3,6 @@ package net.fexcraft.mod.fvtm.model.program;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
@@ -79,7 +77,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 				Renderer21.resetColor();
 			}
 		});
-		ModelGroup.PROGRAMS.add(new RGBCustom(new float[]{ 1, 1, 1 }));
+		ModelGroup.PROGRAMS.add(new RGBCustom(RGB.WHITE));
 		ModelGroup.PROGRAMS.add(new RGBChannel("custom"));
 		ModelGroup.PROGRAMS.add(new Program() {
 			public String id(){
@@ -216,12 +214,10 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 	public static class RGBCustom implements Program {
 
-		private Vec3f color = new Vec3f();
+		private RGB color = RGB.WHITE;
 
-		public RGBCustom(float[] col){
-			color.x = col[0];
-			color.y = col[1];
-			color.z = col[2];
+		public RGBCustom(RGB rgb){
+			color = rgb;
 		}
 
 		@Override
@@ -241,7 +237,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			return new RGBCustom(new RGB(args[0]).toFloatArray());
+			return new RGBCustom(new RGB(args[0]));
 		}
 
 	}

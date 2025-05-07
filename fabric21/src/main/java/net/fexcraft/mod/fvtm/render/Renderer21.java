@@ -27,10 +27,6 @@ public class Renderer21 extends Renderer<GLObject> {
 	public static final Vector3f AZ = new Vector3f(0, 0, 1);
 	public static final Vector3f NULLVEC = new Vector3f(0, 0, 0);
 	//
-	public static Vec3f BLUE = new Vec3f(0, 0, 1);
-	public static Vec3f CYAN = new Vec3f(0, 1, 1);
-	public static Vec3f ORG = new Vec3f(1, 0.75f, 0);
-	//
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static int color = 0xffffffff;
 	//
@@ -49,8 +45,8 @@ public class Renderer21 extends Renderer<GLObject> {
 		color = col.packed;
 	}
 
-	public static void setColor(Vec3f col){
-		//TODO color.copy(col);
+	public static void setColor(int col){
+		color = col;
 	}
 
 	public static void resetColor(){

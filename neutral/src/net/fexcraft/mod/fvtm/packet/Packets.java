@@ -319,15 +319,16 @@ public abstract class Packets {
 			FvtmLogger.debug("Receiving entity spawn request.");
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
 			SystemRegion<RailSystem, Junction> region = system.getRegions().get(tag.getIntArray("xz"), true);
-			if(region != null && region.loaded){
-				//TODO region.spawnEntity(new RailEntity(region, tag.getLong("uid")).read(tag));
+			if(region != null /*&& region.loaded*/){
+				RailRegion railreg = (RailRegion)region;
+				railreg.spawnEntity(new RailEntity(railreg, tag.getLong("uid")).read(tag));
 			}
-			else RailRegion.clientqueue.put(tag.getLong("uid"), tag.copy());
+			//else RailRegion.clientqueue.put(tag.getLong("uid"), tag.copy());
 		});
 		LIS_CLIENT.put("rail_rem_ent", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
-			//TODO RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false);
-			//TODO if(ent != null) ent.remove();
+			RailEntity ent = system.getEntity(tag.getLong("uid"), false);
+			if(ent != null) ent.remove();
 		});
 		LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());

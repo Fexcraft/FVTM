@@ -244,7 +244,6 @@ public class FVTM implements ModInitializer {
 			else{
 				RoadPlacingCache.onLogIn(handler.player.getGameProfile().getId());
 			}
-			SystemManager.PLAYERON = true;
 			SystemManager.syncPlayer(WrapperHolder.getWorld(handler.player.level()).dimkey(), UniEntity.getEntity(handler.player));
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {

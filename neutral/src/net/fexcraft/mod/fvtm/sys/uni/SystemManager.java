@@ -27,7 +27,8 @@ import static net.fexcraft.mod.fvtm.Config.*;
  */
 public class SystemManager {
 
-	public static boolean SINGLEPLAYER, PLAYERON;
+	public static boolean SINGLEPLAYER;
+	public static boolean CLIENTLOADED;
 	private static ConcurrentHashMap<Systems, ConcurrentHashMap<String, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
 	private static ConcurrentHashMap<String, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
 	private static ConcurrentHashMap<String, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
@@ -67,6 +68,11 @@ public class SystemManager {
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world){
 		if(!SYSTEMS.containsKey(sysid)) return null;
 		return (T)SYSTEMS.get(sysid).get(world.dimkey());
+	}
+
+	public static <T extends DetachedSystem> T get(Systems sysid, String key){
+		if(!SYSTEMS.containsKey(sysid)) return null;
+		return (T)SYSTEMS.get(sysid).get(key);
 	}
 
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world, Class<T> clazz){
@@ -148,6 +154,7 @@ public class SystemManager {
 		SYSTEMS.clear();
 		SYSTEMS_DIM.clear();
 		LOADED_DIM.clear();
+		SINGLEPLAYER = CLIENTLOADED = false;
 	}
 
 	/** Called client side. */

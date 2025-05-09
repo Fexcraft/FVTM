@@ -53,14 +53,17 @@ public class RailJunctionContainer extends ContainerInterface {
 			case "switch0":{
 				if(junc.type.isFork3()){
 					if(junc.switch0){
-						if(junc.switch1){
-							junc.switch0 = junc.switch1 = false;
-						}
-						else{
-							junc.switch1 = true;
-						}
+						junc.switch0 = false;
+						junc.switch1 = true;
 					}
-					else junc.switch0 = true;
+					else if(junc.switch1){
+						junc.switch0 = false;
+						junc.switch1 = false;
+					}
+					else{
+						junc.switch0 = true;
+						junc.switch1 = false;
+					}
 				}
 				else{
 					junc.switch0 = !junc.switch0;

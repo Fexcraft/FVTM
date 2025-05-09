@@ -2,8 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
-import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.PLAYERON;
-import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.SINGLEPLAYER;
+import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -281,7 +280,13 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	@Override
 	public void onServerTick(){
 		if(world.isClient()) return;
-		if(!fillqueue.isEmpty() && (!SINGLEPLAYER || PLAYERON)){
+		if(SINGLEPLAYER && !CLIENTLOADED){
+			String key = world.dimkey();
+			key = key.substring(0, key.length() - 1) + "c";
+			CLIENTLOADED = SystemManager.get(Systems.RAIL, key) != null;
+			if(!CLIENTLOADED) return;
+		}
+		if(!fillqueue.isEmpty() && (!SINGLEPLAYER || CLIENTLOADED)){
 			FvtmLogger.debug("Processing RailEntities in Queue " + fillqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
 			RailRegion region;

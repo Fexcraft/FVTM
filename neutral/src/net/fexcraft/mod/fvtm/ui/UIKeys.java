@@ -27,7 +27,6 @@ public class UIKeys {
 	public static final int ID12_FUEL_FILLER = 901;
 	public static final int ID12_VEHICLE_MAIN = 930;
 	public static final int ID12_VEHICLE_INFO = 931;
-	public static final int ID12_VEHICLE_ATTR_EDITOR = 932;
 	public static final int ID12_VEHICLE_FUEL = 933;
 	public static final int ID12_VEHICLE_ATTRIBUTES = 934;
 	public static final int ID12_VEHICLE_INVENTORIES = 935;
@@ -55,7 +54,6 @@ public class UIKeys {
 	public static final UIKey VEHICLE_CATALOG = new UIKey(ID12_VEHICLE_CATALOG, "fvtm:vehicle_catalog");
 	public static final UIKey VEHICLE_MAIN = new UIKey(ID12_VEHICLE_MAIN, "fvtm:vehicle_main");
 	public static final UIKey VEHICLE_INFO = new UIKey(ID12_VEHICLE_INFO, "fvtm:vehicle_info");
-	public static final UIKey VEHICLE_ATTR_EDITOR = new UIKey(ID12_VEHICLE_ATTR_EDITOR, "fvtm:vehicle_attr_editor");
 	public static final UIKey VEHICLE_FUEL = new UIKey(ID12_VEHICLE_FUEL, "fvtm:vehicle_fuel");
 	public static final UIKey VEHICLE_ATTRIBUTES = new UIKey(ID12_VEHICLE_ATTRIBUTES, "fvtm:vehicle_attributes");
 	public static final UIKey VEHICLE_INVENTORIES = new UIKey(ID12_VEHICLE_INVENTORIES, "fvtm:vehicle_inventories");

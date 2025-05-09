@@ -833,8 +833,8 @@ public class VehicleInstance {
 				V3D br0 = railent.moveOnly((float)(railent.passed - railent.frbogiedis - railent.rrbogiedis + 0.1));
 				V3D br1 = railent.moveOnly((float)(railent.passed - railent.frbogiedis - railent.rrbogiedis - 0.1));
 				if(bf0 != null && br0 != null && bf1 != null && br1 != null){
-					data.getAttribute("bogie_front_angle").set(toDegrees(Math.atan2(bf1.x - bf0.x, bf1.z - bf0.z) - point.getPivot().yaw()));
-					data.getAttribute("bogie_rear_angle").set(toDegrees(Math.atan2(br1.x - br0.x, br1.z - br0.z) - point.getPivot().yaw()));
+					data.getAttribute("bogie_front_angle").set(-toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x) - point.getPivot().yaw()) + 90);
+					data.getAttribute("bogie_rear_angle").set(-toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x) - point.getPivot().yaw()) + 90);
 				}
 			}
 			else{

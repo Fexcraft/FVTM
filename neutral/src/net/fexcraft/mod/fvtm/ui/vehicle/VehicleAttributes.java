@@ -116,7 +116,7 @@ public class VehicleAttributes extends UserInterface {
 			}
 			case "toggle":{
 				Attribute<?> attr = attributes.get(sel);
-				if(!attr.editable) return true;
+				if(!attr.editable && !attr.hasPerm()) return true;
 				if(!attr.valuetype.isTristate()) return true;
 				TagCW com = TagCW.create();
 				com.set("cargo", "toggle");
@@ -127,7 +127,7 @@ public class VehicleAttributes extends UserInterface {
 			}
 			case "reset":{
 				Attribute<?> attr = attributes.get(sel);
-				if(!attr.editable) return true;
+				if(!attr.editable && !attr.hasPerm()) return true;
 				if(!attr.valuetype.isTristate()) return true;
 				TagCW com = TagCW.create();
 				com.set("cargo", "toggle");
@@ -139,7 +139,7 @@ public class VehicleAttributes extends UserInterface {
 			}
 			case "decr":{
 				Attribute<?> attr = attributes.get(sel);
-				if(!attr.editable) return true;
+				if(!attr.editable && !attr.hasPerm()) return true;
 				if(!attr.valuetype.isNumber()) return true;
 				TagCW com = TagCW.create();
 				com.set("cargo", "toggle");
@@ -155,7 +155,7 @@ public class VehicleAttributes extends UserInterface {
 			}
 			case "incr":{
 				Attribute<?> attr = attributes.get(sel);
-				if(!attr.editable) return true;
+				if(!attr.editable && !attr.hasPerm()) return true;
 				if(!attr.valuetype.isNumber()) return true;
 				TagCW com = TagCW.create();
 				com.set("cargo", "toggle");
@@ -171,7 +171,7 @@ public class VehicleAttributes extends UserInterface {
 			}
 			case "apply":{
 				Attribute<?> attr = attributes.get(sel);
-				if(!attr.editable) return true;
+				if(!attr.editable && !attr.hasPerm()) return true;
 				if(!attr.valuetype.isNumber()) return true;
 				UIField field = fields.get("editor");
 				TagCW com = TagCW.create();
@@ -245,9 +245,13 @@ public class VehicleAttributes extends UserInterface {
 		}
 		int idx = ((mx - gLeft - 7) / 18) + ((my - gTop - 7) / 18) * COLS;
 		if(idx < 0 || idx >= attributes.size()) return;
-		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_id", new Object[]{ attributes.get(idx).id }));
-		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_value", new Object[]{ attributes.get(idx).asString() }));
-		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_type", new Object[]{ attributes.get(idx).valuetype.name }));
+		Attribute attr = attributes.get(idx);
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_id", new Object[]{ attr.id }));
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_value", new Object[]{ attr.asString() }));
+		list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_type", new Object[]{ attr.valuetype.name }));
+		if(attr.hasPerm()){
+			list.add(TRANSFORMAT.apply("ui.fvtm.vehicle_attributes.info_perm", new Object[]{ attr.perm }));
+		}
 	}
 
 }

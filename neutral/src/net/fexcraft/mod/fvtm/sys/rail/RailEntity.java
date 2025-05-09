@@ -54,7 +54,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public double moverq;//push_rq, pull_rq;
 	public TrackUnit[] unitson = new TrackUnit[4];
 	//
-	private Short lastcheck = null;//for entity despawn/spawning;
+	private short lastcheck = 40;//for entity despawn/spawning;
 	private static final short interval = 100;//300
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
@@ -271,7 +271,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			coupler = coupler.getOpposite();
 			if(coupler.isFrontal() ? coupler.isFront() : coupler.isRear()) rev = !rev;
 			coupler = coupler.getCounterpart();
-			if(coupler.root == null) continue;
+			if(coupler == null || coupler.root == null) continue;
 			coupler.root.moverq += rev ? -amount : amount;
 		}
 	}
@@ -481,7 +481,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private void checkIfShouldHaveEntity(){
-		if(lastcheck == null) return;
+		//if(lastcheck == null) return;
 		if(lastcheck > 0){
 			lastcheck--;
 			return;
@@ -626,7 +626,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		FvtmLogger.debug("Removing TrackEntity " + uid + "!");
 		front.decouple();
 		rear.decouple();
-		lastcheck = null;
+		lastcheck = 1000;
 		region.getSystem().delEntity(this);
 		if(vehicle.entity != null && !vehicle.entity.isRemoved()) vehicle.entity.remove();
 		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(this);
@@ -779,7 +779,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public RailEntity start(){
-		lastcheck = interval / 2; return this;
+		lastcheck = interval / 2;
+		return this;
 	}
 
 	public ArrayList<JEC> getCommands(){

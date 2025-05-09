@@ -23,6 +23,7 @@ public class PlayerEvents {
 		else{
 			RoadPlacingCache.onLogIn(event.getEntity().getGameProfile().getId());
 		}
+		SystemManager.PLAYERON = true;
 		SystemManager.syncPlayer(WrapperHolder.getWorld(event.getEntity().level()).dimkey(), UniEntity.getEntity(event.getEntity()));
 	}
 

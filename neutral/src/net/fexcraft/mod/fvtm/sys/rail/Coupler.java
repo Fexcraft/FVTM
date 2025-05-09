@@ -17,7 +17,10 @@ public class Coupler {
 	public final boolean frontal;
 	public MiniBB mbb = new MiniBB();
 	
-	public Coupler(RailEntity root, boolean bool){ this.root = root; this.frontal = bool; }
+	public Coupler(RailEntity root, boolean bool){
+		this.root = root;
+		this.frontal = bool;
+	}
 
 	public boolean isFront(){
 		return entity == null ? false : entity.front.entity == root;

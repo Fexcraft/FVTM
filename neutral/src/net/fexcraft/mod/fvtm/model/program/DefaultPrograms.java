@@ -162,6 +162,68 @@ public class DefaultPrograms {
 				}
 			});
 		}
+		//
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean();
+			}
+			public String id(){
+				return "fvtm:lights_rail_forward";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
+			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
+				return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean();
+			}
+			public String id(){
+				return "fvtm:lights_rail_backward";
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_auto";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_auto_opposite";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_front";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(-data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:bogie_rear";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+			}
+			public void post(ModelGroup list, ModelRenderData data){
+				RENDERER.rotate(-data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+			}
+		});
+		//
 		ModelGroup.PROGRAMS.add(new AttributeLights("", false));
 		ModelGroup.PROGRAMS.add(new AttributeSignalLights("", 0, false));
 		ModelGroup.PROGRAMS.add(new IDSpecific(""));

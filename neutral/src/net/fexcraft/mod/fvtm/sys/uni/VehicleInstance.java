@@ -449,7 +449,9 @@ public class VehicleInstance {
 			}
 			case PKT_UPD_LIGHTS:{
 				data.getAttribute("lights").set(packet.getBoolean("lights"));
-				data.getAttribute("lights_long").set(packet.getBoolean("lights_long"));
+				if(data.hasAttribute("lights_long")){
+					data.getAttribute("lights_long").set(packet.getBoolean("lights_long"));
+				}
 				return;
 			}
 			case PKT_UPD_TOGGLE_ATTR:{
@@ -577,7 +579,7 @@ public class VehicleInstance {
 			}
 			case PKT_UPD_LIGHTS:{
 				com.set("lights", data.getAttribute("lights").asBoolean());
-				com.set("lights_long", data.getAttribute("lights_long").asBoolean());
+				if(data.hasAttribute("lights_long")) com.set("lights_long", data.getAttribute("lights_long").asBoolean());
 				break;
 			}
 			case PKT_UPD_TOGGLE_ATTR:{

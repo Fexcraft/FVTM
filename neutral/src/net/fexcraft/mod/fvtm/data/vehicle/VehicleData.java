@@ -377,6 +377,10 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	public JsonMap toJson(){
 		return new JsonMap();
 	}
+
+	public boolean hasAttribute(String id){
+		return attributes.containsKey(id);
+	}
 	
 	public Attribute<?> getAttribute(String id){
 		return attributes.get(id);

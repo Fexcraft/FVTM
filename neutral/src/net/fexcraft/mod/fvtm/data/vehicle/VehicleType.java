@@ -55,14 +55,14 @@ public enum VehicleType {
 		ArrayList<Attribute<?>> attrs = new ArrayList<>();
 		//general
 		attrs.add(new AttrFloat("weight", 1000f).limit(0, Integer.MAX_VALUE));
-		attrs.add(new AttrBoolean("constructor_show", true).editable(true));
+		//attrs.add(new AttrBoolean("constructor_show", true).editable(true));
 		attrs.add(new AttrFloat("hitbox_width", 1f).limit(0, 16).editable(false));
 		attrs.add(new AttrFloat("hitbox_height", 1f).limit(0, 16).editable(false));
 		attrs.add(new AttrInteger("fuel_capacity", 20000).limit(0, Integer.MAX_VALUE));
-		attrs.add(new AttrString("fuel_primary", ""));
-		attrs.add(new AttrString("fuel_secondary", ""));
-		attrs.add(new AttrFloat("fuel_quality", 0f).limit(0, 10f));
-		attrs.add(new AttrInteger("fuel_stored", 0).limit(0, Integer.MAX_VALUE));
+		attrs.add(new AttrString("fuel_primary", "").editable(false));
+		attrs.add(new AttrString("fuel_secondary", "").editable(false));
+		attrs.add(new AttrFloat("fuel_quality", 0f).editable(false).limit(0, 10f));
+		attrs.add(new AttrInteger("fuel_stored", 0).editable(false).limit(0, Integer.MAX_VALUE));
 		//animation
 		attrs.add(new AttrBoolean("lights", false).addAccess("driver").sync(true)
 			.addIcons("true", "fvtm:textures/gui/icons/lights_low_on.png", "false", "fvtm:textures/gui/icons/lights_low_off.png"));
@@ -78,6 +78,7 @@ public enum VehicleType {
 		attrs.add(new AttrFloat("speed", 0f).limit(Integer.MIN_VALUE, Integer.MAX_VALUE).editable(false));
 		attrs.add(new AttrInteger("rpm", 0).limit(0, Integer.MAX_VALUE).editable(false));
 		attrs.add(new AttrInteger("generated_keys", 0).limit(0, 8).editable(false));
+		attrs.add(new AttrBoolean("use-fuel", true).perm("fvtm.admin"));//for automated entities
 		switch(this){
 			case LAND:{
 				attrs.add(new AttrBoolean("lights_fog", false).editable(true).addAccess("driver").sync(true)

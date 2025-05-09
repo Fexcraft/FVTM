@@ -17,7 +17,6 @@ import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
  */
 public class RailRegion extends SystemRegion<RailSystem, Junction> {
 
-	public static final TreeMap<Long, TagCW> fillqueue = new TreeMap<>();
 	protected ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 
 	public RailRegion(RailSystem root, RegionKey rk){
@@ -33,9 +32,7 @@ public class RailRegion extends SystemRegion<RailSystem, Junction> {
 			FvtmLogger.debug("Spawning Entity " + ent.uid + "!");
 			entities.put(ent.getUID(), ent);
 			if(system.isRemote()) return;
-			TagCW compound = ent.write(null);
-			compound.set("xz", key.toArray());
-			Packets.sendToAllTrackingPos(PKT_TAG, system.getWorld(), ent.pos, "rail_spawn_ent", compound);
+			Packets.sendToAllTrackingPos(PKT_TAG, system.getWorld(), ent.pos, "rail_spawn_ent", ent.write(null));
 		}
 		catch(Exception e){
 			e.printStackTrace();

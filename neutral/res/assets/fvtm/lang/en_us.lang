@@ -20,6 +20,17 @@ tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt
 
+# Items
+item.fvtm:junction_tool.name=Junction Adjustment Toolbox
+item.fvtm.junction_tool.selected=&9Junction Selected: &7%s
+item.fvtm.junction_tool.none=&aNo Junction Position Cached.
+item.fvtm.junction_tool.nosys=&aRailSystem not found on this Level.
+item.fvtm.junction_tool.nojunc=&cNo junction at this position.
+item.fvtm.junction_tool.fulljunc=&cDisconnect all tracks before removing a Junction.
+item.fvtm.junction_tool.remjunc=&c&oRemoving Junction...
+item.fvtm.junction_tool.reset=&7&oResetting previous Cached Position.
+item.fvtm.junction_tool.cached=&a&lJunction Position Cached.
+
 cmd.fvtm.get-key.is-locked=&cPlease unlock the Vehicle first.
 cmd.fvtm.get-key.not-driver=&eYou need to be the driver to get a key.
 cmd.fvtm.get-key.max-keys=&cMax amount of keys for this vehicle has been given already.

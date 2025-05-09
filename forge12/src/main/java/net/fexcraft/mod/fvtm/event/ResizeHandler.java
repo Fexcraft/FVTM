@@ -19,13 +19,13 @@ public class ResizeHandler {
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) throws Exception {
     	//if(event.phase == Phase.END) return;
-		if(!resize(event.player)) event.player.eyeHeight = event.player.getDefaultEyeHeight();
+		//if(!resize(event.player)) event.player.eyeHeight = event.player.getDefaultEyeHeight();
     }
     
     @SubscribeEvent
     public void onTick(LivingEvent.LivingUpdateEvent event) throws Exception {
     	//if(event.phase == Phase.END) return;
-		if(event.getEntity() instanceof EntityPlayer == false) resize(event.getEntity());
+		//if(event.getEntity() instanceof EntityPlayer == false) resize(event.getEntity());
     }
     
     private boolean resize(Entity entity) throws Exception {

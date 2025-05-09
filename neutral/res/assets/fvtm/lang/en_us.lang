@@ -118,7 +118,9 @@ ui.fvtm.vehicle_attributes.info_origin=Type: %s; Origin: %s
 ui.fvtm.vehicle_attributes.info_bound=V: %s; I: %s; Mn: %s; Mx: %s
 ui.fvtm.vehicle_attributes.info_type=T: %s
 ui.fvtm.vehicle_attributes.info_value=V: %s
+ui.fvtm.vehicle_attributes.info_perm=Perm: %s
 ui.fvtm.vehicle_attributes.not_editable=Not Editable
+ui.fvtm.vehicle_attributes.no_permission=No Permission
 ui.fvtm.vehicle_inventories.title=Vehicle Inventories
 ui.fvtm.vehicle_inventories.page_next=Next Page
 ui.fvtm.vehicle_inventories.page_prev=Previous Page
@@ -292,6 +294,8 @@ fvtm.seat.controls_info=&3Vehicle controls and instructions can be found in the 
 fvtm.seat.control_mode.on=&6Switched to &aAttribute Control &6mode.
 fvtm.seat.control_mode.off=&6Switched to &eDrive/Steer &6mode.
 fvtm.rail.decrease_throttle=&cDecrease the throttle before switching direction.
+fvtm.rail.direction_forward=&e&oDirection set to FORWARD
+fvtm.rail.direction_reverse=&e&oDirection set to REVERSE
 
 # Entity Spawn
 fvtm.spawn.rail.no_system=&cRailSystem not found on this Level.

@@ -62,8 +62,8 @@ public class NRailVehicle extends RootVehicle {
 
 	@Override
 	public void readSpawnData(TagCW com){
-		//sys.getEntity(com.getLong("RID"), true).setveh(vehicle);
 		if(com.has("RID")){
+			sys.getEntity(com.getLong("RID"), true).setveh(vehicle);
 			current = new Track(null).read(com.getCompound("Track"));
 			frbogiedis = com.getDouble("fr_bogie");
 			rrbogiedis = com.getDouble("rr_bogie");

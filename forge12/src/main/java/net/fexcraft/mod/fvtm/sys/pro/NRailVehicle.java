@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.pro;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity.TRO;
@@ -10,10 +8,8 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.EntityWIE;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -66,10 +62,12 @@ public class NRailVehicle extends RootVehicle {
 
 	@Override
 	public void readSpawnData(TagCW com){
-		sys.getEntity(com.getLong("RID"), true).setveh(vehicle);
-		current = new Track(null).read(com.getCompound("Track"));
-		frbogiedis = com.getDouble("fr_bogie");
-		rrbogiedis = com.getDouble("rr_bogie");
+		//sys.getEntity(com.getLong("RID"), true).setveh(vehicle);
+		if(com.has("RID")){
+			current = new Track(null).read(com.getCompound("Track"));
+			frbogiedis = com.getDouble("fr_bogie");
+			rrbogiedis = com.getDouble("rr_bogie");
+		}
 	}
 
 	@Override

@@ -396,7 +396,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(vehicle.entity == null) return;
 		switch(com.getString("sub")){
 			case "track":{
-				current = new Track(null).read(com);
+				current = region.getTrack(new PathKey(com));
 				break;
 			}
 			case "passed":{

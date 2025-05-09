@@ -206,13 +206,11 @@ public class EventHandler {
 			Packets.sendTo(PKT_TAG, ent, "sync_conf", cfgsync);
 		}
 		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player.getGameProfile().getId());
-		if(!Static.getServer().isSinglePlayer()) return;
-		SystemManager.PLAYERON = true;
 		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), ent);
 	}
 
 	@SubscribeEvent
-	public void onPlayerOut(PlayerEvent.PlayerChangedDimensionEvent event){
+	public void onPlayerDim(PlayerEvent.PlayerChangedDimensionEvent event){
 		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), UniEntity.getEntity(event.player));
 	}
 	
@@ -225,8 +223,6 @@ public class EventHandler {
 		if(Config.DISMOUNT_ON_LOGOUT && event.player.getRidingEntity() instanceof RootVehicle){
 			event.player.dismountRidingEntity();
 		}
-		if(!Static.getServer().isSinglePlayer()) return;
-		SystemManager.PLAYERON = false;
 	}
 	
 	@SubscribeEvent

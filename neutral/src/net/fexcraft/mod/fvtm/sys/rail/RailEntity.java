@@ -701,7 +701,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setForward(EntityW player, boolean bool){
 		com.forward = bool;
-		if(player != null) player.bar("&e&oDirection set to " + (bool ? "FORWARD" : "REVERSE"));
+		if(player != null) player.bar("fvtm.rail.direction_" + (bool ? "forward" : "reverse"));
 		for(RailEntity ent : com.entities){
 			ent.vehicle.data.getAttribute("forward").set(com.getOrient(ent));
 			ent.sendForwardUpdate();
@@ -710,13 +710,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	private void sendForwardUpdate(){
 		if(vehicle.entity == null || region.getSystem().getWorld().isClient()) return;
-		TagCW packet = TagCW.create();
-		packet.set("target_listener", "");
-		packet.set("task", "attr_update");
-		packet.set("attr", "forward");
-		packet.set("value", vehicle.data.getAttribute("forward").asString());
-		packet.set("entity", vehicle.entity.getId());
-		//TODO send in range
+		vehicle.updateAttr("forward");
 	}
 
 	private void updateOrientationAttr(){

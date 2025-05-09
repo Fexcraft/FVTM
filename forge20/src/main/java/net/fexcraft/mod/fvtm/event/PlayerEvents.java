@@ -23,12 +23,11 @@ public class PlayerEvents {
 		else{
 			RoadPlacingCache.onLogIn(event.getEntity().getGameProfile().getId());
 		}
-		SystemManager.PLAYERON = true;
 		SystemManager.syncPlayer(WrapperHolder.getWorld(event.getEntity().level()).dimkey(), UniEntity.getEntity(event.getEntity()));
 	}
 
 	@SubscribeEvent
-	public static void onPlayerIn(PlayerEvent.PlayerChangedDimensionEvent event){
+	public static void onPlayerDim(PlayerEvent.PlayerChangedDimensionEvent event){
 		SystemManager.syncPlayer(WrapperHolder.getWorld(event.getEntity().level()).dimkey(), UniEntity.getEntity(event.getEntity()));
 	}
 

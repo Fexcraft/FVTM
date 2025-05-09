@@ -359,12 +359,12 @@ public class RailEntity implements Comparable<RailEntity>{
 		TagCW compound = TagCW.create();
 		switch(string){
 			case "track":{
-				compound.set("sub", "update_track");
+				compound.set("sub", "track");
 				current.getId().write(compound);
 				break;
 			}
 			case "passed":{
-				compound.set("sub", "update_passed");
+				compound.set("sub", "passed");
 				compound.set("passed", passed);
 				break;
 			}
@@ -389,7 +389,21 @@ public class RailEntity implements Comparable<RailEntity>{
 				break;
 			}*/
 		}
-		vehicle.sendUpdate(PKT_UPD_ENTITY, compound);
+		vehicle.sendUpdate(PKT_UPD_RAILENTITY, compound);
+	}
+
+	public void onPacket(EntityW pass, TagCW com){
+		if(vehicle.entity == null) return;
+		switch(com.getString("sub")){
+			case "track":{
+				current = new Track(null).read(com);
+				break;
+			}
+			case "passed":{
+				passed = com.getDouble("passed");
+				break;
+			}
+		}
 	}
 
 	public void updateRegion(QV3D start){
@@ -724,13 +738,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void setActive(boolean bool){
 		vehicle.data.getAttribute("active").set(bool);
 		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
-			TagCW packet = TagCW.create();
-			packet.set("target_listener", "");
-			packet.set("task", "attr_update");
-			packet.set("attr", "active");
-			packet.set("value", vehicle.data.getAttribute("active").asString());
-			packet.set("entity", vehicle.entity.getId());
-			//TODO send to server
+			vehicle.updateAttr("active");
 		}
 	}
 	
@@ -750,13 +758,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void setPaused(boolean bool){
 		vehicle.data.getAttribute("paused").set(com.paused = bool);
 		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
-			TagCW packet = TagCW.create();
-			packet.set("target_listener", "fvtm:railsys");
-			packet.set("task", "attr_update");
-			packet.set("attr", "paused");
-			packet.set("value", vehicle.data.getAttribute("paused").asBoolean() + "");
-			packet.set("entity", vehicle.entity.getId());
-			//TODO send to server
+			vehicle.updateAttr("paused");
 		}
 	}
 	

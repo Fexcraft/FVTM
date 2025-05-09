@@ -34,6 +34,7 @@ import net.fexcraft.mod.uni.world.*;
 public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	private long gc_entities, gc_sections, gc_compounds;
+	public final ConcurrentHashMap<Long, TagCW> fillqueue = new ConcurrentHashMap<>();
 	//
 	private TrackMap trackunits = new TrackMap(this);
 	private SectionMap sections = new SectionMap(this);
@@ -186,7 +187,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		if(com.has("Entities")){
 			reg.entities.clear();
 			com.getList("Entities").forEach(tag -> {
-				reg.fillqueue.put(tag.getLong("Compound"), tag);
+				fillqueue.put(tag.getLong("Compound"), tag);
 			});
 		}
 	}
@@ -279,36 +280,25 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	@Override
 	public void onServerTick(){
-		/*if(remote && !RailRegion.clientqueue.isEmpty()){
-			Print.debug("Processing <NBT> Entities in Queue " + RailRegion.clientqueue.size());
+		if(world.isClient()) return;
+		if(!fillqueue.isEmpty() && (!SINGLEPLAYER || PLAYERON)){
+			FvtmLogger.debug("Processing RailEntities in Queue " + fillqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
-			for(Long uid : RailRegion.clientqueue.keySet()){
-				TagCW compound = RailRegion.clientqueue.get(uid);
-				Print.debug("Checking " + compound.getLong("uid"));
-				RailRegion region = getRegions().get(compound.getIntArray("XZ"));
-				if(region == null || !region.loaded) continue;
-				Print.debug("Processing " + compound.getLong("uid") + " - " + region.getKey().x + "/" + region.getKey().z);
-				region.spawnEntity(new RailEntity(region, compound.getLong("uid")).read(compound));
-				torem.add(uid);
-			} torem.forEach(rem -> RailRegion.clientqueue.remove(rem)); torem.clear();
-		}*/
-		if(!RailRegion.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
-			FvtmLogger.debug("Processing Entities in Queue " + RailRegion.fillqueue.size());
-			ArrayList<Long> torem = new ArrayList<>(); RailRegion region;
-			for(Long uid : RailRegion.fillqueue.keySet()){
-				TagCW com = RailRegion.fillqueue.get(uid);
-				boolean single = com.has("Singular") ? com.getBoolean("Singular") : true;
+			RailRegion region;
+			for(Long uid : fillqueue.keySet()){
+				TagCW com = fillqueue.get(uid);
+				boolean single = com.getBoolean("Singular");
 				if(single){
 					region = getRegions().getC(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
 					if(FvtmRegistry.VEHICLES.get(com.getString("Vehicle")) == null){
-						FvtmLogger.log("SINGULAR Rail Vehicle with id '" + com.getString("Vehicle") + "' not found, removing.");
+						FvtmLogger.log("SINGULAR Rail Vehicle Type with id '" + com.getString("Vehicle") + "' not found, removing.");
 						FvtmLogger.log("NBT:" + com);
 						torem.add(uid);
 						continue;
 					}
 					Singular singular = new Singular(region, com.getLong("Compound"), com);
-					if(singular.getEntitites().size() == 0) continue;
+					if(singular.getEntitites().isEmpty()) continue;
 					singular.forward = com.getBoolean("forward");
 					region.spawnEntity(singular.getEntitites().get(0).start());
 					torem.add(uid);
@@ -318,7 +308,10 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 					for(TagCW tag : com.getList("Entities")){
 						if(tag == null || !tag.has("region")) continue;
 						region = getRegions().getC(tag.getIntArray("region"), true);
-						if(region == null || !region.loaded){ allregionsloaded = false; break; }
+						if(region == null || !region.loaded){
+							allregionsloaded = false;
+							break;
+						}
 					}
 					if(allregionsloaded){
 						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, com.getList("Entities"));
@@ -329,7 +322,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 					}
 				}
 			}
-			torem.forEach(rem -> RailRegion.fillqueue.remove(rem));
+			torem.forEach(fillqueue::remove);
 			torem.clear();
 		}
 		for(SystemRegion<RailSystem, Junction> region : regions.values()){
@@ -342,6 +335,30 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 			reg.timer++;
 		}
+	}
+
+	@Override
+	public void onClientTick(){
+		if(!world.isClient() || fillqueue.isEmpty()) return;
+		FvtmLogger.debug("Processing RailEntities in Queue " + fillqueue.size());
+		ArrayList<Long> torem = new ArrayList<>();
+		for(Long uid : fillqueue.keySet()){
+			TagCW compound = fillqueue.get(uid);
+			FvtmLogger.debug("Checking " + uid);
+			if(!compound.has("region")){
+				FvtmLogger.log("Invalid spawn data for RailEntity " + uid);
+				FvtmLogger.log(compound);
+				torem.add(uid);
+				continue;
+			}
+			RailRegion region = getRegions().getC(compound.getIntArray("region"), false);
+			if(region == null || !region.loaded) continue;
+			FvtmLogger.debug("Processing " + uid + " - " + region.key.x + "/" + region.key.z);
+			region.spawnEntity(new RailEntity(region, compound.getLong("uid")).read(compound));
+			torem.add(uid);
+		}
+		torem.forEach(fillqueue::remove);
+		torem.clear();
 	}
 
 	@Override
@@ -564,11 +581,6 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 
-	}
-
-	@Override
-	public void onClientTick(){
-		//unused
 	}
 
 }

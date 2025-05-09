@@ -74,7 +74,7 @@ public class SystemManager {
 		return (T)SYSTEMS.get(sysid).get(world.dimkey());
 	}
 
-	private static boolean loaded(Object dimension){
+	private static boolean loaded(String dimension){
 		Boolean bool = LOADED_DIM.get(dimension);
 		return bool != null && bool;
 	}

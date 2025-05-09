@@ -49,6 +49,14 @@ public abstract class FvtmLogger {
 		if(EnvInfo.DEV) LOGGER.log0("MARKER " + o);
 	}
 
+	public static void marker(Object... os){
+		if(EnvInfo.DEV){
+			StringBuilder str = new StringBuilder();
+			for(Object o : os) str.append(o + " ");
+			LOGGER.log0("MARKER " + str);
+		}
+	}
+
 	public static void log(Throwable e, String info){
 		LOGGER.log0("ERROR: " + e.getMessage() + " / " + e.getCause() + " @ " + info);
 		for(StackTraceElement elm : e.getStackTrace()){

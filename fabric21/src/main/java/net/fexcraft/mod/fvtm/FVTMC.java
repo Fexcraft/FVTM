@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -151,6 +153,9 @@ public class FVTMC implements ClientModInitializer {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(RailRenderer::renderRails);
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderGrid);
+		HudLayerRegistrationCallback.EVENT.register(reg -> {
+			reg.attachLayerAfter(IdentifiedLayer.HOTBAR_AND_BARS, new VehicleHUD());
+		});
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){

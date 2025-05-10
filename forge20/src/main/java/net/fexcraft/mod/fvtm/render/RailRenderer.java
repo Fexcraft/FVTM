@@ -48,7 +48,6 @@ public class RailRenderer {
 
 	private static RailSystem sys;
 	private static boolean holding;
-	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 	private static HashSet<Junction> juncset = new HashSet<>();
 
 	@SubscribeEvent
@@ -63,7 +62,7 @@ public class RailRenderer {
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
 		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
-		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionTool;
+		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		Renderer120.resetColor();
@@ -74,12 +73,12 @@ public class RailRenderer {
 			for(Junction junc : juncset){
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);
-				Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(junc.getV3D().x, junc.getV3D().y + 0.1, junc.getV3D().z));
+				Renderer120.RENDERER.light(junc.getV3D());
 				JUNC_CORE.render();
-				pose.popPose();
-				if(junc.tracks.size() == 0 || holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem){
-					DebugUtils.renderBB(0.5f, COL_ORG);
+				if(junc.tracks.size() == 0 || holding){
+					DebugUtils.renderBB(0.25f, COL_ORG);
 				}
+				pose.popPose();
 				renderRails(pose, junc);
 			}
 		}

@@ -5,6 +5,7 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Sign;
@@ -102,6 +103,19 @@ public class SignContainer extends ContainerInterface {
 					sign.getTexture().setSelectedTexture(sel, null, false);
 					mirror(com, client);
 				}
+				break;
+			}
+			case "texc":{
+				SignData sign = signs.get(com.getInteger("idx"));
+				String tex = com.getString("loc");
+				boolean ext = com.getBoolean("ext");
+				if(ext && !UniFCL.URL_TEXTURES && !tex.startsWith("server:")){
+					player.entity.send("ui.fvtm.toolbox.texture.no_url");
+					player.entity.send("ui.fvtm.toolbox.texture.server");
+					break;
+				}
+				sign.getTexture().setSelectedTexture(-1, tex, ext);
+				mirror(com, client);
 				break;
 			}
 			case "color":{

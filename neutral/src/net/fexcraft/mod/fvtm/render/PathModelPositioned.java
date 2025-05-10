@@ -49,9 +49,8 @@ public class PathModelPositioned {
 
 	public void render(){
 		for(int m = 0; m < hedrons.length; m++){
-			//TODO int i = RailRenderer.getBrightness(positions[m]), j = i % 65536, k = i / 65536;
-			//TODO setLightmapTextureCoords(lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
-			//TODO color(1.0F, 1.0F, 1.0F, 1.0F);
+			Renderer.RENDERER.light(positions[m]);
+			Renderer.RENDERER.color(0xffffffff);
 			hedrons[m].render();
 		}
 	}

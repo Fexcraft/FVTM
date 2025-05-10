@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
@@ -12,9 +13,12 @@ import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.uni.IDL;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import org.joml.*;
 
 /**
@@ -30,6 +34,7 @@ public class Renderer21 extends Renderer<GLObject> {
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static int color = 0xffffffff;
 	//
+	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 	public static PoseStack pose;
 	private static MultiBufferSource buffer;
 	private static VertexConsumer cons;
@@ -170,6 +175,11 @@ public class Renderer21 extends Renderer<GLObject> {
 	@Override
 	public void color(int rgb){
 		color = rgb;
+	}
+
+	@Override
+	public void light(V3D vec){
+		light = LevelRenderer.getLightColor(Minecraft.getInstance().level, pos.set(vec.x, vec.y, vec.z));
 	}
 
 	public static void set(PoseStack ps, MultiBufferSource mbs, int lgt, int ol){

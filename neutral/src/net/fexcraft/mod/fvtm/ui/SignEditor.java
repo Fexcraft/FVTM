@@ -88,6 +88,25 @@ public class SignEditor extends UserInterface {
 				SEND_TO_SERVER.accept(com);
 				break;
 			}
+			case "tex_local":{
+				if(com_sel < 0 || com_sel >= scon.signs.size()) return true;
+				TagCW com = TagCW.create();
+				com.set("task", "texc");
+				com.set("idx", com_sel);
+				com.set("loc", fields.get("tex").text());
+				SEND_TO_SERVER.accept(com);
+				break;
+			}
+			case "tex_server":{
+				if(com_sel < 0 || com_sel >= scon.signs.size()) return true;
+				TagCW com = TagCW.create();
+				com.set("task", "texc");
+				com.set("idx", com_sel);
+				com.set("ext", true);
+				com.set("loc", fields.get("tex").text());
+				SEND_TO_SERVER.accept(com);
+				break;
+			}
 			case "ch_prev":{
 				if(colors.isEmpty()) return true;
 				col_sel--;
@@ -342,6 +361,7 @@ public class SignEditor extends UserInterface {
 			fields.get("scl" + i).text(miss ? 0 : (i == 0 ? sign.sclx : i == 1 ? sign.scly : sign.sclz));
 		}
 		texts.get("texc").value(miss ? "" : sign.getCurrentTexture().name());
+		fields.get("tex").text(miss ? "" : sign.getCustomTexture());
 		col_sel = colidx;
 		if(!miss) colors.addAll(sign.getColorChannels().keySet());
 		if(col_sel >= colors.size() || col_sel < 0) col_sel = 0;

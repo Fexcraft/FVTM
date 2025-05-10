@@ -39,7 +39,7 @@
 		},
 		"right": {
 			"texture": "fvtm:textures/gui/sign_editor_right.png",
-			"size": [ 187, 188 ],
+			"size": [ 187, 215 ],
 			"pos": [ -187, 0 ],
 			"uv": [ 69, 0 ],
 			"absolute": true,
@@ -48,6 +48,7 @@
 				"rot0", "rot1", "rot2",
 				"scl0", "scl1", "scl2",
 				"tex_prev", "tex_next",
+				"tex_local", "tex_server",
 				"ch_prev", "ch_next",
 				"rgb", "hex",
 				"colorpicker"
@@ -58,13 +59,14 @@
 				"scl",
 				"tex",
 				"texc",
+				"texe",
 				"channel"
 			],
 			"fields": [
 				"pos0", "pos1", "pos2",
 				"rot0", "rot1", "rot2",
 				"scl0", "scl1", "scl2",
-				"rgb", "hex"
+				"tex", "rgb", "hex"
 			]
 		}
 	},
@@ -216,44 +218,63 @@
 		"tex_prev": {
 			"absolute": true,
 			"size": [ 10, 10 ],
-			"pos": [ -13, 101 ],
-			"uv": [ 231, 101 ]
+			"pos": [ -24, 101 ],
+			"uv": [ 232, 101 ],
+			"tooltip": "ui.fvtm.sign_editor.texture_prev"
 		},
 		"tex_next": {
 			"absolute": true,
 			"size": [ 10, 10 ],
 			"pos": [ -13, 101 ],
-			"uv": [ 243, 101 ]
+			"uv": [ 243, 101 ],
+			"tooltip": "ui.fvtm.sign_editor.texture_next"
+		},
+		"tex_local": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -24, 129 ],
+			"uv": [ 232, 129 ],
+			"tooltip": "ui.fvtm.sign_editor.texture_local"
+		},
+		"tex_server": {
+			"absolute": true,
+			"size": [ 10, 10 ],
+			"pos": [ -13, 129 ],
+			"uv": [ 243, 129 ],
+			"tooltip": "ui.fvtm.sign_editor.texture_external"
 		},
 		"ch_prev": {
 			"absolute": true,
 			"size": [ 10, 10 ],
-			"pos": [ -25, 126 ],
-			"uv": [ 231, 126 ]
+			"pos": [ -24, 154 ],
+			"uv": [ 232, 154 ],
+			"tooltip": "ui.fvtm.sign_editor.channel_prev"
 		},
 		"ch_next": {
 			"absolute": true,
 			"size": [ 10, 10 ],
-			"pos": [ -13, 126 ],
-			"uv": [ 243, 126 ]
+			"pos": [ -13, 154 ],
+			"uv": [ 243, 154 ],
+			"tooltip": "ui.fvtm.sign_editor.channel_next"
 		},
 		"rgb": {
 			"absolute": true,
 			"size": [ 10, 10 ],
-			"pos": [ -13, 146 ],
-			"uv": [ 243, 146 ]
+			"pos": [ -13, 174 ],
+			"uv": [ 243, 174 ]
 		},
 		"hex": {
 			"absolute": true,
 			"size": [ 10, 10 ],
-			"pos": [ -13, 166 ],
-			"uv": [ 243, 166 ]
+			"pos": [ -13, 194 ],
+			"uv": [ 243, 194 ]
 		},
 		"colorpicker": {
 			"absolute": true,
 			"size": [ 6, 6 ],
-			"pos": [ -10, 118 ],
-			"uv": [ 246, 118 ]
+			"pos": [ -10, 146 ],
+			"uv": [ 246, 146 ],
+			"tooltip": "ui.fvtm.sign_editor.colorpicker"
 		}
 	},
 	"texts": {
@@ -309,16 +330,24 @@
 		},
 		"texc": {
 			"absolute": true,
-			"size": [ 107, 8 ],
+			"size": [ 108, 8 ],
 			"pos": [ -136, 102 ],
 			"autoscale": true,
 			"color": "cfcfcf",
 			"value": "-"
 		},
+		"texe": {
+			"absolute": true,
+			"size": [ 108, 8 ],
+			"pos": [ -136, 116 ],
+			"value": "ui.fvtm.decoration_editor.custom_texture",
+			"translate": true,
+			"autoscale": true
+		},
 		"channel": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -136, 127 ],
+			"size": [ 108, 8 ],
+			"pos": [ -136, 155 ],
 			"autoscale": true,
 			"color": "cfcfcf",
 			"value": "-"
@@ -408,16 +437,22 @@
 			"background": false,
 			"numberfield": true
 		},
+		"tex": {
+			"absolute": true,
+			"size": [ 110, 8 ],
+			"pos": [ -135, 130 ],
+			"background": false
+		},
 		"rgb": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -135, 147 ],
+			"size": [ 121, 8 ],
+			"pos": [ -135, 175 ],
 			"background": false
 		},
 		"hex": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -135, 167 ],
+			"size": [ 121, 8 ],
+			"pos": [ -135, 195 ],
 			"background": false
 		}
 	}

@@ -161,10 +161,11 @@ public class Config extends ConfigBase {
 				if(RAIL_SEGMENTATOR < 1) RAIL_SEGMENTATOR = 1;
 			})
 			.rang(1, 16));
-		entries.add(new ConfigEntry(this, catr, "max_length", new JsonValue(32))
+		entries.add(new ConfigEntry(this, catr, "max_length", new JsonValue(64))
 			.info("Max total vector length of new placed rail tracks.")
 			.cons((con, map) -> MAX_RAIL_TRACK_LENGTH = con.getInteger(map))
-			.rang(1, 256));
+			.rang(1, 1024)
+			.req(false, false));
 
 		//road
 		entries.add(new ConfigEntry(this, cato, "disable", new JsonValue(false))

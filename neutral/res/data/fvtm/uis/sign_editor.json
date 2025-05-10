@@ -340,7 +340,7 @@
 			"absolute": true,
 			"size": [ 108, 8 ],
 			"pos": [ -136, 116 ],
-			"value": "ui.fvtm.decoration_editor.custom_texture",
+			"value": "ui.fvtm.sign_editor.custom_texture",
 			"translate": true,
 			"autoscale": true
 		},

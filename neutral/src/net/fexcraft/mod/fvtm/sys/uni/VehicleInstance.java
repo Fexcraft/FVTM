@@ -814,6 +814,8 @@ public class VehicleInstance {
 		rot = point.getPivot().toArray();
 		if(remote){
 			if(serv_sync > 0){
+				if(rot[0] < -90 && serv_rot[0] > 90) rot[0] += 360;
+				if(rot[0] > 90 && serv_rot[0] < -90) rot[0] -= 360;
 				pos.x = pos.x + (serv_pos[0] - pos.x) / serv_sync;
 				pos.y = pos.y + (serv_pos[1] - pos.y) / serv_sync;
 				pos.z = pos.z + (serv_pos[2] - pos.z) / serv_sync;

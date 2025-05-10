@@ -93,7 +93,7 @@ public class FvtmRegistry {
 		AIR = IDLManager.getIDLCached("minecraft:air");
 		NULL_TEXTURE = IDLManager.getIDLNamed("No Texture;fvtm:textures/entity/null.png");
 		WHITE_TEXTURE = IDLManager.getIDLNamed("No Texture;fvtm:textures/entity/white.png");
-		STANDARD_GAUGE = IDLManager.getIDLCached("fvtm:standard");
+		STANDARD_GAUGE = IDLManager.getIDLCached("gep:standard");
 		//
 		UniStack.register(new VehItemApp(null));
 		UniStack.register(new PartItemApp(null));

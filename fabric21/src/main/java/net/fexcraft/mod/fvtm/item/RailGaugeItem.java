@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -12,10 +11,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.inv.StackWrapper;
-import net.fexcraft.mod.uni.inv.UniStack;
-import net.fexcraft.mod.uni.tag.TagLW;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.network.chat.Component;
@@ -26,7 +21,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;

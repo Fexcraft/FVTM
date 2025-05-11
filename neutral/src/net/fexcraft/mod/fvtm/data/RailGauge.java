@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
@@ -18,6 +19,7 @@ import net.fexcraft.mod.uni.IDLManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -28,9 +30,10 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 	//
 	protected float width;
 	protected float height;
-	protected float blockwidth;
-	protected float blockheight;
+	//protected float blockwidth;
+	//protected float blockheight;
 	protected List<String> compatible;
+	protected List<IDL> materials = new ArrayList<>();
 	protected IDL rail_texture;
 	protected IDL ties_texture;
 	protected IDL model_texture;
@@ -52,13 +55,19 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		description = ContentConfigUtil.getStringList(map, "Description");
 		width = map.getFloat("Width", DEFWIDTH);
 		height = map.getFloat("Height", 0.25f);
-		blockwidth = map.getFloat("BlockSpace", 2);
-		blockheight = map.getFloat("BlockHeight", 0);
+		//blockwidth = map.getFloat("BlockSpace", 2);
+		//blockheight = map.getFloat("BlockHeight", 0);
 		String blks = EnvInfo.is112() ? "blocks" : "block";
 		rail_texture = IDLManager.getIDLNamed(map.getString("RailTexture", "minecraft:textures/" + blks + "/iron_block.png"));
 		ties_texture = IDLManager.getIDLNamed(map.getString("TiesTexture", "minecraft:textures/" + blks + "/anvil_base.png"));
 		model_texture = IDLManager.getIDLNamed(map.getString("ModelTexture", "fvtm:textures/" + blks + "/null.png"));
 		compatible = ContentConfigUtil.getStringList(map, "Compatible");
+		if(map.has("UseMaterials")){
+			for(JsonValue<?> mat : map.getArray("UseMaterials").value){
+				materials.add(IDLManager.getIDLCached(mat.string_value()));
+			}
+		}
+		else materials.add(IDLManager.getIDLCached("minecraft:iron_ingot"));
 		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
@@ -128,6 +137,10 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return compatible;
 	}
 
+	public List<IDL> getMaterials(){
+		return materials;
+	}
+
 	public RailGaugeModel getModel(){
 		return model;
 	}
@@ -149,13 +162,13 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return model_texture;
 	}
 	
-	public float getBlockWidth(){
+	/*public float getBlockWidth(){
 		return blockwidth;
 	}
 	
 	public float getBlockHeight(){
 		return blockheight;
-	}
+	}*/
 
 	@Override
 	public IDL getItemTexture(){

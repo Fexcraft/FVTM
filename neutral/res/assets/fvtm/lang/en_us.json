@@ -31,6 +31,8 @@
 	"item.fvtm.junction_tool.remjunc": "\u00A7c\u00A7oRemoving Junction...",
 	"item.fvtm.junction_tool.reset": "\u00A77\u00A7oResetting previous Cached Position.",
 	"item.fvtm.junction_tool.cached": "\u00A7a\u00A7lJunction Position Cached.",
+	"item.fvtm.railgauge.width": "\u00A79Gauge/Width: \u00A77%s",
+	"item.fvtm.railgauge.compatible": "\u00A79Compatible with:",
 
 	"cmd.fvtm.get-key.is-locked": "\u00A7cPlease unlock the Vehicle first.",
 	"cmd.fvtm.get-key.not-driver": "\u00A7eYou need to be the driver to get a key.",
@@ -303,6 +305,10 @@
     "tooltip.fvtm.road_tool.created": "\u00A7o> Road Created.",
 
     "keycompound.fvtm.controls": "FVTM Controls",
+    "key.fvtm.accelerate": "Acc./Throttle Increase",
+    "key.fvtm.decelerate": "Dec./Throttle Decrease",
+    "key.fvtm.turn_left": "Turn Left / Rail Reverse",
+    "key.fvtm.turn_right": "Turn Right / Rail Forward",
     "key.fvtm.engine": "Engine Toggle",
     "key.fvtm.vehicle_inventory": "Vehicle Inventory Toggle",
     "key.fvtm.vehicle_control": "Control Mode Toggle",

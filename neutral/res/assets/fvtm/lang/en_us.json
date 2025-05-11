@@ -235,6 +235,8 @@
 	"interact.fvtm.rail_marker.too_long": "\u00a7cTrack length exceeds the configured max length.",
 	"interact.fvtm.rail_marker.track_created": "\u00a7o> Track Created.",
 	"interact.fvtm.rail_marker.no_start_junction": "\u00a7cNo Junction at starting point found!",
+	"interact.fvtm.rail_marker.missing_materials": "\u00a7eNot enough materials to create Track!",
+	"interact.fvtm.rail_marker.material_entry": "&7%s: %s of %s",
 
     "ui.fvtm.road_tool.add_width": "Increase Road Width",
     "ui.fvtm.road_tool.sub_width": "Decrease Road Width",

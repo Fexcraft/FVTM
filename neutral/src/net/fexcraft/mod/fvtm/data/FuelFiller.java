@@ -75,9 +75,16 @@ public class FuelFiller {
 	private void extractFromItem(){
 		if(tank.amount() > fullenough) return;
 		StackWrapper stack = items.get(0);
-		if(!tank.isValid(stack)) return;
-		Pair<StackWrapper, Boolean> res = tank.drainFrom(stack, 1000);
-		if(res.getRight()) items.set(0, res.getLeft());
+		if(tank.isValid(stack)){
+			Pair<StackWrapper, Boolean> res = tank.drainFrom(stack, 1000);
+			if(res.getRight()) items.set(0, res.getLeft());
+		}
+		else if(selected.isSourceFluid(stack.getID())){
+			if(converted == tanksize) return;
+			items.set(0, StackWrapper.EMPTY);
+			converted += 1000 * selected.getConversionRate(stack.getID());
+			if(converted > tanksize) converted = tanksize;
+		}
 	}
 
 	private void convert(){

@@ -42,36 +42,13 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
-		tooltip.add(GenericUtils.format("&9Name: &7" + gauge.getName()));
-		for(String s : gauge.getDescription()){
-			tooltip.add(GenericUtils.format(ContainerInterface.translate(s)));
-		}
-		tooltip.add(GenericUtils.format("&9Width: &7" + gauge.getWidth()));
+		for(String desc : gauge.getDescription()) tooltip.add(Component.translatable(desc));
+		tooltip.add(Component.translatable("item.fvtm.railgauge.width", gauge.getWidth()));
 		if(gauge.getCompatible().size() > 0){
-			tooltip.add(GenericUtils.format("&9Compatible with:"));
+			tooltip.add(Component.translatable("item.fvtm.railgauge.compatible"));
 			for(String str : gauge.getCompatible()){
-				tooltip.add(GenericUtils.format("&7 - " + str));
+				tooltip.add(GenericUtils.format("- " + str));
 			}
-		}
-		tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
-		if(flag.isAdvanced()){
-			tooltip.add(GenericUtils.format("&6Usage:"));
-			tooltip.add(GenericUtils.format("&b- Rightclick twice in the same position to create a Junction."));
-			tooltip.add(GenericUtils.format("&b- Rightclick in sequence between 2 Junctions to create a track."));
-			tooltip.add(GenericUtils.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
-		}
-		else{
-			tooltip.add(GenericUtils.format("&6Enable advanced tooltips for item usage info."));
-		}
-		tooltip.add(GenericUtils.format("&9- - - - - - &7-"));
-		if(stack.hasTag() && stack.getTag().contains("fvtm:railpoints")){
-			ListTag list = (ListTag)stack.getTag().get("fvtm:railpoints");
-			for(int i = 0; i < list.size(); i++){
-				tooltip.add(GenericUtils.format("&9PT" + i + " POS:" + new QV3D(TagCW.wrap(list.getCompound(i)), null)));
-			}
-		}
-		else{
-			tooltip.add(GenericUtils.format("No Connection data."));
 		}
 	}
 

@@ -18,6 +18,7 @@ import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 	//protected float blockwidth;
 	//protected float blockheight;
 	protected List<String> compatible;
-	protected List<IDL> materials = new ArrayList<>();
+	protected HashMap<IDL, Float> materials = new HashMap<>();
 	protected IDL rail_texture;
 	protected IDL ties_texture;
 	protected IDL model_texture;
@@ -63,11 +64,11 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		model_texture = IDLManager.getIDLNamed(map.getString("ModelTexture", "fvtm:textures/" + blks + "/null.png"));
 		compatible = ContentConfigUtil.getStringList(map, "Compatible");
 		if(map.has("UseMaterials")){
-			for(JsonValue<?> mat : map.getArray("UseMaterials").value){
-				materials.add(IDLManager.getIDLCached(mat.string_value()));
+			for(Map.Entry<String, JsonValue<?>> entry : map.getMap("UseMaterials").entries()){
+				materials.put(IDLManager.getIDLCached(entry.getKey()), entry.getValue().float_value());
 			}
 		}
-		else materials.add(IDLManager.getIDLCached("minecraft:iron_ingot"));
+		else materials.put(IDLManager.getIDLCached("minecraft:iron_ingot"), 0.25f);
 		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
@@ -137,7 +138,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return compatible;
 	}
 
-	public List<IDL> getMaterials(){
+	public HashMap<IDL, Float> getMaterials(){
 		return materials;
 	}
 

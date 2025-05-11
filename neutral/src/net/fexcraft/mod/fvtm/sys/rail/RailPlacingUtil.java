@@ -4,18 +4,22 @@ import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.FclRecipe;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 
@@ -172,6 +176,31 @@ public class RailPlacingUtil {
 			if(ntrack == null){
 				player.send("no_queue_entry / 1");
 				return;
+			}
+			HashMap<IDL, int[]> needs = new HashMap<>();
+			if(!player.isCreative()){
+				List<StackWrapper> stacks = player.copyInventory();
+				for(Map.Entry<IDL, Float> entry : ntrack.gauge.getMaterials().entrySet()){
+					double v = entry.getValue() * ntrack.track.length;
+					int n = (int)v + ((v % 1 > 0) ? 1 : 0);
+					needs.put(entry.getKey(), new int[]{ n, 0 });
+				}
+				boolean missing = false;
+				for(Map.Entry<IDL, int[]> entry : needs.entrySet()){
+					for(StackWrapper stack : stacks){
+						if(stack.empty()) continue;
+						if(stack.getID().equals(entry.getKey())) entry.getValue()[1] += stack.count();
+					}
+					if(entry.getValue()[0] > entry.getValue()[1]) missing = true;
+				}
+				if(missing){
+					player.send("interact.fvtm.rail_marker.missing_materials");
+					for(Map.Entry<IDL, int[]> entry : needs.entrySet()){
+						StackWrapper stack = UniStack.createStack(FvtmRegistry.getItem(entry.getKey().colon()));
+						player.send("interact.fvtm.rail_marker.material_entry", stack.getName(), entry.getValue()[1], entry.getValue()[0]);
+					}
+					return;
+				}
 			}
 			if(junc == null){
 				sys.addJunction(vector);

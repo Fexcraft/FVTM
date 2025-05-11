@@ -25,6 +25,10 @@ public class ClientEvents {
 
 	protected static Minecraft minecraft;
 	//
+	public static KeyMapping accelerate;
+	public static KeyMapping decelerate;
+	public static KeyMapping turn_left;
+	public static KeyMapping turn_right;
 	public static KeyMapping engine_toggle;
 	public static KeyMapping inventory_open;
 	public static KeyMapping control;
@@ -63,6 +67,10 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
+		event.register(accelerate = new KeyMapping("key.fvtm.accelerate", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_W, category));
+		event.register(decelerate = new KeyMapping("key.fvtm.decelerate", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_S, category));
+		event.register(turn_left = new KeyMapping("key.fvtm.turn_left", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_A, category));
+		event.register(turn_right = new KeyMapping("key.fvtm.turn_right", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_D, category));
 		event.register(engine_toggle = new KeyMapping("key.fvtm.engine", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_I, category));
 		event.register(inventory_open = new KeyMapping("key.fvtm.vehicle_inventory", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_R, category));
 		event.register(control = new KeyMapping("key.fvtm.vehicle_control", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
@@ -89,7 +97,7 @@ public class ClientEvents {
 
 			@Override
 			public boolean conflicts(IKeyConflictContext other){
-				return other == this;
+				return other != this;
 			}
 		}
 

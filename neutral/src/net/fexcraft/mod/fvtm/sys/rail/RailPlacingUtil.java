@@ -178,24 +178,25 @@ public class RailPlacingUtil {
 				junc = sys.getJunction(vector.pos, true);
 				junc.updateVecPos(vector);
 				if(ntrack.points.size() == 1 || ntrack.allsame()){
-					player.send("&o> Junction Created.");
+					player.send("interact.fvtm.rail_marker.junction_created");
 					reset();
 					return;
 				}
 				else{
-					player.send("&o> End Junction Created.");
+					player.send("interact.fvtm.rail_marker.end_junction_created");
 				}
 			}
 			if(!junc.tracks.isEmpty() && junc.tracks.size() < 2 && !junc.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
-				player.send("&9Item/Track Gauge not compatible with the &7Junction's Gauge&9.");
+				player.send("interact.fvtm.rail_marker.incompatible_gauge");
 				return;
 			}
 			if(junc.signal != null){
-				player.send("&9Please remove the signal first.");
+				player.send("interact.fvtm.rail_marker.remove_signal");
 				return;
 			}
 			if(junc.tracks.size() >= 4){
-				player.send("&9Junction reached track limit (4)\n&c&oPoint cache reset.");
+				player.send("interact.fvtm.rail_marker.junction_full");
+				player.send("interact.fvtm.rail_marker.cache_reset");
 				ntrack.reset();
 				return;
 			}
@@ -204,7 +205,7 @@ public class RailPlacingUtil {
 				if(nn) arr[arr.length - 1] = junc.getPos();
 				Track track = new Track(junc, arr, gauge);
 				if(track.length > MAX_RAIL_TRACK_LENGTH){
-					player.send("&cTrack length exceeds the configured max length.");
+					player.send("interact.fvtm.rail_marker.too_long");
 					return;
 				}
 				//track.blockless = DISABLE_RAIL_BLOCKS;
@@ -212,17 +213,17 @@ public class RailPlacingUtil {
 				if(second == null){
 					sys.addJunction(track.start);
 					second = sys.getJunction(track.start.pos, true);
-					player.send("&o> Start Junction Created.");
+					player.send("interact.fvtm.rail_marker.start_junction_created");
 				}
 				if(second != null){
 					//if(!TrackPlacer.set(player, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
 					second.addnew(track);
 					junc.addnew(track.createOppositeCopy());
 					second.checkTrackSectionConsistency();
-					player.send("&o> Track Created.");
+					player.send("interact.fvtm.rail_marker.track_created");
 					ntrack.reset();
 				}
-				else player.send("&cNo Junction at starting point found!");
+				else player.send("interact.fvtm.rail_marker.no_start_junction");
 			}
 		}
 

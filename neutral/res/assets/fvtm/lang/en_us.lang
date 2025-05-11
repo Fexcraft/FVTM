@@ -85,6 +85,17 @@ interact.fvtm.relay.wire_duplicate=&cWire has same start/end as another wire.
 interact.fvtm.relay.wire_created=&aWire created.
 interact.fvtm.relay.wire_slack=&aWire slack changed to %s.
 
+interact.fvtm.rail_marker.junction_created=&o> Junction Created.
+interact.fvtm.rail_marker.start_junction_created=&o> Start Junction Created.
+interact.fvtm.rail_marker.end_junction_created=&o> End Junction Created.
+interact.fvtm.rail_marker.incompatible_gauge=&9Item/Track Gauge not compatible with the &7Junction's Gauge&9.
+interact.fvtm.rail_marker.remove_signal=&9Please remove the signal first.
+interact.fvtm.rail_marker.junction_full=&9Junction reached track limit (4)
+interact.fvtm.rail_marker.cache_reset=&c&oPoint cache reset.
+interact.fvtm.rail_marker.too_long=&cTrack length exceeds the configured max length.
+interact.fvtm.rail_marker.track_created=&o> Track Created.
+interact.fvtm.rail_marker.no_start_junction=&cNo Junction at starting point found!
+
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.
 ui.fvtm.toolbox.texture.info=Here you can select your vehicle/block/container's texture.
@@ -344,7 +355,9 @@ tooltip.fvtm.road_tool.created=&o> Road Created.
 
 # Other
 itemGroup.fvtm=FVTM [Internal-Addon]
-fvtm.recipes.blocks=FVTM Blocks
+recipe.fvtm.blocks=FVTM Blocks
+recipe.fvtm.items=FVTM Items
+recipe.fvtm.rails=FVTM Rail Gauges
 
 
 # Keys

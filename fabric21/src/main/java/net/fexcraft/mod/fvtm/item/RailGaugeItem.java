@@ -45,12 +45,12 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
-		for(String s : gauge.getDescription()) tooltip.add(Formatter.format(I18n.format(s)));
-		tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.width", gauge.getWidth())));
+		for(String desc : gauge.getDescription()) cons.accept(Component.translatable(desc));
+		cons.accept(Component.translatable("item.fvtm.railgauge.width", gauge.getWidth()));
 		if(gauge.getCompatible().size() > 0){
-			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.compatible")));
+			cons.accept(Component.translatable("item.fvtm.railgauge.compatible"));
 			for(String str : gauge.getCompatible()){
-				tooltip.add(Formatter.format("- " + str));
+				cons.accept(GenericUtils.format("- " + str));
 			}
 		}
 	}

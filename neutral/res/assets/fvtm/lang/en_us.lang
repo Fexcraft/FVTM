@@ -30,6 +30,8 @@ item.fvtm.junction_tool.fulljunc=&cDisconnect all tracks before removing a Junct
 item.fvtm.junction_tool.remjunc=&c&oRemoving Junction...
 item.fvtm.junction_tool.reset=&7&oResetting previous Cached Position.
 item.fvtm.junction_tool.cached=&a&lJunction Position Cached.
+item.fvtm.railgauge.width=&9Gauge/Width: &7%s
+item.fvtm.railgauge.compatible=&9Compatible with:
 
 cmd.fvtm.get-key.is-locked=&cPlease unlock the Vehicle first.
 cmd.fvtm.get-key.not-driver=&eYou need to be the driver to get a key.

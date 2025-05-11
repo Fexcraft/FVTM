@@ -441,6 +441,7 @@
 			"absolute": true,
 			"size": [ 110, 8 ],
 			"pos": [ -135, 130 ],
+			"max-length": 1024,
 			"background": false
 		},
 		"rgb": {

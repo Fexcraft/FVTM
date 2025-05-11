@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
@@ -44,37 +45,13 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
-		cons.accept(GenericUtils.format("&9Name: &7" + gauge.getName()));
-		for(String s : gauge.getDescription()){
-			cons.accept(GenericUtils.format(ContainerInterface.translate(s)));
-		}
-		cons.accept(GenericUtils.format("&9Width: &7" + gauge.getWidth()));
+		for(String s : gauge.getDescription()) tooltip.add(Formatter.format(I18n.format(s)));
+		tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.width", gauge.getWidth())));
 		if(gauge.getCompatible().size() > 0){
-			cons.accept(GenericUtils.format("&9Compatible with:"));
+			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.compatible")));
 			for(String str : gauge.getCompatible()){
-				cons.accept(GenericUtils.format("&7 - " + str));
+				tooltip.add(Formatter.format("- " + str));
 			}
-		}
-		cons.accept(GenericUtils.format("&9- - - - - - &7-"));
-		if(flag.isAdvanced()){
-			cons.accept(GenericUtils.format("&6Usage:"));
-			cons.accept(GenericUtils.format("&b- Rightclick twice in the same position to create a Junction."));
-			cons.accept(GenericUtils.format("&b- Rightclick in sequence between 2 Junctions to create a track."));
-			cons.accept(GenericUtils.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
-		}
-		else{
-			cons.accept(GenericUtils.format("&6Enable advanced tooltips for item usage info."));
-		}
-		cons.accept(GenericUtils.format("&9- - - - - - &7-"));
-		StackWrapper us = UniStack.getStack(stack);
-		if(us.directTag().has("fvtm:railpoints")){
-			TagLW list = us.directTag().getList("fvtm:railpoints");
-			for(int i = 0; i < list.size(); i++){
-				cons.accept(GenericUtils.format("&9PT" + i + " POS:" + new QV3D(list.getCompound(i), null)));
-			}
-		}
-		else{
-			cons.accept(GenericUtils.format("No Connection data."));
 		}
 	}
 

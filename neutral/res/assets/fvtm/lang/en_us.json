@@ -1,6 +1,7 @@
 {
 	"recipe.fvtm.blocks": "FVTM Blocks",
 	"recipe.fvtm.items": "FVTM Items",
+	"recipe.fvtm.rails": "FVTM Rail Gauges",
 
 	"block.fvtm.vehicle_lift": "Vehicle Maintenance Lift",
 	"block.fvtm.constructor": "Constructor",
@@ -223,6 +224,17 @@
 	"interact.fvtm.relay.wire_duplicate": "\u00A7cWire has same start/end as another wire.",
 	"interact.fvtm.relay.wire_created": "\u00A7aWire created.",
 	"interact.fvtm.relay.wire_slack": "\u00A7aWire slack changed to %s.",
+
+	"interact.fvtm.rail_marker.junction_created": "\u00a7o> Junction Created.",
+	"interact.fvtm.rail_marker.start_junction_created": "\u00a7o> Start Junction Created.",
+	"interact.fvtm.rail_marker.end_junction_created": "\u00a7o> End Junction Created.",
+	"interact.fvtm.rail_marker.incompatible_gauge": "\u00a79Item/Track Gauge not compatible with the \u00a77Junction's Gauge\u00a79.",
+	"interact.fvtm.rail_marker.remove_signal": "\u00a79Please remove the signal first.",
+	"interact.fvtm.rail_marker.junction_full": "\u00a79Junction reached track limit (4)",
+	"interact.fvtm.rail_marker.cache_reset": "\u00a7c\u00a7oPoint cache reset.",
+	"interact.fvtm.rail_marker.too_long": "\u00a7cTrack length exceeds the configured max length.",
+	"interact.fvtm.rail_marker.track_created": "\u00a7o> Track Created.",
+	"interact.fvtm.rail_marker.no_start_junction": "\u00a7cNo Junction at starting point found!",
 
     "ui.fvtm.road_tool.add_width": "Increase Road Width",
     "ui.fvtm.road_tool.sub_width": "Decrease Road Width",

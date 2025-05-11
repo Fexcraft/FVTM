@@ -44,16 +44,16 @@ public class InputEvents {
 		SeatInstance seat = ((RootVehicle)minecraft.player.getVehicle()).getSeatOf(minecraft.player);
 		if(seat == null) return;
 		boolean u12 = false;
-		if(minecraft.options.keyUp.isDown()){
+		if(accelerate.isDown()){
 			seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
 		}
-		if(minecraft.options.keyDown.isDown()){
+		if(decelerate.isDown()){
 			seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
 		}
-		if(minecraft.options.keyLeft.isDown()){
+		if(turn_left.isDown()){
 			seat.onKeyPress(KeyPress.TURN_LEFT, player);
 		}
-		if(minecraft.options.keyRight.isDown()){
+		if(turn_right.isDown()){
 			seat.onKeyPress(KeyPress.TURN_RIGHT, player);
 		}
 		if(arrow_up.isDown()){

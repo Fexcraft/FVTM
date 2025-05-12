@@ -34,7 +34,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 	//protected float blockwidth;
 	//protected float blockheight;
 	protected List<String> compatible;
-	protected HashMap<IDL, Float> materials = new HashMap<>();
+	protected List<UseMat> materials = new ArrayList<>();
 	protected IDL rail_texture;
 	protected IDL ties_texture;
 	protected IDL model_texture;
@@ -65,10 +65,13 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		compatible = ContentConfigUtil.getStringList(map, "Compatible");
 		if(map.has("UseMaterials")){
 			for(Map.Entry<String, JsonValue<?>> entry : map.getMap("UseMaterials").entries()){
-				materials.put(IDLManager.getIDLCached(entry.getKey()), entry.getValue().float_value());
+				materials.add(UseMat.parse(entry.getKey(), entry.getValue().float_value()));
 			}
 		}
-		else materials.put(IDLManager.getIDLCached("minecraft:iron_ingot"), 0.25f);
+		else{
+			materials.add(UseMat.parse(EnvInfo.is112() ? "#ingotIron" : "#c:ingots/iron", 0.25f));
+			materials.add(UseMat.parse(EnvInfo.is112() ? "#plankWood" : "#minecraft:planks", 0.2f));
+		}
 		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
@@ -116,6 +119,24 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 
 	}
 
+	public static class UseMat {
+
+		public String id;
+		public boolean tag;
+		public float amount;
+
+		public static UseMat parse(String key, float v){
+			UseMat mat = new UseMat();
+			if(key.startsWith("#")){
+				mat.tag = true;
+				key = key.substring(1);
+			}
+			mat.id = key;
+			mat.amount = v;
+			return mat;
+		}
+	}
+
 	@Override
 	public ContentType getContentType(){
 		return ContentType.RAILGAUGE;
@@ -138,7 +159,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return compatible;
 	}
 
-	public HashMap<IDL, Float> getMaterials(){
+	public List<UseMat> getMaterials(){
 		return materials;
 	}
 

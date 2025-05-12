@@ -389,6 +389,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				break;
 			}
 			case "no_junction":{
+				compound = TagCW.create();
 				task = "rail_rem_junc";
 				compound.set("pos", vector);
 				break;

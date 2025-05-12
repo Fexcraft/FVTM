@@ -65,6 +65,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		compatible = ContentConfigUtil.getStringList(map, "Compatible");
 		if(map.has("UseMaterials")){
 			for(Map.Entry<String, JsonValue<?>> entry : map.getMap("UseMaterials").entries()){
+				if(UseMat.invalid(entry.getKey())) continue;
 				materials.add(UseMat.parse(entry.getKey(), entry.getValue().float_value()));
 			}
 		}
@@ -135,6 +136,11 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 			mat.amount = v;
 			return mat;
 		}
+
+		public static boolean invalid(String key){
+			return key.startsWith("#") && key.contains(":") == EnvInfo.is112();
+		}
+
 	}
 
 	@Override

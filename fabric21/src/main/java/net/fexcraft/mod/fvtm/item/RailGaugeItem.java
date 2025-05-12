@@ -47,6 +47,12 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 				cons.accept(GenericUtils.format("- " + str));
 			}
 		}
+		if(gauge.getMaterials().size() > 0){
+			cons.accept(Component.translatable("item.fvtm.railgauge.materials"));
+			for(RailGauge.UseMat mat : gauge.getMaterials()){
+				cons.accept(GenericUtils.format("- " + (mat.tag ? "#" : "")+ mat.id + " x" + mat.amount));
+			}
+		}
 	}
 
 	@Override

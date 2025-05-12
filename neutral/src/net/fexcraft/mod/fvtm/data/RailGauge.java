@@ -131,6 +131,8 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 			if(key.startsWith("#")){
 				mat.tag = true;
 				key = key.substring(1);
+				if(EnvInfo.is120() && key.startsWith("c:")) key = key.replace("c:", "forge:");
+				else if(!EnvInfo.is120() && key.startsWith("forge:")) key = key.replace("forge:", "c:");
 			}
 			mat.id = key;
 			mat.amount = v;

@@ -97,6 +97,7 @@ interact.fvtm.rail_marker.track_created=&o> Track Created.
 interact.fvtm.rail_marker.no_start_junction=&cNo Junction at starting point found!
 interact.fvtm.rail_marker.missing_materials=&eNot enough materials to create Track!
 interact.fvtm.rail_marker.material_entry=&7%s: %s of %s
+interact.fvtm.rail_marker.material_tag_entry=&7%s (%s): %s of %s
 
 # UI
 ui.fvtm.toolbox.painter.info=Here you can edit your vehicle/block/container's color.

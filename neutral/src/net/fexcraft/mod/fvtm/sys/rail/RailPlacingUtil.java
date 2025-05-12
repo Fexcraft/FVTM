@@ -314,6 +314,7 @@ public class RailPlacingUtil {
 
 		private void fillFound(int[] arr, int idx, StackWrapper stack){
 			int need = arr[0] - arr[idx];
+			if(need <= 0) return;
 			if(need > stack.count()){
 				arr[idx] += stack.count();
 				stack.count(0);

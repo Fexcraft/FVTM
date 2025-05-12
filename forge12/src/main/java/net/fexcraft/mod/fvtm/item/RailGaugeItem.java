@@ -60,6 +60,12 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
                 tooltip.add(Formatter.format("- " + str));
             }
         }
+		if(gauge.getMaterials().size() > 0){
+			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.materials")));
+			for(RailGauge.UseMat mat : gauge.getMaterials()){
+				tooltip.add(Formatter.format("- " + (mat.tag ? "#" : "")+ mat.id + " x" + mat.amount));
+			}
+		}
     }
 	
 	@Override

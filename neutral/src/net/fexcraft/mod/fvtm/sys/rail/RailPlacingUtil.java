@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -177,27 +178,56 @@ public class RailPlacingUtil {
 				player.send("no_queue_entry / 1");
 				return;
 			}
-			HashMap<IDL, int[]> needs = new HashMap<>();
+			HashMap<String, List<StackWrapper>> tags = new HashMap<>();
+			HashMap<RailGauge.UseMat, int[]> needs = new HashMap<>();
 			if(!player.isCreative()){
 				List<StackWrapper> stacks = player.copyInventory();
-				for(Map.Entry<IDL, Float> entry : ntrack.gauge.getMaterials().entrySet()){
-					double v = entry.getValue() * ntrack.track.length;
+				for(RailGauge.UseMat mat : ntrack.gauge.getMaterials()){
+					FvtmLogger.marker(mat.id, mat.tag, mat.amount);
+					if(mat.tag){
+						List<StackWrapper> tag = UniStack.getTagAsList(mat.id);
+						if(tag.isEmpty()) continue;
+						tags.put(mat.id, tag);
+					}
+					double v = mat.amount * ntrack.track.length;
 					int n = (int)v + ((v % 1 > 0) ? 1 : 0);
-					needs.put(entry.getKey(), new int[]{ n, 0 });
+					needs.put(mat, new int[]{ n, 0, 0 });
 				}
 				boolean missing = false;
-				for(Map.Entry<IDL, int[]> entry : needs.entrySet()){
-					for(StackWrapper stack : stacks){
-						if(stack.empty()) continue;
-						if(stack.getID().equals(entry.getKey())) entry.getValue()[1] += stack.count();
+				for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
+					if(entry.getKey().tag){
+						List<StackWrapper> tag = tags.get(entry.getKey().id);
+						for(StackWrapper stack : stacks){
+							if(stack.empty()) continue;
+							for(StackWrapper stag : tag){
+								if(stack.getID().equals(stag.getID())){
+									fillFound(entry.getValue(), 1, stack);
+									break;
+								}
+							}
+						}
+					}
+					else{
+						for(StackWrapper stack : stacks){
+							if(stack.empty()) continue;
+							if(stack.getID().equals(entry.getKey().id)){
+								fillFound(entry.getValue(), 1, stack);
+							}
+						}
 					}
 					if(entry.getValue()[0] > entry.getValue()[1]) missing = true;
 				}
 				if(missing){
 					player.send("interact.fvtm.rail_marker.missing_materials");
-					for(Map.Entry<IDL, int[]> entry : needs.entrySet()){
-						StackWrapper stack = UniStack.createStack(FvtmRegistry.getItem(entry.getKey().colon()));
-						player.send("interact.fvtm.rail_marker.material_entry", stack.getName(), entry.getValue()[1], entry.getValue()[0]);
+					for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
+						if(entry.getKey().tag){
+							StackWrapper stack = tags.get(entry.getKey().id).get(0);
+							player.send("interact.fvtm.rail_marker.material_tag_entry", stack.getName(), entry.getKey().id, entry.getValue()[1], entry.getValue()[0]);
+						}
+						else{
+							StackWrapper stack = UniStack.createStack(FvtmRegistry.getItem(entry.getKey().id));
+							player.send("interact.fvtm.rail_marker.material_entry", stack.getName(), entry.getValue()[1], entry.getValue()[0]);
+						}
 					}
 					return;
 				}
@@ -251,8 +281,46 @@ public class RailPlacingUtil {
 					second.checkTrackSectionConsistency();
 					player.send("interact.fvtm.rail_marker.track_created");
 					ntrack.reset();
+					//
+					StackWrapper stack;
+					for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
+						if(entry.getKey().tag){
+							List<StackWrapper> tag = tags.get(entry.getKey().id);
+							for(int i = 0; i < player.getInventorySize(); i++){
+								stack = player.getStackAt(i);
+								if(stack.empty()) continue;
+								for(StackWrapper stag : tag){
+									if(stack.getID().equals(stag.getID())){
+										fillFound(entry.getValue(), 2, stack);
+										break;
+									}
+								}
+							}
+						}
+						else{
+							for(int i = 0; i < player.getInventorySize(); i++){
+								stack = player.getStackAt(i);
+								if(stack.empty()) continue;
+								if(stack.getID().equals(entry.getKey().id)){
+									fillFound(entry.getValue(), 2, stack);
+								}
+							}
+						}
+					}
 				}
 				else player.send("interact.fvtm.rail_marker.no_start_junction");
+			}
+		}
+
+		private void fillFound(int[] arr, int idx, StackWrapper stack){
+			int need = arr[0] - arr[idx];
+			if(need > stack.count()){
+				arr[idx] += stack.count();
+				stack.count(0);
+			}
+			else{
+				arr[idx] += need;
+				stack.decr(need);
 			}
 		}
 

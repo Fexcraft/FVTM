@@ -34,6 +34,7 @@
 	"item.fvtm.junction_tool.cached": "\u00A7a\u00A7lJunction Position Cached.",
 	"item.fvtm.railgauge.width": "\u00A79Gauge/Width: \u00A77%s",
 	"item.fvtm.railgauge.compatible": "\u00A79Compatible with:",
+	"item.fvtm.railgauge.materials": "\u00A79Materials (per Block length*)",
 
 	"cmd.fvtm.get-key.is-locked": "\u00A7cPlease unlock the Vehicle first.",
 	"cmd.fvtm.get-key.not-driver": "\u00A7eYou need to be the driver to get a key.",

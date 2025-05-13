@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.data.FvtmPlayer;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.sys.rail.LongDisRailUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
@@ -81,14 +83,20 @@ public class Command extends CommandBase {
         switch(args[0]){
             case "help": {
         		Print.chat(sender, "&9Command arguments");
+				Print.chat(sender, "&7- /fvtm undo road");
+				Print.chat(sender, "&7- /fvtm get-key");
+				Print.chat(sender, "&7- /fvtm long-rail select");
+				Print.chat(sender, "&7- /fvtm long-rail status");
+				Print.chat(sender, "&7- /fvtm long-rail set <seg-dis>");
+				Print.chat(sender, "&7- /fvtm long-rail start");
+				Print.chat(sender, "&7- /fvtm long-rail clear");
+				Print.chat(sender, "&8- - - - - -");
         		Print.chat(sender, "&7- /fvtm packs");
         		Print.chat(sender, "&7- /fvtm pack-info <pack_id>");
-        		Print.chat(sender, "&7- /fvtm get-key");
         		Print.chat(sender, "&7- /fvtm preset <args>");
         		Print.chat(sender, "&7- /fvtm attr <args>");
         		Print.chat(sender, "&7- /fvtm debug <args>");
         		Print.chat(sender, "&7- /fvtm spawn-sys");
-        		Print.chat(sender, "&7- /fvtm undo road");
         		Print.chat(sender, "&7- /fvtm catalog");
         		Print.chat(sender, "&8- - - - - -");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
@@ -476,6 +484,32 @@ public class Command extends CommandBase {
 					Print.chat(sender, entry.getValue() + "ms - " + entry.getKey());
 				});
 			}*/
+			case "long-rail":{
+				FvtmPlayer player = UniEntity.get(sender.getCommandSenderEntity()).getApp(FvtmPlayer.class);
+				switch(args[1]){
+					case "select":{
+						LongDisRailUtil.add(player);
+						break;
+					}
+					case "status":{
+						LongDisRailUtil.status(player);
+						break;
+					}
+					case "set":{
+						LongDisRailUtil.seg(player, Integer.parseInt(args[2]));
+						break;
+					}
+					case "start":{
+						LongDisRailUtil.process(player);
+						break;
+					}
+					case "clear":{
+						LongDisRailUtil.clear(player);
+						break;
+					}
+				}
+				break;
+			}
             default: {
                 Print.chat(sender, "null [0]");
                 break;

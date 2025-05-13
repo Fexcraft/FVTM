@@ -40,10 +40,7 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.ZipUtils;
 import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.fvtm.handler.BogieInstallationHandler;
-import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.FclRecipe;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.*;
 import net.fexcraft.mod.uni.inv.ItemWrapper;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -74,6 +71,7 @@ public abstract class FvtmResources {
 	public void init(){
 		FVTM_CONFIG_DIR = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/");
 		if(!FVTM_CONFIG_DIR.exists()) FVTM_CONFIG_DIR.mkdirs();
+		UniEntity.register(new FvtmPlayer(null));
 		//
 		JsonMap map = new JsonMap();
 		map.add("ID", INTERNAL_ADDON_ID.colon());

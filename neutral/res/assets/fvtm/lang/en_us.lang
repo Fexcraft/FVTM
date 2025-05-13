@@ -335,6 +335,20 @@ fvtm.spawn.simple.no_engine=&9Vehicle does not have an Engine installed!
 fvtm.spawn.simple.no_seats=&9Vehicle does not have any Seats!
 fvtm.spawn.simple.no_data=&9Vehicle does not have simple-physics data configured!
 
+# Long Distance Rail
+fvtm.rail.long_distance.no_permission=This is an Operator tool.
+fvtm.rail.long_distance.added=Point added (%s, %s, %s)
+fvtm.rail.long_distance.cleared=Point cache cleared.
+fvtm.rail.long_distance.segments_set=Segmentation set to %sm
+fvtm.rail.long_distance.starting=Starting long distance track creation...
+fvtm.rail.long_distance.no_gauge=Please hold a rail gauge item in hand.
+fvtm.rail.long_distance.too_short=Distance too short for this tool.
+fvtm.rail.long_distance.junction_full=Junction at %s is full, aborting further placing.
+fvtm.rail.long_distance.finished=Done! %s tracks created on a distance of %s.
+fvtm.rail.long_distance.info=This tool is best for straight paths!
+fvtm.rail.long_distance.segments=Segmentation: %sm
+fvtm.rail.long_distance.points=Selected Points:
+
 # Items
 item.fvtm:road_tool.name=Road Tool
 item.fvtm:decoration.name=Decoration (Editor)

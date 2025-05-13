@@ -600,4 +600,8 @@ public class Junction implements SysObj {
 		return this;
 	}
 
+	public boolean full(){
+		return tracks.size() >= 4;
+	}
+
 }

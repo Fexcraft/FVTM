@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
@@ -9,6 +10,7 @@ import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.FvtmPlayer;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
@@ -19,6 +21,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.item.*;
+import net.fexcraft.mod.fvtm.sys.rail.LongDisRailUtil;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
@@ -56,6 +59,7 @@ public class FVTM20 {
 		StackWrapper.ITEM_TYPES.put(ContentType.MATERIAL.item_type, item -> item instanceof MaterialItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.VEHICLE.item_type, item -> item instanceof VehicleItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.BLOCK.item_type, item -> item instanceof BlockItem);
+		StackWrapper.ITEM_TYPES.put(ContentType.RAILGAUGE.item_type, item -> item instanceof RailGaugeItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.TOOLBOX.item_type, item -> item instanceof ToolboxItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.WIRE.item_type, item -> item instanceof WireItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.SIGN.item_type, item -> item instanceof SignItem);
@@ -192,6 +196,27 @@ public class FVTM20 {
 				}
 				return 0;
 			}))
+			.then(Commands.literal("long-rail")
+				.then(Commands.literal("select").executes(ctx -> {
+					LongDisRailUtil.add(UniEntity.get(ctx.getSource().getPlayer()).getApp(FvtmPlayer.class));
+					return 0;
+				}))
+				.then(Commands.literal("status").executes(ctx -> {
+					LongDisRailUtil.status(UniEntity.get(ctx.getSource().getPlayer()).getApp(FvtmPlayer.class));
+					return 0;
+				})).then(Commands.literal("set").then(Commands.argument("segmentation", IntegerArgumentType.integer(4, 32)).executes(ctx -> {
+					LongDisRailUtil.seg(UniEntity.get(ctx.getSource().getPlayer()).getApp(FvtmPlayer.class), ctx.getArgument("segmentation", Integer.class));
+					return 0;
+				})))
+				.then(Commands.literal("clear").executes(ctx -> {
+					LongDisRailUtil.clear(UniEntity.get(ctx.getSource().getPlayer()).getApp(FvtmPlayer.class));
+					return 0;
+				}))
+				.then(Commands.literal("start").executes(ctx -> {
+					LongDisRailUtil.process(UniEntity.get(ctx.getSource().getPlayer()).getApp(FvtmPlayer.class));
+					return 0;
+				}))
+			)
 		;
 	}
 

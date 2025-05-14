@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
 
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBoolean;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.AttrInteger;
@@ -107,7 +108,7 @@ public enum VehicleType {
 			case RAIL:{
 				attrs.add(new AttrFloat("bogie_front_angle", 0f).limit(-360f, 360f));
 				attrs.add(new AttrFloat("bogie_rear_angle", 0f).limit(-360f, 360f));
-				attrs.add(new AttrInteger("gauge", 30).limit(Integer.MIN_VALUE, Integer.MAX_VALUE).editable(false).addAccess("driver"));
+				attrs.add(new AttrFloat("gauge", RailGauge.DEFWIDTH).limit(Integer.MIN_VALUE, Integer.MAX_VALUE).editable(false));
 				attrs.add(new AttrBoolean("forward", true).editable(false));
 				attrs.add(new AttrBoolean("active", false).editable(true));//for automatic/steered/AI traffic
 				attrs.add(new AttrBoolean("paused", false).editable(true));//for automatic/steered/AI traffic

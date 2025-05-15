@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.ui;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -25,6 +26,7 @@ public class RailJunction extends UserInterface {
 	public static final RGB ORA = new RGB(0xFF6A00);
 	private static BufferedImage conv = new BufferedImage(64, 64, BufferedImage.TYPE_INT_RGB);
 	private static int[][] grid = new int[64][64];
+	private static RGB temp = new RGB();
 	public static Color[] TRACK_COLOR = { Color.BLUE, Color.RED, Color.GREEN, Color.ORANGE };
 	private RailJunctionContainer menu;
 
@@ -109,11 +111,13 @@ public class RailJunction extends UserInterface {
 	@Override
 	public void postdraw(float ticks, int mx, int my){
 		if(menu.junc == null) return;
+		drawer.bind(FvtmRegistry.WHITE_TEXTURE);
 		for(int xo = 0; xo < 64; xo++){
 			for(int yo = 0; yo < 64; yo++){
 				if(grid[xo][yo] == 0) continue;
-				drawer.apply(new RGB(grid[xo][yo]));
-				drawer.draw(xo + gLeft + 7, yo + gTop + 21, 7, 21, 1, 1);
+				temp.packed = grid[xo][yo];
+				drawer.apply(temp);
+				drawer.drawFull(xo + gLeft + 7, yo + gTop + 21, 1, 1);
 			}
 		}
 		drawer.applyWhite();

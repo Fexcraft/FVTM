@@ -64,6 +64,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
@@ -149,6 +150,12 @@ public class EffectRenderer {
 		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return null;
 		PartData data = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
+	}
+
+	private static PartData isBogie(){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return null;
+		PartData data = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
+		return data.hasFunction("fvtm:bogie") ? data : null;
 	}
 
 	private static PartData isNormalPart(){
@@ -267,6 +274,17 @@ public class EffectRenderer {
 						red = data.hasPart(entry.getKey()) && ((WheelData)data.getPart(entry.getKey()).getType().getInstallHandlerData()).hasTire();
 						if(!red) red = data.hasPart(entry.getKey() + ":tire");
 					}
+					slot = entry.getValue();
+					DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
+				}
+			}
+			part = isBogie();
+			if(part != null){
+				WheelSlot slot;
+				boolean green;
+				for(Map.Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
+					green = part.getType().getInstallHandler().validInstall(FvtmLogger.NONE, part, entry.getKey(), data, true);
+					red = data.hasPart(entry.getKey());
 					slot = entry.getValue();
 					DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 				}

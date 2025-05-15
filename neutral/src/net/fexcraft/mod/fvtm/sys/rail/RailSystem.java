@@ -459,7 +459,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendToAll(PKT_TAG, world, entity.pos, task, compound);
+		Packets.sendToAll(PKT_TAG, task, compound);
 	}
 
 	@Override

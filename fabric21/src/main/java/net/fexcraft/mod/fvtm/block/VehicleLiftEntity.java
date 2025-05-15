@@ -66,7 +66,7 @@ public class VehicleLiftEntity extends BlockEntity implements PacketTagListener,
 		super.loadAdditional(com, prov);
 		rot = com.getIntOr("Rot", 0);
 		if(com.contains("VehicleData")){
-			data = FvtmResources.getVehicleData(com.getCompound("VehicleData"));
+			data = FvtmResources.getVehicleData(com.getCompoundOrEmpty("VehicleData"));
 			data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(rot), true);
 		}
 		liftstate = com.getDoubleOr("LiftState", 0);

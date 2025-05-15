@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
+import net.fexcraft.mod.fvtm.handler.BogieInstallationHandler.BogieData;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
@@ -66,6 +67,7 @@ public class InteractionHandler {
 				if(data.getType().getInstallHandlerData() instanceof DPIHData && tryInstall(vehdata, ref, data, seat, pass)) return true;
 				if(data.getType().getInstallHandlerData() instanceof TireData && tryWTInstall(vehdata, ref, data, seat, pass)) return true;
 				if(data.getType().getInstallHandlerData() instanceof WheelData && tryWTInstall(vehdata, ref, data, seat, pass)) return true;
+				if(data.getType().getInstallHandlerData() instanceof BogieData && tryWTInstall(vehdata, ref, data, seat, pass)) return true;
 				return false;
 			}
 			if(stack.isItemOf(ContentType.MATERIAL.item_type)){

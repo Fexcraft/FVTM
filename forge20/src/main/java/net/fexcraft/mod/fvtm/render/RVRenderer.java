@@ -217,6 +217,17 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 			}
 		}
+		part = isBogie();
+		if(part != null){
+			WheelSlot slot;
+			boolean green;
+			for(Map.Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
+				green = part.getType().getInstallHandler().validInstall(FvtmLogger.NONE, part, entry.getKey(), data, true);
+				red = data.hasPart(entry.getKey());
+				slot = entry.getValue();
+				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
+			}
+		}
 		//
 		tool = isToolbox();
 		if(tool > 0){
@@ -268,6 +279,12 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
 		PartData data = UniStack.getApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
 		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
+	}
+
+	private static PartData isBogie(){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
+		PartData data = UniStack.getApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
+		return data.hasFunction("fvtm:bogie")? data : null;
 	}
 
 	private V3D getRotations(RootVehicle veh, float ticks){

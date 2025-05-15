@@ -93,12 +93,22 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag){
 		TagCW com = TagCW.wrap(tag);
+		if(vehicle.data == null){
+			FvtmLogger.log("Entity with ID '" + getId() + "' has no vehicle data, not saving.");
+			remove(RemovalReason.DISCARDED);
+			return;
+		}
 		vehicle.data.write(com);
 		vehicle.point.savePivot(com);
 	}
 
 	@Override
 	public void writeSpawnData(TagCW com){
+		if(vehicle.data == null){
+			FvtmLogger.log("Entity with ID '" + getId() + "' has no vehicle data, removing.");
+			remove(RemovalReason.DISCARDED);
+			return;
+		}
 		vehicle.point.savePivot(com);
 		if(vehicle.front != null){
 			com.set("TruckId", vehicle.front.entity.getId());

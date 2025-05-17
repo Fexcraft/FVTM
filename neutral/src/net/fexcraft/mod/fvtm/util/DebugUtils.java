@@ -105,6 +105,28 @@ public class DebugUtils {
 		RENDERER.color(0xffffffff);
 	}
 
+	public static void renderAxe(float scale, int col){
+		RENDERER.bind(FvtmResources.WHITE_TEXTURE);
+		RENDERER.color(col);
+		//
+		RENDERER.push();
+		RENDERER.scale(scale, 1, 1);
+		LLBB0.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(1, scale, 1);
+		LLBB1.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(1, 1, scale);
+		LLBB2.render();
+		RENDERER.pop();
+		//
+		RENDERER.color(0xffffffff);
+	}
+
 	public static void renderBB(V3D pos, float scale, int col){
 		RENDERER.translate(pos.x, pos.y, pos.z);
 		renderBB(scale, col);

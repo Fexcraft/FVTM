@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.MathUtils;
@@ -71,6 +72,7 @@ public class VehicleInstance {
 	public WheelTireData w_rear_l;
 	public WheelTireData w_rear_r;
 	public RailEntity railent;
+	public Map<String, OBB> obb = new LinkedHashMap<>();
 	//
 	public SimplePhysData spdata;
 	public WheelMap wheels = new WheelMap();
@@ -419,6 +421,13 @@ public class VehicleInstance {
 	public void updatePointsSeats(){
 		for(SwivelPoint point : data.getRotationPoints().values()) point.update(this);
 		for(SeatInstance seat : seats) seat.update();
+		for(OBB.OBBRef ref : data.getBoundBoxes()){
+			SwivelPoint point = data.getRotationPoint(ref.point);
+			if(!obb.containsKey(ref.key)){
+				obb.put(ref.key, new OBB());
+			}
+			obb.get(ref.key).update(point, ref.pos, entity.getPos(), ref.size.x, ref.size.y, ref.size.z);
+		}
 	}
 
 	public void sendUpdatePacket(){

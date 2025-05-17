@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -122,12 +123,25 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			renderSeats(pose, state.vehicle);
 		}
 		pose.popPose();
+		if(DebugUtils.ACTIVE){
+			Renderer21.light = 255;
+			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
+			for(OBB.OBBRef ref : state.vehicle.data.getBoundBoxes()){
+				OBB obb = state.vehicle.obb.get(ref.key);
+				if(obb == null) continue;
+				for(V3D vert : obb.verts){
+					pose.pushPose();
+					RENDERER.translate(vert);
+					DebugUtils.renderSphere(0.025f, COL_CYN);
+					pose.popPose();
+				}
+			}
+		}
 	}
 
 	private void renderSeats(PoseStack pose, VehicleInstance vehicle){
 		if(vehicle.seats.isEmpty()) return;
 		pose.pushPose();
-		FvtmRenderTypes.setLines();
 		float scale;
 		for(SeatInstance seat : vehicle.seats){
 			scale = seat.seat.scale() * 0.5f;

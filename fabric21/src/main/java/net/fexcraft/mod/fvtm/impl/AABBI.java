@@ -56,4 +56,34 @@ public class AABBI extends net.fexcraft.mod.fvtm.data.block.AABB {
 		return aabb.contains((Vec3)vec);
 	}
 
+	@Override
+	public double minX(){
+		return aabb.minX;
+	}
+
+	@Override
+	public double minY(){
+		return aabb.minY;
+	}
+
+	@Override
+	public double minZ(){
+		return aabb.minZ;
+	}
+
+	@Override
+	public double maxX(){
+		return aabb.maxX;
+	}
+
+	@Override
+	public double maxY(){
+		return aabb.maxY;
+	}
+
+	@Override
+	public double maxZ(){
+		return aabb.maxZ;
+	}
+
 }

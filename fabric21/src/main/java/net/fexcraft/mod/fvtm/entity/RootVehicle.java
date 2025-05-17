@@ -4,11 +4,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
+import net.fexcraft.mod.fvtm.util.CollisionUtil;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -26,10 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
@@ -179,9 +181,28 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		xRotO = vehicle.point.getPivot().deg_pitch();
 		protZ = vehicle.point.getPivot().deg_roll();
 		vehicle.onUpdate();
-		//collchecks
+		checkCollision();
 		if(!level().isClientSide && tickCount % VEHICLE_SYNC_RATE == 0){
 			vehicle.sendUpdatePacket();
+		}
+	}
+
+	private void checkCollision(){
+		ArrayList<Entity> checked = new ArrayList<>();
+		for(InteractZone zone : vehicle.data.getInteractZones().values()){
+			level().getEntities(this, AABB.ofSize(position().add(zone.pos.x, zone.pos.y, zone.pos.z), zone.range, zone.range, zone.range),
+				ent -> (ent instanceof LivingEntity) && !(ent instanceof WheelEntity)).forEach(entity -> {
+				if(entity.getVehicle() != null || checked.contains(entity)) return;
+				OBB bb = new OBB().set(net.fexcraft.mod.fvtm.data.block.AABB.wrap(entity.getBoundingBox()));
+				for(OBB obb : vehicle.obb.values()){
+					var res = CollisionUtil.check(bb, obb);
+					if(res != null){
+						Vec3 vec = new Vec3(-res.x, res.y, -res.z);
+						entity.setDeltaMovement(entity.getDeltaMovement().scale(0.9).add(vec));
+						checked.add(entity);
+					}
+				}
+			});
 		}
 	}
 

@@ -141,6 +141,7 @@ public class FVTM implements ModInitializer {
 		StackWrapper.CONTENT_TYPES.put(ContentType.SIGN.item_type, stack -> ((SignItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);
 		AABB.SUPPLIER = () -> new AABBI();
+		AABB.WRAPPER = obj -> new AABBI((net.minecraft.world.phys.AABB)obj);
 		/*BlockType.BLOCK_IMPL = BlockTypeImpl::get;*/
 		FvtmResources.INSTANCE = new Resources21();
 		LoopedSound.ACTIVATE = sound -> {

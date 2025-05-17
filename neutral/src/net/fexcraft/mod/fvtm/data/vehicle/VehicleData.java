@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.function.part.*;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
+import net.fexcraft.mod.fvtm.util.OBB.OBBRef;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -46,6 +47,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	protected Map<String, SwivelPoint> rotpoints = new LinkedHashMap<>();
 	protected Map<String, PartSlots> partproviders = new LinkedHashMap<>();
 	protected Map<String, InteractZone> interact_zones = new LinkedHashMap<>();
+	protected List<OBBRef> boundboxes = new ArrayList<>();
 	protected ArrayList<String> vehinvkeys = new ArrayList<>();
 	protected ArrayList<FvtmInv> vehinvs = new ArrayList<>();
 	//protected ArrayList<VehicleScript> scripts = new ArrayList<>();
@@ -79,6 +81,9 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		for(InteractZone zone : type.getDefaultInteractZones()){
 			interact_zones.put(zone.id, zone.copy());
+		}
+		for(OBBRef ref : type.getDefaultBoundBoxes()){
+			boundboxes.add(ref);
 		}
 		partproviders.put("vehicle", type.getPartSlots());
 		if(type.getInstalled() != null){
@@ -859,6 +864,10 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			if(value.getType().getIDS().equals(str)) return true;
 		}
 		return false;
+	}
+
+	public List<OBBRef> getBoundBoxes(){
+		return boundboxes;
 	}
 
 }

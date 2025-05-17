@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.RGB;
@@ -33,6 +34,8 @@ import net.fexcraft.mod.fvtm.model.content.VehicleModel;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.fvtm.sys.event.EventListener;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
+import net.fexcraft.mod.fvtm.util.OBB;
+import net.fexcraft.mod.fvtm.util.OBB.OBBRef;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -62,6 +65,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 	protected float coupler_range = 1f;
 	protected Map<String, LiftingPoint> liftingpoints = new HashMap<>();
 	protected Map<String, LiftingPoint[]> gliftingpoints = new HashMap<>();
+	protected List<OBBRef> boundboxes = new ArrayList<>();
 	protected List<InteractZone> interact_zones = new ArrayList<>();
 	protected List<CatalogPreset> catalog = new ArrayList<>();
 	protected List<Seat> defseats = new ArrayList<>();
@@ -200,6 +204,16 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 		}
 		if(interact_zones.isEmpty()){
 			interact_zones.add(new InteractZone("default", V3D.NULL, 4, SwivelPoint.DEFAULT));
+		}
+		if(map.has("BoundingBoxes")){
+			for(Entry<String, JsonValue<?>> entry : map.get("BoundingBoxes").asMap().entries()){
+				try{
+					boundboxes.add(new OBBRef(entry.getKey(), entry.getValue().asMap()));
+				}
+				catch(Exception e){
+					FvtmLogger.log(e, "vehicle bounding box loading of " + id.colon());
+				}
+			}
 		}
 		if(map.has("Events")){
 			for(JsonValue<?> val : map.getArray("Events").value){
@@ -408,6 +422,10 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 
 	public Map<String, FvtmInv> getDefaultInventories(){
 		return definvs;
+	}
+
+	public List<OBBRef> getDefaultBoundBoxes(){
+		return boundboxes;
 	}
 
 }

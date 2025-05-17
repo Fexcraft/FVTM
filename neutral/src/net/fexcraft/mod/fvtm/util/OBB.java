@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
@@ -21,35 +23,40 @@ public class OBB {
 		}
 	}
 
-	public OBB set(AABB aabb, V3D pos){
-		verts[0].set(aabb.minX() + pos.x, aabb.minY() + pos.y, aabb.minZ() + pos.z);
-		verts[1].set(aabb.minX() + pos.x, aabb.minY() + pos.y, aabb.maxZ() + pos.z);
-		verts[2].set(aabb.minX() + pos.x, aabb.maxY() + pos.y, aabb.minZ() + pos.z);
-		verts[3].set(aabb.minX() + pos.x, aabb.maxY() + pos.y, aabb.maxZ() + pos.z);
-		verts[4].set(aabb.maxX() + pos.x, aabb.minY() + pos.y, aabb.minZ() + pos.z);
-		verts[5].set(aabb.maxX() + pos.x, aabb.minY() + pos.y, aabb.maxZ() + pos.z);
-		verts[6].set(aabb.maxX() + pos.x, aabb.maxY() + pos.y, aabb.minZ() + pos.z);
-		verts[7].set(aabb.maxX() + pos.x, aabb.maxY() + pos.y, aabb.maxZ() + pos.z);
+	public OBB set(AABB aabb){
+		verts[0].set(aabb.minX(), aabb.minY(), aabb.minZ());
+		verts[1].set(aabb.minX(), aabb.minY(), aabb.maxZ());
+		verts[2].set(aabb.minX(), aabb.maxY(), aabb.minZ());
+		verts[3].set(aabb.minX(), aabb.maxY(), aabb.maxZ());
+		verts[4].set(aabb.maxX(), aabb.minY(), aabb.minZ());
+		verts[5].set(aabb.maxX(), aabb.minY(), aabb.maxZ());
+		verts[6].set(aabb.maxX(), aabb.maxY(), aabb.minZ());
+		verts[7].set(aabb.maxX(), aabb.maxY(), aabb.maxZ());
 		genAxes();
 		return this;
 	}
 
 	private void genAxes(){
-		axes[0] = verts[0].sub(verts[1]).normalize();
-		axes[1] = verts[0].sub(verts[2]).normalize();
-		axes[2] = verts[0].sub(verts[4]).normalize();
+		verts[0].sub(verts[1]).normalize(axes[0]);
+		verts[0].sub(verts[2]).normalize(axes[1]);
+		verts[0].sub(verts[4]).normalize(axes[2]);
 	}
 
-	public void update(SwivelPoint point, V3D vec, double x, double y, double z){
-		verts[0].set(-(x *= 0.5), -(y *= 0.5), -(z *= 0.5));
-		verts[1].set(-x, -y, +z);
-		verts[2].set(-x, +y, -z);
-		verts[3].set(-x, +y, +z);
-		verts[4].set(+x, -y, -z);
-		verts[5].set(+x, -y, +z);
-		verts[6].set(+x, +y, -z);
-		verts[7].set(+x, +y, +z);
-		for(int i = 0; i < verts.length; i++) verts[i] = point.getPivot().get_vector(verts[i]).add(vec);
+	public void update(SwivelPoint point, V3D pos, V3D veh, double x, double y, double z){
+		verts[0].set(-(x *= 0.5) + pos.x, -(y *= 0.5) + pos.y, -(z *= 0.5) + pos.z);
+		verts[1].set(-x + pos.x, -y + pos.y, +z + pos.z);
+		verts[2].set(-x + pos.x, +y + pos.y, -z + pos.z);
+		verts[3].set(-x + pos.x, +y + pos.y, +z + pos.z);
+		verts[4].set(+x + pos.x, -y + pos.y, -z + pos.z);
+		verts[5].set(+x + pos.x, -y + pos.y, +z + pos.z);
+		verts[6].set(+x + pos.x, +y + pos.y, -z + pos.z);
+		verts[7].set(+x + pos.x, +y + pos.y, +z + pos.z);
+		for(int i = 0; i < verts.length; i++){
+			V3D rel = point.getRelativeVector(verts[i]);
+			verts[i].x = rel.x + veh.x;
+			verts[i].y = rel.y + veh.y;
+			verts[i].z = rel.z + veh.z;
+		}
 		genAxes();
 	}
 
@@ -71,6 +78,22 @@ public class OBB {
 			axes[2].cross(obb.axes[1]).normalize(),
 			axes[2].cross(obb.axes[2]).normalize(),
 		};
+	}
+
+	public static class OBBRef {
+
+		public String point;
+		public String key;
+		public V3D pos;
+		public V3D size;
+
+		public OBBRef(String key, JsonMap map){
+			this.key = key;
+			pos = ContentConfigUtil.getVector(map.getArray("pos"));
+			size = map.has("size") ? ContentConfigUtil.getVector(map.getArray("size")) : new V3D(1, 1, 1);
+			point = map.getString("point", SwivelPoint.DEFAULT);
+		}
+
 	}
 
 }

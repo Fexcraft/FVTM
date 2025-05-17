@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.lib.common.math.V3D;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -10,6 +11,7 @@ import java.util.function.Supplier;
 public abstract class AABB {
 
     public static Supplier<AABB> SUPPLIER = null;
+    public static Function<Object, AABB> WRAPPER = null;
     //public float x0, y0, z0;
     //public float x1, y1, z1;
 
@@ -27,6 +29,10 @@ public abstract class AABB {
 
     public static AABB create(float[] arr){
         return SUPPLIER.get().set(arr);
+    }
+
+    public static AABB wrap(Object obj){
+        return WRAPPER.apply(obj);
     }
 
     public abstract AABB set(float sx, float sy, float sz, float ex, float ey, float ez);
@@ -55,4 +61,17 @@ public abstract class AABB {
     public abstract boolean contains(V3D vec);
 
     public abstract boolean contains(Object vec);
+
+    public abstract double minX();
+
+    public abstract double minY();
+
+    public abstract double minZ();
+
+    public abstract double maxX();
+
+    public abstract double maxY();
+
+    public abstract double maxZ();
+
 }

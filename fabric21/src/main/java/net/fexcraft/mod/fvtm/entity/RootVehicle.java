@@ -56,7 +56,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
-	private int synctimer;
+	private boolean cl_sync;
 	public boolean should_sit = true;
 
 	public RootVehicle(EntityType<?> type, Level level){
@@ -133,6 +133,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 			e.printStackTrace();
 			FvtmLogger.LOGGER.log("Failed to read additional spawn data for vehicle entity with ID " + getId() + "!");
 		}
+		FvtmLogger.debug("Received sync for " + getId());
 	}
 
 	@Override
@@ -168,12 +169,17 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		super.tick();
 		if(isRemoved()) return;
 		if(vehicle.data == null){
-			if(level().isClientSide && synctimer < 1){
-				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-				synctimer = 10;
+			if(level().isClientSide){
+				if(!cl_sync){
+					FvtmLogger.debug("Sending sync request for " + getId());
+					ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+					cl_sync = true;
+				}
 			}
-			synctimer--;
-			FvtmLogger.log("Vehicle '" + getId() + "' has no data, skipping update. " + level().isClientSide);
+			else{
+				FvtmLogger.log("Vehicle '" + getId() + "' has no data, removing!");
+				kill((ServerLevel)level());
+			}
 			return;
 		}
 		tickCount++;

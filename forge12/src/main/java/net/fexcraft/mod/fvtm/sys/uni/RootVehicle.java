@@ -7,11 +7,13 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.*;
-import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.event.EventHandler;
+import net.fexcraft.mod.fvtm.util.CollisionUtil;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -20,6 +22,8 @@ import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWIE;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -31,6 +35,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -39,6 +44,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.*;
@@ -225,9 +231,30 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevRotationPitch = vehicle.point.getPivot().deg_pitch();
 		prevRotationRoll = vehicle.point.getPivot().deg_roll();
 		vehicle.onUpdate();
-		//collchecks
+		checkCollision();
 		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
 			vehicle.sendUpdatePacket();
+		}
+	}
+
+	private void checkCollision(){
+		if(Config.DISABLE_OBB || vehicle.obb.isEmpty()) return;
+		ArrayList<Entity> checked = new ArrayList<>();
+		for(InteractZone zone : vehicle.data.getInteractZones().values()){
+			float r = zone.range * 0.5f + 1;
+			Vec3d min = getPositionVector().add(zone.pos.x - r, zone.pos.y - r, zone.pos.z - r);
+			Vec3d max = getPositionVector().add(zone.pos.x + r, zone.pos.y + r, zone.pos.z + r);
+			world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(min, max), ent -> ent instanceof EntityLivingBase).forEach(ent -> {
+				if(ent.isRiding() || checked.contains(ent)) return;
+				OBB bb = new OBB().set(net.fexcraft.mod.fvtm.data.block.AABB.wrap(ent.getEntityBoundingBox()));
+				for(OBB obb : vehicle.obb.values()){
+					V3D res = CollisionUtil.check(bb, obb);
+					if(res != null){
+						ent.move(MoverType.SELF, -res.x * 0.5, res.y * 0.5, -res.z * 0.5);
+						checked.add(ent);
+					}
+				}
+			});
 		}
 	}
 

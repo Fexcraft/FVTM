@@ -87,11 +87,6 @@ public abstract class FvtmLogger {
 		}
 
 		@Override
-		public void dismount(){
-			//
-		}
-
-		@Override
 		public String getName(){
 			return "LOG";
 		}
@@ -122,11 +117,6 @@ public abstract class FvtmLogger {
 		@Override
 		public void bar(String str, Object... args){
 			if(EnvInfo.DEV) FvtmLogger.LOGGER.log(str, args);
-		}
-
-		@Override
-		public void dismount(){
-			//
 		}
 
 		@Override
@@ -163,11 +153,6 @@ public abstract class FvtmLogger {
 		}
 
 		@Override
-		public void dismount(){
-			//
-		}
-
-		@Override
 		public String getName(){
 			return "NONE";
 		}
@@ -178,4 +163,5 @@ public abstract class FvtmLogger {
 		}
 
 	};
+
 }

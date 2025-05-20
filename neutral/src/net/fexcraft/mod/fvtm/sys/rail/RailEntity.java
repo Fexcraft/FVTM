@@ -202,7 +202,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private boolean CMODE(){
-		if(!VEHICLES_NEED_FUEL || vehicle.data.getAttribute("use-fuel").asBoolean()) return true;
+		if(!VEHICLES_NEED_FUEL || !vehicle.data.getAttribute("use-fuel").asBoolean()) return true;
 		EntityW driver = vehicle.driver();
 		if(driver != null){
 	    	return driver.isCreative();

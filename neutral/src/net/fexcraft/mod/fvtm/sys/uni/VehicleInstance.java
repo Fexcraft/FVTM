@@ -891,7 +891,7 @@ public class VehicleInstance {
 				if(driver == null || (!creative && data.outoffuel())){
 					throttle *= 0.98;
 				}
-				move(!VEHICLES_NEED_FUEL || data.getAttribute("use-fuel").asBoolean() || creative);
+				move(!VEHICLES_NEED_FUEL || !data.getAttribute("use-fuel").asBoolean() || creative);
 				if(rear != null) rear.align();
 				//
 				V3D fl = wheels.get(w_front_l.id).pos();

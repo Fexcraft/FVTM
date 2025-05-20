@@ -229,7 +229,7 @@ public class VehicleInstance {
 				return true;
 			}
 			case DISMOUNT:{
-				player.dismount();
+				player.dismount(data.getRotationPoint(seat.swivel_point).getRelativeVector(seat.dis).add(getV3D()));
 				return true;
 			}
 			case INVENTORY:{

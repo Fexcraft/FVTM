@@ -27,6 +27,8 @@ public class Config extends ConfigBase {
 	public static boolean DISMOUNT_ON_LOGOUT;
 	public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 	public static int PACKET_RANGE;
+	//collision
+	public static boolean DISABLE_OBB;
 	//client
 	public static boolean RENDER_OUT_OF_VIEW;
 	public static boolean DISABLE_LIGHT_BEAMS;
@@ -74,6 +76,7 @@ public class Config extends ConfigBase {
 		//categories
 		String catg = "general";
 		String catc = "client";
+		String catl = "collision";
 		String catu = "u12/basic";
 		String catv = "vehicle";
 		String catr = "rail";
@@ -141,6 +144,12 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catv, "steer_reset_rate", new JsonValue(0.90))//0.95
 			.info("Steer multiplier per tick. 1 = no reset, 0 = full reset each tick.").rang(0, 1)
 			.cons((con, map) -> STEER_RESET_RATE = con.getFloat(map)));
+
+		//collision
+		entries.add(new ConfigEntry(this, catl, "disable", new JsonValue(false))
+			.info("If FVTM Oriented-Bounding-Boxes should be disabled.")
+			.cons((con, map) -> DISABLE_OBB = con.getBoolean(map))
+			.req(false, false));
 
 		//rail
 		entries.add(new ConfigEntry(this, catr, "disable", new JsonValue(false))

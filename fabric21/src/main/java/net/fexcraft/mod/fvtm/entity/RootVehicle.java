@@ -189,7 +189,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	}
 
 	private void checkCollision(){
-		if(Config.DISABLE_OBB) return;
+		if(Config.DISABLE_OBB || vehicle.obb.isEmpty()) return;
 		ArrayList<Entity> checked = new ArrayList<>();
 		for(InteractZone zone : vehicle.data.getInteractZones().values()){
 			level().getEntities(this, AABB.ofSize(position().add(zone.pos.x, zone.pos.y, zone.pos.z), zone.range, zone.range, zone.range),

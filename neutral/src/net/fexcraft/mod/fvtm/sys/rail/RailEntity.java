@@ -138,7 +138,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(!vehicle.data.getType().isTrailer() && !isPaused() && vehicle.throttle > 0.001f){
 			if(vehicle.data.hasPart("engine")){
 				EngineFunction engine = vehicle.data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
-				if(CMODE() || processConsumption(engine)){
+				if(CMODE() || (vehicle.engine != null && vehicle.consumeFuel())){
 					double eng = vehicle.throttle * engine.getSphEngineSpeed();
 					if(com.isMultiple()) com.accumulator += eng;
 					else moverq = com.forward ? eng : -eng;
@@ -202,51 +202,12 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private boolean CMODE(){
-		if(!VEHICLES_NEED_FUEL) return true;
+		if(!VEHICLES_NEED_FUEL || vehicle.data.getAttribute("use-fuel").asBoolean()) return true;
 		EntityW driver = vehicle.driver();
 		if(driver != null){
 	    	return driver.isCreative();
 		}
 		else return false;
-	}
-
-	private byte fuel_accu;
-	private float consumed;
-
-	private boolean processConsumption(EngineFunction engine){
-    	if(engine == null) return false;
-    	if(vehicle.data.getAttributeInteger("fuel_stored", 0) <= 0) return false;
-    	if(fuel_accu < 20){
-    		if(engine.isOn()){
-    			if(vehicle.throttle == 0f || (vehicle.throttle < 0.05f && vehicle.throttle > -0.05f)){
-        			consumed += engine.getIdleFuelConsumption();
-        		}
-        		else{
-        			consumed += engine.getFuelConsumption(vehicle.data.getAttribute("fuel_secondary").asString()) * vehicle.throttle;
-        		}
-    		}
-    		fuel_accu++;
-    		return engine.isOn();
-    	}
-    	else{
-    		boolean bool = false;
-    		if(consumed > 0){
-    			int con = (int)(consumed / 20f);
-    			vehicle.data.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
-    			bool = true;
-    		}
-    		if(vehicle.entity != null && engine.isOn() && vehicle.data.getAttribute("fuel_stored").asFloat() <= 0){
-				vehicle.throttle = 0;
-				engine.setState(false);
-				TagCW compound = TagCW.create();
-    			compound.set("engine_toggle_result", false);
-            	compound.set("no_fuel", true);
-				vehicle.sendUpdate(PKT_UPD_ENGINE_TOGGLE, compound);
-    		}
-    		fuel_accu = 0;
-    		consumed = 0;
-    		return bool;
-    	}
 	}
 
 	public void checkIfShouldStop(){

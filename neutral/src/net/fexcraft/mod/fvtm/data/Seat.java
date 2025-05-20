@@ -12,6 +12,7 @@ import net.fexcraft.mod.uni.world.EntityW;
 public class Seat {
 
 	public V3D pos;
+	public V3D dis;
 	public boolean driver;
 	public boolean sitting;
 	public String name;
@@ -50,6 +51,7 @@ public class Seat {
 			}
 		}
 		if(map.has("scale")) scale = map.get("scale").float_value();
+		dis = map.has("dismount") ? ContentConfigUtil.getVector(map.getArray("dismount")) : pos.copy();
 	}
 
 	public Seat(String name, V3D pos, boolean driver, String point){

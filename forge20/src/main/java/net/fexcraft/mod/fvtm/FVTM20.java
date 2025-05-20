@@ -76,6 +76,7 @@ public class FVTM20 {
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);
 		//UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
 		AABB.SUPPLIER = () -> new AABBI();
+		AABB.WRAPPER = obj -> new AABBI((net.minecraft.world.phys.AABB)obj);
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
 			FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);

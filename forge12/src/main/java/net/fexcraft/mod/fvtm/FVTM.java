@@ -63,6 +63,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -136,6 +137,7 @@ public class FVTM {
 		//UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
 		//ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
 		AABB.SUPPLIER = () -> new AABBI();
+		AABB.WRAPPER = obj -> new AABBI((AxisAlignedBB)obj);
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;
 		InvHandlerFluid.IMPL = InvHandlerFluidImpl.class;
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;

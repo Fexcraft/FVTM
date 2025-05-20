@@ -38,7 +38,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	public double motionY;
 	public double motionZ;
 	private int remtimer;
-	private int synctimer;
+	private boolean cl_sync;
 	protected V3D pos = new V3D();
 
 	public WheelEntity(EntityType<WheelEntity> type, Level level){
@@ -76,7 +76,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag){
-		wheelid = tag.getStringOr("wheelid", "no-wheel-id");
+		//wheelid = tag.getStringOr("wheelid", "no-wheel-id");
 		remtimer = 100;
 	}
 
@@ -91,12 +91,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	}
 
 	@Override
-	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){}
-
-	@Override
-	public HumanoidArm getMainArm(){
-		return HumanoidArm.RIGHT;
-	}*/
+	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){}*/
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float f){
@@ -108,7 +103,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag){
-		tag.putString("wheelid", wheelid);
+		//tag.putString("wheelid", wheelid);
 	}
 
 	@Override
@@ -138,9 +133,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 		vehid = com.getInteger("veh");
 		wheelid = com.getString("id");
 		root = (RootVehicle)level().getEntity(vehid);
-		if(root == null) return;
-		setPos(root.position());
-		if(root.vehicle.data == null) return;
+		if(root == null || root.vehicle.data == null) return;
 		wheel = root.vehicle.wheeldata.get(wheelid);
 	}
 
@@ -156,16 +149,17 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 			remtimer--;
 			return;
 		}
-		if(!found){
-			if(level().isClientSide && vehid == 0 && synctimer < 1){
+		if(level().isClientSide){
+			if(!cl_sync){
 				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-				synctimer = 10;
+				cl_sync = true;
+				return;
 			}
-			synctimer--;
-			root = (RootVehicle)level().getEntity(vehid);
-			if(root == null) return;
-			found = true;
-			root.vehicle.wheels.put(wheelid, this);
+			FvtmLogger.marker(getId() + " " + wheelid);
+			if(root == null || wheel == null) return;
+			V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
+			setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
+			setOldPosAndRot();
 		}
 	}
 

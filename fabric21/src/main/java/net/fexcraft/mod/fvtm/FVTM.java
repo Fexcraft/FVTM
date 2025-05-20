@@ -161,14 +161,6 @@ public class FVTM implements ModInitializer {
 			ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
 			0, 256, 1, "fvtm.wheel", Optional.empty(), FeatureFlagSet.of()));
 		//FabricDefaultAttributeRegistry.register(Resources21.WHEEL_ENTITY, LivingEntity.createLivingAttributes().build());
-		Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
-			0, 256, 1, "fvtm.vehicle", Optional.empty(), FeatureFlagSet.of()));
-		Resources21.RAIL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_vehicle", new EntityType<>(RailVehicle::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
-			0, 256, 1, "fvtm.rail_vehicle", Optional.empty(), FeatureFlagSet.of()));
 		Resources21.DECO_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:decoration", new EntityType<>(DecorationEntity::new,
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
@@ -201,6 +193,14 @@ public class FVTM implements ModInitializer {
 		FvtmResources.INSTANCE.createContentItems();
 		//
 		(Packets.INSTANCE = new Packets21()).init();
+		FvtmRegistry.VEHICLES.forEach(vehicle -> {
+			EntityType<RootVehicle> type = Registry.register(BuiltInRegistries.ENTITY_TYPE, vehicle.getIDS(), new EntityType<>(vehicle.getVehicleType().isRailVehicle() ? RailVehicle::new : RootVehicle::new,
+				MobCategory.MISC, true, false, true, true,
+				ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
+				0, 256, 1, vehicle.getIDS().replace(":", "."), Optional.empty(), FeatureFlagSet.of()));
+			Resources21.VEH_BY_TYPE.put(type, vehicle);
+			Resources21.TYPE_BY_VEH.put(vehicle, type);
+		});
 		FvtmRegistry.VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(sound.soundid.space().equals("minecraft")){

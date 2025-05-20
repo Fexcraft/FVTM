@@ -26,7 +26,7 @@ public class AttributeUtil {
 		if(!attr.editable || attr.hasPerm()){
 			boolean perm = attr.hasPerm() && UniPerm.has(from, attr.perm);
 			if(!perm){
-				from.send("interact.fvtm.vehicle.attribute."+ (!attr.editable ? "not_editable" : "no_permission"));
+				from.send("interact.fvtm.vehicle.attribute." + (!attr.editable ? "not_editable" : "no_permission"));
 				return;
 			}
 		}

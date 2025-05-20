@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.CallbackContainer;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;

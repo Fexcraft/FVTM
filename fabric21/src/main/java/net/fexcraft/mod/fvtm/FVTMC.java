@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -43,6 +42,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 import static net.fexcraft.mod.fvtm.impl.Packets21.*;
 
@@ -83,8 +83,9 @@ public class FVTMC implements ClientModInitializer {
 		BlockEntityRenderers.register(Resources21.CONST_ENTITY, context -> new ConstRenderer());
 		BlockEntityRenderers.register(Resources21.FUELFILLER_ENTITY, context -> new FuelFillerRenderer());
 		EntityRendererRegistry.register(Resources21.WHEEL_ENTITY, context -> new EmptyRenderer(context));
-		EntityRendererRegistry.register(Resources21.VEHICLE_ENTITY, context -> new RVRenderer(context));
-		EntityRendererRegistry.register(Resources21.RAIL_ENTITY, context -> new RVRenderer(context));
+		for(EntityType<RootVehicle> type : Resources21.VEH_BY_TYPE.keySet()){
+			EntityRendererRegistry.register(type, context -> new RVRenderer(context));
+		}
 		EntityRendererRegistry.register(Resources21.ROAD_MARKER_ENTITY, context -> new RoadMarkerRenderer(context));
 		EntityRendererRegistry.register(Resources21.RAIL_MARKER_ENTITY, context -> new RailMarkerRenderer(context));
 		Packets21.PACKET_HANDLERS.add(() -> {

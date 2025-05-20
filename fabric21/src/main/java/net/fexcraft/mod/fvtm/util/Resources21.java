@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
+import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.item.SignItem;
@@ -34,10 +35,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -65,8 +63,8 @@ public class Resources21 extends FvtmResources {
 	public static BlockEntityType<FuelFillerEntity> FUELFILLER_ENTITY;
 	//
 	public static EntityType<WheelEntity> WHEEL_ENTITY;
-	public static EntityType<RootVehicle> VEHICLE_ENTITY;
-	public static EntityType<RailVehicle> RAIL_ENTITY;
+	public static HashMap<EntityType<RootVehicle>, Vehicle> VEH_BY_TYPE = new HashMap();
+	public static HashMap<Vehicle, EntityType<RootVehicle>> TYPE_BY_VEH = new HashMap();
 	public static EntityType<RoadMarker> ROAD_MARKER_ENTITY;
 	public static EntityType<RailMarker> RAIL_MARKER_ENTITY;
 	public static EntityType<DecorationEntity> DECO_ENTITY;

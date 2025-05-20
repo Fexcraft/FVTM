@@ -11,12 +11,12 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.util.CollisionUtil;
 import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -56,12 +56,12 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
-	private int synctimer;
+	private Boolean cl_sync;
 	public boolean should_sit = true;
 
 	public RootVehicle(EntityType<?> type, Level level){
 		super(type, level);
-		vehicle = new VehicleInstance(new EntityWIE(this), null);
+		vehicle = new VehicleInstance(new EntityWIE(this), new VehicleData(Resources21.VEH_BY_TYPE.get(type)));
 	}
 
 	@Override
@@ -133,6 +133,8 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 			e.printStackTrace();
 			FvtmLogger.LOGGER.log("Failed to read additional spawn data for vehicle entity with ID " + getId() + "!");
 		}
+		FvtmLogger.debug("Sync received for " + getId());
+		cl_sync = true;
 	}
 
 	@Override
@@ -167,14 +169,16 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	public void tick(){
 		super.tick();
 		if(isRemoved()) return;
-		if(vehicle.data == null){
-			if(level().isClientSide && synctimer < 1){
+		if(level().isClientSide){
+			if(cl_sync == null){
+				FvtmLogger.debug("Requesting sync for " + getId());
 				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-				synctimer = 10;
+				cl_sync = false;
 			}
-			synctimer--;
-			FvtmLogger.log("Vehicle '" + getId() + "' has no data, skipping update. " + level().isClientSide);
-			return;
+			if(!cl_sync){
+				FvtmLogger.debug("Waiting for sync packet for " + getId());
+				return;
+			}
 		}
 		tickCount++;
 		if(tickCount >= Integer.MAX_VALUE) tickCount = 0;

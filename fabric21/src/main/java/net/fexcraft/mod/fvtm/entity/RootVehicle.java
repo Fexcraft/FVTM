@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.InteractZone;
@@ -188,6 +189,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	}
 
 	private void checkCollision(){
+		if(Config.DISABLE_OBB) return;
 		ArrayList<Entity> checked = new ArrayList<>();
 		for(InteractZone zone : vehicle.data.getInteractZones().values()){
 			level().getEntities(this, AABB.ofSize(position().add(zone.pos.x, zone.pos.y, zone.pos.z), zone.range, zone.range, zone.range),

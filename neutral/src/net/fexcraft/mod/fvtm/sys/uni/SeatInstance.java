@@ -137,8 +137,8 @@ public class SeatInstance {
 			if(controlmode) return true;
 		}
 		else if(key.dismount() && root.entity.isOnClient() && passenger != null){
-			passenger.dismount();
-			return true;
+			passenger.dismount(root.data.getRotationPoint(seat.swivel_point).getRelativeVector(seat.dis).add(root.getV3D()));
+			//return true;
 		}
 		return root.onKeyPress(key, seat, player, state, false);
 	}

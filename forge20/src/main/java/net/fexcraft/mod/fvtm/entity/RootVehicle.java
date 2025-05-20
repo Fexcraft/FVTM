@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entity;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.*;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -19,8 +20,10 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.fvtm.util.CollisionUtil;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.EntityWIE;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -50,6 +53,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,9 +201,29 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 		xRotO = vehicle.point.getPivot().deg_pitch();
 		protZ = vehicle.point.getPivot().deg_roll();
 		vehicle.onUpdate();
-		//collchecks
+		checkCollision();
 		if(!level().isClientSide && tickCount % VEHICLE_SYNC_RATE == 0){
 			vehicle.sendUpdatePacket();
+		}
+	}
+
+	private void checkCollision(){
+		if(Config.DISABLE_OBB || vehicle.obb.isEmpty()) return;
+		ArrayList<Entity> checked = new ArrayList<>();
+		for(InteractZone zone : vehicle.data.getInteractZones().values()){
+			level().getEntities(this, AABB.ofSize(position().add(zone.pos.x, zone.pos.y, zone.pos.z), zone.range, zone.range, zone.range),
+				ent -> (ent instanceof LivingEntity) && !(ent instanceof WheelEntity)).forEach(entity -> {
+				if(entity.getVehicle() != null || checked.contains(entity)) return;
+				OBB bb = new OBB().set(net.fexcraft.mod.fvtm.data.block.AABB.wrap(entity.getBoundingBox()));
+				for(OBB obb : vehicle.obb.values()){
+					var res = CollisionUtil.check(bb, obb);
+					if(res != null){
+						Vec3 vec = new Vec3(-res.x, res.y, -res.z);
+						entity.setDeltaMovement(entity.getDeltaMovement().scale(0.9).add(vec));
+						checked.add(entity);
+					}
+				}
+			});
 		}
 	}
 

@@ -26,4 +26,8 @@ public enum SignalType {
 		return this == AUTOMATIC;
 	}
 
+	public boolean any(){
+		return this != NONE;
+	}
+
 }

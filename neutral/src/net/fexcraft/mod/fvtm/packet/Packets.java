@@ -374,8 +374,8 @@ public abstract class Packets {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
 			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
-				junction.signal0 = tag.getBoolean("signal0");
-				junction.signal1 = tag.getBoolean("signal1");
+				junction.sigstate0 = tag.getBoolean("signal0");
+				junction.sigstate1 = tag.getBoolean("signal1");
 			}
 		});
 		LIS_CLIENT.put("rail_place_util", (tag, player) -> {

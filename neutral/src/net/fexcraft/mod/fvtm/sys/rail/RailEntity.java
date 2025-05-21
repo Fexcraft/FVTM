@@ -400,7 +400,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
 				junc.pollSignal(this);
 				if(!junc.getSignalState(track.getId()) && !isPaused()){
-					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
+					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
 				}
 				return new TRO(track, track.length);

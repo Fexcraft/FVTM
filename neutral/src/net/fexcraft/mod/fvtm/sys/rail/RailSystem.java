@@ -425,8 +425,8 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				task = "rail_upd_junc_signal_state";
 				compound = TagCW.create();
 				compound.set("pos", vector);
-				compound.set("signal0", junction.signal0);
-				compound.set("signal1", junction.signal1);
+				compound.set("signal0", junction.sigstate0);
+				compound.set("signal1", junction.sigstate1);
 				break;
 			}
 			case "sections":{

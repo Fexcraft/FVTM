@@ -360,13 +360,12 @@ public abstract class Packets {
 			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
 			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
-				if(tag.has("nosignal") && tag.getBoolean("nosignal")){
-					junction.signal = null;
-					junction.signal_dir = EntryDirection.FORWARD;
+				if(tag.getBoolean("nosignal")){
+					junction.setSignal(SignalType.NONE, null);
 				}
 				else{
-					junction.signal = null;//TODOSignalType.values()[tag.getInteger("signal")];
-					junction.signal_dir = EntryDirection.values()[tag.getInteger("signal_dir")];
+					junction.sigtype0 = SignalType.values()[tag.getInteger("sig0")];
+					junction.sigtype1 = SignalType.values()[tag.getInteger("sig1")];
 				}
 				junction.signalpos0 = junction.signalpos1 = null;
 			}

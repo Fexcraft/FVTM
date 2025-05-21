@@ -41,13 +41,13 @@ public class RailSignalContainer extends ContainerInterface {
 		switch(task){
 			case "status0":{
 				if(junc.sigtype0.auto()) return;
-				junc.signal0 = !junc.signal0;
+				junc.sigstate0 = !junc.sigstate0;
 				junc.sendSigState();
 				break;
 			}
 			case "status1":{
 				if(junc.sigtype1.auto()) return;
-				junc.signal1 = !junc.signal1;
+				junc.sigstate1 = !junc.sigstate1;
 				junc.sendSigState();
 				break;
 			}

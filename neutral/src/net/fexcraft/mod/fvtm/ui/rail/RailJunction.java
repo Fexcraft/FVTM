@@ -149,6 +149,10 @@ public class RailJunction extends UserInterface {
 				container.SEND_TO_SERVER.accept(com);
 				break;
 			}
+			case "copy":{
+				root.setClipboard(menu.junc.posString());
+				break;
+			}
 			default:{
 				break;
 			}

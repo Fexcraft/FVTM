@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.ui;
+package net.fexcraft.mod.fvtm.ui.rail;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;

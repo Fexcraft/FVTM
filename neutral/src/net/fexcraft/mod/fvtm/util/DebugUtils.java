@@ -39,6 +39,10 @@ public class DebugUtils {
 	public static Polyhedron LLBB1 = new Polyhedron();
 	public static Polyhedron LLBB2 = new Polyhedron();
 	public static Polyhedron JUNC_CORE = new Polyhedron();
+	public static Polyhedron JUNC_LINE = new Polyhedron();
+	public static Polyhedron JUNC_DIR = new Polyhedron();
+	public static Polyhedron JUNC_SIG_STATE = new Polyhedron();
+	public static Polyhedron JUNC_SIG_DIR = new Polyhedron();
 	static{
 		/*CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 0, 1) }));
@@ -57,8 +61,16 @@ public class DebugUtils {
 		LLBB1.importMRT(new ModelRendererTurbo(LLBB1, 0, 0, 1, 1).addBox(-0.1f, -8, -0.1f, 0.2f, 16, 0.2f), false, sixteenth);
 		LLBB2.importMRT(new ModelRendererTurbo(LLBB2, 0, 0, 1, 1).addBox(-0.1f, -0.1f, -8, 0.2f, 0.2f, 16), false, sixteenth);
 		SPHERE.importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8), false, 1);
-		JUNC_CORE.importMRT(new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(120, 120, 120)), false, sixteenth);
+		JUNC_CORE.importMRT(new ModelRendererTurbo(JUNC_CORE, 0, 0, 1, 1).newCylinderBuilder()
+			.setPosition(0, 0, 0).setRadius(0.5f, 0.125f).setLength(0.5f).setSegments(8, 0).setScale(1.1f, 1.1f).setDirection(4).build(), false, sixteenth);
+		JUNC_LINE.importMRT(new ModelRendererTurbo(JUNC_LINE, 0, 0, 1, 1).addBox(-0.125f, 0, 0.5f, 0.25f, 0.25f, 8), false, sixteenth);
+		JUNC_DIR.importMRT(new ModelRendererTurbo(JUNC_DIR, 0, 0, 1, 1)
+			.addShapeBox(-0.25f, 0, 0, 0.5f, 0.5f, 2, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-0, 0, 0.5f), false, sixteenth);
+		JUNC_SIG_DIR.importMRT(new ModelRendererTurbo(JUNC_SIG_DIR, 0, 0, 1, 1)
+			.addShapeBox(-4, 0, 1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0), false, sixteenth);
+		JUNC_SIG_STATE.importMRT(new ModelRendererTurbo(JUNC_SIG_STATE, 0, 0, 1, 1)
+			.addShapeBox(-4, 0, -1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), false, sixteenth);
 	}
 
 	public static void renderBB(float scale, int col){

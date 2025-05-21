@@ -572,7 +572,7 @@ public class Junction implements SysObj {
 	}
 
 	public boolean hasSignal(PathKey track){
-		return eqTrack(track, 0) ? !sigtype0.none() : !sigtype1.none();
+		return eqTrack(track, 0) ? !sigtype1.none() : !sigtype0.none();
 	}
 
 	public boolean hasSignals(){

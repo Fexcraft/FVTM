@@ -249,7 +249,7 @@ public class RailPlacingUtil {
 				player.send("interact.fvtm.rail_marker.incompatible_gauge");
 				return;
 			}
-			if(junc.signal != null){
+			if(junc.hasSignals()){
 				player.send("interact.fvtm.rail_marker.remove_signal");
 				return;
 			}

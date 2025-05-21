@@ -397,9 +397,9 @@ public class RailEntity implements Comparable<RailEntity>{
 				com.stop(track, track.length);
 				return new TRO(track, track.length);
 			}
-			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
+			if(signal && junc.hasSignal(track.getOppositeId()) && isActiveEnd()){
 				junc.pollSignal(this);
-				if(!junc.getSignalState(track.getId()) && !isPaused()){
+				if(!junc.getSignalState(track.getOppositeId()) && !isPaused()){
 					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
 				}

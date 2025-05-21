@@ -29,8 +29,8 @@ public class Junction implements SysObj {
 	public SystemRegion<RailSystem, Junction> region;
 	public SignalType sigtype0 = SignalType.NONE;
 	public SignalType sigtype1 = SignalType.NONE;
-	public boolean signal0;
-	public boolean signal1;
+	public boolean sigstate0;
+	public boolean sigstate1;
 	public JuncType type;
 	public String station;
 	//
@@ -119,8 +119,8 @@ public class Junction implements SysObj {
 				if(cmd != null) fortrains.add(cmd);
 			});
 		}
-		signal0 = !sigtype0.none() && compound.getBoolean("Signal0");
-		signal1 = !sigtype1.none() && compound.getBoolean("Signal1");
+		sigstate0 = !sigtype0.none() && compound.getBoolean("Signal0");
+		sigstate1 = !sigtype1.none() && compound.getBoolean("Signal1");
 		entities.clear();
 		if(compound.has("LinkedBlocks")){
 			TagLW list = compound.getList("LinkedBlocks").local();
@@ -164,8 +164,8 @@ public class Junction implements SysObj {
 			for(JEC cmd : fortrains) list.add(cmd.write(null));
 			compound.set("EntityCommands", list);
 		}
-		if(!sigtype0.none()) compound.set("Signal0", signal0);
-		if(!sigtype1.none()) compound.set("Signal1", signal1);
+		if(!sigtype0.none()) compound.set("Signal0", sigstate0);
+		if(!sigtype1.none()) compound.set("Signal1", sigstate1);
 		if(!entities.isEmpty()){
 			TagLW list = TagLW.create();
 			for(V3I pos : entities){
@@ -423,15 +423,15 @@ public class Junction implements SysObj {
 
 	public void pollSignal(RailEntity ent){
 		if(sigtype0.none() && sigtype1.none()) return;
-		boolean oldsig0 = signal0, oldsig1 = signal1;
+		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
 		if(sigtype0.auto()){
-			signal0 = tracks.get(0).unit.section().isFree(ent);
+			sigstate0 = tracks.get(0).unit.section().isFree(ent);
 		}
 		if(sigtype1.auto()){
-			signal1 = tracks.get(1).unit.section().isFree(ent);
+			sigstate1 = tracks.get(1).unit.section().isFree(ent);
 		}
 		//
-		if(oldsig0 != signal0 || oldsig1 != signal1){
+		if(oldsig0 != sigstate0 || oldsig1 != sigstate1){
 			root.updateClient("junction_signal_state", vecpos.pos);
 			updateLinkedTileEntities(true);
 		}
@@ -565,7 +565,7 @@ public class Junction implements SysObj {
 
 	/** @return true, if entry dir differs junction signal dir */
 	public boolean getSignalState(EntryDirection dir){
-		return dir.isForward() ? sigtype1.none() || signal1 : sigtype0.none() || signal0;
+		return dir.isForward() ? sigtype1.none() || sigstate1 : sigtype0.none() || sigstate0;
 	}
 
 	public boolean hasSignal(PathKey track){

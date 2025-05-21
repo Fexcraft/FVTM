@@ -141,7 +141,9 @@ public class RailJunction extends UserInterface {
 			case "rem0":
 			case "rem1":
 			case "rem2":
-			case "rem3":{
+			case "rem3":
+			case "signal_edit":
+			case "signal_remove":{
 				TagCW com = TagCW.create();
 				com.set("task", id);
 				container.SEND_TO_SERVER.accept(com);
@@ -166,7 +168,7 @@ public class RailJunction extends UserInterface {
 			}
 		}
 		if(buttons.get("signal").hovered()){
-			list.add(menu.TRANSFORMAT.apply("ui.fvtm.rail_junction.signal", new Object[]{ menu.junc.signal == null ? "none" : menu.junc.signal }));
+			list.add(menu.TRANSFORMAT.apply("ui.fvtm.rail_junction.signal", new Object[]{ menu.junc.sigtype0.name() + "/" + menu.junc.sigtype1.name() }));
 		}
 	}
 

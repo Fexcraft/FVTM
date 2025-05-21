@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cmd;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
+import net.fexcraft.mod.fvtm.sys.rail.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -50,7 +50,7 @@ public class CMD_SetSignal extends JEC {
 	public void processSwitch(RailEntity entity, Junction junction, PathKey track, int index, boolean applystate){
 		if(junction.type.isStraight() && type == JECType.SET_SIGNAL){
 			if(signal == null){
-				if(!junction.signal.is(SignalType.Kind.CUSTOM)) return;
+				//if(!junction.signal.is(SignalType.Kind.CUSTOM)) return;
 				//TODO set signal state
 			}
 			else{

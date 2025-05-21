@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
 import net.fexcraft.mod.fvtm.ui.rail.RailJunctionContainer;
+import net.fexcraft.mod.fvtm.ui.rail.RailSignal;
+import net.fexcraft.mod.fvtm.ui.rail.RailSignalContainer;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
@@ -19,6 +21,7 @@ public class UIKeys {
 	public static final int ID12_TOOLBOX_TEXTURE = 601;
 	public static final int ID12_VEHICLE_CATALOG = 610;
 	public static final int ID12_RAIL_JUNCTION = 701;
+	public static final int ID12_RAIL_SIGNAL = 704;
 	public static final int ID12_ROAD_TOOL = 702;
 	public static final int ID12_ROAD_TOOL_CUSTOM = 703;
 	public static final int ID12_ENTITY_SYSTEM_CHOOSE = 705;
@@ -46,6 +49,7 @@ public class UIKeys {
 	public static final UIKey TOOLBOX_COLORS = new UIKey(ID12_TOOLBOX_COLORS, "fvtm:toolbox_colors");
 	public static final UIKey TOOLBOX_TEXTURE = new UIKey(ID12_TOOLBOX_TEXTURE, "fvtm:toolbox_texture");
 	public static final UIKey RAIL_JUNCTION = new UIKey(ID12_RAIL_JUNCTION, "fvtm:rail_junction");
+	public static final UIKey RAIL_SIGNAL = new UIKey(ID12_RAIL_SIGNAL, "fvtm:rail_signal");
 	public static final UIKey ROAD_TOOL = new UIKey(ID12_ROAD_TOOL, "fvtm:road_tool");
 	public static final UIKey ROAD_TOOL_CUSTOM = new UIKey(ID12_ROAD_TOOL_CUSTOM, "fvtm:road_tool_custom");
 	public static final UIKey ENTITY_SYSTEM_CHOOSE = new UIKey(ID12_ENTITY_SYSTEM_CHOOSE, "fvtm:entity_system_choose");
@@ -75,38 +79,40 @@ public class UIKeys {
 	public static Class<? extends VehicleCatalog> VEHICLE_CATALOG_IMPL;
 
 	public static void register(){
-		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "fvtm:uis/toolbox_colors", ToolboxPaintContainer.class);
-		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
-		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
-		UniReg.registerUI(UIKeys.VEHICLE_CATALOG, VEHICLE_CATALOG_IMPL);
-		UniReg.registerMenu(UIKeys.VEHICLE_CATALOG, "fvtm:uis/vehicle_catalog", VehicleCatalogCon.class);
-		UniReg.registerUI(UIKeys.FUEL_FILLER, FuelFillerUI.class);
-		UniReg.registerMenu(UIKeys.FUEL_FILLER, "fvtm:uis/fuel_filler", FuelFillerCon.class);
+		UniReg.registerUI(TOOLBOX_COLORS, ToolboxPainter.class);
+		UniReg.registerMenu(TOOLBOX_COLORS, "fvtm:uis/toolbox_colors", ToolboxPaintContainer.class);
+		UniReg.registerUI(TOOLBOX_TEXTURE, ToolboxTexture.class);
+		UniReg.registerMenu(TOOLBOX_TEXTURE, "fvtm:uis/toolbox_texture", ToolboxTextureContainer.class);
+		UniReg.registerUI(VEHICLE_CATALOG, VEHICLE_CATALOG_IMPL);
+		UniReg.registerMenu(VEHICLE_CATALOG, "fvtm:uis/vehicle_catalog", VehicleCatalogCon.class);
+		UniReg.registerUI(FUEL_FILLER, FuelFillerUI.class);
+		UniReg.registerMenu(FUEL_FILLER, "fvtm:uis/fuel_filler", FuelFillerCon.class);
 		UniReg.registerUI(SIGN_EDITOR, SignEditor.class);
 		UniReg.registerMenu(SIGN_EDITOR, "fvtm:uis/sign_editor", SignContainer.class);
 		//
-		UniReg.registerUI(UIKeys.RAIL_JUNCTION, RailJunction.class);
-		UniReg.registerMenu(UIKeys.RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
-		UniReg.registerUI(UIKeys.ROAD_TOOL, RoadToolUI.class);
-		UniReg.registerMenu(UIKeys.ROAD_TOOL, "fvtm:uis/road_tool", RoadToolCon.class);
-		UniReg.registerUI(UIKeys.ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
-		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "fvtm:uis/road_tool_custom", RoadToolCustomCon.class);
-		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
-		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "fvtm:uis/deco_editor", DecoContainer.class);
+		UniReg.registerUI(RAIL_JUNCTION, RailJunction.class);
+		UniReg.registerMenu(RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
+		UniReg.registerUI(RAIL_SIGNAL, RailSignal.class);
+		UniReg.registerMenu(RAIL_SIGNAL, "fvtm:uis/rail_signal", RailSignalContainer.class);
+		UniReg.registerUI(ROAD_TOOL, RoadToolUI.class);
+		UniReg.registerMenu(ROAD_TOOL, "fvtm:uis/road_tool", RoadToolCon.class);
+		UniReg.registerUI(ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
+		UniReg.registerMenu(ROAD_TOOL_CUSTOM, "fvtm:uis/road_tool_custom", RoadToolCustomCon.class);
+		UniReg.registerUI(DECORATION_EDITOR, DecoEditor.class);
+		UniReg.registerMenu(DECORATION_EDITOR, "fvtm:uis/deco_editor", DecoContainer.class);
 		//
 		//TODO entity system chooser
 		//
-		UniReg.registerUI(UIKeys.VEHICLE_MAIN, VehicleMain.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_MAIN, "fvtm:uis/vehicle_main", VehicleMainCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_ATTRIBUTES, VehicleAttributes.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_ATTRIBUTES, "fvtm:uis/vehicle_attributes", VehicleAttributesCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_INVENTORIES, VehicleInventories.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VehicleFuelCon.class);
-		UniReg.registerUI(UIKeys.VEHICLE_INVENTORY_ITEM, VehicleInvItems.class);
-		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORY_ITEM, "fvtm:uis/inventory_item", VehicleInvItemsCon.class);
+		UniReg.registerUI(VEHICLE_MAIN, VehicleMain.class);
+		UniReg.registerMenu(VEHICLE_MAIN, "fvtm:uis/vehicle_main", VehicleMainCon.class);
+		UniReg.registerUI(VEHICLE_ATTRIBUTES, VehicleAttributes.class);
+		UniReg.registerMenu(VEHICLE_ATTRIBUTES, "fvtm:uis/vehicle_attributes", VehicleAttributesCon.class);
+		UniReg.registerUI(VEHICLE_INVENTORIES, VehicleInventories.class);
+		UniReg.registerMenu(VEHICLE_INVENTORIES, "fvtm:uis/vehicle_inventories", VehicleInventoriesCon.class);
+		UniReg.registerUI(VEHICLE_FUEL, VehicleFuel.class);
+		UniReg.registerMenu(VEHICLE_FUEL, "fvtm:uis/vehicle_fuel", VehicleFuelCon.class);
+		UniReg.registerUI(VEHICLE_INVENTORY_ITEM, VehicleInvItems.class);
+		UniReg.registerMenu(VEHICLE_INVENTORY_ITEM, "fvtm:uis/inventory_item", VehicleInvItemsCon.class);
 	}
 
 }

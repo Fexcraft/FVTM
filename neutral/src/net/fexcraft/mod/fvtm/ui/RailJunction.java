@@ -27,6 +27,7 @@ public class RailJunction extends UserInterface {
 	private static BufferedImage conv = new BufferedImage(64, 64, BufferedImage.TYPE_INT_RGB);
 	private static int[][] grid = new int[64][64];
 	private static RGB temp = new RGB();
+	public static RGB[] TRACK_RGB = { BLU, RED, GRE, ORA };
 	public static Color[] TRACK_COLOR = { Color.BLUE, Color.RED, Color.GREEN, Color.ORANGE };
 	private RailJunctionContainer menu;
 

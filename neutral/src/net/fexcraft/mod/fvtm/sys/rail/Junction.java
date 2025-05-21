@@ -550,12 +550,16 @@ public class Junction implements SysObj {
 	}
 
 	public void setSignal(SignalType signal, Boolean snd){
+		boolean had = sigtype0.any() || sigtype1.any();
 		if(snd == null || !snd){
 			sigtype0 = signal;
 		}
 		if(snd == null || snd){
 			sigtype1 = signal;
 		}
+		boolean has = sigtype0.any() || sigtype1.any();
+		if(had && !has) tracks.get(0).unit.section().fuseAtTrack(tracks.get(0));
+		else if(!had && has) tracks.get(0).unit.section().splitAtTrack(tracks.get(0));
 		root.updateClient("junction_signal", vecpos.pos);
 	}
 

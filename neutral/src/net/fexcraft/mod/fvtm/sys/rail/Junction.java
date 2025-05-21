@@ -559,6 +559,10 @@ public class Junction implements SysObj {
 		root.updateClient("junction_signal", vecpos.pos);
 	}
 
+	public void sendSigState(){
+		root.updateClient("junction_signal_state", vecpos.pos);
+	}
+
 	/** @return true, if entry dir differs junction signal dir */
 	public boolean getSignalState(EntryDirection dir){
 		return dir.isForward() ? sigtype1.none() || signal1 : sigtype0.none() || signal0;

@@ -36,10 +36,10 @@ public class RailSignal extends UserInterface {
 	@Override
 	public void predraw(float ticks, int mx, int my){
 		if(menu.junc == null) return;
-		texts.get("signal0").value(menu.junc.sigtype0.name() + " / " + menu.junc.signal0);
-		texts.get("signal1").value(menu.junc.sigtype1.name() + " / " + menu.junc.signal1);
-		buttons.get("status0").ecolor = menu.junc.signal0 ? RGB.GREEN : RGB.RED;
-		buttons.get("status1").ecolor = menu.junc.signal1 ? RGB.GREEN : RGB.RED;
+		texts.get("signal0").value(menu.junc.sigtype0.name() + " / " + menu.junc.sigstate0);
+		texts.get("signal1").value(menu.junc.sigtype1.name() + " / " + menu.junc.sigstate1);
+		buttons.get("status0").ecolor = menu.junc.sigstate0 ? RGB.GREEN : RGB.RED;
+		buttons.get("status1").ecolor = menu.junc.sigstate1 ? RGB.GREEN : RGB.RED;
 	}
 
 	@Override

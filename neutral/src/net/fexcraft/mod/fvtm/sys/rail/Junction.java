@@ -425,10 +425,10 @@ public class Junction implements SysObj {
 		if(sigtype0.none() && sigtype1.none()) return;
 		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
 		if(sigtype0.auto()){
-			sigstate0 = tracks.get(0).unit.section().isFree(ent);
+			sigstate0 = tracks.get(1).unit.section().isFree(ent);
 		}
 		if(sigtype1.auto()){
-			sigstate1 = tracks.get(1).unit.section().isFree(ent);
+			sigstate1 = tracks.get(0).unit.section().isFree(ent);
 		}
 		//
 		if(oldsig0 != sigstate0 || oldsig1 != sigstate1){
@@ -563,7 +563,6 @@ public class Junction implements SysObj {
 		root.updateClient("junction_signal_state", vecpos.pos);
 	}
 
-	/** @return true, if entry dir differs junction signal dir */
 	public boolean getSignalState(EntryDirection dir){
 		return dir.isForward() ? sigtype1.none() || sigstate1 : sigtype0.none() || sigstate0;
 	}

@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.item.JunctionTool;
@@ -12,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
+import net.fexcraft.mod.fvtm.ui.RailJunction;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -23,8 +26,10 @@ import net.minecraft.world.phys.HitResult;
 
 import java.util.HashSet;
 
+import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
+import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -58,15 +63,63 @@ public class RailRenderer {
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);
 				Renderer21.RENDERER.light(junc.getV3D());
-				JUNC_CORE.render();
 				if(junc.tracks.size() == 0 || holding){
 					DebugUtils.renderBB(0.25f, COL_ORG);
+				}
+				if(holding){
+					pose.translate(0, junc.tracks.get(0).gauge.getHeight(), 0);
+					FvtmRenderTypes.setCutout(WHITE_TEXTURE);
+					Renderer21.setColor(COL_GRY);
+					JUNC_CORE.render();
+					for(int i = 0; i < junc.tracks.size(); i++){
+						renderJuncModel(junc, i, JUNC_LINE);
+					}
+					switch(junc.type){
+						case STRAIGHT:
+							if(junc.signal != null){
+								//
+							}
+							break;
+						case FORK_2:
+							renderJuncModel(junc, junc.switch0 ? 1 : 2, JUNC_DIR);
+							break;
+						case FORK_3:
+							renderJuncModel(junc, junc.switch0 ? 1 : junc.switch1 ? 3 : 2, JUNC_DIR);
+							break;
+						case DOUBLE:
+							renderJuncModel(junc, junc.switch0 ? 1 : 2, JUNC_DIR);
+							renderJuncModel(junc, junc.switch1 ? 0 : 3, JUNC_DIR);
+							break;
+						case CROSSING: break;
+					}
 				}
 				pose.popPose();
 				renderRails(pose, junc);
 			}
 		}
 		pose.popPose();
+	}
+
+	private static void renderJuncModel(Junction junc, int idx, Polyhedron hed){
+		V3D pos = junc.tracks.get(idx).getVectorPosition0(junc.tracks.get(idx).length * 0.5f, false);
+		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
+		Renderer21.pushPose();
+		Renderer21.rotateRad((float)ang, AY);
+		Renderer21.setColor(RailJunction.TRACK_RGB[idx]);
+		hed.render();
+		Renderer21.popPose();
+	}
+
+	private static void renderJuncSignal(Junction junc, int idx, RGB col){
+		V3D pos = junc.tracks.get(idx).getVectorPosition0(junc.tracks.get(idx).length * 0.5f, false);
+		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
+		Renderer21.pushPose();
+		Renderer21.rotateRad((float)ang, AY);
+		Renderer21.setColor(RailJunction.TRACK_RGB[idx]);
+		JUNC_SIG_DIR.render();
+		Renderer21.setColor(col);
+		JUNC_SIG_STATE.render();
+		Renderer21.popPose();
 	}
 
 	private static void renderRails(PoseStack pose, Junction junc){

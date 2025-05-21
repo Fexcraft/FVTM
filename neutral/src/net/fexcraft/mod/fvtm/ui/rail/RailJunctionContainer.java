@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -136,8 +137,8 @@ public class RailJunctionContainer extends ContainerInterface {
 				break;
 			}
 			case "signal_edit":{
-				//
-				break;
+				player.entity.openUI(UIKeys.RAIL_SIGNAL, pos);
+				return;
 			}
 			case "signal_remove":{
 				junc.setSignal(SignalType.NONE, null);

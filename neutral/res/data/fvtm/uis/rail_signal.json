@@ -1,0 +1,96 @@
+{
+	"_info_": "Rail Signal UI",
+	"background": true,
+	"size": [ 215, 58 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/rail_signal.png",
+			"size": [ 215, 58 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"info", "copy",
+				"status0", "status1",
+				"auto0", "auto1",
+				"con0", "con1",
+				"remove0", "remove1"
+			],
+			"texts": [
+				"title", "signal0", "signal1"
+			]
+		}
+	},
+	"buttons": {
+		"info": {
+			"pos": [ 183, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.info"
+		},
+		"copy": {
+			"pos": [ 196, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.copy"
+		},
+		"status0": {
+			"pos": [ 171, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.status0"
+		},
+		"status1": {
+			"pos": [ 171, 35 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.status1"
+		},
+		"auto0": {
+			"pos": [ 185, 21 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.auto0"
+		},
+		"auto1": {
+			"pos": [ 185, 35 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.auto1"
+		},
+		"con0": {
+			"pos": [ 193, 21 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.con0"
+		},
+		"con1": {
+			"pos": [ 193, 35 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.con1"
+		},
+		"remove0": {
+			"pos": [ 201, 21 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.rem0"
+		},
+		"remove1": {
+			"pos": [ 201, 35 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_signal.rem1"
+		}
+	},
+	"texts": {
+		"title": {
+			"pos": [ 9, 9 ],
+			"size": [ 172, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"signal0": {
+			"pos": [ 11, 23 ],
+			"size": [ 158, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"signal1": {
+			"pos": [ 11, 37 ],
+			"size": [ 158, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		}
+	}
+}

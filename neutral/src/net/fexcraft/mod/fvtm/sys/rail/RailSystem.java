@@ -410,12 +410,12 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 				task = "rail_upd_junc_signal";
 				compound = TagCW.create();
 				compound.set("pos", vector);
-				if(junction.signal == null){
+				if(!junction.hasSignals()){
 					compound.set("nosignal", true);
 				}
 				else{
-					compound.set("signal", junction.signal.ordinal());
-					compound.set("signal_dir", junction.signal_dir.ordinal());
+					compound.set("sig0", junction.sigtype0.ordinal());
+					compound.set("sig1", junction.sigtype1.ordinal());
 				}
 				break;
 			}

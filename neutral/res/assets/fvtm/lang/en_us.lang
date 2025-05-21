@@ -220,7 +220,18 @@ ui.fvtm.rail_junction.switch1=Change Switch(1) State
 ui.fvtm.rail_junction.remove=Remove Track
 ui.fvtm.rail_junction.move_down=Move Track Down
 ui.fvtm.rail_junction.move_up=Move Track Up
-//
+
+ui.fvtm.rail_signal.info=Here you can adjust this Junction's Signals as needed.
+ui.fvtm.rail_signal.copy=Copy Position
+ui.fvtm.rail_signal.status0=Signal 0/Blu State
+ui.fvtm.rail_signal.status1=Signal 1/Red State
+ui.fvtm.rail_signal.auto0=Set Signal 0/Blu to Automatic Mode
+ui.fvtm.rail_signal.auto1=Set Signal 1/Red to Automatic Mode
+ui.fvtm.rail_signal.con0=Set Signal 0/Blu to Controlled/Manual Mode
+ui.fvtm.rail_signal.con1=Set Signal 1/Red to Controlled/Manual Mode
+ui.fvtm.rail_signal.rem0=Remove Signal at 0/Blu
+ui.fvtm.rail_signal.rem1=Remove Signal at 1/Red
+
 ui.fvtm.decoration_editor.position=Position Offset
 ui.fvtm.decoration_editor.rotation=Rotation (Degrees)
 ui.fvtm.decoration_editor.scale=Scale

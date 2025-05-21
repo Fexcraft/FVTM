@@ -6,7 +6,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
-import net.fexcraft.mod.fvtm.sys.rail.signal.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
@@ -28,9 +27,10 @@ public class Junction implements SysObj {
 	public boolean switch0, switch1;
 	public RailSystem root;
 	public SystemRegion<RailSystem, Junction> region;
-	public SignalType signal;
-	public boolean signal0, signal1;
-	public EntryDirection signal_dir = EntryDirection.FORWARD;
+	public SignalType sigtype0 = SignalType.NONE;
+	public SignalType sigtype1 = SignalType.NONE;
+	public boolean signal0;
+	public boolean signal1;
 	public JuncType type;
 	public String station;
 	//
@@ -95,12 +95,15 @@ public class Junction implements SysObj {
 		else tracks.clear();
 		frustumbb = null;
 		//TODO see if necessary //if(!root.getWorld().isRemote) checkTrackSectionConsistency();
-		if(compound.has("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
-		if(compound.has("SignalDir"))
-			signal_dir = EntryDirection.getFromSaveByte((byte)compound.getInteger("SignalDir"));
-		if(tracks.size() > 2)
+		if(tracks.size() > 2){
 			type = compound.has("Type") ? JuncType.valueOf(compound.getString("Type")) : JuncType.byTracksAmount(size());
-		else type = JuncType.STRAIGHT;
+			sigtype0 = sigtype1 = SignalType.NONE;
+		}
+		else{
+			type = JuncType.STRAIGHT;
+			sigtype0 = SignalType.parse(compound.getString("SignalType0"));
+			sigtype1 = SignalType.parse(compound.getString("SignalType1"));
+		}
 		station = compound.has("Station") ? compound.getString("Station") : null;
 		if(compound.has("JunctionCommands")){
 			forswitch.clear();
@@ -116,10 +119,8 @@ public class Junction implements SysObj {
 				if(cmd != null) fortrains.add(cmd);
 			});
 		}
-		if(signal != null){
-			signal0 = compound.getBoolean("Signal0");
-			signal1 = compound.getBoolean("Signal1");
-		}
+		signal0 = !sigtype0.none() && compound.getBoolean("Signal0");
+		signal1 = !sigtype1.none() && compound.getBoolean("Signal1");
 		entities.clear();
 		if(compound.has("LinkedBlocks")){
 			TagLW list = compound.getList("LinkedBlocks").local();
@@ -149,8 +150,8 @@ public class Junction implements SysObj {
 		compound.set("Switch1", switch1);
 		//compound.setBoolean("Crossing", crossing);
 		vecpos.write(compound, "Pos");
-		if(signal != null) compound.set("SignalType", signal.name());
-		if(signal_dir != null) compound.set("SignalDir", signal_dir.getSaveByte());
+		if(!sigtype0.none()) compound.set("SignalType0", sigtype0.save());
+		if(!sigtype1.none()) compound.set("SignalType1", sigtype1.save());
 		if(tracks.size() > 2) compound.set("Type", type.name());
 		if(station != null) compound.set("Station", station);
 		if(!forswitch.isEmpty()){
@@ -163,10 +164,8 @@ public class Junction implements SysObj {
 			for(JEC cmd : fortrains) list.add(cmd.write(null));
 			compound.set("EntityCommands", list);
 		}
-		if(signal != null){
-			compound.set("Signal0", signal0);
-			compound.set("Signal1", signal1);
-		}
+		if(!sigtype0.none()) compound.set("Signal0", signal0);
+		if(!sigtype1.none()) compound.set("Signal1", signal1);
 		if(!entities.isEmpty()){
 			TagLW list = TagLW.create();
 			for(V3I pos : entities){
@@ -192,16 +191,14 @@ public class Junction implements SysObj {
 	public void addnew(Track track){
 		tracks.add(track);
 		type = JuncType.byTracksAmount(size());
-		if(signal != null){
-			this.setSignal(null, null);
-		}
+		if(hasSignals()) setSignal(SignalType.NONE, null);
 		updateClient();
 		return;
 	}
 
 	public void checkTrackSectionConsistency(){
 		if(tracks.size() < 2) return;
-		if(tracks.size() == 2 && signal != null){
+		if(tracks.size() == 2 && hasSignals()){
 			Section sec0 = tracks.get(0).unit.section(), sec1 = tracks.get(1).unit.section();
 			if(sec0.getUID() == sec1.getUID()){
 				sec0.splitAtSignal(this);
@@ -228,9 +225,7 @@ public class Junction implements SysObj {
 	public void remove(int index, boolean firstcall){
 		Track track = tracks.remove(index);
 		if(track == null) return;
-		if(signal != null){
-			this.setSignal(null, null);
-		}
+		if(hasSignals()) setSignal(SignalType.NONE, null);
 		//
 		if(!firstcall){
 			track.unit.section().splitAtTrack(track);
@@ -427,16 +422,13 @@ public class Junction implements SysObj {
 	}
 
 	public void pollSignal(RailEntity ent){
-		if(signal == null) return;
+		if(sigtype0.none() && sigtype1.none()) return;
 		boolean oldsig0 = signal0, oldsig1 = signal1;
-		if(signal.type == SignalType.Kind.BLOCK){
-			if(signal_dir.isBoth()){
-				signal0 = tracks.get(0).unit.section().isFree(ent);
-				signal1 = tracks.get(1).unit.section().isFree(ent);
-			}
-			else{
-				signal0 = tracks.get(signal_dir.isForward() ? 1 : 0).unit.section().isFree(ent);
-			}
+		if(sigtype0.auto()){
+			signal0 = tracks.get(0).unit.section().isFree(ent);
+		}
+		if(sigtype1.auto()){
+			signal1 = tracks.get(1).unit.section().isFree(ent);
 		}
 		//
 		if(oldsig0 != signal0 || oldsig1 != signal1){
@@ -557,29 +549,27 @@ public class Junction implements SysObj {
 		return frustumbb = AABB.create(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 
-	public void setSignal(SignalType signal, EntryDirection entrydir){
-		if(entrydir == null) entrydir = EntryDirection.FORWARD;
-		if(signal == null){
-			this.signal = null;
-			this.signal_dir = entrydir;
+	public void setSignal(SignalType signal, Boolean snd){
+		if(snd == null || !snd){
+			sigtype0 = signal;
 		}
-		else{
-			this.signal = signal;
-			this.signal_dir = entrydir;
+		if(snd == null || snd){
+			sigtype1 = signal;
 		}
 		root.updateClient("junction_signal", vecpos.pos);
 	}
 
 	/** @return true, if entry dir differs junction signal dir */
 	public boolean getSignalState(EntryDirection dir){
-		if(signal_dir.isBoth()) return dir.isForward() ? signal1 : signal0;
-		return dir == signal_dir ? signal0 : true;
+		return dir.isForward() ? sigtype1.none() || signal1 : sigtype0.none() || signal0;
 	}
 
 	public boolean hasSignal(PathKey track){
-		if(track == null || signal == null) return signal != null;
-		if(signal_dir.isBoth()) return true;
-		return eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward();
+		return eqTrack(track, 0) ? !sigtype0.none() : !sigtype1.none();
+	}
+
+	public boolean hasSignals(){
+		return !sigtype0.none() || !sigtype1.none();
 	}
 
 	public boolean getSignalState(PathKey track){
@@ -588,7 +578,7 @@ public class Junction implements SysObj {
 
 	@Override
 	public String toString(){
-		return "Junction{ " + vecpos + ", " + tracks.size() + ", " + signal_dir + " }";
+		return "Junction{ " + vecpos + ", " + tracks.size() + ", " + sigtype0 + "/" + sigtype1 + " }";
 	}
 
 	public String posString(){

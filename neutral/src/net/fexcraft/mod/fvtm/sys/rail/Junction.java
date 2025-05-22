@@ -550,6 +550,10 @@ public class Junction implements SysObj {
 	}
 
 	public void setSignal(SignalType signal, Boolean snd){
+		if(tracks.size() > 2){
+			signal = SignalType.NONE;
+			snd = null;
+		}
 		boolean had = sigtype0.any() || sigtype1.any();
 		if(snd == null || !snd){
 			sigtype0 = signal;

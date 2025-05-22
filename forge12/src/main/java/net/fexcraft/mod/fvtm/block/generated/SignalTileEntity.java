@@ -104,7 +104,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
 
 	/** For the status printout. */
 	public String getValidatedJunctionStatus(){
-		if(junction.signal_dir.isBoth() || junction.signal_dir == dir){
+		if(dir.isForward() ? junction.sigtype1.any() : junction.sigtype0.any()){
 			return junction.getSignalState(dir) ? "&agreen" : "&cred";
 		}
 		else return "&einvalid signal direction for this junction";

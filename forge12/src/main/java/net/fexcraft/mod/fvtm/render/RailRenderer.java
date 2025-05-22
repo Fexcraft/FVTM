@@ -1,13 +1,21 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.lib.common.Static.toDegrees;
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
+import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.JUNC_DIR;
 
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
@@ -17,10 +25,8 @@ import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
-import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.fvtm.util.TexUtil;
-import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
+import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -156,9 +162,38 @@ public class RailRenderer {
         	for(int i = 0; i < junctions.length; i++){
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB().local())) continue;
             	GL11.glPushMatrix();
-            	TexUtil.bindTexture(WOOLTEX);
             	GL11.glTranslated(junctions[i].getV3D().x - cx, junctions[i].getV3D().y - cy, junctions[i].getV3D().z - cz);
-            	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
+				RENDERER.light(junctions[i].getV3D());
+				if(junctions[i].tracks.size() == 0 || HOLDING){
+					DebugUtils.renderBB(0.25f, COL_ORG);
+				}
+				if(junctions[i].tracks.size() > 0 && HOLDING){
+					Junction junc = junctions[i];
+					GL11.glTranslatef(0, junc.tracks.get(0).gauge.getHeight(), 0);
+					TexUtil.bindTexture(WHITE_TEXTURE);
+					RENDERER.color(COL_GRY);
+					JUNC_CORE.render();
+					for(int t = 0; t < junc.tracks.size(); t++){
+						renderJuncModel(junc, t, JUNC_LINE);
+					}
+					switch(junc.type){
+						case STRAIGHT:
+							if(junc.tracks.size() > 1 && !junc.sigtype0.none()) renderJuncSignal(junc, 0, junc.sigstate0 ? RGB.GREEN : RGB.RED);
+							if(junc.tracks.size() > 1 && !junc.sigtype1.none()) renderJuncSignal(junc, 1, junc.sigstate1 ? RGB.GREEN : RGB.RED);
+							break;
+						case FORK_2:
+							renderJuncModel(junc, junc.switch0 ? 1 : 2, JUNC_DIR);
+							break;
+						case FORK_3:
+							renderJuncModel(junc, junc.switch0 ? 1 : junc.switch1 ? 3 : 2, JUNC_DIR);
+							break;
+						case DOUBLE:
+							renderJuncModel(junc, junc.switch0 ? 1 : 2, JUNC_DIR);
+							renderJuncModel(junc, junc.switch1 ? 0 : 3, JUNC_DIR);
+							break;
+						case CROSSING: break;
+					}
+				}
             	GL11.glPopMatrix();
         		renderLines(junctions[i], cx, cy, cz);
         	}
@@ -211,6 +246,28 @@ public class RailRenderer {
         }
 		GL11.glPopMatrix();
     }
+
+	private static void renderJuncModel(Junction junc, int idx, Polyhedron hed){
+		V3D pos = junc.tracks.get(idx).getVectorPosition0(junc.tracks.get(idx).length * 0.5f, false);
+		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
+		GL11.glPushMatrix();
+		GL11.glRotatef(toDegrees((float)ang), 0, 1, 0);
+		RENDERER.color(RailJunction.TRACK_RGB[idx].packed);
+		hed.render();
+		GL11.glPopMatrix();
+	}
+
+	private static void renderJuncSignal(Junction junc, int idx, RGB col){
+		V3D pos = junc.tracks.get(idx).getVectorPosition0(junc.tracks.get(idx).length * 0.5f, false);
+		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
+		GL11.glPushMatrix();
+		GL11.glRotatef(toDegrees((float)ang), 0, 1, 0);
+		RENDERER.color(RailJunction.TRACK_RGB[idx].packed);
+		JUNC_SIG_DIR.render();
+		RENDERER.color(col.packed);
+		JUNC_SIG_STATE.render();
+		GL11.glPopMatrix();
+	}
 
 	private static void renderLines(Junction value, double cx, double cy, double cz){
         /*if(Command.DEBUG){
@@ -290,51 +347,6 @@ public class RailRenderer {
 	    			}*/
         		}
         	}
-    		if(value.signal != null && value.size() == 2){
-    			if(value.signalpos0 == null){
-    				Track track = value.tracks.get(value.signal_dir.getTrackId());
-					V3D vec0 = track.start.vec, vec1 = track.getVectorPosition0(0.001f, false);
-    				value.signalrot0 = Math.atan2(vec0.x - vec1.x, vec0.z - vec1.z);
-    				value.signalpos0 = vec0.add(VecUtil.rotByRad(value.signalrot0, new V3D(track.gauge.getModel().signal_offset, 0, 0)));
-    				value.signalrot0 = Math.toDegrees(value.signalrot0);
-    			}
-    			if(value.signal_dir.isBoth() && value.signalpos1 == null){
-					Track track = value.tracks.get(1);
-					V3D vec0 = track.start.vec, vec1 = track.getVectorPosition0(0.001f, false);
-    				value.signalrot1 = Math.atan2(vec0.x - vec1.x, vec0.z - vec1.z);
-    				value.signalpos1 = vec0.add(VecUtil.rotByRad(value.signalrot1, new V3D(track.gauge.getModel().signal_offset, 0, 0)));
-    				value.signalrot1 = Math.toDegrees(value.signalrot1);
-    			}
-    			TexUtil.bindTexture(value.tracks.get(0).gauge.getModelTexture());
-    			if(value.signalpos0 != null){
-        			GL11.glPushMatrix();
-        			GL11.glTranslated(value.signalpos0.x - cx, value.signalpos0.y - cy, value.signalpos0.z - cz);
-        			GL11.glRotatef(180, 0, 0, 1);
-					GL11.glRotated(value.signalrot0, 0, 1, 0);
-        			value.tracks.get(value.signal_dir.getTrackId()).gauge.getModel()
-        				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : value.signal_dir, value.signal0);
-        			GL11.glPopMatrix();
-    			}
-    			if(value.signalpos1 != null){
-        			GL11.glPushMatrix();
-        			GL11.glTranslated(value.signalpos1.x - cx, value.signalpos1.y - cy, value.signalpos1.z - cz);
-        			GL11.glRotatef(180, 0, 0, 1);
-					GL11.glRotated(value.signalrot1, 0, 1, 0);
-        			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD, value.signal1);
-        			GL11.glPopMatrix();
-    			}
-    			if(Command.OTHER){
-        			double deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-        			long uid = value.tracks.get(value.signal_dir.getTrackId()).getUnit().section().getUID();
-					V3D pos = value.signalpos0;
-        			drawString(uid + "/" + value.signal0, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
-    				if(value.signal_dir.isBoth()){
-    					uid = value.tracks.get(1).getUnit().section().getUID();
-						pos = value.signalpos1;
-            			drawString(uid + "/" + value.signal1, pos.x, pos.y + 1, pos.z, true, true, 0.8f, 0xffffff, deg);
-    				}
-    			}
-    		}
     		/*if(value.size() == 1){
     			if(value.bufferrot == null){
     				Track track = value.tracks.get(0);

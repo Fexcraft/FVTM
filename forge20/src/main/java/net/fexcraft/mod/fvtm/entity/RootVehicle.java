@@ -195,7 +195,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 			FvtmLogger.LOGGER.log("Vehicle '" + getId() + "' has no data, skipping update.");
 			return;
 		}
-		tickCount++;
+		//tickCount++;
 		if(tickCount >= Integer.MAX_VALUE) tickCount = 0;
 		yRotO = vehicle.point.getPivot().deg_yaw();
 		xRotO = vehicle.point.getPivot().deg_pitch();

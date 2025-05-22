@@ -334,9 +334,10 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			RailRegion reg = (RailRegion)region;
 			if(!reg.entities.isEmpty()) reg.setAccessed();
 			for(RailEntity ent : reg.entities.values()) ent.onUpdate();
-			if(reg.timer > 20){
-				reg.timer = -1;
+			if(reg.timer >= 20){
+				reg.timer = 0;
 				for(Junction junction : reg.getObjects().values()) junction.onUpdate();
+				for(RailEntity ent : reg.entities.values()) ent.checkIfShouldHaveEntity();
 			}
 			reg.timer++;
 		}

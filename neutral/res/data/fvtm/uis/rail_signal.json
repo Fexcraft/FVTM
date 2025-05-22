@@ -79,15 +79,15 @@
 			"color": "545454"
 		},
 		"signal0": {
-			"pos": [ 11, 23 ],
-			"size": [ 158, 8 ],
+			"pos": [ 12, 23 ],
+			"size": [ 156, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
 		"signal1": {
-			"pos": [ 11, 37 ],
-			"size": [ 158, 8 ],
+			"pos": [ 12, 37 ],
+			"size": [ 156, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"

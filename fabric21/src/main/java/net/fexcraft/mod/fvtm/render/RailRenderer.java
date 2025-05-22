@@ -64,7 +64,7 @@ public class RailRenderer {
 				if(junc.tracks.size() == 0 || holding){
 					DebugUtils.renderBB(0.25f, COL_ORG);
 				}
-				if(holding){
+				if(junc.tracks.size() > 0 && holding){
 					pose.translate(0, junc.tracks.get(0).gauge.getHeight(), 0);
 					FvtmRenderTypes.setCutout(WHITE_TEXTURE);
 					Renderer21.setColor(COL_GRY);

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
 
 import java.util.ArrayList;
@@ -196,6 +197,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		region.getSystem().updateEntityEntry(uid, region.key);
+		if(vehicle.entity != null && !vehicle.entity.inSimRange()){
+			vehicle.onUpdate();
+			if(vehicle.entity.getTicks() % VEHICLE_SYNC_RATE == 0){
+				vehicle.sendUpdatePacket();
+				vehicle.entity.pushTicks();
+			}
+		}
 	}
 
 	private boolean CMODE(){

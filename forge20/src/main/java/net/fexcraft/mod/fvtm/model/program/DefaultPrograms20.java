@@ -1,11 +1,9 @@
 package net.fexcraft.mod.fvtm.model.program;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
@@ -15,7 +13,7 @@ import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -23,10 +21,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
-import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -61,11 +58,11 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) Renderer120.setColor(data.color.getPrimaryColor());
+				if(data.color != null) Renderer20.setColor(data.color.getPrimaryColor());
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				Renderer120.resetColor();
+				Renderer20.resetColor();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
@@ -74,11 +71,11 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) Renderer120.setColor(data.color.getSecondaryColor());
+				if(data.color != null) Renderer20.setColor(data.color.getSecondaryColor());
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				Renderer120.resetColor();
+				Renderer20.resetColor();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new RGBCustom(new float[]{ 1, 1, 1 }));
@@ -119,7 +116,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				Renderer120.popPose();
+				Renderer20.popPose();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
@@ -233,12 +230,12 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			Renderer120.setColor(color);
+			Renderer20.setColor(color);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			Renderer120.resetColor();
+			Renderer20.resetColor();
 		}
 
 		@Override
@@ -263,12 +260,12 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			Renderer120.setColor(data.color.getColorChannel(channel));
+			Renderer20.setColor(data.color.getColorChannel(channel));
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			Renderer120.resetColor();
+			Renderer20.resetColor();
 		}
 
 		@Override
@@ -499,7 +496,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			rentype = Renderer120.rentype();
+			rentype = Renderer20.rentype();
 			FvtmRenderTypes.setCutout(idl);
 		}
 
@@ -527,10 +524,10 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			RENDERER.scale(-0.025F, -0.025F, 0.025F);
 			RENDERER.rotate(90, 0, 1, 0);
 			Minecraft.getInstance().font.drawInBatch(data.sign.text, data.sign.centered ? -Minecraft.getInstance().font.width(data.sign.text) / 2 : 0, 0,
-				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer120.buffer(),
-				Font.DisplayMode.SEE_THROUGH, light, Renderer120.overlay
+				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer20.buffer(),
+				Font.DisplayMode.SEE_THROUGH, light, Renderer20.overlay
 			);
-			Renderer120.resetColor();
+			Renderer20.resetColor();
 			RENDERER.pop();
 		}
 

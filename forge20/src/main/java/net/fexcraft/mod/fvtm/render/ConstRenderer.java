@@ -16,7 +16,7 @@ import net.minecraft.core.Direction;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
-import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
+import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -28,8 +28,8 @@ public class ConstRenderer implements BlockEntityRenderer<ConstructorEntity> {
 
 	@Override
 	public void render(ConstructorEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
-		Renderer120.pose = pose;
-		Renderer120.set(pose, buffer, light, overlay);
+		Renderer20.pose = pose;
+		Renderer20.set(pose, buffer, light, overlay);
 		FvtmRenderTypes.setCutout(TEXTURE);
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);

@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -34,7 +34,7 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity> {
 	@Override
 	public void render(DecorationEntity deco, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		pose.pushPose();
-		Renderer120.set(pose, buffer, light);
+		Renderer20.set(pose, buffer, light);
 		EntityW ent = UniEntity.getEntity(deco);
 		for(DecorationData data : deco.decos){
 			if(data.getType().getModel() == null){

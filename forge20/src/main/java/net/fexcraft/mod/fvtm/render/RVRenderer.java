@@ -38,9 +38,8 @@ import org.joml.Quaternionf;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static com.ibm.icu.impl.ValidIdentifiers.Datatype.x;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
@@ -71,7 +70,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			.rotateAxis((float)Static.toRadians(rot.z), AZ)
 		);
 		sepcache.set(veh.position().x, veh.position().y, veh.position().z, rot);
-		Renderer120.set(pose, buffer, light);
+		Renderer20.set(pose, buffer, light);
 		//
 		pose.pushPose();
 		Model vehmod = veh.vehicle.data.getType().getModel();
@@ -100,13 +99,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		//TODO toggle info
 		//TODO containers
 		if(DebugUtils.ACTIVE){
-			/*Renderer120.set(RenderType.lines());
+			/*Renderer20.set(RenderType.lines());
 			pose.pushPose();
 			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
 			pose.scale(scale, scale, scale);
-			Renderer120.setColor(RGB.BLUE);
+			Renderer20.setColor(RGB.BLUE);
 			DebugUtils.SPHERE.render();
-			Renderer120.resetColor();
+			Renderer20.resetColor();
 			pose.popPose();*/
 			//
 			renderSeats(pose, veh.vehicle);
@@ -126,7 +125,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			}
 			DebugUtils.renderBB(pos, scale, COL_YLW);
 		}
-		Renderer120.resetColor();
+		Renderer20.resetColor();
 		pose.popPose();
 	}
 
@@ -141,10 +140,10 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			}
 			if(DebugUtils.ACTIVE){
 				pose.pushPose();
-				Renderer120.setColor(zone.inRange(data, vehpos, ply) ? GRNCOLOR : GRYCOLOR);
+				Renderer20.setColor(zone.inRange(data, vehpos, ply) ? GRNCOLOR : GRYCOLOR);
 				pose.scale(zone.range, zone.range, zone.range);
 				DebugUtils.SPHERE.render();
-				Renderer120.resetColor();
+				Renderer20.resetColor();
 				pose.popPose();
 			}
 		}
@@ -256,7 +255,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				else pose.translate(-pos.x, -pos.y, -pos.z);
 			}
 		}
-		Renderer120.resetColor();
+		Renderer20.resetColor();
 	}
 
 	private static int isImpact(){

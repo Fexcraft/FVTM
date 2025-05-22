@@ -6,7 +6,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.RVRenderer;
-import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleCatalog;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -41,7 +41,7 @@ public class VehicleCatalogImpl extends VehicleCatalog {
         drawer.applyWhite();
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         RenderSystem.runAsFancy(() -> {
-            Renderer120.set(gg.pose(), gg.bufferSource(), 15728880);
+            Renderer20.set(gg.pose(), gg.bufferSource(), 15728880);
             FvtmRenderTypes.setCutout(data.getCurrentTexture());
             veh.getModel().render(DefaultModel.RENDERDATA.set(data, null, null, null, ticks));
             RVRenderer.renderPoint(gg.pose(), data.getRotationPoint("vehicle"), null, data, null, ticks);

@@ -9,7 +9,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.*;
 import net.fexcraft.mod.fvtm.model.GLObject;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -26,7 +25,7 @@ import org.joml.Vector4f;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Renderer120 extends Renderer<GLObject> {
+public class Renderer20 extends Renderer<GLObject> {
 
 	public static final Vector3f AY = new Vector3f(0, 1, 0);
 	public static final Vector3f AX = new Vector3f(1, 0, 0);
@@ -35,6 +34,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	//
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static Vec3f color = new Vec3f();
+	private static RGB conv = RGB.WHITE.copy();
 	private static float alpha;
 	//
 	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -56,6 +56,11 @@ public class Renderer120 extends Renderer<GLObject> {
 	public static void setColor(RGB col, float al){
 		setColor(col);
 		alpha = al;
+	}
+
+	public static void setColor(int col){
+		conv.packed = col;
+		setColor(conv);
 	}
 
 	public static void setColor(Vec3f col){

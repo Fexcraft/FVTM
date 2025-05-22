@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -12,8 +11,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
-import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
-import static net.fexcraft.mod.fvtm.render.Renderer120.rotateRad;
+import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
+import static net.fexcraft.mod.fvtm.render.Renderer20.rotateRad;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -27,8 +26,8 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity> {
 	public void render(BaseBlockEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
 		data = tile.getBlockData();
 		if(data == null) return;
-		Renderer120.pose = pose;
-		Renderer120.set(pose, buffer, light, overlay);
+		Renderer20.pose = pose;
+		Renderer20.set(pose, buffer, light, overlay);
 		FvtmRenderTypes.setCutout(data.getCurrentTexture());
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);

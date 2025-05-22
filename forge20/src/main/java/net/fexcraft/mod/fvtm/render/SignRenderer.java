@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
-import net.fexcraft.mod.fvtm.sys.wire.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Camera;
@@ -25,9 +24,8 @@ import org.joml.Matrix4f;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
-import static net.fexcraft.mod.fvtm.event.ForgeClientEvents.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
+import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -52,11 +50,11 @@ public class SignRenderer {
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
-		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.SIGN_ADJREM.idx;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
-		Renderer120.resetColor();
+		Renderer20.resetColor();
 		for(SystemRegion<?, SignInstance> reg : sys.getRegions().values()){
 			for(SignInstance sign : reg.getObjects().values()){
 				//TODO distance check
@@ -76,7 +74,7 @@ public class SignRenderer {
 							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
-							Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;
+							Renderer20.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;
 							pose.pushPose();
 							pose.translate(scom.offset.x, scom.offset.y, scom.offset.z);
 							if(scom.roty != 0f) RENDERER.rotate(scom.roty, 0, 1, 0);

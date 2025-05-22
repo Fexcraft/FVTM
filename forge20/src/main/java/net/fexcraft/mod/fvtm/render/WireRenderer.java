@@ -58,13 +58,13 @@ public class WireRenderer {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		PoseStack pose = event.getPoseStack();
 		FvtmRenderTypes.setCutout(WHITE_TEXTURE);
-		Renderer120.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		for(SystemRegion<?, RelayHolder> reg : wiredata.getRegions().values()){
 			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){
-					Renderer120.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
+					Renderer20.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check
 					if(DebugUtils.ACTIVE || holding_wire){
 						DebugUtils.renderBB(relay.pos, holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);

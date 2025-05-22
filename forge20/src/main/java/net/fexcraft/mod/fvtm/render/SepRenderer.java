@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPointSep;
-import static net.fexcraft.mod.fvtm.render.Renderer120.pose;
+import static net.fexcraft.mod.fvtm.render.Renderer20.pose;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 
 /**
@@ -31,7 +31,7 @@ public class SepRenderer {
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
-		Renderer120.setColor(RGB.WHITE);
+		Renderer20.setColor(RGB.WHITE);
 		if(VEHICLES.size() > 0){
 			pose.pushPose();
 			pose.translate(-cx, -cy, -cz);

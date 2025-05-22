@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.lib.common.Static.rad180;
-import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -29,8 +29,8 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 
 	@Override
 	public void render(VehicleLiftEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
-		Renderer120.pose = pose;
-		Renderer120.set(pose, buffer, light, overlay);
+		Renderer20.pose = pose;
+		Renderer20.set(pose, buffer, light, overlay);
 		FvtmRenderTypes.setCutout(TEXTURE);
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);

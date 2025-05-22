@@ -24,11 +24,11 @@ public class Transforms120 {
 		}
 
 		public void apply(){
-			Renderer120.pose.translate(this.x, this.y, this.z);
+			Renderer20.pose.translate(this.x, this.y, this.z);
 		}
 
 		public void deapply(){
-			Renderer120.pose.translate(-this.x, -this.y, -this.z);
+			Renderer20.pose.translate(-this.x, -this.y, -this.z);
 		}
 
 	}
@@ -48,12 +48,12 @@ public class Transforms120 {
 		}
 
 		public void apply(){
-			Renderer120.pose.pushPose();
-			Renderer120.pose.mulPose(new Quaternionf(this.x, this.y, this.z, Static.toRadians(this.angle)));
+			Renderer20.pose.pushPose();
+			Renderer20.pose.mulPose(new Quaternionf(this.x, this.y, this.z, Static.toRadians(this.angle)));
 		}
 
 		public void deapply(){
-			Renderer120.pose.popPose();
+			Renderer20.pose.popPose();
 		}
 
 	}
@@ -71,12 +71,12 @@ public class Transforms120 {
 		}
 
 		public void apply(){
-			Renderer120.pose.pushPose();
-			Renderer120.pose.scale(this.x, this.y, this.z);
+			Renderer20.pose.pushPose();
+			Renderer20.pose.scale(this.x, this.y, this.z);
 		}
 
 		public void deapply(){
-			Renderer120.pose.popPose();
+			Renderer20.pose.popPose();
 		}
 
 	}

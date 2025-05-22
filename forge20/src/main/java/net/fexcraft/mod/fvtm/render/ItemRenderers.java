@@ -15,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.NonNullLazy;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer120.*;
-import static net.fexcraft.mod.fvtm.render.Renderer120.AY;
+import static net.fexcraft.mod.fvtm.render.Renderer20.*;
+import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -29,7 +29,7 @@ public class ItemRenderers {
 			VehItemApp via = UniStack.getApp(stack, VehItemApp.class);
 			if(via != null && via.data != null && via.data.getType().getModel() != null){
 				VehicleModel model = (VehicleModel)via.data.getType().getModel();
-				Renderer120.set(pose, src, v0);
+				Renderer20.set(pose, src, v0);
 				FvtmRenderTypes.setCutout(via.data.getCurrentTexture());
 				pose.pushPose();
 				//

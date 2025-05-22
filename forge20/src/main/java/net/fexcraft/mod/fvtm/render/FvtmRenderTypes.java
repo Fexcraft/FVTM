@@ -6,7 +6,6 @@ import net.fexcraft.mod.uni.IDL;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -54,46 +53,46 @@ public class FvtmRenderTypes {
 	public static void setCutout(IDL tex){
 		RenderType type = CUTOUTS.get(tex);
 		if(type != null){
-			Renderer120.rentype = type;
+			Renderer20.rentype = type;
 			return;
 		}
 		type = CUTOUT.apply(tex);
 		CUTOUTS.put(tex, type);
-		Renderer120.rentype = type;
+		Renderer20.rentype = type;
 	}
 
 	public static void setGlow(IDL tex){
 		RenderType type = GLOWS.get(tex);
 		if(type != null){
-			Renderer120.rentype = type;
+			Renderer20.rentype = type;
 			return;
 		}
 		type = GLOW.apply(tex.local());
 		GLOWS.put(tex, type);
-		Renderer120.rentype = type;
+		Renderer20.rentype = type;
 	}
 
 	public static void setLB(IDL tex){
 		RenderType type = LBS.get(tex);
 		if(type != null){
-			Renderer120.rentype = type;
+			Renderer20.rentype = type;
 			return;
 		}
 		type = LIGHTBEAM.apply(tex.local());
 		LBS.put(tex, type);
-		Renderer120.rentype = type;
+		Renderer20.rentype = type;
 	}
 
 	public static void setLines(){
-		Renderer120.rentype = RenderType.lines();
+		Renderer20.rentype = RenderType.lines();
 	}
 
 	public static void setLineStrip(){
-		Renderer120.rentype = RenderType.lineStrip();
+		Renderer20.rentype = RenderType.lineStrip();
 	}
 
 	public static void setDef(RenderType type){
-		Renderer120.rentype = type;
+		Renderer20.rentype = type;
 	}
 
 }

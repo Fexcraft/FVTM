@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -29,7 +30,7 @@ import static net.minecraft.network.chat.Component.translatable;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class JunctionTool extends Item {
+public class JunctionTool extends Item implements JunctionGridItem {
 
 	public JunctionTool(){
 		super(new Properties().stacksTo(1));

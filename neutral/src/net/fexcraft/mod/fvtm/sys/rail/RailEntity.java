@@ -54,8 +54,6 @@ public class RailEntity implements Comparable<RailEntity>{
 	public double moverq;//push_rq, pull_rq;
 	public TrackUnit[] unitson = new TrackUnit[4];
 	//
-	private short lastcheck = 40;//for entity despawn/spawning;
-	private static final short interval = 100;//300
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
 	protected Compound com;
@@ -130,7 +128,6 @@ public class RailEntity implements Comparable<RailEntity>{
 			this.remove();
 			return;
 		}
-		checkIfShouldHaveEntity();
 		checkIfShouldStop();
 		for(JEC command : commands) command.processEntity(this);
 		commands.removeIf(cmd -> cmd.isDone());
@@ -455,38 +452,21 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	}
 
-	private void checkIfShouldHaveEntity(){
-		//if(lastcheck == null) return;
-		if(lastcheck > 0){
-			lastcheck--;
-			return;
-		}
+	public void checkIfShouldHaveEntity(){
 		if(vehicle.entity != null){
 			if(vehicle.seats != null){
 				for(SeatInstance seat : vehicle.seats){
-					if(seat.passenger() != null){
-						lastcheck = interval;
-						return;
-					}
+					if(seat.passenger() != null) return;
 				}
 			}
-			if(isInPlayerRange()){
-				lastcheck = interval;
-				return;
-			}
+			if(isInPlayerRange()) return;
 			vehicle.entity.remove();
 			vehicle.entity = null;
-			lastcheck = interval;
-			return;
 		}
 		else{
-			if(!isInPlayerRange()){
-				lastcheck = interval;
-				return;
-			}
+			if(!isInPlayerRange()) return;
 			FvtmWorld world = (FvtmWorld)region.getSystem().getWorld();
 			world.spawnRailEntity(this);
-			lastcheck = interval;
 		}
 	}
 
@@ -601,7 +581,6 @@ public class RailEntity implements Comparable<RailEntity>{
 		FvtmLogger.debug("Removing TrackEntity " + uid + "!");
 		front.decouple();
 		rear.decouple();
-		lastcheck = 1000;
 		region.getSystem().delEntity(this);
 		if(vehicle.entity != null && !vehicle.entity.isRemoved()) vehicle.entity.remove();
 		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(this);
@@ -736,7 +715,6 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public RailEntity start(){
-		lastcheck = interval / 2;
 		return this;
 	}
 

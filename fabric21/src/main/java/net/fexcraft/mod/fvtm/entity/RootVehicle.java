@@ -182,7 +182,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 			}
 			return;
 		}
-		tickCount++;
+		//tickCount++;
 		if(tickCount >= Integer.MAX_VALUE) tickCount = 0;
 		yRotO = vehicle.point.getPivot().deg_yaw();
 		xRotO = vehicle.point.getPivot().deg_pitch();

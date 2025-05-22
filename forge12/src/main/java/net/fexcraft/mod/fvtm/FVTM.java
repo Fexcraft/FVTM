@@ -279,7 +279,6 @@ public class FVTM {
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
 			StreetSignItem.INSTANCE.setCreativeTab(tab);
 			TrafficSignItem.INSTANCE.setCreativeTab(tab);
-			SignalItem0.INSTANCE.setCreativeTab(tab);
 			TrainAdjuster.INSTANCE.setCreativeTab(tab);*/
 			JunctionToolItem.INSTANCE.setCreativeTab(tab);
 			RoadToolItem.INSTANCE.setCreativeTab(tab);

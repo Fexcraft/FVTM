@@ -6,7 +6,6 @@ package net.fexcraft.mod.fvtm.sys.rail.cmd;
 public enum JECType {
 	
 	SIGNAL_WAIT(true, 20),//check if signal changed once per second
-	GOTO(true, -1),//path finding, only search if in need
 	REVERSE(true, 0),//apply instantly, remove command afterwards
 	STOP(true, 0),//apply instantly (decrease throttle to 0), remove command afterwards
 	WAIT(true, 20),//check every second if time passed

@@ -26,15 +26,17 @@ public class TileRenderer {
 	private static AxisAlignedBB box;
 
 	public static void renderBlocks(World world, double cx, double cy, double cz, float ticks){
-		if(!RENDER_BLOCKS_SEPARATELY) return;
+		//if(!RENDER_BLOCKS_SEPARATELY) return;
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		entities.clear();
 		entities.addAll(world.loadedTileEntityList);
+		BlockTileEntity tile;
 		for(TileEntity entity : entities){
 			if(entity instanceof BlockTileEntity == false) continue;
-			BlockTileEntity tile = (BlockTileEntity)entity;
-			box = tile.getBlockData().getType().getAABB("render", "").get(0);
+			tile = (BlockTileEntity)entity;
+			if(!RENDER_BLOCKS_SEPARATELY && !tile.sep) continue;
+			box = tile.getBlockData().getType().getAABBs().get("render").get(0);
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(box.offset(tile.getPos()))) continue;
 			//
 			SeparateRenderCache.SORTED_BLK_ENTITY.add(tile);

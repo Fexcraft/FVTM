@@ -266,6 +266,8 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return model;
 	}
 
+	private static AABBs RAABB = new AABBs(AABB.create(-3, -3, -3, 3, 3, 3));
+
 	public AABBs getAABB(String type, String... states){
 		if(type.equals("selection")){
 			for(String state : states){
@@ -294,8 +296,8 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 			if(aabbs.containsKey("collision#" + state)) return aabbs.get("collision#" + state);
 			if(aabbs.containsKey("collision#normal")) return aabbs.get("collision#normal");
 		}
-		else if(type.equals("render") && aabbs.containsKey("render")){
-			return aabbs.get("render");
+		else if(type.equals("render")){
+			return aabbs.containsKey("render") ? aabbs.get("render") : RAABB;
 		}
 		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : AABBs.FULL;
 	}

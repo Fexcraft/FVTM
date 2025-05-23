@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -54,7 +55,7 @@ public class TileRenderer {
 			}
 			else{
 				TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-				DebugModels.SPHERE_RED.render(0.5f);
+				DebugUtils.SPHERE.render();
 			}
 			//
 			GL11.glPopMatrix();

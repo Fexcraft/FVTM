@@ -302,6 +302,10 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : AABBs.FULL;
 	}
 
+	public Map<String, AABBs> getAABBs(){
+		return aabbs;
+	}
+
 	public BlockType getBlockType(){
 		return blocktype;
 	}

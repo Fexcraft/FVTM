@@ -28,7 +28,6 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 	
 	public byte meta = -1;
 	public BlockData data;
-    public boolean sep;
 	
 	public BlockTileEntity(BlockBase type){
 		data = new BlockData(type.type);
@@ -77,7 +76,6 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
-        super.readFromNBT(pkt.getNbtCompound());
         this.readFromNBT(pkt.getNbtCompound());
     }
     
@@ -113,7 +111,6 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
         	SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world), WireSystem.class).register(this);
         }
-        sep = data.getType().getAABBs().containsKey("render");
     }
     
     @Override

@@ -31,6 +31,11 @@ public class AABBs {
         aabbs = list;
     }
 
+    public AABBs(AABB... abs){
+        aabbs = new ArrayList<>();
+        for(AABB ab : abs) aabbs.add(ab);
+    }
+
     public AABBs(float sx, float sy, float sz, float ex, float ey, float ez){
         this();
         aabbs.add(AABB.create(sx, sy, sz, ex, ey, ez));

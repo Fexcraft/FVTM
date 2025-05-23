@@ -35,8 +35,8 @@ public class TileRenderer {
 		for(TileEntity entity : entities){
 			if(entity instanceof BlockTileEntity == false) continue;
 			tile = (BlockTileEntity)entity;
-			if(!RENDER_BLOCKS_SEPARATELY && !tile.sep) continue;
-			box = tile.getBlockData().getType().getAABBs().get("render").get(0);
+			if(!RENDER_BLOCKS_SEPARATELY && !tile.getBlockData().getType().getAABBs().containsKey("render")) continue;
+			box = tile.getBlockData().getType().getAABB("render", "").get(0);
 			if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(box.offset(tile.getPos()))) continue;
 			//
 			SeparateRenderCache.SORTED_BLK_ENTITY.add(tile);

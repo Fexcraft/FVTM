@@ -3,11 +3,13 @@ package net.fexcraft.mod.fvtm.entity;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.mod.fvtm.data.block.AABBs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -15,6 +17,7 @@ public class RenderViewEntity extends Entity implements IEntityAdditionalSpawnDa
 	
     private UUID player_id;
     private EntityPlayer player;
+	private AxisAlignedBB rbb = AABBs.FULL.get(0);
 
     public RenderViewEntity(World world){
         super(world);
@@ -69,13 +72,19 @@ public class RenderViewEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     public void onUpdate(){
     	if(getPlayer() == null) return;
-    	this.setPosition(getPlayer().posX, getPlayer().posY + 1, getPlayer().posZ);
+    	this.setPosition(player.posX, player.posY + 1.5, player.posZ);
+		rbb = getEntityBoundingBox().expand(1, 1, 1);
     }
 
     @Override
     public void setPositionAndRotationDirect(double d, double d1, double d2, float f, float f1, int i, boolean b){
         //
     }
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox(){
+		return rbb;
+	}
 
     @Override
     public boolean canBePushed(){

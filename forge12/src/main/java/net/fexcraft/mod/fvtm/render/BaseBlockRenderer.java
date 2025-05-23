@@ -35,6 +35,8 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
             GL11.glPopMatrix();
             return;
         }
+        SeparateRenderCache.SORTED_BLK_ENTITY.add(tile);
+        SeparateRenderCache.SORTED_BLK_DATA.add(tile.getBlockData());
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);

@@ -20,7 +20,7 @@ public class EventListener {
 
 	public EventListener(JsonMap map){
 		type = EventType.parse(map.getString("type", "null"));
-		cond = ConditionRegistry.get(map.getString("cond", "null"));
+		cond = ConditionRegistry.get(map.getString("cond", "true"));
 		action = EventAction.parse(map.getString("action", "none"));
 		if(map.has("args")){
 			if(map.get("args").isArray()) args = map.getArray("args").toStringArray();

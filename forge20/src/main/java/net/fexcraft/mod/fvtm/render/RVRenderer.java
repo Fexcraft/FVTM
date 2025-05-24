@@ -30,9 +30,11 @@ import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
@@ -54,6 +56,21 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	public RVRenderer(EntityRendererProvider.Context context){
 		super(context);
 		shadowRadius = 0.25F;
+	}
+
+	@Override
+	public boolean shouldRender(RootVehicle ent, Frustum frustum, double x, double y, double z){
+		if(ent.vehicle.data == null) return false;
+		V3D iz;
+		float ran;
+		AABB box;
+		for(InteractZone value : ent.vehicle.data.getInteractZones().values()){
+			iz = value.pos(ent.vehicle.data).add(x, y, z);
+			ran = value.range;
+			box = new AABB(iz.x - ran, iz.y - ran, iz.z - ran, iz.x + ran, iz.y + ran, iz.z + ran);
+			if(frustum.isVisible(box)) return true;
+		}
+		return false;
 	}
 
 	@Override

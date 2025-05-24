@@ -79,7 +79,7 @@ public class CondBuilderRoot {
 					}
 					break;
 				}
-				case PART_FUNC:{
+				/*case PART_FUNC:{
 					return edat -> {
 						ModelRenderData mrdata = (ModelRenderData)edat;
 						PartData data = mrdata.part_category.equals(cond.target) ? mrdata.part : mrdata.vehicle.getPart(cond.target);
@@ -89,7 +89,7 @@ public class CondBuilderRoot {
 				}
 				case MULTI:{
 					Conditional con0 = ConditionRegistry.get(cond.targets[0]);
-					Conditional con1 = ConditionRegistry.get(cond.targets[0]);
+					Conditional con1 = ConditionRegistry.get(cond.targets[1]);
 					if(cond.mode == CondMode.AND){
 						return data -> con0.isMet(data) && con1.isMet(data);
 					}
@@ -97,7 +97,7 @@ public class CondBuilderRoot {
 						return data -> con0.isMet(data) || con1.isMet(data);
 					}
 					else return COND_FALSE;
-				}
+				}*/
 			}
 			return null;
 		};

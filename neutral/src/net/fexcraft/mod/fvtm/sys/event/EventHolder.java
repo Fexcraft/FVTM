@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
-import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -46,7 +45,7 @@ public class EventHolder {
 			listeners.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 		}
 		else{
-			if(subholders.containsKey(origin)) subholders.remove(origin);
+			subholders.remove(origin);
 		}
 	}
 

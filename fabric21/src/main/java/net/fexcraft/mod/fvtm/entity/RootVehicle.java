@@ -53,7 +53,6 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_LOCK;
 public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 
 	public VehicleInstance vehicle;
-	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
 	private boolean cl_sync;
@@ -75,11 +74,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	}
 
 	protected void init(TagCW com){
-		if(level().isClientSide){
-			int w = vehicle.data.getAttribute("hitbox_width").asInteger();
-			int h = vehicle.data.getAttribute("hitbox_height").asInteger();
-			renderbox = new BoundingBox(-w, -h, -w, w, h, w);
-		}
+		//
 	}
 
 	@Override

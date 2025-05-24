@@ -72,7 +72,6 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 
 	public VehicleInstance vehicle;
-	public BoundingBox renderbox;
 	public float rotZ = 0;
 	public float protZ = 0;
 	public float wheel_radius = 0;
@@ -90,11 +89,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	protected void init(TagCW com){
-		if(level().isClientSide){
-			int w = vehicle.data.getAttribute("hitbox_width").asInteger();
-			int h = vehicle.data.getAttribute("hitbox_height").asInteger();
-			renderbox = new BoundingBox(-w, -h, -w, w, h, w);
-		}
+		//
 	}
 
 	@Override

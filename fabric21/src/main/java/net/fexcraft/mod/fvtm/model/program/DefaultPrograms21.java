@@ -19,7 +19,10 @@ import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import java.util.HashMap;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 import static net.fexcraft.mod.fvtm.render.Renderer21.*;
@@ -511,6 +514,17 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 	public static class SignText implements Program {
 
+		private static HashMap<String, SignText> TEXTS = new HashMap<>();
+		private static HashMap<String, Font> FONTS = new HashMap<>();
+		private Font font;
+		private String key;
+
+		public SignText(){}
+
+		public SignText(String font){
+			key = font;
+		}
+
 		@Override
 		public String id(){ return "fvtm:sign_text"; }
 
@@ -520,7 +534,16 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			RENDERER.push();
 			RENDERER.scale(-0.025F, -0.025F, 0.025F);
 			RENDERER.rotate(90, 0, 1, 0);
-			Minecraft.getInstance().font.drawInBatch(data.sign.text, data.sign.centered ? -Minecraft.getInstance().font.width(data.sign.text) / 2 : 0, 0,
+			if(font == null){
+				if(key == null) font = Minecraft.getInstance().font;
+				else{
+					if(!FONTS.containsKey(key)){
+						FONTS.put(key, new Font(res -> Minecraft.getInstance().fontManager.fontSets.getOrDefault(ResourceLocation.tryParse(key), Minecraft.getInstance().fontManager.missingFontSet), true));
+					}
+					font = FONTS.get(key);
+				}
+			}
+			font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
 				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer21.buffer(),
 				Font.DisplayMode.SEE_THROUGH, light, Renderer21.overlay
 			);
@@ -535,6 +558,13 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
+			if(args.length > 0){
+				String key = args[0];
+				if(!TEXTS.containsKey(key)){
+					TEXTS.put(key, new SignText(key));
+				}
+				return TEXTS.get(key);
+			}
 			return this;
 		}
 

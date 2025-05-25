@@ -101,7 +101,12 @@ public class Addon extends Content<Addon> {
 		}
 		if(map.has("Conditions")){
 			for(Entry<String, JsonValue<?>> entry : map.getMap("Conditions").entries()){
-				ConditionRegistry.register(conid(id, entry.getKey()), new Condition(entry.getValue().asArray().toStringList()));
+				try{
+					ConditionRegistry.register(conid(id, entry.getKey()), new Condition(entry.getValue().asArray().toStringList()));
+				}
+				catch(Throwable e){
+					e.printStackTrace();
+				}
 			}
 		}
 		return this;

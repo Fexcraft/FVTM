@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.part.PartFunction.StaticFunction;
+import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
@@ -71,7 +72,7 @@ public class ParticleEmitterFunction extends StaticFunction {
 			speed = map.has("speed") ? map.get("speed").float_value() : null;
 		}
 		
-		public Conditional conditional;
+		public Condition condi;
 		public final Particle particle;
 		public final String condition;
 		public final int frequency;
@@ -79,10 +80,10 @@ public class ParticleEmitterFunction extends StaticFunction {
 		public final V3D dir;
 		public final V3D pos;
 		
-		public Conditional getConditional(){
+		public Condition getCondition(){
 			if(condition == null) return null;
-			if(conditional == null) conditional = ConditionRegistry.get(condition);
-			return conditional;
+			if(condi == null) condi = ConditionRegistry.parse(condition).link();
+			return condi;
 		}
 		
 	}

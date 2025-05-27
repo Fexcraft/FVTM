@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
-import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.sys.event.EventData;
 
 /**

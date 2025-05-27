@@ -8,6 +8,6 @@ import net.fexcraft.mod.fvtm.sys.event.EventData;
 @FunctionalInterface
 public interface Conditional {
 
-	boolean isMet(EventData data);
+	boolean isMet(Condition cond, EventData data);
 
 }

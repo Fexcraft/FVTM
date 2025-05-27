@@ -7,10 +7,8 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
+import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
-import net.fexcraft.mod.fvtm.sys.condition.Conditional;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -42,15 +40,15 @@ public class ConditionalPrograms {
 
 	public static class ConditionBased extends Program.ConditionalProgram {
 
-		protected Conditional cond;
+		protected Condition cond;
 
 		public ConditionBased(String condition){
-			cond = ConditionRegistry.get(condition);
+			cond = ConditionRegistry.parse(condition).link();
 		}
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return cond.isMet(data);
+			return cond.al.isMet(cond, data);
 		}
 
 	}

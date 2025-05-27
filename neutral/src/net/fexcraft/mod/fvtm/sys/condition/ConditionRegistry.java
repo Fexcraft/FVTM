@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -10,43 +10,53 @@ import java.util.function.Function;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class ConditionRegistry {
-	
-	public static HashMap<String, Condition> MAPPED_CONDITIONS = new HashMap<>();
-	private static HashMap<String, Conditional> MAPPED_CONDITIONALS = new HashMap<>();
-	private static HashMap<String, Condition> PARSED_CONDITIONS = new HashMap<>();
-	private static HashMap<String, Conditional> PARSED_CONDITIONALS = new HashMap<>();
-	public static Function<Condition, Conditional> BUILDER = CondBuilder.run();
-	public static final Conditional COND_FALSE = data -> false;
-	public static final Conditional COND_TRUE = data -> true;
+
+	public static HashMap<String, CondKey> KEY_REG = new HashMap<>();
+	private static HashMap<String, Condition> CONDITIONS = new HashMap<>();
+	private static HashMap<CondKey, Conditional> CONDITIONALS = new HashMap<>();
+	public static Function<CondKey, Conditional> BUILDER = CondBuilder.run();
+	public static final Conditional COND_FALSE = (con, data) -> false;
+	public static final Conditional COND_TRUE = (con, data) -> true;
 	static {
-		MAPPED_CONDITIONALS.put("fvtm:true", COND_TRUE);
-		MAPPED_CONDITIONALS.put("true", COND_TRUE);
+		CondKey key = new CondKey(CondType.CUSTOM, CondMode.EQUAL, "");
+		KEY_REG.put("fvtm:true", key);
+		KEY_REG.put("true", key);
+		CONDITIONS.put("fvtm:true", new Condition(key, new JsonValue(false)));
+		CONDITIONALS.put(key, COND_TRUE);
+		key = new CondKey(CondType.CUSTOM, CondMode.EQUAL, "");
+		KEY_REG.put("fvtm:false", key);
+		KEY_REG.put("false", key);
+		CONDITIONS.put("fvtm:false", new Condition(key, new JsonValue(false)));
+		CONDITIONALS.put(key, COND_FALSE);
 	}
 	
-	public static void register(String id, Condition con){
-		MAPPED_CONDITIONS.put(id, con);
-	}
-	
-	public static Conditional get(String id){
-		if(!MAPPED_CONDITIONALS.containsKey(id)){
-			Condition con = MAPPED_CONDITIONS.get(id);
-			if(con == null) return parse(id);
-			MAPPED_CONDITIONALS.put(id, BUILDER.apply(con));
+	public static Conditional get(CondKey key){
+		if(!CONDITIONALS.containsKey(key)){
+			CONDITIONALS.put(key, BUILDER.apply(key));
 		}
-		return MAPPED_CONDITIONALS.get(id);
+		return CONDITIONALS.get(key);
 	}
 
-	public static Conditional parse(String cond){
-		if(!PARSED_CONDITIONS.containsKey(cond)){
-			String[] arr = cond.split(" ");
-			if(arr.length < 2) return COND_FALSE;
-			cond = new Condition(arr).toCompare();
-			if(PARSED_CONDITIONALS.containsKey(cond)) return PARSED_CONDITIONALS.get(cond);
-		}
-		if(!PARSED_CONDITIONALS.containsKey(cond)){
-			PARSED_CONDITIONALS.put(cond, BUILDER.apply(PARSED_CONDITIONS.get(cond)));
-		}
-		return PARSED_CONDITIONALS.get(cond);
+	public static Condition parse(String cond){
+		if(CONDITIONS.containsKey(cond)) return CONDITIONS.get(cond);
+		String[] arr = cond.split(" ");
+		if(arr.length < 2) return CONDITIONS.get("fvtm:false");
+		return new Condition(arr);
+	}
+
+	public static CondKey parseKey(String ctype, String tar, String cmode){
+		CondType type = CondType.parse(ctype);
+		CondMode mode = CondMode.parse(cmode);
+		String key = type.key + "-" + mode + "-" + tar;
+		if(KEY_REG.containsKey(key)) return KEY_REG.get(key);
+		CondKey ck = new CondKey(type, mode, tar);
+		KEY_REG.put(ck.toString(), ck);
+		return ck;
+	}
+
+	public static void register(String key, Condition cond){
+		if(!KEY_REG.containsKey(key)) KEY_REG.put(key, cond.key);
+		CONDITIONS.put(key, cond);
 	}
 
 }

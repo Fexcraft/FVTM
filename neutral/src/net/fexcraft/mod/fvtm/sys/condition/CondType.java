@@ -11,6 +11,7 @@ public enum CondType {
 	BLOCKSTATE("blockstate"),
 	MULTI("multi"),
 	CUSTOM("custom"),
+	//STATIC("static"),
 	;
 
 	public final String key;

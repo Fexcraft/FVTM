@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.impl;
 
 import net.fexcraft.mod.fvtm.sys.condition.CondBuilderRoot;
+import net.fexcraft.mod.fvtm.sys.condition.CondKey;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 
@@ -13,11 +14,11 @@ import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
  */
 public class CondBuilder {
 
-	public static Function<Condition, Conditional> run(){
-		Function<Condition, Conditional> con = CondBuilderRoot.run();
+	public static Function<CondKey, Conditional> run(){
+		Function<CondKey, Conditional> con = CondBuilderRoot.run();
 		if(con != null) return con;
-		return cond -> {
-			switch(cond.type){
+		return key -> {
+			switch(key.type){
 				case WORLDTIME -> {
 
 					return COND_FALSE;

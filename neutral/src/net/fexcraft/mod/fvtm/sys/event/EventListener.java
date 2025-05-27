@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.sys.event;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
-import net.fexcraft.mod.fvtm.sys.condition.Conditional;
 
 import java.util.Arrays;
 
@@ -14,13 +14,14 @@ import java.util.Arrays;
 public class EventListener {
 
 	public EventType type;
-	public Conditional cond;
+	public Condition cond;
 	public EventAction action;
 	public String[] args;
 
 	public EventListener(JsonMap map){
 		type = EventType.parse(map.getString("type", "null"));
-		cond = ConditionRegistry.get(map.getString("cond", "true"));
+		cond = map.get("cond").isArray() ? new Condition(map.get("cond").asArray()) : ConditionRegistry.parse(map.getString("cond", "true"));
+		cond.link();
 		action = EventAction.parse(map.getString("action", "none"));
 		if(map.has("args")){
 			if(map.get("args").isArray()) args = map.getArray("args").toStringArray();
@@ -33,7 +34,8 @@ public class EventListener {
 
 	public EventListener(JsonArray arr){
 		type = EventType.parse(arr.get(0).string_value());
-		cond = ConditionRegistry.get(arr.get(1).string_value());
+		cond = arr.get(1).isArray() ? new Condition(arr.get(1).asArray()) : ConditionRegistry.parse(arr.get(1).string_value());
+		cond.link();
 		action = EventAction.parse(arr.get(2).string_value());
 		if(arr.size() > 3){
 			if(arr.get(3).isArray()) args = arr.get(3).asArray().toStringArray();
@@ -44,7 +46,7 @@ public class EventListener {
 
 	public EventListener(String[] strs){
 		type = EventType.parse(strs[0]);
-		cond = ConditionRegistry.get(strs[1]);
+		cond = ConditionRegistry.parse(strs[1]);
 		action = EventAction.parse(strs[2]);
 		if(strs.length > 3){
 			args = Arrays.copyOfRange(strs, 3, strs.length);

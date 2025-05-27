@@ -1,80 +1,46 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
-import net.fexcraft.mod.fvtm.model.ModelRenderData;
-
 import java.util.function.Function;
-
-import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class CondBuilderRoot {
 
-	public static Function<Condition, Conditional> run(){
-		return cond -> {
-			switch(cond.type){
+	public static Function<CondKey, Conditional> run(){
+		return key -> {
+			switch(key.type){
 				case ATTRIBUTE:{
-					switch(cond.mode){
+					switch(key.mode){
 						case BOOL_EQUAL:{
-							boolean bool = Boolean.parseBoolean(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeBoolean(cond.target, false) == bool;
-							};
+							return (cond, data) -> data.vehicle.getAttributeBoolean(key.target, false) == cond.value.bool();
 						}
 						case BOOL_NEQUAL:{
-							boolean bool = Boolean.parseBoolean(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeBoolean(cond.target, false) != bool;
-							};
+							return (cond, data) -> data.vehicle.getAttributeBoolean(key.target, false) != cond.value.bool();
 						}
 						case NUMB_EQUAL:{
-							Float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) == val;
-							};
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) == cond.value.float_value();
 						}
 						case NUMB_NEQUAL:{
-							Float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) != val;
-							};
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) != cond.value.float_value();
 						}
 						case EQUAL:{
-							return data -> {
-								return data.vehicle.getAttributeString(cond.target, "null").equals(cond.condi);
-							};
+							return (cond, data) -> data.vehicle.getAttributeString(key.target, "null").equals(cond.value.string_value());
 						}
 						case NEQUAL:{
-							return data -> {
-								return !data.vehicle.getAttributeString(cond.target, "null").equals(cond.condi);
-							};
+							return (cond, data) -> !data.vehicle.getAttributeString(key.target, "null").equals(cond.value.string_value());
 						}
 						case LEQUAL:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) <= val;
-							};
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) <= cond.value.float_value();
 						}
 						case GEQUAL:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) >= val;
-							};
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) >= cond.value.float_value();
 						}
 						case LESS:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) < val;
-							};
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) < cond.value.float_value();
 						}
 						case GREATER:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) > val;
-							};
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) > cond.value.float_value();
 						}
 					}
 					break;
@@ -82,19 +48,19 @@ public class CondBuilderRoot {
 				/*case PART_FUNC:{
 					return edat -> {
 						ModelRenderData mrdata = (ModelRenderData)edat;
-						PartData data = mrdata.part_category.equals(cond.target) ? mrdata.part : mrdata.vehicle.getPart(cond.target);
-						PartFunction func = data == null ? null : data.getFunction(cond.targets[1]);
-						return func == null ? false : func.onCondition(cond.targets, cond.mode, cond.condi);
+						PartData data = mrdata.part_category.equals(key.target) ? mrdata.part : mrdata.vehicle.getPart(key.target);
+						PartFunction func = data == null ? null : data.getFunction(key.targets[1]);
+						return func == null ? false : func.onCondition(key.targets, key.mode, key.condi);
 					};
 				}
 				case MULTI:{
-					Conditional con0 = ConditionRegistry.get(cond.targets[0]);
-					Conditional con1 = ConditionRegistry.get(cond.targets[1]);
-					if(cond.mode == CondMode.AND){
-						return data -> con0.isMet(data) && con1.isMet(data);
+					Conditional con0 = ConditionRegistry.get(key.targets[0]);
+					Conditional con1 = ConditionRegistry.get(key.targets[1]);
+					if(key.mode == CondMode.AND){
+						return (cond, data) -> con0.isMet(data) && con1.isMet(data);
 					}
-					else if(cond.mode == CondMode.OR){
-						return data -> con0.isMet(data) || con1.isMet(data);
+					else if(key.mode == CondMode.OR){
+						return (cond, data) -> con0.isMet(data) || con1.isMet(data);
 					}
 					else return COND_FALSE;
 				}*/

@@ -10,7 +10,9 @@ import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.ui.UserInterface;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -22,6 +24,7 @@ public class UIKeys {
 	public static final int ID12_VEHICLE_CATALOG = 610;
 	public static final int ID12_RAIL_JUNCTION = 701;
 	public static final int ID12_RAIL_SIGNAL = 704;
+	public static final int ID12_RAIL_JUNC_EVENTS = 706;
 	public static final int ID12_ROAD_TOOL = 702;
 	public static final int ID12_ROAD_TOOL_CUSTOM = 703;
 	public static final int ID12_ENTITY_SYSTEM_CHOOSE = 705;
@@ -50,6 +53,7 @@ public class UIKeys {
 	public static final UIKey TOOLBOX_TEXTURE = new UIKey(ID12_TOOLBOX_TEXTURE, "fvtm:toolbox_texture");
 	public static final UIKey RAIL_JUNCTION = new UIKey(ID12_RAIL_JUNCTION, "fvtm:rail_junction");
 	public static final UIKey RAIL_SIGNAL = new UIKey(ID12_RAIL_SIGNAL, "fvtm:rail_signal");
+	public static final UIKey RAIL_JUNC_EVENTS = new UIKey(ID12_RAIL_JUNC_EVENTS, "fvtm:rail_junc_events");
 	public static final UIKey ROAD_TOOL = new UIKey(ID12_ROAD_TOOL, "fvtm:road_tool");
 	public static final UIKey ROAD_TOOL_CUSTOM = new UIKey(ID12_ROAD_TOOL_CUSTOM, "fvtm:road_tool_custom");
 	public static final UIKey ENTITY_SYSTEM_CHOOSE = new UIKey(ID12_ENTITY_SYSTEM_CHOOSE, "fvtm:entity_system_choose");
@@ -94,6 +98,8 @@ public class UIKeys {
 		UniReg.registerMenu(RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
 		UniReg.registerUI(RAIL_SIGNAL, RailSignal.class);
 		UniReg.registerMenu(RAIL_SIGNAL, "fvtm:uis/rail_signal", RailSignalContainer.class);
+		UniReg.registerUI(RAIL_JUNC_EVENTS, UserInterface.class);
+		UniReg.registerMenu(RAIL_JUNC_EVENTS, "fvtm:uis/rail_junction_events", ContainerInterface.class);
 		UniReg.registerUI(ROAD_TOOL, RoadToolUI.class);
 		UniReg.registerMenu(ROAD_TOOL, "fvtm:uis/road_tool", RoadToolCon.class);
 		UniReg.registerUI(ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);

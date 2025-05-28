@@ -11,7 +11,6 @@ import java.util.UUID;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.sys.rail.cmd.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -21,6 +20,7 @@ import net.fexcraft.mod.fvtm.util.SaveUtils;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * First prototype of RailEntity system.
@@ -58,7 +58,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
 	protected Compound com;
-	protected ArrayList<JEC> commands = new ArrayList<>();
+	protected Pair<Junction, EntryDirection> waiting_signal;
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	private byte ticks;
 	
@@ -130,8 +130,11 @@ public class RailEntity implements Comparable<RailEntity>{
 			return;
 		}
 		checkIfShouldStop();
-		for(JEC command : commands) command.processEntity(this);
-		commands.removeIf(cmd -> cmd.isDone());
+		if(waiting_signal != null){
+			if(waiting_signal.getLeft().getSignalState(waiting_signal.getRight())){
+				setPaused(false);
+			}
+		}
 		//
 		if(!vehicle.data.getType().isTrailer() && !isPaused() && vehicle.throttle > 0.001f){
 			if(vehicle.data.hasPart("engine")){
@@ -402,10 +405,10 @@ public class RailEntity implements Comparable<RailEntity>{
 				return new TRO(track, track.length);
 			}
 			if(signal && junc.hasSignal(track.getOppositeId()) && isActiveEnd()){
-				junc.pollSignal(this);
+				junc.pollSignal(this, track.getOppositeId());
 				if(!junc.getSignalState(track.getOppositeId()) && !isPaused()){
-					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
-					this.setPaused(true);
+					waiting_signal = Pair.of(junc, junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
+					setPaused(true);
 				}
 				return new TRO(track, track.length);
 			}
@@ -426,10 +429,10 @@ public class RailEntity implements Comparable<RailEntity>{
 				return new TRO(track, 0);
 			}
 			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
-				junc.pollSignal(this);
+				junc.pollSignal(this, track.getOppositeId());
 				if(!junc.getSignalState(track.getId()) && !isPaused()){
-					commands.add(new CMD_SignalWait("signal_wait", junc, junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
-					this.setPaused(true);
+					waiting_signal = Pair.of(junc, junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
+					setPaused(true);
 				}
 				return new TRO(track, 0);
 			}
@@ -509,10 +512,9 @@ public class RailEntity implements Comparable<RailEntity>{
 			compound.set("rear_coupler", rear.isFront());
 		}
 		compound.set("rear_auto", rear.autocoupler);
-		if(!commands.isEmpty()){
-			TagLW list = TagLW.create();
-			for(JEC cmd : commands) list.add(cmd.write(null));
-			compound.set("Commands", list);
+		if(waiting_signal != null){
+			compound.set("WaitSig", waiting_signal.getLeft().getPos().pos);
+			compound.set("WaitSigDir", waiting_signal.getRight().ordinal());
 		}
 		compound.set("Compound", com.getUID());
 		compound.set("Singular", com.isSingular());
@@ -538,12 +540,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		front.autocoupler = compound.getBoolean("front_auto");
 		rear.autocoupler = compound.getBoolean("rear_auto");
 		//
-		if(compound.has("Commands")){
-			commands.clear();
-			compound.getList("Commands").forEach(tag -> {
-				JEC command = JEC.read(tag);
-				if(command != null) commands.add(command);
-			});
+		if(compound.has("WaitSig")){
+			try{
+				waiting_signal = Pair.of(region.system.getJunction(compound.getV3I("WaitSid")), EntryDirection.values()[compound.getInteger("WaitSigDir")]);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
@@ -723,10 +726,6 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public RailEntity start(){
 		return this;
-	}
-
-	public ArrayList<JEC> getCommands(){
-		return commands;
 	}
 
 	public void flip(){

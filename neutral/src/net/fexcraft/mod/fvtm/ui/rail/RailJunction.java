@@ -143,7 +143,8 @@ public class RailJunction extends UserInterface {
 			case "rem2":
 			case "rem3":
 			case "signal_edit":
-			case "signal_remove":{
+			case "signal_remove":
+			case "events":{
 				TagCW com = TagCW.create();
 				com.set("task", id);
 				container.SEND_TO_SERVER.accept(com);

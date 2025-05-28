@@ -173,7 +173,7 @@ public class EntitySystem extends DetachedSystem {
 		}
 
 		public boolean invalid(Collection<ParticleEntity> particles, int mul){
-			if(edata.getConditional() == null || edata.getConditional().isMet(DefaultModel.RENDERDATA.set(vehicle.vehicle, data, part, 0))){
+			if(edata.getCondition() == null || edata.getCondition().al.isMet(edata.getCondition(), DefaultModel.RENDERDATA.set(vehicle.vehicle, data, part, 0))){
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.vehicle.data.getRotationPoint(data.getSwivelPointInstalledOn());

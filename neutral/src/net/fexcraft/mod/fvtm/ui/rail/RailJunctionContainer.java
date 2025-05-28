@@ -136,6 +136,10 @@ public class RailJunctionContainer extends ContainerInterface {
 				remove(3);
 				break;
 			}
+			case "events":{
+				player.entity.openUI(UIKeys.RAIL_JUNC_EVENTS, pos);
+				return;
+			}
 			case "signal_edit":{
 				player.entity.openUI(UIKeys.RAIL_SIGNAL, pos);
 				return;

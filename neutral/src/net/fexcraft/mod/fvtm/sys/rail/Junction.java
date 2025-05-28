@@ -267,22 +267,10 @@ public class Junction implements SysObj {
 	}
 
 	public Track getNext(RailEntity entity, PathKey track, boolean applystate){
-		if(entity != null && fortrains.size() > 0){
-			Track track0 = getNext0(entity, track, applystate);
-			for(JEC cmd : fortrains){
-				//TODO if(cmd.isTarget(entity)) entity.commands.add(cmd.copy());
-			}
-			return track0;
-
-		}
-		else return getNext0(entity, track, applystate);
-	}
-
-	public Track getNext0(RailEntity entity, PathKey track, boolean applystate){
 		if(type == null)
 			type = size() <= 2 ? JuncType.STRAIGHT : size() == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
-		if(entity != null){
-			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
+		if(entity != null && applystate){
+			holder.run(EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
 		}
 		switch(type){
 			case STRAIGHT:{
@@ -443,7 +431,7 @@ public class Junction implements SysObj {
 				sigstate1 = tracks.get(0).unit.section().isFree(ent);
 			}
 			else if(sigtype1.any()){
-				holder.run(EventType.JUNC_POLL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.FORWARD);
+				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.FORWARD);
 			}
 		}
 		else{
@@ -451,7 +439,7 @@ public class Junction implements SysObj {
 				sigstate0 = tracks.get(1).unit.section().isFree(ent);
 			}
 			else if(sigtype0.any()){
-				holder.run(EventType.JUNC_POLL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.BACKWARD);
+				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.BACKWARD);
 			}
 		}
 		//

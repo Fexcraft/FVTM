@@ -6,7 +6,6 @@ package net.fexcraft.mod.fvtm.sys.rail.cmd;
 public enum JECType {
 	
 	SIGNAL_WAIT(true, 20),//check if signal changed once per second
-	REVERSE(true, 0),//apply instantly, remove command afterwards
 	STOP(true, 0),//apply instantly (decrease throttle to 0), remove command afterwards
 	WAIT(true, 20),//check every second if time passed
 	ADJUST_SPEED(true, 1),//apply instantly, remove command afterwards
@@ -28,7 +27,6 @@ public enum JECType {
 		switch(this){
 			case SET_SIGNAL: return CMD_SetSignal.class;
 			case SET_STATE: return CMD_SetSwitch.class;
-			case REVERSE: return CMD_ChangeDirection.class;
 			case SIGNAL_WAIT: return CMD_SignalWait.class;
 			default: return null;
 		}

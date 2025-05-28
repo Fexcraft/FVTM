@@ -7,7 +7,6 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
-import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
@@ -39,8 +38,6 @@ public class Junction implements SysObj {
 	//
 	public EventHolder holder = new EventHolder(this);
 	public ArrayList<V3I> entities = new ArrayList<>();
-	private ArrayList<JEC> fortrains = new ArrayList<>();
-	private ArrayList<JEC> forswitch = new ArrayList<>();
 	//
 	protected AABB frustumbb;
 	//client side
@@ -109,20 +106,6 @@ public class Junction implements SysObj {
 			sigtype1 = SignalType.parse(compound.getString("SignalType1"));
 		}
 		station = compound.has("Station") ? compound.getString("Station") : null;
-		if(compound.has("JunctionCommands")){
-			forswitch.clear();
-			compound.getList("JunctionCommands").forEach(tag -> {
-				JEC cmd = JEC.read(tag);
-				if(cmd != null) forswitch.add(cmd);
-			});
-		}
-		if(compound.has("EntityCommands")){
-			forswitch.clear();
-			compound.getList("EntityCommands").forEach(tag -> {
-				JEC cmd = JEC.read(tag);
-				if(cmd != null) fortrains.add(cmd);
-			});
-		}
 		sigstate0 = !sigtype0.none() && compound.getBoolean("Signal0");
 		sigstate1 = !sigtype1.none() && compound.getBoolean("Signal1");
 		entities.clear();
@@ -158,16 +141,6 @@ public class Junction implements SysObj {
 		if(!sigtype1.none()) compound.set("SignalType1", sigtype1.save());
 		if(tracks.size() > 2) compound.set("Type", type.name());
 		if(station != null) compound.set("Station", station);
-		if(!forswitch.isEmpty()){
-			TagLW list = TagLW.create();
-			for(JEC cmd : forswitch) list.add(cmd.write(null));
-			compound.set("JunctionCommands", list);
-		}
-		if(!fortrains.isEmpty()){
-			TagLW list = TagLW.create();
-			for(JEC cmd : fortrains) list.add(cmd.write(null));
-			compound.set("EntityCommands", list);
-		}
 		if(!sigtype0.none()) compound.set("Signal0", sigstate0);
 		if(!sigtype1.none()) compound.set("Signal1", sigstate1);
 		if(!entities.isEmpty()){

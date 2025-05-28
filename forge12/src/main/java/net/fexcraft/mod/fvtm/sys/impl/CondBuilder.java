@@ -1,19 +1,11 @@
 package net.fexcraft.mod.fvtm.sys.impl;
 
-import java.util.ArrayList;
 import java.util.function.Function;
 
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
-import net.fexcraft.mod.fvtm.event.ConditionEvent;
-import net.fexcraft.mod.fvtm.sys.condition.CondBuilderRoot;
-import net.fexcraft.mod.fvtm.sys.condition.Condition;
-import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
-import net.fexcraft.mod.fvtm.sys.condition.Conditional;
+import net.fexcraft.mod.fvtm.sys.condition.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
 
@@ -22,57 +14,51 @@ import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
  */
 public class CondBuilder {
 
-	public static Function<Condition, Conditional> run(){
-		Function<Condition, Conditional> con = CondBuilderRoot.run();
+	public static Function<CondKey, Conditional> run(){
+		Function<CondKey, Conditional> con = CondBuilderRoot.run();
 		if(con != null) return con;
-		return (cond) -> {
-			switch(cond.type){
+		return (key) -> {
+			switch(key.type){
 				case WORLDTIME:{
-					int value = Integer.parseInt(cond.condi);
-					switch(cond.mode){
+					switch(key.mode){
 						case EQUAL:{
-							return data -> {
+							return (cd, data) -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
-								return world == null ? false : world.getWorldTime() == value;
+								return world == null ? false : world.getWorldTime() == cd.value.integer_value();
 							};
 						}
 						case NEQUAL:{
-							return data -> {
+							return (cd, data) -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
-								return world == null ? false : world.getWorldTime() != value;
+								return world == null ? false : world.getWorldTime() != cd.value.integer_value();
 							};
 						}
 						case LEQUAL:{
-							return data -> {
+							return (cd, data) -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
-								return world == null ? false : world.getWorldTime() <= value;
+								return world == null ? false : world.getWorldTime() <= cd.value.integer_value();
 							};
 						}
 						case GEQUAL:{
-							return data -> {
+							return (cd, data) -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
-								return world == null ? false : world.getWorldTime() >= value;
+								return world == null ? false : world.getWorldTime() >= cd.value.integer_value();
 							};
 						}
 						case LESS:{
-							return data -> {
+							return (cd, data) -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
-								return world == null ? false : world.getWorldTime() < value;
+								return world == null ? false : world.getWorldTime() < cd.value.integer_value();
 							};
 						}
 						case GREATER:{
-							return data -> {
+							return (cd, data) -> {
 								World world = data.entity == null ? data.tile == null ? null : ((TileEntity)data.tile).getWorld() : ((Entity)data.entity).world;
-								return world == null ? false : world.getWorldTime() > value;
+								return world == null ? false : world.getWorldTime() > cd.value.integer_value();
 							};
 						}
 					}
 					break;
-				}
-				case CUSTOM:{
-					ConditionEvent.ConditionalCreate event = new ConditionEvent.ConditionalCreate(cond);
-					MinecraftForge.EVENT_BUS.post(event);
-					return event.getConditional();
 				}
 			}
 			return COND_FALSE;

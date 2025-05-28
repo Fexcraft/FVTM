@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
+import net.fexcraft.mod.fvtm.data.root.Soundable;
+import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -26,6 +28,10 @@ public class EventData {
 		rootholder = root;
 		holder = hol;
 		return this;
+	}
+
+	public SoundHolder sounds(){
+		return (SoundHolder)holder;
 	}
 
 }

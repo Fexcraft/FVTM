@@ -1,0 +1,141 @@
+{
+	"_info_": "Rail Junction Events UI",
+	"background": true,
+	"size": [ 248, 116 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/rail_junction_events.png",
+			"size": [ 248, 116 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"info", "t_prev", "t_next", "copy",
+				"add", "e_prev", "e_next", "rem",
+				"clear_cond", "clear_act", "clear_arg",
+				"save"
+			],
+			"texts": [
+				"title", "entry", "cond", "act", "arg"
+			],
+			"fields": [
+				"cond", "act", "arg"
+			]
+		}
+	},
+	"buttons": {
+		"info": {
+			"pos": [ 190, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.info"
+		},
+		"copy": {
+			"pos": [ 229, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.copy"
+		},
+		"t_prev": {
+			"pos": [ 203, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.type_prev"
+		},
+		"t_next": {
+			"pos": [ 216, 7 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.type_next"
+		},
+		"add": {
+			"pos": [ 190, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.add"
+		},
+		"rem": {
+			"pos": [ 229, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.rem"
+		},
+		"e_prev": {
+			"pos": [ 203, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.entry_prev"
+		},
+		"e_next": {
+			"pos": [ 216, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.entry_next"
+		},
+		"clear_cond": {
+			"pos": [ 234, 45 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.clear_cond"
+		},
+		"clear_act": {
+			"pos": [ 234, 69 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.clear_act"
+		},
+		"clear_arg": {
+			"pos": [ 221, 93 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.clear_arg"
+		},
+		"save": {
+			"pos": [ 229, 93 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.save"
+		}
+	},
+	"texts": {
+		"title": {
+			"pos": [ 9, 9 ],
+			"size": [ 179, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"entry": {
+			"pos": [ 9, 23 ],
+			"size": [ 179, 8 ],
+			"autoscale": true,
+			"color": "545454"
+		},
+		"cond": {
+			"pos": [ 9, 36 ],
+			"size": [ 230, 8 ],
+			"autoscale": true,
+			"color": "545454",
+			"value": "ui.fvtm.rail_junction_events.condition",
+			"translate": true
+		},
+		"act": {
+			"pos": [ 9, 60 ],
+			"size": [ 230, 8 ],
+			"autoscale": true,
+			"color": "545454",
+			"value": "ui.fvtm.rail_junction_events.action",
+			"translate": true
+		},
+		"arg": {
+			"pos": [ 9, 84 ],
+			"size": [ 230, 8 ],
+			"autoscale": true,
+			"color": "545454",
+			"value": "ui.fvtm.rail_junction_events.arguments",
+			"translate": true
+		}
+	},
+	"fields": {
+		"cond": {
+			"size": [ 226, 12 ],
+			"pos": [ 7, 45 ],
+			"background": true
+		},
+		"act": {
+			"size": [ 226, 12 ],
+			"pos": [ 7, 69 ],
+			"background": true
+		},
+		"arg": {
+			"size": [ 213, 12 ],
+			"pos": [ 7, 93 ],
+			"background": true
+		}
+	}
+}

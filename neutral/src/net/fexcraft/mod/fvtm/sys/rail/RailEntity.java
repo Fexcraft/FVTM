@@ -398,8 +398,9 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private TRO getTrack(Track track, double passed, boolean apply, boolean signal){
+		Junction junc;
 		while(passed > track.length){
-			Junction junc = region.get(track.end.pos);
+			junc = region.get(track.end.pos);
 			if(junc == null){
 				com.stop(track, track.length);
 				return new TRO(track, track.length);
@@ -423,7 +424,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		while(passed < 0){
-			Junction junc = region.get(track.start.pos);
+			junc = region.get(track.start.pos);
 			if(junc == null){
 				com.stop(track, 0);
 				return new TRO(track, 0);

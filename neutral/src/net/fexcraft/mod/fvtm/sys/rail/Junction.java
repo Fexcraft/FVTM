@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.sys.event.EventHolder;
+import net.fexcraft.mod.fvtm.sys.event.EventType;
 import net.fexcraft.mod.fvtm.sys.rail.cmd.JEC;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
@@ -34,6 +37,7 @@ public class Junction implements SysObj {
 	public JuncType type;
 	public String station;
 	//
+	public EventHolder holder = new EventHolder(this);
 	public ArrayList<V3I> entities = new ArrayList<>();
 	private ArrayList<JEC> fortrains = new ArrayList<>();
 	private ArrayList<JEC> forswitch = new ArrayList<>();
@@ -266,7 +270,7 @@ public class Junction implements SysObj {
 		if(entity != null && fortrains.size() > 0){
 			Track track0 = getNext0(entity, track, applystate);
 			for(JEC cmd : fortrains){
-				if(cmd.isTarget(entity)) entity.commands.add(cmd.copy());
+				//TODO if(cmd.isTarget(entity)) entity.commands.add(cmd.copy());
 			}
 			return track0;
 
@@ -408,7 +412,17 @@ public class Junction implements SysObj {
 
 	public void onUpdate(){
 		if(this.isDecorational()) return;
-		pollSignal(null);
+		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
+		if(sigtype1.auto()){
+			sigstate1 = tracks.get(0).unit.section().isFree((Compound)null);
+		}
+		if(sigtype0.auto()){
+			sigstate0 = tracks.get(1).unit.section().isFree((Compound)null);
+		}
+		if(oldsig0 != sigstate0 || oldsig1 != sigstate1){
+			root.updateClient("junction_signal_state", vecpos.pos);
+			updateLinkedTileEntities(true);
+		}
 		/*if(checktimer == 0){
 			// junction switch entities been updated here,
 			// right now there's nothing to update here though
@@ -421,14 +435,24 @@ public class Junction implements SysObj {
 		return tracks.size() == 0 || tracks.get(0).gauge.getWidth() < 0;
 	}
 
-	public void pollSignal(RailEntity ent){
+	public void pollSignal(RailEntity ent, PathKey key){
 		if(sigtype0.none() && sigtype1.none()) return;
 		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
-		if(sigtype0.auto()){
-			sigstate0 = tracks.get(1).unit.section().isFree(ent);
+		if(eqTrack(key, 0)){//forward
+			if(sigtype1.auto()){
+				sigstate1 = tracks.get(0).unit.section().isFree(ent);
+			}
+			else if(sigtype1.any()){
+				holder.run(EventType.JUNC_POLL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.FORWARD);
+			}
 		}
-		if(sigtype1.auto()){
-			sigstate1 = tracks.get(0).unit.section().isFree(ent);
+		else{
+			if(sigtype0.auto()){
+				sigstate0 = tracks.get(1).unit.section().isFree(ent);
+			}
+			else if(sigtype0.any()){
+				holder.run(EventType.JUNC_POLL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.BACKWARD);
+			}
 		}
 		//
 		if(oldsig0 != sigstate0 || oldsig1 != sigstate1){

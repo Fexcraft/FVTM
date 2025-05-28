@@ -10,7 +10,7 @@
 			"buttons": [
 				"info", "copy",
 				"type_0", "type_1", "type_2", "type_3", "type_4",
-				"section", "section_edit",
+				"section", "section_edit", "events",
 				"signal", "signal_edit", "signal_remove",
 				"switch00", "switch01", "switch10", "switch11",
 				"switch0", "switch1",
@@ -61,17 +61,22 @@
 			"tooltip": "ui.fvtm.rail_junction.type_4"
 		},
 		"section": {
-			"pos": [ 179, 24 ],
-			"size": [ 16, 12 ],
+			"pos": [ 170, 24 ],
+			"size": [ 16, 12 ]
 		},
 		"section_edit": {
-			"pos": [ 197, 24 ],
+			"pos": [ 188, 24 ],
 			"size": [ 7, 12 ],
 			"tooltip": "ui.fvtm.rail_junction.section_edit"
 		},
+		"events": {
+			"pos": [ 200, 24 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction.events"
+		},
 		"signal": {
 			"pos": [ 212, 24 ],
-			"size": [ 7, 12 ],
+			"size": [ 7, 12 ]
 		},
 		"signal_edit": {
 			"pos": [ 222, 24 ],

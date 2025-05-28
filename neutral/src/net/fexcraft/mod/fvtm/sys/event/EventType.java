@@ -16,13 +16,11 @@ public class EventType {
 	public static EventType ATTRIBUTE_UPDATE = new EventType("attr_update");
 	public static EventType PART_INSTALL = new EventType("part_install");
 	public static EventType PART_UNINSTALL = new EventType("part_deinstall");
-	public static EventType JUNC_ENTER = new EventType("junction_enter");
-	public static EventType JUNC_POLL = new EventType("junction_poll");
-	public static EventType JUNC_EXIT = new EventType("junction_exit");
+	public static EventType JUNC_SWITCH = new EventType("rail_poll_switch");
+	public static EventType JUNC_SIGNAL = new EventType("rail_poll_signal");
 	static{
-		JUNCTION_EVENTS.add(JUNC_ENTER);
-		JUNCTION_EVENTS.add(JUNC_POLL);
-		JUNCTION_EVENTS.add(JUNC_EXIT);
+		JUNCTION_EVENTS.add(JUNC_SWITCH);
+		JUNCTION_EVENTS.add(JUNC_SIGNAL);
 	}
 
 	public final String key;

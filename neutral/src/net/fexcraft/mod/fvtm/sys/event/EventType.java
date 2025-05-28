@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -8,11 +10,20 @@ import java.util.LinkedHashMap;
 public class EventType {
 
 	public static LinkedHashMap<String, EventType> TYPES = new LinkedHashMap<>();
+	public static List<EventType> JUNCTION_EVENTS = new ArrayList<>();
 	public static EventType VEHICLE_SPAWN = new EventType("vehicle_spawn");
 	public static EventType VEHICLE_DESPAWN = new EventType("vehicle_despawn");
 	public static EventType ATTRIBUTE_UPDATE = new EventType("attr_update");
 	public static EventType PART_INSTALL = new EventType("part_install");
 	public static EventType PART_UNINSTALL = new EventType("part_deinstall");
+	public static EventType JUNC_ENTER = new EventType("junction_enter");
+	public static EventType JUNC_POLL = new EventType("junction_poll");
+	public static EventType JUNC_EXIT = new EventType("junction_exit");
+	static{
+		JUNCTION_EVENTS.add(JUNC_ENTER);
+		JUNCTION_EVENTS.add(JUNC_POLL);
+		JUNCTION_EVENTS.add(JUNC_EXIT);
+	}
 
 	public final String key;
 

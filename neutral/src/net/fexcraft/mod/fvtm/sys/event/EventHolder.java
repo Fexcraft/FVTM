@@ -16,12 +16,10 @@ public class EventHolder {
 
 	public HashMap<EventType, ArrayList<EventListener>> listeners = new LinkedHashMap<>();
 	public HashMap<String, EventHolder> subholders = new LinkedHashMap<>();
-	public SoundHolder sounds;
 	public Object root;
 
 	public EventHolder(Object root){
 		this.root = root;
-		sounds = (SoundHolder)root;
 	}
 
 	public void integrate(EventHolder holder, String origin){

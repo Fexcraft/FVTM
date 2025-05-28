@@ -61,7 +61,7 @@ public class EventActions {
 		data.vehent.stopSound(lis.args[0]);
 	});
 	//
-	public static EventAction RAIL_REVERSE = new EventAction("train_reverse").set((data, lis, args) -> {
+	public static EventAction RAIL_REVERSE = new EventAction("rail_reverse").set((data, lis, args) -> {
 		data.vehent.railent.setForward(null, !data.vehent.railent.isHeadingForward());
 	});
 

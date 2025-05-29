@@ -98,7 +98,14 @@ public class RailJuncEvents extends UserInterface {
 				break;
 			}
 			case "save":{
-
+				TagCW com = TagCW.create();
+				com.set("task", id);
+				com.set("type", EventType.JUNCTION_EVENTS.get(type).key);
+				com.set("sel", sel);
+				com.set("cond", fields.get("cond").text());
+				com.set("act", fields.get("act").text());
+				com.set("arg", fields.get("arg").text());
+				ContainerInterface.SEND_TO_SERVER.accept(com);
 				break;
 			}
 		}

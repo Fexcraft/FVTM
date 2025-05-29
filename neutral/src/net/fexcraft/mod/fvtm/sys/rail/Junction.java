@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
+import net.fexcraft.mod.fvtm.sys.event.EventListener;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -108,6 +110,25 @@ public class Junction implements SysObj {
 		station = compound.has("Station") ? compound.getString("Station") : null;
 		sigstate0 = !sigtype0.none() && compound.getBoolean("Signal0");
 		sigstate1 = !sigtype1.none() && compound.getBoolean("Signal1");
+		holder.listeners.clear();
+		for(EventType type : EventType.JUNCTION_EVENTS){
+			if(!compound.has("Ev_" + type.key)) continue;
+			TagLW list = compound.getList("Ev_" + type.key);
+			if(list.size() > 0){
+				holder.listeners.put(type, new ArrayList<>());
+			}
+			for(TagCW lt : list){
+				String[] arg = lt.has("arg") ? new String[lt.getList("arg").size()] : new String[0];
+				if(arg.length > 0){
+					TagLW ltl = lt.getList("arg");
+					for(int i = 0; i < ltl.size(); i++){
+						arg[0] = ltl.getString(i);
+					}
+				}
+				holder.listeners.get(type).add(new EventListener(lt.getString("key"), lt.getString("cond"), lt.getString("act"), arg));
+			}
+			FvtmLogger.marker(list.direct());
+		}
 		entities.clear();
 		if(compound.has("LinkedBlocks")){
 			TagLW list = compound.getList("LinkedBlocks").local();
@@ -115,11 +136,6 @@ public class Junction implements SysObj {
 				entities.add(new V3I(list.getList(i)));
 			}
 		}
-	}
-
-	@Override
-	public void update(){
-
 	}
 
 	@Override
@@ -143,6 +159,26 @@ public class Junction implements SysObj {
 		if(station != null) compound.set("Station", station);
 		if(!sigtype0.none()) compound.set("Signal0", sigstate0);
 		if(!sigtype1.none()) compound.set("Signal1", sigstate1);
+		for(EventType type : EventType.JUNCTION_EVENTS){
+			if(!holder.listeners.containsKey(type)) continue;
+			TagLW list = TagLW.create();
+			for(EventListener lis : holder.listeners.get(type)){
+				TagCW lt = TagCW.create();
+				lt.set("key", lis.type.key);
+				lt.set("cond", lis.cond.key.toString());
+				lt.set("act", lis.action.key);
+				if(lis.args.length > 0){
+					TagLW ltl = TagLW.create();
+					for(String arg : lis.args){
+						ltl.add(arg);
+					}
+					lt.set("arg", ltl);
+				}
+				list.add(lt);
+			}
+			if(!list.empty()) compound.set("Ev_" + type.key, list);
+			FvtmLogger.marker(list.direct());
+		}
 		if(!entities.isEmpty()){
 			TagLW list = TagLW.create();
 			for(V3I pos : entities){
@@ -371,7 +407,8 @@ public class Junction implements SysObj {
 
 	//private byte checktimer = 0;
 
-	public void onUpdate(){
+	@Override
+	public void update(){
 		if(this.isDecorational()) return;
 		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
 		if(sigtype1.auto()){

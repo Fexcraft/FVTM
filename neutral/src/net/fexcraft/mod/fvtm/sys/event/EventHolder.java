@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
@@ -68,6 +69,10 @@ public class EventHolder {
 				}
 			}
 		}
+	}
+
+	public Junction junction(){
+		return (Junction)root;
 	}
 
 }

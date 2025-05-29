@@ -336,7 +336,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			for(RailEntity ent : reg.entities.values()) ent.onUpdate();
 			if(reg.timer >= 20){
 				reg.timer = 0;
-				for(Junction junction : reg.getObjects().values()) junction.onUpdate();
+				for(Junction junction : reg.getObjects().values()) junction.update();
 				for(RailEntity ent : reg.entities.values()) ent.checkIfShouldHaveEntity();
 			}
 			reg.timer++;

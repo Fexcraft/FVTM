@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.ui.rail;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
+import net.fexcraft.mod.fvtm.sys.event.EventAction;
 import net.fexcraft.mod.fvtm.sys.event.EventListener;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -67,8 +69,19 @@ public class RailJuncEventsCon extends ContainerInterface {
 				break;
 			}
 			case "save":{
-				//
-				junc.updateClient();
+				EventType type = EventType.parse(com.getString("type"));
+				if(!EventType.JUNCTION_EVENTS.contains(type)) return;
+				if(junc.holder.listeners.containsKey(type)){
+					int idx = com.getInteger("sel");
+					if(idx >= 0 && idx < junc.holder.listeners.get(type).size()){
+						EventListener lis = junc.holder.listeners.get(type).get(idx);
+						lis.cond = ConditionRegistry.parse(com.getString("cond"));
+						lis.action = EventAction.parse(com.getString("act"));
+						lis.args = new String[]{ com.getString("arg") };
+						lis.cond.link();
+						junc.updateClient();
+					}
+				}
 				break;
 			}
 		}

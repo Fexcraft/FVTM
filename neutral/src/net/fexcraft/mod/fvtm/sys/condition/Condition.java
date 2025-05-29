@@ -34,4 +34,9 @@ public class Condition {
 		return this;
 	}
 
+	@Override
+	public String toString(){
+		return key.type.key + " " + key.target + " " + key.mode.key + " " + value.string_value();
+	}
+
 }

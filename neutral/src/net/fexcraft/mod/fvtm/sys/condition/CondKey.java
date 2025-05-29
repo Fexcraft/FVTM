@@ -27,7 +27,7 @@ public class CondKey {
 
 	@Override
 	public String toString(){
-		return type.key + "-" + mode + "-" + target;
+		return type.key + "-" + mode.key + "-" + target;
 	}
 
 	@Override

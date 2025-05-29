@@ -127,7 +127,6 @@ public class Junction implements SysObj {
 				}
 				holder.listeners.get(type).add(new EventListener(lt.getString("key"), lt.getString("cond"), lt.getString("act"), arg));
 			}
-			FvtmLogger.marker(list.direct());
 		}
 		entities.clear();
 		if(compound.has("LinkedBlocks")){
@@ -177,7 +176,6 @@ public class Junction implements SysObj {
 				list.add(lt);
 			}
 			if(!list.empty()) compound.set("Ev_" + type.key, list);
-			FvtmLogger.marker(list.direct());
 		}
 		if(!entities.isEmpty()){
 			TagLW list = TagLW.create();

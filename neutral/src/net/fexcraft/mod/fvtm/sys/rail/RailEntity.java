@@ -309,12 +309,12 @@ public class RailEntity implements Comparable<RailEntity>{
 		Track track0;
 		//TODO alternative for when a specific path is followed
 		if(junction != null){
-			track0 = junction.getNext(null, track.getId(), false);
+			track0 = junction.getNext(null, track.getId(), false, false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		}
 		junction = region.get(track.end.pos);
 		if(junction != null){
-			track0 = junction.getNext(null, track.getOppositeId(), false);
+			track0 = junction.getNext(null, track.getOppositeId(), false, false);
 			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		}
 		return railentlist;
@@ -411,7 +411,7 @@ public class RailEntity implements Comparable<RailEntity>{
 				}
 				return new TRO(track, track.length);
 			}
-			Track newtrack = junc.getNext(this, track.getOppositeId(), apply);
+			Track newtrack = junc.getNext(this, track.getOppositeId(), apply, signal);
 			if(newtrack != null){
 				passed -= track.length;
 				track = newtrack;
@@ -435,7 +435,7 @@ public class RailEntity implements Comparable<RailEntity>{
 				}
 				return new TRO(track, 0);
 			}
-			Track newtrack = junc.getNext(this, track.getId(), apply);
+			Track newtrack = junc.getNext(this, track.getId(), apply, signal);
 			if(newtrack != null){
 				passed += newtrack.length;
 				track = newtrack.createOppositeCopy();

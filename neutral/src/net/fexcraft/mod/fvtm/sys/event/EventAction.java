@@ -39,8 +39,8 @@ public class EventAction {
 		return EventActions.NONE;
 	}
 
-	public void run(EventData data, EventListener lis, Object[] args){
-		consumer.accept(data, lis, args);
+	public void run(EventData data, EventListener lis, Object[] objs){
+		consumer.accept(data, lis, objs);
 	}
 
 }

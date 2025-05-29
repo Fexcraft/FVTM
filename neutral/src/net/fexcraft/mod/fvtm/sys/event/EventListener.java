@@ -44,20 +44,29 @@ public class EventListener {
 		else args = new String[0];
 	}
 
-	public EventListener(String[] strs){
-		type = EventType.parse(strs[0]);
-		cond = ConditionRegistry.parse(strs[1]);
-		action = EventAction.parse(strs[2]);
-		if(strs.length > 3){
-			args = Arrays.copyOfRange(strs, 3, strs.length);
-		}
-		else args = new String[0];
+	public EventListener(String typ, String con, String act, String... strs){
+		type = EventType.parse(typ);
+		cond = ConditionRegistry.parse(con);
+		cond.link();
+		action = EventAction.parse(act);
+		args = strs;
 	}
 
 	public static EventListener parse(JsonValue val){
 		if(val.isArray()) return new EventListener(val.asArray());
 		else if(val.isMap()) return new EventListener(val.asMap());
-		else return new EventListener(val.string_value().split(" "));
+		else{
+			String[] args = val.string_value().split(" ");
+			return new EventListener(args[0], args[1], args[2], args.length > 3 ? Arrays.copyOfRange(args, 3, args.length) : new String[0]);
+		}
 	}
 
+	public String argString(){
+		StringBuilder str = new StringBuilder();
+		for(String arg : args){
+			if(str.length() > 0) str.append(" " + arg);
+			else str.append(arg);
+		}
+		return str.toString();
+	}
 }

@@ -1,18 +1,13 @@
 package net.fexcraft.mod.fvtm.ui;
 
-import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
-import net.fexcraft.mod.fvtm.ui.rail.RailJunctionContainer;
-import net.fexcraft.mod.fvtm.ui.rail.RailSignal;
-import net.fexcraft.mod.fvtm.ui.rail.RailSignalContainer;
+import net.fexcraft.mod.fvtm.ui.rail.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
-import net.fexcraft.mod.uni.ui.UserInterface;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -98,8 +93,8 @@ public class UIKeys {
 		UniReg.registerMenu(RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);
 		UniReg.registerUI(RAIL_SIGNAL, RailSignal.class);
 		UniReg.registerMenu(RAIL_SIGNAL, "fvtm:uis/rail_signal", RailSignalContainer.class);
-		UniReg.registerUI(RAIL_JUNC_EVENTS, UserInterface.class);
-		UniReg.registerMenu(RAIL_JUNC_EVENTS, "fvtm:uis/rail_junction_events", ContainerInterface.class);
+		UniReg.registerUI(RAIL_JUNC_EVENTS, RailJuncEvents.class);
+		UniReg.registerMenu(RAIL_JUNC_EVENTS, "fvtm:uis/rail_junction_events", RailJuncEventsCon.class);
 		UniReg.registerUI(ROAD_TOOL, RoadToolUI.class);
 		UniReg.registerMenu(ROAD_TOOL, "fvtm:uis/road_tool", RoadToolCon.class);
 		UniReg.registerUI(ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);

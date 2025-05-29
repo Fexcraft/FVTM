@@ -18,15 +18,21 @@ public class ConditionRegistry {
 	public static final Conditional COND_FALSE = (con, data) -> false;
 	public static final Conditional COND_TRUE = (con, data) -> true;
 	static {
-		CondKey key = new CondKey(CondType.CUSTOM, CondMode.EQUAL, "");
+		CondKey key = new CondKey(CondType.CUSTOM, CondMode.BOOL_EQUAL, "true");
 		KEY_REG.put("fvtm:true", key);
 		KEY_REG.put("true", key);
-		CONDITIONS.put("fvtm:true", new Condition(key, new JsonValue(false)));
+		Condition cond = new Condition(key, new JsonValue(true));
+		CONDITIONS.put(key.toString(), cond);
+		CONDITIONS.put("fvtm:true", cond);
+		CONDITIONS.put("true", cond);
 		CONDITIONALS.put(key, COND_TRUE);
-		key = new CondKey(CondType.CUSTOM, CondMode.EQUAL, "");
+		key = new CondKey(CondType.CUSTOM, CondMode.BOOL_NEQUAL, "false");
 		KEY_REG.put("fvtm:false", key);
 		KEY_REG.put("false", key);
-		CONDITIONS.put("fvtm:false", new Condition(key, new JsonValue(false)));
+		cond = new Condition(key, new JsonValue(false));
+		CONDITIONS.put(key.toString(), cond);
+		CONDITIONS.put("fvtm:false", cond);
+		CONDITIONS.put("false", cond);
 		CONDITIONALS.put(key, COND_FALSE);
 	}
 	

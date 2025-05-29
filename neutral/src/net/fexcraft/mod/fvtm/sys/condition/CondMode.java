@@ -27,7 +27,7 @@ public enum CondMode {
 
 	public static CondMode parse(String mode){
 		for(CondMode cm : values()){
-			if(cm.key.equals(mode)) return cm;
+			if(cm.key.equals(mode) || cm.name().equals(mode)) return cm;
 		}
 		return EQUAL;
 	}

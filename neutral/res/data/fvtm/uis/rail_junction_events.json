@@ -88,13 +88,13 @@
 			"pos": [ 9, 9 ],
 			"size": [ 179, 8 ],
 			"autoscale": true,
-			"color": "545454"
+			"#color": "545454"
 		},
 		"entry": {
 			"pos": [ 9, 23 ],
 			"size": [ 179, 8 ],
 			"autoscale": true,
-			"color": "545454"
+			"#color": "545454"
 		},
 		"cond": {
 			"pos": [ 9, 36 ],
@@ -125,17 +125,20 @@
 		"cond": {
 			"size": [ 226, 12 ],
 			"pos": [ 7, 45 ],
-			"background": true
+			"background": true,
+			"max-length": 512
 		},
 		"act": {
 			"size": [ 226, 12 ],
 			"pos": [ 7, 69 ],
-			"background": true
+			"background": true,
+			"max-length": 64
 		},
 		"arg": {
 			"size": [ 213, 12 ],
 			"pos": [ 7, 93 ],
-			"background": true
+			"background": true,
+			"max-length": 1024
 		}
 	}
 }

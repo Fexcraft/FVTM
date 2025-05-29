@@ -273,11 +273,11 @@ public class Junction implements SysObj {
 		this.updateClient();
 	}
 
-	public Track getNext(RailEntity entity, PathKey track, boolean applystate){
+	public Track getNext(RailEntity entity, PathKey track, boolean applystate, boolean event){
 		if(type == null)
 			type = size() <= 2 ? JuncType.STRAIGHT : size() == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
-		if(entity != null && applystate){
-			holder.run(EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
+		if(entity != null && event){
+			holder.run(type == JuncType.STRAIGHT ? EventType.JUNC_PASS : EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
 		}
 		switch(type){
 			case STRAIGHT:{

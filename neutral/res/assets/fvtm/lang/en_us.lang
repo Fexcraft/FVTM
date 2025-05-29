@@ -248,6 +248,9 @@ ui.fvtm.rail_junction_events.condition=Event Listener Condition
 ui.fvtm.rail_junction_events.action=Event Listener Action
 ui.fvtm.rail_junction_events.arguments=Event Listener Arguments
 ui.fvtm.rail_junction_events.save=Save changes to Event Listener
+ui.fvtm.rail_junction_events.rail_poll_signal=Signal Poll Event (%s)
+ui.fvtm.rail_junction_events.rail_poll_switch=Switch Poll Event (%s)
+ui.fvtm.rail_junction_events.selected=Event Listener %s of %s
 
 ui.fvtm.decoration_editor.position=Position Offset
 ui.fvtm.decoration_editor.rotation=Rotation (Degrees)

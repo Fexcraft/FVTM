@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
 /**
@@ -71,8 +72,27 @@ public class EventActions {
 		data.vehent.stopSound(lis.args[0]);
 	});
 	//
-	public static EventAction RAIL_REVERSE = new EventAction("rail_reverse").set((data, lis, objs) -> {
-		data.vehent.railent.setForward(null, !data.vehent.railent.isHeadingForward());
-	});
+	static{
+		new EventAction("rail_reverse").set((data, lis, objs) -> {
+			data.vehent.railent.setForward(null, !data.vehent.railent.isHeadingForward());
+		});
+		new EventAction("rail_fork2_switch").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+		});
+		new EventAction("rail_fork3_switch").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[1]);
+		});
+		new EventAction("rail_double_switch").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[1]);
+		});
+		new EventAction("rail_double_switch0").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+		});
+		new EventAction("rail_double_switch1").set((data, lis, objs) -> {
+			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[0]);
+		});
+	}
 
 }

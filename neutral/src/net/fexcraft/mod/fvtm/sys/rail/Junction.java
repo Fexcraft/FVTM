@@ -583,7 +583,7 @@ public class Junction implements SysObj {
 		}
 		boolean has = sigtype0.any() || sigtype1.any();
 		if(had && !has) tracks.get(0).unit.section().fuseAtTrack(tracks.get(0));
-		else if(!had && has) tracks.get(0).unit.section().splitAtTrack(tracks.get(0));
+		else if(!had && has) tracks.get(0).unit.section().splitAtSignal(this);
 		root.updateClient("junction_signal", vecpos.pos);
 	}
 

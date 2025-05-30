@@ -93,7 +93,7 @@ public class NRailVehicle extends RootVehicle {
 		while(passed > track.length){
 			Junction junc = sys.getJunction(track.end.pos);
 			if(junc == null) return new TRO(track, track.length);
-			Track newtrack = junc.getNext(null, track.getOppositeId(), false);
+			Track newtrack = junc.getNext(null, track.getOppositeId(), false, false);
 			if(newtrack != null){
 				passed -= track.length;
 				track = newtrack;
@@ -103,7 +103,7 @@ public class NRailVehicle extends RootVehicle {
 		while(passed < 0){
 			Junction junc = sys.getJunction(track.start.pos);
 			if(junc == null) return new TRO(track, 0);
-			Track newtrack = junc.getNext(null, track.getId(), false);
+			Track newtrack = junc.getNext(null, track.getId(), false, false);
 			if(newtrack != null){
 				passed += newtrack.length;
 				track = newtrack.createOppositeCopy();

@@ -102,7 +102,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     				current = current.createOppositeCopy(); Print.debug(this, "No junction, returning.");
     			}
     			else{
-    				current = junc.getNext(null, current.getId(), false); Print.debug(this, "Junction found, passing on new track.");
+    				current = junc.getNext(null, current.getId(), false, false); Print.debug(this, "Junction found, passing on new track.");
     			}
     			passed = 0;
     		}

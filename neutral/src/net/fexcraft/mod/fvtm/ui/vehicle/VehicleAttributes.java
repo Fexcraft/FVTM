@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm.ui.vehicle;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -28,7 +30,7 @@ public class VehicleAttributes extends UserInterface {
 
 	public VehicleAttributes(JsonMap map, ContainerInterface con) throws Exception{
 		super(map, con);
-		veh = (VehicleInstance)container.get("vehicle");
+		veh = ((Passenger)con.player.entity).getFvtmWorld().getVehicle(con.pos.x);
 		seat = veh.getSeatOf(con.player.entity.direct());
 		veh.data.getAttributes().values().forEach(attr -> {
 			if(seat == null){
@@ -172,7 +174,6 @@ public class VehicleAttributes extends UserInterface {
 			case "apply":{
 				Attribute<?> attr = attributes.get(sel);
 				if(!attr.editable && !attr.hasPerm()) return true;
-				if(!attr.valuetype.isNumber()) return true;
 				UIField field = fields.get("editor");
 				TagCW com = TagCW.create();
 				com.set("cargo", "toggle");

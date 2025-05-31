@@ -161,19 +161,20 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		else if(com.isSingular()) move = true;
 		if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
-			TRO tro = getTrack(current, passed + am, false, false);
+			TRO tro = getTrack(current, passed + am, false);
 			am = checkForPushCoupling(tro, am);
 			//
 			if(move){
-				tro = getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : -rrconndis - frbogiedis) + am, true, true);
+				tro = checkPathWithSignals(new TROE(current, passed + (am > 0 ? frconndis - frbogiedis : -rrconndis - frbogiedis), am));
 				if(com.last_stop != null && tro.track != com.last_stop){
 					if(tro.passed > com.last_stop_passed || tro.passed < com.last_stop_passed){
 						com.last_stop = null;
 						com.last_stop_passed = tro.passed;
 					}
 				}
+				am = ((TROE)tro).moved;
 			}
-			tro = getTrack(current, passed + am, true, false);
+			tro = getTrack(current, passed + am, true);
 			last = current;
 			current = tro.track;
 			passed = tro.passed;
@@ -379,7 +380,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public V3D move(double passed, TrainPoint point){
-		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0), false);
+		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0));
 		if(unitson[point.index] == null){
 			(unitson[point.index] = tro.track.unit).update(this, true);
 		}
@@ -391,64 +392,108 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public V3D moveOnly(float passed){
-		TRO tro = getTrack(current, passed, true, false);
+		TRO tro = getTrack(current, passed, true);
 		return tro.track.getVectorPosition(tro.passed, false);
 	}
 
-	private TRO getTrack(Track track, double passed, boolean apply, boolean signal){
+	private TRO getTrack(Track track, double pass, boolean apply){
 		Junction junc;
-		while(passed > track.length){
+		while(pass > track.length){
 			junc = region.get(track.end.pos);
 			if(junc == null){
 				com.stop(track, track.length);
 				return new TRO(track, track.length);
 			}
-			if(signal && junc.hasSignal(track.getOppositeId()) && isActiveEnd()){
-				EntryDirection dir = junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
-				junc.pollSignal(this, dir);
-				if(!junc.getSignalState(track.getOppositeId()) && !isPaused()){
-					wait_at = new WaitingAt(junc, dir);
-					setPaused(true);
-					return new TRO(track, track.length);
-				}
-			}
-			Track newtrack = junc.getNext(this, track.getOppositeId(), apply, signal);
+			Track newtrack = junc.getNext(this, track.getOppositeId(), apply, false);
 			if(newtrack != null){
-				passed -= track.length;
+				pass -= track.length;
 				track = newtrack;
 			}
-			else{
-				if(signal) com.stop(track, track.length);
-				return new TRO(track, track.length);
-			}
+			else return new TRO(track, track.length);
 		}
-		while(passed < 0){
+		while(pass < 0){
 			junc = region.get(track.start.pos);
 			if(junc == null){
 				com.stop(track, 0);
 				return new TRO(track, 0);
 			}
-			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
-				EntryDirection dir = junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
-				junc.pollSignal(this, dir);
-				if(!junc.getSignalState(track.getId()) && !isPaused()){
-					wait_at = new WaitingAt(junc, dir);
-					setPaused(true);
-					return new TRO(track, 0);
-				}
-			}
-			Track newtrack = junc.getNext(this, track.getId(), apply, signal);
+			Track newtrack = junc.getNext(this, track.getId(), apply, false);
 			if(newtrack != null){
-				passed += newtrack.length;
+				pass += newtrack.length;
 				track = newtrack.createOppositeCopy();
 			}
-			else{
-				if(signal) com.stop(track, 0);
-				return new TRO(track, 0);
-			}
-			
+			else return new TRO(track, 0);
 		}
-		return new TRO(track, passed);
+		return new TRO(track, pass);
+	}
+
+	private TROE checkPathWithSignals(TROE tro){
+		Junction junc;
+		if(tro.passed + tro.moveby > tro.track.length){
+			tro.moved += tro.track.length - tro.passed;
+			junc = region.get(tro.track.end.pos);
+			if(junc == null){
+				com.stop(tro.track, tro.track.length);
+				tro.passed = tro.track.length;
+				return tro;
+			}
+			if(junc.hasSignal(tro.track.getOppositeId()) && isActiveEnd()){
+				EntryDirection dir = junc.eqTrack(tro.track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
+				junc.pollSignal(this, dir);
+				if(!junc.getSignalState(dir) && !isPaused()){
+					wait_at = new WaitingAt(junc, dir);
+					setPaused(true);
+					tro.passed = tro.track.length;
+					return tro;
+				}
+			}
+			Track newtrack = junc.getNext(this, tro.track.getOppositeId(), true, true);
+			if(newtrack != null){
+				tro.moveby -= tro.track.length - tro.passed;
+				tro.passed = 0;
+				tro.track = newtrack;
+				if(tro.moveby > 0) return checkPathWithSignals(tro);
+			}
+			else{
+				com.stop(tro.track, tro.track.length);
+				tro.passed = tro.track.length;
+				return tro;
+			}
+		}
+		if(tro.passed + tro.moveby < 0){
+			tro.moved -= tro.passed;
+			junc = region.get(tro.track.start.pos);
+			if(junc == null){
+				com.stop(tro.track, 0);
+				tro.passed = 0;
+				return tro;
+			}
+			if(junc.hasSignal(tro.track.getId()) && isActiveEnd()){
+				EntryDirection dir = junc.eqTrack(tro.track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
+				junc.pollSignal(this, dir);
+				if(!junc.getSignalState(dir) && !isPaused()){
+					wait_at = new WaitingAt(junc, dir);
+					setPaused(true);
+					tro.passed = 0;
+					return tro;
+				}
+			}
+			Track newtrack = junc.getNext(this, tro.track.getId(), true, true);
+			if(newtrack != null){
+				tro.moveby += tro.passed;
+				tro.passed = newtrack.length;
+				tro.track = newtrack.createOppositeCopy();
+				if(tro.moveby < 0) return checkPathWithSignals(tro);
+			}
+			else{
+				com.stop(tro.track, 0);
+				tro.passed = 0;
+				return tro;
+			}
+		}
+		tro.passed += tro.moveby;
+		tro.moved += tro.moveby;
+		return tro;
 	}
 
 	public void checkIfShouldHaveEntity(){
@@ -736,6 +781,18 @@ public class RailEntity implements Comparable<RailEntity>{
 
 		public Track track;
 		public double passed;
+
+	}
+
+	public static class TROE extends TRO {//track return object extended
+
+		public TROE(Track track, double passed, double moved){
+			super(track, passed);
+			this.moveby = moved;
+		}
+
+		public double moveby;
+		public double moved = 0;
 
 	}
 

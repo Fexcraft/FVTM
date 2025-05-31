@@ -88,6 +88,9 @@ public class AttributeUtil {
 		else if(attr.valuetype.isNumber()){
 			attr.set(attr.valuetype.isInteger() ? com.getInteger("value") : com.getFloat("value"));
 		}
+		else if(attr.valuetype.isString()){
+			attr.set(com.getString("value"));
+		}
 		else{
 			from.send("interact.fvtm.vehicle.attribute.not_supported");
 		}
@@ -103,6 +106,9 @@ public class AttributeUtil {
 		}
 		else if(attr.valuetype.isNumber()){
 			attr.set(attr.valuetype.isInteger() ? com.getInteger("value") : com.getFloat("value"));
+		}
+		else if(attr.valuetype.isString()){
+			attr.set(com.getString("value"));
 		}
 		else{
 			from.send("interact.fvtm.vehicle.attribute.not_supported");

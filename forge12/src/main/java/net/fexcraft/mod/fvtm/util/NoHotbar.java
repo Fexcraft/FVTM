@@ -52,9 +52,9 @@ public class NoHotbar {
 				mc.fontRenderer.drawStringWithShadow("Engine: " + (veh.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 66, 0xffffff);
 			}
 		}
-		if(event.getType() == ElementType.HOTBAR){
+		/*if(event.getType() == ElementType.HOTBAR){
 			if(mc.gameSettings.hideGUI || OVERLAY_ON_BOTTOM) event.setCanceled(true);
-		}
+		}*/
     }
 
 }

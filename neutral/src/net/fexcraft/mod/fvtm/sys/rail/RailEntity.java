@@ -18,7 +18,6 @@ import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.util.SaveUtils;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * First prototype of RailEntity system.
@@ -56,7 +55,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
 	protected Compound com;
-	protected Pair<Junction, EntryDirection> waiting_signal;
+	protected WaitingAt wait_at;
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	private byte ticks;
 	
@@ -128,8 +127,9 @@ public class RailEntity implements Comparable<RailEntity>{
 			return;
 		}
 		checkIfShouldStop();
-		if(waiting_signal != null){
-			if(waiting_signal.getLeft().getSignalState(waiting_signal.getRight())){
+		if(wait_at != null){
+			wait_at.junction.pollSignal(this, wait_at.dir);
+			if(wait_at.junction.getSignalState(wait_at.dir)){
 				setPaused(false);
 			}
 		}
@@ -404,12 +404,13 @@ public class RailEntity implements Comparable<RailEntity>{
 				return new TRO(track, track.length);
 			}
 			if(signal && junc.hasSignal(track.getOppositeId()) && isActiveEnd()){
-				junc.pollSignal(this, track.getOppositeId());
+				EntryDirection dir = junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
+				junc.pollSignal(this, dir);
 				if(!junc.getSignalState(track.getOppositeId()) && !isPaused()){
-					waiting_signal = Pair.of(junc, junc.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
+					wait_at = new WaitingAt(junc, dir);
 					setPaused(true);
+					return new TRO(track, track.length);
 				}
-				return new TRO(track, track.length);
 			}
 			Track newtrack = junc.getNext(this, track.getOppositeId(), apply, signal);
 			if(newtrack != null){
@@ -428,12 +429,13 @@ public class RailEntity implements Comparable<RailEntity>{
 				return new TRO(track, 0);
 			}
 			if(signal && junc.hasSignal(track.getId()) && isActiveEnd()){
-				junc.pollSignal(this, track.getOppositeId());
+				EntryDirection dir = junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
+				junc.pollSignal(this, dir);
 				if(!junc.getSignalState(track.getId()) && !isPaused()){
-					waiting_signal = Pair.of(junc, junc.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
+					wait_at = new WaitingAt(junc, dir);
 					setPaused(true);
+					return new TRO(track, 0);
 				}
-				return new TRO(track, 0);
 			}
 			Track newtrack = junc.getNext(this, track.getId(), apply, signal);
 			if(newtrack != null){
@@ -447,18 +449,6 @@ public class RailEntity implements Comparable<RailEntity>{
 			
 		}
 		return new TRO(track, passed);
-	}
-	
-	public static class TRO {//track return object
-
-		public TRO(Track track, double passed){
-			this.track = track;
-			this.passed = passed;
-		}
-
-		public Track track;
-		public double passed;
-
 	}
 
 	public void checkIfShouldHaveEntity(){
@@ -511,9 +501,9 @@ public class RailEntity implements Comparable<RailEntity>{
 			compound.set("rear_coupler", rear.isFront());
 		}
 		compound.set("rear_auto", rear.autocoupler);
-		if(waiting_signal != null){
-			compound.set("WaitSig", waiting_signal.getLeft().getPos().pos);
-			compound.set("WaitSigDir", waiting_signal.getRight().ordinal());
+		if(wait_at != null){
+			compound.set("WaitSig", wait_at.junction.getPos().pos);
+			compound.set("WaitSigDir", wait_at.dir.ordinal());
 		}
 		compound.set("Compound", com.getUID());
 		compound.set("Singular", com.isSingular());
@@ -541,7 +531,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		//
 		if(compound.has("WaitSig")){
 			try{
-				waiting_signal = Pair.of(region.system.getJunction(compound.getV3I("WaitSid")), EntryDirection.values()[compound.getInteger("WaitSigDir")]);
+				wait_at = new WaitingAt(region.system.getJunction(compound.getV3I("WaitSid")), EntryDirection.values()[compound.getInteger("WaitSigDir")]);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -733,6 +723,32 @@ public class RailEntity implements Comparable<RailEntity>{
 		current = current.createOppositeCopy();
 		passed = current.oppositePassed(passed);
 		updatePosition();
+	}
+
+	//
+
+	public static class TRO {//track return object
+
+		public TRO(Track track, double passed){
+			this.track = track;
+			this.passed = passed;
+		}
+
+		public Track track;
+		public double passed;
+
+	}
+
+	public static class WaitingAt {
+
+		public Junction junction;
+		public EntryDirection dir;
+
+		public WaitingAt(Junction junc, EntryDirection entry){
+			junction = junc;
+			dir = entry;
+		}
+
 	}
 
 }

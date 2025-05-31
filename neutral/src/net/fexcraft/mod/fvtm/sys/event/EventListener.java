@@ -49,7 +49,11 @@ public class EventListener {
 		cond = ConditionRegistry.parse(con);
 		cond.link();
 		action = EventAction.parse(act);
-		args = strs.length == 1 && strs[0].contains(" ") ? strs[0].split(" ") : strs;
+		args = parseArg(strs);
+	}
+
+	public static String[] parseArg(String... args){
+		return args.length == 1 && args[0].contains(" ") ? args[0].split(" ") : args;
 	}
 
 	public static EventListener parse(JsonValue val){

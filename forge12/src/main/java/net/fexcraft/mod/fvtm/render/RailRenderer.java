@@ -178,8 +178,8 @@ public class RailRenderer {
 					}
 					switch(junc.type){
 						case STRAIGHT:
-							if(junc.tracks.size() > 1 && !junc.sigtype0.none()) renderJuncSignal(junc, 0, junc.sigstate0 ? RGB.GREEN : RGB.RED);
-							if(junc.tracks.size() > 1 && !junc.sigtype1.none()) renderJuncSignal(junc, 1, junc.sigstate1 ? RGB.GREEN : RGB.RED);
+							if(junc.tracks.size() > 1 && junc.sigtype0.any()) renderJuncSignal(junc, 0, junc.sigstate0 ? RGB.GREEN : RGB.RED);
+							if(junc.tracks.size() > 1 && junc.sigtype1.any()) renderJuncSignal(junc, 1, junc.sigstate1 ? RGB.GREEN : RGB.RED);
 							break;
 						case FORK_2:
 							renderJuncModel(junc, junc.switch0 ? 1 : 2, JUNC_DIR);

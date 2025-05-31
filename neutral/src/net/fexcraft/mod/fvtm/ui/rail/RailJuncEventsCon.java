@@ -77,7 +77,7 @@ public class RailJuncEventsCon extends ContainerInterface {
 						EventListener lis = junc.holder.listeners.get(type).get(idx);
 						lis.cond = ConditionRegistry.parse(com.getString("cond"));
 						lis.action = EventAction.parse(com.getString("act"));
-						lis.args = new String[]{ com.getString("arg") };
+						lis.args = EventListener.parseArg(com.getString("arg"));
 						lis.cond.link();
 						junc.updateClient();
 					}

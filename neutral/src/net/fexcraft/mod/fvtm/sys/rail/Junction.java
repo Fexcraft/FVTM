@@ -118,13 +118,7 @@ public class Junction implements SysObj {
 				holder.listeners.put(type, new ArrayList<>());
 			}
 			for(TagCW lt : list){
-				String[] arg = lt.has("arg") ? new String[lt.getList("arg").size()] : new String[0];
-				if(arg.length > 0){
-					TagLW ltl = lt.getList("arg");
-					for(int i = 0; i < ltl.size(); i++){
-						arg[0] = ltl.getString(i);
-					}
-				}
+				String[] arg = lt.has("arg") ? new String[]{ lt.getString("arg") } : new String[0];
 				holder.listeners.get(type).add(new EventListener(lt.getString("key"), lt.getString("cond"), lt.getString("act"), arg));
 			}
 		}
@@ -164,15 +158,9 @@ public class Junction implements SysObj {
 			for(EventListener lis : holder.listeners.get(type)){
 				TagCW lt = TagCW.create();
 				lt.set("key", lis.type.key);
-				lt.set("cond", lis.cond.key.toString());
+				lt.set("cond", lis.cond.toString());
 				lt.set("act", lis.action.key);
-				if(lis.args.length > 0){
-					TagLW ltl = TagLW.create();
-					for(String arg : lis.args){
-						ltl.add(arg);
-					}
-					lt.set("arg", ltl);
-				}
+				if(lis.args.length > 0) lt.set("arg", lis.argString());
 				list.add(lt);
 			}
 			if(!list.empty()) compound.set("Ev_" + type.key, list);

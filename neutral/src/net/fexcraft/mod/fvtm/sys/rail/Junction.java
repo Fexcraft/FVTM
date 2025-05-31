@@ -410,10 +410,10 @@ public class Junction implements SysObj {
 		if(this.isDecorational()) return;
 		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
 		if(sigtype1.auto()){
-			sigstate1 = tracks.get(0).unit.section().isFree((Compound)null);
+			sigstate1 = tracks.get(1).unit.section().isFree((Compound)null);
 		}
 		if(sigtype0.auto()){
-			sigstate0 = tracks.get(1).unit.section().isFree((Compound)null);
+			sigstate0 = tracks.get(0).unit.section().isFree((Compound)null);
 		}
 		if(oldsig0 != sigstate0 || oldsig1 != sigstate1){
 			root.updateClient("junction_signal_state", vecpos.pos);
@@ -436,7 +436,7 @@ public class Junction implements SysObj {
 		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
 		if(eqTrack(key, 0)){//forward
 			if(sigtype1.auto()){
-				sigstate1 = tracks.get(0).unit.section().isFree(ent);
+				sigstate1 = tracks.get(1).unit.section().isFree(ent);
 			}
 			else if(sigtype1.any()){
 				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.FORWARD);
@@ -444,7 +444,7 @@ public class Junction implements SysObj {
 		}
 		else{
 			if(sigtype0.auto()){
-				sigstate0 = tracks.get(1).unit.section().isFree(ent);
+				sigstate0 = tracks.get(0).unit.section().isFree(ent);
 			}
 			else if(sigtype0.any()){
 				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.BACKWARD);

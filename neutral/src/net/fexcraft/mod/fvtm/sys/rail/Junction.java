@@ -265,7 +265,7 @@ public class Junction implements SysObj {
 		if(type == null)
 			type = size() <= 2 ? JuncType.STRAIGHT : size() == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
 		if(entity != null && event){
-			holder.run(type == JuncType.STRAIGHT ? EventType.JUNC_PASS : EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
+			holder.run(EventType.JUNC_PASS, entity.vehicle, null, track, getIndex(track));
 		}
 		switch(type){
 			case STRAIGHT:{
@@ -280,7 +280,10 @@ public class Junction implements SysObj {
 				break;
 			}
 			case FORK_2:{
-				if(eqTrack(track, 0)) return tracks.get(switch0 ? 1 : 2);
+				if(eqTrack(track, 0)){
+					if(entity != null && event) holder.run(EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
+					return tracks.get(switch0 ? 1 : 2);
+				}
 				else{
 					if(applystate){
 						boolean bool = eqTrack(track, 1);
@@ -294,7 +297,10 @@ public class Junction implements SysObj {
 				}
 			}
 			case FORK_3:{
-				if(eqTrack(track, 0)) return tracks.get(switch0 ? 1 : switch1 ? 3 : 2);
+				if(eqTrack(track, 0)){
+					if(entity != null && event) holder.run(EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
+					return tracks.get(switch0 ? 1 : switch1 ? 3 : 2);
+				}
 				else{
 					if(applystate){
 						boolean bool0 = eqTrack(track, 1), bool1 = eqTrack(track, 2);
@@ -336,6 +342,7 @@ public class Junction implements SysObj {
 				break;
 			}
 			case DOUBLE:{
+				if(entity != null && event) holder.run(EventType.JUNC_SWITCH, entity.vehicle, null, track, getIndex(track));
 				if(eqTrack(track, 0)){
 					if(applystate && !switch1){
 						switch1 = true;
@@ -419,10 +426,10 @@ public class Junction implements SysObj {
 		return tracks.size() == 0 || tracks.get(0).gauge.getWidth() < 0;
 	}
 
-	public void pollSignal(RailEntity ent, PathKey key){
+	public void pollSignal(RailEntity ent, EntryDirection dir){
 		if(sigtype0.none() && sigtype1.none()) return;
 		boolean oldsig0 = sigstate0, oldsig1 = sigstate1;
-		if(eqTrack(key, 0)){//forward
+		if(dir.isForward()){//forward
 			if(sigtype1.auto()){
 				sigstate1 = tracks.get(1).unit.section().isFree(ent);
 			}

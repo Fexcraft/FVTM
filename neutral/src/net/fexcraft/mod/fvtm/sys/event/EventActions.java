@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
  */
 public class EventActions {
 
-	public static EventAction NONE = new EventAction("none");
+	public static EventAction NONE = new EventAction("none").set((d, l, o) -> {});
 	public static EventAction LOGGER = new EventAction("logger").set((data, lis, objs) ->{
 		String str = lis.argString();
 		str = str.replace("{event}", lis.type.key);

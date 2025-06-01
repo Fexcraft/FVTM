@@ -16,6 +16,7 @@ public enum CondMode {
 	BOOL_EQUAL("b="),
 	BOOL_NEQUAL("b!"),
 	AND("&&"),
+	ANN("&!"),
 	OR("||"),
 	;
 

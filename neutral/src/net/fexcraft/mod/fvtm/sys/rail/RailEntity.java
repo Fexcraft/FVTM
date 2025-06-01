@@ -576,7 +576,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		//
 		if(compound.has("WaitSig")){
 			try{
-				wait_at = new WaitingAt(region.system.getJunction(compound.getV3I("WaitSid")), EntryDirection.values()[compound.getInteger("WaitSigDir")]);
+				wait_at = new WaitingAt(region.system.getJunction(compound.getV3I("WaitSig")), EntryDirection.values()[compound.getInteger("WaitSigDir")]);
 			}
 			catch(Exception e){
 				e.printStackTrace();

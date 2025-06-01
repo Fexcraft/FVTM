@@ -76,6 +76,23 @@ public class EventActions {
 		new EventAction("rail_reverse").set((data, lis, objs) -> {
 			data.vehent.railent.setForward(null, !data.vehent.railent.isHeadingForward());
 		});
+		new EventAction("rail_fork2_bool").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+		});
+		new EventAction("rail_fork3_bool").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[1]);
+		});
+		new EventAction("rail_double_bool").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[1]);
+		});
+		new EventAction("rail_double_bool0").set((data, lis, objs) -> {
+			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+		});
+		new EventAction("rail_double_bool1").set((data, lis, objs) -> {
+			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[0]);
+		});
 		new EventAction("rail_fork2_switch").set((data, lis, objs) -> {
 			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
 		});

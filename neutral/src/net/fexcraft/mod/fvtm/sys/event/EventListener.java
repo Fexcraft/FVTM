@@ -61,7 +61,7 @@ public class EventListener {
 		else if(val.isMap()) return new EventListener(val.asMap());
 		else{
 			String[] args = val.string_value().split(" ");
-			return new EventListener(args[0], args[1], args[2], args.length > 3 ? Arrays.copyOfRange(args, 3, args.length) : new String[0]);
+			return new EventListener(args[0], args[1].replace("-", " "), args[2], args.length > 3 ? Arrays.copyOfRange(args, 3, args.length) : new String[0]);
 		}
 	}
 

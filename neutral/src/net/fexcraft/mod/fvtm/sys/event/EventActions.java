@@ -42,14 +42,14 @@ public class EventActions {
 		Attribute attr = data.vehicle.getAttribute(lis.args[0]);
 		if(attr != null){
 			attr.set(lis.args[1]);
-			if(data.vehent != null) data.vehent.sendUpdate(VehicleInstance.PKT_UPD_VEHICLEDATA);//TODO packet to update only attribute
+			if(data.vehent != null) data.vehent.updateAttr(lis.args[0]);
 		}
 	});
 	public static EventAction RESET_ATTR = new EventAction("reset_attr").set((data, lis, objs) -> {
 		Attribute attr = data.vehicle.getAttribute(lis.args[0]);
 		if(attr != null){
 			attr.reset();
-			if(data.vehent != null) data.vehent.sendUpdate(VehicleInstance.PKT_UPD_VEHICLEDATA);//TODO packet to update only attribute
+			if(data.vehent != null) data.vehent.updateAttr(lis.args[0]);
 		}
 	});
 	public static EventAction PLAY_SOUND = new EventAction("play_sound").set((data, lis, objs) -> {

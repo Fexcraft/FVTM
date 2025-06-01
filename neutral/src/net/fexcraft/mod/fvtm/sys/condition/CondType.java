@@ -6,8 +6,8 @@ package net.fexcraft.mod.fvtm.sys.condition;
 public enum CondType {
 
 	ATTRIBUTE("attribute"),
-	PART_FUNC("part-func"),
-	WORLDTIME("world-time"),
+	PART_FUNC("part_func"),
+	WORLDTIME("world_time"),
 	BLOCKSTATE("blockstate"),
 	MULTI("multi"),
 	CUSTOM("custom"),

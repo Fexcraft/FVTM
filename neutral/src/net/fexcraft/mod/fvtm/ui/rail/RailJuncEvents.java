@@ -94,7 +94,7 @@ public class RailJuncEvents extends UserInterface {
 				break;
 			}
 			case "clear_arg":{
-				fields.get("arg").text("empty {event} listener in {junction}");
+				fields.get("arg").text("{event}/{junction}");
 				break;
 			}
 			case "save":{

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
 import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonValue;
 
 /**
@@ -21,12 +22,12 @@ public class Condition {
 
 	public Condition(String[] array){
 		key = ConditionRegistry.parseKey(array[0], array[1], array.length > 2 ? array[2] : CondMode.EQUAL.key);
-		value = new JsonValue(array.length > 3 ? array[3] : "true");
+		value = array.length > 3 ? JsonHandler.parseValue(array[3]) : new JsonValue(true);
 	}
 
 	public Condition(JsonArray array){
 		key = ConditionRegistry.parseKey(array.get(0).string_value(), array.get(1).string_value(), array.size() > 2 ? array.get(2).string_value() : CondMode.EQUAL.key);
-		value = array.size() > 3 ? array.get(3) : new JsonValue("true");
+		value = array.size() > 3 ? array.get(3) : new JsonValue(true);
 	}
 
 	public Condition link(){

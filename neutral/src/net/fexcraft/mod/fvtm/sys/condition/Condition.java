@@ -31,7 +31,7 @@ public class Condition {
 	}
 
 	public Condition link(){
-		al = ConditionRegistry.get(key);
+		if(al == null) al = ConditionRegistry.get(key);
 		return this;
 	}
 

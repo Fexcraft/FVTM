@@ -44,8 +44,12 @@ public class ConditionRegistry {
 	}
 
 	public static Condition parse(String cond){
+		return parse(cond, false);
+	}
+
+	public static Condition parse(String cond, boolean dash){
 		if(CONDITIONS.containsKey(cond)) return CONDITIONS.get(cond);
-		String[] arr = cond.split(" ");
+		String[] arr = cond.split(dash ? "-" : " ");
 		if(arr.length < 2) return CONDITIONS.get("fvtm:false");
 		return new Condition(arr);
 	}
@@ -65,4 +69,12 @@ public class ConditionRegistry {
 		CONDITIONS.put(key, cond);
 	}
 
+	public static Conditional[] getByTarget(String target){
+		String[] tar = target.split(",");
+		Conditional[] als = new Conditional[tar.length];
+		for(int i = 0; i < tar.length; i++){
+			als[i] = parse(tar[i], true).link().al;
+		}
+		return als;
+	}
 }

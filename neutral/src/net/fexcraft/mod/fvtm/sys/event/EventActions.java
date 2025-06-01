@@ -73,6 +73,13 @@ public class EventActions {
 	});
 	//
 	static{
+		new EventAction("set_throttle").set((data, lis, objs) -> {
+			float am = Float.parseFloat(lis.args[0]);
+			if(am < -1) am = -1;
+			if(am > 1) am = 1;
+			data.vehent.throttle = am;
+		});
+		//
 		new EventAction("rail_reverse").set((data, lis, objs) -> {
 			data.vehent.railent.setForward(null, !data.vehent.railent.isHeadingForward());
 		});

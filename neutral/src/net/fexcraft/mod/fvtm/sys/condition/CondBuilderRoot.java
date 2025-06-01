@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.sys.condition;
 
 import java.util.function.Function;
 
+import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -52,18 +54,20 @@ public class CondBuilderRoot {
 						PartFunction func = data == null ? null : data.getFunction(key.targets[1]);
 						return func == null ? false : func.onCondition(key.targets, key.mode, key.condi);
 					};
-				}
+				}*/
 				case MULTI:{
-					Conditional con0 = ConditionRegistry.get(key.targets[0]);
-					Conditional con1 = ConditionRegistry.get(key.targets[1]);
+					Conditional[] als = ConditionRegistry.getByTarget(key.target);
 					if(key.mode == CondMode.AND){
-						return (cond, data) -> con0.isMet(data) && con1.isMet(data);
+						return (cond, data) -> als[0].isMet(cond, data) && als[1].isMet(cond, data);
+					}
+					else if(key.mode == CondMode.ANN){
+						return (cond, data) -> als[0].isMet(cond, data) && !als[1].isMet(cond, data);
 					}
 					else if(key.mode == CondMode.OR){
-						return (cond, data) -> con0.isMet(data) || con1.isMet(data);
+						return (cond, data) -> als[0].isMet(cond, data) || als[1].isMet(cond, data);
 					}
 					else return COND_FALSE;
-				}*/
+				}
 			}
 			return null;
 		};

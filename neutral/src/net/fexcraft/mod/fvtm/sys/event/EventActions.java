@@ -100,22 +100,24 @@ public class EventActions {
 		new EventAction("rail_double_bool1").set((data, lis, objs) -> {
 			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[0]);
 		});
+		//
 		new EventAction("rail_fork2_switch").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch0 = Integer.parseInt(lis.args[0]) == 1;
 		});
 		new EventAction("rail_fork3_switch").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
-			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[1]);
+			int idx = Integer.parseInt(lis.args[0]);
+			data.holder.junction().switch0 = idx == 1;
+			data.holder.junction().switch1 = idx == 3;
 		});
 		new EventAction("rail_double_switch").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
-			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[1]);
+			data.holder.junction().switch0 = Integer.parseInt(lis.args[0]) == 1;
+			data.holder.junction().switch1 = Integer.parseInt(lis.args[1]) == 0;
 		});
 		new EventAction("rail_double_switch0").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch0 = Integer.parseInt(lis.args[0]) == 1;
 		});
 		new EventAction("rail_double_switch1").set((data, lis, objs) -> {
-			data.holder.junction().switch1 = Boolean.parseBoolean(lis.args[0]);
+			data.holder.junction().switch1 = Integer.parseInt(lis.args[0]) == 0;
 		});
 	}
 

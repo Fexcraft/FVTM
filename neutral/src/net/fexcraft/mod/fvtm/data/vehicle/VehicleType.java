@@ -80,7 +80,8 @@ public enum VehicleType {
 		attrs.add(new AttrInteger("rpm", 0).limit(0, Integer.MAX_VALUE).editable(false));
 		attrs.add(new AttrInteger("generated_keys", 0).limit(0, 8).editable(false));
 		attrs.add(new AttrBoolean("use-fuel", true).perm("fvtm.admin"));//for automated entities
-		attrs.add(new AttrString("line", "none").editable(true).sync(true));//for automated entities
+		attrs.add(new AttrString("line_name", "none").editable(true).sync(true));//for automated entities
+		attrs.add(new AttrInteger("line_id", 0).editable(true).sync(true));//for automated entities
 		switch(this){
 			case LAND:{
 				attrs.add(new AttrBoolean("lights_fog", false).editable(true).addAccess("driver").sync(true)

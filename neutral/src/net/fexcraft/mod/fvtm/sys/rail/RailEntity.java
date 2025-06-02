@@ -131,6 +131,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			wait_at.junction.pollSignal(this, wait_at.dir);
 			if(wait_at.junction.getSignalState(wait_at.dir)){
 				setPaused(false);
+				wait_at = null;
 			}
 		}
 		//
@@ -702,6 +703,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(player != null) player.bar("fvtm.rail.direction_" + (bool ? "forward" : "reverse"));
 		for(RailEntity ent : com.entities){
 			ent.vehicle.data.getAttribute("forward").set(com.getOrient(ent));
+			if(ent.wait_at != null){
+				ent.wait_at = null;
+				ent.setPaused(false);
+			}
 			ent.sendForwardUpdate();
 		}
 	}

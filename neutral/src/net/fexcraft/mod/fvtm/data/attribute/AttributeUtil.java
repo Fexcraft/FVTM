@@ -48,6 +48,7 @@ public class AttributeUtil {
 				attr = ent.vehicle.data.getAttribute(attrid);
 				if(attr != null){
 					com = TagCW.create();
+					com.set("attr", attrid);
 					toggleAttr(FvtmLogger.NONE, attr, bool, com, true, syncval);
 					if(ent.vehicle.entity != null){
 						ent.vehicle.sendUpdate(VehicleInstance.PKT_UPD_TOGGLE_ATTR, com);
@@ -62,6 +63,7 @@ public class AttributeUtil {
 				attr = trailer.data.getAttribute(attrid);
 				if(attr != null){
 					com = TagCW.create();
+					com.set("attr", attrid);
 					toggleAttr(FvtmLogger.NONE, attr, bool, com, true, syncval);
 					trailer.sendUpdate(VehicleInstance.PKT_UPD_TOGGLE_ATTR, com);
 				}

@@ -75,6 +75,10 @@ public class AttributeUtil {
 	private static void toggleAttr(MessageSender from, Attribute<?> attr, boolean bool, TagCW com, boolean check, Object syncval){
 		if(check && attr.sync){
 			attr.set(syncval);
+			if(syncval instanceof Boolean) com.set("bool", (Boolean)syncval);
+			else if(syncval instanceof Integer) com.set("value", (int)syncval);
+			else if(syncval instanceof Float) com.set("value", (float)syncval);
+			else if(syncval instanceof String) com.set("value", (String)syncval);
 			return;
 		}
 		if(attr.valuetype.isTristate()){
@@ -99,6 +103,7 @@ public class AttributeUtil {
 	}
 
 	public static void processToggleClient(VehicleInstance vehicle, TagCW com, Passenger from){
+		FvtmLogger.marker(com);
 		boolean bool = com.getBoolean("bool");
 		String attrid = com.getString("attr");
 		Attribute<?> attr = vehicle.data.getAttribute(attrid);

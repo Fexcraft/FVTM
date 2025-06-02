@@ -464,7 +464,14 @@ public class VehicleInstance {
 				return;
 			}
 			case PKT_UPD_TOGGLE_ATTR:{
-				if(passenger.isOnClient()) AttributeUtil.processToggleClient(this, packet, passenger);
+				if(passenger.isOnClient()){
+					try{
+						AttributeUtil.processToggleClient(this, packet, passenger);
+					}
+					catch(Exception e){
+						FvtmLogger.log(e, "attr toggle packet / " + packet);
+					}
+				}
 				return;
 			}
 			case PKT_UPD_VEHICLEDATA:{
@@ -792,7 +799,7 @@ public class VehicleInstance {
 					player.send("interact.fvtm.vehicle.engine_on");
 				}
 				else{
-					player.openUI(UIKeys.VEHICLE_MAIN, 0, entity.getId(), 0);
+					player.openUI(UIKeys.VEHICLE_MAIN, entity.getId(), 0, 0);
 				}
 				return INTERACT_SUCCESS;
 			}

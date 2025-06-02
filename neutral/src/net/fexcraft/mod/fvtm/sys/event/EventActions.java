@@ -102,22 +102,21 @@ public class EventActions {
 		});
 		//
 		new EventAction("rail_fork2_switch").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Integer.parseInt(lis.args[0]) == 1;
+			data.holder.junction().switch0 = lis.args[0].charAt(0) == '1';
 		});
 		new EventAction("rail_fork3_switch").set((data, lis, objs) -> {
-			int idx = Integer.parseInt(lis.args[0]);
-			data.holder.junction().switch0 = idx == 1;
-			data.holder.junction().switch1 = idx == 3;
+			data.holder.junction().switch0 = lis.args[0].charAt(0) == '1';
+			data.holder.junction().switch1 = lis.args[0].charAt(0) == '3';
 		});
 		new EventAction("rail_double_switch").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Integer.parseInt(lis.args[0]) == 1;
-			data.holder.junction().switch1 = Integer.parseInt(lis.args[1]) == 0;
+			data.holder.junction().switch0 = lis.args[0].charAt(0) == '1';
+			data.holder.junction().switch1 = lis.args[1].charAt(0) == '0';
 		});
 		new EventAction("rail_double_switch0").set((data, lis, objs) -> {
-			data.holder.junction().switch0 = Integer.parseInt(lis.args[0]) == 1;
+			data.holder.junction().switch0 = lis.args[0].charAt(0) == '1';
 		});
 		new EventAction("rail_double_switch1").set((data, lis, objs) -> {
-			data.holder.junction().switch1 = Integer.parseInt(lis.args[0]) == 0;
+			data.holder.junction().switch1 = lis.args[0].charAt(0) == '0';
 		});
 	}
 

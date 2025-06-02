@@ -17,16 +17,18 @@ public class EventData {
 	public Passenger pass;
 	public EventHolder rootholder;
 	public EventHolder holder;
+	public Object[] args;
 	//
 	public EntityW entity;
 	public Object tile;
 
-	public EventData set(VehicleInstance inst, Passenger passenger, EventHolder root, EventHolder hol){
+	public EventData set(VehicleInstance inst, Passenger passenger, EventHolder root, EventHolder hol, Object... objs){
 		vehent = inst;
 		vehicle = inst.data;
 		pass = passenger;
 		rootholder = root;
 		holder = hol;
+		args = objs;
 		return this;
 	}
 

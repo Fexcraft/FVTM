@@ -55,6 +55,30 @@ public class CondBuilderRoot {
 						return func == null ? false : func.onCondition(key.targets, key.mode, key.condi);
 					};
 				}*/
+				case TRACK_FROM:{
+					switch(key.mode){
+						case EQUAL:
+						case NUMB_EQUAL:{
+							return (cond, data) -> (int)data.args[1] == cond.value.integer_value();
+						}
+						case NEQUAL:
+						case NUMB_NEQUAL:{
+							return (cond, data) -> (int)data.args[1] != cond.value.integer_value();
+						}
+						case LEQUAL:{
+							return (cond, data) -> (int)data.args[1] <= cond.value.integer_value();
+						}
+						case GEQUAL:{
+							return (cond, data) -> (int)data.args[1] >= cond.value.integer_value();
+						}
+						case LESS:{
+							return (cond, data) -> (int)data.args[1] < cond.value.integer_value();
+						}
+						case GREATER:{
+							return (cond, data) -> (int)data.args[1] > cond.value.integer_value();
+						}
+					}
+				}
 				case MULTI:{
 					Conditional[] als = ConditionRegistry.getByTarget(key.target);
 					if(key.mode == CondMode.AND){

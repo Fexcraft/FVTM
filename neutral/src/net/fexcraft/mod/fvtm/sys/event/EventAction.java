@@ -11,6 +11,7 @@ public class EventAction {
 
 	public static LinkedHashMap<String, EventAction> ACTIONS = new LinkedHashMap<>();
 	public static EventData DATA = new EventData();
+	public static EventAction NONE = EventActions.init();
 	public final String key;
 	private TriConsumer<EventData, EventListener, Object[]> consumer;
 
@@ -28,7 +29,7 @@ public class EventAction {
 		for(EventAction et : ACTIONS.values()){
 			if(et.key.equals(type)) return et;
 		}
-		return EventActions.NONE;
+		return NONE;
 	}
 
 	public void run(EventData data, EventListener lis, Object[] objs){

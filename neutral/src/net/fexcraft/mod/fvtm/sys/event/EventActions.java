@@ -81,7 +81,7 @@ public class EventActions {
 		});
 		//
 		new EventAction("rail_reverse").set((data, lis, objs) -> {
-			data.vehent.railent.setForward(data.pass, !data.vehent.railent.isHeadingForward());
+			data.vehent.railent.setForward(data.pass, !data.vehent.railent.getCompound().forward);
 		});
 		new EventAction("rail_fork2_bool").set((data, lis, objs) -> {
 			data.holder.junction().switch0 = Boolean.parseBoolean(lis.args[0]);

@@ -118,7 +118,7 @@ public class Section {
 		if(junction == null) return list;
 		ArrayList<Track> tracks = new ArrayList<>();
 		//for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
-		if(!junction.hasSignal(null)) tracks.addAll(junction.tracks);
+		if(!junction.hasSignals()) tracks.addAll(junction.tracks);
 		for(Track track : tracks){
 			if(list.contains(track.unit)) continue;
 			list.add(track.unit);

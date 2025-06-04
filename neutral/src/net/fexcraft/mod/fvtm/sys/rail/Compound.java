@@ -24,7 +24,7 @@ public abstract class Compound {
 	//
 	protected float accumulator;
 	protected ArrayList<RailEntity> entities = new ArrayList<>();
-	public boolean forward, paused;
+	public boolean forward;
 	protected final long uid;
 	//
 	protected Track last_stop;
@@ -62,6 +62,16 @@ public abstract class Compound {
 		@Override
 		public boolean isEnd(RailEntity root){
 			return isThis(root);
+		}
+
+		@Override
+		public RailEntity getHead(){
+			return entities.get(0);
+		}
+
+		@Override
+		public RailEntity getEnd(){
+			return entities.get(0);
 		}
 
 		@Override
@@ -156,6 +166,16 @@ public abstract class Compound {
 		}
 
 		@Override
+		public RailEntity getHead(){
+			return entities.get(0);
+		}
+
+		@Override
+		public RailEntity getEnd(){
+			return entities.get(entities.size() - 1);
+		}
+
+		@Override
 		public int getIndex(RailEntity root){
 			return entities.indexOf(root);
 		}
@@ -202,6 +222,10 @@ public abstract class Compound {
 	public abstract boolean isHead(RailEntity root);
 
 	public abstract boolean isEnd(RailEntity root);
+
+	public abstract RailEntity getHead();
+
+	public abstract RailEntity getEnd();
 	
 	public abstract boolean isSingular();
 	

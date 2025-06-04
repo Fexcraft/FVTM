@@ -134,11 +134,10 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		//
-		if(!vehicle.data.getType().isTrailer() && !isPaused() && vehicle.throttle > 0.001f){
-			if(vehicle.data.hasPart("engine")){
-				EngineFunction engine = vehicle.data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
-				if(CMODE() || (vehicle.engine != null && vehicle.consumeFuel())){
-					double eng = vehicle.throttle * engine.getSphEngineSpeed();
+		if(!vehicle.data.getType().isWagon() && notPaused() && vehicle.throttle > 0.001f){
+			if(vehicle.engine != null){
+				if(needsNoFuel() || vehicle.consumeFuel()){
+					double eng = vehicle.throttle * vehicle.engine.getSphEngineSpeed();
 					if(com.isMultiple()) com.accumulator += eng;
 					else moverq = com.forward ? eng : -eng;
 				}
@@ -146,20 +145,19 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		double am = moverq;
 		boolean move = com.isSingular();
-		if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
-			double amount = com.accumulator;
+		if(com.isMultiple()){
 			if(com.forward && com.isHead(this)){
-				am += front.hasEntity() ? -amount : amount;
+				am = front.hasEntity() ? -com.accumulator : com.accumulator;
 				com.accumulator = 0;
 				move = true;
 			}
 			else if(!com.forward && com.isEnd(this)){
-				am += rear.hasEntity() ? amount : -amount;
+				am += rear.hasEntity() ? com.accumulator : -com.accumulator;
 				com.accumulator = 0;
 				move = true;
 			}
 		}
-		if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
+		if(am > 0.001 || am < -0.001){//prevents unnecessary calculations, theoretically, comment out otherwise
 			TRO tro = getTrack(current, passed + am, false);
 			am = checkForPushCoupling(tro, am);
 			//
@@ -206,7 +204,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 	}
 
-	private boolean CMODE(){
+	private boolean needsNoFuel(){
 		if(!VEHICLES_NEED_FUEL || !vehicle.data.getAttribute("use-fuel").asBoolean()) return true;
 		EntityW driver = vehicle.driver();
 		if(driver != null){
@@ -439,7 +437,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(junc.hasSignal(tro.track.getOppositeId()) && isActiveEnd()){
 				EntryDirection dir = junc.eqTrack(tro.track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
 				junc.pollSignal(this, dir);
-				if(!junc.getSignalState(dir) && !isPaused()){
+				if(!junc.getSignalState(dir) && notPaused()){
 					wait_at = new WaitingAt(junc, dir);
 					tro.passed = tro.track.length;
 					return tro;
@@ -469,7 +467,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(junc.hasSignal(tro.track.getId()) && isActiveEnd()){
 				EntryDirection dir = junc.eqTrack(tro.track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD;
 				junc.pollSignal(this, dir);
-				if(!junc.getSignalState(dir) && !isPaused()){
+				if(!junc.getSignalState(dir) && notPaused()){
 					wait_at = new WaitingAt(junc, dir);
 					tro.passed = 0;
 					return tro;
@@ -739,6 +737,10 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public boolean isPaused(){
 		return com.forward ? com.getHead().wait_at != null : com.getEnd().wait_at != null;
+	}
+
+	public boolean notPaused(){
+		return com.forward ? com.getHead().wait_at == null : com.getEnd().wait_at == null;
 	}
 
 	public boolean isActiveEnd(){

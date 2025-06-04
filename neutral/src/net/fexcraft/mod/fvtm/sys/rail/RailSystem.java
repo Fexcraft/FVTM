@@ -142,7 +142,12 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		if(!region.getObjects().isEmpty()){
 			TagLW list = TagLW.create();
 			for(Junction junc : region.getObjects().values()){
-				list.add(junc.write());
+				try{
+					list.add(junc.write());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 			compound.set("Junctions", list);
 		}
@@ -161,7 +166,12 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 					com.set("Singular", false);
 					TagLW ents = TagLW.create();
 					for(RailEntity ent : entity.com.entities){
-						ents.add(ent.write(null));
+						try{
+							ents.add(ent.write(null));
+						}
+						catch(Exception e){
+							e.printStackTrace();
+						}
 					}
 					com.set("Entities", ents);
 					list.add(com);
@@ -178,15 +188,25 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			region.getObjects().clear();
 			TagLW list = com.getList("Junctions");
 			list.forEach(tag -> {
-				Junction junc = new Junction(region);
-				junc.read(tag);
-				region.getObjects().put(junc.getV3I(), junc);
+				try{
+					Junction junc = new Junction(region);
+					junc.read(tag);
+					region.getObjects().put(junc.getV3I(), junc);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			});
 		}
 		if(com.has("Entities")){
 			reg.entities.clear();
 			com.getList("Entities").forEach(tag -> {
-				fillqueue.put(tag.getLong("Compound"), tag);
+				try{
+					fillqueue.put(tag.getLong("Compound"), tag);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			});
 		}
 	}

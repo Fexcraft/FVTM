@@ -130,7 +130,6 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(wait_at != null){
 			wait_at.junction.pollSignal(this, wait_at.dir);
 			if(wait_at.junction.getSignalState(wait_at.dir)){
-				setPaused(false);
 				wait_at = null;
 			}
 		}
@@ -443,7 +442,6 @@ public class RailEntity implements Comparable<RailEntity>{
 				junc.pollSignal(this, dir);
 				if(!junc.getSignalState(dir) && !isPaused()){
 					wait_at = new WaitingAt(junc, dir);
-					setPaused(true);
 					tro.passed = tro.track.length;
 					return tro;
 				}
@@ -474,7 +472,6 @@ public class RailEntity implements Comparable<RailEntity>{
 				junc.pollSignal(this, dir);
 				if(!junc.getSignalState(dir) && !isPaused()){
 					wait_at = new WaitingAt(junc, dir);
-					setPaused(true);
 					tro.passed = 0;
 					return tro;
 				}
@@ -705,7 +702,6 @@ public class RailEntity implements Comparable<RailEntity>{
 			ent.vehicle.data.getAttribute("forward").set(com.getOrient(ent));
 			if(ent.wait_at != null){
 				ent.wait_at = null;
-				ent.setPaused(false);
 			}
 			ent.sendForwardUpdate();
 		}
@@ -743,16 +739,9 @@ public class RailEntity implements Comparable<RailEntity>{
 	public String toString(){
 		return "RE['" + uid + "', '" + vehicle.data.getName() + "', '" + pos.toString() + "']";
 	}
-
-	public void setPaused(boolean bool){
-		vehicle.data.getAttribute("paused").set(com.paused = bool);
-		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
-			vehicle.updateAttr("paused");
-		}
-	}
 	
 	public boolean isPaused(){
-		return com.paused;
+		return com.forward ? com.getHead().wait_at != null : com.getEnd().wait_at != null;
 	}
 
 	public boolean isActiveEnd(){

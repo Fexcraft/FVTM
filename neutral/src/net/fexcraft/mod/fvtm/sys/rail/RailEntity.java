@@ -152,7 +152,7 @@ public class RailEntity implements Comparable<RailEntity>{
 				move = true;
 			}
 			else if(!com.forward && com.isEnd(this)){
-				am += rear.hasEntity() ? com.accumulator : -com.accumulator;
+				am = rear.hasEntity() ? com.accumulator : -com.accumulator;
 				com.accumulator = 0;
 				move = true;
 			}

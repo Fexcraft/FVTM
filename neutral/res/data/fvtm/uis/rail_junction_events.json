@@ -9,7 +9,8 @@
 			"pos": [ 0, 0 ],
 			"buttons": [
 				"info", "t_prev", "t_next", "copy",
-				"add", "e_prev", "e_next", "rem",
+				"add", "paste", "copye", "e_prev", "e_next", "rem",
+				"a_prev", "a_next", "reset",
 				"clear_cond", "clear_act", "clear_arg",
 				"save"
 			],
@@ -43,7 +44,7 @@
 			"tooltip": "ui.fvtm.rail_junction_events.type_next"
 		},
 		"add": {
-			"pos": [ 190, 21 ],
+			"pos": [ 164, 21 ],
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.rail_junction_events.add"
 		},
@@ -51,6 +52,16 @@
 			"pos": [ 229, 21 ],
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.rail_junction_events.rem"
+		},
+		"paste": {
+			"pos": [ 177, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.paste_listener"
+		},
+		"copye": {
+			"pos": [ 190, 21 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.copy_listener"
 		},
 		"e_prev": {
 			"pos": [ 203, 21 ],
@@ -77,6 +88,21 @@
 			"size": [ 7, 12 ],
 			"tooltip": "ui.fvtm.rail_junction_events.clear_arg"
 		},
+		"a_prev": {
+			"pos": [ 218, 69 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.action_prev"
+		},
+		"a_next": {
+			"pos": [ 226, 69 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.action_next"
+		},
+		"reset": {
+			"pos": [ 213, 93 ],
+			"size": [ 7, 12 ],
+			"tooltip": "ui.fvtm.rail_junction_events.reset"
+		},
 		"save": {
 			"pos": [ 229, 93 ],
 			"size": [ 12, 12 ],
@@ -92,7 +118,7 @@
 		},
 		"entry": {
 			"pos": [ 9, 23 ],
-			"size": [ 179, 8 ],
+			"size": [ 153, 8 ],
 			"autoscale": true,
 			"#color": "545454"
 		},
@@ -129,13 +155,13 @@
 			"max-length": 512
 		},
 		"act": {
-			"size": [ 226, 12 ],
+			"size": [ 210, 12 ],
 			"pos": [ 7, 69 ],
 			"background": true,
 			"max-length": 64
 		},
 		"arg": {
-			"size": [ 213, 12 ],
+			"size": [ 205, 12 ],
 			"pos": [ 7, 93 ],
 			"background": true,
 			"max-length": 1024

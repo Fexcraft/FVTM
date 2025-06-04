@@ -145,7 +145,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 		}
 		double am = moverq;
-		boolean move = false;
+		boolean move = com.isSingular();
 		if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
 			double amount = com.accumulator;
 			if(com.forward && com.isHead(this)){
@@ -159,7 +159,6 @@ public class RailEntity implements Comparable<RailEntity>{
 				move = true;
 			}
 		}
-		else if(com.isSingular()) move = true;
 		if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
 			TRO tro = getTrack(current, passed + am, false);
 			am = checkForPushCoupling(tro, am);
@@ -700,9 +699,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(player != null) player.bar("fvtm.rail.direction_" + (bool ? "forward" : "reverse"));
 		for(RailEntity ent : com.entities){
 			ent.vehicle.data.getAttribute("forward").set(com.getOrient(ent));
-			if(ent.wait_at != null){
-				ent.wait_at = null;
-			}
+			ent.wait_at = null;
 			ent.sendForwardUpdate();
 		}
 	}

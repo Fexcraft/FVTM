@@ -251,18 +251,22 @@ public class RailEntity implements Comparable<RailEntity>{
 				if(ent == this || ent == front.entity || ent == rear.entity || ent.com.uid == com.uid) continue;
 				ccalc.update(ent.cfront, ent.crear, 0.125f); if(!ccalc.contains(coucen)) continue;
 				if(ent.rear.mbb.contains(coucen)){
-					//float entpos = ent.pos.distanceTo(pos);
-					//float coupos = ent.crear.distanceTo(pos);
-					//if(entpos < coupos) continue;//we're probably inside the other entity, abort!
-					hascoupled = true; couplers[i].couple(ent, false); am = coucen.dis(ent.crear); 
+					double entpos = ent.pos.dis(pos);
+					double coupos = ent.crear.dis(pos);
+					if(entpos < coupos) continue;//we're probably inside the other entity, abort!
+					hascoupled = true;
+					couplers[i].couple(ent, false);
+					am = coucen.dis(ent.crear);
 					if(ent.brear.dis(coucen) < ent.crear.dis(coucen)) am = -am;
 					FvtmLogger.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
 				}
 				if(ent.front.mbb.contains(coucen)){
-					//float entpos = ent.pos.distanceTo(pos);
-					//float coupos = ent.cfront.distanceTo(pos);
-					//if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
-					hascoupled = true; couplers[i].couple(ent, true); am = coucen.dis(ent.cfront);
+					double entpos = ent.pos.dis(pos);
+					double coupos = ent.cfront.dis(pos);
+					if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
+					hascoupled = true;
+					couplers[i].couple(ent, true);
+					am = coucen.dis(ent.cfront);
 					if(ent.bfront.dis(coucen) < ent.cfront.dis(coucen)) am = -am;
 					FvtmLogger.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
 				}

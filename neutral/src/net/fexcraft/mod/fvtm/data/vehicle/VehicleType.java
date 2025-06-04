@@ -113,7 +113,7 @@ public enum VehicleType {
 				attrs.add(new AttrFloat("gauge", RailGauge.DEFWIDTH).limit(Integer.MIN_VALUE, Integer.MAX_VALUE).editable(false));
 				attrs.add(new AttrBoolean("forward", true).editable(false));
 				attrs.add(new AttrBoolean("active", false).editable(true));//for automatic/steered/AI traffic
-				attrs.add(new AttrBoolean("paused", false).editable(true));//for automatic/steered/AI traffic
+				//attrs.add(new AttrBoolean("paused", false).editable(true));//for automatic/steered/AI traffic
 				attrs.add(new AttrBoolean("doors_left", false).sync(true).group("mirror_lr"));
 				attrs.add(new AttrBoolean("doors_right", false).sync(true).group("mirror_lr"));
 				attrs.add(new AttrInteger("section_on", 0));

@@ -11,8 +11,8 @@ import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
  */
 public class CondBuilder {
 
-	public static Function<Condition, Conditional> run(){
-		Function<Condition, Conditional> con = CondBuilderRoot.run();
+	public static Function<CondKey, Conditional> run(){
+		Function<CondKey, Conditional> con = CondBuilderRoot.run();
 		if(con != null) return con;
 		return cond -> {
 			switch(cond.type){

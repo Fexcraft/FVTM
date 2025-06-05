@@ -4,8 +4,6 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Sound;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +82,10 @@ public class EventActions {
 			float am = Float.parseFloat(lis.args[0]);
 			if(am < -1) am = -1;
 			if(am > 1) am = 1;
-			data.vehent.throttle = am;
+			if(data.vehent.railent != null){
+				data.vehent.railent.setThrottle(am);
+			}
+			else data.vehent.throttle = am;
 		});
 		JUNC_PASS_ACTIONS.add(EventAction.parse("set_attr"));
 		JUNC_PASS_ACTIONS.add(EventAction.parse("reset_attr"));

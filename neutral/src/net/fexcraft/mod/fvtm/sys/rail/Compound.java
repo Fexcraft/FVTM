@@ -210,7 +210,7 @@ public abstract class Compound {
 				coupler = coupler.getOpposite();
 				if(coupler.isFrontal() ? coupler.isFront() : coupler.isRear()) rev = !rev;
 				coupler = coupler.getCounterpart();
-				if(coupler.root == ent) break;
+				if(coupler == null || coupler.root == ent) break;
 			}
 			return rev ? !forward : forward;
 		}

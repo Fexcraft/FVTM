@@ -171,14 +171,7 @@ public class RailEntity implements Comparable<RailEntity>{
 				}
 				am = ((TROE)tro).moved;
 			}
-			tro = getTrack(current, passed + am, true);
-			last = current;
-			current = tro.track;
-			passed = tro.passed;
-			if(!last.equals(current)) this.updateClient("track");
-			this.updateClient("passed");
-			if(!region.key.isInRegion(current.start)) this.updateRegion(current.start);
-			updatePosition();
+			moveOnTrack(am);
 			//
 			if(!hascoupled && isCoupled()){
 				//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
@@ -202,6 +195,17 @@ public class RailEntity implements Comparable<RailEntity>{
 				vehicle.sendUpdatePacket();
 			}
 		}
+	}
+
+	private void moveOnTrack(double am){
+		TRO tro = getTrack(current, passed + am, true);
+		last = current;
+		current = tro.track;
+		passed = tro.passed;
+		if(!last.equals(current)) this.updateClient("track");
+		this.updateClient("passed");
+		if(!region.key.isInRegion(current.start)) this.updateRegion(current.start);
+		updatePosition();
 	}
 
 	private boolean needsNoFuel(){
@@ -235,8 +239,9 @@ public class RailEntity implements Comparable<RailEntity>{
 			coupler = coupler.getOpposite();
 			if(coupler.isFrontal() ? coupler.isFront() : coupler.isRear()) rev = !rev;
 			coupler = coupler.getCounterpart();
-			if(coupler == null || coupler.root == null) continue;
-			coupler.root.moverq += rev ? -amount : amount;
+			if(coupler == null || coupler.root == null) break;
+			//coupler.root.moverq += rev ? -amount : amount;
+			coupler.root.moveOnTrack(rev ? -amount : amount);
 		}
 	}
 
@@ -643,7 +648,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public int compareTo(RailEntity obj){
 		return Long.compare(obj.getUID(), getUID());
 	}
-	
+
 	public static enum TrainPoint {
 		
 		COUPLER_FRONT(0), BOGIE_FRONT(1), BOGIE_REAR(2), COUPLER_REAR(3); int index; TrainPoint(int idx){ this.index = idx; }
@@ -696,12 +701,20 @@ public class RailEntity implements Comparable<RailEntity>{
 		return new MiniBB[]{ front.mbb, rear.mbb };
 	}
 
+	public void setThrottle(double am){
+		for(RailEntity ent : com.entities){
+			if(!ent.vehicle.data.getType().isWagon()) ent.vehicle.throttle = am;
+		}
+	}
+
 	public void setForward(EntityW player, boolean bool){
 		com.forward = bool;
+		com.accumulator = 0;
 		if(player != null) player.bar("fvtm.rail.direction_" + (bool ? "forward" : "reverse"));
 		for(RailEntity ent : com.entities){
 			ent.vehicle.data.getAttribute("forward").set(com.getOrient(ent));
 			ent.wait_at = null;
+			ent.moverq = 0;
 			ent.sendForwardUpdate();
 		}
 	}

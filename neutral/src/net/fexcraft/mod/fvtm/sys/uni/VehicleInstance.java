@@ -167,6 +167,7 @@ public class VehicleInstance {
 				else{
 					throttle += throttle < 0 ? 0.02 : 0.01;
 					if(throttle > 1) throttle = 1;
+					if(railent != null) railent.setThrottle(throttle);
 				}
 				return true;
 			}
@@ -184,6 +185,7 @@ public class VehicleInstance {
 					if(spdata != null && throttle < 0 && spdata.min_throttle == 0){
 						throttle = 0;
 					}
+					if(railent != null) railent.setThrottle(throttle);
 				}
 				return true;
 			}

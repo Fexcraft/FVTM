@@ -265,7 +265,7 @@ public class Junction implements SysObj {
 		if(type == null)
 			type = size() <= 2 ? JuncType.STRAIGHT : size() == 3 ? JuncType.FORK_2 : JuncType.CROSSING;
 		if(entity != null && event){
-			holder.run(EventType.JUNC_PASS, entity.vehicle, null, track, getIndex(track));
+			holder.run(EventType.JUNC_PASS, entity.vehicle, null, track);
 		}
 		switch(type){
 			case STRAIGHT:{

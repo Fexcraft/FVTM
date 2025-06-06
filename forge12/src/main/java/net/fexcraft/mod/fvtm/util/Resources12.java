@@ -204,6 +204,7 @@ public class Resources12 extends FvtmResources {
 		MULTIBLOCKS.forEach(mb -> mb.setItemWrapper(wrapwrapper(mb.getID(), new MultiBlockItem(mb))));
 		CLOTHES.forEach(cth -> cth.setItemWrapper(wrapwrapper(cth.getID(), new ClothItem(cth))));
 		WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), new WireItem(wire))));
+		WIREDECOS.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), new WireDecoItem(wire))));
 		CONTAINERS.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ContainerItem(con))));
 		RAILGAUGES.forEach(rail -> {
 			rail.setItemWrapper(wrapwrapper(rail.getID(), new RailGaugeItem(rail)));

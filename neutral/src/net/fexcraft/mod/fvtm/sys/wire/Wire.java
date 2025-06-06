@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
@@ -9,6 +10,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.render.PathModelPositioned;
+import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -30,15 +32,8 @@ public class Wire {
 	protected WireType type;
 	public boolean copy;
 	public float slack = 0;
-	//
-	public PathModelPositioned wiremodel;
-	public double model_start_angle, model_end_angle;
-	public double model_start_angle_down, model_end_angle_down;
-	public WireDeco deco_s, deco_e;
-	public String deco_start, deco_end;
-	public HashMap<String, WireDeco> decos;
-	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
-	public HashMap<String, HashMap<String, ArrayList<net.fexcraft.lib.tmt.ModelRendererTurbo>>> deco_g;
+	public LinkedHashMap<String, WireDeco> decos;
+	public WireMD model;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, V3D s_v, V3D e_v){
 		key = new WireKey(relay, relay0);
@@ -129,10 +124,8 @@ public class Wire {
 		copy = compound.has("copy") && compound.getBoolean("copy");
 		this.length = compound.has("length") ? compound.getFloat("length") : calcLength();
 		//TODO if(relay != null) unit = getUnit(compound.getLong("section"));
-		deco_start = compound.has("deco_start") ? compound.getString("deco_start") : null;
-		deco_end = compound.has("deco_end") ? compound.getString("deco_end") : null;
 		if(compound.has("decos")){
-			if(decos == null) decos = new HashMap<>();
+			if(decos == null) decos = new LinkedHashMap<>();
 			TagLW list = compound.getList("decos");
 			for(int i = 0; i < list.size(); i++){
 				String[] split = list.getString(i).split(";");
@@ -142,11 +135,9 @@ public class Wire {
 			}
 		}
 		else{
-			if(decos != null) decos.clear();
+			decos = null;
 		}
-		if(relay.holder.getRegion().system.isRemote()){
-			deco_d = null;
-		}
+		model = null;
 		return this;
 	}
 
@@ -171,8 +162,6 @@ public class Wire {
 		if(copy) compound.set("copy", copy);
 		if(type != null) compound.set("wiretype", type.getIDS());
 		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
-		if(deco_start != null) compound.set("deco_start", deco_start);
-		if(deco_end != null) compound.set("deco_end", deco_end);
 		if(decos != null && decos.size() > 0){
 			TagLW list = TagLW.create();
 			for(Entry<String, WireDeco> entry : decos.entrySet()){

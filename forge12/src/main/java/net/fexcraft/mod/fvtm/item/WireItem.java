@@ -55,6 +55,7 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
         for(String s : wire.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
+		tooltip.add(Formatter.format("&9Type: &7" + wire.getType()));
         tooltip.add(Formatter.format("&9Def. Slack: &7" + wire.getDefaultSlack()));
         tooltip.add(Formatter.format("&9Customisable: &7" + wire.isCustomisable()));
         tooltip.add(Formatter.format("&9- &6- &9- - - - &6-"));

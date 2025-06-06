@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
@@ -9,19 +10,19 @@ import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WireDeco extends Content<WireDeco> {
+public class WireDeco extends Content<WireDeco> implements WithItem {
 
 	protected String type;
 	protected IDL texture;
 	protected Model model;
 	protected ModelData modeldata;
 	protected String modelid;
+	protected String ctab;
 	protected List<String> accepts;
 
 	public WireDeco(){}
@@ -36,10 +37,12 @@ public class WireDeco extends Content<WireDeco> {
 		type = map.getString("Type", "relay");
 		texture = ContentConfigUtil.getTextures(map).get(0);
 		accepts = ContentConfigUtil.getStringList(map, "Accepts");
+		if(accepts.isEmpty()) accepts.add("universal");
 		if(EnvInfo.CLIENT || EnvInfo.is121()){
 			modelid = map.getString("Model", null);
 			modeldata = new ModelData(map);
 		}
+		ctab = map.getString("CreativeTab", "default");
 		return this;
 	}
 
@@ -73,6 +76,20 @@ public class WireDeco extends Content<WireDeco> {
 
 	public boolean accepts(String wiretype){
 		return accepts.contains(wiretype);
+	}
+
+	@Override
+	public String getItemContainer(){
+		return null;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
+	}
+
+	public List<String> getCompatible(){
+		return accepts;
 	}
 
 }

@@ -210,10 +210,10 @@ public class WireRenderer {
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
         			}
-        			if(wire.deco_m == null) genWireDeco(relay, wire);
-        			if(wire.deco_m.size() > 0){
+        			if(wire.deco_d == null) genWireDeco(relay, wire);
+        			if(wire.deco_d.size() > 0){
         				WireModel wm;
-        				for(Entry<String, WireDeco> dm : wire.deco_m.entrySet()){
+        				for(Entry<String, WireDeco> dm : wire.decos.entrySet()){
                 			wm = dm.getValue().getModel();
                 			for(ModelGroup list : wm.groups){
                 				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
@@ -267,22 +267,19 @@ public class WireRenderer {
 	}
 
 	private static void genWireDeco(WireRelay relay, Wire wire){
-		wire.deco_m = new HashMap<>();
 		wire.deco_d = new HashMap<>();
 		wire.deco_g = new HashMap<>();
 		if(wire.decos == null) return;
-		for(Entry<String, String> entry : wire.decos.entrySet()){
-			WireDeco deco = FvtmRegistry.WIREDECOS.get(entry.getValue());
-			if(deco != null){
-				wire.deco_m.put(entry.getKey(), deco);
-				wire.deco_d.put(entry.getKey(), new HashMap<>());
-				wire.deco_g.put(entry.getKey(), new HashMap<>());
-				for(ModelGroup list : deco.getModel().groups){
-					for(Program program : list.getAllPrograms()){
-						if(program instanceof WirePrograms.SpacedDeco == false) continue;
-						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
-						break;
-					}
+		WireDeco deco;
+		for(Entry<String, WireDeco> entry : wire.decos.entrySet()){
+			deco = entry.getValue();
+			wire.deco_d.put(entry.getKey(), new HashMap<>());
+			wire.deco_g.put(entry.getKey(), new HashMap<>());
+			for(ModelGroup list : deco.getModel().groups){
+				for(Program program : list.getAllPrograms()){
+					if(program instanceof WirePrograms.SpacedDeco == false) continue;
+					wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
+					break;
 				}
 			}
 		}

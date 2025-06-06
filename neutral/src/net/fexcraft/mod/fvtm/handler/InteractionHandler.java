@@ -389,7 +389,6 @@ public class InteractionHandler {
 		V3D lvec = evec.add(pass.getLookVec().multiply(3));
 		V3D cen;
 		float size;
-		FvtmLogger.marker(type);
 		for(SystemRegion<?, RelayHolder> reg : system.getRegions().values()){
 			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){

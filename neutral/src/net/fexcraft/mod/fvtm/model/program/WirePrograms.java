@@ -258,7 +258,7 @@ public class WirePrograms {
 					last = dis;
 					idx++;
 				}
-				wire.deco_g.get(decoid).put(group.name, tlist);
+				wire.model.deco_g.get(decoid).put(group.name, tlist);
 			}
 			return veclis;
 		}

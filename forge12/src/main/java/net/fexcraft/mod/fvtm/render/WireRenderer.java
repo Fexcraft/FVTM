@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
+import net.fexcraft.mod.fvtm.item.WireDecoItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -70,6 +71,8 @@ public class WireRenderer {
 	private static ItemStack held;
 	private static boolean holding_wire;
 	private static boolean holding_slack;
+	private static boolean holding_relaydeco;
+	private static boolean holding_deco;
 	private static V3D cubepos;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
@@ -77,8 +80,14 @@ public class WireRenderer {
 	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getMinecraft().player.getHeldItemMainhand();
-		holding_wire = held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
-		holding_slack = held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
+		holding_wire = Command.OTHER || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
+		holding_slack = Command.OTHER || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
+		if(held.getItem() instanceof WireDecoItem){
+			WireDecoItem item = (WireDecoItem)held.getItem();
+			holding_relaydeco = item.getContent().getType().equals("relay");
+			holding_deco = !holding_relaydeco;
+		}
+		else holding_relaydeco = holding_deco = false;
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -93,14 +102,25 @@ public class WireRenderer {
 						DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 						GL11.glPopMatrix();
                 	}
-					if((Command.OTHER || holding_slack) && relay.wires.size() > 0){
-						for(Wire wire : relay.wires){
-							if(wire.copy) continue;
-							cubepos = wire.getVectorPosition(wire.length * 0.5, false);
-							GL11.glPushMatrix();
-							GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
-							DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
-							GL11.glPopMatrix();
+					if(relay.wires.size() > 0){
+						if(holding_slack || holding_deco){
+							for(Wire wire : relay.wires){
+								if(wire.copy) continue;
+								cubepos = wire.getVectorPosition(wire.length * 0.5, false);
+								GL11.glPushMatrix();
+								GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
+								DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
+								GL11.glPopMatrix();
+							}
+						}
+						if(holding_relaydeco){
+							for(Wire wire : relay.wires){
+								cubepos = wire.getVectorPosition(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, false);
+								GL11.glPushMatrix();
+								GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
+								DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
+								GL11.glPopMatrix();
+							}
 						}
 					}
             		renderWires(relay, cx, cy, cz);

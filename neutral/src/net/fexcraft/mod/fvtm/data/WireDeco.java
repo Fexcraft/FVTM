@@ -92,4 +92,8 @@ public class WireDeco extends Content<WireDeco> implements WithItem {
 		return accepts;
 	}
 
+	public boolean isRelayType(){
+		return type.equals("relay");
+	}
+
 }

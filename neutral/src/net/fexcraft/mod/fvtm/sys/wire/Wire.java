@@ -36,8 +36,7 @@ public class Wire {
 	public double model_start_angle_down, model_end_angle_down;
 	public WireDeco deco_s, deco_e;
 	public String deco_start, deco_end;
-	public HashMap<String, String> decos;
-	public HashMap<String, WireDeco> deco_m;
+	public HashMap<String, WireDeco> decos;
 	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
 	public HashMap<String, HashMap<String, ArrayList<net.fexcraft.lib.tmt.ModelRendererTurbo>>> deco_g;
 	
@@ -137,14 +136,16 @@ public class Wire {
 			TagLW list = compound.getList("decos");
 			for(int i = 0; i < list.size(); i++){
 				String[] split = list.getString(i).split(";");
-				decos.put(split[0], split[1]);
+				WireDeco deco = FvtmRegistry.WIREDECOS.get(split[1]);
+				if(deco == null) continue;;
+				decos.put(split[0], deco);
 			}
 		}
 		else{
 			if(decos != null) decos.clear();
 		}
 		if(relay.holder.getRegion().system.isRemote()){
-			deco_m = null;
+			deco_d = null;
 		}
 		return this;
 	}
@@ -174,8 +175,8 @@ public class Wire {
 		if(deco_end != null) compound.set("deco_end", deco_end);
 		if(decos != null && decos.size() > 0){
 			TagLW list = TagLW.create();
-			for(Entry<String, String> entry : decos.entrySet()){
-				list.add(entry.getKey() + ";" + entry.getValue());
+			for(Entry<String, WireDeco> entry : decos.entrySet()){
+				list.add(entry.getKey() + ";" + entry.getValue().getIDS());
 			}
 			compound.set("decos", list);
 		}

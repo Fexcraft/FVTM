@@ -4,14 +4,15 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireDecoItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -168,88 +169,77 @@ public class WireRenderer {
     		}
         }
         else{
+			BlockData data;
         	GL11.glPushMatrix();
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         	for(int i = 0; i < relay.size(); i++){
         		if(relay.wires.get(i).copy) continue;
         		Wire wire = relay.wires.get(i);
         		if(wire.vecpath == null || wire.getWireType() == null) continue;
-				WireModel model = wire.getWireType().getModel();
-        		if(wire.wiremodel == null) PathModelGenerator.generateWireModel(wire, model);
+				if(wire.model == null) new WireMD(wire);
         		TexUtil.bindTexture(wire.getWireType().getTexture());
+				GL11.glPushMatrix();
 				GL11.glTranslated(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
-        		wire.wiremodel.render();
-        		if(relay.getTile() != null){
-        			CURRENT = wire;
-    				ANGLE = wire.model_end_angle;
-        			if(wire.deco_s != null){
-        				ANGLE_DOWN = wire.model_start_angle_down;
-        				GL11.glPushMatrix();
-            			//GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-            			GL11.glRotated(180, 0, 0, 1);
-            			GL11.glRotated(90, 0, 1, 0);
-            			GL11.glRotated(wire.model_start_angle, 0, 1, 0);
-    	        		TexUtil.bindTexture(wire.deco_s.getTexture());
-            			wire.deco_s.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
-            			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
-            			GL11.glPopMatrix();
-        			}
-        			if(wire.deco_e != null){
-        				//ANGLE = wire.model_end_angle;
-        				ANGLE_DOWN = wire.model_end_angle_down;
-            			int l = wire.vecpath.length - 1;
-        				GL11.glPushMatrix();
-            			//GL11.glTranslated(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
-            			GL11.glRotated(180, 0, 0, 1);
-            			GL11.glRotated(90, 0, 1, 0);
-            			GL11.glRotated(wire.model_end_angle, 0, 1, 0);
-            			//RGB.RED.glColorApply();
-    	        		TexUtil.bindTexture(wire.deco_e.getTexture());
-            			wire.deco_e.getModel().render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
-            			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
-            			//RGB.glColorReset();
-            			GL11.glPopMatrix();
-        			}
-        			if(wire.deco_d == null) genWireDeco(relay, wire);
-        			if(wire.deco_d.size() > 0){
-        				WireModel wm;
-        				for(Entry<String, WireDeco> dm : wire.decos.entrySet()){
-                			wm = dm.getValue().getModel();
-                			for(ModelGroup list : wm.groups){
-                				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
-                					ArrayList<ModelRendererTurbo> tlist = wire.deco_g.containsKey(dm.getKey()) ? wire.deco_g.get(dm.getKey()).get(list.name) : null;
-                					int didx = 0;
-                					for(V3D vec : wire.deco_d.get(dm.getKey()).get(list.name)){
-                            			GL11.glPushMatrix();
-                            			//GL11.glTranslated(vec.x, vec.y, vec.z);
-                            			GL11.glRotated(180, 0, 0, 1);
-                            			GL11.glRotated(90, 0, 1, 0);
-                    					wm.transforms.apply();
-                    	        		TexUtil.bindTexture(dm.getValue().getTexture());
-                    					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
-                    					if(tlist != null){
-                    		        		TexUtil.bindTexture(wire.getWireType().getTexture());
-                    						tlist.get(didx++).render();
-                    					}
-                    					wm.transforms.deapply();
-                            			GL11.glPopMatrix();
-                					}
-                				}
-                				else{
-                        			GL11.glPushMatrix();
-                        			GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-                        			GL11.glRotated(180, 0, 0, 1);
-                        			GL11.glRotated(90, 0, 1, 0);
-                					wm.transforms.apply();
-                	        		TexUtil.bindTexture(dm.getValue().getTexture());
-                					list.render(RENDERDATA.set(((BlockTileEntity)relay.getTile()).getBlockData(), relay.getTile(), null));
-                					wm.transforms.deapply();
-                        			GL11.glPopMatrix();
-                				}
-                			}
-        				}
-        			}
-        		}
+        		wire.model.wiremodel.render();
+				GL11.glPopMatrix();
+				data = relay.getTile() == null ? null : ((BlockTileEntity)relay.getTile()).getBlockData();
+				CURRENT = wire;
+				ANGLE = wire.model.end_angle;
+				if(wire.model.deco_s != null){
+					ANGLE_DOWN = wire.model.start_angle_down;
+					GL11.glPushMatrix();
+					GL11.glTranslated(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
+					GL11.glRotated(wire.model.start_angle, 0, 1, 0);
+					TexUtil.bindTexture(wire.model.deco_s.getTexture());
+					wire.model.deco_s.getModel().render(RENDERDATA.set(data, relay.getTile(), null));
+					GL11.glPopMatrix();
+				}
+				if(wire.model.deco_e != null){
+					//ANGLE = wire.model.end_angle;
+					ANGLE_DOWN = wire.model.end_angle_down;
+					int l = wire.vecpath.length - 1;
+					GL11.glPushMatrix();
+					GL11.glTranslated(wire.vecpath[l].x - cx, wire.vecpath[l].y - cy, wire.vecpath[l].z - cz);
+					GL11.glRotated(wire.model.end_angle, 0, 1, 0);
+					TexUtil.bindTexture(wire.model.deco_e.getTexture());
+					wire.model.deco_e.getModel().render(RENDERDATA.set(data, relay.getTile(), null));
+					GL11.glPopMatrix();
+				}
+				if(wire.model.deco_d == null) genWireDeco(relay, wire);
+				if(wire.model.deco_d.size() > 0){
+					WireModel wm;
+					for(Entry<String, WireDeco> dm : wire.decos.entrySet()){
+						wm = dm.getValue().getModel();
+						for(ModelGroup list : wm.groups){
+							if(wire.model.deco_d.get(dm.getKey()).containsKey(list.name)){
+								ArrayList<ModelRendererTurbo> tlist = wire.model.deco_g.containsKey(dm.getKey()) ? wire.model.deco_g.get(dm.getKey()).get(list.name) : null;
+								int didx = 0;
+								for(V3D vec : wire.model.deco_d.get(dm.getKey()).get(list.name)){
+									GL11.glPushMatrix();
+									//GL11.glTranslated(vec.x, vec.y, vec.z);
+									wm.transforms.apply();
+									TexUtil.bindTexture(dm.getValue().getTexture());
+									list.render(RENDERDATA.set(data, relay.getTile(), null));
+									if(tlist != null){
+										TexUtil.bindTexture(wire.getWireType().getTexture());
+										tlist.get(didx++).render();
+									}
+									wm.transforms.deapply();
+									GL11.glPopMatrix();
+								}
+							}
+							else{
+								GL11.glPushMatrix();
+								GL11.glTranslated(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+								wm.transforms.apply();
+								TexUtil.bindTexture(dm.getValue().getTexture());
+								list.render(RENDERDATA.set(data, relay.getTile(), null));
+								wm.transforms.deapply();
+								GL11.glPopMatrix();
+							}
+						}
+					}
+				}
         	}
         	if(Command.OTHER){
         		Wire wire;
@@ -267,22 +257,22 @@ public class WireRenderer {
 	}
 
 	private static void genWireDeco(WireRelay relay, Wire wire){
-		wire.deco_d = new HashMap<>();
-		wire.deco_g = new HashMap<>();
-		if(wire.decos == null) return;
+		wire.model.deco_d = new HashMap<>();
+		wire.model.deco_g = new HashMap<>();
+		/*if(wire.decos == null) return;
 		WireDeco deco;
 		for(Entry<String, WireDeco> entry : wire.decos.entrySet()){
 			deco = entry.getValue();
-			wire.deco_d.put(entry.getKey(), new HashMap<>());
-			wire.deco_g.put(entry.getKey(), new HashMap<>());
+			wire.model.deco_d.put(entry.getKey(), new HashMap<>());
+			wire.model.deco_g.put(entry.getKey(), new HashMap<>());
 			for(ModelGroup list : deco.getModel().groups){
 				for(Program program : list.getAllPrograms()){
 					if(program instanceof WirePrograms.SpacedDeco == false) continue;
-					wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
+					wire.model.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
 					break;
 				}
 			}
-		}
+		}*/
 	}
 
 }

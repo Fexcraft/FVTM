@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
@@ -309,14 +310,14 @@ public class InteractionHandler {
 		return true;
 	}
 
-	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.SIGN.item_type };
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type };
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
 		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
-		if((stack.isItemOf(ContentType.WIRE.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK)))) return handleWire(world, pass, key, stack);
+		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIREDECO.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK))) return handleWire(world, pass, key, stack);
 		if(stack.isItemOf(ContentType.SIGN.item_type) || (is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM))) return handleSign(world, pass, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
@@ -351,23 +352,52 @@ public class InteractionHandler {
 		return false;
 	}
 
+	private enum WIT {//wire interact type
+
+		WIRE, DECO_RELAY, DECO, SLACK, REMOVAL;
+
+		public boolean slack(){
+			return this == SLACK;
+		}
+
+		public boolean wire(){
+			return this == WIRE;
+		}
+
+		public boolean deco(){
+			return this == DECO;
+		}
+
+		public boolean relay(){
+			return this == DECO_RELAY;
+		}
+
+	}
+
 	private static boolean handleWire(FvtmWorld world, Passenger pass, KeyPress key, StackWrapper stack){
 		if(last.equals("wire") && Time.getDate() < cooldown) return false;
-		boolean wire = stack.isItemOf(ContentType.WIRE.item_type);
-		boolean slack = !wire && WIRE_SLACK.eq(getToolboxType(stack));
-		if(key.mouse_main() && (wire || !slack)) return false;
+		WIT type;
+		if(stack.isItemOf(ContentType.WIRE.item_type)) type = WIT.WIRE;
+		else if(stack.isItemOf(ContentType.WIREDECO.item_type)){
+			WireDeco deco = stack.getContent(ContentType.WIREDECO.item_type);
+			type = deco.isRelayType() ? WIT.DECO_RELAY : WIT.DECO;
+		}
+		else type = WIRE_SLACK.eq(getToolboxType(stack)) ? WIT.SLACK : WIT.REMOVAL;
+		if(key.mouse_main() && !type.slack()) return false;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, (WorldW)world);
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(3));
+		V3D cen;
 		float size;
+		FvtmLogger.marker(type);
 		for(SystemRegion<?, RelayHolder> reg : system.getRegions().values()){
 			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){
 					size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) : 0.0125f;
-					if(slack){
+					if(type.slack() || type.deco()){
 						for(Wire wr : relay.wires){
 							if(wr.copy) continue;
-							V3D cen = wr.getVectorPosition(wr.length * 0.5, false);
+							cen = wr.getVectorPosition(wr.length * 0.5, false);
 							aabb = AABB.create(cen.x - size, cen.y - size, cen.z - size, cen.x + size, cen.y + size, cen.z + size);
 							if(contains(evec, lvec, aabb)){
 								TagCW com = TagCW.create();
@@ -375,7 +405,37 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								wr.key.save(com);
 								com.set("up", key.mouse_right());
-								Packets.send(Packet_TagListener.class, "relay_wire_slack", com);
+								Packets.send(Packet_TagListener.class, type.deco() ? "relay_wire_deco" : "relay_wire_slack", com);
+								cooldown = Time.getDate() + 20;
+								last = "wire";
+								return true;
+							}
+						}
+					}
+					else if(type.relay()){
+						for(Wire wr : relay.wires){
+							cen = wr.getVectorPosition(size, false);
+							aabb = AABB.create(cen.x - size, cen.y - size, cen.z - size, cen.x + size, cen.y + size, cen.z + size);
+							if(contains(evec, lvec, aabb)){
+								TagCW com = TagCW.create();
+								com.set("holder", holder.pos, false);
+								com.set("relay", relay.getKey());
+								com.set("as", "relay_start");
+								wr.key.save(com);
+								Packets.send(Packet_TagListener.class, "relay_wire_deco", com);
+								cooldown = Time.getDate() + 20;
+								last = "wire";
+								return true;
+							}
+							cen = wr.getVectorPosition(wr.length - size, false);
+							aabb = AABB.create(cen.x - size, cen.y - size, cen.z - size, cen.x + size, cen.y + size, cen.z + size);
+							if(contains(evec, lvec, aabb)){
+								TagCW com = TagCW.create();
+								com.set("holder", holder.pos, false);
+								com.set("relay", relay.getKey());
+								com.set("as", "relay_end");
+								wr.key.save(com);
+								Packets.send(Packet_TagListener.class, "relay_wire_deco", com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;
@@ -388,7 +448,7 @@ public class InteractionHandler {
 							TagCW com = TagCW.create();
 							com.set("holder", holder.pos, false);
 							com.set("relay", relay.getKey());
-							Packets.send(Packet_TagListener.class, wire ? "relay_interact" : "relay_remove", com);
+							Packets.send(Packet_TagListener.class, type.wire() ? "relay_interact" : "relay_remove", com);
 							cooldown = Time.getDate() + 20;
 							last = "wire";
 							return true;

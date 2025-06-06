@@ -5,11 +5,8 @@ import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
 import static net.fexcraft.mod.uni.world.WrapperHolder.getPos;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TimerTask;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.Static;
@@ -17,6 +14,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -167,6 +165,25 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		wire0.getRelay().updateClient();
 		wire1.getRelay().updateClient();
 		player.bar("interact.fvtm.relay.wire_slack", wire0.slack);
+	}
+
+	public void onRelayWireDeco(TagCW com, Passenger player){
+		WireDeco deco = player.getHeldItem(true).getContent(ContentType.WIREDECO.item_type);
+		if(deco == null){
+			player.bar("deco null on server");
+			return;
+		}
+		Wire wire = getWire(new WireKey(com));
+		if(!deco.accepts(wire.type.getType())){
+			player.bar("interact.fvtm.relay.wire_deco_not_compatible");
+			return;
+		}
+		String type = com.has("as") ? com.getString("as") : deco.getType();
+		if(wire.decos == null) wire.decos = new HashMap<>();
+		wire.decos.put(type, deco);
+		//
+		wire.getRelay().updateClient();
+		player.bar("interact.fvtm.relay.wire_deco_added", deco.getType());
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

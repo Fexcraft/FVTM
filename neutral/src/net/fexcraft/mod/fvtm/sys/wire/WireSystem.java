@@ -13,6 +13,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
@@ -179,7 +180,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			return;
 		}
 		String type = com.has("as") ? com.getString("as") : deco.getType();
-		if(wire.decos == null) wire.decos = new HashMap<>();
+		if(wire.decos == null) wire.decos = new LinkedHashMap<>();
 		wire.decos.put(type, deco);
 		//
 		wire.getRelay().updateClient();

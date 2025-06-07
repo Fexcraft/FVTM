@@ -155,9 +155,9 @@ public class PathModelGenerator {
 		wire.model.wiremodel = tarp;
 		//
 		vec = wire.vecpath[wire.vecpath.length - 1];
-		wire.model.end_angle = Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
-		wire.model.end_angle = Static.toDegrees(wire.model.end_angle);
-		wire.model.start_angle = wire.model.end_angle - 180;
+		wire.model.end_angle = Math.atan2(wire.vecpath[0].x - vec.x, wire.vecpath[0].z - vec.z);
+		wire.model.end_angle = Static.toDegrees(wire.model.end_angle) - 90;
+		wire.model.start_angle = wire.model.end_angle + 180;
 		//
 		if(wire.decos == null) return;
 		if(wire.decos.containsKey("relay_start")) wire.model.deco_s = wire.decos.get("relay_start");

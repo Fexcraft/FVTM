@@ -184,8 +184,8 @@ public class WireRenderer {
 				GL11.glPopMatrix();
 				data = relay.getTile() == null ? null : ((BlockTileEntity)relay.getTile()).getBlockData();
 				CURRENT = wire;
-				ANGLE = wire.model.end_angle;
 				if(wire.model.deco_s != null){
+					ANGLE = wire.model.start_angle;
 					ANGLE_DOWN = wire.model.start_angle_down;
 					GL11.glPushMatrix();
 					GL11.glTranslated(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
@@ -195,7 +195,7 @@ public class WireRenderer {
 					GL11.glPopMatrix();
 				}
 				if(wire.model.deco_e != null){
-					//ANGLE = wire.model.end_angle;
+					ANGLE = wire.model.end_angle;
 					ANGLE_DOWN = wire.model.end_angle_down;
 					int l = wire.vecpath.length - 1;
 					GL11.glPushMatrix();

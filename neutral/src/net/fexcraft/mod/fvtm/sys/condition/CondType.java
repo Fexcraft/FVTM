@@ -7,7 +7,7 @@ public enum CondType {
 
 	ATTRIBUTE("attribute"),
 	PART_FUNC("part_func"),
-	WORLDTIME("world_time"),
+	DAYTIME("day_time"),
 	BLOCKSTATE("blockstate"),
 	TRACK_FROM("track_from"),
 	MULTI("multi"),

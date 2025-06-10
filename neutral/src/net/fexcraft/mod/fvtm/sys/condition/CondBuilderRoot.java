@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
+import net.fexcraft.mod.uni.world.WorldW;
+
 import java.util.function.Function;
 
 import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
@@ -91,6 +93,33 @@ public class CondBuilderRoot {
 						return (cond, data) -> als[0].isMet(cond, data) || als[1].isMet(cond, data);
 					}
 					else return COND_FALSE;
+				}
+				case DAYTIME:{
+					switch(key.mode){
+						case EQUAL:
+						case NUMB_EQUAL:
+						case BOOL_EQUAL:{
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() == cond.value.integer_value();
+						}
+						case NEQUAL:
+						case NUMB_NEQUAL:
+						case BOOL_NEQUAL:{
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() != cond.value.integer_value();
+						}
+						case LEQUAL:{
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() <= cond.value.integer_value();
+						}
+						case GEQUAL:{
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() >= cond.value.integer_value();
+						}
+						case LESS:{
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() < cond.value.integer_value();
+						}
+						case GREATER:{
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() > cond.value.integer_value();
+						}
+					}
+					break;
 				}
 			}
 			return null;

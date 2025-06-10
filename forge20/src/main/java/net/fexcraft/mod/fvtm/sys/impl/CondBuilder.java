@@ -12,25 +12,7 @@ import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
 public class CondBuilder {
 
 	public static Function<CondKey, Conditional> run(){
-		Function<CondKey, Conditional> con = CondBuilderRoot.run();
-		if(con != null) return con;
-		return cond -> {
-			switch(cond.type){
-				case WORLDTIME -> {
-
-					return COND_FALSE;
-				}
-				case BLOCKSTATE -> {
-
-					return COND_FALSE;
-				}
-				case CUSTOM -> {
-
-					return COND_FALSE;
-				}
-			}
-			return COND_FALSE;
-		};
+		return CondBuilderRoot.run();
 	}
 
 }

@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.Pos;
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,8 @@ import static net.fexcraft.mod.fvtm.model.program.DefaultPrograms.LightBeam.*;
  */
 public class DefaultPrograms12 extends DefaultPrograms {
 
+	private static HashMap<String, SignText> TEXTS = new HashMap<>();
+	private static HashMap<String, FontRenderer> FONTS = new HashMap<>();
 	public static boolean DIDLOAD = false;
 
 	public static void init(){
@@ -245,8 +248,8 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			}
 		});
-		ModelGroup.PROGRAMS.add(new TextRenderer(0, 0, 0, 0, 0, 0, 0, true));
-		ModelGroup.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
+		ModelGroup.PROGRAMS.add(new TextRenderer());
+		ModelGroup.PROGRAMS.add(new AttributeTextRenderer());
 		ModelGroup.PROGRAMS.add(new Rotator(0, 0, 0, 0, null, false, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new Translator(0, 0, 0, 0, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
@@ -1047,67 +1050,22 @@ public class DefaultPrograms12 extends DefaultPrograms {
 	public static class TextRenderer extends Transparent {
 		
 		protected static Attribute<?> attr;
-		protected net.minecraft.client.gui.FontRenderer font_renderer;
 		protected float downscale_font = 0.00390625f;
 		protected float rx, ry, rz, scale;
 		protected boolean glow, no_depth_test, centered;
 		protected String text = "", attrid;
 		protected int color = RGB.BLACK.packed, lx, ly;
-		protected Pos pos;
-		
-		public TextRenderer(float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered){
-			super(189f, 4f);
-			this.centered = centered;
-			this.scale = scale;
-			this.rx = rx;
-			this.ry = ry;
-			this.rz = rz;
-			pos = new Pos(-x, y, z);
-		}
-		
-		public TextRenderer(float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered, String string){
-			this(x, y, z, rx, ry, rz, scale, centered);
-			this.text = string;
-		}
-		
-		public TextRenderer setFontRenderer(net.minecraft.client.gui.FontRenderer renderer){
-			font_renderer = renderer;
-			return this;
-		}
-		
-		public TextRenderer disableDepthTest(boolean bool){
-			no_depth_test = bool;
-			return this;
-		}
-		
-		public TextRenderer setColor(RGB rgb){
-			color = rgb.packed;
-			return this;
-		}
-		
-		public TextRenderer setColor(int color){
-			this.color = color;
-			return this;
-		}
-		
-		public TextRenderer setGlow(boolean bool){
-			glow = bool;
-			return this;
-		}
-		
-		public TextRenderer glow(){
-			glow = true;
-			return this;
-		}
+		protected V3D pos = new V3D();
+		protected String fontkey;
+		protected FontRenderer font;
 
-		public TextRenderer setLightAttribute(String string){
-			attrid = string;
-			return this;
+		public TextRenderer(){
+			super(189f, 4f);
 		}
 
 		@Override
 		public String id(){
-			return "fvtm:text_renderer";
+			return "fvtm:text";
 		}
 		
 		@Override
@@ -1118,25 +1076,24 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(text.length() == 0) return;
-			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
-			if(font_renderer == null) return;
+			if(font == null) font = getFont(fontkey);
 	        GlStateManager.pushMatrix();
 			if(glow || (attrid != null && attr(data.vehicle))) super.pre(list, data);
-			pos.translate();
+			GLUtils112.translate(pos);
 	        RGB.WHITE.glColorApply();
 	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
-	        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
+	        if(scale != 1f) GL11.glScalef(scale, scale, scale);
 	        GL11.glRotatef(-90, 0, 1, 0);
 			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
 	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	        GlStateManager.depthMask(false);
 	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        font_renderer.drawString(text, centered ? -font_renderer.getStringWidth(text) / 2 : 0, 0, this.color);
+	        font.drawString(text, centered ? -font.getStringWidth(text) / 2 : 0, 0, this.color);
 	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GlStateManager.depthMask(true);
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			if(glow || (attrid != null && attr(data.vehicle))) super.post(list, data                                                                                                                    );
+			if(glow || (attrid != null && attr(data.vehicle))) super.post(list, data);
 	        GlStateManager.popMatrix();
 		}
 		
@@ -1148,18 +1105,19 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			float px = args.length > 0 ? Float.parseFloat(args[0]) : 0;
-			float py = args.length > 1 ? Float.parseFloat(args[1]) : 0;
-			float pz = args.length > 2 ? Float.parseFloat(args[2]) : 0;
-			float rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
-			float ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
-			float rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
-			float scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
-			boolean cen = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
-			String text = args.length > 8 && !args[8].equals("null") ? args[8] : "";
-			int color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
-			boolean glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
-			return new TextRenderer(px, py, pz, rx, ry, rz, scale, cen, text).setColor(color).setGlow(glow);
+			TextRenderer ren = new TextRenderer();
+			ren.pos.x = args.length > 0 ? Float.parseFloat(args[0]) : 0;
+			ren.pos.y = args.length > 1 ? Float.parseFloat(args[1]) : 0;
+			ren.pos.z = args.length > 2 ? Float.parseFloat(args[2]) : 0;
+			ren.rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
+			ren.ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
+			ren.rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
+			ren.scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
+			ren.centered = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
+			ren.text = args.length > 8 && !args[8].equals("null") ? args[8] : "";
+			ren.color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
+			ren.glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
+			return ren;
 		}
 		
 	}
@@ -1168,15 +1126,10 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 		protected Attribute<?> attr;
 		protected String attribute;
-		
-		public AttributeTextRenderer(String attribute, float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered){
-			super(x, y, z, rx, ry, rz, scale, centered);
-			this.attribute = attribute;
-		}
 
 		@Override
 		public String id(){
-			return "fvtm:attr_text_renderer";
+			return "fvtm:attr_text";
 		}
 		
 		@Override
@@ -1193,18 +1146,19 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			float px = args.length > 0 ? Float.parseFloat(args[0]) : 0;
-			float py = args.length > 1 ? Float.parseFloat(args[1]) : 0;
-			float pz = args.length > 2 ? Float.parseFloat(args[2]) : 0;
-			float rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
-			float ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
-			float rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
-			float scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
-			boolean cen = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
-			String attr = args.length > 8 && !args[8].equals("null") ? args[8] : "";
-			int color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
-			boolean glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
-			return new AttributeTextRenderer(attr, px, py, pz, rx, ry, rz, scale, cen).setColor(color).setGlow(glow);
+			AttributeTextRenderer ren = new AttributeTextRenderer();
+			ren.pos.x = args.length > 0 ? Float.parseFloat(args[0]) : 0;
+			ren.pos.y = args.length > 1 ? Float.parseFloat(args[1]) : 0;
+			ren.pos.z = args.length > 2 ? Float.parseFloat(args[2]) : 0;
+			ren.rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
+			ren.ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
+			ren.rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
+			ren.scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
+			ren.centered = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
+			ren.attribute = args.length > 8 && !args[8].equals("null") ? args[8] : "";
+			ren.color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
+			ren.glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
+			return ren;
 		}
 		
 	}
@@ -1634,8 +1588,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 	public static class SignText implements Program {
 
-		private static HashMap<String, SignText> TEXTS = new HashMap<>();
-		private static HashMap<String, FontRenderer> FONTS = new HashMap<>();
 		private FontRenderer font;
 		private String key;
 
@@ -1655,15 +1607,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 			GlStateManager.scale(-0.025F, -0.025F, 0.025F);
 			GlStateManager.rotate(90, 0, 1, 0);
 			/*if(glow)*/ GlStateManager.disableLighting();
-			if(font == null){
-				if(key == null) font = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
-				else{
-					if(!FONTS.containsKey(key)){
-						FONTS.put(key, new FontRenderer(Minecraft.getMinecraft().gameSettings, new ResourceLocation(key), Minecraft.getMinecraft().getTextureManager(), false));
-					}
-					font = FONTS.get(key);
-				}
-			}
+			if(font == null) font = getFont(key);
 			font.drawString(data.sign.text, data.sign.centered ? -font.getStringWidth(data.sign.text) / 2 : 0, 0, data.sign.getColorChannel("text").packed - 16777216);
 			/*if(glow)*/ GlStateManager.enableLighting();
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -1687,6 +1631,16 @@ public class DefaultPrograms12 extends DefaultPrograms {
 			return this;
 		}
 
+	}
+
+	private static FontRenderer getFont(String key){
+		if(key == null) return Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+		else{
+			if(!FONTS.containsKey(key)){
+				FONTS.put(key, new FontRenderer(Minecraft.getMinecraft().gameSettings, new ResourceLocation(key), Minecraft.getMinecraft().getTextureManager(), false));
+			}
+			return FONTS.get(key);
+		}
 	}
 	
 }

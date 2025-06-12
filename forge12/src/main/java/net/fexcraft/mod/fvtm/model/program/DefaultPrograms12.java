@@ -249,7 +249,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 			}
 		});
 		ModelGroup.PROGRAMS.add(new TextRenderer());
-		ModelGroup.PROGRAMS.add(new AttributeTextRenderer());
 		ModelGroup.PROGRAMS.add(new Rotator(0, 0, 0, 0, null, false, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new Translator(0, 0, 0, 0, false));//parsed init only
 		ModelGroup.PROGRAMS.add(new DisplayBarrel());
@@ -1047,21 +1046,9 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 	}
 	
-	public static class TextRenderer extends Transparent {
-		
-		protected static Attribute<?> attr;
-		protected float downscale_font = 0.00390625f;
-		protected float rx, ry, rz, scale;
-		protected boolean glow, no_depth_test, centered;
-		protected String text = "", attrid;
-		protected int color = RGB.BLACK.packed, lx, ly;
-		protected V3D pos = new V3D();
-		protected String fontkey;
-		protected FontRenderer font;
+	public static class TextRenderer extends TextRendererBase {
 
-		public TextRenderer(){
-			super(189f, 4f);
-		}
+		protected FontRenderer font;
 
 		@Override
 		public String id(){
@@ -1074,91 +1061,35 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		}
 
 		@Override
+		public TextRendererBase create(){
+			return new TextRenderer();
+		}
+
+		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			if(text.length() == 0) return;
+			if(attrid != null){
+				attr = data.vehicle.getAttribute(attrid);
+				if(attr == null) return;
+				text = attr.asString();
+			}
+			if(text.isEmpty()) return;
 			if(font == null) font = getFont(fontkey);
-	        GlStateManager.pushMatrix();
-			if(glow || (attrid != null && attr(data.vehicle))) super.pre(list, data);
+	        GL11.glPushMatrix();
 			GLUtils112.translate(pos);
-	        RGB.WHITE.glColorApply();
-	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
+	        GL11.glScalef(-downscale, -downscale, -downscale);
 	        if(scale != 1f) GL11.glScalef(scale, scale, scale);
 	        GL11.glRotatef(-90, 0, 1, 0);
-			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
-	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
-	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
-	        GlStateManager.depthMask(false);
-	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        font.drawString(text, centered ? -font.getStringWidth(text) / 2 : 0, 0, this.color);
-	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
-	        GlStateManager.depthMask(true);
-	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			if(glow || (attrid != null && attr(data.vehicle))) super.post(list, data);
-	        GlStateManager.popMatrix();
+			if(rot.y != 0.0F) GL11.glRotated(rot.y, 0, 1, 0);
+	        if(rot.z != 0.0F) GL11.glRotated(rot.z, 0, 0, 1);
+	        if(rot.x != 0.0F) GL11.glRotated(rot.x, 1, 0, 0);
+	        font.drawString(width > 0 ? font.trimStringToWidth(text, width) : text, centered ? -font.getStringWidth(text) / 2 : 0, 0, color);
+	        RGB.glColorReset();
+			GL11.glPopMatrix();
 		}
 		
 		protected boolean attr(VehicleData data){
 			attr = data.getAttribute(attrid);
 			return attr != null && attr.asBoolean();
-		}
-		
-
-		@Override
-		public Program parse(String[] args){
-			TextRenderer ren = new TextRenderer();
-			ren.pos.x = args.length > 0 ? Float.parseFloat(args[0]) : 0;
-			ren.pos.y = args.length > 1 ? Float.parseFloat(args[1]) : 0;
-			ren.pos.z = args.length > 2 ? Float.parseFloat(args[2]) : 0;
-			ren.rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
-			ren.ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
-			ren.rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
-			ren.scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
-			ren.centered = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
-			ren.text = args.length > 8 && !args[8].equals("null") ? args[8] : "";
-			ren.color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
-			ren.glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
-			return ren;
-		}
-		
-	}
-	
-	public static class AttributeTextRenderer extends TextRenderer {
-		
-		protected Attribute<?> attr;
-		protected String attribute;
-
-		@Override
-		public String id(){
-			return "fvtm:attr_text";
-		}
-		
-		@Override
-		public boolean pre(){
-			return true;
-		}
-		
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
-			text = attr.asString();
-		}
-		
-
-		@Override
-		public Program parse(String[] args){
-			AttributeTextRenderer ren = new AttributeTextRenderer();
-			ren.pos.x = args.length > 0 ? Float.parseFloat(args[0]) : 0;
-			ren.pos.y = args.length > 1 ? Float.parseFloat(args[1]) : 0;
-			ren.pos.z = args.length > 2 ? Float.parseFloat(args[2]) : 0;
-			ren.rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
-			ren.ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
-			ren.rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
-			ren.scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
-			ren.centered = args.length > 7 ? Boolean.parseBoolean(args[7]) : true;
-			ren.attribute = args.length > 8 && !args[8].equals("null") ? args[8] : "";
-			ren.color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
-			ren.glow = args.length > 10 ? Boolean.parseBoolean(args[10]) : false;
-			return ren;
 		}
 		
 	}

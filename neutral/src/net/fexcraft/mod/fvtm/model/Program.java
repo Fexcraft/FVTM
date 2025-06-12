@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import net.fexcraft.app.json.JsonMap;
+
 import static net.fexcraft.mod.fvtm.model.ModelGroup.PROGRAMS;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +21,8 @@ public interface Program {
 
 	/** For creating instances from String arguments if necessary. */
 	public default Program parse(String[] args){ return this; }
+
+	public default Program parse(JsonMap map){ return this; }
 
 	public default <T extends Program> T register(){
 		PROGRAMS.add(this);

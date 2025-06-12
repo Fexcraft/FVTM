@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model.program;
 
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -8,6 +10,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
+import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -709,6 +712,51 @@ public class DefaultPrograms {
 
 			public abstract void post(LightBeam beam, ModelGroup list, ModelRenderData data);
 		}
+
+	}
+
+	public static abstract class TextRendererBase implements Program {
+
+		protected static float downscale = 1f / 256f;
+		protected int color = RGB.BLACK.packed;
+		protected int width;
+		protected float scale;
+		protected static Attribute<?> attr;
+		protected boolean glow;
+		protected boolean centered;
+		protected String text = "";
+		protected String attrid;
+		protected V3D pos = new V3D();
+		protected V3D rot = new V3D();
+		protected String fontkey;
+
+		@Override
+		public String id(){
+			return "fvtm:text";
+		}
+
+		@Override
+		public boolean pre(){
+			return false;
+		}
+
+		@Override
+		public Program parse(JsonMap map){
+			TextRendererBase ren = create();
+			ren.pos = map.has("pos") ? ContentConfigUtil.getVector(map.getArray("pos")) : V3D.NULL;
+			ren.rot = map.has("rot") ? ContentConfigUtil.getVector(map.getArray("rot")) : V3D.NULL;
+			ren.scale = map.getFloat("scale", 4);
+			ren.centered = map.getBoolean("centered", true);
+			ren.text = map.getString("text", "-");
+			ren.color = map.has("color") ? Integer.parseInt(map.get("color").string_value(), 16) : RGB.BLACK.packed;
+			ren.glow = map.getBoolean("glow", false);
+			ren.attrid = map.getString("attr", null);
+			ren.fontkey = map.getString("font", null);
+			ren.width = map.getInteger("width", 0);
+			return ren;
+		}
+
+		public abstract TextRendererBase create();
 
 	}
 

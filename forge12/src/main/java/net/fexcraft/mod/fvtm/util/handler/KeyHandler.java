@@ -78,7 +78,7 @@ public class KeyHandler {
         if(minecraft.player == null || minecraft.world == null) return;
         switch(event.phase){
             case START: {
-                if(minecraft.player.getRidingEntity() instanceof RootVehicle){
+                if(minecraft.player.getRidingEntity() instanceof RootVehicle && minecraft.currentScreen == null){
                     handleKeyboardInput();
                 }
             }

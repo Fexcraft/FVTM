@@ -124,6 +124,16 @@ public class DefaultModel implements Model {
 					}
 					continue;
 				}
+				if(val.isMap()){
+					JsonMap map = val.asMap();
+					try{
+						groups.get(map.get("group").string_value()).addProgram(parseProgram(map));
+					}
+					catch(Exception e){
+						FvtmLogger.log(e, "adding program to " + map.get("group"));
+					}
+					continue;
+				}
 				String[] split = val.string_value().trim().split(" ");
 				if(!groups.contains(split[0])) continue;
 				try{
@@ -333,6 +343,14 @@ public class DefaultModel implements Model {
 			throw new Exception("PROGRAM WITH ID '" + args[atidx] + "' NOT FOUND!");
 		}
 		return prog.parse(Arrays.copyOfRange(args, atidx + 1, args.length));
+	}
+
+	private static Program parseProgram(JsonMap map) throws Exception {
+		Program prog = ModelGroup.PROGRAMS.get(map.get("id").string_value());
+		if(prog == null){
+			throw new Exception("PROGRAM WITH ID '" + map.get("id").string_value() + "' NOT FOUND!");
+		}
+		return prog.parse(map);
 	}
 
 	public ModelGroup get(String key){

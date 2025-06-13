@@ -90,19 +90,19 @@ public class WireRenderer {
 			Wire wire = relay.wires.get(i);
 			if(wire.vecpath == null || wire.getWireType() == null) continue;
 			WireModel model = wire.getWireType().getModel();
-			if(wire.wiremodel == null) PathModelGenerator.generateWireModel(wire, model);
+			if(wire.model.wiremodel == null) PathModelGenerator.generateWireModel(wire, model);
 			FvtmRenderTypes.setCutout(wire.getWireType().getTexture());
 			pose.translate(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-			wire.wiremodel.render();
+			wire.model.wiremodel.render();
 			if(relay.getTile() != null){
 				CURRENT = wire;
-				ANGLE = wire.model_end_angle;
-				if(wire.deco_s != null){
-					ANGLE_DOWN = wire.model_start_angle_down;
+				ANGLE = wire.model.end_angle;
+				if(wire.model.deco_s != null){
+					ANGLE_DOWN = wire.model.start_angle_down;
 					//TODO wire deco
 				}
-				if(wire.deco_e != null){
-					ANGLE_DOWN = wire.model_end_angle_down;
+				if(wire.model.deco_e != null){
+					ANGLE_DOWN = wire.model.end_angle_down;
 					//TODO wire deco
 				}
 				//TODO wire deco

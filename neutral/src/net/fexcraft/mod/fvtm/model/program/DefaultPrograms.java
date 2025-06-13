@@ -718,6 +718,7 @@ public class DefaultPrograms {
 	public static abstract class TextRendererBase implements Program {
 
 		protected static float downscale = 1f / 256f;
+		protected static RGB col = new RGB();
 		protected int color = RGB.BLACK.packed;
 		protected int width;
 		protected float scale;

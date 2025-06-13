@@ -1555,7 +1555,10 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		if(key == null) return Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 		else{
 			if(!FONTS.containsKey(key)){
-				FONTS.put(key, new FontRenderer(Minecraft.getMinecraft().gameSettings, new ResourceLocation(key), Minecraft.getMinecraft().getTextureManager(), false));
+				String[] split = key.split(":");
+				ResourceLocation loc = new ResourceLocation(split[0], "textures/font/" + split[1] + ".png");
+				FONTS.put(key, new FontRenderer(Minecraft.getMinecraft().gameSettings, loc, Minecraft.getMinecraft().getTextureManager(), false));
+				FONTS.get(key).onResourceManagerReload(null);
 			}
 			return FONTS.get(key);
 		}

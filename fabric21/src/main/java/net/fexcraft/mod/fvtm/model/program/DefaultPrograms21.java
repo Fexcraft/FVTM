@@ -32,6 +32,8 @@ import static net.fexcraft.mod.fvtm.render.Renderer21.*;
  */
 public class DefaultPrograms21 extends DefaultPrograms {
 
+	private static HashMap<String, Font> FONTS = new HashMap<>();
+
 	public static void init(){
 		DefaultPrograms.init();
 		GLOW = new Program() {
@@ -213,6 +215,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 				pose.popPose();
 			}
 		};
+		ModelGroup.PROGRAMS.add(new TextRenderer());
 	}
 
 	public static class RGBCustom implements Program {
@@ -515,7 +518,6 @@ public class DefaultPrograms21 extends DefaultPrograms {
 	public static class SignText implements Program {
 
 		private static HashMap<String, SignText> TEXTS = new HashMap<>();
-		private static HashMap<String, Font> FONTS = new HashMap<>();
 		private Font font;
 		private String key;
 
@@ -535,17 +537,12 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			RENDERER.scale(-0.025F, -0.025F, 0.025F);
 			RENDERER.rotate(90, 0, 1, 0);
 			if(font == null){
-				if(key == null) font = Minecraft.getInstance().font;
-				else{
-					if(!FONTS.containsKey(key)){
-						FONTS.put(key, new Font(res -> Minecraft.getInstance().fontManager.fontSets.getOrDefault(ResourceLocation.tryParse(key), Minecraft.getInstance().fontManager.missingFontSet), true));
-					}
-					font = FONTS.get(key);
-				}
+				font = getFont(key);
+				if(font == null) return;
 			}
 			font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
 				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer21.buffer(),
-				Font.DisplayMode.SEE_THROUGH, light, Renderer21.overlay
+				Font.DisplayMode.SEE_THROUGH, overlay, light
 			);
 			Renderer21.resetColor();
 			RENDERER.pop();
@@ -566,6 +563,54 @@ public class DefaultPrograms21 extends DefaultPrograms {
 				return TEXTS.get(key);
 			}
 			return this;
+		}
+
+	}
+
+	private static Font getFont(String key){
+		if(key == null) return Minecraft.getInstance().font;
+		else{
+			if(!FONTS.containsKey(key)){
+				FONTS.put(key, new Font(res -> Minecraft.getInstance().fontManager.fontSets.getOrDefault(ResourceLocation.tryParse(key), Minecraft.getInstance().fontManager.missingFontSet), true));
+			}
+			return FONTS.get(key);
+		}
+	}
+
+	public static class TextRenderer extends TextRendererBase {
+
+		protected Font font;
+
+		@Override
+		public TextRendererBase create(){
+			return new TextRenderer();
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			if(attrid != null){
+				attr = data.vehicle.getAttribute(attrid);
+				if(attr == null) return;
+				text = attr.asString();
+			}
+			if(text.isEmpty()) return;
+			if(font == null){
+				font = getFont(fontkey);
+				if(font == null) return;
+			}
+			RENDERER.push();
+			RENDERER.translate(pos);
+			RENDERER.scale(-downscale, -downscale, -downscale);
+			if(scale != 1f) RENDERER.scale(scale, scale, scale);
+			RENDERER.rotate(-90, 0, 1, 0);
+			if(rot.y != 0.0F) RENDERER.rotate(rot.y, 0, 1, 0);
+			if(rot.z != 0.0F) RENDERER.rotate(rot.z, 0, 0, 1);
+			if(rot.x != 0.0F) RENDERER.rotate(rot.x, 1, 0, 0);
+			font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
+				color - 16777216, false, pose.last().pose(), Renderer21.buffer(),
+				glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, overlay, light
+			);
+			RENDERER.pop();
 		}
 
 	}

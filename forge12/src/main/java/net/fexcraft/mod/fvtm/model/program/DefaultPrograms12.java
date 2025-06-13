@@ -1051,16 +1051,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		protected FontRenderer font;
 
 		@Override
-		public String id(){
-			return "fvtm:text";
-		}
-		
-		@Override
-		public boolean pre(){
-			return false;
-		}
-
-		@Override
 		public TextRendererBase create(){
 			return new TextRenderer();
 		}
@@ -1077,6 +1067,8 @@ public class DefaultPrograms12 extends DefaultPrograms {
 	        GL11.glPushMatrix();
 			GLUtils112.translate(pos);
 	        GL11.glScalef(-downscale, -downscale, -downscale);
+			col.packed = color;
+			col.glColorApply();
 	        if(scale != 1f) GL11.glScalef(scale, scale, scale);
 	        GL11.glRotatef(-90, 0, 1, 0);
 			if(rot.y != 0.0F) GL11.glRotated(rot.y, 0, 1, 0);
@@ -1085,11 +1077,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 	        font.drawString(width > 0 ? font.trimStringToWidth(text, width) : text, centered ? -font.getStringWidth(text) / 2 : 0, 0, color);
 	        RGB.glColorReset();
 			GL11.glPopMatrix();
-		}
-		
-		protected boolean attr(VehicleData data){
-			attr = data.getAttribute(attrid);
-			return attr != null && attr.asBoolean();
 		}
 		
 	}

@@ -1078,6 +1078,11 @@ public class DefaultPrograms12 extends DefaultPrograms {
 	        RGB.glColorReset();
 			GL11.glPopMatrix();
 		}
+
+		@Override
+		public RenderOrder order(){
+			return RenderOrder.LAST;
+		}
 		
 	}
 	

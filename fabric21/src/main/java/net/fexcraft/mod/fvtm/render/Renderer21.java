@@ -163,6 +163,11 @@ public class Renderer21 extends Renderer<GLObject> {
 	}
 
 	@Override
+	public void rotate(double deg, int x, int y, int z){
+		pose.mulPose(new Matrix4f().rotate((float)deg * Static.rad1, x, y, z));
+	}
+
+	@Override
 	public void scale(double x, double y, double z){
 		pose.scale((float)x, (float)y, (float)z);
 	}

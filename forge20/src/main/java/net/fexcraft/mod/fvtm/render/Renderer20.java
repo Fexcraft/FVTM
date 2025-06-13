@@ -172,11 +172,12 @@ public class Renderer20 extends Renderer<GLObject> {
 
 	@Override
 	public void rotate(float deg, int x, int y, int z){
-		Matrix4f mat = new Matrix4f();
-		if(x != 0f) mat.rotate(deg * Static.rad1, AX);
-		if(y != 0f) mat.rotate(deg * Static.rad1, AY);
-		if(z != 0f) mat.rotate(deg * Static.rad1, AZ);
-		pose.mulPoseMatrix(mat);
+		pose.mulPoseMatrix(new Matrix4f().rotate(deg * Static.rad1, x, y, z));
+	}
+
+	@Override
+	public void rotate(double deg, int x, int y, int z){
+		pose.mulPoseMatrix(new Matrix4f().rotate((float)deg * Static.rad1, x, y, z));
 	}
 
 	@Override

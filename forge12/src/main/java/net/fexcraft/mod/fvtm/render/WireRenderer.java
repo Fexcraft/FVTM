@@ -212,18 +212,18 @@ public class WireRenderer {
 						wm = dm.getValue().getModel();
 						for(ModelGroup list : wm.groups){
 							if(wire.model.deco_d.get(dm.getKey()).containsKey(list.name)){
-								ArrayList<Polyhedron> tlist = wire.model.deco_g.containsKey(dm.getKey()) ? wire.model.deco_g.get(dm.getKey()).get(list.name) : null;
-								int didx = 0;
+								//ArrayList<Polyhedron> tlist = wire.model.deco_g.containsKey(dm.getKey()) ? wire.model.deco_g.get(dm.getKey()).get(list.name) : null;
+								//int didx = 0;
 								for(V3D vec : wire.model.deco_d.get(dm.getKey()).get(list.name)){
 									GL11.glPushMatrix();
 									GL11.glTranslated(vec.x - cx, vec.y - cy, vec.z - cz);
 									wm.transforms.apply();
 									TexUtil.bindTexture(dm.getValue().getTexture());
 									list.render(RENDERDATA.set(data, relay.getTile(), null));
-									if(tlist != null){
+									/*if(tlist != null){
 										TexUtil.bindTexture(wire.getWireType().getTexture());
 										tlist.get(didx++).render();
-									}
+									}*/
 									wm.transforms.deapply();
 									GL11.glPopMatrix();
 								}

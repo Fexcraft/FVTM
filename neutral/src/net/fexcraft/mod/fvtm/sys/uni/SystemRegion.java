@@ -126,11 +126,12 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 		return objects.get(pos);
 	}
 
-	public void del(V3I pos){
+	public boolean del(V3I pos){
 		V val = get(pos);
-		if(val == null) return;
+		if(val == null) return false;
 		val.delete();
 		objects.remove(pos);
+		return true;
 	}
 
 	public Map<V3I, V> getObjects(){

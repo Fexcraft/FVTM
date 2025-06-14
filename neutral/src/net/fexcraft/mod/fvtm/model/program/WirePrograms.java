@@ -1,8 +1,9 @@
 package net.fexcraft.mod.fvtm.model.program;
 
-import net.fexcraft.lib.common.Static;
+import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
@@ -27,9 +28,9 @@ public class WirePrograms {
 	public static void init(){
 		ModelGroup.PROGRAMS.add(new RotateY(0));
 		ModelGroup.PROGRAMS.add(ROTATED);
-		ModelGroup.PROGRAMS.add(new DownwardAngled(0, false));
-		ModelGroup.PROGRAMS.add(new SpacedDeco());
-		ModelGroup.PROGRAMS.add(new CatenaryDropper());
+		ModelGroup.PROGRAMS.add(new DownwardAngled(0));
+		ModelGroup.PROGRAMS.add(new SpacedDeco(new JsonMap()));
+		//ModelGroup.PROGRAMS.add(new CatenaryDropper(new JsonMap()));
 	}
 	
 	public static class RotateY implements Program {
@@ -74,11 +75,9 @@ public class WirePrograms {
 	public static class DownwardAngled implements Program {
 		
 		private float length;
-		private boolean diswire;
 		
-		public DownwardAngled(float length, boolean disable){
+		public DownwardAngled(float length){
 			this.length = length;
-			diswire = disable;
 		}
 
 		@Override
@@ -88,63 +87,36 @@ public class WirePrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.rotate(WireRenderer.ANGLE_DOWN, 1, 0, 0);
+			RENDERER.rotate(WireRenderer.ANGLE_DOWN, 0, 0, 1);
 		}
 
 		@Override
 		public Program parse(String[] args){
-			return new DownwardAngled(args.length > 0 ? Float.parseFloat(args[0]) : sixteenth, args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
+			return new DownwardAngled(args.length > 0 ? Float.parseFloat(args[0]) : sixteenth/*, args.length > 1 ? Boolean.parseBoolean(args[1]) : false*/);
 		}
 
 		public float length(){
 			return length;
 		}
 		
-		public boolean disable_wire(){
-			return diswire;
-		}
-		
 	};
 	
 	public static class SpacedDeco implements Program {
 		
-		protected boolean symmetric, centered;
+		protected boolean symmetric;
+		protected boolean centered;
 		protected float center_spacing = 0.5f;
 		protected float ending_spacing = 0.5f;
 		protected float between_spacing = 1f;
 		protected int limit = 0;
 		
-		public SpacedDeco(String... args){
-			for(String arg : args){
-				String[] split = arg.split(":");
-				switch(split[0]){
-					case "symmetric":{
-						symmetric = Boolean.parseBoolean(split[1]);
-						break;
-					}
-					case "centered":{
-						centered = Boolean.parseBoolean(split[1]);
-						break;
-					}
-					case "start_spacing":
-					case "center_spacing":{
-						center_spacing = Float.parseFloat(split[1]);
-						break;
-					}
-					case "ending_spacing":{
-						ending_spacing = Float.parseFloat(split[1]);
-						break;
-					}
-					case "between_spacing":{
-						between_spacing = Float.parseFloat(split[1]);
-						break;
-					}
-					case "limit":{
-						limit = Integer.parseInt(split[1]);
-						break;
-					}
-				}
-			}
+		public SpacedDeco(JsonMap map){
+			symmetric = map.getBoolean("symmetric", false);
+			centered = map.getBoolean("centered", false);
+			center_spacing = map.getFloat("center_spacing", 0.5f);
+			ending_spacing = map.getFloat("ending_spacing", 0.5f);
+			between_spacing = map.getFloat("between_spacing", 1f);
+			limit = map.getInteger("limit", 0);
 		}
 
 		@Override
@@ -153,8 +125,13 @@ public class WirePrograms {
 		}
 
 		@Override
+		public Program parse(JsonMap map){
+			return new SpacedDeco(map);
+		}
+
+		@Override
 		public Program parse(String[] args){
-			return new SpacedDeco(args);
+			return new SpacedDeco(new JsonMap());
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -192,30 +169,18 @@ public class WirePrograms {
 		
 	}
 	
-	public static class CatenaryDropper extends SpacedDeco {
+	/*public static class CatenaryDropper extends SpacedDeco {
 		
 		public Vec3f[][] model = new Vec3f[4][];
-		public float sx = 0.5f, sz = 0.5f, sl = Static.sixteenth;
+		public float sx;
+		public float sz;
+		public float sl;
 
-		public CatenaryDropper(String... args){
-			super(args);
-			for(String arg : args){
-				String[] split = arg.split(":");
-				switch(split[0]){
-					case "width":{
-						sx = Float.parseFloat(split[1]);
-						break;
-					}
-					case "depth":{
-						sz = Float.parseFloat(split[1]);
-						break;
-					}
-					case "scale":{
-						sl = Float.parseFloat(split[1]);
-						break;
-					}
-				}
-			}
+		public CatenaryDropper(JsonMap map){
+			super(map);
+			sx = map.getFloat("width", 0.5f);
+			sz = map.getFloat("depth", 0.5f);
+			sl = map.getFloat("scale", sixteenth);
 			float hx = sx / 2, hz = sz / 2;
 			model[0] = new Vec3f[]{ new Vec3f(-hx, 0, -hz).scale(sl), new Vec3f(hx, -hz, 0).scale(sl) };
 			model[1] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) };
@@ -229,8 +194,8 @@ public class WirePrograms {
 		}
 
 		@Override
-		public Program parse(String[] args){
-			return new CatenaryDropper(args);
+		public Program parse(JsonMap map){
+			return new CatenaryDropper(map);
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -244,7 +209,7 @@ public class WirePrograms {
 			Wire owir = other.getWire(new WireKey(wire.key.start_pos, "support", wire.key.end_pos, "support"));
 			//if(owir.copy) owir = relay.getHolder().getRegion().getSystem().getWire(owir.okey);
 			if(owir != null){
-				ArrayList<ModelRendererTurbo> tlist = new ArrayList<>();
+				ArrayList<Polyhedron> tlist = new ArrayList<>();
 				float rat = owir.length / wire.length;
 				float last = -1;
 				int idx = 0;
@@ -252,9 +217,9 @@ public class WirePrograms {
 					V3D vec = owir.getVectorPosition(dis * rat, last == dis);
 					V3D vecl = veclis.get(idx);
 					double hei = vec.y - vecl.y;
-					tlist.add(new ModelRendererTurbo(null, 0, 0, 16, 16)
+					tlist.add(new Polyhedron().importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16)
 						.addBox(-sx/2, 0, -sz/2, sx, (float)hei * 16, sz)
-						.setRotationPoint(0, (float)-hei * 16, 0));
+						.setRotationPoint(0, (float)-hei * 16, 0), false, sixteenth));
 					last = dis;
 					idx++;
 				}
@@ -263,6 +228,6 @@ public class WirePrograms {
 			return veclis;
 		}
 		
-	}
+	}*/
 	
 }

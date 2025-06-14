@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireDeco;
@@ -189,7 +190,7 @@ public class WireRenderer {
 					ANGLE_DOWN = wire.model.start_angle_down;
 					GL11.glPushMatrix();
 					GL11.glTranslated(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
-					GL11.glRotated(wire.model.start_angle, 0, 1, 0);
+					//GL11.glRotated(wire.model.start_angle, 0, 1, 0);
 					TexUtil.bindTexture(wire.model.deco_s.getTexture());
 					wire.model.deco_s.getModel().render(RENDERDATA.set(data, relay.getTile(), null));
 					GL11.glPopMatrix();
@@ -200,23 +201,22 @@ public class WireRenderer {
 					int l = wire.vecpath.length - 1;
 					GL11.glPushMatrix();
 					GL11.glTranslated(wire.vecpath[l].x - cx, wire.vecpath[l].y - cy, wire.vecpath[l].z - cz);
-					GL11.glRotated(wire.model.end_angle, 0, 1, 0);
+					//GL11.glRotated(wire.model.end_angle, 0, 1, 0);
 					TexUtil.bindTexture(wire.model.deco_e.getTexture());
 					wire.model.deco_e.getModel().render(RENDERDATA.set(data, relay.getTile(), null));
 					GL11.glPopMatrix();
 				}
-				if(wire.model.deco_d == null) genWireDeco(relay, wire);
 				if(wire.model.deco_d.size() > 0){
 					WireModel wm;
 					for(Entry<String, WireDeco> dm : wire.decos.entrySet()){
 						wm = dm.getValue().getModel();
 						for(ModelGroup list : wm.groups){
 							if(wire.model.deco_d.get(dm.getKey()).containsKey(list.name)){
-								ArrayList<ModelRendererTurbo> tlist = wire.model.deco_g.containsKey(dm.getKey()) ? wire.model.deco_g.get(dm.getKey()).get(list.name) : null;
+								ArrayList<Polyhedron> tlist = wire.model.deco_g.containsKey(dm.getKey()) ? wire.model.deco_g.get(dm.getKey()).get(list.name) : null;
 								int didx = 0;
 								for(V3D vec : wire.model.deco_d.get(dm.getKey()).get(list.name)){
 									GL11.glPushMatrix();
-									//GL11.glTranslated(vec.x, vec.y, vec.z);
+									GL11.glTranslated(vec.x - cx, vec.y - cy, vec.z - cz);
 									wm.transforms.apply();
 									TexUtil.bindTexture(dm.getValue().getTexture());
 									list.render(RENDERDATA.set(data, relay.getTile(), null));
@@ -254,25 +254,6 @@ public class WireRenderer {
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPopMatrix();
         }
-	}
-
-	private static void genWireDeco(WireRelay relay, Wire wire){
-		wire.model.deco_d = new HashMap<>();
-		wire.model.deco_g = new HashMap<>();
-		/*if(wire.decos == null) return;
-		WireDeco deco;
-		for(Entry<String, WireDeco> entry : wire.decos.entrySet()){
-			deco = entry.getValue();
-			wire.model.deco_d.put(entry.getKey(), new HashMap<>());
-			wire.model.deco_g.put(entry.getKey(), new HashMap<>());
-			for(ModelGroup list : deco.getModel().groups){
-				for(Program program : list.getAllPrograms()){
-					if(program instanceof WirePrograms.SpacedDeco == false) continue;
-					wire.model.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
-					break;
-				}
-			}
-		}*/
 	}
 
 }

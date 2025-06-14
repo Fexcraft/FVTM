@@ -36,6 +36,7 @@ public class Wire {
 	public WireMD model;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, V3D s_v, V3D e_v){
+		this(relay);
 		key = new WireKey(relay, relay0);
 		okey = new WireKey(relay0, relay);
 		type = wiretype;
@@ -108,7 +109,6 @@ public class Wire {
 
 	/** Only for the READ process. @param relay just to make sure it's not used elsewhere */
 	public Wire(WireRelay relay){
-		super();
 		this.relay = relay;
 	}
 

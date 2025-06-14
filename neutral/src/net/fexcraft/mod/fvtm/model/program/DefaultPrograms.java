@@ -257,6 +257,8 @@ public class DefaultPrograms {
 			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
 			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
 		}).register());
+		//
+		WirePrograms.init();
 	}
 
 	public static void setupSignalTimer(){

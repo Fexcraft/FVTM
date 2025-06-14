@@ -2,11 +2,12 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.model.DebugModels;
-import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +19,6 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCKS_SEPARATELY;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 public class TileRenderer {
 
@@ -43,16 +43,29 @@ public class TileRenderer {
 			SeparateRenderCache.SORTED_BLK_DATA.add(tile.getBlockData());
 			GL11.glPushMatrix();
 			GL11.glTranslated(tile.getPos().getX() - cx + 0.5, tile.getPos().getY() - cy, tile.getPos().getZ() - cz + 0.5);
+			GL11.glRotated(tile.getBlockData().getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0, 1, 0);
 			//
 			float i = getBrightness(tile.getPos()), j = i % 65536f, k = i / 65536f;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 			//
 			RenderCache cache = tile.getCapability(Capabilities.RENDERCACHE, null);
-			Model modVehicle = tile.getBlockData().getType().getModel();
-			if(modVehicle != null){
+			BlockModel model = (BlockModel)tile.getBlockData().getType().getModel();
+			if(model != null){
 				GL11.glPushMatrix();
 				TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-				modVehicle.render(RENDERDATA.set(tile.getBlockData(), null, null).rc(cache));
+				if(model.rootrender) model.render(BlockModel.RENDERDATA.set(tile.getBlockData(), tile, null).rc(cache));
+				if(model.state_models.size() > 0){
+					IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+					for(IProperty<?> prop : tile.getBlockType().getBlockState().getProperties()){
+						String str = prop.getName() + "=" + state.getValue(prop);
+						if(model.state_models.containsKey(str)){
+							ArrayList<BlockModel> list = model.state_models.get(str);
+							for(BlockModel statemodel : list){
+								statemodel.render(BlockModel.RENDERDATA);
+							}
+						}
+					}
+				}
 				GL11.glPopMatrix();
 			}
 			else{

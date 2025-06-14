@@ -2,14 +2,12 @@ package net.fexcraft.mod.fvtm.sys.wire;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
 import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
-import static net.fexcraft.mod.uni.world.WrapperHolder.getPos;
+import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
@@ -18,7 +16,6 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
-import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -256,7 +253,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		}
 	}
 
-	public void updateClient(String kind, String key, V3I pos, Object obj){
+	public void updateClient(String kind, String key, V3I pos, WireRelay relay){
 		if(world.isClient()) return;
 		TagCW compound = null;
 		String task = null;
@@ -264,8 +261,8 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			case "relay":{
 				task = "wire_upd_relay";
 				compound = TagCW.create();
-				compound.set("pos", ((WireRelay)obj).holder.pos, false);
-				((WireRelay)obj).write(compound);
+				compound.set("pos", relay.holder.pos, false);
+				relay.write(compound);
 				break;
 			}
 			case "no_relay":{
@@ -302,12 +299,12 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 				break;
 			}
 			default:{
-				Static.stop();
+				FvtmLogger.log("Invalid WIRE update: " + kind);
 				break;
 			}
 		}
 		if(compound == null) return;
-		Packets.sendToAllTrackingPos(Packet_TagListener.class, world, pos, task, compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, world, pos, task, compound);
 	}
 
 	public WireRelay getRelay(WireKey key){
@@ -482,7 +479,11 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	public void delHolder(V3I pos){
 		SystemRegion<?, RelayHolder> region = regions.get(pos, true);
-		if(region != null) region.del(pos);
+		if(region != null){
+			if(region.del(pos) && !world.isClient()){
+				updateClient("no_holder", null, pos, null);
+			}
+		}
 	}
 
 	@Override

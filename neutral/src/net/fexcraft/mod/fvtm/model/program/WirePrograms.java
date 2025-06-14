@@ -11,11 +11,11 @@ import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
-import org.lwjgl.opengl.GL11;//TODO
 
 import java.util.ArrayList;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class WirePrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(deg, 0, 1, 0);
+			RENDERER.rotate(deg, 0, 1, 0);
 		}
 
 		@Override
@@ -66,7 +66,7 @@ public class WirePrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotated(WireRenderer.ANGLE, 0, 1, 0);
+			RENDERER.rotate(WireRenderer.ANGLE, 0, 1, 0);
 		}
 		
 	};
@@ -88,7 +88,7 @@ public class WirePrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotated(WireRenderer.ANGLE_DOWN, 1, 0, 0);
+			RENDERER.rotate(WireRenderer.ANGLE_DOWN, 1, 0, 0);
 		}
 
 		@Override

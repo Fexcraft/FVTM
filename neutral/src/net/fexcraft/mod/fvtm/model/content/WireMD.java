@@ -26,19 +26,19 @@ public class WireMD {
 	public double start_angle_down, end_angle_down;
 	public WireDeco deco_s, deco_e;
 	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
-	public HashMap<String, HashMap<String, ArrayList<Polyhedron>>> deco_g;
+	//public HashMap<String, HashMap<String, ArrayList<Polyhedron>>> deco_g;
 
 	public WireMD(Wire wire){
 		wire.model = this;
 		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());
 		deco_d = new HashMap<>();
-		deco_g = new HashMap<>();
+		//deco_g = new HashMap<>();
 		if(wire.decos == null) return;
 		WireDeco deco;
 		for(Map.Entry<String, WireDeco> entry : wire.decos.entrySet()){
 			deco = entry.getValue();
 			deco_d.put(entry.getKey(), new HashMap<>());
-			deco_g.put(entry.getKey(), new HashMap<>());
+			//deco_g.put(entry.getKey(), new HashMap<>());
 			for(ModelGroup list : deco.getModel().groups){
 				for(Program program : list.getAllPrograms()){
 					if(program instanceof WirePrograms.SpacedDeco == false) continue;

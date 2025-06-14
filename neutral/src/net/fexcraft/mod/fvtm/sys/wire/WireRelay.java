@@ -37,8 +37,8 @@ public class WireRelay {
 	public WireRelay read(TagCW compound){
 		key = compound.getString("Key");
 		int wiream = compound.getInteger("Wires");
+		wires.clear();
 		if(wiream > 0){
-			wires.clear();
 			for(int i = 0; i < wiream; i++){
 				try{
 					wires.add(new Wire(this).read(compound.getCompound("Wire" + i)));
@@ -48,7 +48,6 @@ public class WireRelay {
 				}
 			}
 		}
-		else wires.clear();
 		pos = compound.getV3D("Pos");
 		frustumbb = null;
 		return this;

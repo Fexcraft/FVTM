@@ -313,7 +313,6 @@ public class Resources12 extends FvtmResources {
 		};
 		DefaultPrograms12.init();
 		ConditionalPrograms.init();
-		WirePrograms.init();
 	}
 
 	@Override

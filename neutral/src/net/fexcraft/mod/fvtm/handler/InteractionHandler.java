@@ -413,6 +413,7 @@ public class InteractionHandler {
 					}
 					else if(type.relay()){
 						for(Wire wr : relay.wires){
+							if(wr.copy) continue;
 							cen = wr.getVectorPosition(size, false);
 							aabb = AABB.create(cen.x - size, cen.y - size, cen.z - size, cen.x + size, cen.y + size, cen.z + size);
 							if(contains(evec, lvec, aabb)){

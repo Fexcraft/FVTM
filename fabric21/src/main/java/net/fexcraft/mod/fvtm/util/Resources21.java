@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
+import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
@@ -51,6 +52,7 @@ public class Resources21 extends FvtmResources {
 	//
 	public static Asphalt[] ASPHALT = new Asphalt[16];
 	public static BlockItem[] ASPHALT_ITEM = new BlockItem[16];
+	public static BlockEntityType<BaseBlockEntity> BASE_ENTITY;
 	//
 	public static VehicleLiftBlock LIFT_BLOCK;
 	public static BlockItem LIFT_BLOCK_ITEM;
@@ -243,6 +245,7 @@ public class Resources21 extends FvtmResources {
 			ASPHALT[idx] = (Asphalt)reg.getLeft();
 			ASPHALT_ITEM[idx] = reg.getRight();
 		}
+		BASE_ENTITY = FVTM.regBlockEntity("fvtm:blockbase", BaseBlockEntity::new);//TODO list of valid blocks
 		reg = FVTM.regBlock("fvtm:vehicle_lift", prop -> new VehicleLiftBlock(prop));
 		LIFT_BLOCK = (VehicleLiftBlock)reg.getLeft();
 		LIFT_BLOCK_ITEM = reg.getRight();

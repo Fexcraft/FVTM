@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
+import net.fexcraft.mod.fvtm.model.program.WirePrograms.WireBreak;
 import net.fexcraft.mod.fvtm.render.PathModelGenerator;
 import net.fexcraft.mod.fvtm.render.PathModelPositioned;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
@@ -30,7 +31,7 @@ public class WireMD {
 
 	public WireMD(Wire wire){
 		wire.model = this;
-		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());
+		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());//, getWireBreak(wire));
 		deco_d = new HashMap<>();
 		//deco_g = new HashMap<>();
 		if(wire.decos == null) return;
@@ -47,6 +48,19 @@ public class WireMD {
 				}
 			}
 		}
+	}
+
+	private WireBreak getWireBreak(Wire wire){
+		if(wire.decos == null) return null;
+		for(WireDeco value : wire.decos.values()){
+			if(value.getModel() == null) continue;
+			for(ModelGroup group : value.getModel().getGroups()){
+				for(Program prog : group.getAllPrograms()){
+					if(prog instanceof WireBreak) return (WireBreak)prog;
+				}
+			}
+		}
+		return null;
 	}
 
 }

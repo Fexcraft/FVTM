@@ -108,6 +108,7 @@ public class Resources21 extends FvtmResources {
 		FvtmRegistry.DECORATIONS.forEach(dec -> dec.setItemWrapper(wrapwrapper(dec.getID(), FVTM.regItem(dec.getIDS(), prop -> new DecorationItem(prop, dec)))));
 		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), FVTM.regItem(rg.getIDS(), prop -> new RailGaugeItem(prop, rg)))));
 		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), FVTM.regItem(wire.getIDS(), prop -> new WireItem(prop, wire)))));
+		FvtmRegistry.WIREDECOS.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), FVTM.regItem(wire.getIDS(), prop -> new WireDecoItem(prop, wire)))));
 		FvtmRegistry.SIGNS.forEach(sign -> sign.setItemWrapper(wrapwrapper(sign.getID(), FVTM.regItem(sign.getIDS(), prop -> new SignItem(prop, sign)))));
 	}
 

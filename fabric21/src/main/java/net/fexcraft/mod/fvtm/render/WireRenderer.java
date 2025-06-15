@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
+import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
@@ -84,7 +85,7 @@ public class WireRenderer {
 			Wire wire = relay.wires.get(i);
 			if(wire.vecpath == null || wire.getWireType() == null) continue;
 			WireModel model = wire.getWireType().getModel();
-			if(wire.model.wiremodel == null) PathModelGenerator.generateWireModel(wire, model);
+			if(wire.model == null) new WireMD(wire);
 			FvtmRenderTypes.setCutout(wire.getWireType().getTexture());
 			pose.translate(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
 			wire.model.wiremodel.render();

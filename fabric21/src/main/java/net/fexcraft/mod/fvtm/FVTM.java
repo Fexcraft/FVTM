@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -41,10 +42,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
-import net.fexcraft.mod.fvtm.util.CTab;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.Resources21;
-import net.fexcraft.mod.fvtm.util.TabInitializer;
+import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
@@ -124,7 +122,7 @@ public class FVTM implements ModInitializer {
 		StackWrapper.ITEM_TYPES.put(ContentType.PART.item_type, item -> item instanceof PartItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.MATERIAL.item_type, item -> item instanceof MaterialItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.VEHICLE.item_type, item -> item instanceof VehicleItem);
-		/*StackWrapper.ITEM_TYPES.put(ContentType.BLOCK.item_type, item -> item instanceof BlockItem);*/
+		StackWrapper.ITEM_TYPES.put(ContentType.BLOCK.item_type, item -> item instanceof BlockItem21);
 		StackWrapper.ITEM_TYPES.put(ContentType.RAILGAUGE.item_type, item -> item instanceof RailGaugeItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.TOOLBOX.item_type, item -> item instanceof ToolboxItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.WIRE.item_type, item -> item instanceof WireItem);
@@ -136,7 +134,7 @@ public class FVTM implements ModInitializer {
 			return stack.getItem().direct() instanceof MaterialItem ? ((MaterialItem)stack.getItem().direct()).getContent() : null;
 		});
 		StackWrapper.CONTENT_TYPES.put(ContentType.CONSUMABLE.item_type, stack -> ((ConsumableItem)stack.getItem().direct()).getContent());
-		/*StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem)stack.getItem().direct()).getData(stack));*/
+		StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem21)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.RAILGAUGE.item_type, stack -> ((RailGaugeItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.WIRE.item_type, stack -> ((WireItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.WIREDECO.item_type, stack -> ((WireDecoItem)stack.getItem().direct()).getContent());
@@ -144,7 +142,7 @@ public class FVTM implements ModInitializer {
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);
 		AABB.SUPPLIER = () -> new AABBI();
 		AABB.WRAPPER = obj -> new AABBI((net.minecraft.world.phys.AABB)obj);
-		/*BlockType.BLOCK_IMPL = BlockTypeImpl::get;*/
+		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		FvtmResources.INSTANCE = new Resources21();
 		LoopedSound.ACTIVATE = sound -> {
 			/*sound.localsound = new LoopSound(sound);*/

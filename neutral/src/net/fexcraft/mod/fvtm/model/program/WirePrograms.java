@@ -2,21 +2,18 @@ package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
-import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 
 import java.util.ArrayList;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fvtm.render.UniWireRenderer.ANGLE;
+import static net.fexcraft.mod.fvtm.render.UniWireRenderer.ANGLE_DOWN;
 
 /**
  * 
@@ -73,7 +70,7 @@ public class WirePrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.rotate(WireRenderer.ANGLE, 0, 1, 0);
+			RENDERER.rotate(ANGLE, 0, 1, 0);
 		}
 
 		@Override
@@ -98,7 +95,7 @@ public class WirePrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.rotate(WireRenderer.ANGLE_DOWN, 0, 0, 1);
+			RENDERER.rotate(ANGLE_DOWN, 0, 0, 1);
 		}
 
 		@Override

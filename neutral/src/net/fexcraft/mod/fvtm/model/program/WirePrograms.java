@@ -30,6 +30,7 @@ public class WirePrograms {
 		ModelGroup.PROGRAMS.add(ROTATED);
 		ModelGroup.PROGRAMS.add(new DownwardAngled(0));
 		ModelGroup.PROGRAMS.add(new SpacedDeco(new JsonMap()));
+		ModelGroup.PROGRAMS.add(new WireBreak(0, 0));
 		//ModelGroup.PROGRAMS.add(new CatenaryDropper(new JsonMap()));
 	}
 	
@@ -52,6 +53,11 @@ public class WirePrograms {
 		}
 
 		@Override
+		public boolean post(){
+			return false;
+		}
+
+		@Override
 		public Program parse(String[] args){
 			return args.length > 0 ? new RotateY(Float.parseFloat(args[0])) : this;
 		}
@@ -68,6 +74,11 @@ public class WirePrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			RENDERER.rotate(WireRenderer.ANGLE, 0, 1, 0);
+		}
+
+		@Override
+		public boolean post(){
+			return false;
 		}
 		
 	};
@@ -91,6 +102,11 @@ public class WirePrograms {
 		}
 
 		@Override
+		public boolean post(){
+			return false;
+		}
+
+		@Override
 		public Program parse(String[] args){
 			return new DownwardAngled(args.length > 0 ? Float.parseFloat(args[0]) : sixteenth/*, args.length > 1 ? Boolean.parseBoolean(args[1]) : false*/);
 		}
@@ -99,7 +115,41 @@ public class WirePrograms {
 			return length;
 		}
 		
-	};
+	}
+
+	public static class WireBreak implements Program {
+
+		public final float after, _for;
+
+		public WireBreak(float af, float fr){
+			after = af;
+			_for = fr;
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:wire_break";
+		}
+
+		@Override
+		public boolean pre(){
+			return false;
+		}
+
+		@Override
+		public boolean post(){
+			return false;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new WireBreak(args.length > 0 ? Float.parseFloat(args[0]) : 0.5f, args.length > 1 ? Float.parseFloat(args[1]) : 1f);
+		}
+
+		public float minlength(){
+			return after * 2 + _for * 2;
+		}
+	}
 	
 	public static class SpacedDeco implements Program {
 		
@@ -122,6 +172,16 @@ public class WirePrograms {
 		@Override
 		public String id(){
 			return "fvtm:wire_spaced_deco";
+		}
+
+		@Override
+		public boolean pre(){
+			return false;
+		}
+
+		@Override
+		public boolean post(){
+			return false;
 		}
 
 		@Override

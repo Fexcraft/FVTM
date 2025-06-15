@@ -38,6 +38,7 @@ public class WireDecoItem extends Item implements ContentItem<WireDeco>, Junctio
         for(String s : wire.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
+		tooltip.add(Formatter.format("&9DecoType: &7" + wire.getType()));
         tooltip.add(Formatter.format("&9Accepts: &7"));
 		for(String str : wire.getCompatible()){
 			tooltip.add(Formatter.format("- " + str));

@@ -40,6 +40,8 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.BLOCKS;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -53,6 +55,7 @@ public class Resources21 extends FvtmResources {
 	public static Asphalt[] ASPHALT = new Asphalt[16];
 	public static BlockItem[] ASPHALT_ITEM = new BlockItem[16];
 	public static BlockEntityType<BaseBlockEntity> BASE_ENTITY;
+	public static ArrayList<Block> BLOCK_LIST = new ArrayList<>();
 	//
 	public static VehicleLiftBlock LIFT_BLOCK;
 	public static BlockItem LIFT_BLOCK_ITEM;
@@ -92,9 +95,12 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void createContentBlocks(){
-		/*BLOCKS.forEach(block -> {
-			FVTM4.BLOCK_REGISTRY.get(block.getID().space()).register(block.getID().id(), () -> block.genBlock());
-		});*/
+		BLOCKS.forEach(block -> {
+			Pair<Block, BlockItem> pair = FVTM.regBlock(block.getIDS(), block::genBlock, (blk, prop) -> new BlockItem21(prop, blk));
+			block.setItemWrapper(wrapwrapper(block.getID(), pair.getRight()));
+			BLOCK_LIST.add(pair.getLeft());
+		});
+		BASE_ENTITY = FVTM.regBlockEntity("fvtm:blockbase", BaseBlockEntity::new, BLOCK_LIST.toArray(new Block[0]));
 	}
 
 	@Override
@@ -103,10 +109,7 @@ public class Resources21 extends FvtmResources {
 		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), FVTM.regItem(con.getIDS(), prop -> new ConsumableItem(prop, con)))));
 		FvtmRegistry.PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), FVTM.regItem(part.getIDS(), prop -> new PartItem(prop, part)))));
 		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), FVTM.regItem(veh.getIDS(), prop -> new VehicleItem(prop, veh)))));
-		/*FvtmRegistry.BLOCKS.forEach(blk -> blk.setItemWrapper(wrapwrapper(blk.getID(), () -> {
-			FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
-			return new net.fexcraft.mod.fvtm.item.BlockItem(blk);
-		})));*/
+		//Block Items
 		FvtmRegistry.DECORATIONS.forEach(dec -> dec.setItemWrapper(wrapwrapper(dec.getID(), FVTM.regItem(dec.getIDS(), prop -> new DecorationItem(prop, dec)))));
 		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), FVTM.regItem(rg.getIDS(), prop -> new RailGaugeItem(prop, rg)))));
 		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), FVTM.regItem(wire.getIDS(), prop -> new WireItem(prop, wire)))));
@@ -245,7 +248,6 @@ public class Resources21 extends FvtmResources {
 			ASPHALT[idx] = (Asphalt)reg.getLeft();
 			ASPHALT_ITEM[idx] = reg.getRight();
 		}
-		BASE_ENTITY = FVTM.regBlockEntity("fvtm:blockbase", BaseBlockEntity::new);//TODO list of valid blocks
 		reg = FVTM.regBlock("fvtm:vehicle_lift", prop -> new VehicleLiftBlock(prop));
 		LIFT_BLOCK = (VehicleLiftBlock)reg.getLeft();
 		LIFT_BLOCK_ITEM = reg.getRight();

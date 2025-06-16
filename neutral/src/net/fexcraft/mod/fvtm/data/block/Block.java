@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -33,6 +34,16 @@ import java.util.function.Supplier;
  */
 public class Block extends Content<Block> implements TextureHolder, ColorHolder, SoundHolder, WithItem, ItemTextureable {
 
+	public static BiFunction<Block, Object, Object> BLK_GETTER = (blk, obj) -> {
+		try{
+			return BlockType.BLOCK_IMPL.get(blk.getBlockType(), blk.hasEntity() || blk.hasRelay(), blk.hasPlainModel())
+				.getConstructor(net.fexcraft.mod.fvtm.data.block.Block.class).newInstance(blk);
+		}
+		catch(Throwable e){
+			FvtmLogger.log(e, "block class creation");
+			return null;
+		}
+	};;
 	protected List<IDL> textures;
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected Map<String, RGB> channels = new LinkedHashMap<>();
@@ -74,7 +85,6 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	protected int maxstacksize;
 	protected int burntime;
 	protected IDL itemtexloc;
-	public Supplier block20;
 	protected Object block;
 
 	@Override
@@ -182,16 +192,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
 		no3ditem = map.getBoolean("Disable3DItemModel", false);
 		//
-		block20 = () -> {
-			try{
-				return BlockType.BLOCK_IMPL.get(blocktype, hastile || relaydata != null, plain_model).getConstructor(Block.class).newInstance(this);
-			}
-			catch(Throwable e){
-				FvtmLogger.log(e, "block class creation");
-				return null;
-			}
-		};
-		if(EnvInfo.is112()) genBlock();
+		if(EnvInfo.is112()) genBlock(null);
 		return this;
 	}
 
@@ -423,8 +424,12 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return (BLK)block;
 	}
 
-	public <BLK> BLK genBlock(){
-		return (BLK)(block = block20.get());
+	public <BLK> BLK genBlock(Object prop){
+		return (BLK)(block = BLK_GETTER.apply(this, prop));
+	}
+
+	public boolean hasEntity(){
+		return hastile;
 	}
 
 	public boolean isRandomRot(){

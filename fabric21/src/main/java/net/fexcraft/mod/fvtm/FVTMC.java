@@ -82,6 +82,7 @@ public class FVTMC implements ClientModInitializer {
 		BlockEntityRenderers.register(Resources21.LIFT_ENTITY, context -> new VehicleLiftRenderer());
 		BlockEntityRenderers.register(Resources21.CONST_ENTITY, context -> new ConstRenderer());
 		BlockEntityRenderers.register(Resources21.FUELFILLER_ENTITY, context -> new FuelFillerRenderer());
+		BlockEntityRenderers.register(Resources21.BASE_ENTITY, context -> new BaseBlockRenderer());
 		EntityRendererRegistry.register(Resources21.WHEEL_ENTITY, context -> new EmptyRenderer(context));
 		EntityRendererRegistry.register(Resources21.VEHICLE_ENTITY, context -> new RVRenderer(context));
 		EntityRendererRegistry.register(Resources21.RAIL_ENTITY, context -> new RVRenderer(context));

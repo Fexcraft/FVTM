@@ -50,7 +50,7 @@ public class BlockBase extends PlainBase implements EntityBlock {
 
 	@Override
 	public RenderShape getRenderShape(BlockState state){
-		return type.isInvisible() ? RenderShape.INVISIBLE : RenderShape.MODEL;
+		return type.isInvisible() || !type.hasPlainModel() ? RenderShape.INVISIBLE : RenderShape.MODEL;
 	}
 
 }

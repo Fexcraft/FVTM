@@ -69,7 +69,7 @@ public class Resources20 extends FvtmResources {
 	@Override
 	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
-			FVTM4.BLOCK_REGISTRY.get(block.getID().space()).register(block.getID().id(), () -> block.genBlock());
+			FVTM4.BLOCK_REGISTRY.get(block.getID().space()).register(block.getID().id(), () -> block.genBlock(null));
 		});
 	}
 

@@ -92,7 +92,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import static net.fexcraft.mod.fvtm.data.block.Block.BLK_GETTER;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -143,6 +146,16 @@ public class FVTM implements ModInitializer {
 		AABB.SUPPLIER = () -> new AABBI();
 		AABB.WRAPPER = obj -> new AABBI((net.minecraft.world.phys.AABB)obj);
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
+		BLK_GETTER = (blk, prop) -> {
+			try{
+				return BlockType.BLOCK_IMPL.get(blk.getBlockType(), blk.hasEntity() || blk.hasRelay(), blk.hasPlainModel())
+					.getConstructor(BlockBehaviour.Properties.class, net.fexcraft.mod.fvtm.data.block.Block.class).newInstance(prop, blk);
+			}
+			catch(Throwable e){
+				FvtmLogger.log(e, "block class creation");
+				return null;
+			}
+		};
 		FvtmResources.INSTANCE = new Resources21();
 		LoopedSound.ACTIVATE = sound -> {
 			/*sound.localsound = new LoopSound(sound);*/
@@ -277,6 +290,14 @@ public class FVTM implements ModInitializer {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(idl));
 		Block block = Blocks.register(key, factory, BlockBehaviour.Properties.of());
 		Item item = Items.registerBlock(block);
+		Resources21.addItem(idl, item);
+		return Pair.of(block, (BlockItem)item);
+	}
+
+	public static Pair<Block, BlockItem> regBlock(String idl, Function<Block.Properties, Block> factory, BiFunction<Block, Item.Properties, Item> func){
+		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(idl));
+		Block block = Blocks.register(key, factory, BlockBehaviour.Properties.of());
+		Item item = Items.registerBlock(block, func);
 		Resources21.addItem(idl, item);
 		return Pair.of(block, (BlockItem)item);
 	}

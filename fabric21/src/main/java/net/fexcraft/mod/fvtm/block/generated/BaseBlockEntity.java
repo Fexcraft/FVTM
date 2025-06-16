@@ -42,7 +42,7 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 	public void loadAdditional(CompoundTag com, HolderLookup.Provider prov){
 		super.loadAdditional(com, prov);
 		if(com.contains("FvtmData")){
-			data = FvtmResources.getBlockData(com.getCompound("FvtmData"));
+			data = FvtmResources.getBlockData(com.getCompound("FvtmData").get());
 		}
 	}
 

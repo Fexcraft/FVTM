@@ -122,18 +122,6 @@ public class FVTMC implements ClientModInitializer {
 		KeyBindingHelper.registerKeyBinding(pbrake = new KeyMapping("key.fvtm.pbrake", InputConstants.Type.KEYSYM, InputConstants.KEY_O, category));
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> handleKeyboardInput(mc));
 		//
-		UseBlockCallback.EVENT.register((player, world, hand, res) -> {
-			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){
-				return InteractionResult.SUCCESS;
-			}
-			return InteractionResult.PASS;
-		});
-		UseItemCallback.EVENT.register((player, world, hand) -> {
-			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){
-				return InteractionResult.SUCCESS;
-			}
-			return InteractionResult.PASS;
-		});
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, dir) -> {
 			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(player.getItemInHand(hand)))){
 				return InteractionResult.SUCCESS;

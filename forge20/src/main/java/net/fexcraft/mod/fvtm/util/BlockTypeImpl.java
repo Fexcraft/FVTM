@@ -30,9 +30,9 @@ public class BlockTypeImpl {
             case GENERIC_13VAR: return plain ? G_VAR.T13.class : G_VAR_TE.T13.class;
             case GENERIC_14VAR: return plain ? G_VAR.T14.class : G_VAR_TE.T14.class;
             case GENERIC_15VAR: return plain ? G_VAR.T15.class : G_VAR_TE.T15.class;
-            case GENERIC_16VAR: return plain ? G_VAR.T16.class : G_VAR_TE.T16.class;
-            case GENERIC_ROAD: return plain ? G_ROAD.class : G_ROAD_TE.class;
-            case MULTIBLOCK_4ROT: return plain ? M_4ROT.class : M_4ROT_TE.class;
+            case GENERIC_16VAR: return plain ? G_VAR.T16.class : G_VAR_TE.T16.class;*/
+            case GENERIC_ROAD: return /*plain ?*/ G_ROAD.class /*: G_ROAD_TE.class*/;
+            /*case MULTIBLOCK_4ROT: return plain ? M_4ROT.class : M_4ROT_TE.class;
             case SIGNAL_4ROT: return SG_4ROT_TE.class;
             case SIGNAL_16ROT: return SG_16ROT_TE.class;
             case FORK2_SWITCH_4ROT: return F2SW_4ROT_TE.class;

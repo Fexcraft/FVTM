@@ -43,7 +43,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 			FvtmLogger.log(e, "block class creation");
 			return null;
 		}
-	};;
+	};
 	protected List<IDL> textures;
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
 	protected Map<String, RGB> channels = new LinkedHashMap<>();

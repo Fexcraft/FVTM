@@ -29,14 +29,12 @@ import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
 public class BlockItem extends net.minecraft.world.item.BlockItem implements ContentDataItem<Block, BlockData>, TextureableItem<Block> {
 
 	private Block type;
+	private int var;
 
-    public BlockItem(net.minecraft.world.level.block.Block block){
+    public BlockItem(net.minecraft.world.level.block.Block block, int v){
 		super(block, genProps(((PlainBase)block).type));
 		type = ((PlainBase)block).type;
-	}
-
-	public BlockItem(Block block){
-		this((net.minecraft.world.level.block.Block)block.getBlock());
+		var = v;
 	}
 
 	private static Properties genProps(Block type){
@@ -48,7 +46,7 @@ public class BlockItem extends net.minecraft.world.item.BlockItem implements Con
 		tooltip.add(GenericUtils.format("&9Name: &7" + type.getName()));
 		for(String s : type.getDescription()) tooltip.add(GenericUtils.format(I18n.get(s)));
 		if(type.getBlockType().isGenericRoad()){
-			//
+			tooltip.add(GenericUtils.format("&9Height: &7" + (var == 0 ? 16 : var)));
 		}
 		else if(type.getBlockType().getMetaVariants() > 0){
 			tooltip.add(GenericUtils.format("&9Variant: &7" + stack.getDamageValue()));

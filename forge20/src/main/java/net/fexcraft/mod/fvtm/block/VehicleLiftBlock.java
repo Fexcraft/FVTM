@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.mod.fvtm.FVTM4;
+import net.fexcraft.mod.fvtm.block.generated.FvtmProperties;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +34,7 @@ public class VehicleLiftBlock extends Block implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
-		return Asphalt.SHAPES[1];
+		return FvtmProperties.SHAPES[1];
 	}
 
 	@Override

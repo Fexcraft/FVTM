@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.FuelFillerBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.impl.SWI;
@@ -29,11 +31,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.BLOCKS;
@@ -54,6 +58,8 @@ public class Resources20 extends FvtmResources {
 	public static Supplier<FuelFillerBlock> FUELFILLER_BLOCK;
 	public static Supplier<BlockItem> CONST_BLOCK_ITEM;
 	public static Supplier<BlockItem> FUELFILLER_ITEM;
+	//
+	public static ConcurrentHashMap<IDL, Block[]> ROAD_BLOCKS = new ConcurrentHashMap<>();
 
 	@Override
 	public void searchASMPacks(){}
@@ -69,7 +75,14 @@ public class Resources20 extends FvtmResources {
 	@Override
 	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
-			FVTM4.BLOCK_REGISTRY.get(block.getID().space()).register(block.getID().id(), () -> block.genBlock(null));
+			var reg = FVTM4.BLOCK_REGISTRY.get(block.getID().space());
+			if(block.getBlockType().isGenericRoad()){
+				for(int i = 0; i < 16; i++){
+					int height = i;
+					reg.register(block.getID().id() + "_" + i, () -> new G_ROAD(block, height));
+				}
+			}
+			else reg.register(block.getID().id(), () -> block.genBlock(null));
 		});
 	}
 
@@ -79,10 +92,29 @@ public class Resources20 extends FvtmResources {
 		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem(con))));
 		FvtmRegistry.PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), () -> new PartItem(part))));
 		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new VehicleItem(veh))));
-		FvtmRegistry.BLOCKS.forEach(blk -> blk.setItemWrapper(wrapwrapper(blk.getID(), () -> {
-			FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
-			return new net.fexcraft.mod.fvtm.item.BlockItem(blk);
-		})));
+		FvtmRegistry.BLOCKS.forEach(blk -> {
+			if(blk.getBlockType().isGenericRoad()){
+				net.fexcraft.mod.fvtm.item.BlockItem item = null;
+				for(int i = 0; i < 16; i++){
+					IDL idl = IDLManager.getIDLCached(blk.getID().space() + ":" + blk.getID().id() + "_" + i);
+					int height = i;
+					ItemWrapper wrap = wrapwrapper(idl, () -> {
+						FvtmRegistry.CONTENT_BLOCKS.put(idl, ROAD_BLOCKS.get(blk.getID())[height]);
+						return new net.fexcraft.mod.fvtm.item.BlockItem(ROAD_BLOCKS.get(blk.getID())[height], height);
+					});
+					if(i == 0){
+						blk.setItemWrapper(wrap);
+						FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
+					}
+				}
+			}
+			else{
+				blk.setItemWrapper(wrapwrapper(blk.getID(), () -> {
+					FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
+					return new net.fexcraft.mod.fvtm.item.BlockItem(blk.getBlock(), 0);
+				}));
+			}
+		});
 		FvtmRegistry.DECORATIONS.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new DecorationItem(veh))));
 		FvtmRegistry.RAILGAUGES.forEach(rg -> rg.setItemWrapper(wrapwrapper(rg.getID(), () -> new RailGaugeItem(rg))));
 		FvtmRegistry.WIRES.forEach(wire -> wire.setItemWrapper(wrapwrapper(wire.getID(), () -> new WireItem(wire))));

@@ -7,7 +7,9 @@ import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
+import net.fexcraft.mod.fvtm.item.BlockItem20;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -81,6 +83,12 @@ public class TabInitializerF implements CTab {
 				ItemStack stack = item.getDefaultInstance();
 				stack.setTag(compound);
 				out.accept(stack);
+			}
+		}
+		if(item instanceof BlockItem20){
+			BlockItem20 bi = (BlockItem20)item;
+			if(bi.getContent().getBlockType().isGenericRoad()){
+				if(bi.var > 0 && bi.var < 16 && !(bi.var == 4 || bi.var == 8 || bi.var == 12)) return;
 			}
 		}
 		out.accept(item);

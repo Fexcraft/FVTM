@@ -26,15 +26,13 @@ import java.util.function.Consumer;
  */
 public class BlockItem21 extends net.minecraft.world.item.BlockItem implements ContentDataItem<Block, BlockData>, TextureableItem<Block> {
 
+	public final int var;
 	private Block type;
 
-    public BlockItem21(Properties prop, net.minecraft.world.level.block.Block block){
+    public BlockItem21(Properties prop, net.minecraft.world.level.block.Block block, int v){
 		super(block, genProps(prop, ((PlainBase)block).type));
 		type = ((PlainBase)block).type;
-	}
-
-	public BlockItem21(Properties prop, Block block){
-		this(prop, (net.minecraft.world.level.block.Block)block.getBlock());
+		var = v;
 	}
 
 	private static Properties genProps(Properties prop, Block type){

@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
+import net.fexcraft.mod.fvtm.item.BlockItem21;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -89,6 +90,12 @@ public class TabInitializer implements CTab {
 				StackWrapper stack = UniStack.getStack(item.getDefaultInstance());
 				stack.updateTag(compound);
 				out.accept((ItemStack)stack.direct());
+			}
+		}
+		if(item instanceof BlockItem21){
+			BlockItem21 bi = (BlockItem21)item;
+			if(bi.getContent().getBlockType().isGenericRoad()){
+				if(bi.var > 0 && bi.var < 16 && !(bi.var == 4 || bi.var == 8 || bi.var == 12)) return;
 			}
 		}
 		out.accept(item);

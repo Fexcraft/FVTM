@@ -96,7 +96,7 @@ public class Resources21 extends FvtmResources {
 	@Override
 	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
-			Pair<Block, BlockItem> pair = FVTM.regBlock(block.getIDS(), block::genBlock, (blk, prop) -> new BlockItem21(prop, blk));
+			Pair<Block, BlockItem> pair = FVTM.regBlock(block.getIDS(), block::genBlock, (blk, prop) -> new BlockItem21(prop, blk, 0));
 			block.setItemWrapper(wrapwrapper(block.getID(), pair.getRight()));
 			BLOCK_LIST.add(pair.getLeft());
 		});

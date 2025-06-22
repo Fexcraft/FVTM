@@ -94,13 +94,13 @@ public class Resources20 extends FvtmResources {
 		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new VehicleItem(veh))));
 		FvtmRegistry.BLOCKS.forEach(blk -> {
 			if(blk.getBlockType().isGenericRoad()){
-				net.fexcraft.mod.fvtm.item.BlockItem item = null;
+				BlockItem20 item = null;
 				for(int i = 0; i < 16; i++){
 					IDL idl = IDLManager.getIDLCached(blk.getID().space() + ":" + blk.getID().id() + "_" + i);
 					int height = i;
 					ItemWrapper wrap = wrapwrapper(idl, () -> {
 						FvtmRegistry.CONTENT_BLOCKS.put(idl, ROAD_BLOCKS.get(blk.getID())[height]);
-						return new net.fexcraft.mod.fvtm.item.BlockItem(ROAD_BLOCKS.get(blk.getID())[height], height);
+						return new BlockItem20(ROAD_BLOCKS.get(blk.getID())[height], height);
 					});
 					if(i == 0){
 						blk.setItemWrapper(wrap);
@@ -111,7 +111,7 @@ public class Resources20 extends FvtmResources {
 			else{
 				blk.setItemWrapper(wrapwrapper(blk.getID(), () -> {
 					FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
-					return new net.fexcraft.mod.fvtm.item.BlockItem(blk.getBlock(), 0);
+					return new BlockItem20(blk.getBlock(), 0);
 				}));
 			}
 		});

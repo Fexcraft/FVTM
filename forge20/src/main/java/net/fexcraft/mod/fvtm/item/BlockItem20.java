@@ -26,12 +26,12 @@ import static net.fexcraft.mod.uni.world.WrapperHolder.getWorld;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class BlockItem extends net.minecraft.world.item.BlockItem implements ContentDataItem<Block, BlockData>, TextureableItem<Block> {
+public class BlockItem20 extends net.minecraft.world.item.BlockItem implements ContentDataItem<Block, BlockData>, TextureableItem<Block> {
 
+	public final int var;
 	private Block type;
-	private int var;
 
-    public BlockItem(net.minecraft.world.level.block.Block block, int v){
+    public BlockItem20(net.minecraft.world.level.block.Block block, int v){
 		super(block, genProps(((PlainBase)block).type));
 		type = ((PlainBase)block).type;
 		var = v;

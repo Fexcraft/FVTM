@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.fexcraft.mod.fvtm.item.BlockItem20;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -36,7 +36,7 @@ public class BlockBase extends PlainBase implements EntityBlock {
 		BlockEntity entity = level.getBlockEntity(pos);
 		if(entity == null) return;
 		BaseBlockEntity base = (BaseBlockEntity)entity;
-		base.data = ((BlockItem)stack.getItem()).getData(UniStack.getStack(stack));
+		base.data = ((BlockItem20)stack.getItem()).getData(UniStack.getStack(stack));
 		base.regRelay();
 	}
 

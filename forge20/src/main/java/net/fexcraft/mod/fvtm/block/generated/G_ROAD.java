@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.item.BlockItem20;
 import net.fexcraft.mod.fvtm.util.Resources20;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -73,8 +74,8 @@ public class G_ROAD extends PlainBase {
 	}
 
 	private boolean isRoadBlock(ItemStack stack){
-		if(!(stack.getItem() instanceof net.fexcraft.mod.fvtm.item.BlockItem)) return false;
-		return ((net.fexcraft.mod.fvtm.item.BlockItem)stack.getItem()).getContent().getBlockType().isGenericRoad();
+		if(!(stack.getItem() instanceof BlockItem20)) return false;
+		return ((BlockItem20)stack.getItem()).getContent().getBlockType().isGenericRoad();
 	}
 
 }

@@ -187,7 +187,7 @@ public class Resources12 extends FvtmResources {
 	@Override
 	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
-			net.minecraft.block.Block blk = block.getBlock();
+			net.minecraft.block.Block blk = block.genBlock(null);
 			blk.setRegistryName(block.getIDS());
 			blk.setTranslationKey(block.getIDS());
 			FvtmRegistry.CONTENT_BLOCKS.put(block.getID(), blk);

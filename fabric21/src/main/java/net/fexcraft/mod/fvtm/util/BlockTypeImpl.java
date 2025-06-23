@@ -14,6 +14,7 @@ public class BlockTypeImpl {
             case GENERIC_4ROT: return plain ? G_4ROT.class : G_4ROT_BE.class;
             case GENERIC_16ROT: return plain ? G_16ROT.class : G_16ROT_BE.class;
             case GENERIC_SIMPLE: return plain ? PlainBase.class : BlockBase.class;
+            case GENERIC_ROAD: return G_ROAD.class;
         }
         return plain ? PlainBase.class : BlockBase.class;
     }

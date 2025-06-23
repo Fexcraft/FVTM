@@ -191,8 +191,6 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
 		no3ditem = map.getBoolean("Disable3DItemModel", false);
-		//
-		if(EnvInfo.is112()) genBlock(null);
 		return this;
 	}
 

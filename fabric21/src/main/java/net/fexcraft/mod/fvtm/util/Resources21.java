@@ -105,7 +105,7 @@ public class Resources21 extends FvtmResources {
 				for(int i = 0; i < 16; i++){
 					int height = i;
 					IDL idl = IDLManager.getIDLCached(block.getID().space() + ":" + block.getID().id() + "_" + i);
-					Pair<Block, BlockItem> pair = FVTM.regBlock(idl.colon(), prop -> new G_ROAD(prop, block, height), (blk, prop) -> new BlockItem21(prop, blk, 0));
+					Pair<Block, BlockItem> pair = FVTM.regBlock(idl.colon(), prop -> new G_ROAD(prop, block, height), (blk, prop) -> new BlockItem21(prop, blk, height));
 					block.setItemWrapper(wrapwrapper(idl, pair.getRight()));
 					BLOCK_LIST.add(pair.getLeft());
 				}

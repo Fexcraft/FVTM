@@ -20,6 +20,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.SHAPES;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -31,7 +33,7 @@ public class VehicleLiftBlock extends Block implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
-		return Asphalt.SHAPES[1];
+		return SHAPES[1];
 	}
 
 	@Override

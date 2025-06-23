@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.model.program.DefaultPrograms21;
 import net.fexcraft.mod.fvtm.render.Transforms21;
 import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.inv.ItemWrapper;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.BLOCKS;
 
@@ -69,6 +72,8 @@ public class Resources21 extends FvtmResources {
 	public static BlockItem FUELFILLER_ITEM;
 	public static BlockEntityType<FuelFillerEntity> FUELFILLER_ENTITY;
 	//
+	public static ConcurrentHashMap<IDL, Block[]> ROAD_BLOCKS = new ConcurrentHashMap<>();
+	//
 	public static EntityType<WheelEntity> WHEEL_ENTITY;
 	public static EntityType<RootVehicle> VEHICLE_ENTITY;
 	public static EntityType<RailVehicle> RAIL_ENTITY;
@@ -96,9 +101,20 @@ public class Resources21 extends FvtmResources {
 	@Override
 	public void createContentBlocks(){
 		BLOCKS.forEach(block -> {
-			Pair<Block, BlockItem> pair = FVTM.regBlock(block.getIDS(), block::genBlock, (blk, prop) -> new BlockItem21(prop, blk, 0));
-			block.setItemWrapper(wrapwrapper(block.getID(), pair.getRight()));
-			BLOCK_LIST.add(pair.getLeft());
+			if(block.getBlockType().isGenericRoad()){
+				for(int i = 0; i < 16; i++){
+					int height = i;
+					IDL idl = IDLManager.getIDLCached(block.getID().space() + ":" + block.getID().id() + "_" + i);
+					Pair<Block, BlockItem> pair = FVTM.regBlock(idl.colon(), prop -> new G_ROAD(prop, block, height), (blk, prop) -> new BlockItem21(prop, blk, 0));
+					block.setItemWrapper(wrapwrapper(idl, pair.getRight()));
+					BLOCK_LIST.add(pair.getLeft());
+				}
+			}
+			else{
+				Pair<Block, BlockItem> pair = FVTM.regBlock(block.getIDS(), block::genBlock, (blk, prop) -> new BlockItem21(prop, blk, 0));
+				block.setItemWrapper(wrapwrapper(block.getID(), pair.getRight()));
+				BLOCK_LIST.add(pair.getLeft());
+			}
 		});
 		BASE_ENTITY = FVTM.regBlockEntity("fvtm:blockbase", BaseBlockEntity::new, BLOCK_LIST.toArray(new Block[0]));
 	}

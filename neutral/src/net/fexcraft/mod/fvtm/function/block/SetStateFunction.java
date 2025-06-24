@@ -7,10 +7,10 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.CubeSide;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 
@@ -43,7 +43,7 @@ public class SetStateFunction extends BlockFunction.StaticBlockFunction {
 	}
 
 	@Override
-	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, Passenger player, boolean main){
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean main){
 		if(!main) return false;
 		for(ChangeState cs : changes){
 			FvtmLogger.marker(cs.cstate + " " + cs.nstate);

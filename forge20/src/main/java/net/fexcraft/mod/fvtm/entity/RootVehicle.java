@@ -212,7 +212,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 		SeatInstance seat = vehicle.getSeatOf(pass);
 		if(seat != null) updatePassenger(pass, seat);
 		else{
-			//if(level(.isClientSide) pass.getData(PASSENGER).reconn(true);
+			if(level().isClientSide) UniEntity.getApp(pass, Passenger.class).reqPassUpdate();
 			pass.setPos(position());
 		}
 	}

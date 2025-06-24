@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class NRailVehicle extends RootVehicle {
+public class RailVehicle extends RootVehicle {
 
 	public Track current;
 	public Track last;
@@ -26,7 +26,7 @@ public class NRailVehicle extends RootVehicle {
 	private double frbogiedis;
 	private double rrbogiedis;
 
-	public NRailVehicle(World world){
+	public RailVehicle(World world){
 		super(world);
 		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(world));
 		preventEntitySpawning = true;
@@ -37,7 +37,7 @@ public class NRailVehicle extends RootVehicle {
 		}
 	}
 
-	public NRailVehicle(World world, RailEntity ent){
+	public RailVehicle(World world, RailEntity ent){
 		this(world);
 		setPosition(ent.pos.x, ent.pos.y, ent.pos.z);
 		ent.vehicle.entity = vehicle.entity;

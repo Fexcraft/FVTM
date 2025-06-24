@@ -21,7 +21,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, UniWheel {
+public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, UniWheel {
 
 	public RootVehicle root;
 	private boolean found;
@@ -30,13 +30,13 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	public String wheelid;
 	protected V3D pos = new V3D();
 
-	public NWheelEntity(World world){
+	public WheelEntity(World world){
 		super(world);
 		setSize(0.25f, 0.25f);
 		stepHeight = 1.125f;
 	}
 
-	public NWheelEntity(RootVehicle root, String wid){
+	public WheelEntity(RootVehicle root, String wid){
 		this(root.world);
 		this.root = root;
 		vehid = this.root.getEntityId();
@@ -100,13 +100,13 @@ public class NWheelEntity extends Entity implements IEntityAdditionalSpawnData, 
 	}
 
 	private void setStepHeight(){
-		if(root instanceof NLandVehicle == false){
+		if(root instanceof LandVehicle == false){
 			WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 			stepHeight = wtd == null ? 0 : wtd.function.step_height;
 		}
 		else{
 			WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
-			NLandVehicle veh = (NLandVehicle) root;
+			LandVehicle veh = (LandVehicle) root;
 			stepHeight = wtd == null ? veh.vehicle.data == null ? 1f : veh.vehicle.data.getType().getSphData().wheel_step_height : wtd.function.step_height;
 		}
 	}

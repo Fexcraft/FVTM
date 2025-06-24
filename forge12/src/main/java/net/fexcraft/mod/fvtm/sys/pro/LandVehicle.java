@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.pro;
 
-import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -12,9 +11,9 @@ import net.minecraft.world.World;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class NLandVehicle extends RootVehicle {
+public class LandVehicle extends RootVehicle {
 
-	public NLandVehicle(World world){
+	public LandVehicle(World world){
 		super(world);
 		preventEntitySpawning = true;
 		ignoreFrustumCheck = true;
@@ -25,7 +24,7 @@ public class NLandVehicle extends RootVehicle {
 		}
 	}
 
-	public NLandVehicle(World world, VehicleData data, Vec3d pos, EntityPlayer placer, int meta){
+	public LandVehicle(World world, VehicleData data, Vec3d pos, EntityPlayer placer, int meta){
 		this(world);
 		setPosition(pos.x, pos.y, pos.z);
 		vehicle.init(data, null);
@@ -36,7 +35,7 @@ public class NLandVehicle extends RootVehicle {
 		init(null);
 	}
 
-	public NLandVehicle(NLandVehicle truck, VehicleData data, EntityPlayer placer){
+	public LandVehicle(LandVehicle truck, VehicleData data, EntityPlayer placer){
 		this(truck.world, data, truck.getPositionVector(), placer, 0);
 		vehicle.front = truck.vehicle;
 		truck.vehicle.rear = vehicle;
@@ -61,7 +60,7 @@ public class NLandVehicle extends RootVehicle {
 	@Override
 	public void readSpawnData(TagCW com){
 		if(com.has("TruckId")){
-			vehicle.front = ((NLandVehicle)world.getEntityByID(com.getInteger("TruckId"))).vehicle;
+			vehicle.front = ((LandVehicle)world.getEntityByID(com.getInteger("TruckId"))).vehicle;
 			vehicle.front.rear = vehicle;
 		}
 	}

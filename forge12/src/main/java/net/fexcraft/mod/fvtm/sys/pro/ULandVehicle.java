@@ -61,7 +61,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 		init(null);
 	}
 
-	public ULandVehicle(NLandVehicle truck, VehicleData data, EntityPlayer placer){
+	public ULandVehicle(LandVehicle truck, VehicleData data, EntityPlayer placer){
 		this(truck.world, data, truck.vehicle.getV3D(), placer, 0);
 		vehicle.front = truck.vehicle;
 		truck.vehicle.rear = vehicle;
@@ -284,7 +284,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     	accx = 0;
         //
         for(UniWheel ent : vehicle.wheels.values()){
-			NWheelEntity wheel = (NWheelEntity)ent;
+			WheelEntity wheel = (WheelEntity)ent;
             if(wheel == null) continue;
 			WheelSlot slot = vehicle.data.getWheelSlots().get(wheel.wheelid);
             wheel.onGround = true;
@@ -349,7 +349,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
             trailer.vehicle.pivot().set_yaw((float)Math.atan2(conn.z - trax.z, conn.x - trax.x), false);
         	trailer.onGround = true;
 			for(UniWheel ent : trailer.vehicle.wheels.values()){
-				NWheelEntity wheel = (NWheelEntity)ent;
+				WheelEntity wheel = (WheelEntity)ent;
         		if(wheel == null) continue;
         		wheel.onGround = true;
                 wheel.rotationYaw = trailer.vehicle.pivot().deg_yaw();
@@ -365,7 +365,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
             trailer.opos();
             trailer.setPosition(conn.x, conn.y, conn.z);
 			for(UniWheel ent : trailer.vehicle.wheels.values()){
-				NWheelEntity wheel = (NWheelEntity)ent;
+				WheelEntity wheel = (WheelEntity)ent;
             	wheel.move(MoverType.SELF, 0, -GRAVITY_200th, 0);
             }
             trailer.rerot();
@@ -377,7 +377,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 		int wheelid = 0;
 		V3D atmc = new V3D(0, 0, 0);
 		for(UniWheel ent : vehicle.wheels.values()){
-			NWheelEntity wheel = (NWheelEntity)ent;
+			WheelEntity wheel = (WheelEntity)ent;
             if(wheel == null) continue;
             onGround = true; wheel.onGround = true;
             wheel.rotationYaw = vehicle.pivot().deg_yaw();
@@ -395,7 +395,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 	
 	private void opos(){ prevPosX = posX; prevPosY = posY; prevPosZ = posZ; }
 	
-	private static V3D alignWheel(ULandVehicle vehicle, NWheelEntity wheel, V3D vec, V3D atmc, boolean corrcheck){
+	private static V3D alignWheel(ULandVehicle vehicle, WheelEntity wheel, V3D vec, V3D atmc, boolean corrcheck){
 		V3D targetpos = vehicle.vehicle.pivot().get_vector(vec);
 		V3D current = new V3D(wheel.posX - vehicle.posX, wheel.posY - vehicle.posY, wheel.posZ - vehicle.posZ);
 		V3D despos = new V3D(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(0.5f);//TODO lata.wss
@@ -414,10 +414,10 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     
     public void rerot(){
 		V3D fron, rear, left, righ;
-		NWheelEntity fl = vehicle.wheels.getWheel(vehicle.w_front_l.id);
-		NWheelEntity fr = vehicle.wheels.getWheel(vehicle.w_front_r.id);
-		NWheelEntity rl = vehicle.wheels.getWheel(vehicle.w_rear_l.id);
-		NWheelEntity rr = vehicle.wheels.getWheel(vehicle.w_rear_r.id);
+		WheelEntity fl = vehicle.wheels.getWheel(vehicle.w_front_l.id);
+		WheelEntity fr = vehicle.wheels.getWheel(vehicle.w_front_r.id);
+		WheelEntity rl = vehicle.wheels.getWheel(vehicle.w_rear_l.id);
+		WheelEntity rr = vehicle.wheels.getWheel(vehicle.w_rear_r.id);
 		fron = new V3D((fl.posX + fr.posX) * 0.5, (fl.posY + fr.posY) * 0.5, (fl.posZ + fr.posZ) * 0.5);
 		rear = new V3D((rl.posX + rr.posX) * 0.5, (rl.posY + rr.posY) * 0.5, (rl.posZ + rr.posZ) * 0.5);
 		left = new V3D((fl.posX + rl.posX) * 0.5, (fl.posY + rl.posY) * 0.5, (fl.posZ + rl.posZ) * 0.5);

@@ -6,17 +6,16 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
-import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.fvtm.sys.pro.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.pro.RailVehicle;
+import net.fexcraft.mod.fvtm.sys.pro.WheelEntity;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.packet.PacketTagListener;
-import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
-import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -174,22 +173,22 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public void spawnRailEntity(RailEntity ent){
-		world.spawnEntity(new NRailVehicle(world, ent));
+		world.spawnEntity(new RailVehicle(world, ent));
 	}
 
 	@Override
 	public void spawnLandEntity(VehicleData data, V3D pos, EntityW placer){
-		world.spawnEntity(new NLandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), placer == null ? null : placer.local(), -1));
+		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), placer == null ? null : placer.local(), -1));
 	}
 
 	@Override
 	public void spawnLandEntity(VehicleData data, VehicleInstance truck, EntityW placer){
-		world.spawnEntity(new NLandVehicle(truck.entity.local(), data, placer.local()));
+		world.spawnEntity(new LandVehicle(truck.entity.local(), data, placer.local()));
 	}
 
 	@Override
 	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
-		NWheelEntity wheel = new NWheelEntity(vehicle.entity.local(), id);
+		WheelEntity wheel = new WheelEntity(vehicle.entity.local(), id);
 		world.spawnEntity(wheel);
 		return wheel;
 	}

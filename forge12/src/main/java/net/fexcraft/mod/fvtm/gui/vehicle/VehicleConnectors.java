@@ -2,8 +2,8 @@ package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.sys.pro.NLandVehicle;
-import net.fexcraft.mod.fvtm.sys.pro.NRailVehicle;
+import net.fexcraft.mod.fvtm.sys.pro.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.pro.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.minecraft.block.material.MapColor;
@@ -65,8 +65,8 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 	}
 
 	private void tryCouple(boolean front){
-		if(vehicle instanceof NLandVehicle){
-			NLandVehicle land = (NLandVehicle)vehicle;
+		if(vehicle instanceof LandVehicle){
+			LandVehicle land = (LandVehicle)vehicle;
 			if(front && land.vehicle.front != null){
 				//land.vehicle.front.tryDetach(player);
 			}
@@ -80,7 +80,7 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
         		}*///TODO
 			}
 		}
-		else if(vehicle instanceof NRailVehicle){
+		else if(vehicle instanceof RailVehicle){
 			/*RailVehicle railveh = (RailVehicle)vehicle;
 			railveh.rek.ent().tryCoupling(player, front);*/
 			//TODO isn't this client side?

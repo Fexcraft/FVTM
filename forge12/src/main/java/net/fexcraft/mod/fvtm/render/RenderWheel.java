@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.sys.pro.NWheelEntity;
+import net.fexcraft.mod.fvtm.sys.pro.WheelEntity;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.Minecraft;
@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 
@@ -24,8 +23,8 @@ public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialticks){
     	if(Command.OTHER) shadowSize = 0.125f;
     	else shadowSize = 0f;
-        if(entity instanceof NWheelEntity && Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
-            drawString(((NWheelEntity)entity).wheelid, x, y + 2, z, true, true, 0.8f, 0xb8bc38, null);
+        if(entity instanceof WheelEntity && Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
+            drawString(((WheelEntity)entity).wheelid, x, y + 2, z, true, true, 0.8f, 0xb8bc38, null);
             if(EnvInfo.DEV && Static.getServer().isSinglePlayer()){
                 Entity serv = Static.getServer().getWorld(entity.dimension).getEntityByID(entity.getEntityId());
                 if(serv == null) return;

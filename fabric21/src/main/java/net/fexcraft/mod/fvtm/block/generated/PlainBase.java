@@ -47,7 +47,7 @@ public class PlainBase extends net.minecraft.world.level.block.Block {
 		if(level.isClientSide || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 		if(!player.isCrouching() && type.getFunctions().size() > 0){
 			for(BlockFunction func : type.getFunctions()){
-				if(func.onClick(getWorld(level), getPos(pos), new V3D(0, 0, 0), StateWrapper.of(state), getSide(res.getDirection()), UniEntity.getCasted(player), hand == InteractionHand.MAIN_HAND)) return InteractionResult.SUCCESS;
+				if(func.onClick(getWorld(level), getPos(pos), new V3D(0, 0, 0), StateWrapper.of(state), getSide(res.getDirection()), UniEntity.getEntity(player), hand == InteractionHand.MAIN_HAND)) return InteractionResult.SUCCESS;
 			}
 		}
 		return InteractionResult.PASS;

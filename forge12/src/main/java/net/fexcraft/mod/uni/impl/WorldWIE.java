@@ -70,7 +70,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	public Passenger getPassenger(int id){
 		Entity ent = world.getEntityByID(id);
 		if(ent == null) return null;
-		return UniEntity.getCasted(ent);
+		return UniEntity.getApp(ent, Passenger.class);
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return UniEntity.getCasted(Minecraft.getMinecraft().player);
+		return UniEntity.getApp(Minecraft.getMinecraft().player, Passenger.class);
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	}
 
 	@Override
-	public void handleBlockEntityPacket(TagCW com, Passenger player){
+	public void handleBlockEntityPacket(TagCW com, EntityW player){
 		BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof PacketTagListener){

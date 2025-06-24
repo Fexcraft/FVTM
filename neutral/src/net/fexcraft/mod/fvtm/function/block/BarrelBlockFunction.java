@@ -1,8 +1,5 @@
 package net.fexcraft.mod.fvtm.function.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
@@ -12,12 +9,15 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.CubeSide;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BarrelBlockFunction extends BlockFunction {
 
@@ -78,7 +78,7 @@ public class BarrelBlockFunction extends BlockFunction {
 	}
 
 	@Override
-	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, Passenger player, boolean main){
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean main){
 		if(!main) return false;
 		//
 		return true;

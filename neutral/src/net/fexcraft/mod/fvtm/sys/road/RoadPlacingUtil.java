@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class RoadPlacingUtil {
 	public static final ConcurrentHashMap<UUID, UUID> CURRENT = new ConcurrentHashMap<>();
 	public static NewRoad CL_CURRENT = null;
 
-	public static void place(WorldW world, Passenger pass, TagCW com, QV3D vector){
+	public static void place(WorldW world, EntityW pass, TagCW com, QV3D vector){
 		UUID roadid = CURRENT.get(pass.getUUID());
 		if(!com.has("RoadLayers")){
 			pass.send("interact.fvtm.road_tool.empty");
@@ -92,7 +93,7 @@ public class RoadPlacingUtil {
 			road = points.size() > 1 ? new Road(points.toArray(new QV3D[0])) : null;
 		}
 
-		public void select(Passenger pass, QV3D vector){
+		public void select(EntityW pass, QV3D vector){
 			int sel = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){
@@ -154,7 +155,7 @@ public class RoadPlacingUtil {
 			return -2;
 		}
 
-		public void create(Passenger pass, QV3D vector, StackWrapper stack){
+		public void create(EntityW pass, QV3D vector, StackWrapper stack){
 			UUID current = CURRENT.get(pass.getUUID());
 			if(current == null){
 				pass.send("no_queue_entry / 0");

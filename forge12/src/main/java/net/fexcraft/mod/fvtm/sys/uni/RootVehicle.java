@@ -19,7 +19,7 @@ import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.EntityWIE;
+import net.fexcraft.mod.uni.world.EntityWI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -52,7 +52,7 @@ import static net.fexcraft.mod.fvtm.Config.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
+public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, VehicleInstance.Holder {
 
 	public VehicleInstance vehicle;
 	public float rotationRoll = 0;
@@ -61,7 +61,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public RootVehicle(World world){
 		super(world);
-		vehicle = new VehicleInstance(new EntityWIE(this), null, isAdv());
+		vehicle = new VehicleInstance(new EntityWI(this), null, isAdv());
 	}
 
 	protected void init(TagCW com){
@@ -213,7 +213,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if(isDead || hand == EnumHand.OFF_HAND) return false;
-		int res = vehicle.onInteract((Passenger)UniEntity.getEntity(player), UniStack.getStack(player.getHeldItemMainhand()));
+		int res = vehicle.onInteract(UniEntity.getEntity(player), UniStack.getStack(player.getHeldItemMainhand()));
 		return res >= 0;
 	}
 
@@ -265,7 +265,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	@Override
 	public void updatePassenger(Entity pass){
-		SeatInstance seat = getSeatOf(pass);
+		SeatInstance seat = vehicle.getSeatOf(pass);
 		if(seat != null) updatePassenger(pass, seat);
 		else{
 			if(world.isRemote) ((Passenger)UniEntity.getEntity(pass)).reqPassUpdate();
@@ -291,7 +291,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
-		SeatInstance seat = getSeatOf(pass);
+		SeatInstance seat = vehicle.getSeatOf(pass);
 		if(seat != null) seat.passenger(UniEntity.getEntity(pass));
 	}
 
@@ -324,14 +324,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	}
 
 	public void updateSittingState(Entity pass){
-		SeatInstance seat = getSeatOf(pass);
+		SeatInstance seat = vehicle.getSeatOf(pass);
 		if(seat != null) should_sit = seat.seat.sitting;
-	}
-
-	public SeatInstance getSeatOf(Entity entity){
-		Passenger pass = UniEntity.getCasted(entity);
-		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;
-		return vehicle.seats.get(pass.seat());
 	}
 
 	@Override
@@ -373,9 +367,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		if(world.isRemote || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
 		ItemStack stack = player.getHeldItem(hand);
 		SeatInstance seat = vehicle.seats.get(seatidx);
-		Passenger pass = UniEntity.getCasted(player);
+		Passenger pass = UniEntity.getApp(player, Passenger.class);
 		if(Lockable.isKey(FvtmRegistry.getItem(stack.getItem().getRegistryName().toString())) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(pass, UniStack.getStack(stack));
+			vehicle.data.getLock().toggle(pass.entity, UniStack.getStack(stack));
 			vehicle.sendUpdate(VehicleInstance.PKT_UPD_LOCK);
 			return true;
 		}
@@ -401,8 +395,8 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			List<EntityLiving> nearbyMobs = world.getEntitiesWithinAABB(EntityLiving.class, aabb);
 			for(EntityLiving entity : nearbyMobs){
 				if(entity.getLeashed() && entity.getLeashHolder() == player){
-					Passenger ent = UniEntity.getCasted(entity);
-					if(!seat.seat.allow(ent)){
+					Passenger ent = UniEntity.getApp(entity, Passenger.class);
+					if(!seat.seat.allow(ent.entity)){
 						Print.bar(player, "&eSeat does not accept this entity kind. (" + entity.getName() + ")");
 						continue;
 					}
@@ -417,7 +411,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			return true;
 		}
 		if(seat.passenger() == null){
-			if(!seat.seat.allow(pass)){
+			if(!seat.seat.allow(pass.entity)){
 				Print.bar(player, "&eSeat does not accept players as passengers.");
 				return false;
 			}
@@ -425,11 +419,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 				SeatInstance oseat = vehicle.getSeatOf(player);
 				oseat.passenger(null);
 				pass.set(getEntityId(), seatidx);
-				seat.passenger(pass);
+				seat.passenger(pass.entity);
 			}
 			else{
 				player.dismountRidingEntity();
-				UniEntity.getCasted(player, Passenger.class).set(getEntityId(), seatidx);
+				UniEntity.getApp(player, Passenger.class).set(getEntityId(), seatidx);
 				player.startRiding(this);
 			}
 			seat.interacttimer += 10;
@@ -483,8 +477,12 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		return false;
     }
 
-	public void onPacket(EntityW player, TagCW packet){
-
+	@Override
+	public VehicleInstance getVehicleInstance(){
+		return vehicle;
 	}
+
+	@Override
+	public void onPacket(EntityW pass, TagCW com){}
 
 }

@@ -109,7 +109,7 @@ public class RoadPlacingUtil {
 			Packets.sendToAll(PKT_TAG, "road_tool_selected", compound);
 		}
 
-		public void remove(Passenger pass, QV3D vector){
+		public void remove(EntityW pass, QV3D vector){
 			int rem = -1;
 			for(int i = 0; i < points.size(); i++){
 				if(vector.equals(points.get(i))){

@@ -1,9 +1,8 @@
 package net.fexcraft.mod.fvtm.ui.vehicle;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -30,7 +29,7 @@ public class VehicleAttributes extends UserInterface {
 
 	public VehicleAttributes(JsonMap map, ContainerInterface con) throws Exception{
 		super(map, con);
-		veh = ((Passenger)con.player.entity).getFvtmWorld().getVehicle(con.pos.x);
+		veh = ((FvtmWorld)con.player.entity.getWorld()).getVehicle(con.pos.x);
 		seat = veh.getSeatOf(con.player.entity.direct());
 		veh.data.getAttributes().values().forEach(attr -> {
 			if(seat == null){

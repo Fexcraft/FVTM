@@ -1,9 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
-import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.uni.world.EntityW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +52,7 @@ public class EventHolder {
 		listeners.get(lis.type).add(lis);
 	}
 
-	public void run(EventType event, VehicleInstance inst, Passenger pass, Object... args){
+	public void run(EventType event, VehicleInstance inst, EntityW pass, Object... args){
 		if(listeners.containsKey(event)){
 			for(EventListener lis : listeners.get(event)){
 				if(lis.cond.al.isMet(lis.cond, EventAction.DATA.set(inst, pass, this, this, args))){

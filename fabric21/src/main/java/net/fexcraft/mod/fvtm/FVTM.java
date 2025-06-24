@@ -32,7 +32,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.impl.AABBI;
-import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.impl.Packets21;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.*;
@@ -125,7 +124,6 @@ public class FVTM implements ModInitializer {
 		//
 		FCL.INIT_COMPLETE.add(() -> {
 			WrapperHolderImpl.LEVEL_PROVIDER = lvl -> new WorldWIE((Level)lvl);
-			EntityUtil.IMPL = EntityWIE.class;
 		});
 		CTab.IMPL[0] = TabInitializer.class;
 		StackWrapper.ITEM_TYPES.put(ContentType.ITYPE, item -> item instanceof ContentItem<?>);
@@ -329,7 +327,7 @@ public class FVTM implements ModInitializer {
 		return Commands.literal("fvtm")
 			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
 				Player player = ctx.getSource().getPlayerOrException();
-				Passenger pass = UniEntity.getCasted(player);
+				EntityW pass = UniEntity.getEntity(player);
 				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
 				if(map == null || map.empty()){
 					pass.send("No last road data in item.");
@@ -381,7 +379,7 @@ public class FVTM implements ModInitializer {
 					if(data.getLock().isLocked()){
 						pass.send("cmd.fvtm.get-key.is-locked");
 					}
-					else if(!ent.getSeatOf(player).seat.driver){
+					else if(!UniEntity.getApp(player, Passenger.class).getSeatOn().seat.driver){
 						pass.send("cmd.fvtm.get-key.not-driver");
 					}
 					else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){

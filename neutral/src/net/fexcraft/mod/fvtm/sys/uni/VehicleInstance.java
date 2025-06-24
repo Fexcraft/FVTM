@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import java.util.*;
-
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
@@ -30,19 +28,21 @@ import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.MathUtils;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.util.Pivot;
-import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+
+import java.util.*;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
@@ -146,7 +146,7 @@ public class VehicleInstance {
 		return point.getPrevPivot();
 	}
 
-	public boolean onKeyPress(KeyPress key, Seat seat, Passenger player, boolean state, boolean sync){
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityW player, boolean state, boolean sync){
 		//TODO script key press event
 		if(!seat.driver && key.driver_only()) return false;
 		if(entity.isOnClient() && !key.control() && !sync){
@@ -447,11 +447,11 @@ public class VehicleInstance {
 		return null;
 	}
 
-	public SeatInstance getSeatOf(Passenger passenger){
-		return getSeatOf(passenger.direct());
+	public SeatInstance getSeatOf(EntityW entity){
+		return getSeatOf(entity.direct());
 	}
 
-	public void packet(TagCW packet, Passenger passenger){
+	public void packet(TagCW packet, EntityW pass){
 		String cargo = packet.getString("cargo");
 		switch(cargo){
 			case PKT_UPD_LOCK:{
@@ -466,9 +466,9 @@ public class VehicleInstance {
 				return;
 			}
 			case PKT_UPD_TOGGLE_ATTR:{
-				if(passenger.isOnClient()){
+				if(entity.isOnClient()){
 					try{
-						AttributeUtil.processToggleClient(this, packet, passenger);
+						AttributeUtil.processToggleClient(this, packet, pass);
 					}
 					catch(Exception e){
 						FvtmLogger.log(e, "attr toggle packet / " + packet);
@@ -481,16 +481,17 @@ public class VehicleInstance {
 				return;
 			}
 			case PKT_UPD_ENGINE_TOGGLE:{
-				if(passenger.getSeatOn() != null && passenger.getSeatOn().root == this){
+				SeatInstance seaton = getSeatOf(pass);
+				if(seaton != null && seaton.root == this){
 					boolean state = packet.getBoolean("engine_toggle_result");
 					if(engine.setState(state)){
-						passenger.send("interact.fvtm.vehicle.engine_toggled_on");
+						pass.send("interact.fvtm.vehicle.engine_toggled_on");
 					}
 					else{
-						passenger.send("interact.fvtm.vehicle.engine_toggled_off");
+						pass.send("interact.fvtm.vehicle.engine_toggled_off");
 					}
 					if(packet.has("no_fuel") && packet.getBoolean("no_fuel")){
-						passenger.send("interact.fvtm.vehicle.engine_no_fuel");
+						pass.send("interact.fvtm.vehicle.engine_no_fuel");
 					}
 					//TODO sounds
 				}
@@ -518,19 +519,19 @@ public class VehicleInstance {
 				return;
 			}
 			case PKT_UPD_START_SOUND:{
-				if(passenger.isOnClient()) startSound(packet.getString("sound"));
+				if(pass.isOnClient()) startSound(packet.getString("sound"));
 				return;
 			}
 			case PKT_UPD_STOP_SOUND:{
-				if(passenger.isOnClient()) stopSound(packet.getString("sound"));
+				if(pass.isOnClient()) stopSound(packet.getString("sound"));
 				return;
 			}
 			case PKT_UPD_ENTITY:{
-				if(entity != null) entity.onPacket(passenger, packet);
+				if(entity != null) entity.onPacket(pass, packet);
 				return;
 			}
 			case PKT_UPD_RAILENTITY:{
-				if(railent != null) railent.onPacket(passenger, packet);
+				if(railent != null) railent.onPacket(pass, packet);
 				return;
 			}
 			case PKT_UPD_UPDATE_ATTR:{
@@ -741,7 +742,7 @@ public class VehicleInstance {
 		}
 	}
 
-	public int onInteract(Passenger player, StackWrapper stack){
+	public int onInteract(EntityW player, StackWrapper stack){
 		if(entity.isOnClient()){
 			if(!stack.empty() && stack.isItemOf(ContentType.PART.item_type)) return INTERACT_SUCCESS;
 			if(Lockable.isKey(stack.getItem())) return INTERACT_SUCCESS;
@@ -1011,6 +1012,21 @@ public class VehicleInstance {
 		}
 		moveFinish();
 		if(rear != null) rear.align();
+	}
+
+	public static interface Holder {
+
+		public VehicleInstance getVehicleInstance();
+
+		public void onPacket(EntityW pass, TagCW com);
+
+		public static VehicleInstance getFromPlayer(EntityW player){
+			if(player.getVehicle() instanceof Holder){
+				return ((Holder)player.getVehicle()).getVehicleInstance();
+			}
+			return null;
+		}
+
 	}
 
 }

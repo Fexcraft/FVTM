@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.gui.inv;
 
-import java.util.Map;
-
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -11,12 +9,12 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerVar;
 import net.fexcraft.mod.fvtm.data.inv.VarStackHandler;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.util.GuiHandler;
+import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.fvtm.util.GuiHandler;
 import net.fexcraft.mod.fvtm.util.function.InventoryBlockFunction;
-import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -26,6 +24,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.SlotItemHandler;
+
+import java.util.Map;
 
 public class UniVarInvContainer extends GenericContainer {
 
@@ -70,7 +70,7 @@ public class UniVarInvContainer extends GenericContainer {
 		}
 		else if(ID == UIKeys.VEHICLE_INVENTORY_FLUID.id){
 			entity = (RootVehicle)(player.getRidingEntity() instanceof RootVehicle ? player.getRidingEntity() : world.getEntityByID(y));
-			SeatInstance seat = entity.getSeatOf(player);
+			SeatInstance seat = entity.vehicle.getSeatOf(player);
 			int invid = 0;
 			for(Map.Entry<String, PartData> entry : entity.vehicle.data.getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");

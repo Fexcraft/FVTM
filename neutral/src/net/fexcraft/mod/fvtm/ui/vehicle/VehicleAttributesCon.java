@@ -3,9 +3,8 @@ package net.fexcraft.mod.fvtm.ui.vehicle;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -19,7 +18,7 @@ public class VehicleAttributesCon extends ContainerInterface {
 
 	public VehicleAttributesCon(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
-		vehicle = ((Passenger)player.entity).getFvtmWorld().getVehicle(pos.x);
+		vehicle = ((FvtmWorld)player.entity.getWorld()).getVehicle(pos.x);
 	}
 
 	@Override
@@ -32,7 +31,7 @@ public class VehicleAttributesCon extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		if(client) return;
 		if(com.getString("cargo").equals("toggle")){
-			AttributeUtil.processToggle(vehicle, com, (Passenger)player.entity);
+			AttributeUtil.processToggle(vehicle, com, player.entity);
 		}
 	}
 

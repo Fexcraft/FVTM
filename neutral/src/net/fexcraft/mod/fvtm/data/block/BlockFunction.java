@@ -47,7 +47,7 @@ public abstract class BlockFunction {
 
     public void addInformation(StackWrapper stack, WorldW world, BlockData data, List<String> list, boolean adv){}
 
-    public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, Passenger player, boolean mainhand){
+    public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean mainhand){
         return false;
     }
 

@@ -1021,8 +1021,8 @@ public class VehicleInstance {
 		public void onPacket(EntityW pass, TagCW com);
 
 		public static VehicleInstance getFromPlayer(EntityW player){
-			if(player.getVehicle() instanceof Holder){
-				return ((Holder)player.getVehicle()).getVehicleInstance();
+			if(player.getVehicleDirect() instanceof Holder){
+				return ((Holder)player.getVehicleDirect()).getVehicleInstance();
 			}
 			return null;
 		}

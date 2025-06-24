@@ -4,10 +4,10 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
 import net.fexcraft.mod.fvtm.sys.rail.Compound;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
 
 /**
@@ -15,7 +15,7 @@ import net.fexcraft.mod.uni.world.MessageSender;
  */
 public class AttributeUtil {
 
-	public static void processToggle(VehicleInstance vehicle, TagCW com, Passenger from){
+	public static void processToggle(VehicleInstance vehicle, TagCW com, EntityW from){
 		boolean bool = com.getBoolean("bool");
 		String attrid = com.getString("attr");
 		Attribute<?> attr = vehicle.data.getAttribute(attrid);
@@ -102,7 +102,7 @@ public class AttributeUtil {
 		}
 	}
 
-	public static void processToggleClient(VehicleInstance vehicle, TagCW com, Passenger from){
+	public static void processToggleClient(VehicleInstance vehicle, TagCW com, EntityW from){
 		FvtmLogger.marker(com);
 		boolean bool = com.getBoolean("bool");
 		String attrid = com.getString("attr");

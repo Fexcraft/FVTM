@@ -65,13 +65,6 @@ public class PacketsImpl extends Packets {
 		//
 		FvtmLogger.LOGGER.log("Done initialising Packet Handler.");
 		FvtmLogger.LOGGER.log("Starting Packet Listener registration.");
-		LIS_SERVER.put("mount_seat", (com, player) -> {
-			World world = player.getWorld().local();
-			RootVehicle vehicle = (RootVehicle)world.getEntityByID(com.getInteger("entity"));
-			int index = com.getInteger("seat");
-			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
-			vehicle.processSeatInteract(index, player.local(), EnumHand.MAIN_HAND);
-		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("deco", (tag, player) -> {
 				World world = player.getWorld().local();

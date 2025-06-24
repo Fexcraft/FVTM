@@ -78,13 +78,6 @@ public class Packets21 extends Packets {
 		super.init();
 		register();
 		INSTANCE = this;
-		LIS_SERVER.put("mount_seat", (com, player) -> {
-			Player entity = player.local();
-			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
-			int index = com.getInteger("seat");
-			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
-			vehicle.processSeatInteract(index, player.local(), InteractionHand.MAIN_HAND);
-		});
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,8 +41,9 @@ public class InputEvents {
 	}
 
 	private static void handleKeyboardInput(){
-		Passenger player = UniEntity.getCasted(minecraft.player);
-		SeatInstance seat = ((RootVehicle)minecraft.player.getVehicle()).getSeatOf(minecraft.player);
+		Passenger pass = UniEntity.getApp(minecraft.player, Passenger.class);
+		EntityW player = pass.entity;
+		SeatInstance seat = pass.getSeatOn();
 		if(seat == null) return;
 		boolean u12 = false;
 		if(accelerate.isDown()){

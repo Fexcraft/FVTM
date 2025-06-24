@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.data.FvtmPlayerData;
+import net.fexcraft.mod.fvtm.data.FvtmPlayer;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -34,9 +34,9 @@ public abstract class EntitySystem {
 	
 	public static final void spawnVehicle(MessageSender placer, WorldW world, V3D pos, VehicleData data, StackWrapper stack){
 		String pref = null;
-		FvtmPlayerData pd = null;
+		FvtmPlayer pd = null;
 		if(placer instanceof EntityW){
-			pd = UniEntity.get(((EntityW)placer).local()).getApp(FvtmPlayerData.class);
+			pd = UniEntity.get(((EntityW)placer).local()).getApp(FvtmPlayer.class);
 			if(pd != null) pref = pd.getFavoriteSpawnSystemFor(data.getType().getVehicleType());
 		}
 		EntitySystem sel = REGISTRY.get(pref);
@@ -60,7 +60,7 @@ public abstract class EntitySystem {
 		else{
 			if(pd != null){
 				pd.setActiveSpawnPoint(pos);
-				pd.getPlayer().openUI(UIKeys.ENTITY_SYSTEM_CHOOSE, data.getType().getVehicleType().ordinal(), 0, 0);
+				pd.entity.openUI(UIKeys.ENTITY_SYSTEM_CHOOSE, data.getType().getVehicleType().ordinal(), 0, 0);
 			}
 			else{
 				placer.send("&cThere are multiple spawn systems to choose from.");

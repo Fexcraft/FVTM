@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
@@ -106,7 +105,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 		if(world.isRemote) return false;
 		if(!player.isSneaking() && type.getFunctions().size() > 0){
 			for(BlockFunction func : type.getFunctions()){
-				if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), StateWrapper.of(state), getSide(side), UniEntity.getCasted(player), hand == EnumHand.MAIN_HAND)) return true;
+				if(func.onClick(getWorld(world), getPos(pos), new V3D(hitX, hitY, hitZ), StateWrapper.of(state), getSide(side), UniEntity.getEntity(player), hand == EnumHand.MAIN_HAND)) return true;
 			}
 		}
 		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);

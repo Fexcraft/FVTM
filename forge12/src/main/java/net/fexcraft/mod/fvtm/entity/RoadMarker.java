@@ -160,7 +160,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
             if(queueid != null && queueid.equals(queueid)){
             	EntityPlayer player = (EntityPlayer)damagesource.getTrueSource();
             	NewRoad road = RoadPlacingUtil.QUEUE.get(queueid);
-            	if(road != null) road.remove((Passenger)UniEntity.getEntity(player), position);
+            	if(road != null) road.remove(UniEntity.getEntity(player), position);
                 setDead();
             }
         }

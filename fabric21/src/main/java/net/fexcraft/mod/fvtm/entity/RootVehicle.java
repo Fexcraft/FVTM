@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fcl.util.EntityWI;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -9,9 +10,7 @@ import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
-import net.fexcraft.mod.fvtm.impl.EntityWIE;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.util.CollisionUtil;
 import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -37,7 +36,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -50,7 +48,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_LOCK;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
+public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, VehicleInstance.Holder {
 
 	public VehicleInstance vehicle;
 	public float rotZ = 0;
@@ -60,7 +58,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 
 	public RootVehicle(EntityType<?> type, Level level){
 		super(type, level);
-		vehicle = new VehicleInstance(new EntityWIE(this), null);
+		vehicle = new VehicleInstance(new EntityWI(this), null);
 	}
 
 	@Override
@@ -150,7 +148,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand){
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
-		int res = vehicle.onInteract((Passenger)UniEntity.getEntity(player), UniStack.getStack(player.getItemInHand(hand)));
+		int res = vehicle.onInteract(UniEntity.getEntity(player), UniStack.getStack(player.getItemInHand(hand)));
 		return res == 1 ? InteractionResult.SUCCESS : res == 0 ? InteractionResult.PASS : InteractionResult.FAIL;
 	}
 
@@ -225,7 +223,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 
 	@Override
 	public void positionRider(Entity pass, MoveFunction movefunc){
-		SeatInstance seat = getSeatOf(pass);
+		SeatInstance seat = vehicle.getSeatOf(pass);
 		if(seat != null) updatePassenger(pass, seat);
 		else{
 			//if(level(.isClientSide) pass.getData(PASSENGER).reconn(true);
@@ -235,7 +233,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 
 	public void updatePassenger(Entity pass, SeatInstance seat){
 		if(seat.passenger_direct() != pass){
-			seat.passenger(UniEntity.getCasted(pass));
+			seat.passenger(UniEntity.getEntity(pass));
 		}
 		V3D pos = seat.getCurrentGlobalPosition();
 		pass.setPos(pos.x, pos.y - (pass instanceof Player ? 0.7 : 0), pos.z);
@@ -245,8 +243,8 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 	@Override
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
-		SeatInstance seat = getSeatOf(pass);
-		if(seat != null) seat.passenger(UniEntity.getCasted(pass));
+		SeatInstance seat = vehicle.getSeatOf(pass);
+		if(seat != null) seat.passenger(UniEntity.getEntity(pass));
 	}
 
 	@Override
@@ -257,7 +255,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 			}
 		}
 		if(!level().isClientSide){
-			((Passenger)UniEntity.getCasted(pass)).set(-1, -1);
+			UniEntity.getApp(pass, Passenger.class).set(-1, -1);
 		}
 		super.removePassenger(pass);
 	}
@@ -277,16 +275,10 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		return should_sit;
 	}*/
 
-	public SeatInstance getSeatOf(Entity entity){
-		Passenger pass = UniEntity.getCasted(entity);
-		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;
-		return vehicle.seats.get(pass.seat());
-	}
-
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float f){
 		if(source.getDirectEntity() instanceof Player && getDriver() == null){
-			Passenger pass = UniEntity.getCasted(source.getDirectEntity());
+			EntityW pass = UniEntity.getEntity(source.getDirectEntity());
 			Player player = (Player)source.getDirectEntity();
 			if(vehicle.data.getLock().isLocked()){
 				pass.send("interact.fvtm.vehicle.remove_locked");
@@ -338,75 +330,9 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity {
 		//
 	}
 
-	public boolean processSeatInteract(int seatidx, ServerPlayer player, InteractionHand hand){
-		if(level().isClientSide || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
-		ItemStack stack = player.getItemInHand(hand);
-		SeatInstance seat = vehicle.seats.get(seatidx);
-		Passenger pass = UniEntity.getCasted(player);
-		if(Lockable.isKey(FvtmRegistry.getItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(pass, UniStack.getStack(stack));
-			vehicle.sendUpdate(PKT_UPD_LOCK);
-			return true;
-		}
-		if(vehicle.data.getLock().isLocked()){
-			player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
-			return true;
-		}
-		if(seat.interacttimer > 0) return false;
-		if(stack.getItem() instanceof LeadItem){
-			if(seat.passenger() != null){
-				if(seat.passenger().isPlayer()) return false;
-				if(seat.passenger().isLiving()){
-					Mob ent = seat.passenger().local();
-					ent.unRide();
-					ent.setLeashedTo(player, true);
-					seat.interacttimer += 10;
-					return true;
-				}
-			}
-			double range = 10;
-			V3D pos = new V3D(position().x, position().y, position().z);
-			AABB aabb = new AABB(pos.x - range, pos.y - range, pos.z - range, pos.x + range, pos.y + range, pos.z + range);
-			List<Entity> nearby = level().getEntities(this, aabb, ent -> ent instanceof Mob);
-			for(Entity entity : nearby){
-				Mob mob = (Mob)entity;
-				Passenger ment = UniEntity.getCasted(mob);
-				if(mob.isLeashed() && mob.getLeashHolder() == player){
-					if(!seat.seat.allow(ment)){
-						player.sendSystemMessage(Component.literal("&eSeat does not accept this entity kind. (" + entity.getName() + ")"));
-						continue;
-					}
-					ment.set(getId(), seatidx);
-					seat.elook.set_rotation(-entity.getYRot(), entity.getXRot(), 0F, true);
-					//mob.dropLeash(true, !player.isCreative());
-					mob.dropLeash();
-					entity.startRiding(this);
-					break;
-				}
-			}
-			seat.interacttimer += 10;
-			return true;
-		}
-		if(seat.passenger() == null){
-			if(!seat.seat.allow(pass)){
-				player.sendSystemMessage(Component.literal("&eSeat does not accept players as passengers."));
-				return false;
-			}
-			if(player.isPassenger() && player.getVehicle().equals(vehicle)){
-				SeatInstance oseat = vehicle.getSeatOf(player);
-				oseat.passenger(null);
-				pass.set(getId(), seatidx);
-				seat.passenger(pass);
-			}
-			else{
-				player.unRide();
-				pass.set(getId(), seatidx);
-				player.startRiding(this);
-			}
-			seat.interacttimer += 10;
-			return true;
-		}
-		return false;
+	@Override
+	public VehicleInstance getVehicleInstance(){
+		return vehicle;
 	}
 
 	public void onPacket(EntityW player, TagCW packet){

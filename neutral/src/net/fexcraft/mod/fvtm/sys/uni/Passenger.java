@@ -1,49 +1,101 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.uni.Appendable;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.minecraft.entity.player.EntityPlayer;
 
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public interface Passenger extends EntityW {
+public class Passenger implements Appendable<UniEntity> {
 
-	public SeatInstance getSeatOn();
+	public int vehicle = -1;
+	public int seat = -1;
+	public boolean notified;
+	public final EntityW entity;
 
-	public default FvtmWorld getFvtmWorld(){
-		return (FvtmWorld)getWorld();
+	public Passenger(UniEntity ent){
+		entity = ent == null ? null : ent.entity;
 	}
 
-	public void set(int veh, int seatid);
+	@Override
+	public Appendable<UniEntity> create(UniEntity ent){
+		if(!ent.entity.isLiving() && !(ent.entity instanceof VehicleInstance.Holder)) return null;
+		return new Passenger(ent);
+	}
 
-	public int vehicle();
+	@Override
+	public String id(){
+		return "fvtm:passenger";
+	}
 
-	public int seat();
+	public SeatInstance getSeatOn(){
+		EntityW on = entity.getVehicle();
+		if(on instanceof VehicleInstance.Holder){
+			((VehicleInstance.Holder)on).getVehicleInstance().getSeatOf(this);
+		}
+		return null;
+	}
 
-	public V3D getEyeVec();
+	public VehicleInstance getVehicle(){
+		EntityW on = entity.getVehicle();
+		if(on instanceof VehicleInstance.Holder){
+			return ((VehicleInstance.Holder)on).getVehicleInstance();
+		}
+		return null;
+	}
 
-	public V3D getLookVec();
+	/*public FvtmWorld getFvtmWorld(){
+		return (FvtmWorld)entity.getWorld();
+	}*/
 
-	public boolean isShiftDown();
+	public void set(int veh, int seatid){
+		if(entity.isOnClient() && entity.isRiding() && seatid > -1) {
+			VehicleInstance vi = getVehicle();
+			for(SeatInstance seat : vi.seats){
+				if(seat.passenger_direct() == entity) seat.passenger(null);
+			}
+		}
+		vehicle = veh;
+		seat = seatid;
+		if(!entity.isOnClient()){
+			sendPassUpdate(entity.getId(), vehicle, seat);
+			if(entity instanceof EntityPlayer && !notified) {
+				try{
+					entity.send("fvtm.seat.controls_info");
+					entity.send("https://fexcraft.net/wiki/mod/fvtm/controls");
+					notified = true;
+				}
+				catch(Exception e){
+					//
+				}
+			}
+		}
+	}
 
 	/** Towards Clients */
-	public default void sendPassUpdate(int ent, int veh, int seat){
+	public void sendPassUpdate(int ent, int veh, int seat){
 		TagCW com = TagCW.create();
 		com.set("ent", ent);
 		com.set("veh", veh);
 		com.set("seat", seat);
-		Packets.sendInRange(PKT_TAG, this, "upd_pass", com);
+		Packets.sendInRange(PKT_TAG, entity, "upd_pass", com);
 	}
 
 	/** Towards Server */
-	public default void reqPassUpdate(){
+	public void reqPassUpdate(){
 		TagCW com = TagCW.create();
-		com.set("ent", getId());
+		com.set("ent", entity.getId());
 		Packets.send(PKT_TAG, "upd_pass", com);
+	}
+
+	public void onPacket(EntityW pass, TagCW packet){
+		if(entity instanceof VehicleInstance.Holder) ((VehicleInstance.Holder)entity).onPacket(pass, packet);
 	}
 
 }

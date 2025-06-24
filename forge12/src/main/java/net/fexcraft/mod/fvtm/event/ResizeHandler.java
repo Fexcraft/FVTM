@@ -30,7 +30,7 @@ public class ResizeHandler {
     
     private boolean resize(Entity entity) throws Exception {
     	if(entity.getRidingEntity() instanceof RootVehicle == false) return false;
-    	SeatInstance cache = ((RootVehicle)entity.getRidingEntity()).getSeatOf(entity);
+    	SeatInstance cache = ((RootVehicle)entity.getRidingEntity()).vehicle.getSeatOf(entity);
     	if(cache == null || cache.seat == null || cache.seat.scale == null) return false;
     	float width = entity.width * cache.seat.scale;
 		float height = entity.height * cache.seat.scale;
@@ -52,7 +52,7 @@ public class ResizeHandler {
 
 	public static float getScale(Entity entity){
     	if(entity.getRidingEntity() instanceof RootVehicle == false) return 1f;
-    	SeatInstance cache = ((RootVehicle)entity.getRidingEntity()).getSeatOf(entity);
+    	SeatInstance cache = ((RootVehicle)entity.getRidingEntity()).vehicle.getSeatOf(entity);
     	if(cache == null || cache.seat == null || cache.seat.scale == null) return 1f;
     	return cache.seat.scale;
 	}

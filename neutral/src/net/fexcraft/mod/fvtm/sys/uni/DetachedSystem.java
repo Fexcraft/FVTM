@@ -87,7 +87,7 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 			regions.get(key, true).read(compound);
 		}
 		else{
-			regions.get(key, true).sendSync(player);
+			regions.get(key, true).sendSync(player.entity);
 		}
 	}
 

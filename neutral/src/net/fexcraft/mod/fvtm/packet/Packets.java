@@ -76,6 +76,12 @@ public abstract class Packets {
 		LIS_SERVER.put("blockentity", (com, player) -> {
 			((FvtmWorld)player.getWorld()).handleBlockEntityPacket(com, player);
 		});
+		LIS_SERVER.put("mount_seat", (com, player) -> {
+			VehicleInstance vehicle = ((FvtmWorld)player.getWorld()).getVehicle(com.getInteger("entity"));
+			int index = com.getInteger("seat");
+			if(index < 0 || index > vehicle.seats.size()) return;
+			vehicle.onSeatInteract(vehicle.seats.get(index), player);
+		});
 		LIS_SERVER.put("install_part", (com, player) -> {
 			StackWrapper wrapper = player.getHeldItem(true);
 			PartData data = wrapper.getContent(ContentType.PART.item_type);

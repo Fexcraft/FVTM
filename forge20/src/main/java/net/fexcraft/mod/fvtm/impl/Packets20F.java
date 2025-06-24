@@ -102,7 +102,7 @@ public class Packets20F extends Packets20 {
 	private <PKT extends PacketBase> Runnable getRunnable(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){
 		if(context.get().getDirection().getOriginationSide().isClient()){
 			try{
-				return handler.handleServer(packet, UniEntity.getCasted(context.get().getSender()));
+				return handler.handleServer(packet, UniEntity.getEntity(context.get().getSender()));
 			}
 			catch(Throwable e){
 				e.printStackTrace();
@@ -110,7 +110,7 @@ public class Packets20F extends Packets20 {
 		}
 		else{
 			try{
-				return handler.handleClient(packet, UniEntity.getCasted(ClientPacketPlayer.get()));
+				return handler.handleClient(packet, UniEntity.getEntity(ClientPacketPlayer.get()));
 			}
 			catch(Throwable e){
 				e.printStackTrace();
@@ -122,13 +122,13 @@ public class Packets20F extends Packets20 {
 	private <PKT extends PacketBase> Runnable getRunnableWhenPlayerPresent(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){
 		if(context.get().getDirection().getOriginationSide().isClient()){
 			if(context.get().getSender() == null) return () -> {};
-			Passenger pass = UniEntity.getCasted(context.get().getSender());
+			EntityW pass = UniEntity.getEntityN(context.get().getSender());
 			if(pass == null) return () -> {};
 			return handler.handleServer(packet, pass);
 		}
 		else{
 			if(ClientPacketPlayer.get() == null) return () -> {};
-			Passenger pass = UniEntity.getCasted(ClientPacketPlayer.get());
+			EntityW pass = UniEntity.getEntityN(ClientPacketPlayer.get());
 			if(pass == null) return () -> {};
 			return handler.handleClient(packet, pass);
 		}

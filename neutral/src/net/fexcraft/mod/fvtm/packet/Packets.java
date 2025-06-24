@@ -243,7 +243,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("upd_pass", (com, player) -> {
 			UniEntity ent = player.getWorld().getUniEntity(com.getInteger("ent"));
-			ent.runIfPresent(Passenger.class, pass -> pass.sendPassUpdate(com.getInteger("ent"), pass.vehicle, pass.seat));
+			ent.runIfPresent(Passenger.class, pass -> pass.sendPassUpdate(ent.entity.getId(), pass.vehicle, pass.seat));
 		});
 		if(EnvInfo.CLIENT) initClient();
 	}
@@ -290,7 +290,7 @@ public abstract class Packets {
 			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
 			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(uuid);
 			if(road == null) return;
-			road.remove((Passenger)player, new QV3D(tag, "vector"));
+			road.remove(player, new QV3D(tag, "vector"));
 		});
 		LIS_CLIENT.put("road_tool_reset", (tag, player) -> {
 			UUID uuid = new UUID(tag.getLong("uuid_m"), tag.getLong("uuid_l"));
@@ -473,14 +473,14 @@ public abstract class Packets {
 		LIS_CLIENT.put("sync_reg", (tag, player) -> {
 			SystemManager.Systems sys = SystemManager.Systems.values()[tag.getInteger("sys")];
 			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
-			if(system != null) system.updateRegion(tag, (Passenger)player);
+			if(system != null) system.updateRegion(tag, player);
 		});
 		LIS_CLIENT.put("sync_conf", (tag, player) -> {
 			Config.VEHICLE_SYNC_RATE = tag.getByte("sync_rate");
 		});
 		LIS_CLIENT.put("upd_pass", (tag, player) -> {
-			EntityW ent = player.getWorld().getEntity(tag.getInteger("ent"));
-			if(ent instanceof Passenger) ((Passenger)ent).set(tag.getInteger("veh"), tag.getInteger("seat"));
+			UniEntity ent = player.getWorld().getUniEntity(tag.getInteger("ent"));
+			ent.runIfPresent(Passenger.class, pass -> pass.set(tag.getInteger("veh"), tag.getInteger("seat")));
 		});
 	}
 

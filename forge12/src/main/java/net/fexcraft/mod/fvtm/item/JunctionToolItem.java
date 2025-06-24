@@ -1,16 +1,9 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -18,6 +11,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,6 +25,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
+import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -64,7 +63,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 		}
 		WorldW world = WrapperHolder.getWorld(level);
 		RailSystem railsys = SystemManager.get(SystemManager.Systems.RAIL, world);
-		Passenger pass = (Passenger)UniEntity.getEntity(player);
+		EntityW pass = UniEntity.getEntity(player);
 		if(railsys == null){
 			pass.bar("item.fvtm.junction_tool.nosys");
 			return EnumActionResult.FAIL;

@@ -97,7 +97,7 @@ public class FvtmRegistry {
 		//
 		UniStack.register(new VehItemApp(null));
 		UniStack.register(new PartItemApp(null));
-		UniEntity.register(new FvtmPlayerData(null));
+		UniEntity.register(new FvtmPlayer(null));
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new SimplePhysSpawnSystem());
 	}

@@ -530,7 +530,7 @@ public class VehicleInstance {
 				return;
 			}
 			case PKT_UPD_ENTITY:{
-				if(entity != null) entity.onPacket(pass, packet);
+				if(entity != null) ((Holder)entity).onPacket(pass, packet);
 				return;
 			}
 			case PKT_UPD_RAILENTITY:{

@@ -149,7 +149,7 @@ public class Command extends CommandBase {
 					if(data.getLock().isLocked()){
 						pass.send("cmd.fvtm.get-key.is-locked");
 					}
-					else if(!ent.getSeatOf(player).seat.driver){
+					else if(!ent.vehicle.getSeatOf(player).seat.driver){
 						pass.send("cmd.fvtm.get-key.not-driver");
 					}
 					else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){

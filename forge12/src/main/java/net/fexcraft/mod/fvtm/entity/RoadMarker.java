@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import java.util.UUID;
-
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -10,6 +8,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -20,6 +19,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+
+import java.util.UUID;
 
 public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
 	
@@ -140,7 +141,7 @@ public class RoadMarker extends Entity implements IEntityAdditionalSpawnData {
         if(queueid.equals(current)){
         	NewRoad road = RoadPlacingUtil.QUEUE.get(current);
         	if(road == null) return true;
-			Passenger pass = (Passenger)UniEntity.getEntity(player);
+			EntityW pass = UniEntity.getEntity(player);
         	if(player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
         		road.create(pass, position, pass.getHeldItem(true));
         	}

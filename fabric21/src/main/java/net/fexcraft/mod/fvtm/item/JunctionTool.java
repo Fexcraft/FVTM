@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.network.chat.Component;
@@ -52,7 +53,7 @@ public class JunctionTool extends Item implements JunctionGridItem {
 		WorldW world = WrapperHolder.getWorld(context.getLevel());
 		RailSystem railsys = SystemManager.get(SystemManager.Systems.RAIL, world);
 		Player player = context.getPlayer();
-		Passenger pass = (Passenger)UniEntity.getEntity(player);
+		EntityW pass = UniEntity.getEntity(player);
 		if(railsys == null){
 			pass.bar("item.fvtm.junction_tool.nosys");
 			return InteractionResult.FAIL;

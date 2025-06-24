@@ -44,13 +44,6 @@ public abstract class Packets20 extends Packets {
 	public void init(){
 		super.init();
 		INSTANCE = this;
-		LIS_SERVER.put("mount_seat", (com, player) -> {
-			Player entity = player.local();
-			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
-			int index = com.getInteger("seat");
-			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
-			vehicle.processSeatInteract(index, player.local(), InteractionHand.MAIN_HAND);
-		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("deco", (tag, player) -> {
 				Level level = player.getWorld().local();

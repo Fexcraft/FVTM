@@ -43,7 +43,7 @@ public class RoadToolItem extends Item {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context){
-		int result = UniRoadTool.onUse(UniEntity.getCasted(context.getPlayer()), context.getHand() == InteractionHand.MAIN_HAND);
+		int result = UniRoadTool.onUse(UniEntity.getEntity(context.getPlayer()), context.getHand() == InteractionHand.MAIN_HAND);
 		switch(result){
 			case 1: return InteractionResult.FAIL;
 			case 2: return InteractionResult.SUCCESS;
@@ -52,7 +52,7 @@ public class RoadToolItem extends Item {
 				ItemStack stack = context.getPlayer().getItemInHand(context.getHand());
 				if(!stack.hasTag()) stack.setTag(new CompoundTag());
 				RoadPlacingUtil.place(WrapperHolder.getWorld(context.getLevel()),
-					UniEntity.getCasted(context.getPlayer()),
+					UniEntity.getEntity(context.getPlayer()),
 					TagCW.wrap(stack.getTag()),
 					new QV3D(context.getClickLocation().x, context.getClickLocation().y - 1, context.getClickLocation().z));
 				return InteractionResult.SUCCESS;

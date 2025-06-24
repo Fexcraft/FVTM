@@ -5,17 +5,17 @@ import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvHandlerInit;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.function.block.BoolBlockFunction;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.world.CubeSide;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 
@@ -68,7 +68,7 @@ public class InventoryBlockFunction extends BlockFunction {
 	}
 
 	@Override
-	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, Passenger player, boolean main){
+	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean main){
 		if(!main) return false;
 		UIKey ui = handler.type.isFluid() ? UIKeys.BLOCK_INVENTORY_FLUID : UIKeys.BLOCK_INVENTORY_ITEM;
 		if(key != null){

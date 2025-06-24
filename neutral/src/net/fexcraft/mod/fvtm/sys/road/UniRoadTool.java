@@ -5,11 +5,8 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
@@ -19,6 +16,7 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 
@@ -96,7 +94,7 @@ public class UniRoadTool {
 		}
 	}
 
-	public static int onUse(Passenger pass, boolean main){
+	public static int onUse(EntityW pass, boolean main){
 		if(pass.getWorld().isClient()) return 0;
 		if(!pass.isCreative()){
 			pass.send("tooltip.fvtm.road_tool.creative");
@@ -109,7 +107,7 @@ public class UniRoadTool {
 		return 3;
 	}
 
-	public static boolean placeRoad(Passenger pass, StackWrapper stack, Road _road){
+	public static boolean placeRoad(EntityW pass, StackWrapper stack, Road _road){
 		if(_road.length > MAX_ROAD_LENGTH){
 			pass.bar("interact.fvtm.road_tool.too_long");
 			return false;
@@ -319,7 +317,7 @@ public class UniRoadTool {
 		}
 	}
 
-	private static void roadFill(WorldW world, Passenger pass, ArrayList<QV3D> road, V3I pos, StackWrapper stack, StackWrapper slab, int th, boolean flnk, boolean vani, JsonMap map){
+	private static void roadFill(WorldW world, EntityW pass, ArrayList<QV3D> road, V3I pos, StackWrapper stack, StackWrapper slab, int th, boolean flnk, boolean vani, JsonMap map){
 		int height;
 		StateWrapper state;
 		StateWrapper block;
@@ -360,7 +358,7 @@ public class UniRoadTool {
 		}
 	}
 
-	private static void basicFill(WorldW world, Passenger pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, JsonMap map){
+	private static void basicFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, JsonMap map){
 		StateWrapper state;
 		StateWrapper block;
 		for(QV3D v : vecs){
@@ -374,7 +372,7 @@ public class UniRoadTool {
 		}
 	}
 
-	private static void borderFill(WorldW world, Passenger pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, int top, JsonMap map){
+	private static void borderFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, int top, JsonMap map){
 		for(QV3D v : vecs){
 			pos.set(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
 			for(int i = -1; i < top; i++){

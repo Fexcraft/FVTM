@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
 import net.fexcraft.mod.fvtm.model.ModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
@@ -98,6 +99,7 @@ public class FvtmRegistry {
 		UniStack.register(new VehItemApp(null));
 		UniStack.register(new PartItemApp(null));
 		UniEntity.register(new FvtmPlayer(null));
+		UniEntity.register(new Passenger(null));
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new SimplePhysSpawnSystem());
 	}

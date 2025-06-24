@@ -1,15 +1,11 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import java.util.ArrayList;
-
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.fvtm.sys.event.EventListener;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
@@ -18,6 +14,8 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
+
+import java.util.ArrayList;
 
 /**
  * <i>Junctions are essential!</i>
@@ -434,7 +432,7 @@ public class Junction implements SysObj {
 				sigstate1 = tracks.get(1).unit.section().isFree(ent);
 			}
 			else if(sigtype1.any()){
-				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.FORWARD);
+				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, ent.vehicle.driver(), this, EntryDirection.FORWARD);
 			}
 		}
 		else{
@@ -442,7 +440,7 @@ public class Junction implements SysObj {
 				sigstate0 = tracks.get(0).unit.section().isFree(ent);
 			}
 			else if(sigtype0.any()){
-				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, (Passenger)ent.vehicle.driver(), this, EntryDirection.BACKWARD);
+				holder.run(EventType.JUNC_SIGNAL, ent.vehicle, ent.vehicle.driver(), this, EntryDirection.BACKWARD);
 			}
 		}
 		//

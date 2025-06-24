@@ -268,7 +268,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		SeatInstance seat = vehicle.getSeatOf(pass);
 		if(seat != null) updatePassenger(pass, seat);
 		else{
-			if(world.isRemote) ((Passenger)UniEntity.getEntity(pass)).reqPassUpdate();
+			if(world.isRemote) UniEntity.getApp(pass, Passenger.class).reqPassUpdate();
 			pass.setPosition(posX, posY, posZ);
 		}
 	}
@@ -303,7 +303,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			}
 		}
 		if(!world.isRemote){
-			((Passenger)UniEntity.getEntity(pass)).set(-1, -1);
+			UniEntity.getApp(pass, Passenger.class).set(-1, -1);
 		}
 		super.removePassenger(pass);
 	}

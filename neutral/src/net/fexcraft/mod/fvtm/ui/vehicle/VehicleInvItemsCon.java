@@ -5,7 +5,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.inv.FvtmInvItems;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -20,7 +20,7 @@ public class VehicleInvItemsCon extends ContainerInterface {
 
 	public VehicleInvItemsCon(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
-		vehicle = ((Passenger)player.entity).getFvtmWorld().getVehicle(pos.x);
+		vehicle = ((FvtmWorld)player.entity.getWorld()).getVehicle(pos.x);
 		if(pos.y < vehicle.data.getVehInvKeys().size()){
 			inv = (FvtmInvItems)vehicle.data.getVehInventories().get(pos.y);
 		}

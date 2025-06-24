@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.FvtmPlayer;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.uni.Appendable;
@@ -36,7 +35,7 @@ public class Passenger implements Appendable<UniEntity> {
 
 	public SeatInstance getSeatOn(){
 		if(entity.getVehicleDirect() instanceof VehicleInstance.Holder){
-			((VehicleInstance.Holder)entity.getVehicleDirect()).getVehicleInstance().getSeatOf(this);
+			return ((VehicleInstance.Holder)entity.getVehicleDirect()).getVehicleInstance().getSeatOf(entity);
 		}
 		return null;
 	}
@@ -49,7 +48,6 @@ public class Passenger implements Appendable<UniEntity> {
 	}
 
 	public void set(int veh, int seatid){
-		FvtmLogger.marker(entity.direct(), veh, seatid);
 		if(entity.isOnClient() && entity.isRiding() && seatid > -1) {
 			VehicleInstance vi = getVehicle();
 			for(SeatInstance seat : vi.seats){
@@ -58,7 +56,13 @@ public class Passenger implements Appendable<UniEntity> {
 		}
 		vehicle = veh;
 		seat = seatid;
-		if(!entity.isOnClient()){
+		if(entity.isOnClient()){
+			if(vehicle < 0) return;
+			if(entity.getVehicleDirect() == null) entity.mount(veh);
+			VehicleInstance vi = getVehicle();
+			vi.seats.get(seatid).passenger(entity);
+		}
+		else{
 			sendPassUpdate(entity.getId(), vehicle, seat);
 			if(entity.isPlayer()){
 				FvtmPlayer fp = UniEntity.getApp(entity.direct(), FvtmPlayer.class);

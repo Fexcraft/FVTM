@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
-import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumActionResult;
@@ -94,8 +97,9 @@ public class KeyHandler {
     }
 
     public void handleKeyboardInput(){
-        Passenger player = UniEntity.getCasted(minecraft.player);
-        SeatInstance seat = ((RootVehicle)minecraft.player.getRidingEntity()).getSeatOf(minecraft.player);
+        Passenger pass = UniEntity.getApp(minecraft.player, Passenger.class);
+        EntityW player = pass.entity;
+        SeatInstance seat = pass.getSeatOn();
         if(seat == null) return;
         boolean uni12 = minecraft.player.getRidingEntity() instanceof ULandVehicle;
         if(isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode())){

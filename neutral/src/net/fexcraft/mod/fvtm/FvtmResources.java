@@ -71,7 +71,6 @@ public abstract class FvtmResources {
 	public void init(){
 		FVTM_CONFIG_DIR = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/");
 		if(!FVTM_CONFIG_DIR.exists()) FVTM_CONFIG_DIR.mkdirs();
-		UniEntity.register(new FvtmPlayer(null));
 		//
 		JsonMap map = new JsonMap();
 		map.add("ID", INTERNAL_ADDON_ID.colon());

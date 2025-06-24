@@ -75,7 +75,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		}
 	}
 
-	public void onRelayInteract(TagCW com, Passenger player){
+	public void onRelayInteract(TagCW com, EntityW player){
 		RelayHolder holder = getHolder(com.getV3I("holder"));
 		if(holder == null){
 			player.send("error.holder.null");
@@ -134,7 +134,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		}
 	}
 
-	public void onRelayRemove(TagCW com, Passenger player){
+	public void onRelayRemove(TagCW com, EntityW player){
 		RelayHolder holder = getHolder(com.getV3I("holder"));
 		if(holder == null){
 			player.send("error.holder.null");
@@ -151,7 +151,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		else relay.remove(relay.size() - 1, true);
 	}
 
-	public void onRelayWireSlack(TagCW com, Passenger player){
+	public void onRelayWireSlack(TagCW com, EntityW player){
 		Wire wire0 = getWire(new WireKey(com));
 		Wire wire1 = getWire(wire0.okey);
 		wire0.slack += com.getBoolean("up") ? -Config.WIRE_SLACK_ADJUSTMENT : Config.WIRE_SLACK_ADJUSTMENT;
@@ -165,7 +165,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		player.bar("interact.fvtm.relay.wire_slack", wire0.slack);
 	}
 
-	public void onRelayWireDeco(TagCW com, Passenger player){
+	public void onRelayWireDeco(TagCW com, EntityW player){
 		WireDeco deco = player.getHeldItem(true).getContent(ContentType.WIREDECO.item_type);
 		if(deco == null){
 			player.bar("deco null on server");

@@ -113,11 +113,11 @@ public class SeatInstance {
 		return passenger != null && passenger.isPlayer();
 	}
 
-	public boolean onKeyPress(KeyPress key, Passenger player){
+	public boolean onKeyPress(KeyPress key, EntityW player){
 		return onKeyPress(key, player, false);
 	}
 
-	public boolean onKeyPress(KeyPress key, Passenger player, boolean state){
+	public boolean onKeyPress(KeyPress key, EntityW player, boolean state){
 		if(key == null) return false;
 		if(key.control() && seat.driver){
 			if(clicktimer > 0) return false;
@@ -143,7 +143,7 @@ public class SeatInstance {
 		return root.onKeyPress(key, seat, player, state, false);
 	}
 
-	private boolean attrKeyPress(KeyPress key, Passenger player){
+	private boolean attrKeyPress(KeyPress key, EntityW player){
 		if(!attrkeys.containsKey(key)) return false;
 		if(attrkeys.get(key)[0] > 0) return false;
 		boolean bool = false;

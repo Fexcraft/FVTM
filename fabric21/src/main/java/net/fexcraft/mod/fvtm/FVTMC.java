@@ -35,6 +35,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.packet.PacketHandler;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -153,8 +154,9 @@ public class FVTMC implements ClientModInitializer {
 
 	private static void handleKeyboardInput(Minecraft minecraft){
 		if(minecraft.player == null || minecraft.player.getVehicle() instanceof RootVehicle == false) return;
-		Passenger player = UniEntity.getCasted(minecraft.player);
-		SeatInstance seat = ((RootVehicle)minecraft.player.getVehicle()).getSeatOf(minecraft.player);
+		Passenger pass = UniEntity.getApp(minecraft.player, Passenger.class);
+		EntityW player = pass.entity;
+		SeatInstance seat = pass.getSeatOn();
 		if(seat == null) return;
 		boolean u12 = false;
 		if(minecraft.options.keyUp.isDown()){

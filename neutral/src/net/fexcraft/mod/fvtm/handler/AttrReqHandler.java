@@ -1,17 +1,16 @@
 package net.fexcraft.mod.fvtm.handler;
 
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 
 import java.util.Map;
 
@@ -20,9 +19,9 @@ import java.util.Map;
  */
 public class AttrReqHandler {
 
-	public static void processToggleRequest(Passenger pass, TagCW packet){
+	public static void processToggleRequest(EntityW pass, TagCW packet){
 		boolean bool = packet.getBoolean("bool");
-		Map.Entry<VehicleData, InteractRef> ref = pass.getFvtmWorld().getInteractRef(packet);
+		Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)pass.getWorld()).getInteractRef(packet);
 		String attribute = packet.getString("attr");
 		final Attribute<?> attr = ref.getKey().getAttribute(attribute);
 		/*if(!attr.editable && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm) : true)){
@@ -116,9 +115,9 @@ public class AttrReqHandler {
 		}
 	}
 
-	public static void processUpdateRequest(Passenger pass, TagCW packet){
+	public static void processUpdateRequest(EntityW pass, TagCW packet){
 		boolean reset = packet.has("reset") && packet.getBoolean("reset");
-		Map.Entry<VehicleData, InteractRef> ref = pass.getFvtmWorld().getInteractRef(packet);
+		Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)pass.getWorld()).getInteractRef(packet);
 		Attribute<?> attr = ref.getKey().getAttribute(packet.getString("attr"));
 		/*if(!attr.editable && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(pass) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm) : true)){
 			pass.send("No permission. [ED]");
@@ -167,11 +166,11 @@ public class AttrReqHandler {
 		Packets.sendToAll(Packet_TagListener.class, "attr_update", packet);
 	}
 
-	public static void processToggleResponse(Passenger pass, TagCW packet){
+	public static void processToggleResponse(EntityW pass, TagCW packet){
 		boolean bool = packet.getBoolean("bool");
 		String attribute = packet.getString("attr");
 		Attribute<?> attr = null;
-		Map.Entry<VehicleData, InteractRef> ref = pass.getFvtmWorld().getInteractRef(packet);
+		Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)pass.getWorld()).getInteractRef(packet);
 		if(ref == null){
 			FvtmLogger.debug("Received packet for interact-ref not found on client side!");
 		}
@@ -192,8 +191,8 @@ public class AttrReqHandler {
 		}
 	}
 
-	public static void processUpdateResponse(Passenger pass, TagCW packet){
-		Map.Entry<VehicleData, InteractRef> ref = pass.getFvtmWorld().getInteractRef(packet);
+	public static void processUpdateResponse(EntityW pass, TagCW packet){
+		Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)pass.getWorld()).getInteractRef(packet);
 		Attribute<?> attr = ref.getKey().getAttribute(packet.getString("attr"));
 		if(attr.valuetype.isTristate()){
 			if(packet.has("reset") && packet.getBoolean("reset")){

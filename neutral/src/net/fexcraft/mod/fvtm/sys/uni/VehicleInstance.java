@@ -6,7 +6,6 @@ import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -38,7 +37,9 @@ import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 
@@ -46,8 +47,10 @@ import java.util.*;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+import static net.fexcraft.mod.fvtm.data.Material.isFuelContainer;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valRad;
+import static net.fexcraft.mod.uni.inv.StackWrapper.IT_LEAD;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -753,12 +756,12 @@ public class VehicleInstance {
 			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, data, iref(), null, player, stack);
 			return INTERACT_SUCCESS;
 		}
-		if(Lockable.isKey(stack.getItem()) && !Material.isFuelContainer(stack)){
+		if(Lockable.isKey(stack.getItem()) && !isFuelContainer(stack)){
 			data.getLock().toggle(player, stack);
 			sendUpdate(PKT_UPD_LOCK);
 		}
 		if(!stack.empty()){
-			if(Material.isFuelContainer(stack)){
+			if(isFuelContainer(stack)){
 				player.openUI(UIKeys.VEHICLE_FUEL, entity.getId(), 0, 0);
 			}
 			else if(stack.isItemOf(ContentType.TOOLBOX.item_type)){
@@ -811,6 +814,70 @@ public class VehicleInstance {
 			player.bar("interact.fvtm.vehicle.locked");
 		}
 		return INTERACT_PASS;
+	}
+
+	public boolean onSeatInteract(SeatInstance seat, EntityW player){
+		if(entity.isOnClient()) return false;
+		StackWrapper stack = player.getHeldItem(true);
+		Passenger pass = UniEntity.getApp(player, Passenger.class);
+		if(Lockable.isKey(stack.getItem()) && !isFuelContainer(stack)){
+			data.getLock().toggle(pass.entity, UniStack.getStack(stack));
+			sendUpdate(VehicleInstance.PKT_UPD_LOCK);
+			return true;
+		}
+		if(data.getLock().isLocked()){
+			player.send("interact.fvtm.vehicle.locked");
+			return true;
+		}
+		if(seat.interacttimer > 0) return false;
+		if(stack.isItemOf(IT_LEAD)){
+			if(seat.passenger() != null){
+				if(seat.passenger().isPlayer()) return false;
+				if(seat.passenger().isLiving()){
+					EntityW ent = seat.passenger().local();
+					ent.dismount(seat.seat.dis);
+					ent.setLeash(player, true);
+					seat.interacttimer += 10;
+					return true;
+				}
+			}
+			List<EntityW> nearby = entity.getWorld().getEntities(pos, 10);
+			for(EntityW lent : nearby){
+				if(!lent.isLiving() || lent == player) continue;
+				if(lent.getLeash().direct() == player.direct()){
+					Passenger lpass = UniEntity.getApp(lent, Passenger.class);
+					if(!seat.seat.allow(lpass.entity)){
+						player.bar("interact.fvtm.vehicle.seat_wrong_type", lent.getName());
+						continue;
+					}
+					lent.setLeash(player, false);
+					lpass.set(entity.getId(), seat.index);
+					seat.passenger(lent);
+					lent.mount(entity);
+					break;
+				}
+			}
+			seat.interacttimer += 10;
+			return true;
+		}
+		if(seat.passenger() == null){
+			if(!seat.seat.allow(pass.entity)){
+				player.send("interact.fvtm.vehicle.seat_not_player");
+				return false;
+			}
+			if(player.isRiding() && player.getVehicleDirect().equals(entity.direct())){
+				SeatInstance oseat = getSeatOf(player);
+				oseat.passenger(null);
+			}
+			else{
+				player.mount(entity);
+			}
+			pass.set(entity.getId(), seat.index);
+			seat.passenger(pass.entity);
+			seat.interacttimer += 10;
+			return true;
+		}
+		return false;
 	}
 
 	public void onUpdate(){

@@ -2,14 +2,13 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -47,7 +46,7 @@ public class RoadToolItem extends Item {
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-		Passenger ent = UniEntity.getCasted(player);
+		EntityW ent = UniEntity.getEntity(player);
 		int result = UniRoadTool.onUse(ent, hand == EnumHand.MAIN_HAND);
 		switch(result){
 			case 1: return EnumActionResult.FAIL;

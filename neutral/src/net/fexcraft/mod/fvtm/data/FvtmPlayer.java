@@ -21,6 +21,7 @@ public class FvtmPlayer implements Appendable<UniEntity> {
 
 	protected HashMap<VehicleType, String> favtypes = new HashMap<>();
 	protected V3D vehspawnpoint;
+	public boolean notified;
 	//
 	public ArrayList<V3I> longdis = new ArrayList<>();
 	public int segmentation = 16;

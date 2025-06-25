@@ -60,10 +60,10 @@ public class SimplePhysSpawnSystem extends EntitySystem {
 		if(!data.getType().isTrailer() && data.getSeats().size() < 1){
 			placer.send("fvtm.spawn.simple.no_seats");
 		}
-		if(data.getType().getSphData() == null){
+		/*if(data.getType().getSphData() == null){
 			placer.send("fvtm.spawn.simple.no_data");
 			failed = true;
-		}
+		}*/
 		//TODO other checks
 		return !failed;
 	}

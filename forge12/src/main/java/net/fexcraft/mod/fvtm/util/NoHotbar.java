@@ -29,14 +29,13 @@ public class NoHotbar {
 			mc.fontRenderer.drawStringWithShadow("Throttle: " + RGB.df.format(ent.vehicle.throttle), 10, 18, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Speed: " + RGB.df.format(ent.vehicle.speed), 10, 26, 0xffffff);
 			if(ent instanceof ULandVehicle){
-				ULandVehicle veh = (ULandVehicle)ent;
-				int gear = veh.vehicle.data.getAttributeInteger("gear", 0);
+				int gear = ent.vehicle.data.getAttributeInteger("gear", 0);
 				if(lastgear != gear){
 					lastgear = gear;
-					boolean auto = veh.vehicle.transmission != null && veh.vehicle.transmission.isAutomatic();
-					gear_label = veh.vehicle.transmission != null && veh.vehicle.transmission.isAutomatic() && gear != 0 ? "A" : "";
+					boolean auto = ent.vehicle.transmission != null && ent.vehicle.transmission.isAutomatic();
+					gear_label = ent.vehicle.transmission != null && ent.vehicle.transmission.isAutomatic() && gear != 0 ? "A" : "";
 					if(gear < 0){
-						gear_label = (auto ? "A-" : "") + "R" + (veh.vehicle.transmission.getRGearAmount() == 1 ? "" : -gear);
+						gear_label = (auto ? "A-" : "") + "R" + (ent.vehicle.transmission.getRGearAmount() == 1 ? "" : -gear);
 					}
 					else if(gear == 0){
 						gear_label = "N";
@@ -45,12 +44,12 @@ public class NoHotbar {
 						gear_label += gear;
 					}
 				}
-				mc.fontRenderer.drawStringWithShadow("RPM: " + (veh.crpm / 100 * 100), 10, 34, 0xffffff);
+				//mc.fontRenderer.drawStringWithShadow("RPM: " + (ent.crpm / 100 * 100), 10, 34, 0xffffff);
 				mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 42, 0xffffff);
-				mc.fontRenderer.drawStringWithShadow("Braking: " + (veh.vehicle.braking ? "yes" : "no"), 10, 50, 0xffffff);
-				mc.fontRenderer.drawStringWithShadow("P-Brake: " + (veh.vehicle.pbrake ? "ON" : "OFF"), 10, 58, 0xffffff);
-				mc.fontRenderer.drawStringWithShadow("Engine: " + (veh.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 66, 0xffffff);
+				mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 58, 0xffffff);
 			}
+			mc.fontRenderer.drawStringWithShadow("Braking: " + (ent.vehicle.braking ? "yes" : "no"), 10, 50, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Engine: " + (ent.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 66, 0xffffff);
 		}
 		/*if(event.getType() == ElementType.HOTBAR){
 			if(mc.gameSettings.hideGUI || OVERLAY_ON_BOTTOM) event.setCanceled(true);

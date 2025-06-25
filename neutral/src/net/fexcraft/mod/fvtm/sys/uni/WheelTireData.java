@@ -13,6 +13,7 @@ public class WheelTireData {
 	public Axle axle;
 	public TireAttr function;
 	public boolean steering;
+	public boolean powered;
 	public boolean mirror;
 	public float radius;
 	public float rotation;

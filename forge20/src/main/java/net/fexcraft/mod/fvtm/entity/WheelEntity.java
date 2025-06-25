@@ -26,7 +26,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnData, UniWheel {
+public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSpawnData, UniWheel {
 
 	public RootVehicle root;
 	private boolean found;
@@ -75,7 +75,7 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 
 	@Override
 	protected void defineSynchedData(){
-		super.defineSynchedData();
+		//super.defineSynchedData();
 	}
 
 	@Override
@@ -88,10 +88,10 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 		return Collections.EMPTY_LIST;
 	}
 
-	@Override
+	/*@Override
 	public ItemStack getItemBySlot(EquipmentSlot slot){
 		return ItemStack.EMPTY;
-	}
+	}*/
 
 	@Override
 	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){
@@ -116,10 +116,10 @@ public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnD
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public HumanoidArm getMainArm(){
 		return HumanoidArm.RIGHT;
-	}
+	}*/
 
 	@Override
 	public boolean canBeCollidedWith(){

@@ -61,15 +61,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public RootVehicle(World world){
 		super(world);
-		vehicle = new VehicleInstance(new EntityWI(this), null, isAdv());
+		vehicle = new VehicleInstance(new EntityWI(this), null);
 	}
 
 	protected void init(TagCW com){
 		setSize(vehicle.data.getAttribute("hitbox_width").asFloat(), vehicle.data.getAttribute("hitbox_height").asFloat());
-	}
-
-	public boolean isAdv(){
-		return false;
 	}
 
 	@Override
@@ -90,16 +86,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
 		TagCW com = TagCW.wrap(compound);
-		vehicle.data.write(com);
-		vehicle.point.savePivot(com);
+		vehicle.save(com);
 	}
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
 		TagCW com = TagCW.create();
-		vehicle.point.savePivot(com);
 		writeSpawnData(com);
-		vehicle.data.write(com);
+		vehicle.save(com);
 		ByteBufUtils.writeTag(buffer, com.local());
 	}
 
@@ -232,9 +226,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevRotationRoll = vehicle.point.getPivot().deg_roll();
 		vehicle.onUpdate();
 		checkCollision();
-		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
-			vehicle.sendUpdatePacket();
-		}
 	}
 
 	private void checkCollision(){

@@ -237,10 +237,10 @@ public class FVTM4 {
 
 		@SubscribeEvent
 		public void onEntAttrEvent(EntityAttributeCreationEvent event) {
-			event.put(WHEEL_ENTITY.get(),
+			/*event.put(WHEEL_ENTITY.get(),
 				AttributeSupplier.builder()
 					.add(Attributes.MAX_HEALTH, Integer.MAX_VALUE)
-					.add(Attributes.KNOCKBACK_RESISTANCE, 20).build());
+					.add(Attributes.KNOCKBACK_RESISTANCE, 20).build());*/
 		}
 
 	}

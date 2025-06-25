@@ -101,7 +101,7 @@ public class KeyHandler {
         EntityW player = pass.entity;
         SeatInstance seat = pass.getSeatOn();
         if(seat == null) return;
-        boolean uni12 = minecraft.player.getRidingEntity() instanceof ULandVehicle;
+        //boolean uni12 = minecraft.player.getRidingEntity() instanceof ULandVehicle;
         if(isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode())){
             seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
         }
@@ -130,7 +130,7 @@ public class KeyHandler {
             /*if(toggables) scroll(1, 0);
             else*/ seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
         }
-        if(uni12){
+        //if(uni12){
             if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
                 seat.onKeyPress(KeyPress.PBRAKE, player);
             }
@@ -138,12 +138,12 @@ public class KeyHandler {
             if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
                 seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
             }
-        }
+        /*}
         else{
             if(isKeyDown(KeyHandler.brake.getKeyCode())){
                 seat.onKeyPress(KeyPress.BRAKE, player);
             }
-        }
+        }*/
         if(isKeyDown(KeyHandler.engineToggle.getKeyCode())){
             seat.onKeyPress(KeyPress.ENGINE, player);
         }

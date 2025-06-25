@@ -71,11 +71,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 	}
 
 	@Override
-	public boolean isAdv(){
-		return true;
-	}
-
-	@Override
 	protected void entityInit(){
 		//
 	}
@@ -83,54 +78,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 	@Override
 	protected void init(TagCW com){
 		super.init(com);
-		setupAxles();
-	}
-
-	private void setupAxles(){
-		axles.clear();
-        for(WheelTireData wheel : vehicle.wheeldata.values()){
-        	Axle axle = null;
-        	if(axles.stream().anyMatch(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y)){
-        		axle = axles.stream().filter(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y).findFirst().get();
-        	}
-        	else{
-        		axle = new Axle(axles.size(), new V3D(wheel.pos.x, wheel.pos.y, 0));
-            	axles.add(axle);
-        	}
-        	axle.wheels.add(wheel);
-        	wheel.axle = axle;
-        }
-        axles.forEach(axle -> axle.initCenter());
-        double amin = 0, amax = 0;
-        for(Axle axle : axles){
-        	if(axle.pos.x < amin){
-        		amin = axle.pos.x;
-        		ax_rear = axle;
-        	}
-        	if(axle.pos.x > amax){
-        		amax = axle.pos.x;
-        		ax_fron = axle;
-        	}
-        }
-        wheelbase = Math.abs(amin) + Math.abs(amax);
-        cg_height = 0;
-        for(Axle axle : axles){
-        	axle.weight_ratio = Math.abs(axle.pos.x) / wheelbase;
-        	cg_height = axle.pos.y;
-        }
-        cg_height /= axles.size();
-	}
-
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound compound){
-		super.readEntityFromNBT(compound);
-		vehicle.pbrake = compound.getBoolean("ParkingBrake");
-	}
-
-	@Override
-	protected void writeEntityToNBT(NBTTagCompound compound){
-		super.writeEntityToNBT(compound);
-		compound.setBoolean("ParkingBrake", vehicle.pbrake);
+		//setupAxles();
 	}
 
 	@Override
@@ -196,7 +144,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
     	}*///TODO
 	}
 
-	private ArrayList<Double> avsp = new ArrayList<>();
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
     private double appmass = 0;
     private double accx = 0f;
@@ -215,13 +162,6 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
 		}
 		else updateSounds();
 		//
-		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
-		while(avsp.size() < 10) avsp.add(vehicle.speed);
-		avsp.add(Math.sqrt(x * x + y * y + z * z) * 1000F / 20f);
-		avsp.remove(0);
-		vehicle.speed = 0;
-		for(double d : avsp) vehicle.speed += d;
-		vehicle.speed /= avsp.size();
 	}
 
 	public void onUpdateMovement1(EntityW driver){

@@ -46,7 +46,7 @@ public class LandVehicle extends RootVehicle {
 
 	@Override
 	protected void init(TagCW com){
-		stepHeight = vehicle.data.getType().getSphData().wheel_step_height;
+		stepHeight = 0.5f;
 		super.init(com);
 	}
 

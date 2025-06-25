@@ -107,7 +107,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 		else{
 			WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 			LandVehicle veh = (LandVehicle) root;
-			stepHeight = wtd == null ? veh.vehicle.data == null ? 1f : veh.vehicle.data.getType().getSphData().wheel_step_height : wtd.function.step_height;
+			stepHeight = wtd == null ? veh.vehicle.data == null ? 1f : 0.5f : wtd.function.step_height;
 		}
 	}
 
@@ -126,8 +126,8 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 
 	@Override
 	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int incr, boolean tele){
-		setPosition(x, y, z);
-		setRotation(yaw, pitch);
+		//setPosition(x, y, z);
+		//setRotation(yaw, pitch);
 	}
 
 	@Override
@@ -234,6 +234,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 		motionX = x;
 		motionY = y;
 		motionZ = z;
+	}
+
+	@Override
+	public void mulMotion(double m){
+		motionX *= m;
+		motionY *= m;
+		motionZ *= m;
 	}
 
 }

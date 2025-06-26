@@ -77,7 +77,6 @@ public class Config extends ConfigBase {
 		String catg = "general";
 		String catc = "client";
 		String catl = "collision";
-		String catu = "u12/basic";
 		String catv = "vehicle";
 		String catr = "rail";
 		String cato = "road";
@@ -132,12 +131,10 @@ public class Config extends ConfigBase {
 			.info("View distance for road/traffic signs.").rang(1, 40960)
 			.cons((con, map) -> SIGN_VIEW_DISTANCE = con.getInteger(map)));
 
-		//u12/basic
-		entries.add(new ConfigEntry(this, catu, "motion_scale", new JsonValue(0.2f))
+		//general vehicle
+		entries.add(new ConfigEntry(this, catv, "motion_scale", new JsonValue(0.2f))
 			.info("Physics Motion Scale Multiplier.").rang(0.001f, 2f)
 			.cons((con, map) -> MOTION_SCALE = con.getFloat(map)));
-
-		//general vehicle
 		entries.add(new ConfigEntry(this, catv, "sync_rate", new JsonValue(5))
 			.info("Entity sync rate in ticks. Lesser value means higher sync AND higher bandwidth. Higher value means slower sync and less bandwidth.").rang(1, 10)
 			.cons((con, map) -> VEHICLE_SYNC_RATE = (byte)con.getInteger(map)));

@@ -29,6 +29,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	public WheelTireData wheel;
 	public String wheelid;
 	protected V3D pos = new V3D();
+	protected V3D prv = new V3D();
 
 	public WheelEntity(World world){
 		super(world);
@@ -174,6 +175,9 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 
 	@Override
 	public void updatePrevPos(){
+		prv.x = prevPosX;
+		prv.y = prevPosY;
+		prv.z = prevPosZ;
 		pos.x = prevPosX = posX;
 		pos.y = prevPosY = posY;
 		pos.z = prevPosZ = posZ;
@@ -187,6 +191,11 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	@Override
 	public boolean isAdded(){
 		return addedToChunk;
+	}
+
+	@Override
+	public V3D prev(){
+		return prv;
 	}
 
 	@Override
@@ -207,9 +216,9 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	@Override
 	public void prepare(){
 		onGround = true;
-		motionX *= 0.9;
+		/*motionX *= 0.9;
 		motionZ *= 0.9;
-		motionY = -GRAVITY_20th;
+		motionY = -GRAVITY_20th;*/
 	}
 
 	@Override
@@ -241,6 +250,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 		motionX *= m;
 		motionY *= m;
 		motionZ *= m;
+	}
+
+	@Override
+	public void fillMotion(V3D wmot){
+		wmot.x = motionX;
+		wmot.y = motionY;
+		wmot.z = motionZ;
 	}
 
 }

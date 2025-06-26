@@ -9,6 +9,7 @@ import net.fexcraft.app.json.FJson;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartFunction;
@@ -54,7 +55,6 @@ public class EngineFunction extends PartFunction {
 			map.getMap("consumptions").entries().forEach(entry -> cons.put(entry.getKey(), entry.getValue().float_value()));
 		}
 		//
-		if(!map.has("torque_chart")) return this;
 		min_rpm = map.getInteger("min_rpm", 1000);
 		max_rpm = map.getInteger("max_rpm", 6000);
 		JsonMap tor = map.getMap("torque_chart");
@@ -69,7 +69,11 @@ public class EngineFunction extends PartFunction {
 			torque_chart[index++][1] = entry.getValue();
 			if(entry.getValue() > highest_torque) highest_torque = entry.getValue();
 		}
-		//TODO validation, e.g. check if there are at least 2 entries
+		if(torque_chart.length < 2){
+			torque_chart = new float[2][2];
+			torque_chart[0] = new float[]{ 1000, 300 };
+			torque_chart[1] = new float[]{ 5000, 500 };
+		}
 		return this;
 	}
 
@@ -120,13 +124,9 @@ public class EngineFunction extends PartFunction {
     	for(String str : fuelgroup){
             tooltip.add(Formatter.format("&9Engine Fuel: &7" + str));
     	}
-    	if(torque_chart != null){
-            tooltip.add(Formatter.format("&9Range: &7" + min_rpm + "-" + max_rpm + " rpm"));
-            tooltip.add(Formatter.format("&9Torque: &7" + torque_chart[0][1] + "-" + highest_torque));
-    	}
-    	else{
-            tooltip.add(Formatter.format("&8&oLegacy Engine, not U12/Basic Compatible."));
-    	}
+		FvtmLogger.marker(stack.getID());
+		tooltip.add(Formatter.format("&9Range: &7" + min_rpm + "-" + max_rpm + " rpm"));
+		tooltip.add(Formatter.format("&9Torque: &7" + torque_chart[0][1] + "-" + highest_torque));
     }
 
 	public float getFuelConsumption(String fuel_branch){

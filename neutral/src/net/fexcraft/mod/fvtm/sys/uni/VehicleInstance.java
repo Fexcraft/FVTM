@@ -74,12 +74,15 @@ public class VehicleInstance {
 	public Map<String, OBB> obb = new LinkedHashMap<>();
 	//
 	public ArrayList<Axle> axles = new ArrayList<>();
-	public Axle ax_fron, ax_rear;
-	public double wheelbase, cg_height;
+	public Axle ax_fron;
+	public Axle ax_rear;
+	public double wheelbase;
+	public double cg_height;
 	public int rpm, orpm, crpm;
 	private ArrayList<Double> avsp = new ArrayList<>();
 	private double appmass = 0;
 	private double accel = 0f;
+	private double angor = 0f;
 	public boolean overloaded;
 	//
 	public WheelMap wheels = new WheelMap();
@@ -224,6 +227,7 @@ public class VehicleInstance {
 				return true;
 			}
 			case ENGINE:{
+				if(entity.isOnClient()) return true;
 				toggleEngine();
 				return true;
 			}
@@ -586,33 +590,36 @@ public class VehicleInstance {
 		axles.clear();
 		for(WheelTireData wheel : wheeldata.values()){
 			Axle axle = null;
-			if(axles.stream().anyMatch(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y)){
-				axle = axles.stream().filter(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y).findFirst().get();
+			for(Axle ax : axles){
+				if(ax.pos.z == wheel.pos.z && ax.pos.y == wheel.pos.y){
+					axle = ax;
+					break;
+				}
 			}
-			else{
-				axle = new Axle(axles.size(), new V3D(wheel.pos.x, wheel.pos.y, 0));
+			if(axle == null){
+				axle = new Axle(axles.size(), new V3D(0, wheel.pos.y, wheel.pos.z));
 				axles.add(axle);
 			}
 			axle.wheels.add(wheel);
 			wheel.axle = axle;
 		}
-		axles.forEach(axle -> axle.initCenter());
-		double amin = 0, amax = 0;
+		axles.forEach(Axle::initCenter);
+		double amin = 16, amax = -16;
 		for(Axle axle : axles){
-			if(axle.pos.x < amin){
-				amin = axle.pos.x;
-				ax_rear = axle;
-			}
-			if(axle.pos.x > amax){
-				amax = axle.pos.x;
+			if(axle.pos.z < amin){
+				amin = axle.pos.z;
 				ax_fron = axle;
+			}
+			if(axle.pos.z > amax){
+				amax = axle.pos.z;
+				ax_rear = axle;
 			}
 		}
 		wheelbase = Math.abs(amin) + Math.abs(amax);
 		cg_height = 0;
 		for(Axle axle : axles){
-			axle.weight_ratio = Math.abs(axle.pos.x) / wheelbase;
-			cg_height = axle.pos.y;
+			axle.weight_ratio = Math.abs(axle.pos.z) / wheelbase;
+			cg_height += axle.pos.y;
 		}
 		cg_height /= axles.size();
 	}
@@ -1059,6 +1066,7 @@ public class VehicleInstance {
 		double p = -Math.atan2(dy, dxz);
 		double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
 		pivot().set_rotation(y, p, r, false);
+		angor = pivot().yaw() - prev_pivot().yaw();
 	}
 
 	private void remass(){
@@ -1088,7 +1096,7 @@ public class VehicleInstance {
 		double mass = appmass;
 		double rr = data.getAttributeFloat("roll_resistance", 8f);
 		double ar = data.getAttributeFloat("air_resistance", 2.5f);
-		for(Axle axle : axles) axle.calc(mass, accel, cg_height, wheelbase, 1f);
+		for(Axle axle : axles) axle.calc(mass, accel, cg_height, wheelbase, angor);
 		overloaded = appmass - data.getAttributeFloat("weight", 1000f) > data.getAttributeFloat("max_towing", 3500f);
 		move.set(0, 0, 0);
 		boolean cons = nocons || (engine != null && consumeFuel());
@@ -1118,11 +1126,8 @@ public class VehicleInstance {
 			}
 		}
 		double thr = throttle * force;
-		double cos = -Math.cos(-pivot().yaw());
-		double sin = -Math.sin(-pivot().yaw());
-		double stew = Math.toRadians(steer_yaw);
+		double steer_rad = Math.toRadians(steer_yaw);
 		boolean slowdown = throttle < 0.001f || gear == 0;
-		double val;
 		entity.setOnGround(true);
 		accel = 0;
 		//
@@ -1143,27 +1148,30 @@ public class VehicleInstance {
 				wheel.mulMotion(by);
 			}
 			wheel.fillMotion(wmot);
-			wmot.y -= GRAVITY_200th;
+			wmot.x *= 0.8;
+			wmot.y = -GRAVITY_20th;
+			wmot.z *= 0.8;
 			//
-			double motfr = sin * wmot.x + cos * wmot.z;
-			double trac = function.getGripFor(null, raining) * ((cons ? thr : 0) - brake * Math.signum(motfr));
-			double dragfr = -rr * motfr - ar * motfr * Math.abs(motfr);
-			double totalfr = dragfr + trac;
-			double mvfr = (totalfr / mass) * 0.05;
-			accel += mvfr;
-			//
-			double motsd = sin * wmot.z - cos * wmot.x;
-			double steer = slot.steering ? Math.signum(motfr) * stew : 0;
-			double slip_angle = Math.atan2(motsd + wheel.wtd().axle.yaw_speed, Math.abs(motfr)) - steer;
-			double grip = function.getGripFor(null, raining) * (slot.braking && pbrake ? function.brake_grip : 1);
-			double frict = Static.clamp(wheel.wtd().function.getCornerStiffnessFor(null, slot.steering) * slip_angle, -grip, grip) * wheel.wtd().axle.weight_on;
-			double dragsd = -rr * motsd - ar * motsd * Math.abs(motsd);
-			double totalsd = dragsd + (slot.steering ? Math.cos(stew) * frict : 0);
-			double mvsd = (totalsd / mass) * 0.05;
-			//
-			val = mvfr * MOTION_SCALE;
-			wmot.x += sin * val + cos * mvsd;
-			wmot.z += cos * val - sin * mvsd;
+			double s = -Math.cos(-pivot().yaw());
+			double c = -Math.sin(-pivot().yaw());
+			double mov_for = c * wmot.x + s * wmot.z;
+			double mov_sid = c * wmot.z - s * wmot.x;
+			double steer_sig = slot.steering ? Math.signum(mov_for) * steer_rad : 0;
+			double slip = Math.atan2(mov_sid + wheel.wtd().axle.yaw_speed, Math.abs(mov_for)) - steer_sig;
+			double grip = function.getGripFor(null, raining);
+			if(slot.braking && pbrake) grip *= function.brake_grip;
+			double fric = Static.clamp(-wheel.wtd().function.getCornerStiffnessFor(null, slot.steering) * slip, -grip, grip) * wheel.wtd().axle.weight_on;
+			double trac = (cons ? thr : 0) - brake * Math.signum(mov_for);
+			if(trac < 0) trac = 0;
+			double drag_f = -rr * mov_for - ar * mov_for * Math.abs(mov_for);
+			double drag_s = -rr * mov_sid - ar * mov_sid * Math.abs(mov_sid);
+			double total_f = drag_f + trac;
+			double total_s = drag_s + Math.cos(steer_rad) * fric;
+			double res_f = (total_f / mass) * 0.05;// * MOTION_SCALE;
+			double res_s = (total_s / mass) * 0.05;// * MOTION_SCALE;
+			accel += (total_f / mass);
+			wmot.x += c * res_f - s * res_s;
+			wmot.z += s * res_f + c * res_s;
 			//
 			wheel.setMotion(wmot.x, wmot.y, wmot.z);
 			wheel.move();
@@ -1174,43 +1182,6 @@ public class VehicleInstance {
 		}
 		moveFinish();
 		accel /= wheels.size();
-		//
-		/*move.x = move.y = move.z = 0;
-		if(type.isWaterVehicle()){
-			//TODO
-		}
-		else{
-			double steer = Math.toRadians(steer_yaw);
-			double wyaw = valRad(pivot().yaw());
-			double syaw = valRad(wyaw + steer);
-			double myaw = 0;
-			double ryaw = 0;
-			double scal = 0;
-			for(UniWheel wheel : wheels.values()){
-				if(wheel.wtd() == null) continue;
-				wheel.prepare();
-				if(engine != null && cons){
-					if(data.getType().isTracked()){
-						//TODO
-					}
-					else{
-						scal = 0.05 * throttle * (throttle > 0 ? 1 : -1) * engine.getSphEngineSpeed();
-						ryaw = pivot().deg_yaw();
-						myaw = wyaw;
-						if(wheel.wtd().steering){
-							ryaw += steer_yaw;
-							myaw = syaw;
-						}
-						if(!wheel.wtd().powered) scal *= 0.5;
-					}
-					wheel.addMotion(-Math.sin(-myaw) * scal, 0, -Math.cos(-myaw) * scal);
-				}
-				wheel.yaw((float)ryaw);
-				wheel.move();
-				moveToWheel(wheel);
-			}
-		}
-		moveFinish();*/
 	}
 
 	private void pullBackWheel(UniWheel wheel){

@@ -24,14 +24,14 @@ public class Axle {
 	}
 
 	public void initCenter(){
-		wheels.forEach(wtd -> pos = pos.add(0, 0, wtd.pos.z));
-		pos = new V3D(pos.x, pos.y, pos.z / wheels.size());
+		wheels.forEach(wtd -> pos = pos.add(wtd.pos.x, 0, 0));
+		pos = new V3D(pos.x / wheels.size(), pos.y, pos.z);
 	}
 
 	public void calc(double mass, double acc, double height, double base, double yaw){
 		double ahb = 0.2 * acc * height / base;
-		weight_on = mass * (weight_ratio * GRAVITY + (pos.x > 0 ? -ahb : ahb));
-		yaw_speed = pos.x * yaw;
+		weight_on = mass * (weight_ratio * GRAVITY + (pos.z < 0 ? -ahb : ahb));
+		yaw_speed = pos.z * yaw;
 	}
 
 }

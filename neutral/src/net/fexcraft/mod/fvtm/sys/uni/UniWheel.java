@@ -31,8 +31,6 @@ public interface UniWheel {
 
 	public void setMotion(double x, double y, double z);
 
-	public void mulMotion(double m);
-
 	public void fillMotion(V3D wmot);
 
 }

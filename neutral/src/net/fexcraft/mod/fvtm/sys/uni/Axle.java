@@ -5,6 +5,7 @@ import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -31,7 +32,7 @@ public class Axle {
 	public void calc(double mass, double acc, double height, double base, double yaw){
 		double ahb = 0.2 * acc * height / base;
 		weight_on = mass * (weight_ratio * GRAVITY + (pos.z < 0 ? -ahb : ahb));
-		yaw_speed = pos.z * yaw;
+		yaw_speed = pos.z * (yaw / mass);
 	}
 
 }

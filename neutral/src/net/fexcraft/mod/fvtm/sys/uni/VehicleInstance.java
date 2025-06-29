@@ -1127,27 +1127,26 @@ public class VehicleInstance {
 		}
 		double thr = throttle * force;
 		double steer_rad = Math.toRadians(steer_yaw);
-		boolean slowdown = throttle < 0.001f || gear == 0;
+		boolean slowdown = throttle < 0.001f || gear == 0 || nopass;
 		entity.setOnGround(true);
 		accel = 0;
 		//
 		boolean raining;
 		V3D wmot = new V3D();
-		WheelSlot slot;
-		TireFunction.TireAttr function;
+		WheelTireData wtd;
 		for(UniWheel wheel : wheels.values()){
 			if(wheel == null || wheel.wtd() == null) continue;
-			slot = wheel.wtd().slot;
-			function = wheel.wtd().function;
+			wtd = wheel.wtd();
 			wheel.prepare();
 			wheel.yaw(pivot().deg_yaw());
 			raining = entity.getWorld().isRainingAt(wheel.pos().x, wheel.pos().y - sixteenth, wheel.pos().z);
-			if(slowdown || speed < 1 || nopass){
-				boolean brk = braking || pbrake;
-				double by = brk && !slowdown ? 0 : speed < 1 ? 0.9 : 0.99;
-				wheel.mulMotion(by);
-			}
 			wheel.fillMotion(wmot);
+			if(slowdown || speed < 1){
+				boolean brk = braking || pbrake;
+				double by = brk || (slowdown && speed < 1) ? 0 : speed < 1 ? 0.9 : 0.99;
+				wmot.x *= by;
+				wmot.z *= by;
+			}
 			wmot.x *= 0.8;
 			wmot.y = -GRAVITY_20th;
 			wmot.z *= 0.8;
@@ -1156,13 +1155,13 @@ public class VehicleInstance {
 			double c = -Math.sin(-pivot().yaw());
 			double mov_for = c * wmot.x + s * wmot.z;
 			double mov_sid = c * wmot.z - s * wmot.x;
-			double steer_sig = slot.steering ? Math.signum(mov_for) * steer_rad : 0;
-			double slip = Math.atan2(mov_sid + wheel.wtd().axle.yaw_speed, Math.abs(mov_for)) - steer_sig;
-			double grip = function.getGripFor(null, raining);
-			if(slot.braking && pbrake) grip *= function.brake_grip;
-			double fric = Static.clamp(-wheel.wtd().function.getCornerStiffnessFor(null, slot.steering) * slip, -grip, grip) * wheel.wtd().axle.weight_on;
+			double steer_sig = wtd.slot.steering ? Math.signum(mov_for) * steer_rad : 0;
+			double slip = Math.atan2(mov_sid + wtd.axle.yaw_speed, Math.abs(mov_for)) - steer_sig;
+			double grip = wtd.function.getGripFor(null, raining);
+			if(wtd.slot.braking && pbrake) grip *= wtd.function.brake_grip;
+			double fric = Static.clamp(-wtd.function.getCornerStiffnessFor(null, wtd.slot.steering) * slip, -grip, grip) * wtd.axle.weight_on;
 			double trac = (cons ? thr : 0) - brake * Math.signum(mov_for);
-			if(trac < 0) trac = 0;
+			//if(trac < 0) trac = 0;
 			double drag_f = -rr * mov_for - ar * mov_for * Math.abs(mov_for);
 			double drag_s = -rr * mov_sid - ar * mov_sid * Math.abs(mov_sid);
 			double total_f = drag_f + trac;

@@ -993,13 +993,15 @@ public class VehicleInstance {
 		}
 		if(remote){
 			updateSpeed();
-			AttrFloat attr = (AttrFloat)data.getAttribute("steering_angle");
-			attr.initial = attr.value;
-			attr.value = (float)steer_yaw;
-			double dir = Math.abs(pivot().yaw() + rad180) - Math.abs(-Math.atan2(prev.x - pos.x, prev.z - pos.z) + rad180);
-			dir = dir > rad90 || dir < -rad90 ? -1 : 1;
-			for(WheelTireData val : wheeldata.values()){
-				val.rotation = valDegF(val.rotation + speed * dir * val.radius * 100);
+			if(!type.isRailVehicle()){
+				AttrFloat attr = (AttrFloat)data.getAttribute("steering_angle");
+				attr.initial = attr.value;
+				attr.value = (float)steer_yaw;
+				double dir = Math.abs(pivot().yaw() + rad180) - Math.abs(-Math.atan2(prev.x - pos.x, prev.z - pos.z) + rad180);
+				dir = dir > rad90 || dir < -rad90 ? -1 : 1;
+				for(WheelTireData val : wheeldata.values()){
+					val.rotation = valDegF(val.rotation + speed * dir * val.radius * 100);
+				}
 			}
 			data.setAttribute("throttle", throttle);
 			data.setAttribute("speed", speed * 72);

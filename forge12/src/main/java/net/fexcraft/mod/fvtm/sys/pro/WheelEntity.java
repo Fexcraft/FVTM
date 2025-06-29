@@ -246,13 +246,6 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	}
 
 	@Override
-	public void mulMotion(double m){
-		motionX *= m;
-		motionY *= m;
-		motionZ *= m;
-	}
-
-	@Override
 	public void fillMotion(V3D wmot){
 		wmot.x = motionX;
 		wmot.y = motionY;

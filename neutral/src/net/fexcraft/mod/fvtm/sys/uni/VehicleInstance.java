@@ -18,7 +18,6 @@ import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.*;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
@@ -1043,12 +1042,13 @@ public class VehicleInstance {
 			lef = rig = new V3D((fro.x + rea.x) * 0.5, (fro.y + rea.y) * 0.5, (fro.z + rea.z) * 0.5);
 		}
 		else{
-			if(driver == null || (!creative && data.outoffuel())){
+			boolean uf = data.getAttribute("use-fuel").asBoolean();
+			if(driver == null || (!creative && uf && data.outoffuel())){
 				throttle *= 0.98;
 				speed *= 0.9;
 			}
 			if(front == null) remass();
-			move(!VEHICLES_NEED_FUEL || !data.getAttribute("use-fuel").asBoolean() || creative);
+			move(!VEHICLES_NEED_FUEL || !uf || creative);
 			if(rear != null) rear.align();
 			//
 			V3D fl = wheels.get(w_front_l.id).pos();

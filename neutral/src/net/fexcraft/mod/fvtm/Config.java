@@ -41,6 +41,8 @@ public class Config extends ConfigBase {
 	public static byte VEHICLE_SYNC_RATE;
 	public static float STEER_RESET_RATE;
 	public static float STEER_PER_PRESS_TICK;
+	public static float THROTTLE_DECR_PER_TICK;
+	public static float THROTTLE_PER_PRESS_TICK;
 	//rail
 	public static boolean DISABLE_RAILS;
 	public static int UNLOAD_INTERVAL;
@@ -142,9 +144,15 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catv, "steer_reset_rate", new JsonValue(0.90))//0.95
 			.info("Steer multiplier per tick. 1 = no reset, 0 = full reset each tick.").rang(0, 1)
 			.cons((con, map) -> STEER_RESET_RATE = con.getFloat(map)));
-		entries.add(new ConfigEntry(this, catv, "steer_per_press_tick", new JsonValue(0.5))//0.95
+		entries.add(new ConfigEntry(this, catv, "steer_per_press_tick", new JsonValue(0.5))
 			.info("Steer increase per tick of pressing the left/right steering key, in degrees.").rang(0.01f, 30)
 			.cons((con, map) -> STEER_PER_PRESS_TICK = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "throttle_decrease_per_tick", new JsonValue(0.01))
+			.info("Throttle decrease per tick. 0 = no reset, 1 = full reset each tick.").rang(0, 1)
+			.cons((con, map) -> THROTTLE_DECR_PER_TICK = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "throttle_per_press_tick", new JsonValue(0.1))
+			.info("Throttle increase per tick of pressing the acc-/decelerate key.").rang(0.01f, 1)
+			.cons((con, map) -> THROTTLE_PER_PRESS_TICK = con.getFloat(map)));
 
 		//collision
 		entries.add(new ConfigEntry(this, catl, "disable", new JsonValue(false))

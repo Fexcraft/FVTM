@@ -32,7 +32,6 @@ public class NoHotbar {
 			if(lastgear != gear){
 				lastgear = gear;
 				boolean auto = ent.vehicle.transmission != null && ent.vehicle.transmission.isAutomatic();
-				gear_label = ent.vehicle.transmission != null && ent.vehicle.transmission.isAutomatic() && gear != 0 ? "A" : "";
 				if(gear < 0){
 					gear_label = (auto ? "A-" : "") + "R" + (ent.vehicle.transmission.getRGearAmount() == 1 ? "" : -gear);
 				}
@@ -40,10 +39,11 @@ public class NoHotbar {
 					gear_label = "N";
 				}
 				else{
+					gear_label = ent.vehicle.transmission != null && ent.vehicle.transmission.isAutomatic() && gear != 0 ? "A" : "";
 					gear_label += gear;
 				}
 			}
-			mc.fontRenderer.drawStringWithShadow("RPM: " + (ent.vehicle.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.force * 100) / 100), 10, 40, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("RPM/F/T: " + (ent.vehicle.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.force * 100) / 100) + " | " + ((int)(ent.vehicle.torq * 100) / 100), 10, 40, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 50, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Braking: " + (ent.vehicle.braking ? "yes" : "no"), 10, 60, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 70, 0xffffff);

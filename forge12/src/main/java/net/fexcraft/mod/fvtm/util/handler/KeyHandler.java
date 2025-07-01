@@ -101,11 +101,12 @@ public class KeyHandler {
         EntityW player = pass.entity;
         SeatInstance seat = pass.getSeatOn();
         if(seat == null) return;
-        if(isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode())){
-            seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
+        boolean state = isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode());
+        if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
+            seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
         }
         if(isKeyDown(minecraft.gameSettings.keyBindBack.getKeyCode())){
-            seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
+            seat.onKeyPress(KeyPress.DECELERATE, player);
         }
         if(isKeyDown(minecraft.gameSettings.keyBindLeft.getKeyCode())){
             seat.onKeyPress(KeyPress.TURN_LEFT, player);
@@ -133,7 +134,7 @@ public class KeyHandler {
         if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
             seat.onKeyPress(KeyPress.PBRAKE, player);
         }
-        boolean state = isKeyDown(KeyHandler.brake.getKeyCode());
+        state = isKeyDown(KeyHandler.brake.getKeyCode());
         if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
             seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
         }

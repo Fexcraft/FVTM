@@ -199,7 +199,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
         	if(rpm < vehicle.engine.minRPM()) rpm = vehicle.engine.minRPM();
         	if(rpm > vehicle.engine.maxRPM()) rpm = vehicle.engine.maxRPM();
     	}
-    	float force = 0;
+    	double force = 0;
     	if(!overloaded && vehicle.engine != null && vehicle.transmission != null){
     		force = vehicle.engine.getTorque(rpm) * vehicle.transmission.getRatio(gear) * diff * vehicle.transmission.getEfficiency() / axles.get(0).wheels.get(0).radius;
         	if(vehicle.transmission.isAutomatic() && vehicle.autogear_timer <= 0){

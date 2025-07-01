@@ -1094,6 +1094,8 @@ public class VehicleInstance {
 		return true;
 	}
 
+	public double torq;
+
 	private void move(boolean nocons){
 		if(data.getType().isTrailer()) return;
 		double mass = appmass;
@@ -1109,7 +1111,7 @@ public class VehicleInstance {
 		float diff = data.getAttributeFloat("differential_ratio", 3.5f);
 		if(engine != null && transmission != null){
 			orpm = rpm;
-			rpm = (int)((speed / axles.get(0).wheels.get(0).radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
+			rpm = (int)((speed / axles.get(0).radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
 			rpm = (orpm + rpm) / 2;
 			if(rpm < 0) rpm = -rpm;
 			if(rpm < engine.minRPM()) rpm = engine.minRPM();
@@ -1117,7 +1119,8 @@ public class VehicleInstance {
 		}
 		force = 0;
 		if(!overloaded && engine != null && transmission != null){
-			force = engine.getTorque(rpm) * transmission.getRatio(gear) * diff * transmission.getEfficiency() / axles.get(0).wheels.get(0).radius;
+			torq = engine.getTorque(rpm);
+			force = torq * transmission.getRatio(gear) * diff * transmission.getEfficiency();
 			if(transmission.isAutomatic() && autogear_timer <= 0){
 				int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);
 				if(ngear != gear){
@@ -1126,8 +1129,8 @@ public class VehicleInstance {
 				}
 				autogear_timer += transmission.getShiftSpeed();
 			}
+			force *= throttle;
 		}
-		double thr = throttle * force;
 		double steer_rad = Math.toRadians(steer_yaw);
 		boolean slowdown = throttle < 0.001f || gear == 0 || speed < 1;
 		entity.setOnGround(true);
@@ -1158,13 +1161,13 @@ public class VehicleInstance {
 			double c = -Math.sin(-pivot().yaw());
 			double mov_sig = Math.signum(c * wmot.x + s * wmot.z);
 			double mov_for = mov_sig * speed;
-			double mov_sid = 0;//c * wmot.z - s * wmot.x;
+			double mov_sid = c * wmot.z - s * wmot.x;
 			double steer_sig = wtd.slot.steering ? mov_sig * steer_rad : 0;
 			double slip = Math.atan2(mov_sid + wtd.axle.yaw_speed, Math.abs(mov_for)) - steer_sig;
 			double grip = wtd.function.getGripFor(null, raining);
 			if(wtd.slot.braking && pbrake) grip *= wtd.function.brake_grip;
-			double fric = Static.clamp(-wtd.function.getCornerStiffnessFor(null, wtd.slot.steering) * slip, -grip, grip) * wtd.axle.weight_on;
-			double trac = (cons ? thr : 0) - brake * mov_sig;
+			double fric = Static.clamp(-wtd.function.getCornerStiffnessFor(null, wtd.slot.steering) * slip, -grip, grip) * wtd.axle.weight_on * 0.5;
+			double trac = (cons ? force / wheel.wtd().radius : 0) - brake * mov_sig;
 			double drag_f = -rr * mov_for - ar * mov_for * Math.abs(mov_for);
 			double drag_s = -rr * mov_sid - ar * mov_sid * Math.abs(mov_sid);
 			double total_f = drag_f + trac;

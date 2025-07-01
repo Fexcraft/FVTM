@@ -17,6 +17,7 @@ public class Axle {
 	public double weight_ratio;
 	public double weight_on;
 	public double yaw_speed;
+	public double radius;
 	public V3D pos;
 	
 	public Axle(int id, V3D pos){
@@ -25,8 +26,12 @@ public class Axle {
 	}
 
 	public void initCenter(){
-		wheels.forEach(wtd -> pos = pos.add(wtd.pos.x, 0, 0));
+		wheels.forEach(wtd -> {
+			pos = pos.add(wtd.pos.x, 0, 0);
+			radius += wtd.radius;
+		});
 		pos = new V3D(pos.x / wheels.size(), pos.y, pos.z);
+		radius /= wheels.size();
 	}
 
 	public void calc(double mass, double acc, double height, double base, double yaw){

@@ -26,12 +26,13 @@ public class RenderWheel extends Render<WheelEntity> implements IRenderFactory<W
             if(Command.OTHER) shadowSize = 0.125f;
             else shadowSize = 0f;
             GL11.glPushMatrix();
-            GL11.glRotatef(entity.rotationYaw, 0, 1, 0);
-            drawString(entity.wheelid, x, y + 2, z, true, true, 0.8f, 0xb8bc38, null);
-            drawString(entity.motionX + "", x, y + 2.2, z, true, true, 0.8f, 0xb8bc38, null);
-            drawString(entity.motionY + "", x, y + 2.4, z, true, true, 0.8f, 0xb8bc38, null);
-            drawString(entity.motionZ + "", x, y + 2.6, z, true, true, 0.8f, 0xb8bc38, null);
-            drawString(entity.rotationYaw + "", x, y + 2.8, z, true, true, 0.8f, 0xb8bc38, null);
+            GL11.glTranslated(x, y, z);
+            GL11.glRotatef(-Minecraft.getMinecraft().player.rotationYaw, 0, 1, 0);
+            drawString(entity.wheelid, 0, 2, 0, true, true, 0.8f, 0xb8bc38, null);
+            drawString(entity.motionX + "", 0, 2.2, 0, true, true, 0.8f, 0xb8bc38, null);
+            drawString(entity.motionY + "", 0, 2.4, 0, true, true, 0.8f, 0xb8bc38, null);
+            drawString(entity.motionZ + "", 0, 2.6, 0, true, true, 0.8f, 0xb8bc38, null);
+            drawString(entity.rotationYaw + "", 0, 2.8, 0, true, true, 0.8f, 0xb8bc38, null);
             GL11.glPopMatrix();
         }
     }

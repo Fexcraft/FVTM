@@ -40,6 +40,7 @@ public class Config extends ConfigBase {
 	public static float MOTION_SCALE;
 	public static byte VEHICLE_SYNC_RATE;
 	public static float STEER_RESET_RATE;
+	public static float STEER_PER_PRESS_TICK;
 	//rail
 	public static boolean DISABLE_RAILS;
 	public static int UNLOAD_INTERVAL;
@@ -141,6 +142,9 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catv, "steer_reset_rate", new JsonValue(0.90))//0.95
 			.info("Steer multiplier per tick. 1 = no reset, 0 = full reset each tick.").rang(0, 1)
 			.cons((con, map) -> STEER_RESET_RATE = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "steer_per_press_tick", new JsonValue(0.5))//0.95
+			.info("Steer increase per tick of pressing the left/right steering key, in degrees.").rang(0.01f, 30)
+			.cons((con, map) -> STEER_PER_PRESS_TICK = con.getFloat(map)));
 
 		//collision
 		entries.add(new ConfigEntry(this, catl, "disable", new JsonValue(false))

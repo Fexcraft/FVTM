@@ -26,8 +26,8 @@ public class NoHotbar {
 		ent = (RootVehicle)mc.player.getRidingEntity();
 		if(event.getType() == ElementType.ALL){
 			mc.fontRenderer.drawStringWithShadow("Fuel: " + ent.vehicle.data.getStoredFuel() + "/" + ent.vehicle.data.getFuelCapacity(), 10, 10, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Throttle: " + RGB.df.format(ent.vehicle.throttle), 10, 18, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Speed: " + RGB.df.format(ent.vehicle.speed), 10, 26, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Throttle: " + tobar(ent.vehicle.throttle, 1) + RGB.df.format(ent.vehicle.throttle), 10, 20, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Speed: " + RGB.df.format(ent.vehicle.speed), 10, 30, 0xffffff);
 			int gear = ent.vehicle.data.getAttributeInteger("gear", 0);
 			if(lastgear != gear){
 				lastgear = gear;
@@ -43,16 +43,32 @@ public class NoHotbar {
 					gear_label += gear;
 				}
 			}
-			mc.fontRenderer.drawStringWithShadow("RPM: " + (ent.vehicle.crpm / 100 * 100), 10, 34, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 42, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Braking: " + (ent.vehicle.braking ? "yes" : "no"), 10, 50, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 58, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Engine: " + (ent.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 66, 0xffffff);
-			if(ent.vehicle.overloaded) mc.fontRenderer.drawStringWithShadow("Towing limit reached, vehicle is overloaded.", 10, 74, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("RPM: " + (ent.vehicle.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.force * 100) / 100), 10, 40, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 50, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Braking: " + (ent.vehicle.braking ? "yes" : "no"), 10, 60, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 70, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Engine: " + (ent.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 80, 0xffffff);
+			if(ent.vehicle.overloaded) mc.fontRenderer.drawStringWithShadow("Towing limit reached, vehicle is overloaded.", 10, 90, 0xffffff);
 		}
 		/*if(event.getType() == ElementType.HOTBAR){
 			if(mc.gameSettings.hideGUI || OVERLAY_ON_BOTTOM) event.setCanceled(true);
 		}*/
     }
+
+	private static String tobar(double val, int max){
+		double div = val / max * 10;
+		int rou = (int)div;
+		StringBuilder str = new StringBuilder();
+		for(int i = 0; i < 10; i++){
+			if(rou > i){
+				str.append("\u00a7b\u2588");
+			}
+			else{
+				str.append("\u00a7f\u2588");
+			}
+		}
+		str.append(" \u00a7r");
+		return str.toString();
+	}
 
 }

@@ -14,6 +14,7 @@ public class Axle {
 
 	public final ArrayList<WheelTireData> wheels = new ArrayList<>();
 	public final int id;
+	public boolean powered;
 	public double weight_ratio;
 	public double weight_on;
 	public double yaw_speed;

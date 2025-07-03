@@ -187,8 +187,8 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
         boolean consumed = vehicle.consumeFuel();
         boolean nopass = this.getPassengers().isEmpty();
         
-        float brkf = vehicle.data.getAttributeFloat("brake_force", 10000f);
-    	double brake = Math.min((vehicle.braking ? brkf : 0) + (vehicle.pbrake ? vehicle.data.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
+        double brkf = vehicle.data.getAttributeFloat("brake_force", 10000f) * vehicle.brake;
+    	double brake = Math.min(brkf + (vehicle.pbrake ? vehicle.data.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
     	int gear = vehicle.data.getAttributeInteger("gear", 0);
     	float diff = vehicle.data.getAttributeFloat("differential_ratio", 3.5f);
     	if(vehicle.engine != null && vehicle.transmission != null){
@@ -234,7 +234,7 @@ public class ULandVehicle extends RootVehicle implements IEntityAdditionalSpawnD
         	boolean rainfall = world.isRainingAt(wheelpos);
             Material mat = world.getBlockState(wheelpos).getMaterial();
             if(slowdown || vehicle.speed < 3 || nopass){
-            	boolean brk = vehicle.braking || vehicle.pbrake;
+            	boolean brk = vehicle.brake > 0 || vehicle.pbrake;
             	double by = brk && !slowdown ? 0 : vehicle.speed < 3 ? 0.9 : 0.99;
 	            wheel.motionX *= by;
 	            wheel.motionY *= by;

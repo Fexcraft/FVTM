@@ -44,12 +44,12 @@ public class NoHotbar {
 					gear_label += gear;
 				}
 			}
-			mc.fontRenderer.drawStringWithShadow("RPM/F/T: " + (ent.vehicle.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.force * 100) / 100) + " | " + ((int)(ent.vehicle.torq * 100) / 100), 10, 50, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("RPM/F/T: " + (ent.vehicle.md.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.md.force * 100) / 100) + " | " + ((int)(ent.vehicle.torq * 100) / 100), 10, 50, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 60, 0xffffff);
 			//mc.fontRenderer.drawStringWithShadow("Braking: " + (ent.vehicle.braking ? "yes" : "no"), 10, 60, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 70, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Engine: " + (ent.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 80, 0xffffff);
-			if(ent.vehicle.overloaded) mc.fontRenderer.drawStringWithShadow("Towing limit reached, vehicle is overloaded.", 10, 90, 0xffffff);
+			if(ent.vehicle.md.overloaded) mc.fontRenderer.drawStringWithShadow("Towing limit reached, vehicle is overloaded.", 10, 90, 0xffffff);
 		}
 		/*if(event.getType() == ElementType.HOTBAR){
 			if(mc.gameSettings.hideGUI || OVERLAY_ON_BOTTOM) event.setCanceled(true);

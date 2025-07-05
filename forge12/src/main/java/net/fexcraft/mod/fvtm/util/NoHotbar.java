@@ -44,7 +44,7 @@ public class NoHotbar {
 					gear_label += gear;
 				}
 			}
-			mc.fontRenderer.drawStringWithShadow("RPM/F/T: " + (ent.vehicle.md.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.md.force * 100) / 100) + " | " + ((int)(ent.vehicle.torq * 100) / 100), 10, 50, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("RPM/F/T: " + (ent.vehicle.md.rpm / 100 * 100) + " | " + ((int)(ent.vehicle.md.force * 100) / 100) + " | " + ((int)(ent.vehicle.md.torq * 100) / 100), 10, 50, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 60, 0xffffff);
 			//mc.fontRenderer.drawStringWithShadow("Braking: " + (ent.vehicle.braking ? "yes" : "no"), 10, 60, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 70, 0xffffff);

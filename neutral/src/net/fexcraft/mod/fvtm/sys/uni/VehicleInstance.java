@@ -1092,8 +1092,6 @@ public class VehicleInstance {
 		return true;
 	}
 
-	public double torq;
-
 	private void move(boolean nocons){
 		if(data.getType().isTrailer()) return;
 		double mass = md.appmass;
@@ -1123,8 +1121,8 @@ public class VehicleInstance {
 		}
 		md.force = 0;
 		if(!md.overloaded && engine != null && transmission != null){
-			torq = engine.getTorque(md.rpm);
-			md.force = torq * /*tr * */diff * transmission.getEfficiency();
+			md.torq = engine.getTorque(md.rpm);
+			md.force = md.torq * /*tr * */diff * transmission.getEfficiency();
 			if(transmission.isAutomatic() && autogear_timer <= 0){
 				int ngear = transmission.processAutoShift(gear, md.rpm, engine.maxRPM(), throttle);
 				if(ngear != gear){
@@ -1284,6 +1282,7 @@ public class VehicleInstance {
 		public double force;
 		public double accel = 0f;
 		public double angor = 0f;
+		public double torq;
 		public int rpm;
 		public int orpm;
 

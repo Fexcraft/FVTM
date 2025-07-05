@@ -40,6 +40,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	private int remtimer;
 	private boolean cl_sync;
 	protected V3D pos = new V3D();
+	protected V3D prev = new V3D();
 
 	public WheelEntity(EntityType<WheelEntity> type, Level level){
 		super(type, level);
@@ -70,7 +71,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 
 	private void setStepHeight(){
 		WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
-		stepheight = wtd == null ? root.vehicle.spdata == null ? 1f : root.vehicle.spdata.wheel_step_height : wtd.function.step_height;
+		stepheight = wtd == null ? 0.5f : wtd.function.step_height;
 		getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
 	}
 
@@ -174,6 +175,9 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	@Override
 	public void updatePrevPos(){
 		setOldPosAndRot();
+		prev.x = xOld;
+		prev.y = yOld;
+		prev.z = zOld;
 		pos.x = position().x;
 		pos.y = position().y;
 		pos.z = position().z;
@@ -187,6 +191,11 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	@Override
 	public boolean isAdded(){
 		return !isRemoved();//TODO
+	}
+
+	@Override
+	public V3D prev(){
+		return prev;
 	}
 
 	@Override
@@ -234,6 +243,13 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 		motionX = x;
 		motionY = y;
 		motionZ = z;
+	}
+
+	@Override
+	public void fillMotion(V3D wmot){
+		wmot.x = motionX;
+		wmot.y = motionY;
+		wmot.z = motionZ;
 	}
 
 }

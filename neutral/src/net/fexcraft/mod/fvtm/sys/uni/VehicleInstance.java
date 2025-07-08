@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -82,7 +82,6 @@ public class VehicleInstance {
 	public double speed;
 	public V3D pos;
 	public V3D prev;
-	public V3D move = new V3D();
 	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
@@ -749,7 +748,6 @@ public class VehicleInstance {
 				wheel.radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
 			}
 			wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
-			wheel.steering = data.getWheelSlots().get(entry.getKey()).steering;
 			wheel.slot = data.getWheelSlots().get(entry.getKey());
 			wheel.mirror = data.getWheelSlots().get(entry.getKey()).mirror;
 			wheeldata.put(entry.getKey(), wheel);
@@ -967,6 +965,7 @@ public class VehicleInstance {
 			pivot().set_rotation(rot[0], rot[1], rot[2], true);
 			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 		}
+		alignToWheels(false);//process move requests from other sources
 		if(!driven){
 			if(type.isRailVehicle()){
 				if(railent == null || railent.current == null) return;
@@ -1005,7 +1004,7 @@ public class VehicleInstance {
 			}
 			data.setAttribute("throttle", throttle);
 			data.setAttribute("speed", speed * 72);
-			data.getAttribute("rpm").set(md.rpm / 100 * 100);
+			if(md != null) data.getAttribute("rpm").set(md.rpm / 100 * 100);
 		}
 		else{
 			for(SwivelPoint point : data.getRotationPoints().values()){
@@ -1062,12 +1061,11 @@ public class VehicleInstance {
 		double dx = rea.x - fro.x, dy = rea.y - fro.y, dz = rea.z - fro.z;
 		double drx = rig.x - lef.x, dry = rig.y - lef.y, drz = rig.z - lef.z;
 		double dxz = Math.sqrt(dx * dx + dz * dz);
-		double y = -Math.atan2(dx, dz);
+		double y = pivot().yaw();//-Math.atan2(dx, dz);
 		double p = -Math.atan2(dy, dxz);
 		double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
 		pivot().set_rotation(y, p, r, false);
-		if(!type.isRailVehicle()) md.angor = pivot().yaw() - prev_pivot().yaw();
-		for(UniWheel wheel : wheels.values()) if(wheel != null) pullBackWheel(wheel);
+		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 	}
 
 	private void remass(){
@@ -1105,7 +1103,6 @@ public class VehicleInstance {
 		}
 		if(axpwdiv > 0) axpwdiv = 1d / axpwdiv;
 		md.overloaded = md.appmass - data.getAttributeFloat("weight", 1000f) > data.getAttributeFloat("max_towing", 3500f);
-		move.set(0, 0, 0);
 		boolean cons = nocons || (engine != null && consumeFuel());
 		double brkf = data.getAttributeFloat("brake_force", 10000f) * brake;
 		double brake = Math.min(brkf + (pbrake ? data.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf) * 0.25;
@@ -1139,66 +1136,68 @@ public class VehicleInstance {
 		entity.setOnGround(true);
 		md.accel = 0;
 		//
-		boolean raining;
-		V3D wmot = new V3D();
-		WheelTireData wtd;
-		for(UniWheel wheel : wheels.values()){
-			if(wheel == null || wheel.wtd() == null) continue;
-			wtd = wheel.wtd();
-			wheel.prepare();
-			wheel.yaw(pivot().deg_yaw());
-			raining = entity.getWorld().isRainingAt(wheel.pos().x, wheel.pos().y - sixteenth, wheel.pos().z);
-			wheel.fillMotion(wmot);
-			if(speed < 0.05 && (throttle < 0.001 || brake > 0)){
-				wheel.setMotion(0, 0, 0);
-				wmot.set(0, 0, 0);
-				speed = 0;
-			}
-			//
-			double mov_sig = Math.signum(c * wmot.x + s * wmot.z);
-			double mov_for = mov_sig * speed;
-			double mov_sid = c * wmot.z - s * wmot.x;
-			double steer_sig = wtd.slot.steering ? mov_sig * steer_rad : 0;
-			double slip = Math.atan2(mov_sid + wtd.axle.yaw_speed, Math.abs(mov_for)) - steer_sig;
-			double grip = wtd.function.getGripFor(null, raining);
-			if(wtd.slot.braking && pbrake) grip *= wtd.function.brake_grip;
-			double fric = Static.clamp(-wtd.function.getCornerStiffnessFor(null, wtd.slot.steering) * slip, -grip, grip) * wtd.axle.weight_on * 0.5;
-			double trac = (cons && wtd.axle.powered ? (md.force / wtd.radius) * (tr == 0 ? 0 : 1d / tr) : 0) - brake * mov_sig;
-			double drag_f = -(rr * mov_for + ar * mov_for * Math.abs(mov_for));
-			double drag_s = -(rr * mov_sid + ar * mov_sid * Math.abs(mov_sid));
-			double res_f = ((drag_f + trac) / mass) * 0.05;// * MOTION_SCALE;
-			double res_s = ((drag_s + trac == 0 ? 0 : Math.cos(steer_rad) * fric) / mass) * 0.05;// * MOTION_SCALE;
-			md.accel += res_f;
-			//
-			wheel.addMotion(c * res_f - s * res_s, -GRAVITY_20th, s * res_f + c * res_s);
-			wheel.move();
-			moveToWheel(wheel);
+		md.moveto.set(0, 0, 0);
+		double mov_sig = Math.signum(c * md.motion.x + s * md.motion.z);
+		double mov_for = mov_sig * speed;
+		double mov_sid = c * md.motion.z - s * md.motion.x;
+		double steer_sig = mov_sig * steer_rad;
+		double slipf = Math.atan2(mov_sid + md.ax_fron.yaw_speed, Math.abs(mov_for)) - (md.ax_fron.steering ? steer_sig : 0);
+		double slipr = Math.atan2(mov_sid + md.ax_rear.yaw_speed, Math.abs(mov_for)) - (md.ax_rear.steering ? steer_sig : 0);
+		double gripf = md.ax_fron.getGrip(this);
+		double gripr = md.ax_rear.getGrip(this);
+		double fricf = md.ax_fron.getFric(this, slipf, gripf);
+		double fricr = md.ax_rear.getFric(this, slipr, gripr);
+		double tracf = cons && md.ax_fron.powered ? (md.force / md.ax_fron.radius) * (tr == 0 ? 0 : 1d / tr) : 0;
+		double tracr = cons && md.ax_rear.powered ? (md.force / md.ax_rear.radius) * (tr == 0 ? 0 : 1d / tr) : 0;
+		tracf -= brake * mov_sig;
+		tracr -= brake * mov_sig;
+		double drag_f = -(rr * mov_for + ar * mov_for * Math.abs(mov_for));
+		double drag_s = -(rr * mov_sid + ar * mov_sid * Math.abs(mov_sid));
+		double res_f = ((drag_f + tracf + tracr) / mass);// * MOTION_SCALE;
+		double frics = (md.ax_fron.steering ? Math.cos(steer_rad) * fricf : fricf) + (md.ax_rear.steering ? Math.cos(steer_rad) * fricr : fricr);
+		double res_s = ((drag_s + /*(tracf + tracr == 0 ? 0 :*/ frics/*)*/) / mass);// * MOTION_SCALE;
+		md.accel += res_f;
+		V3D.add((c * res_f - s * res_s) * 0.05, -GRAVITY_20th, (s * res_f + c * res_s) * 0.05, md.motion);
+		md.abvel = md.motion.length();
+		double antor = fricf * md.ax_fron.pos.z - fricr * md.ax_rear.pos.z;
+		if(md.abvel < 0.5 && throttle < 0.01){
+			md.motion.set(0, 0, 0);
+			md.abvel = antor = 0;
 		}
-		moveFinish();
+		md.angor = -antor / mass * 0.05;
+		pivot().set_yaw((float)(pivot().yaw() + md.angor * 0.05), false);
+		entity.move(md.motion);
+		pos = entity.getPos();
+		alignToWheels(true);
 		md.accel /= wheels.size();
 	}
 
 	private void pullBackWheel(UniWheel wheel){
 		wheel.prepare();
 		wheel.yaw(pivot().deg_yaw());
-		V3D old = new V3D();
-		wheel.fillMotion(old);
-		V3D dest = pivot().get_vector(wheel.wtd().pos);//.add(pos);
-		//wheel.pos(dest.x, dest.y, dest.z);
-		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.5;
-		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.5;
-		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.5;
-		wheel.setMotion(dest.x, dest.y, dest.z);
+		V3D dest = pivot().get_vector(wheel.wtd().pos);
+		dest.x = (dest.x - (wheel.pos().x - pos.x));
+		dest.y = (dest.y - (wheel.pos().y - pos.y));
+		dest.z = (dest.z - (wheel.pos().z - pos.z));
+		wheel.addMotion(dest.x, dest.y - GRAVITY_200th, dest.z);
 		wheel.move();
-		wheel.setMotion(old.x, old.y, old.z);
+		wheel.setMotion(0, 0, 0);
+	}
+
+	private void alignToWheels(boolean pull){
+		md.moveto.set(0, 0, 0);
+		for(UniWheel wheel : wheels.values()){
+			if(wheel == null || wheel.wtd() == null) continue;
+			if(pull) pullBackWheel(wheel);
+			moveToWheel(wheel);
+		}
+		moveFinish();
 	}
 
 	private void moveFinish(){
-		move.x += pos.x;
-		move.y += pos.y;
-		move.z += pos.z;
+		V3D.add(pos, md.moveto);
 		entity.setPrevPos(pos);
-		entity.setPos(move);
+		entity.setPos(md.moveto);
 	}
 
 	private void moveToWheel(UniWheel wheel){
@@ -1206,9 +1205,7 @@ public class VehicleInstance {
 		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
 		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
 		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
-		if(dest.length() > 0.001){
-			V3D.sub(dest, move);
-		}
+		if(dest.length() > 0.001) V3D.sub(dest, md.moveto);
 	}
 
 	/** for trailers */
@@ -1222,7 +1219,7 @@ public class VehicleInstance {
 		V3D wl = wheels.get(w_rear_l.id).pos();
 		V3D wr = wheels.get(w_rear_r.id).pos();
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
-		move.x = move.y = move.z = 0;
+		md.moveto.set(0, 0, 0);
 		pos = entity.getPos();
 		for(UniWheel wheel : wheels.values()){
 			wheel.prepare();
@@ -1276,12 +1273,15 @@ public class VehicleInstance {
 		public boolean overloaded;
 		public Axle ax_fron;
 		public Axle ax_rear;
+		public V3D moveto = new V3D();
+		public V3D motion = new V3D();
 		public double wheelbase;
 		public double cg_height;
 		public double appmass = 0;
 		public double force;
 		public double accel = 0f;
 		public double angor = 0f;
+		public double abvel = 0f;
 		public double torq;
 		public int rpm;
 		public int orpm;

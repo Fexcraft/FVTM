@@ -12,9 +12,9 @@ public class WheelTireData {
 	public final String id;
 	public WheelSlot slot;
 	public V3D pos;
+	public V3D move = new V3D();
 	public Axle axle;
 	public TireAttr function;
-	public boolean steering;
 	public boolean mirror;
 	public float radius;
 	public float rotation;

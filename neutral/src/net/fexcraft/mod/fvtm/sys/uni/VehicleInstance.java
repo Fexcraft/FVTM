@@ -1132,7 +1132,7 @@ public class VehicleInstance {
 		}
 		double s = -Math.cos(-pivot().yaw());
 		double c = -Math.sin(-pivot().yaw());
-		double steer_rad = Math.toRadians(steer_yaw);
+		double steer_rad = -Math.toRadians(steer_yaw);
 		entity.setOnGround(true);
 		md.accel = 0;
 		//
@@ -1159,8 +1159,8 @@ public class VehicleInstance {
 		md.accel += res_f;
 		V3D.add((c * res_f - s * res_s) * 0.05, -GRAVITY_20th, (s * res_f + c * res_s) * 0.05, md.motion);
 		md.abvel = md.motion.length();
-		double antor = fricf * md.ax_fron.pos.z - fricr * md.ax_rear.pos.z;
-		if(md.abvel < 0.5 && throttle < 0.01){
+		double antor = fricf * -md.ax_fron.pos.z - fricr * md.ax_rear.pos.z;
+		if(md.abvel < 0.05 && throttle < 0.01){
 			md.motion.set(0, 0, 0);
 			md.abvel = antor = 0;
 		}
@@ -1188,7 +1188,7 @@ public class VehicleInstance {
 		md.moveto.set(0, 0, 0);
 		for(UniWheel wheel : wheels.values()){
 			if(wheel == null || wheel.wtd() == null) continue;
-			if(pull) pullBackWheel(wheel);
+			//if(pull) pullBackWheel(wheel);
 			moveToWheel(wheel);
 		}
 		moveFinish();

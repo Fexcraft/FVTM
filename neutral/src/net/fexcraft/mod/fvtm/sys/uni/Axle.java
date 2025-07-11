@@ -42,7 +42,7 @@ public class Axle {
 	public void calc(double mass, double acc, double height, double base, double yaw){
 		double ahb = 0.2 * acc * height / base;
 		weight_on = mass * (weight_ratio * GRAVITY + (pos.z < 0 ? -ahb : ahb));
-		yaw_speed = (pos.z < 0 ? -pos.z : pos.z) * (yaw / mass);
+		yaw_speed = -pos.z * yaw * 0.05;
 	}
 
 	public double getGrip(VehicleInstance vi){

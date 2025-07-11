@@ -37,6 +37,7 @@ public class Config extends ConfigBase {
 	public static boolean DISABLE_PARTICLES;
 	public static int SIGNAL_INTERVAL;
 	//uni/proto
+	public static boolean LAND_PROTOTYPE;
 	public static float MOTION_SCALE;
 	public static byte VEHICLE_SYNC_RATE;
 	public static float STEER_RESET_RATE;
@@ -137,6 +138,9 @@ public class Config extends ConfigBase {
 			.cons((con, map) -> SIGN_VIEW_DISTANCE = con.getInteger(map)));
 
 		//general vehicle
+		entries.add(new ConfigEntry(this, catv, "land_prototype", new JsonValue(false))
+			.info("Should the prototype land vehicle physics be used as the standard vehicle physics?")
+			.cons((con, map) -> LAND_PROTOTYPE = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catv, "motion_scale", new JsonValue(0.2f))
 			.info("Physics Motion Scale Multiplier.").rang(0.001f, 2f)
 			.cons((con, map) -> MOTION_SCALE = con.getFloat(map)));

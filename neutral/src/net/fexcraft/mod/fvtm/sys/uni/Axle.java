@@ -55,7 +55,7 @@ public class Axle {
 		return grip / wheels.size();
 	}
 
-	public double getFric(VehicleInstance vi, double slip, double grip){
+	public double getFric(double slip, double grip){
 		double stif = 0;
 		for(WheelTireData wheel : wheels){
 			stif += wheel.function.getCornerStiffnessFor(null, wheel.slot.steering);

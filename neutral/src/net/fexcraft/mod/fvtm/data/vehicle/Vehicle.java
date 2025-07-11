@@ -56,6 +56,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 	protected Map<String, RGB> channels = new LinkedHashMap<>();
 	protected String modelid;
 	protected String ctab;
+	protected SimplePhysData sphdata;
 	protected boolean trailer;
 	protected boolean tracked;
 	protected Map<String, IDL> installed;
@@ -133,6 +134,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 				wheelpos.put(entry.getKey(), new WheelSlot(entry.getValue().asMap()));
 			}
 		}
+		sphdata = new SimplePhysData(map.getMap("SimplePhysics"));
 		trailer = map.getBoolean("Trailer", false) || map.getBoolean("Wagon", false);
 		tracked = map.getBoolean("Tracked", false) || map.getBoolean("Catenary", false);
 		coupler_range = map.getFloat("CouplerRange", coupler_range);
@@ -420,6 +422,10 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 
 	public List<OBBRef> getDefaultBoundBoxes(){
 		return boundboxes;
+	}
+
+	public SimplePhysData getSphData(){
+		return sphdata;
 	}
 
 }

@@ -34,8 +34,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -237,7 +239,15 @@ public class Resources21 extends FvtmResources {
 	@Override
 	public InputStream getAssetInputStream(IDL loc, boolean log){
 		try{
-			return Minecraft.getInstance().getResourceManager().getResource(loc.local()).get().open();
+			InputStream stream = Minecraft.getInstance().getResourceManager().getResource(loc.local()).get().open();
+			if(stream != null){
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				byte[] buffer = new byte[1024];
+				int read;
+				while((read = stream.read(buffer)) != -1) out.write(buffer, 0, read);
+				stream = new ByteArrayInputStream(out.toByteArray());
+			}
+			return stream;
 		}
 		catch(Throwable e){
 			e.printStackTrace();

@@ -59,9 +59,13 @@ public class ClassicVehMove implements VehicleMovement {
 			double myaw = 0;
 			double ryaw = 0;
 			double scal = 0;
+			double decr = 0;
+			V3D wm;
 			boolean cons = nocons || (inst.engine != null && inst.consumeFuel());
 			for(UniWheel wheel : inst.wheels.values()){
 				if(wheel.wtd() == null) continue;
+				wm = wheel.wtd().move;
+				scal = (-Math.sin(-wyaw) * wm.x + -Math.cos(-myaw) * wm.z) * 0.05;
 				wheel.prepare();
 				if(inst.engine != null && cons){
 					if(inst.data.getType().isTracked()){
@@ -69,21 +73,30 @@ public class ClassicVehMove implements VehicleMovement {
 					}
 					else{
 						scal = 0.05 * inst.throttle * (inst.throttle > 0 ? inst.spdata.max_throttle : inst.spdata.min_throttle) * inst.engine.getSphEngineSpeed();
-						ryaw = inst.pivot().deg_yaw();
-						myaw = wyaw;
-						if(wheel.wtd().slot.steering){
-							ryaw += inst.steer_yaw;
-							myaw = syaw;
-						}
 					}
-					wheel.addMotion(-Math.sin(-myaw) * scal, 0, -Math.cos(-myaw) * scal);
+				}
+				ryaw = inst.pivot().deg_yaw();
+				myaw = wyaw;
+				if(wheel.wtd().slot.steering){
+					ryaw += inst.steer_yaw;
+					myaw = syaw;
 				}
 				wheel.yaw((float)ryaw);
+				wm.x += -Math.sin(-myaw) * scal;
+				wm.y = -VehicleInstance.GRAVITY_20th;
+				wm.z += -Math.cos(-myaw) * scal;
+				decr = 0.99;
+				if(inst.brake > 0 || inst.pbrake){
+					if(inst.throttle > -0.01 && inst.throttle < 0.01) inst.throttle = 0;
+					decr = inst.pbrake ? 0.8 : decr - inst.brake * 0.1;
+				}
+				wm.x *= decr;
+				wm.z *= decr;
+				wheel.setMotion(wm.x, wm.y, wm.z);
 				wheel.move();
-				inst.moveToWheel(wheel);
 			}
 		}
-		inst.moveFinish();
+		inst.alignToWheels();
 	}
 
 	public void assignWheels(){

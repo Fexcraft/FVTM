@@ -70,6 +70,7 @@ public class ClassicVehMove implements VehicleMovement {
 				wm = wheel.wtd().move;
 				scal = (-Math.sin(-wyaw) * wm.x + -Math.cos(-wyaw) * wm.z) * 0.05;
 				wheel.prepare();
+				wheel.yaw((float)ryaw);
 				if(inst.engine != null && cons && inst.throttle != 0){
 					scal += 0.05 * inst.throttle * (inst.throttle > 0 ? inst.spdata.max_throttle : inst.spdata.min_throttle) * inst.engine.getSphEngineSpeed();
 				}
@@ -80,11 +81,10 @@ public class ClassicVehMove implements VehicleMovement {
 					ryaw += inst.steer_yaw;
 					myaw = syaw;
 				}
-				wheel.yaw((float)ryaw);
 				wm.x += -Math.sin(-myaw) * scal;
 				wm.y = -VehicleInstance.GRAVITY_20th;
 				wm.z += -Math.cos(-myaw) * scal;
-				decr = 0.9;
+				decr = 0.95;
 				if(inst.brake > 0 || inst.pbrake){
 					decr = inst.pbrake ? 0.8 : decr - inst.brake * 0.1;
 				}

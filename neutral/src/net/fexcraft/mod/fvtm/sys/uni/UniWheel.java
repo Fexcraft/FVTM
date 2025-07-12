@@ -13,6 +13,8 @@ public interface UniWheel {
 
 	public boolean isAdded();
 
+	public V3D prev();
+
 	public V3D pos();
 
 	public void pos(double x, double y, double z);
@@ -28,5 +30,9 @@ public interface UniWheel {
 	public void addMotion(double x, double y, double z);
 
 	public void setMotion(double x, double y, double z);
+
+	public void mulMotion(double by);
+
+	public void fillMotion(V3D vec);
 
 }

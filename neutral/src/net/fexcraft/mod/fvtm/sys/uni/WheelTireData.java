@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.TireFunction.TireAttr;
 
 /**
@@ -9,10 +10,11 @@ import net.fexcraft.mod.fvtm.function.part.TireFunction.TireAttr;
 public class WheelTireData {
 
 	public final String id;
+	public WheelSlot slot;
 	public V3D pos;
+	public V3D move = new V3D();
 	public Axle axle;
 	public TireAttr function;
-	public boolean steering;
 	public boolean mirror;
 	public float radius;
 	public float rotation;

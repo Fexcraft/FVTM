@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
-import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
@@ -101,12 +100,13 @@ public class KeyHandler {
         EntityW player = pass.entity;
         SeatInstance seat = pass.getSeatOn();
         if(seat == null) return;
-        boolean uni12 = minecraft.player.getRidingEntity() instanceof ULandVehicle;
-        if(isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode())){
-            seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
+        boolean state = isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode());
+        if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
+            seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
         }
-        if(isKeyDown(minecraft.gameSettings.keyBindBack.getKeyCode())){
-            seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
+        state = isKeyDown(minecraft.gameSettings.keyBindBack.getKeyCode());
+        if(state != seat.root.getKeyPressState(KeyPress.DECELERATE)){
+            seat.root.onKeyPress(KeyPress.DECELERATE, seat.seat, player, state, false);
         }
         if(isKeyDown(minecraft.gameSettings.keyBindLeft.getKeyCode())){
             seat.onKeyPress(KeyPress.TURN_LEFT, player);
@@ -130,20 +130,15 @@ public class KeyHandler {
             /*if(toggables) scroll(1, 0);
             else*/ seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
         }
-        if(uni12){
-            if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
-                seat.onKeyPress(KeyPress.PBRAKE, player);
-            }
-            boolean state = isKeyDown(KeyHandler.brake.getKeyCode());
-            if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-                seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
-            }
+        //
+        if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
+            seat.onKeyPress(KeyPress.PBRAKE, player);
         }
-        else{
-            if(isKeyDown(KeyHandler.brake.getKeyCode())){
-                seat.onKeyPress(KeyPress.BRAKE, player);
-            }
+        state = isKeyDown(KeyHandler.brake.getKeyCode());
+        if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
+            seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
         }
+        //
         if(isKeyDown(KeyHandler.engineToggle.getKeyCode())){
             seat.onKeyPress(KeyPress.ENGINE, player);
         }

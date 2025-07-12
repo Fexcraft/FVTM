@@ -116,7 +116,17 @@ ui.fvtm.fuel_filler.warning=Fuel is lost if type changed!!
 ui.fvtm.fuel_filler.stored=Stored: %s
 ui.fvtm.fuel_filler.converted=Converted: %s
 ui.fvtm.fuel_filler.current=Current: %s
-//
+
+ui.fvtm.vehicle_overlay.offset=60
+ui.fvtm.vehicle_overlay.fuel=Fuel
+ui.fvtm.vehicle_overlay.throttle=Throttle
+ui.fvtm.vehicle_overlay.brake=Brake
+ui.fvtm.vehicle_overlay.speed=Speed
+ui.fvtm.vehicle_overlay.engine=Engine
+ui.fvtm.vehicle_overlay.pbrake=P-Brake
+ui.fvtm.vehicle_overlay.on=on
+ui.fvtm.vehicle_overlay.off=off
+
 ui.fvtm.vehicle_fuel.accepts=Accepts:
 ui.fvtm.vehicle_attributes.prev=Previous Page
 ui.fvtm.vehicle_attributes.next=Next Page

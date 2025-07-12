@@ -37,9 +37,15 @@ public class Config extends ConfigBase {
 	public static boolean DISABLE_PARTICLES;
 	public static int SIGNAL_INTERVAL;
 	//uni/proto
+	public static boolean LAND_PROTOTYPE;
 	public static float MOTION_SCALE;
 	public static byte VEHICLE_SYNC_RATE;
 	public static float STEER_RESET_RATE;
+	public static float STEER_PER_PRESS_TICK;
+	public static float THROTTLE_DECR_PER_TICK;
+	public static float THROTTLE_PER_PRESS_TICK;
+	public static float BRAKE_DECR_PER_TICK;
+	public static float BRAKE_PER_PRESS_TICK;
 	//rail
 	public static boolean DISABLE_RAILS;
 	public static int UNLOAD_INTERVAL;
@@ -77,7 +83,6 @@ public class Config extends ConfigBase {
 		String catg = "general";
 		String catc = "client";
 		String catl = "collision";
-		String catu = "u12/basic";
 		String catv = "vehicle";
 		String catr = "rail";
 		String cato = "road";
@@ -132,18 +137,34 @@ public class Config extends ConfigBase {
 			.info("View distance for road/traffic signs.").rang(1, 40960)
 			.cons((con, map) -> SIGN_VIEW_DISTANCE = con.getInteger(map)));
 
-		//u12/basic
-		entries.add(new ConfigEntry(this, catu, "motion_scale", new JsonValue(0.2f))
+		//general vehicle
+		entries.add(new ConfigEntry(this, catv, "land_prototype", new JsonValue(false))
+			.info("Should the prototype land vehicle physics be used as the standard vehicle physics?")
+			.cons((con, map) -> LAND_PROTOTYPE = con.getBoolean(map)));
+		entries.add(new ConfigEntry(this, catv, "motion_scale", new JsonValue(0.2f))
 			.info("Physics Motion Scale Multiplier.").rang(0.001f, 2f)
 			.cons((con, map) -> MOTION_SCALE = con.getFloat(map)));
-
-		//general vehicle
 		entries.add(new ConfigEntry(this, catv, "sync_rate", new JsonValue(5))
 			.info("Entity sync rate in ticks. Lesser value means higher sync AND higher bandwidth. Higher value means slower sync and less bandwidth.").rang(1, 10)
 			.cons((con, map) -> VEHICLE_SYNC_RATE = (byte)con.getInteger(map)));
 		entries.add(new ConfigEntry(this, catv, "steer_reset_rate", new JsonValue(0.90))//0.95
 			.info("Steer multiplier per tick. 1 = no reset, 0 = full reset each tick.").rang(0, 1)
 			.cons((con, map) -> STEER_RESET_RATE = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "steer_per_press_tick", new JsonValue(5))
+			.info("Steer increase per tick of pressing the left/right steering key, in degrees.").rang(0.01f, 30)
+			.cons((con, map) -> STEER_PER_PRESS_TICK = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "throttle_decrease_per_tick", new JsonValue(0.01))
+			.info("Throttle decrease per tick. 0 = no reset, 1 = full reset each tick.").rang(0, 1)
+			.cons((con, map) -> THROTTLE_DECR_PER_TICK = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "throttle_per_press_tick", new JsonValue(0.1))
+			.info("Throttle increase per tick of pressing the acc-/decelerate key.").rang(0.01f, 1)
+			.cons((con, map) -> THROTTLE_PER_PRESS_TICK = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "brake_decrease_per_tick", new JsonValue(0.05))
+			.info("Brake decrease per tick. 0 = no reset, 1 = full reset each tick.").rang(0, 1)
+			.cons((con, map) -> BRAKE_DECR_PER_TICK = con.getFloat(map)));
+		entries.add(new ConfigEntry(this, catv, "brake_per_press_tick", new JsonValue(0.1))
+			.info("Brake increase per tick of pressing the acc-/decelerate key.").rang(0.01f, 1)
+			.cons((con, map) -> BRAKE_PER_PRESS_TICK = con.getFloat(map)));
 
 		//collision
 		entries.add(new ConfigEntry(this, catl, "disable", new JsonValue(false))

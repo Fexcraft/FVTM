@@ -52,7 +52,7 @@ public class CollisionUtil {
 				min_ax = axis;
 			}
 		}
-		return min_ax.scale(min_ov);
+		return min_ax == null ? V3D.NULL : min_ax.scale(min_ov);
 	}
 
 }

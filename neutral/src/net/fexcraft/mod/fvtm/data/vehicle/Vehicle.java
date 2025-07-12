@@ -333,10 +333,6 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 		return wheelpos;
 	}
 
-	public SimplePhysData getSphData(){
-		return sphdata;
-	}
-
 	public boolean isTrailer(){
 		return trailer;
 	}
@@ -426,6 +422,10 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 
 	public List<OBBRef> getDefaultBoundBoxes(){
 		return boundboxes;
+	}
+
+	public SimplePhysData getSphData(){
+		return sphdata;
 	}
 
 }

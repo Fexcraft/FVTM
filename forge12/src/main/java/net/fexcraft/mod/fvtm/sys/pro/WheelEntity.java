@@ -29,6 +29,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	public WheelTireData wheel;
 	public String wheelid;
 	protected V3D pos = new V3D();
+	protected V3D prv = new V3D();
 
 	public WheelEntity(World world){
 		super(world);
@@ -107,7 +108,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 		else{
 			WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 			LandVehicle veh = (LandVehicle) root;
-			stepHeight = wtd == null ? veh.vehicle.data == null ? 1f : veh.vehicle.data.getType().getSphData().wheel_step_height : wtd.function.step_height;
+			stepHeight = wtd == null ? veh.vehicle.data == null ? 1f : 0.5f : wtd.function.step_height;
 		}
 	}
 
@@ -126,8 +127,8 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 
 	@Override
 	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int incr, boolean tele){
-		setPosition(x, y, z);
-		setRotation(yaw, pitch);
+		//setPosition(x, y, z);
+		//setRotation(yaw, pitch);
 	}
 
 	@Override
@@ -174,6 +175,9 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 
 	@Override
 	public void updatePrevPos(){
+		prv.x = prevPosX;
+		prv.y = prevPosY;
+		prv.z = prevPosZ;
 		pos.x = prevPosX = posX;
 		pos.y = prevPosY = posY;
 		pos.z = prevPosZ = posZ;
@@ -187,6 +191,11 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	@Override
 	public boolean isAdded(){
 		return addedToChunk;
+	}
+
+	@Override
+	public V3D prev(){
+		return prv;
 	}
 
 	@Override
@@ -207,9 +216,9 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 	@Override
 	public void prepare(){
 		onGround = true;
-		motionX *= 0.9;
+		/*motionX *= 0.9;
 		motionZ *= 0.9;
-		motionY = -GRAVITY_20th;
+		motionY = -GRAVITY_20th;*/
 	}
 
 	@Override
@@ -234,6 +243,20 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData, U
 		motionX = x;
 		motionY = y;
 		motionZ = z;
+	}
+
+	@Override
+	public void mulMotion(double by){
+		motionX *= by;
+		motionY *= by;
+		motionZ *= by;
+	}
+
+	@Override
+	public void fillMotion(V3D wmot){
+		wmot.x = motionX;
+		wmot.y = motionY;
+		wmot.z = motionZ;
 	}
 
 }

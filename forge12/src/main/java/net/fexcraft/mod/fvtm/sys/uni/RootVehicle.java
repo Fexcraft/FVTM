@@ -5,12 +5,9 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.data.InteractZone;
-import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
-import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.event.EventHandler;
 import net.fexcraft.mod.fvtm.util.CollisionUtil;
 import net.fexcraft.mod.fvtm.util.OBB;
@@ -21,13 +18,10 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.EntityWI;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemLead;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -45,7 +39,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.*;
 
@@ -61,15 +54,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 
 	public RootVehicle(World world){
 		super(world);
-		vehicle = new VehicleInstance(new EntityWI(this), null, isAdv());
+		vehicle = new VehicleInstance(new EntityWI(this), null);
 	}
 
 	protected void init(TagCW com){
 		setSize(vehicle.data.getAttribute("hitbox_width").asFloat(), vehicle.data.getAttribute("hitbox_height").asFloat());
-	}
-
-	public boolean isAdv(){
-		return false;
 	}
 
 	@Override
@@ -90,16 +79,14 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
 		TagCW com = TagCW.wrap(compound);
-		vehicle.data.write(com);
-		vehicle.point.savePivot(com);
+		vehicle.save(com);
 	}
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
 		TagCW com = TagCW.create();
-		vehicle.point.savePivot(com);
 		writeSpawnData(com);
-		vehicle.data.write(com);
+		vehicle.save(com);
 		ByteBufUtils.writeTag(buffer, com.local());
 	}
 
@@ -232,9 +219,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 		prevRotationRoll = vehicle.point.getPivot().deg_roll();
 		vehicle.onUpdate();
 		checkCollision();
-		if(!world.isRemote && ticksExisted % VEHICLE_SYNC_RATE == 0){
-			vehicle.sendUpdatePacket();
-		}
 	}
 
 	private void checkCollision(){

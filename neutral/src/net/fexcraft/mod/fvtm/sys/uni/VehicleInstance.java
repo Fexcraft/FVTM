@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
@@ -18,10 +19,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.function.part.EngineFunction;
-import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
-import net.fexcraft.mod.fvtm.function.part.TireFunction;
-import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
+import net.fexcraft.mod.fvtm.function.part.*;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
@@ -33,7 +31,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.util.MathUtils;
+import net.fexcraft.mod.fvtm.ui.rail.RailVehMovement;
 import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.util.Pivot;
 import net.fexcraft.mod.fvtm.util.ess.SimplePhysSpawnSystem;
@@ -46,10 +44,9 @@ import net.fexcraft.mod.uni.world.EntityW;
 import java.util.*;
 
 import static net.fexcraft.lib.common.Static.*;
-import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.data.Material.isFuelContainer;
-import static net.fexcraft.mod.fvtm.util.MathUtils.valDegF;
-import static net.fexcraft.mod.fvtm.util.MathUtils.valRad;
+import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 import static net.fexcraft.mod.uni.inv.StackWrapper.IT_LEAD;
 
 /**
@@ -78,13 +75,19 @@ public class VehicleInstance {
 	public Map<String, OBB> obb = new LinkedHashMap<>();
 	//
 	public SimplePhysData spdata;
+	public VehicleMovement movement;
 	public WheelMap wheels = new WheelMap();
+	public V3D moveto = new V3D();
+	public V3D motion = new V3D();
+	public boolean acc_down;
+	public boolean dec_down;
+	public boolean brk_down;
 	public double steer_yaw;
 	public double throttle;
+	public double brake;
 	public double speed;
 	public V3D pos;
 	public V3D prev;
-	public V3D move = new V3D();
 	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
@@ -94,11 +97,11 @@ public class VehicleInstance {
 	public int fuel_consumed;
 	public HashMap<String, LoopedSound> activesounds = new LinkedHashMap<>();
 	//
-	public boolean adv;
-	public boolean braking;
+	//public boolean braking;
 	public boolean pbrake;
-	public int gear_timer;
+	public boolean driven;
 	public int autogear_timer;
+	public int gear_timer;
 	public EngineFunction engine;
 	public TransmissionFunction transmission;
 	//
@@ -122,15 +125,10 @@ public class VehicleInstance {
 	public static final String PKT_UPD_RAILENTITY = "rail_ent";
 	public static final String PKT_UPD_ENTITY = "entity";
 
-	public VehicleInstance(EntityW wrapper, VehicleData vdata, boolean base){
+	public VehicleInstance(EntityW wrapper, VehicleData vdata){
 		entity = wrapper;
 		ref = new InteractRef(this);
-		adv = base;
 		init(vdata, null);
-	}
-
-	public VehicleInstance(EntityW wrapper, VehicleData vdata){
-		this(wrapper, vdata, false);
 	}
 
 	public UUID getPlacer(){
@@ -158,69 +156,60 @@ public class VehicleInstance {
 			}
 			else{
 				Packets.send(Packet_VehKeyPress.class, key);
-				return true;
 			}
+			if(!driven) return true;
 		}
 		switch(key){
 			case ACCELERATE:{
-				if(adv){
-					throttle += 0.01;
-					if(throttle > 1) throttle = 1;
+				if(!acc_down){
+					throttle += THROTTLE_PER_PRESS_TICK;
 				}
-				else{
-					throttle += throttle < 0 ? 0.02 : 0.01;
-					if(throttle > 1) throttle = 1;
-					if(railent != null) railent.setThrottle(throttle);
-				}
+				acc_down = state;
+				if(throttle > 1) throttle = 1;
+				if(railent != null) railent.setThrottle(throttle);
 				return true;
 			}
 			case DECELERATE:{
-				if(adv){
-					throttle -= braking ? 0.05f : 0.01f;
-					if(throttle < 0F) throttle = 0F;
+				if(!dec_down){
+					throttle -= THROTTLE_PER_PRESS_TICK;
 				}
-				else{
-					throttle -= throttle > 0 ? 0.02 : 0.01;
-					if(throttle < -1){
-						throttle = -1;
-					}
-					SimplePhysData spdata = data.getType().getSphData();
-					if(spdata != null && throttle < 0 && spdata.min_throttle == 0){
-						throttle = 0;
-					}
-					if(railent != null) railent.setThrottle(throttle);
-				}
+				dec_down = state;
+				double min = LAND_PROTOTYPE || spdata.min_throttle == 0f || railent != null ? 0f : -1f;
+				if(throttle < min) throttle = min;
+				if(railent != null) railent.setThrottle(throttle);
 				return true;
 			}
 			case TURN_LEFT:{
 				if(type.isRailVehicle()){
-					if(throttle > 0.05f) player.bar("fvtm.rail.decrease_throttle");
+					if(throttle > THROTTLE_PER_PRESS_TICK) player.bar("fvtm.rail.decrease_throttle");
 					else railent.setForward(player, false);
 					return true;
 				}
-				steer_yaw -= 5;
+				steer_yaw -= STEER_PER_PRESS_TICK;
 				return true;
 			}
 			case TURN_RIGHT:{
 				if(type.isRailVehicle()){
-					if(throttle > 0.05f) player.bar("fvtm.rail.decrease_throttle");
+					if(throttle > THROTTLE_PER_PRESS_TICK) player.bar("fvtm.rail.decrease_throttle");
 					else railent.setForward(player, true);
 					return true;
 				}
-				steer_yaw += 5;
+				steer_yaw += STEER_PER_PRESS_TICK;
 				return true;
 			}
 			case BRAKE:{
-				if(adv){
-					braking = state;
+				if(!brk_down){
+					brake += BRAKE_PER_PRESS_TICK;
 				}
-				else{
-					throttle *= 0.8;
-					entity.decreaseXZMotion(0.8);
-					if(throttle < -0.0001){
-						throttle = 0;
+				if(brake > 1) brake = 1;
+				brk_down = state;
+				/*if(braking){
+					throttle *= 0.9;
+					if(throttle > -0.001 && throttle < 0.0001) throttle = 0;
+					for(UniWheel wheel : wheels.values()){
+						if(wheel != null) wheel.mulMotion(0.9);
 					}
-				}
+				}*/
 				return true;
 			}
 			case PBRAKE:{
@@ -230,6 +219,7 @@ public class VehicleInstance {
 				return true;
 			}
 			case ENGINE:{
+				if(entity.isOnClient()) return true;
 				toggleEngine();
 				return true;
 			}
@@ -368,7 +358,6 @@ public class VehicleInstance {
 			com.set("no_fuel", true);
 		}
 		Packets.INSTANCE.send(this, com);
-		throttle = 0;
 	}
 
 	public void updateAttr(String attrid){
@@ -383,7 +372,13 @@ public class VehicleInstance {
 
 	public boolean getKeyPressState(KeyPress key){
 		if(key == KeyPress.BRAKE){
-			return braking;
+			return brk_down;
+		}
+		if(key == KeyPress.ACCELERATE){
+			 return acc_down;
+		}
+		if(key == KeyPress.DECELERATE){
+			return dec_down;
 		}
 		return false;
 	}
@@ -410,7 +405,6 @@ public class VehicleInstance {
 			if(engine.isOn() && data.outoffuel()){
 				//TODO send out of fuel packet
 				//TODO play out of fuel sound
-				throttle = 0;
 				engine.setState(false);
 			}
 			fuel_accumulator = 0;
@@ -437,9 +431,11 @@ public class VehicleInstance {
 
 	public void sendUpdatePacket(){
 		data.getAttribute("throttle").set(throttle);
-		Packets.sendToAllTrackingEnt(Packet_VehMove.class, entity, entity, this);
-		for(SwivelPoint point : data.getRotationPoints().values()){
-			point.sendUpdatePacket(entity);
+		if(entity.isOnClient()){
+			Packets.send(Packet_VehMove.class, entity, this);
+		}
+		else{
+			Packets.sendToAllTrackingEnt(Packet_VehMove.class, entity, entity, this);
 		}
 	}
 
@@ -498,7 +494,6 @@ public class VehicleInstance {
 					}
 					//TODO sounds
 				}
-				throttle = 0;
 				Sound sound = data.getSound("engine_running");
 				if(sound != null && sound.event != null){
 					if(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
@@ -552,38 +547,7 @@ public class VehicleInstance {
 	}
 
 	public boolean isBraking(){
-		return braking;
-	}
-
-	public void assignWheels(){
-		w_front_l = w_front_r = w_rear_l = w_rear_r = new WheelTireData();
-		for(WheelTireData wheel : wheeldata.values()){
-			if(!data.getType().isTrailer()){
-				if(wheel.pos.x <= w_front_l.pos.x && wheel.pos.z <= w_front_l.pos.z){
-					w_front_l = wheel;
-					continue;
-				}
-				if(wheel.pos.x >= w_front_r.pos.x && wheel.pos.z <= w_front_r.pos.z){
-					w_front_r = wheel;
-					continue;
-				}
-			}
-			if(wheel.pos.x <= w_rear_l.pos.x && wheel.pos.z >= w_rear_l.pos.z){
-				w_rear_l = wheel;
-				continue;
-			}
-			if(wheel.pos.x >= w_rear_r.pos.x && wheel.pos.z >= w_rear_r.pos.z){
-				w_rear_r = wheel;
-			}
-		}
-		if(data.getType().isTrailer()){
-			w_front_l = new WheelTireData("_" + w_rear_l.id);
-			w_front_l.asTrailerFront(w_rear_l);
-			wheeldata.put(w_front_l.id, w_front_l);
-			w_front_r = new WheelTireData("_" + w_rear_r.id);
-			w_front_r.asTrailerFront(w_rear_r);
-			wheeldata.put(w_front_r.id, w_front_r);
-		}
+		return brake > 0;
 	}
 
 	public void sendUpdate(String type){
@@ -664,36 +628,29 @@ public class VehicleInstance {
 	}
 
 	public void onVehMovePkt(Packet_VehMove packet){
+		if(driven) return;
 		serv_pos = packet.pos;
 		serv_rot = packet.rot;
 		serv_steer = packet.steering;
 		throttle = packet.throttle;
 		if(data != null) data.getAttribute("fuel_stored").set(packet.fuel);
-		serv_sync = Config.VEHICLE_SYNC_RATE;
+		serv_sync = entity.isOnClient() ? Config.VEHICLE_SYNC_RATE : 1;
 	}
 
 	public void init(VehicleData vdata, TagCW com){
 		if(vdata != null) data = vdata;
-		if(com != null){
-			if(data == null){
-				data = FvtmResources.getVehicleData(com);
-			}
-			else{
-				data.read(com);
-			}
-		}
+		if(com != null) read(com);
 		if(data == null) return;
 		type = data.getType().getVehicleType();
 		point = data.getRotationPoint(null);
 		if(com != null) point.loadPivot(com);
 		max_steering_yaw = data.getAttributeInteger("max_steering_angle", 45);
 		engine = data.getFunctionInPart("engine", "fvtm:engine");
-		if(adv){
-			transmission = data.getFunctionInPart("transmission", "fvtm:transmission");
-		}
+		transmission = data.getFunctionInPart("transmission", "fvtm:transmission");
 		spdata = data.getType().getSphData();
 		//
-		initWheels();
+		movement = type.isRailVehicle() ? new RailVehMovement(this) : Config.LAND_PROTOTYPE ? new PrototypeVehMove(this) : new ClassicVehMove(this);
+		movement.initWheels();
 		seats.clear();
 		for(int i = 0; i < data.getSeats().size(); i++){
 			seats.add(new SeatInstance(this, i));
@@ -703,30 +660,6 @@ public class VehicleInstance {
 		}
 		else{
 			//TODO register for particles
-		}
-	}
-
-	public void initWheels(){
-		wheels.clear();
-		if(!type.isRailVehicle()){
-			for(Map.Entry<String, V3D> entry : data.getWheelPositions().entrySet()){
-				if(entry.getKey().endsWith(":tire")) continue;
-				WheelTireData wheel = new WheelTireData(entry.getKey());
-				wheel.pos = entry.getValue();
-				PartData part = data.getPart(entry.getKey());
-				if(!((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).hasTire()){
-					part = data.getPart(entry.getKey()+ ":tire");
-					wheel.radius = ((TireInstallationHandler.TireData)part.getType().getInstallHandlerData()).getOuterRadius();
-				}
-				else{
-					wheel.radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
-				}
-				wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
-				wheel.steering = data.getWheelSlots().get(entry.getKey()).steering;
-				wheel.mirror = data.getWheelSlots().get(entry.getKey()).mirror;
-				wheeldata.put(entry.getKey(), wheel);
-			}
-			assignWheels();
 		}
 	}
 
@@ -880,7 +813,21 @@ public class VehicleInstance {
 		return false;
 	}
 
+	public boolean isDriverInstance(){
+		if(entity == null) return true;
+		if(type.isRailVehicle()) return !entity.isOnClient();
+		boolean driven = false;
+		for(SeatInstance seat : seats){
+			if(seat.seat.driver && seat.passengerIsPlayer()){
+				driven = true;
+				break;
+			}
+		}
+		return driven == entity.isOnClient();
+	}
+
 	public void onUpdate(){
+		driven = isDriverInstance();
 		boolean remote = entity.isOnClient();
 		if(!remote && !type.isRailVehicle()){
 			checkWheelPresence(w_front_l.id);
@@ -892,28 +839,48 @@ public class VehicleInstance {
 		if(toggable_timer > 0) toggable_timer--;
 		if(gear_timer > 0) gear_timer--;
 		if(autogear_timer > 0) autogear_timer--;
-		if(!remote) steer_yaw *= Config.STEER_RESET_RATE;
+		if(driven){
+			steer_yaw *= Config.STEER_RESET_RATE;
+			double sig = Math.signum(throttle);
+			if(!acc_down && throttle > 0){
+				throttle -= THROTTLE_DECR_PER_TICK;
+			}
+			if(!dec_down && throttle < 0){
+				throttle += THROTTLE_DECR_PER_TICK;
+			}
+			if(!brk_down) brake -= BRAKE_DECR_PER_TICK;
+			if(throttle > 1) throttle = 1;
+			double min = LAND_PROTOTYPE || spdata.min_throttle == 0f ? 0f : -1f;
+			if(throttle < min) throttle = min;
+			if(brake > 1) brake = 1;
+			if(brake < 0) brake = 0;
+		}
 		if(steer_yaw > max_steering_yaw) steer_yaw = max_steering_yaw;
 		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
 		//
 		pos = entity.getPos();
+		prev = entity.getPrevPos();
 		rot = point.getPivot().toArray();
-		if(remote){
-			if(serv_sync > 0){
-				if(rot[0] < -90 && serv_rot[0] > 90) rot[0] += 360;
-				if(rot[0] > 90 && serv_rot[0] < -90) rot[0] -= 360;
-				pos.x = pos.x + (serv_pos[0] - pos.x) / serv_sync;
-				pos.y = pos.y + (serv_pos[1] - pos.y) / serv_sync;
-				pos.z = pos.z + (serv_pos[2] - pos.z) / serv_sync;
-				rot[0] = MathUtils.valDeg(rot[0] + (serv_rot[0] - rot[0]) / serv_sync);
-				rot[1] = MathUtils.valDeg(rot[1] + (serv_rot[1] - rot[1]) / serv_sync);
-				rot[2] = MathUtils.valDeg(rot[2] + (serv_rot[2] - rot[2]) / serv_sync);
-				steer_yaw += (serv_steer - steer_yaw) / serv_sync;
-				serv_sync--;
-				entity.setPos(pos);
-				pivot().set_rotation(rot[0], rot[1], rot[2], true);
-			}
-			prev = entity.getPrevPos();
+		for(UniWheel wheel : wheels.values()){
+			if(wheel != null) wheel.updatePrevPos();
+		}
+		if(serv_sync > 0){
+			if(rot[0] < -90 && serv_rot[0] > 90) rot[0] += 360;
+			if(rot[0] > 90 && serv_rot[0] < -90) rot[0] -= 360;
+			pos.x = pos.x + (serv_pos[0] - pos.x) / serv_sync;
+			pos.y = pos.y + (serv_pos[1] - pos.y) / serv_sync;
+			pos.z = pos.z + (serv_pos[2] - pos.z) / serv_sync;
+			rot[0] = valDeg(rot[0] + (serv_rot[0] - rot[0]) / serv_sync);
+			rot[1] = valDeg(rot[1] + (serv_rot[1] - rot[1]) / serv_sync);
+			rot[2] = valDeg(rot[2] + (serv_rot[2] - rot[2]) / serv_sync);
+			steer_yaw += (serv_steer - steer_yaw) / serv_sync;
+			serv_sync--;
+			entity.setPos(pos);
+			pivot().set_rotation(rot[0], rot[1], rot[2], true);
+			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
+		}
+		alignToWheels();//process move requests from other sources
+		if(!driven){
 			if(type.isRailVehicle()){
 				if(railent == null || railent.current == null) return;
 				V3D bf0 = railent.moveOnly((float)(railent.passed + 0.1));
@@ -925,24 +892,44 @@ public class VehicleInstance {
 					data.getAttribute("bogie_rear_angle").set(-toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x) - point.getPivot().yaw()) + 90);
 				}
 			}
-			else{
+		}
+		else{
+			onUpdateMovement();
+		}
+		updatePointsSeats();
+		if(!type.isRailVehicle()){
+			if(entity.isOnClient() ? driven : entity.pushTicks() % VEHICLE_SYNC_RATE == 0){
+				sendUpdatePacket();
+			}
+		}
+		updateSpeed();
+		if(remote){
+			if(!type.isRailVehicle()){
 				AttrFloat attr = (AttrFloat)data.getAttribute("steering_angle");
 				attr.initial = attr.value;
-				attr.value = (float)steer_yaw;
+				attr.value = (float)steer_yaw;//TODO find right ratio/calc
+				if(attr.value > max_steering_yaw) attr.value = (float)max_steering_yaw;
+				if(attr.value < -max_steering_yaw) attr.value = (float)-max_steering_yaw;
 				double dir = Math.abs(pivot().yaw() + rad180) - Math.abs(-Math.atan2(prev.x - pos.x, prev.z - pos.z) + rad180);
 				dir = dir > rad90 || dir < -rad90 ? -1 : 1;
 				for(WheelTireData val : wheeldata.values()){
 					val.rotation = valDegF(val.rotation + speed * dir * val.radius * 100);
 				}
-				data.setAttribute("throttle", throttle);
-				data.setAttribute("speed", speed);
+			}
+			data.setAttribute("throttle", throttle);
+			data.setAttribute("speed", speed * 72);
+			movement.updateAttrs();
+		}
+		else{
+			for(SwivelPoint point : data.getRotationPoints().values()){
+				point.sendUpdatePacket(entity);
 			}
 		}
-		for(UniWheel wheel : wheels.values()){
-			if(wheel != null) wheel.updatePrevPos();
-		}
-		onUpdateMovement(remote);
-		updatePointsSeats();
+	}
+
+	private void updateSpeed(){
+		double x = pos.x - prev.x/*, y = pos.y - prev.y*/, z = pos.z - prev.z;
+		speed = Math.sqrt(x * x /*+ y * y*/ + z * z);
 	}
 
 	private void checkWheelPresence(String id){
@@ -951,110 +938,80 @@ public class VehicleInstance {
 		}
 	}
 
-	private void onUpdateMovement(boolean remote){
+	private void onUpdateMovement(){
 		EntityW driver = driver();
 		boolean creative = driver != null && driver.isCreative();
-		if(!remote){
-			V3D fro, rea, lef, rig;
-			if(type.isRailVehicle()){
-				data.getAttribute("section_on").set(railent.current.getUnit().section().getUID());
-				railent.alignEntity(false);
-				//
-				fro = railent.bfront;
-				rea = railent.brear;
-				lef = rig = new V3D((fro.x + rea.x) * 0.5, (fro.y + rea.y) * 0.5, (fro.z + rea.z) * 0.5);
-			}
-			else{
-				if(driver == null || (!creative && data.outoffuel())){
-					throttle *= 0.98;
-				}
-				move(!VEHICLES_NEED_FUEL || !data.getAttribute("use-fuel").asBoolean() || creative);
-				if(rear != null) rear.align();
-				//
-				V3D fl = wheels.get(w_front_l.id).pos();
-				V3D fr = wheels.get(w_front_r.id).pos();
-				V3D rl = wheels.get(w_rear_l.id).pos();
-				V3D rr = wheels.get(w_rear_r.id).pos();
-				if(fl == null) return;
-				fro = new V3D((fl.x + fr.x) * 0.5, (fl.y + fr.y) * 0.5, (fl.z + fr.z) * 0.5);
-				rea = new V3D((rl.x + rr.x) * 0.5, (rl.y + rr.y) * 0.5, (rl.z + rr.z) * 0.5);
-				lef = new V3D((fl.x + rl.x) * 0.5, (fl.y + rl.y) * 0.5, (fl.z + rl.z) * 0.5);
-				rig = new V3D((fr.x + rr.x) * 0.5, (fr.y + rr.y) * 0.5, (fr.z + rr.z) * 0.5);
-			}
-			double dx = rea.x - fro.x, dy = rea.y - fro.y, dz = rea.z - fro.z;
-			double drx = rig.x - lef.x, dry = rig.y - lef.y, drz = rig.z - lef.z;
-			double dxz = Math.sqrt(dx * dx + dz * dz);
-			double y = -Math.atan2(dx, dz);
-			double p = -Math.atan2(dy, dxz);
-			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
-			pivot().set_rotation(y, p, r, false);
+		V3D fro, rea, lef, rig;
+		if(type.isRailVehicle()){
+			data.getAttribute("section_on").set(railent.current.getUnit().section().getUID());
+			railent.alignEntity(false);
+			//
+			fro = railent.bfront;
+			rea = railent.brear;
+			lef = rig = new V3D((fro.x + rea.x) * 0.5, (fro.y + rea.y) * 0.5, (fro.z + rea.z) * 0.5);
 		}
 		else{
-			speed = MathUtils.calcSpeed(pos.x, pos.y, pos.z, prev.x, prev.y, prev.z);
+			boolean uf = data.getAttribute("use-fuel").asBoolean();
+			movement.move(!VEHICLES_NEED_FUEL || !uf || creative);
+			//
+			V3D fl = wheels.get(w_front_l.id).pos();
+			V3D fr = wheels.get(w_front_r.id).pos();
+			V3D rl = wheels.get(w_rear_l.id).pos();
+			V3D rr = wheels.get(w_rear_r.id).pos();
+			if(fl == null) return;
+			fro = new V3D((fl.x + fr.x) * 0.5, (fl.y + fr.y) * 0.5, (fl.z + fr.z) * 0.5);
+			rea = new V3D((rl.x + rr.x) * 0.5, (rl.y + rr.y) * 0.5, (rl.z + rr.z) * 0.5);
+			lef = new V3D((fl.x + rl.x) * 0.5, (fl.y + rl.y) * 0.5, (fl.z + rl.z) * 0.5);
+			rig = new V3D((fr.x + rr.x) * 0.5, (fr.y + rr.y) * 0.5, (fr.z + rr.z) * 0.5);
 		}
+		double dx = rea.x - fro.x, dy = rea.y - fro.y, dz = rea.z - fro.z;
+		double drx = rig.x - lef.x, dry = rig.y - lef.y, drz = rig.z - lef.z;
+		double dxz = Math.sqrt(dx * dx + dz * dz);
+		double y = movement.yaw(dx, dz);
+		double p = -Math.atan2(dy, dxz);
+		double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
+		pivot().set_rotation(y, p, r, false);
+		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 	}
 
-	private void move(boolean nocons){
-		if(data.getType().isTrailer()) return;
-		entity.setOnGround(true);
-		move.x = move.y = move.z = 0;
-		if(type.isWaterVehicle()){
-			//TODO
-		}
-		else{
-			double steer = Math.toRadians(steer_yaw);
-			double wyaw = valRad(pivot().yaw());
-			double syaw = valRad(wyaw + steer);
-			double myaw = 0;
-			double ryaw = 0;
-			double scal = 0;
-			boolean cons = nocons || (engine != null && consumeFuel());
-			for(UniWheel wheel : wheels.values()){
-				if(wheel.wtd() == null) continue;
-				wheel.prepare();
-				if(engine != null && cons){
-					if(data.getType().isTracked()){
-						//TODO
-					}
-					else{
-						scal = 0.05 * throttle * (throttle > 0 ? spdata.max_throttle : spdata.min_throttle) * engine.getSphEngineSpeed();
-						ryaw = pivot().deg_yaw();
-						myaw = wyaw;
-						if(wheel.wtd().steering){
-							ryaw += steer_yaw;
-							myaw = syaw;
-						}
-					}
-					wheel.addMotion(-Math.sin(-myaw) * scal, 0, -Math.cos(-myaw) * scal);
-				}
-				wheel.yaw((float)ryaw);
-				wheel.move();
-				moveToWheel(wheel);
-			}
-		}
-		moveFinish();
-	}
-
-	private void moveFinish(){
-		move.x += pos.x;
-		move.y += pos.y;
-		move.z += pos.z;
-		entity.setPos(move);
-		speed = Math.sqrt(move.x * move.x + move.z * move.z);
-	}
-
-	private void moveToWheel(UniWheel wheel){
+	private void pullBackWheel(UniWheel wheel){
+		wheel.prepare();
+		wheel.yaw(pivot().deg_yaw());
 		V3D dest = pivot().get_vector(wheel.wtd().pos);
 		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
 		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
 		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
-		if(dest.length() > 0.001){
-			V3D.sub(dest, move);
+		wheel.addMotion(dest.x, dest.y, dest.z);
+		wheel.move();
+		wheel.setMotion(0, 0, 0);
+	}
+
+	public void alignToWheels(){
+		moveto.set(0, 0, 0);
+		for(UniWheel wheel : wheels.values()){
+			if(wheel == null || wheel.wtd() == null) continue;
+			moveToWheel(wheel);
 		}
+		moveFinish();
+	}
+
+	protected void moveFinish(){
+		V3D.add(pos, moveto);
+		entity.setPrevPos(pos);
+		entity.setPos(moveto);
+		pos = entity.getPos();
+	}
+
+	protected void moveToWheel(UniWheel wheel){
+		V3D dest = pivot().get_vector(wheel.wtd().pos);
+		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
+		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
+		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
+		if(dest.length() > 0.001) V3D.sub(dest, moveto);
 	}
 
 	/** for trailers */
-	private void align(){
+	protected void align(){
 		entity.setPrevPos(entity.getPos());
 		if(wheels.isEmpty() || front == null) return;
 		V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
@@ -1064,7 +1021,7 @@ public class VehicleInstance {
 		V3D wl = wheels.get(w_rear_l.id).pos();
 		V3D wr = wheels.get(w_rear_r.id).pos();
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
-		move.x = move.y = move.z = 0;
+		moveto.set(0, 0, 0);
 		pos = entity.getPos();
 		for(UniWheel wheel : wheels.values()){
 			wheel.prepare();
@@ -1079,6 +1036,26 @@ public class VehicleInstance {
 		}
 		moveFinish();
 		if(rear != null) rear.align();
+	}
+
+	public void save(TagCW com){
+		data.write(com);
+		point.savePivot(com);
+		com.set("ParkingBrake", pbrake);
+	}
+
+	private void read(TagCW com){
+		if(data == null){
+			data = FvtmResources.getVehicleData(com);
+		}
+		else{
+			data.read(com);
+		}
+		pbrake = com.getBoolean("ParkingBrake");
+	}
+
+	public <VM extends VehicleMovement> VM vm(){
+		return (VM)movement;
 	}
 
 	public static interface Holder {

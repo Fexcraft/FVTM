@@ -33,7 +33,6 @@ import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.pro.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.RailVehicle;
-import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
@@ -208,9 +207,9 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
 		//
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:simple_vehicle"), LandVehicle.class, "fvtm.simple_vehicle", 0, this, 256, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm.wheel", 100, this, 256, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), RailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:land_vehicle"), LandVehicle.class, "fvtm.land_vehicle", 0, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm.wheel", 100, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), RailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, false);
 		//
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trafficsign"), TrafficSignEntity.class, "fvtm.trafficsign", 7001, this, 256, 600, false);
@@ -218,14 +217,13 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railmarker"), RailMarker.class, "fvtm.railmarker", 7003, this, 256, 5, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadmarker"), RoadMarker.class, "fvtm.roadmarker", 7004, this, 256, 5, false);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:junctionswitch"), JunctionSwitchEntity.class, "fvtm.junctionswitch", 7002, this, 256, 600, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:basic_landvehicle"), ULandVehicle.class, "fvtm.landvehicle", 9002, this, 256, 1, true);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:basic_landvehicle"), ULandVehicle.class, "fvtm.landvehicle", 9002, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:render_view"), RenderViewEntity.class, "fvtm.render_view", 6000, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:block_seat"), BlockSeat.class, "fvtm.block_seat", 6001, this, 256, 60, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderRV::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderWheel::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRV::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(ULandVehicle.class, RenderRV::new);
 			//
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailMarker.class, RenderRailMarker::new);

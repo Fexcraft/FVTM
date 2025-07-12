@@ -1,11 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.fvtm.Config.OVERLAY_ON_BOTTOM;
-
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.sys.uni.PrototypeVehMove;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
+import net.fexcraft.mod.fvtm.ui.VehicleOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -17,9 +13,6 @@ public class NoHotbar {
 
 	private static Minecraft mc;
 	private static RootVehicle ent;
-	private static String gear_label;
-	private static int lastgear = 100;
-	private static PrototypeVehMove pro;
 	
     @SubscribeEvent
     public static void render(RenderGameOverlayEvent.Pre event){
@@ -27,11 +20,11 @@ public class NoHotbar {
 		if(mc.player.getRidingEntity() instanceof RootVehicle == false) return;
 		ent = (RootVehicle)mc.player.getRidingEntity();
 		if(event.getType() == ElementType.ALL){
-			mc.fontRenderer.drawStringWithShadow("Fuel: " + ent.vehicle.data.getStoredFuel() + "/" + ent.vehicle.data.getFuelCapacity(), 10, 10, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Throttle: " + tobar(Math.abs(ent.vehicle.throttle), 1, 'b') + RGB.df.format(ent.vehicle.throttle), 10, 20, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Brake: " + tobar(ent.vehicle.brake, 1, 'c') + RGB.df.format(ent.vehicle.brake), 10, 30, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Speed: " + RGB.df.format(ent.vehicle.speed * 72), 10, 40, 0xffffff);
-			if(Config.LAND_PROTOTYPE){
+			VehicleOverlay.RS[] rs = VehicleOverlay.update(ent.vehicle);
+			for(VehicleOverlay.RS r : rs){
+				mc.fontRenderer.drawStringWithShadow(r.str, r.x, r.y, 0xffffffff);
+			}
+			/*if(Config.LAND_PROTOTYPE){
 				pro = ent.vehicle.vm();
 				int gear = ent.vehicle.data.getAttributeInteger("gear", 0);
 				if(lastgear != gear){
@@ -52,31 +45,11 @@ public class NoHotbar {
 				mc.fontRenderer.drawStringWithShadow("Gear: " + gear_label, 10, 60, 0xffffff);
 				mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 70, 0xffffff);
 				if(pro.overloaded) mc.fontRenderer.drawStringWithShadow("Towing limit reached, vehicle is overloaded.", 10, 90, 0xffffff);
-			}
-			else{
-				mc.fontRenderer.drawStringWithShadow("Engine: " + (ent.vehicle.engine.isOn() ? "ON" : "OFF"), 10, 50, 0xffffff);
-				mc.fontRenderer.drawStringWithShadow("P-Brake: " + (ent.vehicle.pbrake ? "ON" : "OFF"), 10, 60, 0xffffff);
-			}
+			}*/
 		}
 		/*if(event.getType() == ElementType.HOTBAR){
 			if(mc.gameSettings.hideGUI || OVERLAY_ON_BOTTOM) event.setCanceled(true);
 		}*/
     }
-
-	private static String tobar(double val, int max, char code){
-		double div = val / max * 10;
-		int rou = (int)div;
-		StringBuilder str = new StringBuilder();
-		for(int i = 0; i < 10; i++){
-			if(rou > i){
-				str.append("\u00a7" + code + "\u2588");
-			}
-			else{
-				str.append("\u00a7f\u2588");
-			}
-		}
-		str.append(" \u00a7r");
-		return str.toString();
-	}
 
 }

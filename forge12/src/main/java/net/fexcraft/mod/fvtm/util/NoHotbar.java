@@ -28,9 +28,9 @@ public class NoHotbar {
 		ent = (RootVehicle)mc.player.getRidingEntity();
 		if(event.getType() == ElementType.ALL){
 			mc.fontRenderer.drawStringWithShadow("Fuel: " + ent.vehicle.data.getStoredFuel() + "/" + ent.vehicle.data.getFuelCapacity(), 10, 10, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Throttle: " + tobar(ent.vehicle.throttle, 1, 'b') + RGB.df.format(ent.vehicle.throttle), 10, 20, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Throttle: " + tobar(Math.abs(ent.vehicle.throttle), 1, 'b') + RGB.df.format(ent.vehicle.throttle), 10, 20, 0xffffff);
 			mc.fontRenderer.drawStringWithShadow("Brake: " + tobar(ent.vehicle.brake, 1, 'c') + RGB.df.format(ent.vehicle.brake), 10, 30, 0xffffff);
-			mc.fontRenderer.drawStringWithShadow("Speed: " + RGB.df.format(ent.vehicle.speed * 3.6), 10, 40, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("Speed: " + RGB.df.format(ent.vehicle.speed * 72), 10, 40, 0xffffff);
 			if(Config.LAND_PROTOTYPE){
 				pro = ent.vehicle.vm();
 				int gear = ent.vehicle.data.getAttributeInteger("gear", 0);

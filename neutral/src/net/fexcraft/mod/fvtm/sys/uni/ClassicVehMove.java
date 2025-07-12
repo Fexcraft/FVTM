@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
@@ -53,6 +55,7 @@ public class ClassicVehMove implements VehicleMovement {
 			//TODO
 		}
 		else{
+			if(inst.throttle > -0.01 && inst.throttle < 0.01) inst.throttle = 0;
 			double steer = Math.toRadians(inst.steer_yaw);
 			double wyaw = valRad(inst.pivot().yaw());
 			double syaw = valRad(wyaw + steer);
@@ -65,16 +68,12 @@ public class ClassicVehMove implements VehicleMovement {
 			for(UniWheel wheel : inst.wheels.values()){
 				if(wheel.wtd() == null) continue;
 				wm = wheel.wtd().move;
-				scal = (-Math.sin(-wyaw) * wm.x + -Math.cos(-myaw) * wm.z) * 0.05;
+				scal = (-Math.sin(-wyaw) * wm.x + -Math.cos(-wyaw) * wm.z) * 0.05;
 				wheel.prepare();
-				if(inst.engine != null && cons){
-					if(inst.data.getType().isTracked()){
-						//TODO
-					}
-					else{
-						scal = 0.05 * inst.throttle * (inst.throttle > 0 ? inst.spdata.max_throttle : inst.spdata.min_throttle) * inst.engine.getSphEngineSpeed();
-					}
+				if(inst.engine != null && cons && inst.throttle != 0){
+					scal += 0.05 * inst.throttle * (inst.throttle > 0 ? inst.spdata.max_throttle : inst.spdata.min_throttle) * inst.engine.getSphEngineSpeed();
 				}
+				scal *= Config.MOTION_SCALE;
 				ryaw = inst.pivot().deg_yaw();
 				myaw = wyaw;
 				if(wheel.wtd().slot.steering){
@@ -85,13 +84,11 @@ public class ClassicVehMove implements VehicleMovement {
 				wm.x += -Math.sin(-myaw) * scal;
 				wm.y = -VehicleInstance.GRAVITY_20th;
 				wm.z += -Math.cos(-myaw) * scal;
-				decr = 0.99;
+				decr = 0.9;
 				if(inst.brake > 0 || inst.pbrake){
-					if(inst.throttle > -0.01 && inst.throttle < 0.01) inst.throttle = 0;
 					decr = inst.pbrake ? 0.8 : decr - inst.brake * 0.1;
 				}
-				wm.x *= decr;
-				wm.z *= decr;
+				V3D.mul(decr, 1, decr, wm);
 				wheel.setMotion(wm.x, wm.y, wm.z);
 				wheel.move();
 			}

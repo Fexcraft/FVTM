@@ -80,6 +80,7 @@ public class VehicleInstance {
 	public V3D moveto = new V3D();
 	public V3D motion = new V3D();
 	public boolean acc_down;
+	public boolean dec_down;
 	public boolean brk_down;
 	public double steer_yaw;
 	public double throttle;
@@ -169,10 +170,10 @@ public class VehicleInstance {
 				return true;
 			}
 			case DECELERATE:{
-				if(!acc_down){
+				if(!dec_down){
 					throttle -= THROTTLE_PER_PRESS_TICK;
 				}
-				acc_down = state;
+				dec_down = state;
 				double min = LAND_PROTOTYPE || spdata.min_throttle == 0f || railent != null ? 0f : -1f;
 				if(throttle < min) throttle = min;
 				if(railent != null) railent.setThrottle(throttle);
@@ -377,7 +378,7 @@ public class VehicleInstance {
 			 return acc_down;
 		}
 		if(key == KeyPress.DECELERATE){
-			return acc_down;
+			return dec_down;
 		}
 		return false;
 	}
@@ -841,10 +842,11 @@ public class VehicleInstance {
 		if(driven){
 			steer_yaw *= Config.STEER_RESET_RATE;
 			double sig = Math.signum(throttle);
-			if(!acc_down){
-				throttle -= THROTTLE_DECR_PER_TICK * sig;
-				if(sig > 0 && throttle < 0) throttle = 0;
-				if(sig < 0 && throttle > 0) throttle = 0;
+			if(!acc_down && throttle > 0){
+				throttle -= THROTTLE_DECR_PER_TICK;
+			}
+			if(!dec_down && throttle < 0){
+				throttle += THROTTLE_DECR_PER_TICK;
 			}
 			if(!brk_down) brake -= BRAKE_DECR_PER_TICK;
 			if(throttle > 1) throttle = 1;
@@ -915,7 +917,7 @@ public class VehicleInstance {
 				}
 			}
 			data.setAttribute("throttle", throttle);
-			data.setAttribute("speed", speed * 3.6);
+			data.setAttribute("speed", speed * 72);
 			movement.updateAttrs();
 		}
 		else{
@@ -926,8 +928,8 @@ public class VehicleInstance {
 	}
 
 	private void updateSpeed(){
-		double x = pos.x - prev.x, y = pos.y - prev.y, z = pos.z - prev.z;
-		speed = Math.sqrt(x * x + y * y + z * z);
+		double x = pos.x - prev.x/*, y = pos.y - prev.y*/, z = pos.z - prev.z;
+		speed = Math.sqrt(x * x /*+ y * y*/ + z * z);
 	}
 
 	private void checkWheelPresence(String id){
@@ -997,6 +999,7 @@ public class VehicleInstance {
 		V3D.add(pos, moveto);
 		entity.setPrevPos(pos);
 		entity.setPos(moveto);
+		pos = entity.getPos();
 	}
 
 	protected void moveToWheel(UniWheel wheel){

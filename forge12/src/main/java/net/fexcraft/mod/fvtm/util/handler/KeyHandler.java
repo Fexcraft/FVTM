@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
-import net.fexcraft.mod.fvtm.sys.pro.ULandVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
@@ -105,8 +104,9 @@ public class KeyHandler {
         if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
             seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
         }
-        if(isKeyDown(minecraft.gameSettings.keyBindBack.getKeyCode())){
-            seat.onKeyPress(KeyPress.DECELERATE, player);
+        state = isKeyDown(minecraft.gameSettings.keyBindBack.getKeyCode());
+        if(state != seat.root.getKeyPressState(KeyPress.DECELERATE)){
+            seat.root.onKeyPress(KeyPress.DECELERATE, seat.seat, player, state, false);
         }
         if(isKeyDown(minecraft.gameSettings.keyBindLeft.getKeyCode())){
             seat.onKeyPress(KeyPress.TURN_LEFT, player);

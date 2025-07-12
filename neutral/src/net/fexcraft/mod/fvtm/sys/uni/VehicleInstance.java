@@ -172,19 +172,10 @@ public class VehicleInstance {
 				if(!acc_down){
 					throttle -= THROTTLE_PER_PRESS_TICK;
 				}
-				if(throttle < 0F) throttle = 0F;
+				acc_down = state;
+				double min = LAND_PROTOTYPE || spdata.min_throttle == 0f || railent != null ? 0f : -1f;
+				if(throttle < min) throttle = min;
 				if(railent != null) railent.setThrottle(throttle);
-				/*else{
-					throttle -= throttle > 0 ? 0.02 : 0.01;
-					if(throttle < -1){
-						throttle = -1;
-					}
-					SimplePhysData spdata = data.getType().getSphData();
-					if(spdata != null && throttle < 0 && spdata.min_throttle == 0){
-						throttle = 0;
-					}
-
-				}*/
 				return true;
 			}
 			case TURN_LEFT:{
@@ -209,7 +200,7 @@ public class VehicleInstance {
 				if(!brk_down){
 					brake += BRAKE_PER_PRESS_TICK;
 				}
-				if(brake > 1) brake = 0;
+				if(brake > 1) brake = 1;
 				brk_down = state;
 				/*if(braking){
 					throttle *= 0.9;
@@ -384,6 +375,9 @@ public class VehicleInstance {
 		}
 		if(key == KeyPress.ACCELERATE){
 			 return acc_down;
+		}
+		if(key == KeyPress.DECELERATE){
+			return acc_down;
 		}
 		return false;
 	}
@@ -846,10 +840,16 @@ public class VehicleInstance {
 		if(autogear_timer > 0) autogear_timer--;
 		if(driven){
 			steer_yaw *= Config.STEER_RESET_RATE;
-			if(!acc_down) throttle -= THROTTLE_DECR_PER_TICK;
+			double sig = Math.signum(throttle);
+			if(!acc_down){
+				throttle -= THROTTLE_DECR_PER_TICK * sig;
+				if(sig > 0 && throttle < 0) throttle = 0;
+				if(sig < 0 && throttle > 0) throttle = 0;
+			}
 			if(!brk_down) brake -= BRAKE_DECR_PER_TICK;
 			if(throttle > 1) throttle = 1;
-			if(throttle < 0) throttle = 0;
+			double min = LAND_PROTOTYPE || spdata.min_throttle == 0f ? 0f : -1f;
+			if(throttle < min) throttle = min;
 			if(brake > 1) brake = 1;
 			if(brake < 0) brake = 0;
 		}
@@ -900,8 +900,8 @@ public class VehicleInstance {
 				sendUpdatePacket();
 			}
 		}
+		updateSpeed();
 		if(remote){
-			updateSpeed();
 			if(!type.isRailVehicle()){
 				AttrFloat attr = (AttrFloat)data.getAttribute("steering_angle");
 				attr.initial = attr.value;
@@ -915,7 +915,7 @@ public class VehicleInstance {
 				}
 			}
 			data.setAttribute("throttle", throttle);
-			data.setAttribute("speed", speed * 72);
+			data.setAttribute("speed", speed * 3.6);
 			movement.updateAttrs();
 		}
 		else{
@@ -972,13 +972,6 @@ public class VehicleInstance {
 		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 	}
 
-	private boolean noPassengers(){
-		for(SeatInstance seat : seats){
-			if(seat.passenger() != null) return false;
-		}
-		return true;
-	}
-
 	private void pullBackWheel(UniWheel wheel){
 		wheel.prepare();
 		wheel.yaw(pivot().deg_yaw());
@@ -986,12 +979,12 @@ public class VehicleInstance {
 		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
 		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
 		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
-		wheel.addMotion(dest.x, dest.y - GRAVITY_200th, dest.z);
+		wheel.addMotion(dest.x, dest.y, dest.z);
 		wheel.move();
 		wheel.setMotion(0, 0, 0);
 	}
 
-	private void alignToWheels(){
+	public void alignToWheels(){
 		moveto.set(0, 0, 0);
 		for(UniWheel wheel : wheels.values()){
 			if(wheel == null || wheel.wtd() == null) continue;

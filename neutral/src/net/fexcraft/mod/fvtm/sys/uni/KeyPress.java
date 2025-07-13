@@ -50,7 +50,7 @@ public enum KeyPress {
 	}
 
 	public boolean serv_only(){
-		return !control() && (inventory() || scripts() || this == ENGINE || this == LIGHTS || this == COUPLER_FRONT || this == COUPLER_REAR);
+		return (dismount() || inventory() || scripts() || this == ENGINE || this == LIGHTS || this == COUPLER_FRONT || this == COUPLER_REAR);
 	}
 
 }

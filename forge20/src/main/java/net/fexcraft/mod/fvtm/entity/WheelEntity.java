@@ -10,7 +10,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,8 +19,6 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -38,6 +35,7 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 	public double motionY;
 	public double motionZ;
 	private int remtimer;
+	protected V3D prev = new V3D();
 	protected V3D pos = new V3D();
 
 	public WheelEntity(EntityType<?> type, Level level){
@@ -65,7 +63,6 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
 		setOldPosAndRot();
-		Sheep r;
 	}
 
 	private void setStepHeight(){
@@ -184,6 +181,9 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 	@Override
 	public void updatePrevPos(){
 		setOldPosAndRot();
+		prev.x = xOld;
+		prev.y = yOld;
+		prev.z = zOld;
 		pos.x = position().x;
 		pos.y = position().y;
 		pos.z = position().z;
@@ -197,6 +197,11 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 	@Override
 	public boolean isAdded(){
 		return isAddedToWorld();
+	}
+
+	@Override
+	public V3D prev(){
+		return prev;
 	}
 
 	@Override
@@ -217,9 +222,9 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 	@Override
 	public void prepare(){
 		setOnGround(true);
-		motionX *= 0.9;
+		/*motionX *= 0.9;
 		motionZ *= 0.9;
-		motionY = -GRAVITY_20th;
+		motionY = -GRAVITY_20th;*/
 	}
 
 	@Override
@@ -244,6 +249,20 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		motionX = x;
 		motionY = y;
 		motionZ = z;
+	}
+
+	@Override
+	public void mulMotion(double by){
+		motionX *= by;
+		motionY *= by;
+		motionZ *= by;
+	}
+
+	@Override
+	public void fillMotion(V3D vec){
+		vec.x = motionX;
+		vec.y = motionY;
+		vec.z = motionZ;
 	}
 
 }

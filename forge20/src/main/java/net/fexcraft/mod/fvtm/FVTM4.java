@@ -96,6 +96,7 @@ public class FVTM4 {
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
+			.setShouldReceiveVelocityUpdates(false)
 			.build("wheel")
 	);
 	public static final RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
@@ -103,6 +104,7 @@ public class FVTM4 {
 			.sized(1F, 1F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
+			.setShouldReceiveVelocityUpdates(false)
 			.build("vehicle")
 	);
 	public static final RegistryObject<EntityType<RailVehicle>> RAILVEH_ENTITY = ENTITIES.register("railveh", () ->

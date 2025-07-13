@@ -150,7 +150,7 @@ public class VehicleInstance {
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityW player, boolean state, boolean sync){
 		//TODO script key press event
 		if(!seat.driver && key.driver_only()) return false;
-		if(entity.isOnClient() && !key.control() && !sync){
+		if(entity.isOnClient() && key.serv_only() && !sync){
 			if(key.synced() && key.sync_state()){
 				Packets.send(Packet_VehKeyPressState.class, key, state, entity.getId(), player.getId());
 			}

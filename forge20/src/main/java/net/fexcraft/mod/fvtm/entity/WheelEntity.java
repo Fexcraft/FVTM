@@ -174,10 +174,6 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		return new Vec3(motionX, motionY, motionZ);
 	}
 
-	public double getHorSpeed(){
-		return Math.sqrt(motionX * motionX + motionZ * motionZ);
-	}
-
 	@Override
 	public void updatePrevPos(){
 		setOldPosAndRot();
@@ -263,6 +259,11 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		vec.x = motionX;
 		vec.y = motionY;
 		vec.z = motionZ;
+	}
+
+	@Override
+	public void lerpTo(double x, double y, double z, float yr, float xr, int s, boolean b){
+		//
 	}
 
 }

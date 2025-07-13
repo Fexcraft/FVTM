@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.ui.VehicleOverlay;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -217,16 +218,12 @@ public class ForgeClientEvents {
 	public static void onLevelRender(RenderGuiOverlayEvent event){
 		if(Minecraft.getInstance().player.getVehicle() instanceof RootVehicle && event.getOverlay().id().getPath().equals("hotbar")){
 			vehicle = (RootVehicle)Minecraft.getInstance().player.getVehicle();
-			event.getGuiGraphics().drawString(Minecraft.getInstance().font, "Throttle: " + round(vehicle.vehicle.throttle), 10, 10, 0xffffff);
-			event.getGuiGraphics().drawString(Minecraft.getInstance().font, "Steering: " + round(vehicle.vehicle.steer_yaw), 10, 20, 0xffffff);
-			event.getGuiGraphics().drawString(Minecraft.getInstance().font, "Speed: " + round(vehicle.vehicle.speed), 10, 30, 0xffffff);
+			VehicleOverlay.RS[] rs = VehicleOverlay.update(vehicle.vehicle);
+			for(VehicleOverlay.RS r : rs){
+				event.getGuiGraphics().drawString(Minecraft.getInstance().font, r.str, r.x, r.y, 0xffffff);
+			}
 		}
 	}
-
-	private static double round(double var){
-		return (int)(var * 100) / 100D;
-	}
-
 
 	@SubscribeEvent
 	public static void clientTick(TickEvent.ClientTickEvent event){

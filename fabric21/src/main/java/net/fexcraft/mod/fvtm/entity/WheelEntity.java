@@ -216,9 +216,9 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	@Override
 	public void prepare(){
 		setOnGround(true);
-		motionX *= 0.9;
+		/*motionX *= 0.9;
 		motionZ *= 0.9;
-		motionY = -GRAVITY_20th;
+		motionY = -GRAVITY_20th;*/
 	}
 
 	@Override
@@ -243,6 +243,13 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 		motionX = x;
 		motionY = y;
 		motionZ = z;
+	}
+
+	@Override
+	public void mulMotion(double by){
+		motionX *= by;
+		motionY *= by;
+		motionZ *= by;
 	}
 
 	@Override

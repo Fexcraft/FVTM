@@ -82,19 +82,17 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag){
 		TagCW com = TagCW.wrap(tag);
-		vehicle.data.write(com);
-		vehicle.point.savePivot(com);
+		vehicle.save(com);
 	}
 
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		TagCW com = TagCW.create();
-		vehicle.point.savePivot(com);
 		if(vehicle.front != null){
 			com.set("TruckId", vehicle.front.entity.getId());
 		}
 		writeSpawnData(com);
-		vehicle.data.write(com);
+		vehicle.save(com);
 		buffer.writeNbt(com.local());
 	}
 
@@ -168,9 +166,6 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 		protZ = vehicle.point.getPivot().deg_roll();
 		vehicle.onUpdate();
 		checkCollision();
-		if(!level().isClientSide && tickCount % VEHICLE_SYNC_RATE == 0){
-			vehicle.sendUpdatePacket();
-		}
 	}
 
 	private void checkCollision(){

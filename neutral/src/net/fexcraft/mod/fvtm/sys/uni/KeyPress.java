@@ -49,4 +49,8 @@ public enum KeyPress {
 		return this == MOUSE_MAIN;
 	}
 
+	public boolean serv_only(){
+		return !control() && (inventory() || scripts() || this == ENGINE || this == LIGHTS || this == COUPLER_FRONT || this == COUPLER_REAR);
+	}
+
 }

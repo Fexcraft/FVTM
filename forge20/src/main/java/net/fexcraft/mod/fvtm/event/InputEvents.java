@@ -45,12 +45,13 @@ public class InputEvents {
 		EntityW player = pass.entity;
 		SeatInstance seat = pass.getSeatOn();
 		if(seat == null) return;
-		boolean u12 = false;
-		if(accelerate.isDown()){
-			seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
+		boolean state = accelerate.isDown();
+		if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
+			seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
 		}
-		if(decelerate.isDown()){
-			seat.onKeyPress(seat.root.type.isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
+		state = decelerate.isDown();
+		if(state != seat.root.getKeyPressState(KeyPress.DECELERATE)){
+			seat.root.onKeyPress(KeyPress.DECELERATE, seat.seat, player, state, false);
 		}
 		if(turn_left.isDown()){
 			seat.onKeyPress(KeyPress.TURN_LEFT, player);
@@ -70,19 +71,12 @@ public class InputEvents {
 		if(arrow_right.isDown()){
 			seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
 		}
-		if(u12){
-			if(pbrake.isDown()){
-				seat.onKeyPress(KeyPress.PBRAKE, player);
-			}
-			boolean state = brake.isDown();
-			if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-				seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
-			}
+		if(pbrake.isDown()){
+			seat.onKeyPress(KeyPress.PBRAKE, player);
 		}
-		else{
-			if(brake.isDown()){
-				seat.onKeyPress(KeyPress.BRAKE, player);
-			}
+		state = brake.isDown();
+		if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
+			seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
 		}
 		if(engine_toggle.isDown()){
 			seat.onKeyPress(KeyPress.ENGINE, player);

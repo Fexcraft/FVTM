@@ -60,7 +60,6 @@ public class ClassicVehMove implements VehicleMovement {
 			double wyaw = valRad(inst.pivot().yaw());
 			double syaw = valRad(wyaw + steer);
 			double myaw = 0;
-			double ryaw = 0;
 			double scal = 0;
 			double decr = 0;
 			V3D wm;
@@ -70,15 +69,13 @@ public class ClassicVehMove implements VehicleMovement {
 				wm = wheel.wtd().move;
 				scal = (-Math.sin(-wyaw) * wm.x + -Math.cos(-wyaw) * wm.z) * 0.05;
 				wheel.prepare();
-				wheel.yaw((float)ryaw);
+				wheel.yaw(inst.pivot().deg_yaw());
 				if(inst.engine != null && cons && inst.throttle != 0){
 					scal += 0.05 * inst.throttle * (inst.throttle > 0 ? inst.spdata.max_throttle : inst.spdata.min_throttle) * inst.engine.getSphEngineSpeed();
 				}
 				scal *= Config.MOTION_SCALE;
-				ryaw = inst.pivot().deg_yaw();
 				myaw = wyaw;
 				if(wheel.wtd().slot.steering){
-					ryaw += inst.steer_yaw;
 					myaw = syaw;
 				}
 				wm.x += -Math.sin(-myaw) * scal;

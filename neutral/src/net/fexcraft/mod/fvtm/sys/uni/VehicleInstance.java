@@ -40,6 +40,7 @@ import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.util.*;
 
@@ -633,6 +634,7 @@ public class VehicleInstance {
 		serv_rot = packet.rot;
 		serv_steer = packet.steering;
 		throttle = packet.throttle;
+		brake = packet.brake;
 		if(data != null) data.getAttribute("fuel_stored").set(packet.fuel);
 		serv_sync = entity.isOnClient() ? Config.VEHICLE_SYNC_RATE : 1;
 	}
@@ -816,14 +818,18 @@ public class VehicleInstance {
 	public boolean isDriverInstance(){
 		if(entity == null) return true;
 		if(type.isRailVehicle()) return !entity.isOnClient();
-		boolean driven = false;
-		for(SeatInstance seat : seats){
-			if(seat.seat.driver && seat.passengerIsPlayer()){
-				driven = true;
-				break;
+		if(entity.isOnClient()){
+			for(SeatInstance seat : seats){
+				if(seat.seat.driver && seat.passenger_direct() == WrapperHolder.getClientPlayer().direct()) return true;
 			}
+			return false;
 		}
-		return driven == entity.isOnClient();
+		else{
+			for(SeatInstance seat : seats){
+				if(seat.seat.driver && seat.passengerIsPlayer()) return false;
+			}
+			return true;
+		}
 	}
 
 	public void onUpdate(){

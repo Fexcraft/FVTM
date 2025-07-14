@@ -129,6 +129,18 @@ public class FVTMC implements ClientModInitializer {
 			}
 			return InteractionResult.PASS;
 		});
+		UseBlockCallback.EVENT.register((player, world, hand, res) -> {
+			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){
+				return InteractionResult.SUCCESS;
+			}
+			return InteractionResult.PASS;
+		});
+		UseItemCallback.EVENT.register((player, world, hand) -> {
+			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){
+				return InteractionResult.SUCCESS;
+			}
+			return InteractionResult.PASS;
+		});
 		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 			SystemManager.onChunkLoad(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
 		});

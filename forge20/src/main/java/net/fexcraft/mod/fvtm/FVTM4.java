@@ -28,6 +28,7 @@ import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -239,10 +240,9 @@ public class FVTM4 {
 
 		@SubscribeEvent
 		public void onEntAttrEvent(EntityAttributeCreationEvent event) {
-			/*event.put(WHEEL_ENTITY.get(),
-				AttributeSupplier.builder()
-					.add(Attributes.MAX_HEALTH, Integer.MAX_VALUE)
-					.add(Attributes.KNOCKBACK_RESISTANCE, 20).build());*/
+			event.put(WHEEL_ENTITY.get(), Mob.createLivingAttributes()
+				.add(Attributes.MAX_HEALTH, Integer.MAX_VALUE)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 20).build());
 		}
 
 	}

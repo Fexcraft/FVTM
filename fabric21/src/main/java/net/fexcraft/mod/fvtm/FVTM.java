@@ -278,18 +278,6 @@ public class FVTM implements ModInitializer {
 			if(dim) SystemManager.syncPlayer(WrapperHolder.getWorld(neo.level()).dimkey(), UniEntity.getEntity(neo));
 		});
 		CommandRegistrationCallback.EVENT.register((dis, reg, env) -> dis.register(genCommand()));
-		UseBlockCallback.EVENT.register((player, world, hand, res) -> {
-			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){
-				return InteractionResult.SUCCESS;
-			}
-			return InteractionResult.PASS;
-		});
-		UseItemCallback.EVENT.register((player, world, hand) -> {
-			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, UniStack.getStack(player.getItemInHand(hand)))){
-				return InteractionResult.SUCCESS;
-			}
-			return InteractionResult.PASS;
-		});
 	}
 
 	public static <I extends Item> I regItem(String idl, Function<Item.Properties, Item> func){

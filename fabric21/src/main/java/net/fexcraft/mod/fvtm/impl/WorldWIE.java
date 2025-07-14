@@ -6,6 +6,7 @@ import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -162,10 +163,14 @@ public class WorldWIE extends LevelW implements FvtmWorld {
 	@Override
 	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
 		if(block.getBlock() instanceof Asphalt == false){
+			if(block.getBlock() instanceof G_ROAD){
+				return StateWrapper.of(Resources21.ROAD_BLOCKS.get(((G_ROAD)block.getBlock()).type.getID())[height].defaultBlockState());
+			}
 			ResourceLocation rl = BuiltInRegistries.BLOCK.getKey((Block)block.getBlock());
 			String str = rl.toString();
 			str = str.substring(0, str.lastIndexOf("_") + 1);
-			return StateWrapper.of(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(str + height)).get());
+			var hol = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(str + height));
+			return hol.isPresent() ? StateWrapper.of(hol.get().value().defaultBlockState()) : StateWrapper.DEFAULT;
 		}
 		return StateWrapper.of(Resources21.ASPHALT[height].defaultBlockState());
 	}

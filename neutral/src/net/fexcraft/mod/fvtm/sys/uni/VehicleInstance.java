@@ -941,7 +941,7 @@ public class VehicleInstance {
 	private void onUpdateMovement(){
 		EntityW driver = driver();
 		boolean creative = driver != null && driver.isCreative();
-		V3D fro, rea, lef, rig;
+		V3D fro = new V3D(), rea = new V3D(), lef = new V3D(), rig = new V3D();
 		if(type.isRailVehicle()){
 			data.getAttribute("section_on").set(railent.current.getUnit().section().getUID());
 			railent.alignEntity(false);
@@ -954,15 +954,21 @@ public class VehicleInstance {
 			boolean uf = data.getAttribute("use-fuel").asBoolean();
 			movement.move(!VEHICLES_NEED_FUEL || !uf || creative);
 			//
-			V3D fl = wheels.get(w_front_l.id).pos();
-			V3D fr = wheels.get(w_front_r.id).pos();
-			V3D rl = wheels.get(w_rear_l.id).pos();
-			V3D rr = wheels.get(w_rear_r.id).pos();
-			if(fl == null) return;
-			fro = new V3D((fl.x + fr.x) * 0.5, (fl.y + fr.y) * 0.5, (fl.z + fr.z) * 0.5);
-			rea = new V3D((rl.x + rr.x) * 0.5, (rl.y + rr.y) * 0.5, (rl.z + rr.z) * 0.5);
-			lef = new V3D((fl.x + rl.x) * 0.5, (fl.y + rl.y) * 0.5, (fl.z + rl.z) * 0.5);
-			rig = new V3D((fr.x + rr.x) * 0.5, (fr.y + rr.y) * 0.5, (fr.z + rr.z) * 0.5);
+			try{
+				V3D fl = wheels.get(w_front_l.id).pos();
+				V3D fr = wheels.get(w_front_r.id).pos();
+				V3D rl = wheels.get(w_rear_l.id).pos();
+				V3D rr = wheels.get(w_rear_r.id).pos();
+				if(fl == null) return;
+				fro.set((fl.x + fr.x) * 0.5, (fl.y + fr.y) * 0.5, (fl.z + fr.z) * 0.5);
+				rea.set((rl.x + rr.x) * 0.5, (rl.y + rr.y) * 0.5, (rl.z + rr.z) * 0.5);
+				lef.set((fl.x + rl.x) * 0.5, (fl.y + rl.y) * 0.5, (fl.z + rl.z) * 0.5);
+				rig.set((fr.x + rr.x) * 0.5, (fr.y + rr.y) * 0.5, (fr.z + rr.z) * 0.5);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				return;
+			}
 		}
 		double dx = rea.x - fro.x, dy = rea.y - fro.y, dz = rea.z - fro.z;
 		double drx = rig.x - lef.x, dry = rig.y - lef.y, drz = rig.z - lef.z;

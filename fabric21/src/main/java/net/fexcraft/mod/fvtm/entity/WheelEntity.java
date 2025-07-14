@@ -136,6 +136,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 		root = (RootVehicle)level().getEntity(vehid);
 		if(root == null || root.vehicle.data == null) return;
 		wheel = root.vehicle.wheeldata.get(wheelid);
+		root.vehicle.wheels.put(wheelid, this);
 	}
 
 	@Override
@@ -150,17 +151,9 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 			remtimer--;
 			return;
 		}
-		if(level().isClientSide){
-			if(!cl_sync){
-				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-				cl_sync = true;
-				return;
-			}
-			//FvtmLogger.marker(getId() + " " + wheelid);
-			if(root == null || wheel == null) return;
-			V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
-			setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
-			setOldPosAndRot();
+		if(level().isClientSide && !cl_sync){
+			ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+			cl_sync = true;
 		}
 	}
 

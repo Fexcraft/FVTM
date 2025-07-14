@@ -23,7 +23,7 @@ import java.util.Collections;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSpawnData, UniWheel {
+public class WheelEntity extends LivingEntity implements IEntityAdditionalSpawnData, UniWheel {
 
 	public RootVehicle root;
 	private boolean found;
@@ -72,7 +72,7 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 
 	@Override
 	protected void defineSynchedData(){
-		//super.defineSynchedData();
+		super.defineSynchedData();
 	}
 
 	@Override
@@ -85,10 +85,10 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		return Collections.EMPTY_LIST;
 	}
 
-	/*@Override
+	@Override
 	public ItemStack getItemBySlot(EquipmentSlot slot){
 		return ItemStack.EMPTY;
-	}*/
+	}
 
 	@Override
 	public void setItemSlot(EquipmentSlot slot, ItemStack itemStack){
@@ -113,10 +113,10 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		return false;
 	}
 
-	/*@Override
+	@Override
 	public HumanoidArm getMainArm(){
 		return HumanoidArm.RIGHT;
-	}*/
+	}
 
 	@Override
 	public boolean canBeCollidedWith(){
@@ -161,6 +161,7 @@ public class WheelEntity extends /*Living*/Entity implements IEntityAdditionalSp
 		if(remtimer > 0){
 			if(remtimer == 1) kill();
 			remtimer--;
+			return;
 		}
 		if(!found){
 			root = (RootVehicle)level().getEntity(vehid);

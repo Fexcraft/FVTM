@@ -879,7 +879,7 @@ public class VehicleInstance {
 			pivot().set_rotation(rot[0], rot[1], rot[2], true);
 			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 		}
-		alignToWheels();//process move requests from other sources
+		//alignToWheels();//process move requests from other sources
 		if(!driven){
 			if(type.isRailVehicle()){
 				if(railent == null || railent.current == null) return;

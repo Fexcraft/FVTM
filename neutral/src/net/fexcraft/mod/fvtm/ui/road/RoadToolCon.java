@@ -65,6 +65,7 @@ public class RoadToolCon extends ContainerInterface {
 	@Override
 	public void onClosed(){
 		super.onClosed();
+		if(player.entity.isOnClient()) return;
 		stack.updateTag(com -> {
 			for(int i = 0; i < fills.length; i++){
 				if(!inventory.empty(i)){

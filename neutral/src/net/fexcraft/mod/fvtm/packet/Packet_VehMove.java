@@ -17,7 +17,8 @@ public class Packet_VehMove implements PacketBase<Packet_VehMove> {
     public double[] rot;
     public double throttle;
 	public double steering;
-    public int rpm;
+    public double brake;
+    //public int rpm;
 
     @Override
     public Packet_VehMove fill(Object[] data){
@@ -29,6 +30,7 @@ public class Packet_VehMove implements PacketBase<Packet_VehMove> {
         fuel = vehicle.data.getAttribute("fuel_stored").asInteger();
         steering = vehicle.steer_yaw;
         throttle = vehicle.throttle;
+        brake = vehicle.brake;
         return this;
     }
 
@@ -43,7 +45,8 @@ public class Packet_VehMove implements PacketBase<Packet_VehMove> {
         buffer.writeDouble(rot[2]);
         buffer.writeDouble(throttle);
         buffer.writeDouble(steering);
-        buffer.writeInt(rpm);
+        buffer.writeDouble(brake);
+        //buffer.writeInt(rpm);
         buffer.writeInt(fuel);
     }
 
@@ -60,7 +63,8 @@ public class Packet_VehMove implements PacketBase<Packet_VehMove> {
         rot[2] = buffer.readDouble();
         throttle = buffer.readDouble();
         steering = buffer.readDouble();
-        rpm = buffer.readInt();
+        brake = buffer.readDouble();
+        //rpm = buffer.readInt();
         fuel = buffer.readInt();
     }
 

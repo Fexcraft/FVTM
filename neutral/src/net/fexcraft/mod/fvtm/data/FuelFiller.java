@@ -25,7 +25,7 @@ public class FuelFiller {
 
 	public FuelFiller(){
 		selected = FvtmRegistry.FUELS.get(0);
-		items = UniInventory.create(2).stacksize(1);
+		items = UniInventory.create(2);//.stacksize(1);
 		items.addValidator(1, (idx, stack) -> {
 			Material mat = stack.getContent(ContentType.MATERIAL.item_type);
 			return mat != null && mat.isFuelContainer();
@@ -81,7 +81,8 @@ public class FuelFiller {
 		}
 		else if(selected.isSourceFluid(stack.getID())){
 			if(converted == tanksize) return;
-			items.set(0, StackWrapper.EMPTY);
+			stack.count(stack.count() - 1);
+			items.set(0, stack);
 			converted += 1000 * selected.getConversionRate(stack.getID());
 			if(converted > tanksize) converted = tanksize;
 		}

@@ -18,6 +18,10 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+
+import java.util.Optional;
 
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.PROP_ROT16;
 
@@ -33,23 +37,24 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag com, HolderLookup.Provider prov){
-		super.saveAdditional(com, prov);
-		if(data != null) com.put("FvtmData", data.write(TagCW.create()).local());
+	public void saveAdditional(ValueOutput out){
+		super.saveAdditional(out);
+		if(data != null) out.store("FvtmData", CompoundTag.CODEC, data.write(TagCW.create()).local());
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag com, HolderLookup.Provider prov){
-		super.loadAdditional(com, prov);
-		if(com.contains("FvtmData")){
-			data = FvtmResources.getBlockData(com.getCompound("FvtmData").get());
+	public void loadAdditional(ValueInput in){
+		super.loadAdditional(in);
+		Optional<CompoundTag> com = in.read("FvtmData", CompoundTag.CODEC);
+		if(com.isPresent()){
+			data = FvtmResources.getBlockData(com.get());
 		}
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider prov){
 		CompoundTag tag = new CompoundTag();
-		saveAdditional(tag, prov);
+		tag.put("FvtmData", data.write(TagCW.create()).local());
 		return tag;
 	}
 

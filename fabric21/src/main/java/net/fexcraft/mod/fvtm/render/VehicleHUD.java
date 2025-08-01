@@ -21,7 +21,7 @@ public class VehicleHUD implements HudElement {
 		if(vehicle == null || vehicle.data == null) return;
 		VehicleOverlay.RS[] rs = VehicleOverlay.update(vehicle);
 		for(VehicleOverlay.RS r : rs){
-			gg.drawString(Minecraft.getInstance().font, r.str, r.x, r.y, 0xffffff);
+			gg.drawString(Minecraft.getInstance().font, r.str, r.x, r.y, 0xffffffff);
 		}
 	}
 	

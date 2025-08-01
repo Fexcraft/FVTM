@@ -15,6 +15,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,7 +78,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag tag){
+	public void readAdditionalSaveData(ValueInput tag){
 		//wheelid = tag.getStringOr("wheelid", "no-wheel-id");
 		remtimer = 100;
 	}
@@ -103,7 +105,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag tag){
+	public void addAdditionalSaveData(ValueOutput tag){
 		//tag.putString("wheelid", wheelid);
 	}
 
@@ -118,7 +120,7 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	}
 
 	@Override
-	public boolean canBeCollidedWith(){
+	public boolean canBeCollidedWith(Entity entity){
 		return false;
 	}
 

@@ -13,6 +13,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+
+import java.util.Optional;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -29,7 +33,7 @@ public class FuelFillerEntity extends BlockEntity implements FuelFiller.FuelFill
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider prov){
         CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, prov);
+        tag.put("filler", filler.save().local());
         return tag;
     }
 
@@ -39,16 +43,17 @@ public class FuelFillerEntity extends BlockEntity implements FuelFiller.FuelFill
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound, HolderLookup.Provider prov){
-        super.saveAdditional(compound, prov);
-        compound.put("filler", filler.save().local());
+    public void saveAdditional(ValueOutput out){
+        super.saveAdditional(out);
+        out.store("filler", CompoundTag.CODEC, filler.save().local());
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider prov){
-        super.loadAdditional(compound, prov);
-        if(compound.contains("filler")){
-            filler.load(TagCW.wrap(compound.getCompoundOrEmpty("filler")));
+    public void loadAdditional(ValueInput in){
+        super.loadAdditional(in);
+        Optional<CompoundTag> com = in.read("filler", CompoundTag.CODEC);
+        if(com.isPresent()){
+            filler.load(TagCW.wrap(com.get()));
         }
     }
 

@@ -11,7 +11,6 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +22,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.ArrayList;
 
@@ -44,22 +45,21 @@ public class DecorationEntity extends Entity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag tag){
-		this.decos.clear();
-		if(tag.contains("decorations")){
-			ListTag list = (ListTag)tag.get("decorations");
-			for(int i = 0; i < list.size(); i++){
-				this.decos.add(FvtmResources.getDecorationData(TagCW.wrap(list.get(i))));
+	public void readAdditionalSaveData(ValueInput in){
+		decos.clear();
+		var list = in.listOrEmpty("decorations", CompoundTag.CODEC);
+		if(!list.isEmpty()){
+			for(CompoundTag com : list){
+				decos.add(FvtmResources.getDecorationData(TagCW.wrap(com)));
 			}
 		}
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag){
-		if(this.decos.size() == 0) return;
-		ListTag list = new ListTag();
+	protected void addAdditionalSaveData(ValueOutput out){
+		if(decos.size() == 0) return;
+		var list = out.list("decorations", CompoundTag.CODEC);
 		for(DecorationData deco : this.decos) list.add(deco.write(TagCW.create()).local());
-		tag.put("decorations", list);
 	}
 
 	/*@Override
@@ -150,7 +150,7 @@ public class DecorationEntity extends Entity {
 	}
 
 	@Override
-	public boolean canBeCollidedWith(){
+	public boolean canBeCollidedWith(Entity entity){
 		return true;
 	}
 

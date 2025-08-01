@@ -34,7 +34,7 @@ public class VehicleOverlay {
 		lines[7].str = tobar(Math.abs(vi.throttle), 1, 'b') + RGB.df.format(vi.throttle);
 		lines[8].str = tobar(vi.brake, 1, 'c') + RGB.df.format(vi.brake);
 		lines[9].str = RGB.df.format(vi.speed * 72);
-		lines[10].str = ContainerInterface.translate("ui.fvtm.vehicle_overlay." + (vi.engine.isOn() ? "on" : "off"));
+		lines[10].str = ContainerInterface.translate("ui.fvtm.vehicle_overlay." + (vi.engine != null && vi.engine.isOn() ? "on" : "off"));
 		lines[11].str = ContainerInterface.translate("ui.fvtm.vehicle_overlay." + (vi.pbrake ? "on" : "off"));
 		//
 		if(!offinit){

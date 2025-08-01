@@ -135,7 +135,7 @@ public class RailMarker extends Entity {
 	}
 
 	@Override
-	public boolean canBeCollidedWith(){
+	public boolean canBeCollidedWith(Entity entity){
 		return true;
 	}
 

@@ -1,13 +1,10 @@
 package net.fexcraft.mod.fvtm.render;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.TriState;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -23,7 +20,7 @@ public class FvtmRenderTypes {
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
+			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false))
 			.setLightmapState(RenderStateShard.LIGHTMAP)
 			.setOverlayState(RenderStateShard.OVERLAY)
 			.createCompositeState(false);
@@ -31,7 +28,7 @@ public class FvtmRenderTypes {
 	});
 	private static final Function<IDL, RenderType> GLOW = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
+			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false))
 			.setLightmapState(RenderStateShard.LIGHTMAP)
 			.setOverlayState(RenderStateShard.OVERLAY)
 			.createCompositeState(false);
@@ -39,7 +36,7 @@ public class FvtmRenderTypes {
 	});
 	private static final Function<IDL, RenderType> LIGHTBEAM = Util.memoize(idl -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), TriState.DEFAULT, false))
+			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false))
 			.setLightmapState(RenderStateShard.NO_LIGHTMAP)
 			.setOverlayState(RenderStateShard.NO_OVERLAY)
 			.createCompositeState(false);

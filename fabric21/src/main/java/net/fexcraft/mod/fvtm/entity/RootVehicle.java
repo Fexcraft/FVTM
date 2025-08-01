@@ -5,45 +5,40 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fcl.util.EntityWI;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.InteractZone;
-import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.util.CollisionUtil;
-import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.util.CollisionUtil;
+import net.fexcraft.mod.fvtm.util.OBB;
 import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.PKT_UPD_LOCK;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -76,24 +71,24 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, Veh
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag){
-		TagCW com = TagCW.wrap(tag);
-		setXRot(com.getFloat("RotationPitch"));
-		setYRot(com.getFloat("RotationYaw"));
-		protZ = rotZ = com.getFloat("RotationRoll");
+	protected void readAdditionalSaveData(ValueInput in){
+		setXRot(in.getFloatOr("RotationPitch", 0));
+		setYRot(in.getFloatOr("RotationYaw", 0));
+		protZ = rotZ = in.getFloatOr("RotationRoll",0);
 		setOldPosAndRot();
+		TagCW com = TagCW.wrap(in);
 		vehicle.init(null, com);
 		init(com);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag){
-		TagCW com = TagCW.wrap(tag);
+	protected void addAdditionalSaveData(ValueOutput out){
 		if(vehicle.data == null){
 			FvtmLogger.log("Entity with ID '" + getId() + "' has no vehicle data, not saving.");
 			remove(RemovalReason.DISCARDED);
 			return;
 		}
+		TagCW com = TagCW.wrap(out);
 		vehicle.data.write(com);
 		vehicle.point.savePivot(com);
 	}
@@ -141,7 +136,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, Veh
 	}
 
 	@Override
-	public boolean canBeCollidedWith(){
+	public boolean canBeCollidedWith(Entity entity){
 		return true;
 	}
 

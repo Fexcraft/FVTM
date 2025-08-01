@@ -208,9 +208,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		//
 		texture.load(compound);
 		for(String str : channels.keySet()){
-			if(compound.has("RGB_" + str)){
-				channels.get(str).packed = compound.getInteger("RGB_" + str);
-			}
+			channels.get(str).packed = compound.getInteger("RGB_" + str);
 		}
 		//
 		refreshModificableDataByParts();

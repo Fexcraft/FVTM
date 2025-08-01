@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.ui.VehicleOverlay;
@@ -9,15 +9,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
-public class VehicleHUD implements IdentifiedLayer {
+public class VehicleHUD implements HudElement {
 
 	public static final ResourceLocation ID = ResourceLocation.parse("fvtm:vehicle");
 	public static VehicleInstance vehicle;
-	
-	@Override
-	public ResourceLocation id(){
-		return ID;
-	}
 
 	@Override
 	public void render(GuiGraphics gg, DeltaTracker delta){

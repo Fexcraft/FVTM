@@ -1,14 +1,10 @@
 package net.fexcraft.mod.fvtm.entity;
 
+import net.fexcraft.mod.fcl.util.FclCodecs;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +14,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.UUID;
 
@@ -34,23 +32,19 @@ public class RailMarker extends Entity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag tag){
-		if(tag.contains("uuid0")){
-			queueid = new UUID(tag.getLongOr("uuid0", 0l), tag.getLongOr("uuid1", 0l));
-		}
-		if(tag.contains("position")){
-			position = new QV3D(TagCW.wrap(tag), "position");
-		}
+	public void readAdditionalSaveData(ValueInput in){
+		queueid = new UUID(in.getLongOr("uuid0", 0l), in.getLongOr("uuid1", 0l));
+		in.read("position", FclCodecs.V3D).ifPresent(pos -> position = new QV3D(pos));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag){
+	protected void addAdditionalSaveData(ValueOutput out){
 		if(queueid != null){
-			tag.putLong("uuid0", queueid.getMostSignificantBits());
-			tag.putLong("uuid1", queueid.getLeastSignificantBits());
+			out.putLong("uuid0", queueid.getMostSignificantBits());
+			out.putLong("uuid1", queueid.getLeastSignificantBits());
 		}
 		if(position != null){
-			position.write(TagCW.wrap(tag), "position");
+			out.store("position", FclCodecs.V3D, position.vec);
 		}
 	}
 

@@ -18,8 +18,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
-
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.SHAPES;
 
 /**
@@ -35,7 +33,7 @@ public class G_ROAD extends PlainBase {
 		Resources21.ROAD_BLOCKS.computeIfAbsent(block.getID(), key -> new net.minecraft.world.level.block.Block[16])[height] = this;
 	}
 
-	@Nullable
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		return super.getStateForPlacement(context);
 	}

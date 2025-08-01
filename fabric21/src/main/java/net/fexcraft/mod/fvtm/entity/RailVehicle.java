@@ -9,10 +9,11 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -69,14 +70,14 @@ public class RailVehicle extends RootVehicle {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound){
-		super.addAdditionalSaveData(compound);
-		if(vehicle.railent != null) compound.putLong("RailEntity", vehicle.railent.uid);
+	protected void addAdditionalSaveData(ValueOutput out){
+		super.addAdditionalSaveData(out);
+		if(vehicle.railent != null) out.putLong("RailEntity", vehicle.railent.uid);
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound){
-		super.readAdditionalSaveData(compound);
+	protected void readAdditionalSaveData(ValueInput in){
+		super.readAdditionalSaveData(in);
 		remtimer = 40;
 	}
 

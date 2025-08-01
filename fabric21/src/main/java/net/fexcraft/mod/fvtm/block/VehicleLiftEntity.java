@@ -29,6 +29,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -54,29 +56,32 @@ public class VehicleLiftEntity extends BlockEntity implements PacketTagListener,
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag com, HolderLookup.Provider prov){
-		super.saveAdditional(com, prov);
-		if(data != null) com.put("VehicleData", data.write(TagCW.create()).local());
-		com.putDouble("LiftState", liftstate);
-		com.putFloat("Rot", rot);
+	public void saveAdditional(ValueOutput out){
+		super.saveAdditional(out);
+		if(data != null) out.store("VehicleData", CompoundTag.CODEC, data.write(TagCW.create()).local());
+		out.putDouble("LiftState", liftstate);
+		out.putFloat("Rot", rot);
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag com, HolderLookup.Provider prov){
-		super.loadAdditional(com, prov);
-		rot = com.getIntOr("Rot", 0);
-		if(com.contains("VehicleData")){
-			data = FvtmResources.getVehicleData(com.getCompoundOrEmpty("VehicleData"));
+	public void loadAdditional(ValueInput in){
+		super.loadAdditional(in);
+		rot = in.getIntOr("Rot", 0);
+		var vd = in.read("VehicleData", CompoundTag.CODEC);
+		if(vd.isPresent()){
+			data = FvtmResources.getVehicleData(vd.get());
 			data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(rot), true);
 		}
-		liftstate = com.getDoubleOr("LiftState", 0);
+		liftstate = in.getDoubleOr("LiftState", 0);
 		updateState();
 	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider prov){
 		CompoundTag tag = new CompoundTag();
-		saveAdditional(tag, prov);
+		if(data != null) tag.put("VehicleData", data.write(TagCW.create()).local());
+		tag.putDouble("LiftState", liftstate);
+		tag.putFloat("Rot", rot);
 		return tag;
 	}
 

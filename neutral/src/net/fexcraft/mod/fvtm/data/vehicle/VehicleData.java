@@ -129,9 +129,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		compound.set("Attributes", cattrs);
 		//
 		texture.save(compound);
-		for(String str : channels.keySet()){
-			compound.set("RGB_" + str, channels.get(str).packed);
-		}
+		//old for(String str : channels.keySet()) compound.set("RGB_" + str, channels.get(str).packed);
+		TagCW rgb = TagCW.create();
+		for(String str : channels.keySet()) rgb.set(str, channels.get(str).packed);
+		compound.set("RGBChannels", rgb);
+		//
 		TagCW cwpos = TagCW.create();
 		for(Entry<String, V3D> vec : wheelpos.entrySet()){
 			TagLW list = TagLW.create();
@@ -207,8 +209,18 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 		}
 		//
 		texture.load(compound);
-		for(String str : channels.keySet()){
-			channels.get(str).packed = compound.getInteger("RGB_" + str);
+		if(!EnvInfo.is121()){//reading in old data
+			for(String str : channels.keySet()){
+				if(compound.has("RGB_" + str)){
+					channels.get(str).packed = compound.getInteger("RGB_" + str);
+				}
+			}
+		}
+		if(compound.has("RGBChannels")){
+			TagCW rgb = compound.getCompound("RGBChannels");
+			for(String str : channels.keySet()){
+				if(rgb.has(str)) channels.get(str).packed = rgb.getInteger(str);
+			}
 		}
 		//
 		refreshModificableDataByParts();

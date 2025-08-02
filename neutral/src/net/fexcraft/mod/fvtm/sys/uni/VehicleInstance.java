@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
@@ -11,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
-import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.root.Sound;
@@ -22,8 +20,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.function.part.*;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
-import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
-import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
@@ -151,7 +147,7 @@ public class VehicleInstance {
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityW player, boolean state, boolean sync){
 		//TODO script key press event
 		if(!seat.driver && key.driver_only()) return false;
-		if(entity.isOnClient() && key.serv_only() && !sync){
+		if(entity.isOnClient() && key.send_serv(seat.driver) && !sync){
 			if(key.synced() && key.sync_state()){
 				Packets.send(Packet_VehKeyPressState.class, key, state, entity.getId(), player.getId());
 			}
@@ -847,12 +843,13 @@ public class VehicleInstance {
 		if(autogear_timer > 0) autogear_timer--;
 		if(driven){
 			steer_yaw *= Config.STEER_RESET_RATE;
-			double sig = Math.signum(throttle);
-			if(!acc_down && throttle > 0){
-				throttle -= THROTTLE_DECR_PER_TICK;
-			}
-			if(!dec_down && throttle < 0){
-				throttle += THROTTLE_DECR_PER_TICK;
+			if(railent == null){
+				if(!acc_down && throttle > 0){
+					throttle -= THROTTLE_DECR_PER_TICK;
+				}
+				if(!dec_down && throttle < 0){
+					throttle += THROTTLE_DECR_PER_TICK;
+				}
 			}
 			if(!brk_down) brake -= BRAKE_DECR_PER_TICK;
 			if(throttle > 1) throttle = 1;

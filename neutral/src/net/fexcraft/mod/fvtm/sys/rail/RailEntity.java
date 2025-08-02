@@ -189,7 +189,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		region.getSystem().updateEntityEntry(uid, region.key);
-		if(vehicle.entity != null && !vehicle.entity.inSimRange()){
+		if(vehicle.entity != null /*&& !vehicle.entity.inSimRange()*/){
 			vehicle.onUpdate();
 			if(vehicle.entity.pushTicks() % VEHICLE_SYNC_RATE == 0){
 				vehicle.sendUpdatePacket();

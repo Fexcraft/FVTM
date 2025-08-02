@@ -1,7 +1,7 @@
 accessWidener v2 named
-accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Ljava/util/function/Function;Lnet/minecraft/resources/ResourceLocation;IIIIFFFFI)V
+accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/ResourceLocation;IIIIFFFFI)V
 accessible field net/minecraft/server/MinecraftServer storageSource Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;
-accessible field net/minecraft/client/gui/GuiGraphics bufferSource Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;
+#accessible field net/minecraft/client/gui/GuiGraphics bufferSource Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;
 accessible field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 mutable field net/minecraft/server/packs/repository/PackRepository sources Ljava/util/Set;
 extendable method net/minecraft/world/entity/Entity moveOrInterpolateTo (Lnet/minecraft/world/phys/Vec3;FF)V

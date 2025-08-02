@@ -49,8 +49,9 @@ public enum KeyPress {
 		return this == MOUSE_MAIN;
 	}
 
-	public boolean serv_only(){
-		return (dismount() || inventory() || scripts() || this == ENGINE || this == LIGHTS || this == COUPLER_FRONT || this == COUPLER_REAR);
+	public boolean send_serv(boolean driver){
+		if(dismount() || inventory() || scripts() || this == ENGINE || this == LIGHTS || this == COUPLER_FRONT || this == COUPLER_REAR) return true;
+		return driver ? this == TURN_LEFT || this == TURN_RIGHT || this == ACCELERATE || this == DECELERATE : false;
 	}
 
 }

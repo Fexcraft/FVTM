@@ -74,10 +74,9 @@ public class Part extends Content<Part> implements TextureHolder, SoundHolder, W
 		else if(map.has("Categories")){
 			categories = map.getArray("Categories").toStringList();
 		}
-		else{
-			categories = new ArrayList<>();
-			categories.add("undefined");
-		}
+		if(categories == null) categories = new ArrayList<>();
+		if(categories.isEmpty()) categories.add("undefined");
+		//
 		if(map.has("Attributes") && map.get("Attributes").isMap()){
 			for(Entry<String, JsonValue<?>> entry : map.getMap("Attributes").entries()){
 				Attribute<?> attr = Attribute.parse(entry.getKey(), entry.getValue().asMap());

@@ -97,8 +97,8 @@ public class ForgeClientEvents {
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
 			vec0 = nroad.road.vecpath[j];
 			vec1 = nroad.road.vecpath[j + 1];
-			POLY.vertices[0].pos(vec0.x, vec0.y - 0.25f, vec0.z);
-			POLY.vertices[1].pos(vec1.x, vec1.y - 0.25f, vec1.z);
+			POLY.vertices[0].pos(vec0.x, vec0.y + 1.25, vec0.z);
+			POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
 			LINE.render();
 		}
 		int size = RoadPlacingUtil.CL_CURRENT.points.size();
@@ -107,15 +107,15 @@ public class ForgeClientEvents {
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
 			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
-			POLY.vertices[0].pos(arr[0], arr[1] - 0.25f, arr[2]);
-			POLY.vertices[1].pos(vec1.x, vec1.y - 0.25f, vec1.z);
+			POLY.vertices[0].pos(arr[0], arr[1] + 1.25, arr[2]);
+			POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
 			LINE.render();
 		}
 		Renderer20.setColor(ORG);
 		for(ArrayList<V3D> l : nroad.preview){
 			for(int j = 0; j < l.size() - 1; j++){
-				POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y - 0.45f, vec0.z);
-				POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y - 0.45f, vec1.z);
+				POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + 1.45, vec0.z);
+				POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + 1.45, vec1.z);
 				LINE.render();
 			}
 		}

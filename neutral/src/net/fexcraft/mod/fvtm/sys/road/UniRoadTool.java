@@ -418,8 +418,7 @@ public class UniRoadTool {
 	}
 
 	public static V3D grv(double rad, V3D vec){
-		double co = -Math.cos(rad), si = Math.sin(rad);
-		return new V3D(co * vec.x, vec.y, si * vec.x);
+		return new V3D(-Math.cos(rad) * vec.x, vec.y, Math.sin(rad) * vec.x);
 	}
 
 	public static V3D grv(double rad, double x, double y){

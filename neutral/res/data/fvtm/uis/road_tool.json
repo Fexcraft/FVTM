@@ -1,25 +1,28 @@
 {
 	"_info_": "Road Tool UI",
 	"background": true,
-	"size": [ 176, 212 ],
+	"size": [ 176, 232 ],
 	"tabs": {
 		"main": {
 			"texture": "fvtm:textures/gui/road_tool.png",
-			"size": [ 191, 212 ],
+			"size": [ 191, 232 ],
 			"pos": [ 0, 0 ],
 			"buttons": [
-				"add_width", "sub_width",
+				"add_width0", "sub_width0",
+				"add_width1", "sub_width1",
 				"enable_ground", "disable_ground",
 				"add_left", "sub_left",
 				"add_right", "sub_right",
 				"enable_top", "disable_top",
 				"enable_lines", "disable_lines",
 				"edit_road", "rem_road",
+				"edit_slab", "rem_slab",
 				"edit_top", "rem_top",
 				"edit_lines", "rem_lines"
 			],
 			"texts": [
 				"road_fill", "road_width",
+				"slab_fill", "slab_width",
 				"ground_fill", "ground_status",
 				"left_fill", "left_size",
 				"right_fill", "right_size",
@@ -29,63 +32,73 @@
 		}
 	},
 	"buttons": {
-		"add_width": {
-			"pos": [ 47, 7 ],
+		"add_width0": {
+			"pos": [ 27, 7 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.add_width"
 		},
-		"sub_width": {
-			"pos": [ 47, 17 ],
+		"sub_width0": {
+			"pos": [ 27, 17 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.sub_width"
 		},
+		"add_width1": {
+		  "pos": [ 27, 27 ],
+		  "size": [ 8, 8 ],
+		  "tooltip": "ui.fvtm.road_tool.add_width"
+		},
+		"sub_width1": {
+		  "pos": [ 27, 37 ],
+		  "size": [ 8, 8 ],
+		  "tooltip": "ui.fvtm.road_tool.sub_width"
+		},
 		"enable_ground": {
-			"pos": [ 27, 27 ],
+			"pos": [ 27, 47 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.enable_ground"
 		},
 		"disable_ground": {
-			"pos": [ 27, 37 ],
+			"pos": [ 27, 57 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.disable_ground"
 		},
 		"add_left": {
-			"pos": [ 27, 47 ],
+			"pos": [ 27, 67 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.add_left"
 		},
 		"sub_left": {
-			"pos": [ 27, 57 ],
+			"pos": [ 27, 77 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.sub_left"
 		},
 		"add_right": {
-			"pos": [ 27, 67 ],
+			"pos": [ 27, 87 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.add_right"
 		},
 		"sub_right": {
-			"pos": [ 27, 77 ],
+			"pos": [ 27, 97 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.sub_right"
 		},
 		"enable_top": {
-			"pos": [ 27, 87 ],
+			"pos": [ 27, 107 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.enable_top"
 		},
 		"disable_top": {
-			"pos": [ 27, 97 ],
+			"pos": [ 27, 117 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.disable_top"
 		},
 		"enable_lines": {
-			"pos": [ 27, 107 ],
+			"pos": [ 27, 127 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.enable_lines"
 		},
 		"disable_lines": {
-			"pos": [ 27, 117 ],
+			"pos": [ 27, 137 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.disable_lines"
 		},
@@ -94,13 +107,18 @@
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.edit_road"
 		},
+		"edit_slab": {
+		  "pos": [ 168, 32 ],
+		  "size": [ 8, 8 ],
+		  "tooltip": "ui.fvtm.road_tool.edit_slab"
+		},
 		"edit_top": {
-			"pos": [ 168, 92 ],
+			"pos": [ 168, 122 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.edit_top"
 		},
 		"edit_lines": {
-			"pos": [ 168, 112 ],
+			"pos": [ 168, 142 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.edit_lines"
 		},
@@ -109,97 +127,116 @@
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.remove_custom_road"
 		},
+		"rem_slab": {
+		  "pos": [ 177, 32 ],
+		  "size": [ 8, 8 ],
+		  "tooltip": "ui.fvtm.road_tool.remove_custom_slab"
+		},
 		"rem_top": {
-			"pos": [ 177, 92 ],
+			"pos": [ 177, 112 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.remove_custom_top"
 		},
 		"rem_lines": {
-			"pos": [ 177, 112 ],
+			"pos": [ 177, 132 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.remove_custom_lines"
 		}
 	},
 	"texts": {
 		"road_fill": {
-			"pos": [ 59, 8 ],
+			"pos": [ 39, 8 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
 		"road_width": {
-			"pos": [ 59, 16 ],
+			"pos": [ 39, 16 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
+		},
+		"slab_fill": {
+		  "pos": [ 39, 28 ],
+		  "size": [ 128, 8 ],
+		  "autoscale": true,
+		  "centered": true,
+		  "color": "545454"
+		},
+		"slab_width": {
+		  "pos": [ 39, 36 ],
+		  "size": [ 128, 8 ],
+		  "autoscale": true,
+		  "centered": true,
+		  "color": "545454"
 		},
 		"ground_fill": {
-			"pos": [ 39, 28 ],
-			"size": [ 128, 8 ],
-			"autoscale": true,
-			"centered": true,
-			"color": "545454"
-		},
-		"ground_status": {
-			"pos": [ 39, 36 ],
-			"size": [ 128, 8 ],
-			"autoscale": true,
-			"centered": true,
-			"color": "545454"
-		},
-		"left_fill": {
 			"pos": [ 39, 48 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"left_size": {
+		"ground_status": {
 			"pos": [ 39, 56 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"right_fill": {
+		"left_fill": {
 			"pos": [ 39, 68 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"right_size": {
+		"left_size": {
 			"pos": [ 39, 76 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"top_fill": {
+		"right_fill": {
 			"pos": [ 39, 88 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"top_status": {
+		"right_size": {
 			"pos": [ 39, 96 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"lines_fill": {
+		"top_fill": {
 			"pos": [ 39, 108 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
 			"color": "545454"
 		},
-		"lines_status": {
+		"top_status": {
 			"pos": [ 39, 116 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"lines_fill": {
+			"pos": [ 39, 128 ],
+			"size": [ 128, 8 ],
+			"autoscale": true,
+			"centered": true,
+			"color": "545454"
+		},
+		"lines_status": {
+			"pos": [ 39, 136 ],
 			"size": [ 128, 8 ],
 			"autoscale": true,
 			"centered": true,
@@ -212,43 +249,43 @@
 			"player": false,
 			"index": 0
 		},
-		"road_": {
-			"pos": [ 28, 8 ],
+		"slab": {
+			"pos": [ 8, 28 ],
 			"player": false,
 			"index": 6
 		},
 		"ground": {
-			"pos": [ 8, 28 ],
+			"pos": [ 8, 48 ],
 			"player": false,
 			"index": 1
 		},
 		"left": {
-			"pos": [ 8, 48 ],
+			"pos": [ 8, 68 ],
 			"player": false,
 			"index": 2
 		},
 		"right": {
-			"pos": [ 8, 68 ],
+			"pos": [ 8, 88 ],
 			"player": false,
 			"index": 3
 		},
 		"top": {
-			"pos": [ 8, 88 ],
+			"pos": [ 8, 108 ],
 			"player": false,
 			"index": 4
 		},
 		"lines": {
-			"pos": [ 8, 108 ],
+			"pos": [ 8, 128 ],
 			"player": false,
 			"index": 5
 		},
 		"player3x9": {
-			"pos": [ 8, 132 ],
+			"pos": [ 8, 152 ],
 			"index": 9,
 			"repeat": [ 9, 3 ]
 		},
 		"player1x9": {
-			"pos": [ 8, 188 ],
+			"pos": [ 8, 208 ],
 			"index": 0,
 			"repeat": [ 9, 1 ]
 		}

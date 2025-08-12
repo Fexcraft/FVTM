@@ -37,7 +37,7 @@ public class RoadToolItem extends Item {
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
 		ArrayList<String> list = new ArrayList<>();
 		if(!stack.hasTag()) stack.setTag(new CompoundTag());
-		UniRoadTool.addTooltip(TagCW.wrap(stack.getTag()), list, (str, objs) -> I18n.get(str, objs));
+		UniRoadTool.addTooltip(TagCW.wrap(stack.getTag()), list, I18n::get);
 		for(String str : list) tooltip.add(Component.literal(str));
 	}
 

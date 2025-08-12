@@ -44,8 +44,8 @@ public class UniRoadTool {
 		}
 		else{
 			TagCW com = rcom.getCompound(TAG_KEY);
-			int width  = com.getInteger("RoadWidth");
-			boolean bot = com.getBoolean("Bottom");
+			int width  = com.getInteger("Width");
+			boolean bot = com.getBoolean("Ground");
 			boolean top = com.getBoolean("Top");
 			boolean lin = com.getBoolean("Lines");
 			int rheight  = com.getInteger("RHeight");
@@ -116,8 +116,8 @@ public class UniRoadTool {
 			return false;
 		}
 		TagCW com = stack.directTag().getCompound(TAG_KEY);
-		int width  = com.getInteger("RoadWidth");
-		boolean bot_on = com.getBoolean("Bottom");
+		int width  = com.getInteger("Width");
+		boolean bot_on = com.getBoolean("Ground");
 		boolean top_on = com.getBoolean("Top");
 		boolean lin_on = com.getBoolean("Lines");
 		int rheight  = com.getInteger("RHeight");
@@ -259,6 +259,7 @@ public class UniRoadTool {
 				block = roadfill_b.get(i);
 				StackWrapper slb = slabfill_b == null || slabfill_b.isEmpty() ? slab_b : slabfill_b.get(i);
 				flnk = CompatUtil.isValidFurenikus(block.getIDL());
+				vani = !block.getID().equals("fvtm:asphalt") && !block.isItemOf(ContentType.BLOCK.item_type);;
 				roadFill(world, pass, roadfill.get(i), pos, block, slb, top_h, flnk, vani, map);
 			}
 		}

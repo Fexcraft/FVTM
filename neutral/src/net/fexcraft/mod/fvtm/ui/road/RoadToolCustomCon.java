@@ -10,34 +10,36 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UniCon;
 
+import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.TAG_KEY;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class RoadToolCustomCon extends ContainerInterface {
 
-	protected int[] size = new int[]{ 1, 0, 0, 0, 0, 0 };
 	protected StackWrapper stack;
 	protected String tagname;
+	protected int rt_width;
 	protected int offset;
 	protected int scroll;
 
 	public RoadToolCustomCon(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		stack = player.entity.getHeldItem(true);
-		if(!stack.directTag().has("RoadLayers")){
-			stack.updateTag(tag -> tag.set("RoadLayers", size));
+		if(!stack.directTag().has(TAG_KEY)){
+			stack.updateTag(tag -> tag.set(TAG_KEY, TagCW.create()));
 		}
-		else size = stack.directTag().getIntArray("RoadLayers");
 		tagname = "Custom" + RoadToolCon.fills[pos.x];
-		offset = size[0] > 9 ? 9 * 9 : (size[0] * 9);
-		inventory = UniInventory.create(size[0] >= 9 ? 9 : size[0]);
+		rt_width = stack.directTag().getCompound(TAG_KEY).getInteger("Width");
+		offset = rt_width > 9 ? 9 * 9 : (rt_width * 9);
+		inventory = UniInventory.create(rt_width >= 9 ? 9 : rt_width);
 	}
 
 	@Override
 	public void init(){
-		int is = size[0] > 9 ? 9 : size[0];
+		int is = rt_width > 9 ? 9 : rt_width;
 		for(int i = 0; i < is; i++){
-			((UniCon)root).addSlot("fvtm:roadfill", player.entity.getWorld(), inventory, i, 88 - offset + 1 + i * 18, 8, true, pos.x > 0);
+			root.addSlot("fvtm:roadfill", player.entity.getWorld(), inventory, i, 88 - offset + 1 + i * 18, 8, true, true);
 		}
 		fillStacks();
 	}
@@ -56,7 +58,7 @@ public class RoadToolCustomCon extends ContainerInterface {
 				saveStacks();
 				scroll += packet.getInteger("by");
 				if(scroll < 0) scroll = 0;
-				if(scroll + 9 >= size[0]) scroll = size[0] - 9;
+				if(scroll + 9 >= rt_width) scroll = rt_width - 9;
 				fillStacks();
 				break;
 			}
@@ -64,11 +66,11 @@ public class RoadToolCustomCon extends ContainerInterface {
 	}
 
 	protected void fillStacks(){
-		if(!stack.directTag().has(tagname)) return;
-		TagCW compound = stack.directTag().getCompound(tagname);
+		if(!stack.directTag().getCompound(TAG_KEY).has(tagname)) return;
+		TagCW compound = stack.directTag().getCompound(TAG_KEY).getCompound(tagname);
 		for(int i = 0; i < 9; i++){
 			int j = i + scroll;
-			if(j >= size[0]) break;
+			if(j >= rt_width) break;
 			if(!compound.has("Block" + j)){
 				inventory.set(i, StackWrapper.EMPTY);
 				continue;
@@ -79,9 +81,9 @@ public class RoadToolCustomCon extends ContainerInterface {
 
 	protected void saveStacks(){
 		try{
-			TagCW com = stack.directTag().has(tagname) ? stack.directTag().getCompound(tagname).copy() : TagCW.create();
-			com.set("Size", size[0]);
-			int is = size[0] > 9 ? 9 : size[0];
+			TagCW com = stack.directTag().getCompound(TAG_KEY).has(tagname) ? stack.directTag().getCompound(TAG_KEY).getCompound(tagname).copy() : TagCW.create();
+			com.set("Size", rt_width);
+			int is = rt_width > 9 ? 9 : rt_width;
 			for(int i = 0; i < is; i++){
 				int j = i + scroll;
 				if(inventory.empty(i)){
@@ -94,7 +96,7 @@ public class RoadToolCustomCon extends ContainerInterface {
 					com.set("Block" + j, tag);
 				}
 			}
-			stack.updateTag(tag -> tag.set(tagname, com));
+			stack.updateTag(tag -> tag.getCompound(TAG_KEY).set(tagname, com));
 		}
 		catch(Exception e){
 			e.printStackTrace();

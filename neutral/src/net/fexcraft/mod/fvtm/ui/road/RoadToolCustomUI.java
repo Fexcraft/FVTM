@@ -25,7 +25,7 @@ public class RoadToolCustomUI extends UserInterface {
 	public RoadToolCustomUI(JsonMap map, ContainerInterface con) throws Exception{
 		super(map, con);
 		rtc = (RoadToolCustomCon)con;
-		sscr = rtc.size[0] > 8;
+		sscr = rtc.rt_width > 8;
 		tabs.get("left").visible(sscr);
 		tabs.get("right").visible(sscr);
 		tabs.get("full0").visible(sscr);
@@ -34,7 +34,7 @@ public class RoadToolCustomUI extends UserInterface {
 		tabs.get("scroll").visible(sscr);
 		buttons.get("scroll_left").visible(sscr);
 		buttons.get("scroll_right").visible(sscr);
-		seg = 162f / rtc.size[0];
+		seg = 162f / rtc.rt_width;
 	}
 
 	@Override
@@ -47,14 +47,14 @@ public class RoadToolCustomUI extends UserInterface {
 		if(!sscr){
 			int left = gLeft + 88 - rtc.offset;
 			drawer.draw(left - 7, gTop, 0, 0, 25, 32);
-			if(rtc.size[0] == 1){
+			if(rtc.rt_width == 1){
 				drawer.draw(left + 18, gTop, 61, 0, 7, 32);
 			}
 			else{
-				for(int i = 1; i < rtc.size[0] - 1; i++){
+				for(int i = 1; i < rtc.rt_width - 1; i++){
 					drawer.draw(left + i * 18, gTop, 25, 0, 18, 32);
 				}
-				drawer.draw(left + (rtc.size[0] - 1) * 18, gTop, 43, 0, 25, 32);
+				drawer.draw(left + (rtc.rt_width - 1) * 18, gTop, 43, 0, 25, 32);
 			}
 		}
 		else{
@@ -87,7 +87,7 @@ public class RoadToolCustomUI extends UserInterface {
 		container.SEND_TO_SERVER.accept(com);
 		rtc.scroll += by;
 		if(rtc.scroll < 0) rtc.scroll = 0;
-		if(rtc.scroll + 9 >= rtc.size[0]) rtc.scroll = rtc.size[0] - 9;
+		if(rtc.scroll + 9 >= rtc.rt_width) rtc.scroll = rtc.rt_width - 9;
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class RoadToolCustomUI extends UserInterface {
 		if(mb == 0 && mx >= gLeft + 7 && mx <= gLeft + 169 && my >= gTop - 18 && my <= gTop - 12){
 			int sg = (int)((mx - gLeft - 7) / seg);
 			if(sg < 0) sg = 0;
-			if(sg >= rtc.size[0] - 9) sg = rtc.size[0] - 9;
+			if(sg >= rtc.rt_width - 9) sg = rtc.rt_width - 9;
 			scroll(sg - rtc.scroll);
 			return true;
 		}
@@ -120,9 +120,9 @@ public class RoadToolCustomUI extends UserInterface {
 
 	@Override
 	public void getTooltip(int mx, int my, List<String> list){
-		if(rtc.size[0] < 9) return;
+		if(rtc.rt_width < 9) return;
 		if(tabs.get("scroll").hovered(gLeft, gTop, mx, my)){
-			Object[] objs = new Object[]{ rtc.scroll + 1, rtc.scroll + 9, rtc.size[0] };
+			Object[] objs = new Object[]{ rtc.scroll + 1, rtc.scroll + 9, rtc.rt_width };
 			list.add(container.TRANSFORMAT.apply("ui.fvtm.road_tool_custom.scroll_status", objs));
 		}
 	}

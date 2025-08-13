@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.road;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool.Road;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -16,6 +16,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
+import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.TAG_KEY;
+import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.gen;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -28,11 +30,11 @@ public class RoadPlacingUtil {
 
 	public static void place(WorldW world, EntityW pass, TagCW com, QV3D vector){
 		UUID roadid = CURRENT.get(pass.getUUID());
-		if(!com.has("RoadLayers")){
+		if(!com.has(TAG_KEY)){
 			pass.send("interact.fvtm.road_tool.empty");
 			return;
 		}
-		int width = com.getIntArray("RoadLayers")[0];
+		int width = com.getCompound(TAG_KEY).getInteger("Width");
 		if(roadid == null){
 			UUID newid = genId();
 			QUEUE.put(newid, new NewRoad(newid, vector, width));
@@ -72,6 +74,7 @@ public class RoadPlacingUtil {
 		
 		public ArrayList<QV3D> points = new ArrayList<>();
 		public ArrayList<ArrayList<V3D>> preview;
+		public ArrayList<ArrayList<V3I>> coords;
 		public Road road;
 		public int selected = -1, width;
 		public UUID id;
@@ -172,17 +175,34 @@ public class RoadPlacingUtil {
 		}
 
 		public void genpreview(){
-			double angle, half = (width * 0.5f);
 			preview = new ArrayList<>();
-			for(int i = 0; i < width + 1; i++) preview.add(new ArrayList<>());
-			V3D last, vec = road.vecpath[0];
-			for(float pass = 0; pass < road.length + 0.125f; pass += 0.125f){
+			double angle;
+			double passed = 0.001;
+			double half = width * 0.5 - 0.5;
+			V3D last;
+			V3D vec;
+			vec = road.vecpath[0];
+			while(passed < road.length){
 				last = vec;
-				vec = road.getVectorPosition0(pass == 0 ? 0.001f : pass, false);
-				angle = (float)Math.atan2(last.x - vec.x, last.z - vec.z);
-				for(int w = 0; w < width + 1; w++){
-					preview.get(w).add(vec.add(UniRoadTool.grv(angle, new V3D(-half + w, 0, 0))));
+				vec = road.getVectorPosition(passed, false);
+				angle = Math.atan2(last.x - vec.x, last.z - vec.z);
+				ArrayList<V3D> list = new ArrayList<>();
+				for(int i = 0; i < width; i++){
+					list.add(gen(vec, angle, -half + 0.25 + i, 0).vec);
 				}
+				preview.add(list);
+				if(passed < 0.1) passed = 0;
+				passed += 0.125;
+			}
+			coords = new ArrayList<>();
+			for(ArrayList<V3D> vecs : preview){
+				ArrayList<V3I> list = new ArrayList<>();
+				for(V3D v : vecs){
+					V3I pos = new V3I(v);
+					if(list.contains(pos)) continue;
+					list.add(pos);
+				}
+				coords.add(list);
 			}
 		}
 		

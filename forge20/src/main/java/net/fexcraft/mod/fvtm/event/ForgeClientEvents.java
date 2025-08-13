@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.VehicleOverlay;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -117,6 +118,14 @@ public class ForgeClientEvents {
 				POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + 1.45, vec0.z);
 				POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + 1.45, vec1.z);
 				LINE.render();
+			}
+		}
+		for(ArrayList<V3I> coords : nroad.coords){
+			for(V3I coord : coords){
+				pose.pushPose();
+				pose.translate(coord.x + 0.5, coord.y + 0.55, coord.z + 0.5);
+				DebugUtils.renderBB(1, COL_CYN);
+				pose.popPose();
 			}
 		}
 		pose.popPose();

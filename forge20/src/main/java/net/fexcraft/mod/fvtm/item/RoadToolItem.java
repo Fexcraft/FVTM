@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RoadToolItem extends Item {
+public class RoadToolItem extends Item implements JunctionGridItem {
 
 	public RoadToolItem INSTANCE;
 

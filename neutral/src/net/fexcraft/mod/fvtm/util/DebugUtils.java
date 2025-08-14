@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
@@ -38,11 +39,14 @@ public class DebugUtils {
 	public static Polyhedron LLBB0 = new Polyhedron();
 	public static Polyhedron LLBB1 = new Polyhedron();
 	public static Polyhedron LLBB2 = new Polyhedron();
+	public static Polyhedron PANE = new Polyhedron();
 	public static Polyhedron JUNC_CORE = new Polyhedron();
 	public static Polyhedron JUNC_LINE = new Polyhedron();
 	public static Polyhedron JUNC_DIR = new Polyhedron();
 	public static Polyhedron JUNC_SIG_STATE = new Polyhedron();
 	public static Polyhedron JUNC_SIG_DIR = new Polyhedron();
+	public static Polyhedron LINE = new Polyhedron();
+	public static Polygon LINE_POLY;
 	static{
 		/*CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 0, 1) }));
@@ -60,6 +64,7 @@ public class DebugUtils {
 		LLBB0.importMRT(new ModelRendererTurbo(LLBB0, 0, 0, 1, 1).addBox(-8, -0.1f, -0.1f, 16, 0.2f, 0.2f), false, sixteenth);
 		LLBB1.importMRT(new ModelRendererTurbo(LLBB1, 0, 0, 1, 1).addBox(-0.1f, -8, -0.1f, 0.2f, 16, 0.2f), false, sixteenth);
 		LLBB2.importMRT(new ModelRendererTurbo(LLBB2, 0, 0, 1, 1).addBox(-0.1f, -0.1f, -8, 0.2f, 0.2f, 16), false, sixteenth);
+		PANE.importMRT(new ModelRendererTurbo(PANE, 0, 0, 1, 1).addBox(-8, 0, -8, 16, 0.2f, 16), false, sixteenth);
 		SPHERE.importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8), false, 1);
 		JUNC_CORE.importMRT(new ModelRendererTurbo(JUNC_CORE, 0, 0, 1, 1).newCylinderBuilder()
 			.setPosition(0, 0, 0).setRadius(0.5f, 0.125f).setLength(0.5f).setSegments(8, 0).setScale(1.1f, 1.1f).setDirection(4).build(), false, sixteenth);
@@ -71,6 +76,8 @@ public class DebugUtils {
 			.addShapeBox(-4, 0, 1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0), false, sixteenth);
 		JUNC_SIG_STATE.importMRT(new ModelRendererTurbo(JUNC_SIG_STATE, 0, 0, 1, 1)
 			.addShapeBox(-4, 0, -1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), false, sixteenth);
+		LINE_POLY = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f())});
+		LINE.polygons.add(LINE_POLY);
 	}
 
 	public static void renderBB(float scale, int col){
@@ -114,6 +121,18 @@ public class DebugUtils {
 		LLBB2.render();
 		RENDERER.pop();
 		//
+		RENDERER.color(0xffffffff);
+	}
+
+	public static void renderPane(float scale, int col){
+		RENDERER.bind(FvtmResources.WHITE_TEXTURE);
+		RENDERER.color(col);
+		float hs = scale * 0.5f;
+		RENDERER.push();
+		RENDERER.scale(scale, 1, scale);
+		RENDERER.translate(-hs, 0, -hs);
+		PANE.render();
+		RENDERER.pop();
 		RENDERER.color(0xffffffff);
 	}
 

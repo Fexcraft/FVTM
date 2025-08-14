@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
@@ -16,6 +18,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.world.World;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
+
 public class RoadRenderer {
     
     public static void renderRoads(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
@@ -23,12 +28,11 @@ public class RoadRenderer {
         if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //GL11.glTranslated(-cx, -cy, -cz);
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         V3D vec0, vec1;
 		NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
-		if(nroad.preview == null) nroad.genpreview();
+		if(nroad.coords == null) nroad.genpreview();
         GL11.glPushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -54,12 +58,13 @@ public class RoadRenderer {
             bufferbuilder.pos(vec1.x, vec1.y + 1.25, vec1.z).color(0, 1, 1, 1F).endVertex();
             tessellator.draw();
 		}
-		for(ArrayList<V3D> l : nroad.preview){
-			for(int j = 0; j < l.size() - 1; j++){
-				bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-				bufferbuilder.pos((vec0 = l.get(j).sub(cx, cy, cz)).x, vec0.y + 1.05, vec0.z).color(1, 0.75f, 0, 1F).endVertex();
-				bufferbuilder.pos((vec1 = l.get(j + 1).sub(cx, cy, cz)).x, vec1.y + 1.05, vec1.z).color(1, 0.75f, 0, 1F).endVertex();
-				tessellator.draw();
+		GL11.glTranslated(-cx, -cy, -cz);
+		for(ArrayList<QV3D> coords : nroad.coords){
+			for(QV3D coord : coords){
+				GL11.glPushMatrix();
+				GL11.glTranslatef(coord.pos.x + 1, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 1);
+				DebugUtils.renderPane(0.5f, COL_CYN);
+				GL11.glPopMatrix();
 			}
 		}
 		//

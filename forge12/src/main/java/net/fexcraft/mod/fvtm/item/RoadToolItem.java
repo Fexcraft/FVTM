@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.fvtm.util.Perms;
@@ -26,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RoadToolItem extends Item {
+public class RoadToolItem extends Item implements JunctionGridItem {
 	
 	public static RoadToolItem INSTANCE;
 

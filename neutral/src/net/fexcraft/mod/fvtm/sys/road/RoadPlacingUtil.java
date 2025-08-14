@@ -73,7 +73,6 @@ public class RoadPlacingUtil {
 	public static class NewRoad {
 		
 		public ArrayList<QV3D> points = new ArrayList<>();
-		public ArrayList<ArrayList<V3D>> preview;
 		public ArrayList<ArrayList<V3I>> coords;
 		public Road road;
 		public int selected = -1, width;
@@ -88,7 +87,7 @@ public class RoadPlacingUtil {
 		public void add(QV3D vector, int width){
 			points.add(selected == -1 ? points.size() : ++selected, vector);
 			this.width = width;
-			preview = null;
+			coords = null;
 			genroad();
 		}
 
@@ -125,7 +124,7 @@ public class RoadPlacingUtil {
 			if(selected < -1) selected = -1;
 			points.remove(rem);
 			genroad();
-			preview = null;
+			coords = null;
 			//
 			if(points.size() == 0){
 				reset();
@@ -175,7 +174,8 @@ public class RoadPlacingUtil {
 		}
 
 		public void genpreview(){
-			preview = new ArrayList<>();
+			ArrayList<ArrayList<V3D>> preview = new ArrayList<>();
+			coords = new ArrayList<>();
 			double angle;
 			double passed = 0.001;
 			double half = width * 0.5 - 0.5;

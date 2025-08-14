@@ -152,7 +152,7 @@ public class RailRenderer {
 		double cy = event.camera().getPosition().y;
 		double cz = event.camera().getPosition().z;
 		double yy = vec.y * 0.0625f;
-		Renderer21.setColor(RGB.WHITE);
+		Renderer21.resetColor();
 		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);

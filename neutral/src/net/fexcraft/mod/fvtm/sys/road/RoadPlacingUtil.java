@@ -73,7 +73,7 @@ public class RoadPlacingUtil {
 	public static class NewRoad {
 		
 		public ArrayList<QV3D> points = new ArrayList<>();
-		public ArrayList<ArrayList<V3I>> coords;
+		public ArrayList<ArrayList<QV3D>> coords;
 		public Road road;
 		public int selected = -1, width;
 		public UUID id;
@@ -196,9 +196,9 @@ public class RoadPlacingUtil {
 			}
 			coords = new ArrayList<>();
 			for(ArrayList<V3D> vecs : preview){
-				ArrayList<V3I> list = new ArrayList<>();
+				ArrayList<QV3D> list = new ArrayList<>();
 				for(V3D v : vecs){
-					V3I pos = new V3I(v);
+					QV3D pos = new QV3D(v);
 					if(list.contains(pos)) continue;
 					list.add(pos);
 				}

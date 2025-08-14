@@ -154,6 +154,8 @@ public class FVTMC implements ClientModInitializer {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(RailRenderer::renderRails);
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderGrid);
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderRailPreview);
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RoadRenderer::renderRoadPreview);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, VehicleHUD.ID, new VehicleHUD());
 	}
 

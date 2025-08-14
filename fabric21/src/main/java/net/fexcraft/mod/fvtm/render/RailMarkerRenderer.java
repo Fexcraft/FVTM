@@ -26,7 +26,7 @@ import static net.fexcraft.mod.fvtm.render.Renderer21.AZ;
  */
 public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderState> {
 
-	private IDL texture = IDLManager.getIDLCached("fvtm:textures/entity/railmarker.png");
+	private static IDL texture = IDLManager.getIDLCached("fvtm:textures/entity/railmarker.png");
 	public static final RGB CYAN = new RGB(0, 255, 255);
 
 	public RailMarkerRenderer(EntityRendererProvider.Context context){
@@ -67,7 +67,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer21.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					FvtmRenderTypes.setGlow(texture.local());
+					FvtmRenderTypes.setGlow(texture);
 					RailMarkerModel.INST.arrow.render();
 					FvtmRenderTypes.setCutout(texture);
 				}

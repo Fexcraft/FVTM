@@ -102,7 +102,7 @@ public class QV3D implements Comparable<QV3D> {
 		if(obj instanceof V3D) return obj.equals(vec);
 		if(obj instanceof QV3D == false) return false;
 		QV3D vec = (QV3D)obj;
-		return vec.pos.equals(pos) && x == x && y == y && z == z;
+		return vec.pos.equals(pos) && x == vec.x && y == vec.y && z == vec.z;
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class SepRenderer {
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
-		Renderer21.setColor(RGB.WHITE);
+		Renderer21.resetColor();
 		if(VEHICLES.size() > 0){
 			pose.pushPose();
 			pose.translate(-cx, -cy, -cz);

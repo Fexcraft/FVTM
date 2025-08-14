@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -22,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.HitResult;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.rad90;
@@ -179,6 +181,50 @@ public class RailRenderer {
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(0.0625f, 0.0625f, 0.0625f);
 		SPHERE.render();
+		pose.popPose();
+		return true;
+	}
+
+	public static boolean renderRailPreview(WorldRenderContext event, HitResult res){
+		if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return true;
+		double cx = event.camera().getPosition().x;
+		double cy = event.camera().getPosition().y;
+		double cz = event.camera().getPosition().z;
+		PoseStack pose = event.matrixStack();
+		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
+		FvtmRenderTypes.setLines();
+		pose.pushPose();
+		pose.translate(-cx, -cy, -cz);
+		V3D vec0, vec1;
+		RailPlacingUtil.NewTrack conn = RailPlacingUtil.CL_CURRENT;
+		if(conn.preview == null) conn.genpreview();
+		Renderer21.setColor(COL_BLU);
+		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
+			vec0 = conn.track.vecpath[j];
+			vec1 = conn.track.vecpath[j + 1];
+			LINE_POLY.vertices[0].pos(vec0.x, vec0.y + 0.1f, vec0.z);
+			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 0.1f, vec1.z);
+			LINE.render();
+		}
+		int size = RailPlacingUtil.CL_CURRENT.points.size();
+		double[] arr;
+		Renderer21.setColor(COL_CYN);
+		for(int i = 1; i < size - 1; i++){
+			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
+			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
+			LINE_POLY.vertices[0].pos(arr[0], arr[1] - 0.05f, arr[2]);
+			LINE_POLY.vertices[1].pos(vec1.x, vec1.y - 0.05f, vec1.z);
+			LINE.render();
+		}
+		Renderer21.setColor(COL_ORG);
+		for(ArrayList<V3D> l : conn.preview){
+			for(int j = 0; j < l.size() - 1; j++){
+				LINE_POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z);
+				LINE_POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
+				LINE.render();
+			}
+		}
+		Renderer21.resetColor();
 		pose.popPose();
 		return true;
 	}

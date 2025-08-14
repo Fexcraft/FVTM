@@ -67,7 +67,7 @@ public class LongDisRailUtil {
 		double triquar = player.segmentation * 0.75;
 		Junction junc;
 		while(pass < track.length){
-			curr = new QV3D(track.getVectorPosition(pass + player.segmentation, false));
+			curr = new QV3D(track.getVectorPosition0(pass + player.segmentation, false));
 			junc = sys.getJunction(curr.pos, true);
 			if(junc == null){
 				sys.addJunction(curr);
@@ -79,8 +79,8 @@ public class LongDisRailUtil {
 			}
 			QV3D[] points = new QV3D[4];
 			points[3] = last;
-			points[2] = new QV3D(track.getVectorPosition(pass + quarter, false));
-			points[1] = new QV3D(track.getVectorPosition(pass + triquar, false));
+			points[2] = new QV3D(track.getVectorPosition0(pass + quarter, false));
+			points[1] = new QV3D(track.getVectorPosition0(pass + triquar, false));
 			points[0] = curr;
 			Track ntr = new Track(junc, points, gauge);
 			junc.addnew(ntr);

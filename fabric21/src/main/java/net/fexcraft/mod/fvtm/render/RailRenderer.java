@@ -26,7 +26,7 @@ import net.minecraft.world.phys.HitResult;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
@@ -179,7 +179,7 @@ public class RailRenderer {
 		pose.popPose();
 		Renderer21.setColor(COL_ORG);
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
-		pose.scale(0.0625f, 0.0625f, 0.0625f);
+		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
 		SPHERE.render();
 		pose.popPose();
 		return true;

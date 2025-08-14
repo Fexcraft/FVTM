@@ -6,11 +6,13 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.ArrayList;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.LINE;
@@ -52,11 +54,11 @@ public class RoadRenderer {
 			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
 			LINE.render();
 		}
-		for(ArrayList<V3I> coords : nroad.coords){
-			for(V3I coord : coords){
+		for(ArrayList<QV3D> coords : nroad.coords){
+			for(QV3D coord : coords){
 				pose.pushPose();
-				pose.translate(coord.x + 1, coord.y + 1, coord.z + 1);
-				DebugUtils.renderPane(0.95f, COL_CYN);
+				pose.translate(coord.pos.x + 1, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 1);
+				DebugUtils.renderPane(0.5f, COL_CYN);
 				pose.popPose();
 			}
 		}

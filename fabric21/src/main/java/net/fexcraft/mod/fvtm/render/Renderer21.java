@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ARGB;
 import org.joml.*;
 
 /**
@@ -43,11 +44,11 @@ public class Renderer21 extends Renderer<GLObject> {
 	public static int light;
 
 	public static void setColor(RGB col){
-		color = col.packed;
+		color = col.packed + 0xff000000;
 	}
 
 	public static void setColor(RGB col, float al){
-		color = col.packed;
+		color = col.packed + (int)(0xff000000 * al);
 	}
 
 	public static void setColor(int col){

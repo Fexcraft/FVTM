@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.entity;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.mod.fcl.util.FclCodecs;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -22,10 +25,11 @@ import java.util.UUID;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RailMarker extends Entity {
+public class RailMarker extends Entity implements SpawnPacket.PacketEntity {
 
 	public QV3D position;
 	public UUID queueid;
+	private boolean clsync;
 
 	public RailMarker(EntityType<RailMarker> type, Level level){
 		super(type, level);
@@ -48,20 +52,14 @@ public class RailMarker extends Entity {
 		}
 	}
 
-	/*@Override
-	public void writeSpawnData(FriendlyByteBuf buffer){
+	@Override
+	public void writeSpawnData(TagCW com){
 		try{
-			if(queueid == null){
-				buffer.writeLong(0);
-				buffer.writeLong(0);
+			if(queueid != null){
+				com.set("uuid0", queueid.getMostSignificantBits());
+				com.set("uuid1", queueid.getLeastSignificantBits());
 			}
-			else{
-				buffer.writeLong(queueid.getMostSignificantBits());
-				buffer.writeLong(queueid.getLeastSignificantBits());
-			}
-			buffer.writeDouble(position.vec.x);
-			buffer.writeDouble(position.vec.y);
-			buffer.writeDouble(position.vec.z);
+			com.set("pos", position.vec);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -69,12 +67,12 @@ public class RailMarker extends Entity {
 	}
 
 	@Override
-	public void readSpawnData(FriendlyByteBuf buffer){
+	public void readSpawnData(TagCW com){
 		try{
-			long m = buffer.readLong(), l = buffer.readLong();
-			if(m == 0 && l == 0) queueid = null;
-			else queueid = new UUID(m, l);
-			position = new QV3D(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+			if(com.has("uuid0")){
+				queueid = new UUID(com.getLong("uuid0"), com.getLong("uuid1"));
+			}
+			position = new QV3D(com.getV3D("pos"));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -82,7 +80,7 @@ public class RailMarker extends Entity {
 		this.tick();
 	}
 
-	@Override
+	/*@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}*/
@@ -100,7 +98,13 @@ public class RailMarker extends Entity {
 	@Override
 	public void baseTick(){
 		super.baseTick();
-		if(level().isClientSide) return;
+		if(level().isClientSide){
+			if(!clsync){
+				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
+				clsync = true;
+			}
+			return;
+		}
 		if(queueid == null || !RailPlacingUtil.QUEUE.containsKey(queueid)) kill((ServerLevel)level());
 	}
 

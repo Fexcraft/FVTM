@@ -65,12 +65,6 @@ public class ForgeClientEvents {
 		//data.getType().getModel().render(DefaultModel.RENDERDATA);
 	}
 
-	private static Polyhedron LINE = new Polyhedron();
-	private static Polygon POLY;
-	static {
-		POLY = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f())});
-		LINE.polygons.add(POLY);
-	}
 	private static Polyhedron sphere = new Polyhedron().importMRT(new ModelRendererTurbo(null, 0, 0, 32, 32)
 		.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32), false, 0.0625f);
 	public static Vec3f BLUE = new Vec3f(0, 0, 1);
@@ -93,13 +87,13 @@ public class ForgeClientEvents {
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;
 		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
-		if(nroad.preview == null) nroad.genpreview();
+		if(nroad.coords == null) nroad.genpreview();
 		Renderer20.setColor(BLUE);
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
 			vec0 = nroad.road.vecpath[j];
 			vec1 = nroad.road.vecpath[j + 1];
-			POLY.vertices[0].pos(vec0.x, vec0.y + 1.25, vec0.z);
-			POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
+			LINE_POLY.vertices[0].pos(vec0.x, vec0.y + 1.25, vec0.z);
+			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
 			LINE.render();
 		}
 		int size = RoadPlacingUtil.CL_CURRENT.points.size();
@@ -108,23 +102,15 @@ public class ForgeClientEvents {
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
 			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
-			POLY.vertices[0].pos(arr[0], arr[1] + 1.25, arr[2]);
-			POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
+			LINE_POLY.vertices[0].pos(arr[0], arr[1] + 1.25, arr[2]);
+			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
 			LINE.render();
-		}
-		Renderer20.setColor(ORG);
-		for(ArrayList<V3D> l : nroad.preview){
-			for(int j = 0; j < l.size() - 1; j++){
-				POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + 1.45, vec0.z);
-				POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + 1.45, vec1.z);
-				LINE.render();
-			}
 		}
 		for(ArrayList<V3I> coords : nroad.coords){
 			for(V3I coord : coords){
 				pose.pushPose();
-				pose.translate(coord.x + 0.5, coord.y + 0.55, coord.z + 0.5);
-				DebugUtils.renderBB(1, COL_CYN);
+				pose.translate(coord.x + 1, coord.y + 1, coord.z + 1);
+				DebugUtils.renderPane(0.95f, COL_CYN);
 				pose.popPose();
 			}
 		}
@@ -196,8 +182,8 @@ public class ForgeClientEvents {
 		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
 			vec0 = conn.track.vecpath[j];
 			vec1 = conn.track.vecpath[j + 1];
-			POLY.vertices[0].pos(vec0.x, vec0.y + 0.1f, vec0.z);
-			POLY.vertices[1].pos(vec1.x, vec1.y + 0.1f, vec1.z);
+			LINE_POLY.vertices[0].pos(vec0.x, vec0.y + 0.1f, vec0.z);
+			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 0.1f, vec1.z);
 			LINE.render();
 		}
 		int size = RailPlacingUtil.CL_CURRENT.points.size();
@@ -206,18 +192,19 @@ public class ForgeClientEvents {
 		for(int i = 1; i < size - 1; i++){
 			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
-			POLY.vertices[0].pos(arr[0], arr[1] - 0.05f, arr[2]);
-			POLY.vertices[1].pos(vec1.x, vec1.y - 0.05f, vec1.z);
+			LINE_POLY.vertices[0].pos(arr[0], arr[1] - 0.05f, arr[2]);
+			LINE_POLY.vertices[1].pos(vec1.x, vec1.y - 0.05f, vec1.z);
 			LINE.render();
 		}
 		Renderer20.setColor(ORG);
 		for(ArrayList<V3D> l : conn.preview){
 			for(int j = 0; j < l.size() - 1; j++){
-				POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z);
-				POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
+				LINE_POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z);
+				LINE_POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
 				LINE.render();
 			}
 		}
+		Renderer20.resetColor();
 		pose.popPose();
 	}
 

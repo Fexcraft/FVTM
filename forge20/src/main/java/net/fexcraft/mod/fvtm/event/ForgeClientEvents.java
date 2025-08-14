@@ -33,6 +33,8 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.common.Static.thirtysecondth;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -65,8 +67,6 @@ public class ForgeClientEvents {
 		//data.getType().getModel().render(DefaultModel.RENDERDATA);
 	}
 
-	private static Polyhedron sphere = new Polyhedron().importMRT(new ModelRendererTurbo(null, 0, 0, 32, 32)
-		.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32), false, 0.0625f);
 	public static Vec3f BLUE = new Vec3f(0, 0, 1);
 	public static Vec3f CYAN = new Vec3f(0, 1, 1);
 	public static Vec3f ORG = new Vec3f(1, 0.75f, 0);
@@ -106,11 +106,11 @@ public class ForgeClientEvents {
 			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
 			LINE.render();
 		}
-		for(ArrayList<V3I> coords : nroad.coords){
-			for(V3I coord : coords){
+		for(ArrayList<QV3D> coords : nroad.coords){
+			for(QV3D coord : coords){
 				pose.pushPose();
-				pose.translate(coord.x + 1, coord.y + 1, coord.z + 1);
-				DebugUtils.renderPane(0.95f, COL_CYN);
+				pose.translate(coord.pos.x + 1, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 1);
+				DebugUtils.renderPane(0.5f, COL_CYN);
 				pose.popPose();
 			}
 		}
@@ -157,7 +157,8 @@ public class ForgeClientEvents {
 		pose.popPose();
 		Renderer20.setColor(ORG);
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
-		sphere.render();
+		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
+		SPHERE.render();
 		pose.popPose();
 	}
 

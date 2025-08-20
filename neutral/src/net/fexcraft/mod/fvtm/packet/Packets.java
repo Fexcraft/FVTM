@@ -251,6 +251,21 @@ public abstract class Packets {
 			UniEntity ent = player.getWorld().getUniEntity(com.getInteger("ent"));
 			ent.runIfPresent(Passenger.class, pass -> pass.sendPassUpdate(ent.entity.getId(), pass.vehicle, pass.seat));
 		});
+		LIS_SERVER.put("attach_trailer", (com, player) -> {
+			UniEntity ent = player.getWorld().getUniEntity(com.getInteger("ent"));
+			Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)player.getWorld()).getInteractRef(com);
+			if(!ref.getValue().isVehicle()){
+				player.send("interact.fvtm.vehicle.wheel_remove");
+				return;
+			}
+			VehicleData data = player.getHeldItem(true).getContent(ContentType.VEHICLE.item_type);
+			if(data == null || !data.getType().isTrailer()){
+				player.send("invalid item");
+				return;
+			}
+			((FvtmWorld)player.getWorld()).spawnLandEntity(data, ref.getValue().vehicle(), player);
+			if(!player.isCreative()) player.getHeldItem(true).decr(1);
+		});
 		if(EnvInfo.CLIENT) initClient();
 	}
 

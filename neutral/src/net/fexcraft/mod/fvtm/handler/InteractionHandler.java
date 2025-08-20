@@ -64,6 +64,14 @@ public class InteractionHandler {
 		if(key.mouse_right() && ref.isVehicle() && mountSeat(ref.vehicle(), seat, pass, stack)) return true;
 		if(Time.getDate() < cooldown) return false;
 		if(!stack.empty()){
+			if(stack.isItemOf(ContentType.VEHICLE.item_type)){
+				VehicleData data = stack.getContent(ContentType.VEHICLE.item_type);
+				if(seat != null) return false;//TODO error message?
+				if(!data.getType().isTrailer()) return false;
+				if(data.getType().getVehicleType().isRailVehicle()) return true;//TODO clicking directly on a coupler could be nice?
+				if(tryAttachingATrailer(vehdata, ref, data, pass)) return  true;
+				return false;
+			}
 			if(stack.isItemOf(ContentType.PART.item_type)){
 				PartData data = stack.getContent(ContentType.PART.item_type);
 				if(data.getType().getInstallHandlerData() instanceof DPIHData && tryInstall(vehdata, ref, data, seat, pass)) return true;
@@ -234,6 +242,26 @@ public class InteractionHandler {
 		return true;
 	}
 
+	private static boolean tryAttachingATrailer(VehicleData vehdata, InteractRef ref, VehicleData trailer, EntityW pass){
+		ArrayList<Interactive> list = new ArrayList<>();
+		SwivelPoint point = null;
+		V3D conn;
+		for(String category : trailer.getType().getCategories()){
+			conn = vehdata.getConnectorFor(category);
+			if(!conn.isNull()) list.add(new TrailerInteractive(category, conn));
+		}
+		TrailerInteractive res = getInteracted(true, vehdata, ref, pass, list);
+		if(res == null) return false;
+		if(res.id().equals(last) && Time.getDate() < cooldown) return true;
+		TagCW com = TagCW.create();
+		com.set("category", res.cat);
+		ref.setPacket(com);
+		Packets.send(Packet_TagListener.class, "attach_trailer", com);
+		last = res.id();
+		cooldown = Time.getDate() + 20;
+		return true;
+	}
+
 	public static boolean toggle(Attribute<?> attr, VehicleData data, InteractRef ref, KeyPress press, Float val, EntityW pass){
 		TagCW packet = TagCW.create();
 		packet.set("attr", attr.id);
@@ -311,7 +339,7 @@ public class InteractionHandler {
 		return true;
 	}
 
-	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type };
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type };
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
@@ -672,6 +700,30 @@ public class InteractionHandler {
 					.getRelativeVector(inv.pos).add(ref.pos);
 			}
 			double hs = inv.scale * .5;
+			aabbs.put(id(), AABB.create(pos.x - hs, pos.y - hs, pos.z - hs, pos.x + hs, pos.y + hs, pos.z + hs));
+		}
+
+	}
+
+	public static class TrailerInteractive implements Interactive {
+
+		private String cat;
+		private V3D conn;
+
+		public TrailerInteractive(String category, V3D vec){
+			conn = vec;
+			cat = category;
+		}
+
+		@Override
+		public String id(){
+			return cat;
+		}
+
+		@Override
+		public void collect(boolean external, VehicleData data, InteractRef ref, EntityW player, Map<String, AABB> aabbs){
+			V3D pos = data.getRotationPoint(SwivelPoint.DEFAULT).getRelativeVector(conn).add(ref.pos);
+			double hs = .5;
 			aabbs.put(id(), AABB.create(pos.x - hs, pos.y - hs, pos.z - hs, pos.x + hs, pos.y + hs, pos.z + hs));
 		}
 

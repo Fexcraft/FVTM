@@ -48,10 +48,6 @@ public class ClassicVehMove implements VehicleMovement {
 
 	@Override
 	public void move(boolean nocons){
-		if(inst.data.getType().isTrailer()){
-			inst.align();
-			return;
-		}
 		inst.entity.setOnGround(true);
 		inst.moveto.set(0, 0, 0);
 		if(inst.type.isWaterVehicle()){
@@ -93,6 +89,7 @@ public class ClassicVehMove implements VehicleMovement {
 				wheel.move();
 			}
 		}
+		if(inst.data.getType().isTrailer() && inst.front != null) inst.align();
 		inst.alignToWheels();
 	}
 
@@ -120,9 +117,11 @@ public class ClassicVehMove implements VehicleMovement {
 		if(inst.data.getType().isTrailer()){
 			inst.w_front_l = new WheelTireData("_" + inst.w_rear_l.id);
 			inst.w_front_l.asTrailerFront(inst.w_rear_l);
+			inst.w_front_l.slot = inst.w_rear_l.slot;
 			inst.wheeldata.put(inst.w_front_l.id, inst.w_front_l);
 			inst.w_front_r = new WheelTireData("_" + inst.w_rear_r.id);
 			inst.w_front_r.asTrailerFront(inst.w_rear_r);
+			inst.w_front_r.slot = inst.w_rear_r.slot;
 			inst.wheeldata.put(inst.w_front_r.id, inst.w_front_r);
 		}
 	}

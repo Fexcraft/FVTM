@@ -48,7 +48,10 @@ public class ClassicVehMove implements VehicleMovement {
 
 	@Override
 	public void move(boolean nocons){
-		if(inst.data.getType().isTrailer()) return;
+		if(inst.data.getType().isTrailer()){
+			inst.align();
+			return;
+		}
 		inst.entity.setOnGround(true);
 		inst.moveto.set(0, 0, 0);
 		if(inst.type.isWaterVehicle()){

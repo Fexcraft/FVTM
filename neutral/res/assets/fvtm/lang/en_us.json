@@ -226,6 +226,7 @@
 	"interact.fvtm.vehicle.disconnect_trailer": "Please disconnect the currently connected trailer first.",
 	"interact.fvtm.vehicle.wheel_install": "Wheels/Tires can only by installed on lifted vehicles.",
 	"interact.fvtm.vehicle.wheel_remove": "Wheels/Tires can only be removed from lifted vehicles.",
+	"interact.fvtm.vehicle.attach_trailer": "Trailers can't be attached to lifted vehicles.",
 
 	"interact.fvtm.road_tool.empty": "Please setup the tool first!",
     "interact.fvtm.road_tool.too_long": "\u00A7cRoad vector length exceeds the configured max length.",

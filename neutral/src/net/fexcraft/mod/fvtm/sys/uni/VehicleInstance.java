@@ -814,6 +814,7 @@ public class VehicleInstance {
 	public boolean isDriverInstance(){
 		if(entity == null) return true;
 		if(type.isRailVehicle()) return !entity.isOnClient();
+		if(data.getType().isTrailer() && front != null) return front.driven;
 		if(entity.isOnClient()){
 			for(SeatInstance seat : seats){
 				if(seat.seat.driver && seat.passenger_direct() == WrapperHolder.getClientPlayer().direct()) return true;

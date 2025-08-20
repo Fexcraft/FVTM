@@ -1022,8 +1022,8 @@ public class VehicleInstance {
 
 	/** for trailers */
 	protected void align(){
-		entity.setPrevPos(entity.getPos());
-		if(wheels.isEmpty() || front == null) return;
+		//entity.setPrevPos(entity.getPos());
+		//if(wheels.isEmpty() || front == null) return;
 		V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
 		V3D.add(front.getV3D(), conn);
 		entity.setPos(conn);

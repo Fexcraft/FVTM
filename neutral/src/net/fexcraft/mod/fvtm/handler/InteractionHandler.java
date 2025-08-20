@@ -67,7 +67,7 @@ public class InteractionHandler {
 			if(stack.isItemOf(ContentType.VEHICLE.item_type)){
 				VehicleData data = stack.getContent(ContentType.VEHICLE.item_type);
 				if(seat != null) return false;//TODO error message?
-				if(!data.getType().isTrailer()) return false;
+				if(pass.isShiftDown() || !data.getType().isTrailer()) return false;
 				if(data.getType().getVehicleType().isRailVehicle()) return true;//TODO clicking directly on a coupler could be nice?
 				if(tryAttachingATrailer(vehdata, ref, data, pass)) return  true;
 				return false;
@@ -244,7 +244,6 @@ public class InteractionHandler {
 
 	private static boolean tryAttachingATrailer(VehicleData vehdata, InteractRef ref, VehicleData trailer, EntityW pass){
 		ArrayList<Interactive> list = new ArrayList<>();
-		SwivelPoint point = null;
 		V3D conn;
 		for(String category : trailer.getType().getCategories()){
 			conn = vehdata.getConnectorFor(category);

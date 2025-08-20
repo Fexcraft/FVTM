@@ -146,6 +146,11 @@ public class EffectRenderer {
 		return Minecraft.getMinecraft().player.getHeldItemMainhand().getItemDamage();
 	}
 
+	public static VehicleData isVehicle(){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof VehicleItem == false) return null;
+		return Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getVehicleData();
+	}
+
 	private static PartData isWheelOrTire(){
 		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return null;
 		PartData data = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
@@ -287,6 +292,13 @@ public class EffectRenderer {
 					red = data.hasPart(entry.getKey());
 					slot = entry.getValue();
 					DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
+				}
+			}
+			VehicleData trai = isVehicle();
+			if(trai != null && trai.getType().isTrailer()){
+				for(Entry<String, V3D> entry : data.getConnectors().entrySet()){
+					red = !trai.getType().getCategories().contains(entry.getKey());
+					DebugUtils.renderBB(entry.getValue(), 0.8f, red ? COL_RED : COL_GRN);
 				}
 			}
 			//

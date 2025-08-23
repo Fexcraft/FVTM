@@ -89,8 +89,7 @@ public class ClassicVehMove implements VehicleMovement {
 				wheel.move();
 			}
 		}
-		if(inst.data.getType().isTrailer() && inst.front != null) inst.align();
-		else inst.alignToWheels();
+		if(!inst.data.getType().isTrailer() || inst.front == null) inst.alignToWheels();
 	}
 
 	public void assignWheels(){

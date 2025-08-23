@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.sign;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -145,7 +146,12 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 		if(!region.getObjects().isEmpty()){
 			TagLW list = TagLW.create();
 			for(SignInstance sign : region.getObjects().values()){
-				list.add(sign.write());
+				try{
+					list.add(sign.write());
+				}
+				catch(Exception e){
+					FvtmLogger.log(e, "saving sign " + sign.vec + "  in region " + region.key.toString());
+				}
 			}
 			com.set("Signs", list);
 		}
@@ -157,9 +163,14 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 		region.getObjects().clear();
 		TagLW list = com.getList("Signs");
 		for(TagCW tag : list){
-			SignInstance sign = new SignInstance(region);
-			sign.read(tag);
-			region.getObjects().put(sign.vec.pos, sign);
+			try{
+				SignInstance sign = new SignInstance(region);
+				sign.read(tag);
+				region.getObjects().put(sign.vec.pos, sign);
+			}
+			catch(Exception e){
+				FvtmLogger.log(e, "loading sign " + tag.direct() + "in region " + region.key.toString());
+			}
 		}
 	}
 

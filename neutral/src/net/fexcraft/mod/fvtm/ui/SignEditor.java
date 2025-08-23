@@ -350,7 +350,7 @@ public class SignEditor extends UserInterface {
 
 	public void select(int idx, int colidx){
 		com_sel = idx;
-		if(com_sel < 0) com_sel = scon.signs.size() - 1;
+		if(com_sel < 0) com_sel = scon.signs.isEmpty() ? 0 : scon.signs.size() - 1;
 		if(com_sel >= scon.signs.size()) com_sel = 0;
 		colors.clear();
 		sign = com_sel >= scon.signs.size() ? null : scon.signs.get(com_sel);

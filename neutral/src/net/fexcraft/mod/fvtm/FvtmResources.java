@@ -496,6 +496,7 @@ public abstract class FvtmResources {
 	public abstract boolean isModPresent(String s);
 
 	public IDL getExternalTexture(String custom){
+		if(!EnvInfo.CLIENT) return IDLManager.getIDLCached(custom, true);
 		if(custom.startsWith("server:")){
 			return UniFCL.requestServerFile(null, custom);
 		}

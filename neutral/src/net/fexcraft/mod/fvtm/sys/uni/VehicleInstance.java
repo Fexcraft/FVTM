@@ -961,6 +961,10 @@ public class VehicleInstance {
 			try{
 				V3D fl = wheels.get(w_front_l.id).pos();
 				V3D fr = wheels.get(w_front_r.id).pos();
+				/*if(front != null){
+					fl = pivot().get_vector(w_front_l.pos).add(pos);
+					fr = pivot().get_vector(w_front_r.pos).add(pos);
+				}*/
 				V3D rl = wheels.get(w_rear_l.id).pos();
 				V3D rr = wheels.get(w_rear_r.id).pos();
 				if(fl == null) return;
@@ -978,6 +982,12 @@ public class VehicleInstance {
 		double drx = rig.x - lef.x, dry = rig.y - lef.y, drz = rig.z - lef.z;
 		double dxz = Math.sqrt(dx * dx + dz * dz);
 		double y = movement.yaw(dx, dz);
+		if(front != null){
+			V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
+			V3D.add(front.getV3D(), conn);
+			y = -Math.atan2(rea.x - conn.x, rea.z - conn.z);
+			entity.setPos(conn);
+		}
 		double p = -Math.atan2(dy, dxz);
 		double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
 		pivot().set_rotation(y, p, r, false);

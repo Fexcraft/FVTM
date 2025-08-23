@@ -70,7 +70,12 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 	}
 
 	public SystemRegion<R, V> read(TagCW compound){
-		system.readRegion(this, compound);
+		try{
+			system.readRegion(this, compound);
+		}
+		catch(Exception e){
+			FvtmLogger.log(e, "reading " + system.getType() + " region " + key.toString());
+		}
 		loaded = true;
 		return this;
 	}
@@ -96,7 +101,12 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 
 	private TagCW write(boolean syncpkt){
 		TagCW compound = TagCW.create();
-		system.writeRegion(this, compound, syncpkt);
+		try{
+			system.writeRegion(this, compound, syncpkt);
+		}
+		catch(Exception e){
+			FvtmLogger.log(e, "writing " + system.getType() + " region " + key.toString());
+		}
 		if(syncpkt){
 			compound.set("xz", key.toArray());
 			compound.set("sys", system.getType().ordinal());

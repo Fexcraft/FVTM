@@ -97,6 +97,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
 		VehicleData data = getDataFromTag(stack.getTag());
+		if(data.getType().isTrailer() && !context.getPlayer().isCrouching()) return InteractionResult.PASS;
 		EntityW ent = UniEntity.getEntity(context.getPlayer());
 		EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z), data, UniStack.getStack(stack));
 		return InteractionResult.SUCCESS;

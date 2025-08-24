@@ -25,7 +25,7 @@ public class PartItemApp implements Appendable<UniStack> {
 
 	@Override
 	public String id(){
-		return "fvtm:vehicle";
+		return "fvtm:part";
 	}
 
 }

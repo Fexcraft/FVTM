@@ -18,15 +18,13 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.OBB;
-import net.fexcraft.mod.fvtm.util.PartItemApp;
-import net.fexcraft.mod.fvtm.util.Rot;
+import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -271,6 +269,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 			}
 		}
+		VehicleData trai = isVehicle();
+		if(trai != null && trai.getType().isTrailer()){
+			for(Map.Entry<String, V3D> entry : data.getConnectors().entrySet()){
+				red = !trai.getType().getCategories().contains(entry.getKey());
+				DebugUtils.renderBB(entry.getValue(), 0.8f, red ? COL_RED : COL_GRN);
+			}
+		}
 		//
 		tool = isToolbox();
 		if(tool > 0){
@@ -310,6 +315,11 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	public static int isToolbox(){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem == false) return -1;
 		return ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var;
+	}
+
+	public static VehicleData isVehicle(){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof VehicleItem == false) return null;
+		return UniStack.getApp(Minecraft.getInstance().player.getMainHandItem(), VehItemApp.class).data;
 	}
 
 	private static PartData isNormalPart(){

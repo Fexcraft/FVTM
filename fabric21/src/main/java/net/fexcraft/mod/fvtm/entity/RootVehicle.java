@@ -88,9 +88,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, Veh
 			remove(RemovalReason.DISCARDED);
 			return;
 		}
-		TagCW com = TagCW.wrap(out);
-		vehicle.data.write(com);
-		vehicle.point.savePivot(com);
+		vehicle.save(TagCW.wrap(out));
 	}
 
 	@Override
@@ -100,11 +98,10 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, Veh
 			remove(RemovalReason.DISCARDED);
 			return;
 		}
-		vehicle.point.savePivot(com);
+		vehicle.save(com);
 		if(vehicle.front != null){
 			com.set("TruckId", vehicle.front.entity.getId());
 		}
-		vehicle.data.write(com);
 	}
 
 	@Override

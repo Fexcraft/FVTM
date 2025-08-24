@@ -79,8 +79,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag){
-		TagCW com = TagCW.wrap(tag);
-		vehicle.save(com);
+		vehicle.save(TagCW.wrap(tag));
 	}
 
 	@Override
@@ -101,6 +100,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 			vehicle.init(null, com);
 			readSpawnData(com);
 			init(com);
+			if(com.has("TruckId")){
+				vehicle.attachTo(com.getInteger("TruckId"));
+			}
 			setYRot(vehicle.point.getPivot().deg_yaw());
 			setXRot(vehicle.point.getPivot().deg_pitch());
 			protZ = rotZ = vehicle.point.getPivot().deg_roll();

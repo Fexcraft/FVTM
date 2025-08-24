@@ -506,11 +506,7 @@ public class VehicleInstance {
 					if(front != null) front.rear = null;
 					front = null;
 				}
-				VehicleInstance veh = ((FvtmWorld)entity.getWorld()).getVehicle(id);
-				if(veh != null){
-					veh.rear = this;
-					front = veh;
-				}
+				attachTo(id);
 				return;
 			}
 			case PKT_UPD_START_SOUND:{
@@ -540,6 +536,14 @@ public class VehicleInstance {
 				FvtmLogger.LOGGER.log("'" + data.getName() + "'/" + entity.getId() + " received invalid packet: " + packet.toString());
 				return;
 			}
+		}
+	}
+
+	public void attachTo(int id){
+		VehicleInstance veh = ((FvtmWorld)entity.getWorld()).getVehicle(id);
+		if(veh != null){
+			veh.rear = this;
+			front = veh;
 		}
 	}
 

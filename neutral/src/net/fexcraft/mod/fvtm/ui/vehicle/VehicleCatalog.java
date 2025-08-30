@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.ui.vehicle;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.vehicle.CatalogPreset;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -21,9 +19,8 @@ import static net.fexcraft.mod.uni.ui.ContainerInterface.SEND_TO_SERVER;
  */
 public class VehicleCatalog extends UserInterface {
 
-	protected ArrayList<Addon> vehpacks = new ArrayList<>();
-	protected HashMap<Addon, ArrayList<Vehicle>> vehicles = new LinkedHashMap<>();
 	protected ArrayList<StackWrapper> stacks = new ArrayList<>();
+	protected VehicleCatalogCon con;
 	protected CatalogPreset preset;
 	protected VehicleData data;
 	protected Vehicle veh;
@@ -33,14 +30,7 @@ public class VehicleCatalog extends UserInterface {
 
 	public VehicleCatalog(JsonMap map, ContainerInterface container) throws Exception{
 		super(map, container);
-		for(Vehicle veh : FvtmRegistry.VEHICLES){
-			if(veh.getCatalog().isEmpty()) continue;
-			if(!vehpacks.contains(veh.getAddon())){
-				vehpacks.add(veh.getAddon());
-				vehicles.put(veh.getAddon(), new ArrayList<>());
-			}
-			vehicles.get(veh.getAddon()).add(veh);
-		}
+		con = (VehicleCatalogCon)container;
 		switchPack(0);
 	}
 
@@ -84,15 +74,15 @@ public class VehicleCatalog extends UserInterface {
 
 	private void switchPack(int i){
 		pack += i;
-		if(pack >= vehpacks.size()) pack = 0;
-		if(pack < 0) pack = vehpacks.size() - 1;
-		texts.get("pack").value(vehpacks.get(pack).getName());
+		if(pack >= con.vehpacks.size()) pack = 0;
+		if(pack < 0) pack = con.vehpacks.size() - 1;
+		texts.get("pack").value(con.vehpacks.get(pack).getName());
 		switchVehicle(0);
 	}
 
 	private void switchVehicle(int i){
 		vehicle += i;
-		ArrayList<Vehicle> vehs = vehicles.get(vehpacks.get(pack));
+		ArrayList<Vehicle> vehs = con.vehicles.get(con.vehpacks.get(pack));
 		if(vehicle >= vehs.size()) vehicle = 0;
 		if(vehicle < 0) vehicle = vehs.size() - 1;
 		veh = vehs.get(vehicle);

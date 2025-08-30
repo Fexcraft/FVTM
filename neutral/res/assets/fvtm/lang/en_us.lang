@@ -154,8 +154,12 @@ ui.fvtm.vehicle_attributes.no_permission=No Permission
 ui.fvtm.vehicle_inventories.title=Vehicle Inventories
 ui.fvtm.vehicle_inventories.page_next=Next Page
 ui.fvtm.vehicle_inventories.page_prev=Previous Page
-//
-ui.fvtm.vehicle.catalog.no_vehicles=You have no Packs with Vehicles installed.
+
+ui.fvtm.vehicle.catalog.no_recipes=&cThere is no Vehicles with recipes.
+ui.fvtm.vehicle.catalog.total_packs=&6Packs installed: &7%s
+ui.fvtm.vehicle.catalog.vehicle_packs=&6Packs with Vehicles: &7%s
+ui.fvtm.vehicle.catalog.vehicle_recipes=&6Vehicles with recipes: &7%s
+ui.fvtm.vehicle.catalog.more_at=&bYou can find more packs at:
 ui.fvtm.vehicle_catalog.info=You can use this Catalog to &mcreate Blueprints&r craft vehicles.
 ui.fvtm.vehicle_catalog.prev_pack=Previous Pack
 ui.fvtm.vehicle_catalog.next_pack=Next Pack

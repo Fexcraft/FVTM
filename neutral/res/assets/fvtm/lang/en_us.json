@@ -138,7 +138,11 @@
 	"ui.fvtm.vehicle_inventories.page_next": "Next Page",
 	"ui.fvtm.vehicle_inventories.page_prev": "Previous Page",
 
-	"ui.fvtm.vehicle.catalog.no_vehicles": "You have no Packs with Vehicles installed.",
+	"ui.fvtm.vehicle.catalog.no_recipes": "\u00a7cThere is no Vehicles with recipes.",
+	"ui.fvtm.vehicle.catalog.total_packs": "\u00a76Packs installed: \u00a77%s",
+	"ui.fvtm.vehicle.catalog.vehicle_packs": "\u00a76Packs with Vehicles: \u00a77%s",
+	"ui.fvtm.vehicle.catalog.vehicle_recipes": "\u00a76Vehicles with recipes: \u00a77%s",
+	"ui.fvtm.vehicle.catalog.more_at": "\u00a7bYou can find more packs at:",
 	"ui.fvtm.vehicle_catalog.info": "You can use this Catalog to \u00A7mcreate Blueprints\u00A7r craft vehicles.",
 	"ui.fvtm.vehicle_catalog.prev_pack": "Previous Pack",
 	"ui.fvtm.vehicle_catalog.next_pack": "Next Pack",

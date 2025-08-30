@@ -4,6 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.vehicle.CatalogPreset;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.uni.UniEntity;
@@ -12,6 +13,8 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -19,8 +22,30 @@ import java.util.Map;
  */
 public class VehicleCatalogCon extends ContainerInterface {
 
+	protected ArrayList<Addon> vehpacks = new ArrayList<>();
+	protected HashMap<Addon, ArrayList<Vehicle>> vehicles = new LinkedHashMap<>();
+
 	public VehicleCatalogCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
+		for(Vehicle veh : FvtmRegistry.VEHICLES){
+			if(veh.getCatalog().isEmpty()) continue;
+			if(!vehpacks.contains(veh.getAddon())){
+				vehpacks.add(veh.getAddon());
+				vehicles.put(veh.getAddon(), new ArrayList<>());
+			}
+			vehicles.get(veh.getAddon()).add(veh);
+		}
+		if(!player.entity.isOnClient() && vehicles.isEmpty()){
+			player.entity.send("ui.fvtm.vehicle.catalog.no_recipes");
+			player.entity.send("ui.fvtm.vehicle.catalog.total_packs", FvtmRegistry.ADDONS.size());
+			player.entity.send("ui.fvtm.vehicle.catalog.vehicle_packs", vehpacks.size());
+			int vehs = 0;
+			for(ArrayList<Vehicle> list : vehicles.values()) vehs += list.size();
+			player.entity.send("ui.fvtm.vehicle.catalog.vehicle_recipes", vehs);
+			player.entity.send("ui.fvtm.vehicle.catalog.more_at");
+			player.entity.sendLink(root, "https://fexcraft.net/wiki/mod/fvtm/known-packs");
+			player.entity.closeUI();
+		}
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.ui;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.render.FvtmRenderState;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleCatalog;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.uni.ui.ContainerInterface;

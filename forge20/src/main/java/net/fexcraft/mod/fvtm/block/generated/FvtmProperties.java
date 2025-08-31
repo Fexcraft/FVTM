@@ -16,6 +16,8 @@ public class FvtmProperties {
 	public static final IntegerProperty PROP_ROT8 = IntegerProperty.create("rotation", 0, 7);
 	public static final IntegerProperty PROP_ROT16 = IntegerProperty.create("rotation", 0, 15);
 	public static final IntegerProperty PROP_HEIGHT = IntegerProperty.create("height", 0, 15);
+	public static final IntegerProperty PROP_LINE_TYPE = IntegerProperty.create("line_type", 0, 3);
+	public static final IntegerProperty PROP_LINE_ROT = IntegerProperty.create("line_rot", 0, 3);
 	//
 	public static final VoxelShape[] SHAPES = new VoxelShape[16];
 	static{

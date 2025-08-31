@@ -96,7 +96,6 @@ public class Resources20 extends FvtmResources {
 		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new VehicleItem(veh))));
 		FvtmRegistry.BLOCKS.forEach(blk -> {
 			if(blk.getBlockType().isGenericRoad()){
-				BlockItem20 item = null;
 				for(int i = 0; i < 16; i++){
 					IDL idl = IDLManager.getIDLCached(blk.getID().space() + ":" + blk.getID().id() + "_" + i);
 					int height = i;

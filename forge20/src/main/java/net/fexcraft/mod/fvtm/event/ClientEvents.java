@@ -108,7 +108,7 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void modelLoaderReg(ModelEvent.RegisterGeometryLoaders event){
-		event.register("block", new GeoLoaderFvtm());
+		event.register("road_lines", new GeoLoaderFvtm());
 	}
 
 }

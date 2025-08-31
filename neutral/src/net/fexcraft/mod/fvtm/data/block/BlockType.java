@@ -44,7 +44,7 @@ public enum BlockType {
         rotations = rots;
     }
 
-    @FunctionalInterface
+	@FunctionalInterface
     public static interface GetBlockTypeImpl {
 
         public Class get(BlockType type, boolean functional, boolean plainmodel);
@@ -107,6 +107,10 @@ public enum BlockType {
     public boolean isGenericRoad(){
         return this == GENERIC_ROAD;
     }
+
+	public boolean isRoadLayer(){
+		return this == GENERIC_ROAD_LINES || this == GENERIC_ROAD_MARKER;
+	}
 
     public boolean isMultiBlock(){
         return this == MULTIBLOCK_4ROT;

@@ -4,11 +4,16 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fexcraft.mod.fvtm.FVTM4;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.util.RoadLinesModelLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -65,6 +70,11 @@ public class ClientEvents {
 		event.registerBlockEntityRenderer(FVTM4.CONST_ENTITY.get(), con -> new ConstRenderer());
 		event.registerBlockEntityRenderer(FVTM4.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
 		event.registerBlockEntityRenderer(FVTM4.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
+		for(Block block : FvtmRegistry.BLOCKS){
+			if(block.getBlockType() == BlockType.GENERIC_ROAD_MARKER){
+				ItemBlockRenderTypes.setRenderLayer((net.minecraft.world.level.block.Block)block.getBlock(), RenderType.cutout());
+			}
+		}
 	}
 
 	@SubscribeEvent

@@ -33,6 +33,7 @@ import java.util.function.Function;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.common.Static.thirtysecondth;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.PROP_HEIGHT;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -80,7 +81,8 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 		}
 
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction direction, RandomSource randomSource){
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource randomSource){
+			int hei = state == null ? 0 : state.getValue(PROP_HEIGHT);
 			List<BakedQuad> quads = new ArrayList<>();
 			for(Polygon poli : hed.polygons){
 				Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
@@ -89,17 +91,17 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 				QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();
 				baker.setDirection(Direction.getNearest(vec2.x, vec2.y, vec2.z));
 				baker.setSprite(sprite);
-				putVertexData(baker, poli.vertices[0], vec2);
-				putVertexData(baker, poli.vertices[1], vec2);
-				putVertexData(baker, poli.vertices[2], vec2);
-				putVertexData(baker, poli.vertices[3], vec2);
+				putVertexData(baker, poli.vertices[0], vec2, hei);
+				putVertexData(baker, poli.vertices[1], vec2, hei);
+				putVertexData(baker, poli.vertices[2], vec2, hei);
+				putVertexData(baker, poli.vertices[3], vec2, hei);
 				quads.add(baker.getQuad());
 			}
 			return quads;
 		}
 
-		private void putVertexData(QuadBakingVertexConsumer.Buffered builder, Vertex vertex, Vec3f nor){
-			builder.vertex(vertex.vector.x, vertex.vector.y, vertex.vector.z);
+		private void putVertexData(QuadBakingVertexConsumer.Buffered builder, Vertex vertex, Vec3f nor, int off){
+			builder.vertex(vertex.vector.x, vertex.vector.y - off * sixteenth, vertex.vector.z);
 			builder.normal(nor.x, nor.y, nor.z);
 			builder.color(1f, 1f, 1f, 1f);
 			builder.uv(sprite.getU(vertex.u), sprite.getV(vertex.v));

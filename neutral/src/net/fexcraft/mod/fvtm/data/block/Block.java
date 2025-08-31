@@ -40,7 +40,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 				.getConstructor(net.fexcraft.mod.fvtm.data.block.Block.class).newInstance(blk);
 		}
 		catch(Throwable e){
-			FvtmLogger.log(e, "block class creation");
+			FvtmLogger.log(e, "block class creation / " + blk.id);
 			return null;
 		}
 	};

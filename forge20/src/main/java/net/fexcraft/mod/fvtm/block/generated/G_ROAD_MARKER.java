@@ -1,0 +1,43 @@
+package net.fexcraft.mod.fvtm.block.generated;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import javax.annotation.Nullable;
+
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
+
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
+public class G_ROAD_MARKER extends PlainBase {
+
+	public G_ROAD_MARKER(net.fexcraft.mod.fvtm.data.block.Block type){
+		super(type);
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> sd){
+		sd.add(PROP_HEIGHT);
+	}
+
+	@Nullable
+	public BlockState getStateForPlacement(BlockPlaceContext context){
+		BlockState state = context.getLevel().getBlockState(context.getClickedPos().below());
+		VoxelShape shape = state.getShape(context.getLevel(), context.getClickedPos().below());
+		return defaultBlockState().setValue(PROP_HEIGHT, (int)((shape.bounds().maxY - 1) * -16));
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
+		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
+	}
+
+}

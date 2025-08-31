@@ -89,7 +89,7 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 				Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
 				Vec3f vec2 = vec1.cross(vec0).normalize();
 				QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();
-				baker.setDirection(Direction.getNearest(vec2.x, vec2.y, vec2.z));
+				baker.setDirection(Direction.UP);
 				baker.setSprite(sprite);
 				putVertexData(baker, poli.vertices[0], vec2, hei);
 				putVertexData(baker, poli.vertices[1], vec2, hei);

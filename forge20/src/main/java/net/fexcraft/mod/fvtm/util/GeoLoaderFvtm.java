@@ -7,7 +7,8 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.frl.gen.Generator_Cuboid;
+import net.fexcraft.lib.frl.gen.ValueMap;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -26,9 +27,11 @@ import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.common.Static.thirtysecondth;
 
 /**
@@ -45,7 +48,7 @@ public class GeoLoaderFvtm implements IGeometryLoader<GeoLoaderFvtm.UnbakedGeo> 
 
 		@Override
 		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> function, ModelState state, ItemOverrides overrides, ResourceLocation resloc){
-			return new BakedGeo(function);
+			return new BakedGeo(context, function);
 		}
 
 	}
@@ -53,19 +56,27 @@ public class GeoLoaderFvtm implements IGeometryLoader<GeoLoaderFvtm.UnbakedGeo> 
 	public static class BakedGeo implements BakedModel {
 
 		private TextureAtlasSprite sprite;
+		private TextureAtlasSprite particle;
 
-		public BakedGeo(Function<Material, TextureAtlasSprite> function){
-			try{
-				sprite = function.apply(new Material(new ResourceLocation("fvtm:blocks/asphalt"), new ResourceLocation("fvtm:blocks/asphalt")));
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
+		public BakedGeo(IGeometryBakingContext context, Function<Material, TextureAtlasSprite> function){
+			sprite = function.apply(context.getMaterial("texture"));
+			particle = function.apply(context.getMaterial("particle"));
 		}
 
 		private static Polyhedron<?> hed = new Polyhedron<>();
 		static{
-			hed.importMRT(new ModelRendererTurbo(null).addBox(0, 0, 0, 32, 1, 32), false, thirtysecondth);
+			ValueMap map = new ValueMap();
+			map.put("x", 0f);
+			map.put("y", 0f);
+			map.put("z", 0f);
+			map.put("width", 16f);
+			map.put("height", thirtysecondth);
+			map.put("depth", 16f);
+			map.put("texture_width", 1f);
+			map.put("texture_height", 1f);
+			map.put("scale", sixteenth);
+			map.put("rem_poly", Arrays.asList(0, 1, 2, 4, 5));
+			Generator_Cuboid.make(hed, map);
 		}
 
 		@Override
@@ -88,10 +99,10 @@ public class GeoLoaderFvtm implements IGeometryLoader<GeoLoaderFvtm.UnbakedGeo> 
 		}
 
 		private void putVertexData(QuadBakingVertexConsumer.Buffered builder, Vertex vertex, Vec3f nor){
-			builder.vertex(vertex.vector.x, vertex.vector.y - 0.5, vertex.vector.z);
+			builder.vertex(vertex.vector.x, vertex.vector.y, vertex.vector.z);
 			builder.normal(nor.x, nor.y, nor.z);
-			builder.color(255, 255, 255, 255);
-			builder.uv(vertex.u, vertex.v);
+			builder.color(1f, 1f, 1f, 1f);
+			builder.uv(sprite.getU(vertex.u), sprite.getV(vertex.v));
 			builder.endVertex();
 		}
 
@@ -117,7 +128,7 @@ public class GeoLoaderFvtm implements IGeometryLoader<GeoLoaderFvtm.UnbakedGeo> 
 
 		@Override
 		public TextureAtlasSprite getParticleIcon(){
-			return sprite;
+			return particle;
 		}
 
 		@Override

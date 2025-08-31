@@ -37,7 +37,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	public static BiFunction<Block, Object, Object> BLK_GETTER = (blk, obj) -> {
 		try{
 			return BlockType.BLOCK_IMPL.get(blk.getBlockType(), blk.hasEntity() || blk.hasRelay(), blk.hasPlainModel())
-				.getConstructor(net.fexcraft.mod.fvtm.data.block.Block.class).newInstance(blk);
+				.getConstructor(Block.class).newInstance(blk);
 		}
 		catch(Throwable e){
 			FvtmLogger.log(e, "block class creation / " + blk.id);

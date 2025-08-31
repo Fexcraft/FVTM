@@ -6,7 +6,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.util.RoadLinesModelLoader;
@@ -71,7 +70,7 @@ public class ClientEvents {
 		event.registerBlockEntityRenderer(FVTM4.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
 		event.registerBlockEntityRenderer(FVTM4.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
 		for(Block block : FvtmRegistry.BLOCKS){
-			if(block.getBlockType() == BlockType.GENERIC_ROAD_MARKER){
+			if(block.getBlockType().isRoadLayer()){
 				ItemBlockRenderTypes.setRenderLayer((net.minecraft.world.level.block.Block)block.getBlock(), RenderType.cutout());
 			}
 		}

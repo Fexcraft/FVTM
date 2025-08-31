@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +31,9 @@ public class G_ROAD_MARKER extends PlainBase {
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		BlockState state = context.getLevel().getBlockState(context.getClickedPos().below());
 		VoxelShape shape = state.getShape(context.getLevel(), context.getClickedPos().below());
-		return defaultBlockState().setValue(PROP_HEIGHT, (int)((shape.bounds().maxY - 1) * -16));
+		int val = (int)((shape.bounds().maxY - 1) * -16);
+		if(val >= 16 || val < 0) val = 0;
+		return defaultBlockState().setValue(PROP_HEIGHT, val);
 	}
 
 	@Override

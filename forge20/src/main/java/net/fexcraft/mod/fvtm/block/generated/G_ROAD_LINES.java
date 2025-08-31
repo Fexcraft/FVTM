@@ -12,6 +12,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
+import static net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER.getMarkerHeight;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -40,14 +41,10 @@ public class G_ROAD_LINES extends PlainBase {
 	}
 
 	private BlockState getCurrentState(LevelAccessor level, BlockPos pos){
-		BlockState state = level.getBlockState(pos.below());
-		VoxelShape shape = state.getShape(level, pos.below());
-		int val = shape.isEmpty() ? 0 : (int)((shape.bounds().maxY - 1) * -16);
-		if(val >= 16 || val < 0) val = 0;
-		boolean nc = isCompatible(level.getBlockState(pos.north()), level.getBlockState(pos.north().below()));
-		boolean sc = isCompatible(level.getBlockState(pos.south()), level.getBlockState(pos.south().below()));
-		boolean ec = isCompatible(level.getBlockState(pos.east()), level.getBlockState(pos.east().below()));
-		boolean wc = isCompatible(level.getBlockState(pos.west()), level.getBlockState(pos.west().below()));
+		boolean nc = isCompatible(level.getBlockState(pos.north()), level.getBlockState(pos.north().below()), level.getBlockState(pos.north().above()));
+		boolean sc = isCompatible(level.getBlockState(pos.south()), level.getBlockState(pos.south().below()), level.getBlockState(pos.south().above()));
+		boolean ec = isCompatible(level.getBlockState(pos.east()), level.getBlockState(pos.east().below()), level.getBlockState(pos.east().above()));
+		boolean wc = isCompatible(level.getBlockState(pos.west()), level.getBlockState(pos.west().below()), level.getBlockState(pos.west().above()));
 		int lines = (nc ? 1 : 0) + (sc ? 1 : 0) + (wc ? 1 : 0) + (ec ? 1 : 0);
 		int lt = 0;
 		int rot = 0;
@@ -83,7 +80,7 @@ public class G_ROAD_LINES extends PlainBase {
 		else{
 			lt = 3;
 		}
-		return defaultBlockState().setValue(PROP_HEIGHT, val).setValue(PROP_LINE_TYPE, lt).setValue(PROP_LINE_ROT, rot);
+		return defaultBlockState().setValue(PROP_HEIGHT, getMarkerHeight(level, pos)).setValue(PROP_LINE_TYPE, lt).setValue(PROP_LINE_ROT, rot);
 	}
 
 	private boolean isCompatible(BlockState... states){

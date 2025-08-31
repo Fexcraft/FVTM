@@ -3,12 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.frl.Polygon;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.frl.Vertex;
-import net.fexcraft.lib.frl.gen.Generator_Cuboid;
-import net.fexcraft.lib.frl.gen.ValueMap;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,16 +19,14 @@ import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.common.Static.thirtysecondth;
-import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.PROP_HEIGHT;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -64,47 +57,103 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 			particle = function.apply(context.getMaterial("particle"));
 		}
 
-		private static Polyhedron<?> hed = new Polyhedron<>();
+		private static double[][] quad = {
+			{ 1, thirtysecondth, 0 },
+			{ 0, thirtysecondth, 0 },
+			{ 0, thirtysecondth, 1 },
+			{ 1, thirtysecondth, 1 }
+		};
+		private static int[][] uv_full = {
+			{ 16,  0 }, { 0,  0 }, { 0, 16 }, { 16, 16 }
+		};
+		private static int[][] uv_ls = {
+			{ 8,  0 }, { 0,  0 }, { 0, 8 }, { 8, 8 }
+		};
+		private static int[][] uv_lc = {
+			{ 16,  0 }, { 8,  0 }, { 8, 8 }, { 16, 8 }
+		};
+		private static int[][] uv_lt = {
+			{ 8,  8 }, { 0,  8 }, { 0, 16 }, { 8, 16 }
+		};
+		private static int[][] uv_lf = {
+			{ 16,  8 }, { 8,  8 }, { 8, 16 }, { 16, 16 }
+		};
+		private static int[][][] uv_ls2 = new int[2][][];
+		private static int[][][] uv_lc2 = new int[4][][];
+		private static int[][][] uv_l3 = new int[4][][];
 		static{
-			ValueMap map = new ValueMap();
-			map.put("x", 0f);
-			map.put("y", 0f);
-			map.put("z", 0f);
-			map.put("width", 16f);
-			map.put("height", thirtysecondth);
-			map.put("depth", 16f);
-			map.put("texture_width", 1f);
-			map.put("texture_height", 1f);
-			map.put("scale", sixteenth);
-			map.put("rem_poly", Arrays.asList(0, 1, 2, 4, 5));
-			Generator_Cuboid.make(hed, map);
+			uv_ls2[0] = uv_ls;
+			uv_ls2[1] = rotateR(uv_ls);
+			uv_lc2[0] = uv_lc;
+			uv_lc2[1] = rotateL(uv_lc);
+			uv_lc2[2] = rotateU(uv_lc);
+			uv_lc2[3] = rotateR(uv_lc);
+			uv_l3[0] = uv_lt;
+			uv_l3[1] = rotateL(uv_lt);
+			uv_l3[2] = rotateU(uv_lt);
+			uv_l3[3] = rotateR(uv_lt);
+		}
+
+		private static int[][] rotateR(int[][] ar){
+			int[][] na = new int[ar.length][ar[0].length];
+			na[0] = ar[3];
+			na[1] = ar[0];
+			na[2] = ar[1];
+			na[3] = ar[2];
+			return na;
+		}
+
+		private static int[][] rotateL(int[][] ar){
+			int[][] na = new int[ar.length][ar[0].length];
+			na[0] = ar[1];
+			na[1] = ar[2];
+			na[2] = ar[3];
+			na[3] = ar[0];
+			return na;
+		}
+
+		private static int[][] rotateU(int[][] ar){
+			int[][] na = new int[ar.length][ar[0].length];
+			na[0] = ar[2];
+			na[1] = ar[3];
+			na[2] = ar[0];
+			na[3] = ar[1];
+			return na;
 		}
 
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource randomSource){
+		public List<BakedQuad> getQuads(BlockState state, Direction direction, RandomSource random){
 			int hei = state == null ? 0 : state.getValue(PROP_HEIGHT);
-			List<BakedQuad> quads = new ArrayList<>();
-			for(Polygon poli : hed.polygons){
-				Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
-				Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
-				Vec3f vec2 = vec1.cross(vec0).normalize();
-				QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();
-				baker.setDirection(Direction.UP);
-				baker.setSprite(sprite);
-				putVertexData(baker, poli.vertices[0], vec2, hei);
-				putVertexData(baker, poli.vertices[1], vec2, hei);
-				putVertexData(baker, poli.vertices[2], vec2, hei);
-				putVertexData(baker, poli.vertices[3], vec2, hei);
-				quads.add(baker.getQuad());
+			boolean hl = state.getBlock() instanceof G_ROAD_LINES;
+			int[][] uv = uv_full;
+			if(hl){
+				int lines = state.getValue(PROP_LINE_TYPE);
+				int rot = state.getValue(PROP_LINE_ROT);
+				uv = switch(lines){
+					case 0 -> uv_ls2[rot];
+					case 1 -> uv_lc2[rot];
+					case 2 -> uv_l3[rot];
+					case 3 -> uv_lf;
+					default -> uv;
+				};
 			}
+			List<BakedQuad> quads = new ArrayList<>();
+			QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();
+			baker.setDirection(Direction.UP);
+			baker.setSprite(sprite);
+			addVertex(baker, quad[0], hei, uv[0][0], uv[0][1]);
+			addVertex(baker, quad[1], hei, uv[1][0], uv[1][1]);
+			addVertex(baker, quad[2], hei, uv[2][0], uv[2][1]);
+			addVertex(baker, quad[3], hei, uv[3][0], uv[3][1]);
+			quads.add(baker.getQuad());
 			return quads;
 		}
 
-		private void putVertexData(QuadBakingVertexConsumer.Buffered builder, Vertex vertex, Vec3f nor, int off){
-			builder.vertex(vertex.vector.x, vertex.vector.y - off * sixteenth, vertex.vector.z);
-			builder.normal(nor.x, nor.y, nor.z);
+		private void addVertex(QuadBakingVertexConsumer.Buffered builder, double[] vec, int hei, double u, double v){
+			builder.vertex(vec[0], vec[1] - hei * sixteenth, vec[2]);
+			//builder.normal(1, 1, 1);
 			builder.color(1f, 1f, 1f, 1f);
-			builder.uv(sprite.getU(vertex.u), sprite.getV(vertex.v));
+			builder.uv(sprite.getU(u), sprite.getV(v));
 			builder.endVertex();
 		}
 

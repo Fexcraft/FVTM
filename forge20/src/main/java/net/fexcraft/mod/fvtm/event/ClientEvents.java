@@ -4,13 +4,16 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fexcraft.mod.fvtm.FVTM4;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.*;
+import net.fexcraft.mod.fvtm.util.GeoLoaderFvtm;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -101,6 +104,11 @@ public class ClientEvents {
 			}
 		}
 
+	}
+
+	@SubscribeEvent
+	public static void modelLoaderReg(ModelEvent.RegisterGeometryLoaders event){
+		event.register("block", new GeoLoaderFvtm());
 	}
 
 }

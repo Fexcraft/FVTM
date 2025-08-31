@@ -37,7 +37,7 @@ import static net.fexcraft.lib.common.Static.thirtysecondth;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class GeoLoaderFvtm implements IGeometryLoader<GeoLoaderFvtm.UnbakedGeo> {
+public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoader.UnbakedGeo> {
 
 	@Override
 	public UnbakedGeo read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {

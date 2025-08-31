@@ -4,10 +4,9 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fexcraft.mod.fvtm.FVTM4;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.*;
-import net.fexcraft.mod.fvtm.util.GeoLoaderFvtm;
+import net.fexcraft.mod.fvtm.util.RoadLinesModelLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -108,7 +107,7 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void modelLoaderReg(ModelEvent.RegisterGeometryLoaders event){
-		event.register("road_lines", new GeoLoaderFvtm());
+		event.register("road_lines", new RoadLinesModelLoader());
 	}
 
 }

@@ -92,7 +92,7 @@ public class ClientEvents {
 		VEHICLE {
 			@Override
 			public boolean isActive(){
-				return minecraft.player != null && minecraft.player.getVehicle() instanceof RootVehicle;
+				return minecraft != null && minecraft.player != null && minecraft.player.getVehicle() instanceof RootVehicle;
 			}
 
 			@Override

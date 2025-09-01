@@ -36,7 +36,7 @@ public class G_ROAD_MARKER extends PlainBase {
 	public static int getMarkerHeight(LevelAccessor level, BlockPos pos){
 		BlockState state = level.getBlockState(pos.below());
 		VoxelShape shape = state.getShape(level, pos.below());
-		int val = (int)((shape.bounds().maxY - 1) * -16);
+		int val = shape.isEmpty() ? 0 : (int)((shape.bounds().maxY - 1) * -16);
 		if(val >= 16 || val < 0) val = 0;
 		return val;
 	}

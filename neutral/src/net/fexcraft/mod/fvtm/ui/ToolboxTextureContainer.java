@@ -45,7 +45,7 @@ public class ToolboxTextureContainer extends ContainerInterface {
 		switch(key){
 			case "open_wiki":{
 				if(player.entity.getWorld().isClient()){
-					player.entity.sendLink(ui.root, "https://fexcraft.net/wiki/mod/fvtm/toolbox#texture");
+					player.entity.sendLink("https://fexcraft.net/wiki/mod/fvtm/toolbox#texture");
 				}
 				return null;
 			}

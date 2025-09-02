@@ -91,9 +91,14 @@ public class G_ROAD_LINES extends PlainBase {
 	}
 
 	private boolean isCompatible(BlockState state){
-		if(state.getBlock() instanceof PlainBase == false) return false;
+		if(state.getBlock() == this) return true;
+		if(state.getBlock() instanceof PlainBase == false || type.getConnectsTo().isEmpty()) return false;
 		net.fexcraft.mod.fvtm.data.block.Block blk = ((PlainBase)state.getBlock()).type;
-		return blk.getBlockType().isRoadLayer();
+		if(!blk.getBlockType().isRoadLayer() || blk.getConnectsTo().isEmpty()) return false;
+		for(String ct : blk.getConnectsTo()){
+			if(type.getConnectsTo().contains(ct)) return true;
+		}
+		return false;
 	}
 
 	@Override

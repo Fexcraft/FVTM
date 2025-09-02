@@ -28,9 +28,9 @@ public class FvtmProperties {
 	}
 	public static final VoxelShape[] LOWER_SHAPES = new VoxelShape[16];
 	static{
-		LOWER_SHAPES[0] = Block.box(0.0, 0.0, 0.0, 16.0, 0.25, 16.0);
+		LOWER_SHAPES[0] = Block.box(0.0, 0.0, 0.0, 16.0, 0.5, 16.0);
 		for(int i = 1; i < 16; i++){
-			LOWER_SHAPES[i] = Block.box(0, -16 + i, 0, 16, -16 + i + 0.25, 16);
+			LOWER_SHAPES[i] = Block.box(0, -16 + i, 0, 16, -16 + i + 0.5, 16);
 		}
 	}
 

@@ -69,7 +69,7 @@ public class Passenger implements Appendable<UniEntity> {
 				if(fp == null || fp.notified) return;
 				try{
 					entity.send("fvtm.seat.controls_info");
-					entity.send("https://fexcraft.net/wiki/mod/fvtm/controls");
+					entity.sendLink("https://fexcraft.net/wiki/mod/fvtm/controls");
 					fp.notified = true;
 				}
 				catch(Exception e){

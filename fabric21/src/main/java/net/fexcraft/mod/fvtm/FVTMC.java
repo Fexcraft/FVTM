@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -26,6 +27,7 @@ import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.util.BakingPlugin;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.fvtm.util.SpawnPacket;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -157,6 +159,8 @@ public class FVTMC implements ClientModInitializer {
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderRailPreview);
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RoadRenderer::renderRoadPreview);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, VehicleHUD.ID, new VehicleHUD());
+
+		ModelLoadingPlugin.register(new BakingPlugin());
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){

@@ -4,6 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static net.fexcraft.lib.common.Static.sixteenth;
-import static net.fexcraft.lib.common.Static.thirtysecondth;
+import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 
 /**
@@ -136,6 +136,10 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 					case 3 -> uv_lf;
 					default -> uv;
 				};
+			}
+			else if(state.getBlock() instanceof G_ROAD_MARKER4){
+				Direction dir = state.getValue(FACING);
+				for(int i = 0; i < dir.get2DDataValue(); i++) uv = rotateL(uv);
 			}
 			List<BakedQuad> quads = new ArrayList<>();
 			QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();

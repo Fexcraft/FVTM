@@ -15,7 +15,9 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -39,6 +41,19 @@ public class BlockItem20 extends net.minecraft.world.item.BlockItem implements C
 
 	private static Properties genProps(Block type){
 		return new Properties().stacksTo(type.getMaxStackSize());
+	}
+
+	@Override
+	public boolean canPlace(BlockPlaceContext context, BlockState state){
+		if(!super.canPlace(context, state)) return false;
+		if(type.getBlockType().isRoadLayer()){
+			state = context.getLevel().getBlockState(context.getClickedPos().below());
+			if(state.getBlock() instanceof PlainBase){
+				Block blk = ((PlainBase)state.getBlock()).type;
+				if(blk.getBlockType().isRoadLayer()) return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -39,6 +39,10 @@ public class Pivot {
 		return new V3D(d3[0], d3[1], d3[2]);
 	}
 
+	public double[] get_vector(double[] arr){
+		return VecUtil.rotate(arr, rroll, rpitch, ryaw);
+	}
+
 	public void save(TagCW tag){
 		tag.set("yaw", ryaw);
 		tag.set("pitch", rpitch);

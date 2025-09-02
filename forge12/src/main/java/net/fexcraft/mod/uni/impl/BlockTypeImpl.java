@@ -40,7 +40,7 @@ public class BlockTypeImpl {
             case DOUBLE_SWITCH_4ROT: return DBSW_4ROT_TE.class;
             case GENERIC_POST_LIKE: return G_POSTLIKE.class;
         }
-        return null;
+        return G_SIMPLE.class;
     }
 
 }

@@ -36,7 +36,7 @@ public class ToolboxPaintContainer extends ContainerInterface {
 			}
 			case "open_wiki":{
 				if(player.entity.getWorld().isClient()){
-					player.entity.sendLink(ui.root, "https://fexcraft.net/wiki/mod/fvtm/toolbox#painter");
+					player.entity.sendLink("https://fexcraft.net/wiki/mod/fvtm/toolbox#painter");
 				}
 				return null;
 			}

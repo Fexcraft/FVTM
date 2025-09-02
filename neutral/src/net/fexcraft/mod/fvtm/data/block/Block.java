@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data.block;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -27,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -46,6 +44,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	};
 	protected List<IDL> textures;
 	protected ArrayList<BlockFunction> functions = new ArrayList<>();
+	protected ArrayList<String> connectsto;
 	protected Map<String, RGB> channels = new LinkedHashMap<>();
 	protected Map<String, Sound> sounds = new LinkedHashMap<>();
 	protected Map<String, AABBs> aabbs = new LinkedHashMap<>();
@@ -76,6 +75,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	protected String mapcolor;
 	protected String harverest_class;
 	protected String soundtype;
+	protected String conngroup;
 	protected float hardness;
 	protected float lightlevel;
 	protected float resistance;
@@ -187,6 +187,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 			relaydata = new RelayData(map.getMap("WireRelay"));
 		}
 		soundtype = map.getString("SoundType", "stone");
+		connectsto = map.has("ConnectsTo") ? map.getArray("ConnectsTo").toStringList() : new ArrayList<>();
 		//
 		ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
@@ -448,6 +449,10 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 
 	public String getSoundTypeId(){
 		return soundtype;
+	}
+
+	public ArrayList<String> getConnectsTo(){
+		return connectsto;
 	}
 
 }

@@ -43,7 +43,7 @@ public class BlockItem20 extends net.minecraft.world.item.BlockItem implements C
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){;
-		tooltip.add(GenericUtils.format("&9Name: &7" + type.getName()));
+		//tooltip.add(GenericUtils.format("&9Name: &7" + type.getName()));
 		for(String s : type.getDescription()) tooltip.add(GenericUtils.format(I18n.get(s)));
 		if(type.getBlockType().isGenericRoad()){
 			tooltip.add(GenericUtils.format("&9Height: &7" + (var == 0 ? 16 : var)));

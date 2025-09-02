@@ -43,7 +43,7 @@ public class VehicleCatalogCon extends ContainerInterface {
 			for(ArrayList<Vehicle> list : vehicles.values()) vehs += list.size();
 			player.entity.send("ui.fvtm.vehicle.catalog.vehicle_recipes", vehs);
 			player.entity.send("ui.fvtm.vehicle.catalog.more_at");
-			player.entity.sendLink(root, "https://fexcraft.net/wiki/mod/fvtm/known-packs");
+			player.entity.sendLink("https://fexcraft.net/wiki/mod/fvtm/known-packs");
 			player.entity.closeUI();
 		}
 	}

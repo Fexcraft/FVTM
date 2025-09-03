@@ -87,9 +87,10 @@ public class TabInitializerF implements CTab {
 		}
 		if(item instanceof BlockItem20){
 			BlockItem20 bi = (BlockItem20)item;
-			if(bi.getContent().getBlockType().isGenericRoad()){
+			/*if(bi.getContent().getBlockType().isGenericRoad()){
 				if(bi.var > 0 && bi.var < 16 && !(bi.var == 4 || bi.var == 8 || bi.var == 12)) return;
-			}
+			}*/
+			if(bi.getContent().shouldHideItem()) return;
 		}
 		out.accept(item);
 	}

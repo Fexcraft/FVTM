@@ -110,12 +110,12 @@ public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, Blo
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(type.shouldHideItem()) return;
     	if(tab == CreativeTabs.SEARCH || tab == ctab){
-    		if(type.getBlockType().isGenericRoad()){
+    		/*if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));
 	    		items.add(new ItemStack(this, 1, 2)); items.add(new ItemStack(this, 1, 1));
     		}
-    		else if(type.getBlockType().getMetaVariants() > 0){
+    		else*/ if(type.getBlockType().getMetaVariants() > 0){
     			for(int i = 0; i < type.getBlockType().getMetaVariants(); i++){
     	    		items.add(new ItemStack(this, 1, i));
     			}

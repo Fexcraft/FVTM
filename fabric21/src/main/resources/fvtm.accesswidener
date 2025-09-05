@@ -8,3 +8,4 @@ extendable method net/minecraft/world/entity/Entity moveOrInterpolateTo (Lnet/mi
 accessible field net/minecraft/client/Minecraft fontManager Lnet/minecraft/client/gui/font/FontManager;
 accessible field net/minecraft/client/gui/font/FontManager fontSets Ljava/util/Map;
 accessible field net/minecraft/client/gui/font/FontManager missingFontSet Lnet/minecraft/client/gui/font/FontSet;
+accessible field net/minecraft/client/renderer/ItemBlockRenderTypes TYPE_BY_BLOCK Ljava/util/Map;

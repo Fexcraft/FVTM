@@ -4,12 +4,11 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
+import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.core.Direction;
@@ -34,9 +33,15 @@ public class RoadLinesModel {
 
 	public static class UnbakedLines implements BlockStateModel.UnbakedRoot {
 
+		private ResourceLocation texmodel;
+
+		public UnbakedLines(Block blk){
+			texmodel = ResourceLocation.parse(blk.getID().space() + ":block/" + blk.getID().path());
+		}
+
 		@Override
 		public BlockStateModel bake(BlockState state, ModelBaker baker){
-			return new BakedLines(state, baker);
+			return new BakedLines(this, state, baker);
 		}
 
 		@Override
@@ -46,7 +51,7 @@ public class RoadLinesModel {
 
 		@Override
 		public void resolveDependencies(Resolver resolver){
-
+			resolver.markDependency(texmodel);
 		}
 
 	}
@@ -64,11 +69,12 @@ public class RoadLinesModel {
 		private LineModelPart part;
 		private BlockState state;
 
-		public BakedLines(BlockState blkst, ModelBaker baker){
-			sprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.parse("fvtm:block/asphalt")), MDN);
-			particle = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.parse("fvtm:block/asphalt")), MDN);
-			part = new LineModelPart(this);
+		public BakedLines(UnbakedLines root, BlockState blkst, ModelBaker baker){
 			state = blkst;
+			var model = baker.getModel(root.texmodel);
+			sprite = baker.sprites().get(model.getTopTextureSlots().getMaterial("texture"), MDN);
+			particle = baker.sprites().get(model.getTopTextureSlots().getMaterial("particle"), MDN);
+			part = new LineModelPart(this);
 		}
 
 		@Override

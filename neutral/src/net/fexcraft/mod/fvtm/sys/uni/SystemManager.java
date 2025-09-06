@@ -121,26 +121,24 @@ public class SystemManager {
 		LOADED_DIM.put(dim, true);
 	}
 	
-	private static long getDate(){
+	public static long getNextInterval(long interval){
 		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
-		while((mid += UNLOAD_INTERVAL) < date);
+		while(mid < date) mid += interval;
 		return mid;
 	}
 
 	public static void onServerStarting(){
-		long mid = getDate();
 		for(Map<String, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
-				sys.setupTimer(mid);
+				sys.setupTimer(getNextInterval(sys.getTimerInterval()));
 			}
 		}
 	}
 
 	public static void onWorldLoad(WorldW world){
-		long mid = getDate();
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
-			sys.setupTimer(mid);
+			sys.setupTimer(getNextInterval(sys.getTimerInterval()));
 		}
 	}
 

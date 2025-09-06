@@ -24,42 +24,13 @@ import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
  */
 public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
-	private long gc_trafficsigns;
-
 	public SignSystem(WorldW world){
 		super(world);
-		if(!world.isClient()) load();
 	}
 
 	@Override
 	public SystemManager.Systems getType(){
 		return SystemManager.Systems.SIGN;
-	}
-
-	public void load(){
-		try{
-			File file = new File(getSaveRoot(), "/traffic_signs.dat");
-			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			TagCW compound = WrapperHolder.read(file);
-			if(compound == null || compound.empty()) return;
-			gc_trafficsigns = compound.getLong("GlobalCounterSigns");
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	public void save(){
-		TagCW compound = TagCW.create();
-		compound.set("GlobalCounterSigns", gc_trafficsigns);
-		try{
-			File file = new File(getSaveRoot(), "/traffic_signs.dat");
-			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-			WrapperHolder.write(compound, file);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -73,7 +44,6 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 	public void unload(){
 		if(!world.isClient()){
 			regions.values().forEach(reg -> reg.save());
-			save();
 		}
 		regions.clear();
 	}
@@ -86,10 +56,6 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 	@Override
 	public void onChunkUnload(ChunkW chunk){
 		regions.get(RegionKey.getRegionXZ(chunk.x(), chunk.z()), true).chucks.values().removeIf(pre -> pre.x() == chunk.x() && pre.z() == chunk.z());
-	}
-
-	public long getNewSignId(){
-		return gc_trafficsigns++;
 	}
 	
 	//

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.RAIL_SAVE_INTERVAL;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.*;
 
@@ -580,8 +580,13 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	}
 
 	@Override
+	public long getTimerInterval(){
+		return RAIL_SAVE_INTERVAL;
+	}
+
+	@Override
 	public void addTimerTask(long time){
-		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
+		timer.schedule(new TimedTask(this), new Date(time), RAIL_SAVE_INTERVAL);
 	}
 
 	@Override
@@ -601,10 +606,11 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		public void run(){
 			ArrayList<SystemRegion> regs = new ArrayList<>();
 			for(SystemRegion region : railsys.regions.values()){
+				region.save();
 				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 			}
 			for(SystemRegion region : regs){
-				region.save(); railsys.regions.remove(region.key);
+				railsys.regions.remove(region.key);
 			}
 		}
 

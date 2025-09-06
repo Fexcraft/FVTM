@@ -90,12 +90,12 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		TagCW compound = write(false);
 		if(compound.empty()){
-			FvtmLogger.log(system.getType() + "-Region [" + key + "] has no data to save, skipping.");
+			FvtmLogger.debug(system.getType() + "-Region [" + key + "] has no data to save, skipping.");
 			return this;
 		}
 		compound.set("Saved", Time.getDate());
 		WrapperHolder.write(compound, file);
-		FvtmLogger.log("Saved " + system.getType() + "-Region [" + key + "].");
+		FvtmLogger.debug("Saved " + system.getType() + "-Region [" + key + "].");
 		return this;
 	}
 

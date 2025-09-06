@@ -11,6 +11,8 @@ import net.fexcraft.mod.uni.UniReg;
 import java.io.File;
 import java.util.ArrayList;
 
+import static net.fexcraft.lib.common.math.Time.MIN_MS;
+
 /**
  * FVTM Config File
  *
@@ -48,7 +50,7 @@ public class Config extends ConfigBase {
 	public static float BRAKE_PER_PRESS_TICK;
 	//rail
 	public static boolean DISABLE_RAILS;
-	public static int UNLOAD_INTERVAL;
+	public static int RAIL_SAVE_INTERVAL;
 	public static int RAIL_SEGMENTATOR;
 	public static int MAX_RAIL_TRACK_LENGTH;
 	//road
@@ -60,9 +62,11 @@ public class Config extends ConfigBase {
 	public static boolean DISABLE_WIRES;
 	public static int MAX_WIRE_LENGTH;
 	public static float WIRE_SLACK_ADJUSTMENT;
+	public static int WIRE_SAVE_INTERVAL;
 	//signs
 	public static boolean DISABLE_SIGNS;
 	public static int SIGN_VIEW_DISTANCE;
+	public static int SIGN_SAVE_INTERVAL;
 	//deprecated
 	public static boolean OVERLAY_ON_BOTTOM;
 
@@ -176,10 +180,10 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, catr, "disable", new JsonValue(false))
 			.info("If FVTM rail system should be disabled.")
 			.cons((con, map) -> DISABLE_RAILS = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catr, "unload_interval", new JsonValue(300000))
-			.info("Interval (milliseconds) in which it is checked for trains/rails to be unloaded.")
-			.cons((con, map) -> UNLOAD_INTERVAL = con.getInteger(map))
-			.rang(60000, 86400000));
+		entries.add(new ConfigEntry(this, catr, "save_interval", new JsonValue(5))
+			.info("Interval (in minutes) in which the rail system is saved and inactive regions unloaded.")
+			.cons((con, map) -> RAIL_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
+			.rang(1, 60));
 		entries.add(new ConfigEntry(this, catr, "generation_segmentator", new JsonValue(4))
 			.info("Segmentator divider for rail generator, valid are 16, 8, 4, 2 or 1.")
 			.cons((con, map) -> {
@@ -226,11 +230,19 @@ public class Config extends ConfigBase {
 			.info("Default slack adjustment value when using the toolbox item on a wire.")
 			.cons((con, map) -> WIRE_SLACK_ADJUSTMENT = con.getFloat(map))
 			.rang(Static.sixteenth, 1f));
+		entries.add(new ConfigEntry(this, catw, "save_interval", new JsonValue(5))
+			.info("Interval (in minutes) in which the wire system is saved and inactive regions unloaded.")
+			.cons((con, map) -> WIRE_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
+			.rang(1, 60));
 
 		//signs
 		entries.add(new ConfigEntry(this, cats, "disable", new JsonValue(false))
 			.info("If the FVTM sign system should be disabled.")
 			.cons((con, map) -> DISABLE_SIGNS = con.getBoolean(map)));
+		entries.add(new ConfigEntry(this, cats, "save_interval", new JsonValue(5))
+			.info("Interval (in minutes) in which the signs system is saved and inactive regions unloaded.")
+			.cons((con, map) -> SIGN_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
+			.rang(1, 60));
 
 		//1.12 specific settings
 		if(UniReg.LOADER_VERSION.equals("1.12")){

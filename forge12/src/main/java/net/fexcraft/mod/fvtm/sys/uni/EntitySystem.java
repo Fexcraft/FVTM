@@ -48,6 +48,11 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	@Override
+	public long getTimerInterval(){
+		return 0;
+	}
+
+	@Override
 	public String getRegFolderName(){
 		return "entities";
 	}

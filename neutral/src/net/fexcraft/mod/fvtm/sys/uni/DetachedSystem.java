@@ -39,6 +39,7 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 	
 	public void setupTimer(long time){
 		if(!hasTimer()) return;
+		stopTimer();
 		timer = new Timer();
 		addTimerTask(time);
 	}

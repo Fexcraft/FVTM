@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
-import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.WIRE_SAVE_INTERVAL;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 import java.io.File;
@@ -410,8 +410,13 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	}
 
 	@Override
+	public long getTimerInterval(){
+		return WIRE_SAVE_INTERVAL;
+	}
+
+	@Override
 	public void addTimerTask(long time){
-		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
+		timer.schedule(new TimedTask(this), new Date(time), WIRE_SAVE_INTERVAL);
 	}
 
 	@Override
@@ -431,10 +436,10 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		public void run(){
 			ArrayList<SystemRegion<?, RelayHolder>> regs = new ArrayList<>();
 			for(SystemRegion<?, RelayHolder> region : wiresys.regions.values()){
+				region.save();
 				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 			}
 			for(SystemRegion<?, RelayHolder> region : regs){
-				region.save();
 				wiresys.regions.remove(region.key);
 			}
 		}

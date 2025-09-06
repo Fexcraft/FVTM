@@ -49,6 +49,8 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 	}
 	
 	public abstract boolean hasTimer();
+
+	public abstract long getTimerInterval();
 	
 	public void addTimerTask(long time){}
 	

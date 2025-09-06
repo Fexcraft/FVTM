@@ -157,7 +157,6 @@ public class SystemManager {
 		SINGLEPLAYER = CLIENTLOADED = false;
 	}
 
-	/** Called client side. */
 	public static void onWorldUnload(WorldW world){
 		Object dim = world.dimkey();
 		ConcurrentHashMap<Systems, DetachedSystem> map = SYSTEMS_DIM.get(dim);

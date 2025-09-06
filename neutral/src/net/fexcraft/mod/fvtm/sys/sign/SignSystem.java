@@ -8,14 +8,12 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
 
-import static net.fexcraft.mod.fvtm.Config.UNLOAD_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.SIGN_SAVE_INTERVAL;
 
 /**
  * "Sign System"
@@ -66,8 +64,13 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 	}
 
 	@Override
+	public long getTimerInterval(){
+		return SIGN_SAVE_INTERVAL;
+	}
+
+	@Override
 	public void addTimerTask(long time){
-		timer.schedule(new TimedTask(this), new Date(time), UNLOAD_INTERVAL);
+		timer.schedule(new TimedTask(this), new Date(time), SIGN_SAVE_INTERVAL);
 	}
 
 	@Override
@@ -87,10 +90,10 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 		public void run(){
 			ArrayList<SystemRegion> regs = new ArrayList<>();
 			for(SystemRegion region : signsys.regions.values()){
+				region.save();
 				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 			}
 			for(SystemRegion region : regs){
-				region.save();
 				signsys.regions.remove(region.key);
 			}
 		}
@@ -109,18 +112,17 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
 	@Override
 	public void writeRegion(SystemRegion<SignSystem, SignInstance> region, TagCW com){
-		if(!region.getObjects().isEmpty()){
-			TagLW list = TagLW.create();
-			for(SignInstance sign : region.getObjects().values()){
-				try{
-					list.add(sign.write());
-				}
-				catch(Exception e){
-					FvtmLogger.log(e, "saving sign " + sign.vec + "  in region " + region.key.toString());
-				}
+		if(region.getObjects().isEmpty()) return;
+		TagLW list = TagLW.create();
+		for(SignInstance sign : region.getObjects().values()){
+			try{
+				list.add(sign.write());
 			}
-			com.set("Signs", list);
+			catch(Exception e){
+				FvtmLogger.log(e, "saving sign " + sign.vec + "  in region " + region.key.toString());
+			}
 		}
+		com.set("Signs", list);
 	}
 
 	@Override

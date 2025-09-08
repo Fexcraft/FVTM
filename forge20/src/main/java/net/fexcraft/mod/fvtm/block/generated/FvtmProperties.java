@@ -6,6 +6,8 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.HashMap;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -18,6 +20,15 @@ public class FvtmProperties {
 	public static final IntegerProperty PROP_HEIGHT = IntegerProperty.create("height", 0, 15);
 	public static final IntegerProperty PROP_LINE_TYPE = IntegerProperty.create("line_type", 0, 3);
 	public static final IntegerProperty PROP_LINE_ROT = IntegerProperty.create("line_rot", 0, 3);
+	//
+	public static final HashMap<Integer, IntegerProperty> PROP_PATTERN_X = new HashMap<>();
+	public static final HashMap<Integer, IntegerProperty> PROP_PATTERN_Z = new HashMap<>();
+	static {
+		for(int i = 1; i < 8; i++){
+			PROP_PATTERN_X.put(i, IntegerProperty.create("pattern_x", 0, i));
+			PROP_PATTERN_Z.put(i, IntegerProperty.create("pattern_z", 0, i));
+		}
+	}
 	//
 	public static final VoxelShape[] SHAPES = new VoxelShape[16];
 	static{

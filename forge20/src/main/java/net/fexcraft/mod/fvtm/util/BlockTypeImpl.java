@@ -35,6 +35,7 @@ public class BlockTypeImpl {
             case GENERIC_ROAD_MARKER: return G_ROAD_MARKER.class;
             case GENERIC_ROAD_LINES: return G_ROAD_LINES.class;
             case GENERIC_ROAD_MARKER_4ROT: return G_ROAD_MARKER4.class;
+            case GENERIC_ROAD_PATTERN: return G_ROAD_PATTERN.class;
             /*case MULTIBLOCK_4ROT: return plain ? M_4ROT.class : M_4ROT_TE.class;
             case SIGNAL_4ROT: return SG_4ROT_TE.class;
             case SIGNAL_16ROT: return SG_16ROT_TE.class;

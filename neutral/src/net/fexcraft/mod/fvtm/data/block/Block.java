@@ -48,6 +48,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	protected Map<String, RGB> channels = new LinkedHashMap<>();
 	protected Map<String, Sound> sounds = new LinkedHashMap<>();
 	protected Map<String, AABBs> aabbs = new LinkedHashMap<>();
+	protected Map<String, JsonValue> cstates;
 	protected ModelData modeldata;
 	protected BlockType blocktype;
 	protected RelayData relaydata;
@@ -188,6 +189,12 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		}
 		soundtype = map.getString("SoundType", "stone");
 		connectsto = map.has("ConnectsTo") ? map.getArray("ConnectsTo").toStringList() : new ArrayList<>();
+		if(map.has("CustomStates")){
+			cstates = new LinkedHashMap<>();
+			for(Map.Entry<String, JsonValue<?>> entry : map.getMap("CustomStates").entries()){
+				cstates.put(entry.getKey(), entry.getValue());
+			}
+		}
 		//
 		ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
@@ -453,6 +460,10 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 
 	public ArrayList<String> getConnectsTo(){
 		return connectsto;
+	}
+
+	public Map<String, JsonValue> getCustomStates(){
+		return cstates;
 	}
 
 }

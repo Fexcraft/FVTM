@@ -28,6 +28,7 @@ public enum BlockType {
     GENERIC_ROAD(0),
     GENERIC_ROAD_MARKER(0),
     GENERIC_ROAD_MARKER_4ROT(4),
+	GENERIC_ROAD_PATTERN(4),
     GENERIC_ROAD_LINES(0),
     MULTIBLOCK_4ROT(4),
     SIGNAL_4ROT(4),
@@ -110,7 +111,7 @@ public enum BlockType {
     }
 
 	public boolean isRoadLayer(){
-		return this == GENERIC_ROAD_LINES || this == GENERIC_ROAD_MARKER || this == GENERIC_ROAD_MARKER_4ROT;
+		return ordinal() >= GENERIC_ROAD_MARKER.ordinal() && ordinal() <= GENERIC_ROAD_LINES.ordinal();
 	}
 
     public boolean isMultiBlock(){

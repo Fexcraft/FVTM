@@ -92,6 +92,7 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 					{ us * x + us,  vs * z + vs }
 				};
 				Direction dir = state.getValue(FACING);
+				uv = rotateU(uv);
 				for(int i = 0; i < dir.get2DDataValue(); i++) uv = rotateL(uv);
 			}
 			List<BakedQuad> quads = new ArrayList<>();

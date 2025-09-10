@@ -32,8 +32,10 @@ import java.util.function.BiFunction;
  */
 public class Block extends Content<Block> implements TextureHolder, ColorHolder, SoundHolder, WithItem, ItemTextureable {
 
+	public static Block BLK_GETTER_CACHE;
 	public static BiFunction<Block, Object, Object> BLK_GETTER = (blk, obj) -> {
 		try{
+			BLK_GETTER_CACHE = blk;
 			return BlockType.BLOCK_IMPL.get(blk.getBlockType(), blk.hasEntity() || blk.hasRelay(), blk.hasPlainModel())
 				.getConstructor(Block.class).newInstance(blk);
 		}

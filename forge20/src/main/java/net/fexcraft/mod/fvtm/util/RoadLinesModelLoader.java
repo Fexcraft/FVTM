@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD_PATTERN;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -62,7 +63,7 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 		public List<BakedQuad> getQuads(BlockState state, Direction direction, RandomSource random){
 			int hei = state == null ? 0 : state.getValue(PROP_HEIGHT);
 			boolean hl = state.getBlock() instanceof G_ROAD_LINES;
-			int[][] uv = uv_full;
+			double[][] uv = uv_full;
 			if(hl){
 				int lines = state.getValue(PROP_LINE_TYPE);
 				int rot = state.getValue(PROP_LINE_ROT);
@@ -75,6 +76,21 @@ public class RoadLinesModelLoader implements IGeometryLoader<RoadLinesModelLoade
 				};
 			}
 			else if(state.getBlock() instanceof G_ROAD_MARKER4){
+				Direction dir = state.getValue(FACING);
+				for(int i = 0; i < dir.get2DDataValue(); i++) uv = rotateL(uv);
+			}
+			else if(state.getBlock() instanceof G_ROAD_PATTERN){
+				G_ROAD_PATTERN blk = (G_ROAD_PATTERN)state.getBlock();
+				int x = state.getValue(blk.prop_x);
+				int z = state.getValue(blk.prop_z);
+				float us = 16f / blk.texx;
+				float vs = 16f / blk.texz;
+				uv = new double[][]{
+					{ us * x + us,  vs * z },
+					{ us * x,  vs * z },
+					{ us * x,  vs * z + vs },
+					{ us * x + us,  vs * z + vs }
+				};
 				Direction dir = state.getValue(FACING);
 				for(int i = 0; i < dir.get2DDataValue(); i++) uv = rotateL(uv);
 			}

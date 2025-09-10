@@ -13,24 +13,24 @@ public class BakedQuadData {
 		{ 0, thirtysecondth, 1 },
 		{ 1, thirtysecondth, 1 }
 	};
-	public static int[][] uv_full = {
+	public static double[][] uv_full = {
 		{ 16,  0 }, { 0,  0 }, { 0, 16 }, { 16, 16 }
 	};
-	public static int[][] uv_ls = {
+	public static double[][] uv_ls = {
 		{ 8,  0 }, { 0,  0 }, { 0, 8 }, { 8, 8 }
 	};
-	public static int[][] uv_lc = {
+	public static double[][] uv_lc = {
 		{ 16,  0 }, { 8,  0 }, { 8, 8 }, { 16, 8 }
 	};
-	public static int[][] uv_lt = {
+	public static double[][] uv_lt = {
 		{ 8,  8 }, { 0,  8 }, { 0, 16 }, { 8, 16 }
 	};
-	public static int[][] uv_lf = {
+	public static double[][] uv_lf = {
 		{ 16,  8 }, { 8,  8 }, { 8, 16 }, { 16, 16 }
 	};
-	public static int[][][] uv_ls2 = new int[2][][];
-	public static int[][][] uv_lc2 = new int[4][][];
-	public static int[][][] uv_l3 = new int[4][][];
+	public static double[][][] uv_ls2 = new double[2][][];
+	public static double[][][] uv_lc2 = new double[4][][];
+	public static double[][][] uv_l3 = new double[4][][];
 	static{
 		uv_ls2[0] = uv_ls;
 		uv_ls2[1] = rotateR(uv_ls);
@@ -44,8 +44,8 @@ public class BakedQuadData {
 		uv_l3[3] = rotateR(uv_lt);
 	}
 
-	public static int[][] rotateR(int[][] ar){
-		int[][] na = new int[ar.length][ar[0].length];
+	public static double[][] rotateR(double[][] ar){
+		double[][] na = new double[ar.length][ar[0].length];
 		na[0] = ar[3];
 		na[1] = ar[0];
 		na[2] = ar[1];
@@ -53,8 +53,8 @@ public class BakedQuadData {
 		return na;
 	}
 
-	public static int[][] rotateL(int[][] ar){
-		int[][] na = new int[ar.length][ar[0].length];
+	public static double[][] rotateL(double[][] ar){
+		double[][] na = new double[ar.length][ar[0].length];
 		na[0] = ar[1];
 		na[1] = ar[2];
 		na[2] = ar[3];
@@ -62,8 +62,8 @@ public class BakedQuadData {
 		return na;
 	}
 
-	public static int[][] rotateU(int[][] ar){
-		int[][] na = new int[ar.length][ar[0].length];
+	public static double[][] rotateU(double[][] ar){
+		double[][] na = new double[ar.length][ar[0].length];
 		na[0] = ar[2];
 		na[1] = ar[3];
 		na[2] = ar[0];

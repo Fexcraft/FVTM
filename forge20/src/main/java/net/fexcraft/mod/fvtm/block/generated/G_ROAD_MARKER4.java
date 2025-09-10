@@ -28,8 +28,11 @@ public class G_ROAD_MARKER4 extends G_ROAD_MARKER {
 
 	@Nullable
 	public BlockState getStateForPlacement(BlockPlaceContext context){
+		Direction rot = Direction.NORTH;
+		if(type.isRandomRot()) rot = Direction.values()[Static.random.nextInt(4) + 2];
+		else if(context.getPlayer() != null) rot = context.getPlayer().getDirection().getOpposite();
 		return defaultBlockState().setValue(PROP_HEIGHT, getMarkerHeight(context.getLevel(), context.getClickedPos()))
-			.setValue(FACING, type.isRandomRot() ? Direction.values()[Static.random.nextInt(4) + 2] : context.getPlayer().getDirection().getOpposite());
+			.setValue(FACING, rot);
 	}
 
 }

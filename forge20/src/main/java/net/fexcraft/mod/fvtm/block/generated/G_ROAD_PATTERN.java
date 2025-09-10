@@ -24,6 +24,8 @@ public class G_ROAD_PATTERN extends G_ROAD_MARKER {
 
 	public IntegerProperty prop_x;
 	public IntegerProperty prop_z;
+	public int texx;
+	public int texz;
 	private int sizex;
 	private int sizez;
 	private int defx;
@@ -40,9 +42,11 @@ public class G_ROAD_PATTERN extends G_ROAD_MARKER {
 		JsonArray arr = BLK_GETTER_CACHE.getCustomStates().get("pattern_x").asArray();
 		prop_x = FvtmProperties.PROP_PATTERN_X.get(sizex = arr.get(0).integer_value());
 		defx = arr.get(1).integer_value();
+		texx = arr.get(2).integer_value();
 		arr = BLK_GETTER_CACHE.getCustomStates().get("pattern_z").asArray();
 		prop_z = FvtmProperties.PROP_PATTERN_Z.get(sizez = arr.get(0).integer_value());
 		defz = arr.get(1).integer_value();
+		texz = arr.get(2).integer_value();
 		sd.add(prop_x);
 		sd.add(prop_z);
 	}

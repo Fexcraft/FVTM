@@ -153,6 +153,7 @@ public class FVTM implements ModInitializer {
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		BLK_GETTER = (blk, prop) -> {
 			try{
+				net.fexcraft.mod.fvtm.data.block.Block.BLK_GETTER_CACHE = blk;
 				return BlockType.BLOCK_IMPL.get(blk.getBlockType(), blk.hasEntity() || blk.hasRelay(), blk.hasPlainModel())
 					.getConstructor(BlockBehaviour.Properties.class, net.fexcraft.mod.fvtm.data.block.Block.class).newInstance(prop, blk);
 			}

@@ -4,6 +4,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD_PATTERN;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
@@ -102,7 +103,7 @@ public class RoadLinesModel {
 		public List<BakedQuad> getQuads(@Nullable Direction direction){
 			int hei = root.state == null ? 0 : root.state.getValue(PROP_HEIGHT);
 			boolean hl = root.state.getBlock() instanceof G_ROAD_LINES;
-			int[][] uv = uv_full;
+			double[][] uv = uv_full;
 			if(hl){
 				int lines = root.state.getValue(PROP_LINE_TYPE);
 				int rot = root.state.getValue(PROP_LINE_ROT);
@@ -118,10 +119,26 @@ public class RoadLinesModel {
 				Direction dir = root.state.getValue(FACING);
 				for(int i = 0; i < dir.get2DDataValue(); i++) uv = rotateL(uv);
 			}
+			else if(root.state.getBlock() instanceof G_ROAD_PATTERN){
+				G_ROAD_PATTERN blk = (G_ROAD_PATTERN)root.state.getBlock();
+				int x = root.state.getValue(blk.prop_x);
+				int z = root.state.getValue(blk.prop_z);
+				float us = 16f / blk.texx;
+				float vs = 16f / blk.texz;
+				uv = new double[][]{
+					{ us * x + us,  vs * z },
+					{ us * x,  vs * z },
+					{ us * x,  vs * z + vs },
+					{ us * x + us,  vs * z + vs }
+				};
+				Direction dir = root.state.getValue(FACING);
+				uv = rotateU(uv);
+				for(int i = 0; i < dir.get2DDataValue(); i++) uv = rotateL(uv);
+			}
 			List<BakedQuad> quads = new ArrayList<>();
 			for(int i = 0; i < 4; i++){
 				view.pos(i, new Vector3f((float)quad[i][0], (float)quad[i][1] - hei * sixteenth, (float)quad[i][2]));
-				view.uv(i, new Vector2f(root.sprite.getU(uv[i][0] * sixteenth), root.sprite.getV(uv[i][1] * sixteenth)));
+				view.uv(i, new Vector2f(root.sprite.getU((float)uv[i][0] * sixteenth), root.sprite.getV((float)uv[i][1] * sixteenth)));
 				view.color(i, 0xffffffff);
 			}
 			quads.add(view.toBakedQuad(root.sprite));

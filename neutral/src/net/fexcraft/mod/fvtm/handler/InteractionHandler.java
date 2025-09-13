@@ -780,11 +780,18 @@ public class InteractionHandler {
 		public InteractRefHolder holder(){
 			return holder;
 		}
+
+		@Override
+		public String toString(){
+			return holder + "-" + pos;
+		}
+
 	}
 
 	public static interface InteractRefHolder {
 
 		public void markChanged();
+
 	}
 
 }

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -10,12 +11,15 @@ import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SeparateRenderCache {
 
 	public static final Program SEP_VEH_CACHE = new Program.BlankProgram("fvtm:sep_veh_cache");
 	public static final ArrayList<VehicleInstance> VEHICLES = new ArrayList<>();
 	//
+	public static ConcurrentHashMap<V3D, JackEntity> JACKS = new ConcurrentHashMap<>();
+ 	//
 	public static final ArrayList<SeparateModelGroupList> SORTED_BLK_QUEUE = new ArrayList<>();
 	public static final ArrayList<BlockData> SORTED_BLK_DATA = new ArrayList<>();
 	public static final ArrayList<Object> SORTED_BLK_ENTITY = new ArrayList<>();
@@ -29,6 +33,10 @@ public class SeparateRenderCache {
 		SORTED_BLK_QUEUE.clear();
 		SORTED_BLK_DATA.clear();
 		SORTED_BLK_ENTITY.clear();
+	}
+
+	public static void insert(JackEntity jack){
+		JACKS.put(jack.getVehiclePos(), jack);
 	}
 
 	public static class SepVehCache {

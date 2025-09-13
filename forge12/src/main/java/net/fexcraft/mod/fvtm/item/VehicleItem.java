@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
+import net.fexcraft.mod.fvtm.block.generated.JACK;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
@@ -130,7 +130,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand){
     	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
-    	if(world.getBlockState(pos).getBlock() instanceof VehicleLiftBlock) return EnumActionResult.PASS;
+    	if(world.getBlockState(pos).getBlock() instanceof JACK) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
 		if(data.getType().isTrailer() && !player.isSneaking()) return EnumActionResult.PASS;
 		EntityW ent = UniEntity.getEntity(player);

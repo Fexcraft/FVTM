@@ -30,7 +30,6 @@ import net.fexcraft.mod.fvtm.model.Transforms.TF_Translate;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12;
-import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.FclRecipe;
@@ -229,16 +228,6 @@ public class Resources12 extends FvtmResources {
 			.add(new ItemStack(Items.BOOK, 2))
 			.add(new ItemStack(Blocks.LEVER, 8))
 			.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(VehicleLiftBlock.INSTANCE))
-			.add(new ItemStack(Blocks.IRON_BLOCK, 2))
-			.add(new ItemStack(Items.IRON_INGOT, 8))
-			.add(new ItemStack(Items.COMPARATOR, 2))
-			.add(new ItemStack(Items.REPEATER, 4))
-			.add(new ItemStack(Items.REDSTONE, 4))
-			.add(new ItemStack(Items.BOOK, 1))
-			.add(new ItemStack(Blocks.LEVER, 2))
-			.add(new ItemStack(Blocks.PISTON, 2))
-			.register();
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(FuelFillerBlock.INSTANCE))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
 			.add(new ItemStack(Blocks.HOPPER, 2))
@@ -369,12 +358,6 @@ public class Resources12 extends FvtmResources {
 		FuelFillerBlock.ITEM.setRegistryName(FuelFillerBlock.INSTANCE.getRegistryName());
 		FuelFillerBlock.ITEM.setTranslationKey(FuelFillerBlock.INSTANCE.getTranslationKey());
 		GameRegistry.registerTileEntity(FuelFillerEntity.class, new ResourceLocation("fvtm:fuel_filler"));
- 		//
-		VehicleLiftBlock.INSTANCE = new VehicleLiftBlock();
-		VehicleLiftBlock.ITEM = new ItemBlock16(VehicleLiftBlock.INSTANCE);
-		VehicleLiftBlock.ITEM.setRegistryName(VehicleLiftBlock.INSTANCE.getRegistryName());
-		VehicleLiftBlock.ITEM.setTranslationKey(VehicleLiftBlock.INSTANCE.getTranslationKey());
-		GameRegistry.registerTileEntity(VehicleLiftEntity.class, VehicleLiftBlock.INSTANCE.getRegistryName());
 		//
 		Asphalt.INSTANCE = new Asphalt();
 		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
@@ -387,7 +370,6 @@ public class Resources12 extends FvtmResources {
 
 	@SideOnly(Side.CLIENT)
 	private void registerTESR(){
-		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(VehicleLiftEntity.class, new net.fexcraft.mod.fvtm.render.VehicleLiftRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstructorEntity.class, new net.fexcraft.mod.fvtm.render.CatalogRenderer());
 		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(FuelFillerEntity.class, new net.fexcraft.mod.fvtm.render.FuelFillerRenderer());

@@ -4,9 +4,9 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.InteractZone;
+import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.BlockSeat;
@@ -88,8 +88,8 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		}
 		else{
 			V3I pos = new V3I(packet.getIntArray("lift"), 0);
-			VehicleLiftEntity tile = (VehicleLiftEntity)world.getTileEntity(new BlockPos(pos.x, pos.y, pos.z));
-			return tile == null ? null : new AbstractMap.SimpleEntry<>(tile.getVehicleData(), tile.iref());
+			JackEntity tile = (JackEntity)world.getTileEntity(new BlockPos(pos.x, pos.y, pos.z));
+			return tile == null ? null : new AbstractMap.SimpleEntry<>(tile.getVehicle(), tile.iref());
 		}
 	}
 
@@ -118,7 +118,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 	public Map<VehicleData, InteractRef> getVehicleDatas(V3D pos){
 		LinkedHashMap<VehicleData, InteractRef> map = new LinkedHashMap<>();
 		VehicleInstance inst = null;
-		VehicleLiftEntity lift;
+		JackEntity jack;
 		for(Entity entity : world.loadedEntityList){
 			if(entity instanceof RootVehicle){
 				inst = ((RootVehicle)entity).vehicle;
@@ -129,11 +129,11 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 			}
 		}
 		for(TileEntity tile : world.loadedTileEntityList){
-			if(!(tile instanceof VehicleLiftEntity)) continue;
-			if((lift = (VehicleLiftEntity)tile).getVehicleData() == null) continue;
-			for(InteractZone zone : lift.getVehicleData().getInteractZones().values()){
-				if(map.containsKey(lift.getVehicleData())) break;
-				if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos)) map.put(lift.getVehicleData(), lift.iref());
+			if(!(tile instanceof JackEntity)) continue;
+			if((jack = (JackEntity)tile).getVehicle() == null) continue;
+			for(InteractZone zone : jack.getVehicle().getInteractZones().values()){
+				if(map.containsKey(jack.getVehicle())) break;
+				if(zone.inRange(jack.getVehicle(), jack.getVehiclePos(), pos)) map.put(jack.getVehicle(), jack.iref());
 			}
 		}
 		return map;

@@ -38,6 +38,7 @@ public class RenderView extends Render<RenderViewEntity> implements IRenderFacto
 			SignRenderer.renderSigns(entity.world, cx, cy, cz, ticks);
 			WireRenderer.renderWires(entity.world, cx, cy, cz, ticks);
 			ParticleRenderer.renderParticles(entity.world, cx, cy, cz, ticks);
+			VehicleRenderer.renderJacks(entity.world, cx, cy, cz, ticks);
 		}
 		GL11.glPopMatrix();
 	}

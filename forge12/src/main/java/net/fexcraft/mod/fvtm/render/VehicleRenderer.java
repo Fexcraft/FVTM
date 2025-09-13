@@ -191,9 +191,10 @@ public class VehicleRenderer {
 		GL11.glPushMatrix();
 		GL11.glTranslated(-cx, -cy, -cz);
 		for(Entry<V3D, JackEntity> entry : JACKS.entrySet()){
+			JACK_TE jack = (JACK_TE)entry.getValue();
+			if(jack.getVehicle() == null) continue;
 			GL11.glPushMatrix();
 			RENDERER.translate(entry.getKey());
-			JACK_TE jack = (JACK_TE)entry.getValue();
 			GL11.glRotated(BlockType.GENERIC_4ROT.getRotationFor(jack.getBlockMetadata()), 0f, 1f, 0f);
 			int i = getBrightness(entry.getKey().x, entry.getKey().y, entry.getKey().z), j = i % 65536, k = i / 65536;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);

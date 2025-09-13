@@ -202,6 +202,7 @@ public class FVTM {
 		GameRegistry.registerTileEntity(SwitchTileEntity.class, new ResourceLocation("fvtm:rail_switch"));
 		GameRegistry.registerTileEntity(MultiblockTileEntity.class, new ResourceLocation("fvtm:multiblock"));
 		GameRegistry.registerTileEntity(MultiblockTickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
+		GameRegistry.registerTileEntity(JACK_TE.class, new ResourceLocation("fvtm:jack_stand"));
 		//GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
@@ -276,17 +277,10 @@ public class FVTM {
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
 			ConstructorBlock.INSTANCE.setCreativeTab(tab);
 			FuelFillerBlock.INSTANCE.setCreativeTab(tab);
-			VehicleLiftBlock.INSTANCE.setCreativeTab(tab);
-			/*DisplayBlock.INSTANCE.setCreativeTab(tab);
-			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(tab);
-			StreetSignItem.INSTANCE.setCreativeTab(tab);
-			TrafficSignItem.INSTANCE.setCreativeTab(tab);
-			TrainAdjuster.INSTANCE.setCreativeTab(tab);*/
 			JunctionToolItem.INSTANCE.setCreativeTab(tab);
 			RoadToolItem.INSTANCE.setCreativeTab(tab);
 			ToolboxItem.INSTANCE.setCreativeTab(tab);
 			Asphalt.INSTANCE.setCreativeTab(tab);
-			//VPInfo.INSTANCE.setCreativeTab(tab);
 			//
 			if(DefaultPrograms.SIGNAL_TIMER[0] == null){
 				DefaultPrograms.setupSignalTimer();

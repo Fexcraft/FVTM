@@ -15,18 +15,23 @@ import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class JACK_TE extends BlockTileEntity implements JackEntity, PacketTagListener, InteractionHandler.InteractRefHolder {
 
 	protected InteractionHandler.InteractRef ref = new InteractionHandler.InteractRef(this);
+	protected ArrayList<V3D> coords = new ArrayList<>();
 	protected VehicleData vehicle;
-	protected float offset;
+	protected double height;
+	protected double offset;
 
 	public JACK_TE(BlockBase type){
 		super(type);
-		offset = type.type.getCustomStates().get("height").asArray().get(1).float_value();
+		height = type.type.getCustomStates().get("height").asArray().get(1).float_value();
 	}
 
 	public JACK_TE(){}
@@ -37,6 +42,7 @@ public class JACK_TE extends BlockTileEntity implements JackEntity, PacketTagLis
         if(compound.hasKey("VehicleData")){
 			vehicle = FvtmResources.getVehicleData(compound.getCompoundTag("VehicleData"));
 			vehicle.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(meta), true);
+			offset = fillCoords(vehicle, coords);
 		}
     }
 
@@ -53,6 +59,7 @@ public class JACK_TE extends BlockTileEntity implements JackEntity, PacketTagLis
 		item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 		item.setItem(vehicle.newItemStack().local());
 		world.spawnEntity(item);
+		vehicle = null;
 		if(upd) sendVehUpdate();
 	}
 
@@ -64,8 +71,13 @@ public class JACK_TE extends BlockTileEntity implements JackEntity, PacketTagLis
 		return ref.set(getV3I(), pos.toLong(), getVehiclePos());
 	}
 
+	@Override
+	public List<V3D> getCoords(){
+		return coords;
+	}
+
 	public V3D getVehiclePos(){
-		return new V3D(pos.getX() + 0.5, pos.getY() + offset, pos.getZ() + 0.5);
+		return new V3D(pos.getX() + 0.5, pos.getY() + height + offset, pos.getZ() + 0.5);
 	}
 
 	@Override
@@ -93,6 +105,7 @@ public class JACK_TE extends BlockTileEntity implements JackEntity, PacketTagLis
 					else{
 						vehicle = null;
 					}
+					offset = fillCoords(vehicle, coords);
 					return;
 				}
 			}

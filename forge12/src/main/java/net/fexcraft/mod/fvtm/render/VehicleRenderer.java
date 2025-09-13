@@ -1,8 +1,12 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.block.generated.JACK_TE;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InteractZone;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
+import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -12,6 +16,7 @@ import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -25,8 +30,12 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
+import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
+import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.JACKS;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.util.GLUtils112.translate;
 import static net.fexcraft.mod.fvtm.util.GLUtils112.translateR;
@@ -176,6 +185,39 @@ public class VehicleRenderer {
            return Minecraft.getMinecraft().world.getCombinedLight(pos, 0);
         }
         else return 0;
+	}
+
+	public static void renderJacks(World world, double cx, double cy, double cz, float ticks){
+		GL11.glPushMatrix();
+		GL11.glTranslated(-cx, -cy, -cz);
+		for(Entry<V3D, JackEntity> entry : JACKS.entrySet()){
+			GL11.glPushMatrix();
+			RENDERER.translate(entry.getKey());
+			JACK_TE jack = (JACK_TE)entry.getValue();
+			GL11.glRotated(BlockType.GENERIC_4ROT.getRotationFor(jack.getBlockMetadata()), 0f, 1f, 0f);
+			int i = getBrightness(entry.getKey().x, entry.getKey().y, entry.getKey().z), j = i % 65536, k = i / 65536;
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+			//
+			Model vehmod = jack.getVehicle().getType().getModel();
+			if(vehmod != null){
+				GL11.glPushMatrix();
+				TexUtil.bindTexture(jack.getVehicle().getCurrentTexture());
+				vehmod.render(RENDERDATA.set(jack.getVehicle(), null, ticks).rc(jack.getCapability(RENDERCACHE, null)));
+				GL11.glPopMatrix();
+			}
+			else{
+				DebugUtils.renderBB(0.5f, RGB.RED.packed);
+			}
+			if(jack.getVehicle().getParts().size() > 0){
+				VehicleRenderer.renderPoint(jack.getVehicle().getRotationPoint(DEFAULT), null,
+					jack.getVehicle(), jack.getCapability(RENDERCACHE, null), ticks);
+			}
+			EffectRenderer.renderVehicleInfo(null, entry.getKey(), jack.getVehicle());
+			//
+			GL11.glPopMatrix();
+		}
+		GL11.glPopMatrix();
+		JACKS.clear();
 	}
 
 }

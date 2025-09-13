@@ -38,7 +38,6 @@ public class Registerer12 {
 	public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
 		event.getRegistry().register(ConstructorBlock.INSTANCE);
 		event.getRegistry().register(FuelFillerBlock.INSTANCE);
-		event.getRegistry().register(VehicleLiftBlock.INSTANCE);
 		event.getRegistry().register(Asphalt.INSTANCE);
 		event.getRegistry().register(ContainerBlock.INSTANCE);
 	}
@@ -47,7 +46,6 @@ public class Registerer12 {
 	public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
 		event.getRegistry().register(ConstructorBlock.ITEM);
 		event.getRegistry().register(FuelFillerBlock.ITEM);
-		event.getRegistry().register(VehicleLiftBlock.ITEM);
 		event.getRegistry().register(Asphalt.ITEM);
 		//
 		event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
@@ -56,7 +54,6 @@ public class Registerer12 {
 		if(EnvInfo.CLIENT){
 			regModel(ConstructorBlock.ITEM);
 			regModel(FuelFillerBlock.ITEM);
-			regModel(VehicleLiftBlock.ITEM);
 			regModel(Asphalt.ITEM, 16);
 			//
 			regModel(RoadToolItem.INSTANCE);

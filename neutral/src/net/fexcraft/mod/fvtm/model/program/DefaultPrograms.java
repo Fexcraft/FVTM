@@ -6,10 +6,12 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
+import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 
 import java.time.LocalDate;
@@ -259,6 +261,19 @@ public class DefaultPrograms {
 		}).register());
 		//
 		WirePrograms.init();
+		//
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:vehicle_on_jack";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				if(data.tile == null || ((JackEntity)data.tile).getVehicle() == null) return;
+				SeparateRenderCache.insert((JackEntity)data.tile);
+			}
+			public boolean post(){
+				return false;
+			}
+		});
 	}
 
 	public static void setupSignalTimer(){

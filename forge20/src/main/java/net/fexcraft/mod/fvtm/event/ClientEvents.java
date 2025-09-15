@@ -65,10 +65,10 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void renderInit(EntityRenderersEvent.RegisterRenderers event){
-		event.registerBlockEntityRenderer(FVTM4.LIFT_ENTITY.get(), con -> new VehicleLiftRenderer());
 		event.registerBlockEntityRenderer(FVTM4.CONST_ENTITY.get(), con -> new ConstRenderer());
 		event.registerBlockEntityRenderer(FVTM4.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
 		event.registerBlockEntityRenderer(FVTM4.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
+		event.registerBlockEntityRenderer(FVTM4.JACK_ENTITY.get(), con -> new BaseBlockRenderer());
 		for(Block block : FvtmRegistry.BLOCKS){
 			if(block.getBlockType().isRoadLayer()){
 				ItemBlockRenderTypes.setRenderLayer((net.minecraft.world.level.block.Block)block.getBlock(), RenderType.cutout());

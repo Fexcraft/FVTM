@@ -81,10 +81,10 @@ public class FVTMC implements ClientModInitializer {
 				DefaultPrograms.setupSignalTimer();
 			}
 		});
-		BlockEntityRenderers.register(Resources21.LIFT_ENTITY, context -> new VehicleLiftRenderer());
 		BlockEntityRenderers.register(Resources21.CONST_ENTITY, context -> new ConstRenderer());
 		BlockEntityRenderers.register(Resources21.FUELFILLER_ENTITY, context -> new FuelFillerRenderer());
 		BlockEntityRenderers.register(Resources21.BASE_ENTITY, context -> new BaseBlockRenderer());
+		BlockEntityRenderers.register(Resources21.JACK_ENTITY, context -> new BaseBlockRenderer());
 		EntityRendererRegistry.register(Resources21.WHEEL_ENTITY, context -> new EmptyRenderer(context));
 		EntityRendererRegistry.register(Resources21.VEHICLE_ENTITY, context -> new RVRenderer(context));
 		EntityRendererRegistry.register(Resources21.RAIL_ENTITY, context -> new RVRenderer(context));
@@ -153,6 +153,7 @@ public class FVTMC implements ClientModInitializer {
 		});
 		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
 		WorldRenderEvents.AFTER_ENTITIES.register(SepRenderer::renderSeparate);
+		WorldRenderEvents.AFTER_ENTITIES.register(VehicleRenderer::renderVehicles);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(RailRenderer::renderRails);
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderGrid);

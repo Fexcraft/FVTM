@@ -34,6 +34,8 @@ public class PlainBase extends net.minecraft.world.level.block.Block {
 		prop.lightLevel(state -> (int)(type.getLightLevel() * 16));
 		prop.explosionResistance(type.getResistance());
 		if(!type.isFullBlock() || type.isCutout() || !type.isOpaque()) prop.noOcclusion();
+		if(type.getBlockType().isRoadLayer()) prop.noCollission();
+		if(type.getBlockType().isJackStand()) prop.noOcclusion();
 		return prop;
 	}
 

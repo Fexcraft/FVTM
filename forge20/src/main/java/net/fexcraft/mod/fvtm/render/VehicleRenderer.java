@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,6 +23,7 @@ import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.*;
 import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
+import static net.fexcraft.mod.fvtm.util.BlockTypeImpl.getRot;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -36,18 +38,19 @@ public class VehicleRenderer {
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
-		Renderer20.setColor(RGB.WHITE);
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), light);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
+		Renderer20.setColor(RGB.WHITE);
 		for(Map.Entry<V3D, JackEntity> entry : JACKS.entrySet()){
 			JACK_BE jack = (JACK_BE)entry.getValue();
 			if(jack.getVehicle() == null) continue;
 			pose.pushPose();
 			RENDERER.translate(entry.getKey());
 			pose.mulPose(new Quaternionf()
-				.rotateAxis((float)Static.toRadians(BaseBlockRenderer.getRot(jack.getBlockData(), jack.getBlockState())), AY)
+				.rotateAxis((float)Static.toRadians(getRot(jack.getBlockState())), AY)
 			);
-			Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), light);
+			light = LevelRenderer.getLightColor(Minecraft.getInstance().level, jack.getBlockPos());
 			//
 			pose.pushPose();
 			Model vehmod = jack.getVehicle().getType().getModel();

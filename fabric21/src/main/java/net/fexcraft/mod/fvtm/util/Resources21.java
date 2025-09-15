@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
+import net.fexcraft.mod.fvtm.block.generated.JACK_BE;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.*;
@@ -60,11 +61,8 @@ public class Resources21 extends FvtmResources {
 	public static Asphalt[] ASPHALT = new Asphalt[16];
 	public static BlockItem[] ASPHALT_ITEM = new BlockItem[16];
 	public static BlockEntityType<BaseBlockEntity> BASE_ENTITY;
+	public static BlockEntityType<JACK_BE> JACK_ENTITY;
 	public static ArrayList<Block> BLOCK_LIST = new ArrayList<>();
-	//
-	public static VehicleLiftBlock LIFT_BLOCK;
-	public static BlockItem LIFT_BLOCK_ITEM;
-	public static BlockEntityType<VehicleLiftEntity> LIFT_ENTITY;
 	//
 	public static ConstructorBlock CONST_BLOCK;
 	public static BlockItem CONST_BLOCK_ITEM;
@@ -119,6 +117,7 @@ public class Resources21 extends FvtmResources {
 			}
 		});
 		BASE_ENTITY = FVTM.regBlockEntity("fvtm:blockbase", BaseBlockEntity::new, BLOCK_LIST.toArray(new Block[0]));
+		JACK_ENTITY = FVTM.regBlockEntity("fvtm:jack_stand", JACK_BE::new, BLOCK_LIST.toArray(new Block[0]));
 	}
 
 	@Override
@@ -145,16 +144,6 @@ public class Resources21 extends FvtmResources {
 				.add(new ItemStack(Items.REDSTONE, 16))
 				.add(new ItemStack(Items.BOOK, 2))
 				.add(new ItemStack(Blocks.LEVER, 8))
-				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(LIFT_BLOCK_ITEM))
-				.add(new ItemStack(Blocks.IRON_BLOCK, 2))
-				.add(new ItemStack(Items.IRON_INGOT, 8))
-				.add(new ItemStack(Items.COMPARATOR, 2))
-				.add(new ItemStack(Items.REPEATER, 4))
-				.add(new ItemStack(Items.REDSTONE, 4))
-				.add(new ItemStack(Items.BOOK, 1))
-				.add(new ItemStack(Blocks.LEVER, 2))
-				.add(new ItemStack(Blocks.PISTON, 2))
 				.register();
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
@@ -274,10 +263,6 @@ public class Resources21 extends FvtmResources {
 			ASPHALT[idx] = (Asphalt)reg.getLeft();
 			ASPHALT_ITEM[idx] = reg.getRight();
 		}
-		reg = FVTM.regBlock("fvtm:vehicle_lift", prop -> new VehicleLiftBlock(prop));
-		LIFT_BLOCK = (VehicleLiftBlock)reg.getLeft();
-		LIFT_BLOCK_ITEM = reg.getRight();
-		LIFT_ENTITY = FVTM.regBlockEntity("fvtm:vehicle_lift", VehicleLiftEntity::new, LIFT_BLOCK);
 		reg = FVTM.regBlock("fvtm:constructor", prop -> new ConstructorBlock(prop));
 		CONST_BLOCK = (ConstructorBlock)reg.getLeft();
 		CONST_BLOCK_ITEM = reg.getRight();

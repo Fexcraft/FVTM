@@ -19,6 +19,7 @@ public class BlockTypeImpl {
 			case GENERIC_ROAD_LINES: return G_ROAD_LINES.class;
 			case GENERIC_ROAD_MARKER_4ROT: return G_ROAD_MARKER4.class;
 			case GENERIC_ROAD_PATTERN: return G_ROAD_PATTERN.class;
+			case JACK_STAND: return JACK.class;
 		}
 		return plain ? PlainBase.class : BlockBase.class;
 	}

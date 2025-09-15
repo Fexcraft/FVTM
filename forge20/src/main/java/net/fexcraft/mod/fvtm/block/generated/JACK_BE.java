@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.render.BaseBlockRenderer;
 import net.fexcraft.mod.uni.packet.PacketTagListener;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -20,6 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.fexcraft.mod.fvtm.util.BlockTypeImpl.getRot;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -43,7 +44,7 @@ public class JACK_BE extends BaseBlockEntity implements JackEntity, PacketTagLis
         super.load(com);
         if(com.contains("VehicleData")){
 			vehicle = FvtmResources.getVehicleData(com.getCompound("VehicleData"));
-			vehicle.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BaseBlockRenderer.getRot(getBlockData(), getBlockState()), true);
+			vehicle.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)getRot(getBlockState()), true);
 			offset = fillCoords(vehicle, coords);
 		}
     }
@@ -98,7 +99,7 @@ public class JACK_BE extends BaseBlockEntity implements JackEntity, PacketTagLis
 				case "update":{
 					if(packet.has("data")){
 						vehicle = FvtmResources.getVehicleData(packet.getCompound("data"));
-						vehicle.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BaseBlockRenderer.getRot(getBlockData(), getBlockState()), true);
+						vehicle.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)getRot(getBlockState()), true);
 					}
 					else{
 						vehicle = null;

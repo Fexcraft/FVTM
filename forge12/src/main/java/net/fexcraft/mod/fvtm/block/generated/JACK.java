@@ -47,7 +47,10 @@ public class JACK extends G_4ROT_TE {
         if(!world.isRemote){
 			if(player.isSneaking()){
 				JACK_TE te = (JACK_TE)world.getTileEntity(pos);
-				if(te != null) te.dropVehicle(true);
+				if(te != null){
+					te.dropVehicle(true);
+					te.markChanged();
+				}
 				return true;
 			}
 			if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
@@ -56,6 +59,7 @@ public class JACK extends G_4ROT_TE {
 					te.dropVehicle(false);
 					te.vehicle = UniStack.get(player.getHeldItemMainhand()).stack.getContent(ContentType.VEHICLE.item_type);
 					te.sendVehUpdate();
+					te.markChanged();
 					if(!player.capabilities.isCreativeMode) player.getHeldItemMainhand().shrink(1);
 					return true;
 				}

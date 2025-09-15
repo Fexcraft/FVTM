@@ -12,7 +12,6 @@ import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
-import static net.fexcraft.mod.fvtm.render.Renderer20.rotateRad;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,7 +31,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity> {
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);
 		//
-		rot = getRot(tile.getBlockState());
+		rot = getRot(data, tile.getBlockState());
 		if(rot != 0d){
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
 		}
@@ -41,7 +40,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity> {
 		pose.popPose();
 	}
 
-	private double getRot(BlockState state){
+	public static double getRot(BlockData data, BlockState state){
 		if(data.getBlockType().rotations == 4 || data.getBlockType().rotations == 44){
 			switch(state.getValue(FACING).ordinal()){
 				case 2: return 90;

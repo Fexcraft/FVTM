@@ -17,6 +17,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -36,6 +37,10 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 		super(Resources21.BASE_ENTITY, pos, state);
 	}
 
+	public BaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state){
+		super(type, pos, state);
+	}
+
 	@Override
 	public void saveAdditional(ValueOutput out){
 		super.saveAdditional(out);
@@ -48,6 +53,9 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 		Optional<CompoundTag> com = in.read("FvtmData", CompoundTag.CODEC);
 		if(com.isPresent()){
 			data = FvtmResources.getBlockData(com.get());
+		}
+		else{
+			data = new BlockData(((PlainBase)getBlockState().getBlock()).type);
 		}
 	}
 

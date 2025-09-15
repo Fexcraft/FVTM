@@ -37,6 +37,7 @@ public class JACK extends G_4ROT_BE {
 			JACK_BE tile = (JACK_BE)level.getBlockEntity(pos);
 			if(tile != null){
 				tile.dropVehicle(true);
+				tile.markChanged();
 				return InteractionResult.SUCCESS;
 			}
 			return InteractionResult.SUCCESS;
@@ -47,6 +48,7 @@ public class JACK extends G_4ROT_BE {
 				tile.dropVehicle(false);
 				tile.vehicle = UniStack.get(player.getMainHandItem()).stack.getContent(ContentType.VEHICLE.item_type);
 				tile.sendVehUpdate();
+				tile.markChanged();
 				if(!player.isCreative()) player.getMainHandItem().shrink(1);
 				return InteractionResult.SUCCESS;
 			}

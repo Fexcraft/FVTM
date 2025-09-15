@@ -5,7 +5,6 @@ import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.FuelFillerBlock;
-import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
@@ -54,8 +53,6 @@ public class Resources20 extends FvtmResources {
 	public static Supplier<JunctionTool> JUNCTION_TOOL;
 	public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
 	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
-	public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
-	public static Supplier<BlockItem> LIFT_BLOCK_ITEM;
 	public static Supplier<ConstructorBlock> CONST_BLOCK;
 	public static Supplier<FuelFillerBlock> FUELFILLER_BLOCK;
 	public static Supplier<BlockItem> CONST_BLOCK_ITEM;
@@ -134,16 +131,6 @@ public class Resources20 extends FvtmResources {
 				.add(new ItemStack(Items.REDSTONE, 16))
 				.add(new ItemStack(Items.BOOK, 2))
 				.add(new ItemStack(Blocks.LEVER, 8))
-				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(LIFT_BLOCK_ITEM.get()))
-				.add(new ItemStack(Blocks.IRON_BLOCK, 2))
-				.add(new ItemStack(Items.IRON_INGOT, 8))
-				.add(new ItemStack(Items.COMPARATOR, 2))
-				.add(new ItemStack(Items.REPEATER, 4))
-				.add(new ItemStack(Items.REDSTONE, 4))
-				.add(new ItemStack(Items.BOOK, 1))
-				.add(new ItemStack(Blocks.LEVER, 2))
-				.add(new ItemStack(Blocks.PISTON, 2))
 				.register();
 		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM.get()))
 			.add(new ItemStack(Blocks.IRON_BLOCK))
@@ -260,7 +247,6 @@ public class Resources20 extends FvtmResources {
 			int index = idx;
 			ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
 		}
-		LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
 		CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
 		FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());
 	}
@@ -276,7 +262,6 @@ public class Resources20 extends FvtmResources {
 			int index = idx;
 			ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(ASPHALT[index].get(), new Item.Properties()));
 		}
-		LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(LIFT_BLOCK.get(), new Item.Properties()));
 		CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(CONST_BLOCK.get(), new Item.Properties()));
 		FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FUELFILLER_BLOCK.get(), new Item.Properties()));
 	}

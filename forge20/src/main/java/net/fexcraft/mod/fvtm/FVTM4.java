@@ -3,9 +3,10 @@ package net.fexcraft.mod.fvtm;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.fvtm.block.FuelFillerEntity;
-import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
+import net.fexcraft.mod.fvtm.block.generated.JACK;
+import net.fexcraft.mod.fvtm.block.generated.JACK_BE;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
@@ -24,13 +25,11 @@ import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
@@ -55,7 +54,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -126,20 +124,30 @@ public class FVTM4 {
 	public static final HashMap<String, DeferredRegister<SoundEvent>> SOUND_REGISTY = new HashMap<>();
 	//
 	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
-	public static final RegistryObject<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY = BLOCKENTS.register("vehicle_lift", () ->
-		BlockEntityType.Builder.of(VehicleLiftEntity::new, Resources20.LIFT_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ConstructorEntity>> CONST_ENTITY = BLOCKENTS.register("constructor", () ->
 			BlockEntityType.Builder.of(ConstructorEntity::new, Resources20.CONST_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT = BLOCKENTS.register("fuel_filler", () ->
 		BlockEntityType.Builder.of(FuelFillerEntity::new, Resources20.FUELFILLER_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY = BLOCKENTS.register("blockbase", () ->
 		BlockEntityType.Builder.of(BaseBlockEntity::new, getBlockArray()).build(null));
+	public static final RegistryObject<BlockEntityType<JACK_BE>> JACK_ENTITY = BLOCKENTS.register("jack_stand", () ->
+		BlockEntityType.Builder.of(JACK_BE::new, getJackArray()).build(null));
 
 	private static Block[] getBlockArray(){
 		ArrayList<Block> list = new ArrayList<>();
 		BLOCK_REGISTRY.values().forEach(reg -> {
 			reg.getEntries().forEach(obj -> {
 				if(obj.get() instanceof BlockBase) list.add(obj.get());
+			});
+		});
+		return list.toArray(new Block[0]);
+	}
+
+	private static Block[] getJackArray(){
+		ArrayList<Block> list = new ArrayList<>();
+		BLOCK_REGISTRY.values().forEach(reg -> {
+			reg.getEntries().forEach(obj -> {
+				if(obj.get() instanceof JACK) list.add(obj.get());
 			});
 		});
 		return list.toArray(new Block[0]);

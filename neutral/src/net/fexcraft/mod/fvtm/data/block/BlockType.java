@@ -162,4 +162,8 @@ public enum BlockType {
 		return this == GENERIC_4X4ROT || (this.ordinal() >= GENERIC_2VAR.ordinal() && this.ordinal() <= GENERIC_ROAD.ordinal());
 	}
 
+	public boolean isJackStand(){
+		return this == JACK_STAND;
+	}
+
 }

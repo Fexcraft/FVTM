@@ -2,6 +2,9 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
+import net.minecraft.world.level.block.state.BlockState;
+
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -22,6 +25,25 @@ public class BlockTypeImpl {
 			case JACK_STAND: return JACK.class;
 		}
 		return plain ? PlainBase.class : BlockBase.class;
+	}
+
+	public static double getRot(BlockState state){
+		BlockType type = ((PlainBase)state.getBlock()).type.getBlockType();
+		if(type.rotations == 4 || type.rotations == 44){
+			switch(state.getValue(FACING).ordinal()){
+				case 2: return 90;
+				case 3: return -90;
+				case 4: return 180;
+				case 5: return 0;
+			}
+		}
+		else if(type.rotations == 8){
+			return state.getValue(PROP_ROT8) * -45 + 90;
+		}
+		else if(type.rotations == 16){
+			return state.getValue(PROP_ROT16) * -22.5 + 90;
+		}
+		return 0;
 	}
 
 }

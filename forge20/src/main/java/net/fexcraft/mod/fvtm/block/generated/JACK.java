@@ -9,6 +9,7 @@ import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -59,8 +60,11 @@ public class JACK extends G_4ROT_BE {
 	@Override
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity tile, ItemStack tool) {
 		super.playerDestroy(level, player, pos, state, tile, tool);
-		if(tile instanceof JackEntity){
-			((JACK_BE)tile).dropVehicle(false);
+		if(!level.isClientSide){
+			if(tile instanceof JackEntity){
+				((JACK_BE)tile).dropVehicle(false);
+			}
+			level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, type.getNewStack().local()));
 		}
 	}
 

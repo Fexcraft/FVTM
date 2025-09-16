@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDye;
 import net.minecraft.util.EnumFacing;
@@ -74,6 +75,10 @@ public class JACK extends G_4ROT_TE {
     	if(!world.isRemote){
 			JACK_TE te = (JACK_TE)world.getTileEntity(pos);
 			if(te != null) te.dropVehicle(false);
+			EntityItem item = new EntityItem(world);
+			item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			item.setItem(type.getNewStack().local());
+			world.spawnEntity(item);
         }
         super.breakBlock(world, pos, state);
     }

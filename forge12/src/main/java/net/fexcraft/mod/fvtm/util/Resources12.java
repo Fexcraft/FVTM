@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms12;
 import net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader;
+import net.fexcraft.mod.fvtm.render.block.RoadLinesModelLoader;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
@@ -481,6 +482,10 @@ public class Resources12 extends FvtmResources {
 			if(block.getModelData().getBoolean("Baked", false)){
 				FvtmBlockModelLoader.BLOCKS.put(block.getID().space() + ":models/block/" + block.getID().id(), block);
 				FvtmBlockModelLoader.BLOCKS.put(block.getIDS(), block);
+			}
+			if(block.getBlockType().isRoadLayer()){
+				RoadLinesModelLoader.BLOCKS.put(block.getID().space() + ":models/block/" + block.getID().id(), block);
+				RoadLinesModelLoader.BLOCKS.put(block.getIDS(), block);
 			}
 			int var = block.getBlockType().getMetaVariants();
 			for(int v = 0; v < var; v++){

@@ -17,6 +17,7 @@ public class BakedModelLoader {
 	
 	public static void register(){
 		net.minecraftforge.client.model.ModelLoaderRegistry.registerLoader(net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader.getInstance());
+		net.minecraftforge.client.model.ModelLoaderRegistry.registerLoader(net.fexcraft.mod.fvtm.render.block.RoadLinesModelLoader.INSTANCE);
 	}
 
 	public static ArrayList<ModelGroup> getPolygons(BlockModel model, IBlockState state, EnumFacing side, long rand){

@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
 import static net.fexcraft.mod.uni.world.WrapperHolder.getSide;
 
 public class M_4ROT extends PlainBase {

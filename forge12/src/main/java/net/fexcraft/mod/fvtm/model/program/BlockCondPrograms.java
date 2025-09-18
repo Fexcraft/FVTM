@@ -1,29 +1,18 @@
 package net.fexcraft.mod.fvtm.model.program;
 
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
-import net.fexcraft.mod.fvtm.sys.condition.Conditional;
-import net.fexcraft.mod.fvtm.util.GLUtils112;
-import net.fexcraft.mod.fvtm.util.Properties;
+import net.fexcraft.mod.fvtm.block.generated.FvtmProperties;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.MathHelper;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
-import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 
 /**
  * Dedicated Conditional Programs for Block Models
@@ -174,7 +163,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(Properties.FACING) == facing) == val;
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(FvtmProperties.FACING) == facing) == val;
 		}
 
 		@Override
@@ -200,7 +189,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(Properties.ROTATION) == rot) == val;
+			return data.blockstate != null && (((IBlockState)data.blockstate).getValue(FvtmProperties.ROTATION) == rot) == val;
 		}
 
 		@Override

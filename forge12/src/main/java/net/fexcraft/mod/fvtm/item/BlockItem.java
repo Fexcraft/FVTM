@@ -18,6 +18,7 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -134,6 +135,13 @@ public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, Blo
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
     	if(type.getBlockType().isMultiBlock()) return EnumActionResult.PASS;
+		if(type.getBlockType().isRoadLayer()){
+			IBlockState state = world.getBlockState(pos);
+			if(state.getBlock() instanceof PlainBase){
+				Block blk = ((PlainBase)state.getBlock()).type;
+				if(blk.getBlockType().isRoadLayer()) return EnumActionResult.PASS;
+			}
+		}
         return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
 

@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.HEIGHT;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -151,7 +153,7 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public int getRoadHeight(StateWrapper state){
-		return isFvtmRoad(state) ? ((IBlockState)state.direct()).getValue(Asphalt.HEIGHT) : ((IBlockState)state.direct()).getBlock().getMetaFromState(state.local());
+		return isFvtmRoad(state) ? ((IBlockState)state.direct()).getValue(HEIGHT) : ((IBlockState)state.direct()).getBlock().getMetaFromState(state.local());
 	}
 
 	@Override

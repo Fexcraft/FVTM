@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -18,7 +17,7 @@ import static net.minecraft.block.Block.FULL_BLOCK_AABB;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Properties {
+public class FvtmProperties {
 	
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 15);
@@ -70,25 +69,25 @@ public class Properties {
 
     public static PropertyInteger getIntProperty(BlockType type){
         switch(type){
-            case GENERIC_2VAR: return Properties.VARIANTS2;
-            case GENERIC_3VAR: return Properties.VARIANTS3;
+            case GENERIC_2VAR: return FvtmProperties.VARIANTS2;
+            case GENERIC_3VAR: return FvtmProperties.VARIANTS3;
             case GENERIC_4VAR:
-            case GENERIC_4X4ROT: return Properties.VARIANTS4;
-            case GENERIC_5VAR: return Properties.VARIANTS5;
-            case GENERIC_6VAR: return Properties.VARIANTS6;
-            case GENERIC_7VAR: return Properties.VARIANTS7;
-            case GENERIC_8VAR: return Properties.VARIANTS8;
-            case GENERIC_9VAR: return Properties.VARIANTS9;
-            case GENERIC_10VAR: return Properties.VARIANTS10;
-            case GENERIC_11VAR: return Properties.VARIANTS11;
-            case GENERIC_12VAR: return Properties.VARIANTS12;
-            case GENERIC_13VAR: return Properties.VARIANTS13;
-            case GENERIC_14VAR: return Properties.VARIANTS14;
-            case GENERIC_15VAR: return Properties.VARIANTS15;
-            case GENERIC_16VAR: return Properties.VARIANTS16;
+            case GENERIC_4X4ROT: return FvtmProperties.VARIANTS4;
+            case GENERIC_5VAR: return FvtmProperties.VARIANTS5;
+            case GENERIC_6VAR: return FvtmProperties.VARIANTS6;
+            case GENERIC_7VAR: return FvtmProperties.VARIANTS7;
+            case GENERIC_8VAR: return FvtmProperties.VARIANTS8;
+            case GENERIC_9VAR: return FvtmProperties.VARIANTS9;
+            case GENERIC_10VAR: return FvtmProperties.VARIANTS10;
+            case GENERIC_11VAR: return FvtmProperties.VARIANTS11;
+            case GENERIC_12VAR: return FvtmProperties.VARIANTS12;
+            case GENERIC_13VAR: return FvtmProperties.VARIANTS13;
+            case GENERIC_14VAR: return FvtmProperties.VARIANTS14;
+            case GENERIC_15VAR: return FvtmProperties.VARIANTS15;
+            case GENERIC_16VAR: return FvtmProperties.VARIANTS16;
             default: break;
         }
-        return Properties.VARIANTS16;
+        return FvtmProperties.VARIANTS16;
     }
 
     public static IProperty<?> getProperty(BlockType type){
@@ -100,44 +99,44 @@ public class Properties {
             case FORK2_SWITCH_4ROT:
             case FORK3_SWITCH_4ROT:
             case DOUBLE_SWITCH_4ROT:
-                return Properties.FACING;
+                return FvtmProperties.FACING;
             case GENERIC_8ROT:
-                return Properties.ROTATION8;
+                return FvtmProperties.ROTATION8;
             case GENERIC_16ROT:
             case SIGNAL_16ROT:
-                return Properties.ROTATION;
+                return FvtmProperties.ROTATION;
             case GENERIC_SIMPLE:
                 return null;
             case GENERIC_2VAR:
-                return Properties.VARIANTS2;
+                return FvtmProperties.VARIANTS2;
             case GENERIC_3VAR:
-                return Properties.VARIANTS3;
+                return FvtmProperties.VARIANTS3;
             case GENERIC_4VAR:
-                return Properties.VARIANTS4;
+                return FvtmProperties.VARIANTS4;
             case GENERIC_5VAR:
-                return Properties.VARIANTS5;
+                return FvtmProperties.VARIANTS5;
             case GENERIC_6VAR:
-                return Properties.VARIANTS6;
+                return FvtmProperties.VARIANTS6;
             case GENERIC_7VAR:
-                return Properties.VARIANTS7;
+                return FvtmProperties.VARIANTS7;
             case GENERIC_8VAR:
-                return Properties.VARIANTS8;
+                return FvtmProperties.VARIANTS8;
             case GENERIC_9VAR:
-                return Properties.VARIANTS9;
+                return FvtmProperties.VARIANTS9;
             case GENERIC_10VAR:
-                return Properties.VARIANTS10;
+                return FvtmProperties.VARIANTS10;
             case GENERIC_11VAR:
-                return Properties.VARIANTS11;
+                return FvtmProperties.VARIANTS11;
             case GENERIC_12VAR:
-                return Properties.VARIANTS12;
+                return FvtmProperties.VARIANTS12;
             case GENERIC_13VAR:
-                return Properties.VARIANTS13;
+                return FvtmProperties.VARIANTS13;
             case GENERIC_14VAR:
-                return Properties.VARIANTS14;
+                return FvtmProperties.VARIANTS14;
             case GENERIC_15VAR:
-                return Properties.VARIANTS15;
+                return FvtmProperties.VARIANTS15;
             case GENERIC_16VAR:
-                return Properties.VARIANTS16;
+                return FvtmProperties.VARIANTS16;
             case GENERIC_ROAD:
                 return HEIGHT;
         }

@@ -53,9 +53,9 @@ public class G_ROAD_PATTERN extends G_ROAD_MARKER {
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		int[] xz = { defx, defz };
 		BlockState n = getSamePattern(getPatternAt(context.getLevel(), context.getClickedPos().north()));
-		BlockState w = getPatternAt(context.getLevel(), context.getClickedPos().west());
-		BlockState s = getPatternAt(context.getLevel(), context.getClickedPos().south());
-		BlockState e = getPatternAt(context.getLevel(), context.getClickedPos().east());
+		BlockState w = getSamePattern(getPatternAt(context.getLevel(), context.getClickedPos().west()));
+		BlockState s = getSamePattern(getPatternAt(context.getLevel(), context.getClickedPos().south()));
+		BlockState e = getSamePattern(getPatternAt(context.getLevel(), context.getClickedPos().east()));
 		Direction rot = Direction.NORTH;
 		if(type.isRandomRot()) rot = Direction.values()[Static.random.nextInt(4) + 2];
 		else if(context.getPlayer() != null) rot = context.getPlayer().getDirection();

@@ -45,12 +45,13 @@ public class FvtmProperties {
 	public static final PropertyInteger HEIGHT = PropertyInteger.create("height", 0, 15);
 	public static final PropertyInteger LINE_TYPE = PropertyInteger.create("line_type", 0, 3);
 	public static final PropertyInteger LINE_ROT = PropertyInteger.create("line_rot", 0, 3);
-	public static final HashMap<Integer, PropertyInteger> PROP_PATTERN_X = new HashMap<>();
-	public static final HashMap<Integer, PropertyInteger> PROP_PATTERN_Z = new HashMap<>();
+	public static final PropertyBool PATTERN_ROOT = PropertyBool.create("pattern_root");
+	public static final HashMap<Integer, PropertyInteger> PATTERN_X = new HashMap<>();
+	public static final HashMap<Integer, PropertyInteger> PATTERN_Z = new HashMap<>();
 	static {
 		for(int i = 1; i < 8; i++){
-			PROP_PATTERN_X.put(i, PropertyInteger.create("pattern_x", 0, i));
-			PROP_PATTERN_Z.put(i, PropertyInteger.create("pattern_z", 0, i));
+			PATTERN_X.put(i, PropertyInteger.create("pattern_x", 0, i));
+			PATTERN_Z.put(i, PropertyInteger.create("pattern_z", 0, i));
 		}
 	}
 	//

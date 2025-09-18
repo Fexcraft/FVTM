@@ -1,13 +1,11 @@
 package net.fexcraft.mod.fvtm.block;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,6 +29,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.HEIGHT;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.ROAD_AABBS;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -49,19 +50,10 @@ public class Asphalt extends Block {
 		setSoundType(SoundType.STONE);
         setDefaultState(blockState.getBaseState().withProperty(HEIGHT, 0));
 	}
-	
-    public static final PropertyInteger HEIGHT = PropertyInteger.create("height", 0, 15);
-    public static final AxisAlignedBB[] BOUNDING_BOXES = new AxisAlignedBB[16];
-    static{
-    	BOUNDING_BOXES[0] = FULL_BLOCK_AABB;
-    	for(int i = 1; i < 16; i++){
-    		BOUNDING_BOXES[i] = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, i * Static.sixteenth, 1.0D);
-    	}
-    }
     
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return BOUNDING_BOXES[state.getValue(HEIGHT)];
+        return ROAD_AABBS[state.getValue(HEIGHT)];
     }
 
     @Override

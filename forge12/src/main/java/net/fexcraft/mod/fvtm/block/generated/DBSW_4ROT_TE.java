@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
 
 public class DBSW_4ROT_TE extends G_4ROT_TE {
 

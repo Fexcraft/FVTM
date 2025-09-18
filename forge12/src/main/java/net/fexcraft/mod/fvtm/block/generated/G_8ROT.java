@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.fexcraft.mod.fvtm.util.Properties.ROTATION8;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.ROTATION8;
 
 public class G_8ROT extends PlainBase {
 

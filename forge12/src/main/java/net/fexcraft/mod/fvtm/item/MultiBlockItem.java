@@ -8,7 +8,7 @@ import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.util.Properties;
+import net.fexcraft.mod.fvtm.block.generated.FvtmProperties;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -90,9 +90,9 @@ public class MultiBlockItem extends Item implements ContentItem.ContentDataItem<
             EnumFacing facing = player.getHorizontalFacing();
             for(int i = 0; i < poslist.size(); i++){
             	net.minecraft.block.Block block = net.minecraft.block.Block.REGISTRY.getObject(mblock.getBlocks().get(i).getKey().local());
-            	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, MultiBlock.rotate(mblock.getBlocks().get(i).getValue(), facing).local());
+            	IBlockState state = block.getDefaultState().withProperty(FvtmProperties.FACING, MultiBlock.rotate(mblock.getBlocks().get(i).getValue(), facing).local());
                 BlockPos blkpos = new BlockPos(poslist.get(i).x, poslist.get(i).y, poslist.get(i).z);
-				state.getBlock().onBlockPlacedBy(world, blkpos, state.withProperty(Properties.FACING, facing), player, stack);
+				state.getBlock().onBlockPlacedBy(world, blkpos, state.withProperty(FvtmProperties.FACING, facing), player, stack);
             }
             stack.shrink(1);
             return EnumActionResult.SUCCESS;

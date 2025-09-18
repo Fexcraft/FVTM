@@ -19,7 +19,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

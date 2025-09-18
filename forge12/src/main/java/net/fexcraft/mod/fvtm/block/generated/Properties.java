@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util;
+package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
@@ -7,6 +7,13 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+
+import java.util.HashMap;
+
+import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.common.Static.thirtysecondth;
+import static net.minecraft.block.Block.FULL_BLOCK_AABB;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -35,6 +42,31 @@ public class Properties {
     public static final PropertyBool UP = PropertyBool.create("up");
     public static final PropertyBool DOWN = PropertyBool.create("down");
     public static final PropertyBool BASE = PropertyBool.create("base");
+	//
+	public static final PropertyInteger HEIGHT = PropertyInteger.create("height", 0, 15);
+	public static final PropertyInteger LINE_TYPE = PropertyInteger.create("line_type", 0, 3);
+	public static final PropertyInteger LINE_ROT = PropertyInteger.create("line_rot", 0, 3);
+	public static final HashMap<Integer, PropertyInteger> PROP_PATTERN_X = new HashMap<>();
+	public static final HashMap<Integer, PropertyInteger> PROP_PATTERN_Z = new HashMap<>();
+	static {
+		for(int i = 1; i < 8; i++){
+			PROP_PATTERN_X.put(i, PropertyInteger.create("pattern_x", 0, i));
+			PROP_PATTERN_Z.put(i, PropertyInteger.create("pattern_z", 0, i));
+		}
+	}
+	//
+	public static final AxisAlignedBB[] ROAD_AABBS = new AxisAlignedBB[16];
+	public static AxisAlignedBB[] LOWER_AABBS = new AxisAlignedBB[16];
+	static{
+		ROAD_AABBS[0] = FULL_BLOCK_AABB;
+		for(int i = 1; i < 16; i++){
+			ROAD_AABBS[i] = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, i * sixteenth, 1.0D);
+		}
+		LOWER_AABBS[0] = new AxisAlignedBB(0.0, 0.0, 0.0, 1, thirtysecondth, 1);
+		for(int i = 1; i < 16; i++){
+			LOWER_AABBS[i] = new AxisAlignedBB(0, -1 + i * sixteenth, 0, 1, -1 + i * sixteenth + thirtysecondth, 1);
+		}
+	}
 
     public static PropertyInteger getIntProperty(BlockType type){
         switch(type){
@@ -107,7 +139,7 @@ public class Properties {
             case GENERIC_16VAR:
                 return Properties.VARIANTS16;
             case GENERIC_ROAD:
-                return Asphalt.HEIGHT;
+                return HEIGHT;
         }
         return null;
     }

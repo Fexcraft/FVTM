@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.block;
 
-import static net.fexcraft.mod.fvtm.util.Properties.BASE;
-import static net.fexcraft.mod.fvtm.util.Properties.DOWN;
-import static net.fexcraft.mod.fvtm.util.Properties.UP;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.BASE;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.DOWN;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.UP;
 
 import java.util.List;
 

@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.util.Properties;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -87,7 +86,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS2;
+			return FvtmProperties.VARIANTS2;
 		}
 		
 	}
@@ -98,7 +97,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS3;
+			return FvtmProperties.VARIANTS3;
 		}
 		
 	}
@@ -109,7 +108,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS4;
+			return FvtmProperties.VARIANTS4;
 		}
 		
 	}
@@ -120,7 +119,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS5;
+			return FvtmProperties.VARIANTS5;
 		}
 		
 	}
@@ -131,7 +130,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS6;
+			return FvtmProperties.VARIANTS6;
 		}
 		
 	}
@@ -142,7 +141,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS7;
+			return FvtmProperties.VARIANTS7;
 		}
 		
 	}
@@ -153,7 +152,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS8;
+			return FvtmProperties.VARIANTS8;
 		}
 		
 	}
@@ -164,7 +163,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS9;
+			return FvtmProperties.VARIANTS9;
 		}
 		
 	}
@@ -175,7 +174,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS10;
+			return FvtmProperties.VARIANTS10;
 		}
 		
 	}
@@ -186,7 +185,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS11;
+			return FvtmProperties.VARIANTS11;
 		}
 		
 	}
@@ -197,7 +196,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS12;
+			return FvtmProperties.VARIANTS12;
 		}
 		
 	}
@@ -208,7 +207,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS13;
+			return FvtmProperties.VARIANTS13;
 		}
 		
 	}
@@ -219,7 +218,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS14;
+			return FvtmProperties.VARIANTS14;
 		}
 		
 	}
@@ -230,7 +229,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS15;
+			return FvtmProperties.VARIANTS15;
 		}
 		
 	}
@@ -241,7 +240,7 @@ public abstract class G_VAR_TE extends BlockBase {
 
 		@Override
 		public IProperty<Integer> var_property(){
-			return Properties.VARIANTS16;
+			return FvtmProperties.VARIANTS16;
 		}
 		
 	}

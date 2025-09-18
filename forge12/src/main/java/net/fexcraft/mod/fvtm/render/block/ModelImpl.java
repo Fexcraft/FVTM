@@ -32,7 +32,7 @@ class ModelImpl implements IModel {
     protected ArrayList<ResourceLocation> copy;
     protected TextureAtlasSprite particle;
     //
-    protected static final IModelState default_state = new IModelState() {
+    public static final IModelState default_state = new IModelState() {
         @Override
         public Optional<TRSRTransformation> apply(Optional<? extends IModelPart> part){
             return Optional.empty();

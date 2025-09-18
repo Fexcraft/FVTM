@@ -1,9 +1,9 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.block.StreetPost.isSolidUnder;
-import static net.fexcraft.mod.fvtm.util.Properties.BASE;
-import static net.fexcraft.mod.fvtm.util.Properties.DOWN;
-import static net.fexcraft.mod.fvtm.util.Properties.UP;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.BASE;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.DOWN;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.UP;
 import static net.minecraft.block.BlockFence.EAST;
 import static net.minecraft.block.BlockFence.NORTH;
 import static net.minecraft.block.BlockFence.SOUTH;
@@ -16,7 +16,6 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.BlockFence;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;

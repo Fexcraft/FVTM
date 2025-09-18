@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.block;
 
-import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
 
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.GuiHandler;

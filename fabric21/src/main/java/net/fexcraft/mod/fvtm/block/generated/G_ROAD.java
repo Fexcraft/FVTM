@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.BlockItem21;
 import net.fexcraft.mod.fvtm.util.Resources21;
@@ -49,7 +50,7 @@ public class G_ROAD extends PlainBase {
 			return isRoadBlock(stack) ? InteractionResult.SUCCESS : InteractionResult.PASS;
 		}
 		int hei = height;
-		if(isRoadBlock(stack) && hei > 0){
+		if(Config.STACK_ROADS_ON_CLICK && isRoadBlock(stack) && hei > 0){
 			int height = hei + ((G_ROAD)(((BlockItem)stack.getItem()).getBlock())).height;
 			if(height >= 16) height = 0;
 			if(height < 0) height = 0;

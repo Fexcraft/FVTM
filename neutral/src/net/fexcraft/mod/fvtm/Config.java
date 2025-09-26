@@ -55,6 +55,7 @@ public class Config extends ConfigBase {
 	public static int MAX_RAIL_TRACK_LENGTH;
 	//road
 	public static boolean DISABLE_ROADS;
+	public static boolean STACK_ROADS_ON_CLICK;
 	public static int MAX_ROAD_LENGTH;
 	public static int ROAD_UNDO_CACHE_SIZE;
 	public static int ROAD_UNDO_CACHE_CLEARTIME;
@@ -205,6 +206,9 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, cato, "disable", new JsonValue(false))
 			.info("If FVTM road system should be disabled.")
 			.cons((con, map) -> DISABLE_ROADS = con.getBoolean(map)));
+		entries.add(new ConfigEntry(this, cato, "stack_roads_on_click", new JsonValue(false))
+			.info("If road height of the held road item should be added to the interacted (non-full) road block.")
+			.cons((con, map) -> STACK_ROADS_ON_CLICK = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, cato, "max_length", new JsonValue(256))
 			.info("Max total vector length of new placed roads.")
 			.cons((con, map) -> MAX_ROAD_LENGTH = con.getInteger(map))

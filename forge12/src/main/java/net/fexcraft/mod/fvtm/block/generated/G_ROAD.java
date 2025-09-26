@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.block.generated;
 import java.util.List;
 import java.util.Random;
 
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -74,8 +75,11 @@ public class G_ROAD extends PlainBase {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
     	if(world.isRemote) return player.getHeldItem(hand).getItem() instanceof ItemBlock;
     	ItemStack stack = player.getHeldItem(hand);
-    	if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == this && state.getValue(HEIGHT) > 0){
-    		int height = state.getValue(HEIGHT) + stack.getMetadata(); if(height >= 16) height = 0; if(height < 0) height = 0;
+    	if(Config.STACK_ROADS_ON_CLICK && stack.getItem() instanceof ItemBlock
+			&& ((ItemBlock)stack.getItem()).getBlock() == this && state.getValue(HEIGHT) > 0){
+    		int height = state.getValue(HEIGHT) + stack.getMetadata();
+			if(height >= 16) height = 0;
+			if(height < 0) height = 0;
     		world.setBlockState(pos, state.withProperty(HEIGHT, height), 2);
     		if(!player.capabilities.isCreativeMode) stack.shrink(1);
     		return true;

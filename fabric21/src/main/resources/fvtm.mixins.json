@@ -5,6 +5,9 @@
 	"mixins": [
 		"PackRepoMixin"
 	],
+	"client": [
+		"ClientAddEntityMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}

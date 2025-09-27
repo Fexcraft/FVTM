@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -71,7 +72,11 @@ public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, Blo
         	tooltip.add(Formatter.format("&9Height: &7" + (stack.getMetadata() == 0 ? 16 : stack.getMetadata())));
         }
         else if(type.getBlockType().getMetaVariants() > 0){
-        	tooltip.add(Formatter.format("&9Variant: &7" + stack.getMetadata()));
+			if(type.getBlockType() == BlockType.GENERIC_8LAYER){}
+			else if(type.getBlockType() == BlockType.GENERIC_2x8LAYER){
+				tooltip.add(Formatter.format("&9Variant: &7" + (stack.getMetadata() > 7 ? 1 : 0)));
+			}
+        	else tooltip.add(Formatter.format("&9Variant: &7" + stack.getMetadata()));
         }
         BlockData data = cache.getBlockData();
         if(data == null) return;

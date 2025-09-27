@@ -31,6 +31,7 @@ public class BlockTypeImpl {
 			case GENERIC_14VAR: return plain ? G_VAR.T14.class : G_VAR_TE.T14.class;
 			case GENERIC_15VAR: return plain ? G_VAR.T15.class : G_VAR_TE.T15.class;
 			case GENERIC_16VAR: return plain ? G_VAR.T16.class : G_VAR_TE.T16.class;
+			case GENERIC_8LAYER: return G_8LAY.class;
 			case GENERIC_ROAD: return G_ROAD.class;
 			case GENERIC_ROAD_LINES: return G_ROAD_LINES.class;
 			case GENERIC_ROAD_MARKER: return G_ROAD_MARKER.class;

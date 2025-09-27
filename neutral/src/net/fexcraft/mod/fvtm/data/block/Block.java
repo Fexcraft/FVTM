@@ -199,7 +199,8 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		}
 		//
 		switch(blocktype){
-			case GENERIC_8LAYER:{
+			case GENERIC_8LAYER:
+			case GENERIC_2x8LAYER:{
 				fullblock = false;
 				fullcube = false;
 				for(int i = 0; i < 8; i++){

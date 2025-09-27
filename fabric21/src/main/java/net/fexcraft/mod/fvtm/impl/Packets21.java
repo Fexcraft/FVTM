@@ -11,12 +11,10 @@ import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
-import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.SpawnPacket;
-import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.fvtm.util.SpawnPacketEntity;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.packet.PacketBase;
 import net.fexcraft.mod.uni.packet.PacketHandler;
@@ -29,9 +27,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -55,10 +51,6 @@ public class Packets21 extends Packets {
 	public static Handler_VehKeyPressState HVKS = new Handler_VehKeyPressState();
 	public static Handler_SeatUpdate HSU = new Handler_SeatUpdate();
 	public static Handler_SPUpdate HSPU = new Handler_SPUpdate();
-	//
-	public static final ResourceLocation SPAWN_PACKET = ResourceLocation.parse("fvtm:spawn");
-	public static final CustomPacketPayload.Type<SpawnPacket> SPAWN_PACKET_TYPE = new CustomPacketPayload.Type<>(SPAWN_PACKET);
-	public static final StreamCodec<RegistryFriendlyByteBuf, SpawnPacket> SPAWN_PACKET_CODEC = StreamCodec.of(SpawnPacket::encode, SpawnPacket::new);
 	//
 	public static final CustomPacketPayload.Type<Pkt_TagListener> TAG_PACKET_TYPE = new CustomPacketPayload.Type<>(TAG_PACKET);
 	public static final CustomPacketPayload.Type<Pkt_VehMove> VEHMOVE_PACKET_TYPE = new CustomPacketPayload.Type<>(VEHMOVE_PACKET);
@@ -99,17 +91,6 @@ public class Packets21 extends Packets {
 	}
 
 	private void register(){
-		PayloadTypeRegistry.playS2C().register(SPAWN_PACKET_TYPE, SPAWN_PACKET_CODEC);
-		PayloadTypeRegistry.playC2S().register(SPAWN_PACKET_TYPE, SPAWN_PACKET_CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(SPAWN_PACKET_TYPE, (packet, context) -> {
-			context.server().execute(() -> {
-				Entity ent = context.player().level().getEntity(packet.entity());
-				if(ent instanceof SpawnPacket.PacketEntity pe){
-					ServerPlayNetworking.getSender(context.player()).sendPacket(new SpawnPacket(pe));
-				}
-			});
-		});
-		//
 		register(Packet_TagListener.class, Pkt_TagListener.class, TAG_PACKET_TYPE, TAG_PACKET_CODEC, HTL);
 		register(Packet_VehMove.class, Pkt_VehMove.class, VEHMOVE_PACKET_TYPE, VEHMOVE_PACKET_CODEC, HVM);
 		register(Packet_VehKeyPress.class, Pkt_VehKeyPress.class, VEHKEYPRESS_PACKET_TYPE, VEHKEYPRESS_PACKET_CODEC, HVK);

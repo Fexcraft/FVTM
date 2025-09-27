@@ -1,13 +1,14 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.mod.fcl.util.FclCodecs;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
+import net.fexcraft.mod.fvtm.util.ClientAddEntity;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.fvtm.util.SpawnPacket;
+import net.fexcraft.mod.fvtm.util.SpawnPacketEntity;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -25,14 +26,19 @@ import java.util.UUID;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RailMarker extends Entity implements SpawnPacket.PacketEntity {
+public class RailMarker extends Entity implements SpawnPacketEntity {
 
 	public QV3D position;
 	public UUID queueid;
-	private boolean clsync;
 
 	public RailMarker(EntityType<RailMarker> type, Level level){
 		super(type, level);
+	}
+
+	@Override
+	public void recreateFromPacket(ClientboundAddEntityPacket packet){
+		super.recreateFromPacket(packet);
+		readSpawnData(((ClientAddEntity)packet).getFvtmData());
 	}
 
 	@Override
@@ -98,13 +104,6 @@ public class RailMarker extends Entity implements SpawnPacket.PacketEntity {
 	@Override
 	public void baseTick(){
 		super.baseTick();
-		if(level().isClientSide){
-			if(!clsync){
-				ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-				clsync = true;
-			}
-			return;
-		}
 		if(queueid == null || !RailPlacingUtil.QUEUE.containsKey(queueid)) kill((ServerLevel)level());
 	}
 

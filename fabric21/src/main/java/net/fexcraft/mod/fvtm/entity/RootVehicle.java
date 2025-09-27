@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fcl.util.EntityWI;
 import net.fexcraft.mod.fvtm.Config;
@@ -12,13 +11,12 @@ import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.util.CollisionUtil;
-import net.fexcraft.mod.fvtm.util.OBB;
-import net.fexcraft.mod.fvtm.util.SpawnPacket;
+import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -43,17 +41,22 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, VehicleInstance.Holder {
+public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleInstance.Holder {
 
 	public VehicleInstance vehicle;
 	public float rotZ = 0;
 	public float protZ = 0;
-	private boolean cl_sync;
 	public boolean should_sit = true;
 
 	public RootVehicle(EntityType<?> type, Level level){
 		super(type, level);
 		vehicle = new VehicleInstance(new EntityWI(this), null);
+	}
+
+	@Override
+	public void recreateFromPacket(ClientboundAddEntityPacket packet){
+		super.recreateFromPacket(packet);
+		readSpawnData(((ClientAddEntity)packet).getFvtmData());
 	}
 
 	@Override
@@ -123,7 +126,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, Veh
 
 	@Override
 	public void kill(ServerLevel level){
-		if(vehicle != null) vehicle.onRemove();
+		if(vehicle != null && vehicle.data != null) vehicle.onRemove();
 		super.kill(level);
 	}
 
@@ -154,14 +157,7 @@ public class RootVehicle extends Entity implements SpawnPacket.PacketEntity, Veh
 		super.tick();
 		if(isRemoved()) return;
 		if(vehicle.data == null){
-			if(level().isClientSide){
-				if(!cl_sync){
-					FvtmLogger.debug("Sending sync request for " + getId());
-					ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-					cl_sync = true;
-				}
-			}
-			else{
+			if(!level().isClientSide){
 				FvtmLogger.log("Vehicle '" + getId() + "' has no data, removing!");
 				kill((ServerLevel)level());
 			}

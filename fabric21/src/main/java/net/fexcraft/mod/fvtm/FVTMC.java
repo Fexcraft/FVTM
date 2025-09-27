@@ -29,7 +29,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.BakingPlugin;
 import net.fexcraft.mod.fvtm.util.Resources21;
-import net.fexcraft.mod.fvtm.util.SpawnPacket;
+import net.fexcraft.mod.fvtm.util.SpawnPacketEntity;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
@@ -91,14 +91,6 @@ public class FVTMC implements ClientModInitializer {
 		EntityRendererRegistry.register(Resources21.ROAD_MARKER_ENTITY, context -> new RoadMarkerRenderer(context));
 		EntityRendererRegistry.register(Resources21.RAIL_MARKER_ENTITY, context -> new RailMarkerRenderer(context));
 		Packets21.PACKET_HANDLERS.add(() -> {
-			ClientPlayNetworking.registerGlobalReceiver(SPAWN_PACKET_TYPE, (packet, context) -> {
-				context.client().execute(() -> {
-					Entity ent = context.player().level().getEntity(packet.entity());
-					if(ent instanceof SpawnPacket.PacketEntity pe){
-						pe.readSpawnData(packet.com());
-					}
-				});
-			});
 			registerClientPacket(TAG_PACKET_TYPE, HTL);
 			registerClientPacket(VEHMOVE_PACKET_TYPE, HVM);
 			registerClientPacket(VEHKEYPRESS_PACKET_TYPE, HVK);

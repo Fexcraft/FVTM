@@ -22,6 +22,7 @@ public class FvtmProperties {
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 15);
     public static final PropertyInteger ROTATION8 = PropertyInteger.create("rotation", 0, 7);
+	public static final PropertyInteger LAYER8 = PropertyInteger.create("layer", 0, 7);
     public static final PropertyInteger VARIANTS16 = PropertyInteger.create("variant", 0, 15);
     public static final PropertyInteger VARIANTS15 = PropertyInteger.create("variant", 0, 14);
     public static final PropertyInteger VARIANTS14 = PropertyInteger.create("variant", 0, 13);

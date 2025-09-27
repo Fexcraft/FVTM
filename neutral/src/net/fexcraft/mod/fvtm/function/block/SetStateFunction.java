@@ -46,7 +46,7 @@ public class SetStateFunction extends BlockFunction.StaticBlockFunction {
 	public boolean onClick(WorldW world, V3I pos, V3D hit, StateWrapper state, CubeSide side, EntityW player, boolean main){
 		if(!main) return false;
 		for(ChangeState cs : changes){
-			FvtmLogger.marker(cs.cstate + " " + cs.nstate);
+			//FvtmLogger.marker(cs.cstate + " " + cs.nstate);
 			if(Static.random.nextFloat() < (1f - cs.chance)) continue;
 			if(cs.cstate != null){
 				StateWrapper cond = StateWrapper.from(state.getBlock(), cs.cstate);

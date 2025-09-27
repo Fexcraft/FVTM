@@ -155,6 +155,8 @@ public enum BlockType {
 			case GENERIC_15VAR: return 15;
 			case GENERIC_16VAR: return 16;
 			case GENERIC_4X4ROT: return 4;
+			case GENERIC_8LAYER: return 8;
+			case GENERIC_2x8LAYER: return 16;
 			case GENERIC_ROAD: return 16;
 			default: return 0;
 		}

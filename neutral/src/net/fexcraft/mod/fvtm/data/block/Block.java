@@ -198,6 +198,20 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 			}
 		}
 		//
+		switch(blocktype){
+			case GENERIC_8LAYER:{
+				fullblock = false;
+				fullcube = false;
+				for(int i = 0; i < 8; i++){
+					if(!aabbs.containsKey("layer=" + i)){
+						aabbs.put("layer=" + i, new AABBs(AABBs.LAYERS8[i]));
+					}
+				}
+				break;
+			}
+			default: break;
+		}
+		//
 		ctab = map.getString("CreativeTab", "default");
 		itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
 		no3ditem = map.getBoolean("Disable3DItemModel", false);

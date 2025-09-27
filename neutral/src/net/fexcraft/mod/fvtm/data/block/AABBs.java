@@ -12,6 +12,13 @@ public class AABBs {
 
     public static final AABBs EMPTY = new AABBs(0);
     public static final AABBs FULL = new AABBs(1);
+	public static final AABB[] LAYERS8 = new AABB[8];
+	static{
+		LAYERS8[0] = AABB.create().set(0, 0, 0, 1, 1, 1);
+		for(int i = 1; i < 8; i++){
+			LAYERS8[i] = AABB.create().set(0, 0, 0, 1, i * 0.125, 1);
+		}
+	}
     protected List<AABB> aabbs;
 
     public AABBs(){

@@ -68,6 +68,7 @@ public class G_8LAY extends PlainBase {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+		if(super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ)) return true;
 		if(world.isRemote) return player.getHeldItem(hand).getItem() instanceof ItemBlock;
 		ItemStack stack = player.getHeldItem(hand);
 		if(stack.getItem() instanceof ItemBlock && ((ItemBlock)stack.getItem()).getBlock() == this && state.getValue(LAYER8) > 0){

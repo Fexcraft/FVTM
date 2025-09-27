@@ -1,13 +1,12 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
-import net.fexcraft.mod.fvtm.util.SpawnPacket;
+import net.fexcraft.mod.fvtm.util.ClientAddEntity;
+import net.fexcraft.mod.fvtm.util.SpawnPacketEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,18 +16,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
-import java.util.Optional;
-
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.PacketEntity {
+public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacketEntity {
 
 	public RootVehicle root;
 	private boolean found;
@@ -40,7 +33,6 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 	public double motionY;
 	public double motionZ;
 	private int remtimer;
-	private boolean cl_sync;
 	protected V3D pos = new V3D();
 	protected V3D prev = new V3D();
 
@@ -75,6 +67,12 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 		WheelTireData wtd = root.vehicle.wheeldata.get(wheelid);
 		stepheight = wtd == null ? 0.5f : wtd.function.step_height;
 		getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
+	}
+
+	@Override
+	public void recreateFromPacket(ClientboundAddEntityPacket packet){
+		super.recreateFromPacket(packet);
+		readSpawnData(((ClientAddEntity)packet).getFvtmData());
 	}
 
 	@Override
@@ -152,10 +150,6 @@ public class WheelEntity extends LivingEntity implements UniWheel, SpawnPacket.P
 			if(remtimer == 1) kill((ServerLevel)level());
 			remtimer--;
 			return;
-		}
-		if(level().isClientSide && !cl_sync){
-			ClientPlayNetworking.send(new SpawnPacket((Entity)this));
-			cl_sync = true;
 		}
 	}
 

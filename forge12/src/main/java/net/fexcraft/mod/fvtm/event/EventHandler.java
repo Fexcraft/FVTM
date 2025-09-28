@@ -156,13 +156,13 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event){
-		if(!event.getWorld().isRemote) return;
+		//if(!event.getWorld().isRemote) return;
 		SystemManager.onWorldLoad(WrapperHolder.getWorld(event.getWorld()));
 	}
 	
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event){
-		if(!event.getWorld().isRemote) return;
+		//if(!event.getWorld().isRemote) return;
 		SystemManager.onWorldUnload(WrapperHolder.getWorld(event.getWorld()));
 		WrapperHolder.INSTANCE.reset();
 	}

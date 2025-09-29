@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.packet.*;
-import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.packet.PacketBase;
@@ -19,7 +18,6 @@ import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -142,7 +140,7 @@ public class PacketsImpl extends Packets {
 	@Override
 	public void sendInRange0(Class<? extends PacketBase> packet, WorldW world, V3D pos, int range, Object... data){
 		try{
-			instance.sendToAllAround((IMessage)PACKETS.get(packet).newInstance().fill(data), new TargetPoint(world.dim(), pos.x, pos.y, pos.z, range));
+			instance.sendToAllAround((IMessage)PACKETS.get(packet).newInstance().fill(data), new TargetPoint(world.type().int_key(), pos.x, pos.y, pos.z, range));
 		}
 		catch(IllegalAccessException e){
 			throw new RuntimeException(e);
@@ -155,7 +153,7 @@ public class PacketsImpl extends Packets {
 	@Override
 	public void sendToAllTrackingPos0(Class<? extends PacketBase> packet, WorldW world, V3D pos, Object... data){
 		try{
-			instance.sendToAllTracking((IMessage)PACKETS.get(packet).newInstance().fill(data), new TargetPoint(world.dim(), pos.x, pos.y, pos.z, Config.PACKET_RANGE));
+			instance.sendToAllTracking((IMessage)PACKETS.get(packet).newInstance().fill(data), new TargetPoint(world.type().int_key(), pos.x, pos.y, pos.z, Config.PACKET_RANGE));
 		}
 		catch(Exception e){
 			throw new RuntimeException(e);

@@ -5,8 +5,8 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldType;
 import net.fexcraft.mod.uni.world.WorldW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.io.File;
 import java.util.Timer;
@@ -17,13 +17,13 @@ import java.util.Timer;
 public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends SysObj> {
 
 	protected SystemRegMap<S, V> regions;
-	protected WorldW world;
+	protected final WorldType wtype;
 	protected Timer timer;
 	protected File root;
 	
-	public DetachedSystem(WorldW world){
-		this.world = world;
-		root = WrapperHolder.getWorldFolder(world, "fvtm");
+	public DetachedSystem(WorldType type, File file){
+		root = file;
+		wtype = type;
 		regions = new SystemRegMap<>((S)this, this::newRegion);
 	}
 
@@ -31,11 +31,11 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 		return new SystemRegion<>((S)this, key);
 	}
 
-	public WorldW getWorld(){
-		return world;
-	}
-
 	public abstract Systems getType();
+
+	public boolean isRemote(){
+		return wtype.client();
+	}
 	
 	public void setupTimer(long time){
 		if(!hasTimer()) return;
@@ -86,7 +86,7 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 
 	public void updateRegion(TagCW compound, EntityW player){
 		RegionKey key = new RegionKey(compound.getIntArray("xz"));
-		if(world.isClient()){
+		if(wtype.client()){
 			regions.get(key, true).read(compound);
 		}
 		else{
@@ -127,5 +127,10 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 	public void writeRegion(SystemRegion<S, V> region, TagCW com){}
 
 	public void readRegion(SystemRegion<S, V> region, TagCW com){}
+
+	/** Only safe to use on server side code, may return null client side. */
+	public WorldW getWorldW(){
+		return SystemManager.getWorldW(wtype.side_key());
+	}
 
 }

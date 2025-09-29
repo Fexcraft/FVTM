@@ -459,7 +459,7 @@ public abstract class Packets {
 				}
 			}
 			if(holder.getTile() == null){
-				Object tile = system.getWorld().getBlockEntity(pos);
+				Object tile = player.getWorld().getBlockEntity(pos);
 				if(tile instanceof FvtmBlockEntity) holder.setTile(tile);
 			}
 		});
@@ -494,6 +494,7 @@ public abstract class Packets {
 		LIS_CLIENT.put("sync_reg", (tag, player) -> {
 			SystemManager.Systems sys = SystemManager.Systems.values()[tag.getInteger("sys")];
 			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
+			FvtmLogger.marker(sys, player.getWorld().type().side_key(), tag);
 			if(system != null) system.updateRegion(tag, player);
 		});
 		LIS_CLIENT.put("sync_conf", (tag, player) -> {

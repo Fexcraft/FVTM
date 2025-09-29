@@ -7,8 +7,10 @@ import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.WorldType;
 import net.fexcraft.mod.uni.world.WorldW;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
@@ -22,8 +24,8 @@ import static net.fexcraft.mod.fvtm.Config.SIGN_SAVE_INTERVAL;
  */
 public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
-	public SignSystem(WorldW world){
-		super(world);
+	public SignSystem(WorldType type, File file){
+		super(type, file);
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
 	@Override
 	public void unload(){
-		if(!world.isClient()){
+		if(!wtype.client()){
 			regions.values().forEach(reg -> reg.save());
 		}
 		regions.clear();

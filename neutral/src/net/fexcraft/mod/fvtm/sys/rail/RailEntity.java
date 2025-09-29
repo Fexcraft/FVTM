@@ -513,13 +513,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		else{
 			if(!isInPlayerRange()) return;
-			FvtmWorld world = (FvtmWorld)region.getSystem().getWorld();
+			FvtmWorld world = (FvtmWorld)region.getSystem().getWorldW();
 			world.spawnRailEntity(this);
 		}
 	}
 
 	private boolean isInPlayerRange(){
-		for(EntityW pl : region.getSystem().getWorld().getPlayers()){
+		for(EntityW pl : region.getSystem().getWorldW().getPlayers()){
 			if(pos.dis(pl.getPos()) < 256) return true;
 		}
 		return false;
@@ -720,7 +720,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	private void sendForwardUpdate(){
-		if(vehicle.entity == null || region.getSystem().getWorld().isClient()) return;
+		if(vehicle.entity == null || region.getSystem().isRemote()) return;
 		vehicle.updateAttr("forward");
 	}
 
@@ -734,7 +734,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setActive(boolean bool){
 		vehicle.data.getAttribute("active").set(bool);
-		if(vehicle.entity != null && !region.getSystem().getWorld().isClient()){
+		if(vehicle.entity != null && !region.getSystem().isRemote()){
 			vehicle.updateAttr("active");
 		}
 	}

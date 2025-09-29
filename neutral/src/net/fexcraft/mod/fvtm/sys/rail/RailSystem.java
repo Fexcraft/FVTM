@@ -39,9 +39,9 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
 	
-	public RailSystem(WorldW world){
-		super(world);
-		if(!world.isClient()) load();
+	public RailSystem(WorldType wtype, File file){
+		super(wtype, file);
+		if(wtype.server()) load();
 	}
 
 	@Override
@@ -253,7 +253,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		SystemRegion<?, Junction> region = regions.get(vector, false);
 		if(region == null || region.get(vector) == null) return false;
 		Junction junc = region.getObjects().remove(vector);
-		if(world.isClient()){
+		if(wtype.client()){
 			return junc != null;
 		}
 		else{
@@ -299,9 +299,9 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	@Override
 	public void onServerTick(){
-		if(world.isClient()) return;
+		if(wtype.client()) return;
 		if(SINGLEPLAYER && !CLIENTLOADED){
-			String key = world.dimkey();
+			String key = wtype.side_key();
 			key = key.substring(0, key.length() - 1) + "c";
 			CLIENTLOADED = SystemManager.get(Systems.RAIL, key) != null;
 			if(!CLIENTLOADED) return;
@@ -365,7 +365,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	@Override
 	public void onClientTick(){
-		if(!world.isClient() || fillqueue.isEmpty()) return;
+		if(!wtype.client() || fillqueue.isEmpty()) return;
 		FvtmLogger.debug("Processing RailEntities in Queue " + fillqueue.size());
 		ArrayList<Long> torem = new ArrayList<>();
 		for(Long uid : fillqueue.keySet()){
@@ -389,7 +389,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 
 	@Override
 	public void unload(){
-		if(!world.isClient()){
+		if(!wtype.client()){
 			regions.values().forEach(reg -> reg.save());
 			save();
 		}
@@ -397,7 +397,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	}
 
 	public void updateClient(String kind, V3I vector){
-		if(world.isClient()) return;
+		if(wtype.client()) return;
 		TagCW compound = null;
 		String task = null;
 		switch(kind){
@@ -465,11 +465,11 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendToAllTrackingPos(PKT_TAG, world, vector, task, compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, getWorldW(), vector, task, compound);
 	}
 
 	public void updateClient(String kind, RailEntity entity){
-		if(world.isClient()) return;
+		if(wtype.client()) return;
 		TagCW compound = null;
 		String task = null;
 		switch(kind){
@@ -562,10 +562,6 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 		if(region != null){
 			updateClient(string, sender.getV3I());
 		}
-	}
-
-	public boolean isRemote(){
-		return world.isClient();
 	}
 
 	public TreeMap<Long, RegionKey> getEntityIndex(){

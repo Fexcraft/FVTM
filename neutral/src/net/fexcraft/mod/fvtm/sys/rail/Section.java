@@ -172,7 +172,7 @@ public class Section {
 			}
 		}
 		compound.set("units", list);
-		Packets.sendToAllTrackingPos(PKT_TAG, junction.region.system.getWorld(), junction.getPos().vec, "rail_upd_sections", compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, junction.region.system.getWorldW(), junction.getPos().vec, "rail_upd_sections", compound);
 	}
 
 }

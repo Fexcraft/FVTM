@@ -51,7 +51,7 @@ public class RailPlacingUtil {
 			vector.write(compound, "vector");
 			Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 			//
-			FvtmResources.INSTANCE.spawnRailMarker(system.getWorld(), vector, newid);
+			FvtmResources.INSTANCE.spawnRailMarker(pass.getWorld(), vector, newid);
 			return;
 		}
 		NewTrack track = QUEUE.get(trackid);
@@ -65,7 +65,7 @@ public class RailPlacingUtil {
 		vector.write(compound, "vector");
 		Packets.sendToAll(PKT_TAG, "rail_place_util", compound);
 		//
-		FvtmResources.INSTANCE.spawnRailMarker(system.getWorld(), vector, trackid);
+		FvtmResources.INSTANCE.spawnRailMarker(pass.getWorld(), vector, trackid);
 	}
 	
 	private static UUID genId(){

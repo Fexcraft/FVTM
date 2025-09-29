@@ -63,7 +63,7 @@ public class Track extends Path {
 		if(gauge == null){
 			gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
 		}
-		if(junction == null || junction.root.getWorld().isClient()){
+		if(junction == null || junction.root.isRemote()){
 			railmodel = null;
 			restmodel = null;
 		}

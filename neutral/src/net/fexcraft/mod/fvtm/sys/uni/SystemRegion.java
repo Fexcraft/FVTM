@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.io.File;
@@ -35,7 +36,7 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 	}
 
 	public SystemRegion<R, V> load(){
-		if(system.getWorld().isClient()){
+		if(system.isRemote()){
 			TagCW compound = TagCW.create();
 			compound.set("xz", key.toArray());
 			compound.set("sys", system.getType().ordinal());
@@ -43,6 +44,7 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 			return this;
 		}
 		File file = new File(system.getSaveRoot(), "/" + system.getRegFolderName() + "/" + key.x + "_" + key.z + ".dat");
+		FvtmLogger.marker(system.getType() + " " + system.wtype.side_key() + " " + file.getAbsolutePath());
 		TagCW compound = null;
 		boolean failed = false;
 		if(file.exists()){
@@ -110,12 +112,13 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 		if(syncpkt){
 			compound.set("xz", key.toArray());
 			compound.set("sys", system.getType().ordinal());
+			compound.set("dim", system.wtype.side_key());
 		}
 		return compound;
 	}
 
 	public void sendSync(V3I pos){
-		Packets.sendToAllTrackingPos(Packet_TagListener.class, system.getWorld(), pos, "sync_reg", write(true));
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, system.getWorldW(), pos, "sync_reg", write(true));
 	}
 
 	public void sendSync(EntityW ent){

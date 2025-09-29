@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,10 +14,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.fexcraft.mod.uni.world.ChunkW;
-import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.WorldW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.fexcraft.mod.uni.world.*;
 
 import static net.fexcraft.mod.fvtm.Config.*;
 
@@ -29,12 +27,12 @@ public class SystemManager {
 
 	public static boolean SINGLEPLAYER;
 	public static boolean CLIENTLOADED;
-	private static ConcurrentHashMap<Systems, ConcurrentHashMap<String, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
-	private static ConcurrentHashMap<String, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
-	private static ConcurrentHashMap<String, Boolean> LOADED_DIM = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Systems, ConcurrentHashMap<String, DetachedSystem>> SYSTEMS_BY_ST = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_BY_WT = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String, WorldW> WORLDS = new ConcurrentHashMap<>();
 	
 	public static void onServerTick(){
-		for(ConcurrentHashMap<String, DetachedSystem> sys : SYSTEMS.values()){
+		for(ConcurrentHashMap<String, DetachedSystem> sys : SYSTEMS_BY_ST.values()){
 			for(DetachedSystem det : sys.values()){
 				det.onServerTick();
 			}
@@ -42,7 +40,7 @@ public class SystemManager {
 	}
 
 	public static void onClientTick(){
-		for(ConcurrentHashMap<String, DetachedSystem> sys : SYSTEMS.values()){
+		for(ConcurrentHashMap<String, DetachedSystem> sys : SYSTEMS_BY_ST.values()){
 			for(DetachedSystem det : sys.values()){
 				det.onClientTick();
 			}
@@ -50,15 +48,15 @@ public class SystemManager {
 	}
 
 	public static void onChunkLoad(WorldW world, ChunkW chunk){
-		if(!loaded(world.dimkey())) onAttachWorldCapabilities(world);
+		if(!loaded(world.type().side_key())) initWorldSystems(world);
 		if(chunk == null) return;
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
+		for(DetachedSystem sys : SYSTEMS_BY_WT.get(world.type().side_key()).values()){
 			sys.onChunkLoad(chunk);
 		}
 	}
 
 	public static void onChunkUnload(WorldW world, ChunkW chunk){
-		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_DIM.get(world.dimkey());
+		ConcurrentHashMap<Systems, DetachedSystem> systems = SYSTEMS_BY_WT.get(world.type().side_key());
 		if(systems == null) return;
 		for(DetachedSystem sys : systems.values()){
 			sys.onChunkUnload(chunk);
@@ -66,59 +64,60 @@ public class SystemManager {
 	}
 
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world){
-		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(world.dimkey());
+		if(!SYSTEMS_BY_ST.containsKey(sysid)) return null;
+		return (T)SYSTEMS_BY_ST.get(sysid).get(world.type().side_key());
 	}
 
 	public static <T extends DetachedSystem> T get(Systems sysid, String key){
-		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(key);
+		if(!SYSTEMS_BY_ST.containsKey(sysid)) return null;
+		return (T)SYSTEMS_BY_ST.get(sysid).get(key);
 	}
 
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world, Class<T> clazz){
-		if(!SYSTEMS.containsKey(sysid)) return null;
-		return (T)SYSTEMS.get(sysid).get(world.dimkey());
+		if(!SYSTEMS_BY_ST.containsKey(sysid)) return null;
+		return (T)SYSTEMS_BY_ST.get(sysid).get(world.type().side_key());
 	}
 
-	private static boolean loaded(String dimension){
-		Boolean bool = LOADED_DIM.get(dimension);
-		return bool != null && bool;
+	private static boolean loaded(String skey){
+		return WORLDS.containsKey(skey);
 	}
 
-	public static void onAttachWorldCapabilities(WorldW world){
-		if(loaded(world.dimkey())) return;
+	public static void initWorldSystems(WorldW world){
+		WorldType type = world.type();
+		if(loaded(type.side_key())) return;
+		String tk = type.side_key();
 		SINGLEPLAYER = WrapperHolder.isSinglePlayer();
-		String dim = world.dimkey();
-		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
-		FvtmLogger.debug("dimension remote = " + world.isClient() + "/" + SINGLEPLAYER);
+		if(!SYSTEMS_BY_WT.containsKey(tk)) SYSTEMS_BY_WT.put(tk, new ConcurrentHashMap<>());
+		FvtmLogger.debug("world type remote = " + world.isClient() + "/" + SINGLEPLAYER);
+		File rootfolder = WrapperHolder.getWorldFolder(world, "fvtm");
 		if(world.isClient() || SINGLEPLAYER){
 			/*if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new ConcurrentHashMap<>());
 			EntitySystem ensys = new EntitySystem(world);
-			SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
-			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);*///TODO
+			SYSTEMS_BY_ST.get(Systems.ENTITY).put(tk, ensys);
+			SYSTEMS_BY_WT.get(tk).put(Systems.ENTITY, ensys);*///TODO
 		}
 		//
 		if(!DISABLE_RAILS){
-			if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new ConcurrentHashMap<>());
-			RailSystem sys = new RailSystem(world);
-			SYSTEMS.get(Systems.RAIL).put(dim, sys);
-			SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
+			if(!SYSTEMS_BY_ST.containsKey(Systems.RAIL)) SYSTEMS_BY_ST.put(Systems.RAIL, new ConcurrentHashMap<>());
+			RailSystem sys = new RailSystem(type, rootfolder);
+			SYSTEMS_BY_ST.get(Systems.RAIL).put(tk, sys);
+			SYSTEMS_BY_WT.get(tk).put(Systems.RAIL, sys);
 		}
 		//
 		if(!DISABLE_WIRES){
-			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
-			WireSystem sys = new WireSystem(world);
-			SYSTEMS.get(Systems.WIRE).put(dim, sys);
-			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
+			if(!SYSTEMS_BY_ST.containsKey(Systems.WIRE)) SYSTEMS_BY_ST.put(Systems.WIRE, new ConcurrentHashMap<>());
+			WireSystem sys = new WireSystem(type, rootfolder);
+			SYSTEMS_BY_ST.get(Systems.WIRE).put(tk, sys);
+			SYSTEMS_BY_WT.get(tk).put(Systems.WIRE, sys);
 		}
 		if(!DISABLE_SIGNS){
-			if(!SYSTEMS.containsKey(Systems.SIGN)) SYSTEMS.put(Systems.SIGN, new ConcurrentHashMap<>());
-			SignSystem sys = new SignSystem(world);
-			SYSTEMS.get(Systems.SIGN).put(dim, sys);
-			SYSTEMS_DIM.get(dim).put(Systems.SIGN, sys);
+			if(!SYSTEMS_BY_ST.containsKey(Systems.SIGN)) SYSTEMS_BY_ST.put(Systems.SIGN, new ConcurrentHashMap<>());
+			SignSystem sys = new SignSystem(type, rootfolder);
+			SYSTEMS_BY_ST.get(Systems.SIGN).put(tk, sys);
+			SYSTEMS_BY_WT.get(tk).put(Systems.SIGN, sys);
 		}
 		//
-		LOADED_DIM.put(dim, true);
+		WORLDS.put(type.side_key(), world);
 	}
 	
 	public static long getNextInterval(long interval){
@@ -129,7 +128,7 @@ public class SystemManager {
 	}
 
 	public static void onServerStarting(){
-		for(Map<String, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<String, DetachedSystem> entry : SYSTEMS_BY_ST.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.setupTimer(getNextInterval(sys.getTimerInterval()));
 			}
@@ -137,44 +136,49 @@ public class SystemManager {
 	}
 
 	public static void onWorldLoad(WorldW world){
-		for(DetachedSystem sys : SYSTEMS_DIM.get(world.dimkey()).values()){
+		for(DetachedSystem sys : SYSTEMS_BY_WT.get(world.type().side_key()).values()){
 			sys.setupTimer(getNextInterval(sys.getTimerInterval()));
 		}
 	}
 
 	public static void onServerStopping(){
-		for(Map<String, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<String, DetachedSystem> entry : SYSTEMS_BY_ST.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.stopTimer();
 				sys.unload();
 			}
 		}
-		SYSTEMS.clear();
-		SYSTEMS_DIM.clear();
-		LOADED_DIM.clear();
+		SYSTEMS_BY_ST.clear();
+		SYSTEMS_BY_WT.clear();
+		WORLDS.clear();
 		SINGLEPLAYER = CLIENTLOADED = false;
 	}
 
 	public static void onWorldUnload(WorldW world){
-		Object dim = world.dimkey();
-		ConcurrentHashMap<Systems, DetachedSystem> map = SYSTEMS_DIM.get(dim);
+		String skey = world.type().side_key();
+		ConcurrentHashMap<Systems, DetachedSystem> map = SYSTEMS_BY_WT.get(skey);
 		if(map != null){
 			for(Entry<Systems, DetachedSystem> sys : map.entrySet()){
 				sys.getValue().stopTimer();
 				sys.getValue().unload();
-				SYSTEMS.get(sys.getKey()).remove(dim);
+				SYSTEMS_BY_ST.get(sys.getKey()).remove(skey);
 			}
 		}
-		SYSTEMS_DIM.remove(dim);
-		LOADED_DIM.remove(dim);
+		SYSTEMS_BY_WT.remove(skey);
+		WORLDS.remove(skey);
 	}
 
-	public static void syncPlayer(String dimkey, EntityW entity){
-		ConcurrentHashMap<Systems, DetachedSystem> sys = SYSTEMS_DIM.get(dimkey);
+	public static void syncPlayer(String skey, EntityW entity){
+		ConcurrentHashMap<Systems, DetachedSystem> sys = SYSTEMS_BY_WT.get(skey);
 		if(sys == null) return;
 		for(DetachedSystem value : sys.values()){
 			value.syncPlayer(entity);
 		}
+	}
+
+	/** Only safe to use on server side code, may return null client side. */
+	public static WorldW getWorldW(String skey){
+		return WORLDS.get(skey);
 	}
 
 	public static enum Systems {
@@ -184,7 +188,7 @@ public class SystemManager {
 	}
 
 	public static boolean active(Systems sys){
-		return SYSTEMS.containsKey(sys);
+		return SYSTEMS_BY_ST.containsKey(sys);
 	}
 
 }

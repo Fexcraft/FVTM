@@ -11,9 +11,10 @@ import net.fexcraft.mod.fvtm.function.part.ParticleEmitterFunction.EmitterData;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.uni.world.ChunkW;
-import net.fexcraft.mod.uni.world.WorldW;
+import net.fexcraft.mod.uni.world.WorldType;
 import net.minecraft.client.Minecraft;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,8 +34,8 @@ public class EntitySystem extends DetachedSystem {
 	public ConcurrentLinkedQueue<ParticleEntity> particles = new ConcurrentLinkedQueue<>();
 	public ConcurrentLinkedQueue<ParticleEntity> expired = new ConcurrentLinkedQueue<>();
 
-	public EntitySystem(WorldW world){
-		super(world);
+	public EntitySystem(WorldType type, File file){
+		super(type, file);
 	}
 
 	@Override

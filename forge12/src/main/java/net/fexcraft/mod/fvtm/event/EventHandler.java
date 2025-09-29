@@ -35,7 +35,6 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -87,7 +86,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
-		SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(event.getObject()));
+		SystemManager.initWorldSystems(WrapperHolder.getWorld(event.getObject()));
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	
@@ -206,12 +205,12 @@ public class EventHandler {
 			Packets.sendTo(PKT_TAG, ent, "sync_conf", cfgsync);
 		}
 		if(!event.player.world.isRemote) RoadPlacingCache.onLogIn(event.player.getGameProfile().getId());
-		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), ent);
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).type().side_key(), ent);
 	}
 
 	@SubscribeEvent
 	public void onPlayerDim(PlayerEvent.PlayerChangedDimensionEvent event){
-		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).dimkey(), UniEntity.getEntity(event.player));
+		SystemManager.syncPlayer(WrapperHolder.getWorld(event.player.world).type().side_key(), UniEntity.getEntity(event.player));
 	}
 	
 	@SubscribeEvent

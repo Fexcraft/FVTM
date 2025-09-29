@@ -21,10 +21,7 @@ import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
-import net.fexcraft.mod.uni.world.ChunkW;
-import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.WorldW;
-import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.fexcraft.mod.uni.world.*;
 
 /**
  * "Wire System"
@@ -39,9 +36,9 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	private WireMap wireunits = new WireMap(this);
 	private SectionMap sections = new SectionMap(this);
 	
-	public WireSystem(WorldW world){
-		super(world);
-		if(!world.isClient()) load();
+	public WireSystem(WorldType wt, File file){
+		super(wt, file);
+		if(!wt.client()) load();
 	}
 
 	@Override
@@ -254,7 +251,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	}
 
 	public void updateClient(String kind, String key, V3I pos, WireRelay relay){
-		if(world.isClient()) return;
+		if(wtype.client()) return;
 		TagCW compound = null;
 		String task = null;
 		switch(kind){
@@ -304,7 +301,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendToAllTrackingPos(PKT_TAG, world, pos, task, compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, getWorldW(), pos, task, compound);
 	}
 
 	public WireRelay getRelay(WireKey key){
@@ -352,7 +349,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	@Override
 	public void unload(){
-		if(!world.isClient()){
+		if(!wtype.client()){
 			regions.values().forEach(reg -> reg.save());
 			save();
 		}
@@ -396,10 +393,6 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	public void sendReload(String string, EntityW sender){
 		SystemRegion<?, RelayHolder> region = regions.get(RegionKey.getRegionXZ(sender.getPos()));
 		if(region != null) region.sendSync(sender);
-	}
-
-	public boolean isRemote(){
-		return world.isClient();
 	}
 	
 	//
@@ -485,7 +478,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	public void delHolder(V3I pos){
 		SystemRegion<?, RelayHolder> region = regions.get(pos, true);
 		if(region != null){
-			if(region.del(pos) && !world.isClient()){
+			if(region.del(pos) && !wtype.client()){
 				updateClient("no_holder", null, pos, null);
 			}
 		}

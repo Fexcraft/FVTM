@@ -74,7 +74,7 @@ public class Junction implements SysObj {
 		//this.crossing = compound.getBoolean("Crossing");
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
-			if(root.getWorld().isClient()){
+			if(root.isRemote()){
 				for(Track track : tracks){
 					if(track.railmodel != null) track.railmodel.clearGL();
 					if(track.restmodel != null) track.restmodel.clearGL();
@@ -450,9 +450,8 @@ public class Junction implements SysObj {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private boolean isInPlayerRange(){
-		for(EntityW pl : root.getWorld().getPlayers()){
+		for(EntityW pl : root.getWorldW().getPlayers()){
 			if(vecpos.vec.dis(pl.getPos()) < 1024) return true;
 		}
 		return false;
@@ -500,7 +499,7 @@ public class Junction implements SysObj {
 
 	private void updateLinkedTileEntities(boolean signal){
 		entities.removeIf(pos -> {
-			WorldW world = root.getWorld();
+			WorldW world = root.getWorldW();
 			if(!world.isPositionLoaded(pos)) return false;
 			/*TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
@@ -516,7 +515,7 @@ public class Junction implements SysObj {
 
 	public void unlinkLinkedTileEntities(){
 		for(V3I pos : entities){
-			WorldW world = root.getWorld();
+			WorldW world = root.getWorldW();
 			if(!world.isPositionLoaded(pos)) continue;
 			/*TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){

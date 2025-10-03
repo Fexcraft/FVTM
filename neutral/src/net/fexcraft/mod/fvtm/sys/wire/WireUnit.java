@@ -63,9 +63,9 @@ public class WireUnit {
 		}
 		else{
 			Wire wire = orig == null ? copy : orig;
-			Packets.sendToAll(Packet_TagListener.class, wire.relay.holder.getRegion().system.getWorldW(), wire.relay.holder.pos, "wire_udp_unit", compound);
+			Packets.sendToAll(Packet_TagListener.class, wire.relay.holder.getRegion().system.getServerWorld(), wire.relay.holder.pos, "wire_udp_unit", compound);
 			if(wire.length > 16 && orig != null){
-				Packets.sendToAll(Packet_TagListener.class, wire.relay.holder.getRegion().system.getWorldW(), copy.relay.holder.pos, "wire_udp_unit", compound);
+				Packets.sendToAll(Packet_TagListener.class, wire.relay.holder.getRegion().system.getServerWorld(), copy.relay.holder.pos, "wire_udp_unit", compound);
 			}
 		}
 	}

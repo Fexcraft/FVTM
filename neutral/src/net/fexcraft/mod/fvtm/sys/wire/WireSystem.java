@@ -36,8 +36,8 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	private WireMap wireunits = new WireMap(this);
 	private SectionMap sections = new SectionMap(this);
 	
-	public WireSystem(WorldType wt, File file){
-		super(wt, file);
+	public WireSystem(WorldW sw, WorldType wt, File file){
+		super(sw, wt, file);
 		if(!wt.client()) load();
 	}
 
@@ -301,7 +301,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendToAllTrackingPos(PKT_TAG, getWorldW(), pos, task, compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, getServerWorld(), pos, task, compound);
 	}
 
 	public WireRelay getRelay(WireKey key){

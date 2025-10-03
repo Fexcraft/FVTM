@@ -33,6 +33,7 @@ import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -86,7 +87,8 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
-		SystemManager.initWorldSystems(WrapperHolder.getWorld(event.getObject()));
+		WorldW world = WrapperHolder.getWorld(event.getObject());
+		SystemManager.initWorldSystems(world, world.type());
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	

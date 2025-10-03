@@ -24,8 +24,8 @@ import static net.fexcraft.mod.fvtm.Config.SIGN_SAVE_INTERVAL;
  */
 public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
-	public SignSystem(WorldType type, File file){
-		super(type, file);
+	public SignSystem(WorldW sw, WorldType type, File file){
+		super(sw, type, file);
 	}
 
 	@Override

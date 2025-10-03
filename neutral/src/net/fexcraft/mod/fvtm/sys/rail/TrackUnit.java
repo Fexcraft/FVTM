@@ -77,6 +77,7 @@ public class TrackUnit {
 		TagCW compound = TagCW.create();
 		compound.set("unit", getUID());
 		compound.set("section", getSectionId());
+		compound.set("dim", data.getWorldType().rec_key());
 		if(orig == null && copy == null){
 			Packets.sendToAll(PKT_TAG, "rail_upd_unit_section", compound);
 		}

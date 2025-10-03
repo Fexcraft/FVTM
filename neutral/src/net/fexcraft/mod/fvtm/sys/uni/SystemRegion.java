@@ -40,6 +40,7 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 			TagCW compound = TagCW.create();
 			compound.set("xz", key.toArray());
 			compound.set("sys", system.getType().ordinal());
+			compound.set("dim", system.wtype.rec_key());
 			Packets.send(Packet_TagListener.class, "sync_reg", compound);
 			return this;
 		}
@@ -112,13 +113,13 @@ public class SystemRegion<R extends DetachedSystem<R, V>, V extends SysObj> {
 		if(syncpkt){
 			compound.set("xz", key.toArray());
 			compound.set("sys", system.getType().ordinal());
-			compound.set("dim", system.wtype.side_key());
+			compound.set("dim", system.wtype.rec_key());
 		}
 		return compound;
 	}
 
 	public void sendSync(V3I pos){
-		Packets.sendToAllTrackingPos(Packet_TagListener.class, system.getWorldW(), pos, "sync_reg", write(true));
+		Packets.sendToAllTrackingPos(Packet_TagListener.class, system.getServerWorld(), pos, "sync_reg", write(true));
 	}
 
 	public void sendSync(EntityW ent){

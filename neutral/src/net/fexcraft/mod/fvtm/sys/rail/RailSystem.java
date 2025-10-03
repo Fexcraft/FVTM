@@ -39,8 +39,8 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
 	
-	public RailSystem(WorldType wtype, File file){
-		super(wtype, file);
+	public RailSystem(WorldW sw, WorldType wtype, File file){
+		super(sw, wtype, file);
 		if(wtype.server()) load();
 	}
 
@@ -301,9 +301,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 	public void onServerTick(){
 		if(wtype.client()) return;
 		if(SINGLEPLAYER && !CLIENTLOADED){
-			String key = wtype.side_key();
-			key = key.substring(0, key.length() - 1) + "c";
-			CLIENTLOADED = SystemManager.get(Systems.RAIL, key) != null;
+			CLIENTLOADED = SystemManager.get(Systems.RAIL, wtype.rec_key()) != null;
 			if(!CLIENTLOADED) return;
 		}
 		if(!fillqueue.isEmpty() && (!SINGLEPLAYER || CLIENTLOADED)){
@@ -465,7 +463,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
-		Packets.sendToAllTrackingPos(PKT_TAG, getWorldW(), vector, task, compound);
+		Packets.sendToAllTrackingPos(PKT_TAG, getServerWorld(), vector, task, compound);
 	}
 
 	public void updateClient(String kind, RailEntity entity){

@@ -58,6 +58,7 @@ public class WireUnit {
 		compound.set("task", "update_unit_section");
 		compound.set("unit", getUID());
 		compound.set("section", getSectionId());
+		compound.set("dim", data.getWorldType().rec_key());
 		if(orig == null && copy == null){
 			Packets.sendToAll(Packet_TagListener.class, "wire_udp_unit", compound);
 		}

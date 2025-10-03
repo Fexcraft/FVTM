@@ -451,7 +451,7 @@ public class Junction implements SysObj {
 	}
 
 	private boolean isInPlayerRange(){
-		for(EntityW pl : root.getWorldW().getPlayers()){
+		for(EntityW pl : root.getServerWorld().getPlayers()){
 			if(vecpos.vec.dis(pl.getPos()) < 1024) return true;
 		}
 		return false;
@@ -499,7 +499,7 @@ public class Junction implements SysObj {
 
 	private void updateLinkedTileEntities(boolean signal){
 		entities.removeIf(pos -> {
-			WorldW world = root.getWorldW();
+			WorldW world = root.getServerWorld();
 			if(!world.isPositionLoaded(pos)) return false;
 			/*TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
@@ -515,7 +515,7 @@ public class Junction implements SysObj {
 
 	public void unlinkLinkedTileEntities(){
 		for(V3I pos : entities){
-			WorldW world = root.getWorldW();
+			WorldW world = root.getServerWorld();
 			if(!world.isPositionLoaded(pos)) continue;
 			/*TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){

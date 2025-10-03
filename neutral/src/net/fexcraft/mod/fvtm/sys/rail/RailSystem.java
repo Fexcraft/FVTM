@@ -463,6 +463,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
+		compound.set("dim", wtype.rec_key());
 		Packets.sendToAllTrackingPos(PKT_TAG, getServerWorld(), vector, task, compound);
 	}
 
@@ -478,6 +479,7 @@ public class RailSystem extends DetachedSystem<RailSystem, Junction> {
 			}
 		}
 		if(compound == null) return;
+		compound.set("dim", wtype.rec_key());
 		Packets.sendToAll(PKT_TAG, task, compound);
 	}
 

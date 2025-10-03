@@ -309,8 +309,8 @@ public class UniRoadTool {
 			}
 		}
 		pass.bar("interact.fvtm.road_tool.complete");
-		RoadPlacingCache.addEntry(pass.getUUID(), pass.dimid(), map);
-		com.set("LastRoadDim", pass.dimid());
+		RoadPlacingCache.addEntry(pass.getUUID(), pass.getWorld().type().side_key(), map);
+		com.set("LastRoadDim", pass.getWorld().type().side_key());
 		stack.updateTag(tag -> tag.set(TAG_KEY, com));
 		return true;
 	}

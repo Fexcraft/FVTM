@@ -242,7 +242,7 @@ public abstract class Packets {
 		});
 		LIS_SERVER.put("sync_reg", (com, player) -> {
 			SystemManager.Systems sys = SystemManager.Systems.values()[com.getInteger("sys")];
-			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
+			DetachedSystem<?, ?> system = SystemManager.get(sys, com.getString("dim"));
 			if(system == null) return;
 			SystemRegion<?, ?> reg = system.getRegions().get(com.getIntArray("xz"));
 			if(reg != null) reg.sendSync(player);
@@ -482,18 +482,18 @@ public abstract class Packets {
 			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
 		});
 		LIS_CLIENT.put("sign_upd", (tag, player) -> {
-			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, tag.getString("dim"));
 			V3I pos = new V3I(tag.getList("pos"));
 			SystemRegion region = system.getRegions().get(pos, false);
 			if(region != null) region.add(pos).read(tag.getCompound("sign"));
 		});
 		LIS_CLIENT.put("sign_rem", (tag, player) -> {
-			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, tag.getString("dim"));
 			system.del(new V3I(tag.getList("pos")));
 		});
 		LIS_CLIENT.put("sync_reg", (tag, player) -> {
 			SystemManager.Systems sys = SystemManager.Systems.values()[tag.getInteger("sys")];
-			DetachedSystem<?, ?> system = SystemManager.get(sys, player.getWorld());
+			DetachedSystem<?, ?> system = SystemManager.get(sys, tag.getString("dim"));
 			FvtmLogger.marker(sys, player.getWorld().type().side_key(), tag);
 			if(system != null) system.updateRegion(tag, player);
 		});

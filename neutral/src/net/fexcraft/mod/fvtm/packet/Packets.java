@@ -322,12 +322,12 @@ public abstract class Packets {
 			((FvtmWorld)player.getWorld()).handleBlockEntityPacket(tag, player);
 		});
 		LIS_CLIENT.put("rail_upd_unit_section", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			TrackUnit unit = system.getTrackUnits().get(tag.getString("unit"));
 			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")), false);
 		});
 		LIS_CLIENT.put("rail_upd_sections", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			TagLW list = tag.getList("units");
 			TrackUnit unit;
 			for(TagCW com : list){
@@ -340,7 +340,7 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("rail_spawn_ent", (tag, player) -> {
 			FvtmLogger.debug("Receiving entity spawn request.");
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			SystemRegion<RailSystem, Junction> region = system.getRegions().get(tag.getIntArray("region"), true);
 			if(region != null && region.loaded){
 				RailRegion railreg = (RailRegion)region;
@@ -349,12 +349,12 @@ public abstract class Packets {
 			else system.fillqueue.put(tag.getLong("uid"), tag.copy());
 		});
 		LIS_CLIENT.put("rail_rem_ent", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			RailEntity ent = system.getEntity(tag.getLong("uid"), false);
 			if(ent != null) ent.remove();
 		});
 		LIS_CLIENT.put("rail_upd_junc", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			V3I vec = tag.getV3I("pos");
 			Junction junction = system.getJunction(vec);
 			if(junction != null) junction.read(tag);
@@ -368,11 +368,11 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("rail_rem_junc", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			system.delJunction(tag.getV3I("pos"));
 		});
 		LIS_CLIENT.put("rail_upd_junc_state", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
 				junction.switch0 = tag.getBoolean("switch0");
@@ -380,7 +380,7 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("rail_upd_junc_signal", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
 				if(tag.getBoolean("nosignal")){
@@ -394,7 +394,7 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("rail_upd_junc_signal_state", (tag, player) -> {
-			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, player.getWorld());
+			RailSystem system = SystemManager.get(SystemManager.Systems.RAIL, tag.getString("dim"));
 			Junction junction = system.getJunction(tag.getV3I("pos"));
 			if(junction != null){
 				junction.sigstate0 = tag.getBoolean("signal0");
@@ -434,7 +434,7 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("wire_upd_relay", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
 			RelayHolder holder = system.getHolder(tag.getV3I("pos"));
 			String key = tag.getString("Key");
 			if(holder != null && holder.contains(key)){
@@ -442,12 +442,12 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("wire_rem_relay", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
 			RelayHolder holder = system.getHolder(tag.getV3I("pos"));
 			holder.remove(tag.getString("key"));
 		});
 		LIS_CLIENT.put("wire_upd_holder", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
 			V3I pos = tag.getV3I("pos");
 			RelayHolder holder = system.getHolder(pos);
 			if(holder != null) holder.read(tag);
@@ -464,11 +464,11 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("wire_rem_holder", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
 			system.delHolder(tag.getV3I("pos"));
 		});
 		LIS_CLIENT.put("wire_udp_sections", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
 			TagLW list = tag.getList("units");
 			WireUnit unit;
 			for(TagCW com : list){
@@ -477,7 +477,7 @@ public abstract class Packets {
 			}
 		});
 		LIS_CLIENT.put("wire_udp_unit", (tag, player) -> {
-			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
 			WireUnit unit = system.getWireUnits().get(tag.getString("unit"));
 			if(unit != null) unit.setSection(system.getSection(tag.getLong("section")));
 		});

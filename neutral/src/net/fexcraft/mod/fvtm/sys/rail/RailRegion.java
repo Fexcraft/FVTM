@@ -32,7 +32,7 @@ public class RailRegion extends SystemRegion<RailSystem, Junction> {
 			FvtmLogger.debug("Spawning Entity " + ent.uid + "!");
 			entities.put(ent.getUID(), ent);
 			if(system.isRemote()) return;
-			Packets.sendToAllTrackingPos(PKT_TAG, system.getWorldW(), ent.pos, "rail_spawn_ent", ent.write(null));
+			Packets.sendToAllTrackingPos(PKT_TAG, system.getServerWorld(), ent.pos, "rail_spawn_ent", ent.write(null));
 		}
 		catch(Exception e){
 			e.printStackTrace();

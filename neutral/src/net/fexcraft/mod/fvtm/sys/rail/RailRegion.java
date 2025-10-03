@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -32,7 +31,9 @@ public class RailRegion extends SystemRegion<RailSystem, Junction> {
 			FvtmLogger.debug("Spawning Entity " + ent.uid + "!");
 			entities.put(ent.getUID(), ent);
 			if(system.isRemote()) return;
-			Packets.sendToAllTrackingPos(PKT_TAG, system.getServerWorld(), ent.pos, "rail_spawn_ent", ent.write(null));
+			TagCW pkt = TagCW.create();
+			pkt.set("dim", ent.region.system.getWorldType().rec_key());
+			Packets.sendToAllTrackingPos(PKT_TAG, system.getServerWorld(), ent.pos, "rail_spawn_ent", ent.write(pkt));
 		}
 		catch(Exception e){
 			e.printStackTrace();

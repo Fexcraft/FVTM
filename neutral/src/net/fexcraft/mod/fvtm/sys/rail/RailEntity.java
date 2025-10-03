@@ -513,13 +513,12 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		else{
 			if(!isInPlayerRange()) return;
-			FvtmWorld world = (FvtmWorld)region.getSystem().getWorldW();
-			world.spawnRailEntity(this);
+			region.getSystem().getFvtmServerWorld().spawnRailEntity(this);
 		}
 	}
 
 	private boolean isInPlayerRange(){
-		for(EntityW pl : region.getSystem().getWorldW().getPlayers()){
+		for(EntityW pl : region.getSystem().getServerWorld().getPlayers()){
 			if(pos.dis(pl.getPos()) < 256) return true;
 		}
 		return false;

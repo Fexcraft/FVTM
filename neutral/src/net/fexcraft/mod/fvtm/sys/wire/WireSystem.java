@@ -301,6 +301,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			}
 		}
 		if(compound == null) return;
+		compound.set("dim", getWorldType().rec_key());
 		Packets.sendToAllTrackingPos(PKT_TAG, getServerWorld(), pos, task, compound);
 	}
 

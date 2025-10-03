@@ -17,13 +17,15 @@ import java.util.Timer;
 public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends SysObj> {
 
 	protected SystemRegMap<S, V> regions;
-	protected final WorldType wtype;
+	protected WorldW serv_world;
+	protected WorldType wtype;
 	protected Timer timer;
 	protected File root;
 	
-	public DetachedSystem(WorldType type, File file){
+	public DetachedSystem(WorldW sworld, WorldType type, File file){
 		root = file;
 		wtype = type;
+		serv_world = sworld;
 		regions = new SystemRegMap<>((S)this, this::newRegion);
 	}
 
@@ -128,9 +130,15 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 
 	public void readRegion(SystemRegion<S, V> region, TagCW com){}
 
-	/** Only safe to use on server side code, may return null client side. */
-	public WorldW getWorldW(){
-		return SystemManager.getWorldW(wtype.side_key());
+	public WorldW getServerWorld(){
+		return serv_world;
+	}
+	public FvtmWorld getFvtmServerWorld(){
+		return (FvtmWorld)serv_world;
+	}
+
+	public WorldType getWorldType(){
+		return wtype;
 	}
 
 }

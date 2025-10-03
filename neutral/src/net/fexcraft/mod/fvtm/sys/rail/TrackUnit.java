@@ -82,9 +82,9 @@ public class TrackUnit {
 		}
 		else{
 			Track track = orig == null ? copy : orig;
-			Packets.sendToAllTrackingPos(PKT_TAG, track.junction.root.getWorldW(), track.start.vec, "rail_upd_unit_section", compound);
+			Packets.sendToAllTrackingPos(PKT_TAG, track.junction.root.getServerWorld(), track.start.vec, "rail_upd_unit_section", compound);
 			if(track.length > 16){
-				Packets.sendToAllTrackingPos(PKT_TAG, track.junction.root.getWorldW(), track.end.vec, "rail_upd_unit_section", compound);
+				Packets.sendToAllTrackingPos(PKT_TAG, track.junction.root.getServerWorld(), track.end.vec, "rail_upd_unit_section", compound);
 			}
 		}
 	}

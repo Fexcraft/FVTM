@@ -7,7 +7,6 @@ import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -17,8 +16,6 @@ import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.uni.FclRecipe;
-import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;

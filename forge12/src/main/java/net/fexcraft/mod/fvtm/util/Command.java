@@ -452,16 +452,17 @@ public class Command extends CommandBase {
             }
             case "undo":{
             	EntityPlayer player = (EntityPlayer)sender;
+				EntityW pass = UniEntity.getEntity(player);
             	if(args.length > 1 || args[1].equals("road") || player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
-            		JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.dimension);
+            		JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), pass.getWorld().type().side_key());
             		if(map == null || map.empty()){
                 		Print.chatbar(sender, "No last road data in item.");
             			return;
             		}
-					int dim = Integer.parseInt(map.getString("LastRoadDim", "0"));
-            		if(dim != player.dimension){
-                		Print.chatbar(sender, "Last road was placed in &6DIM" + map.getInteger("dimension", -99999));
-                		Print.chatbar(sender, "You are currenctly in &6DIM" + player.world.provider.getDimension());
+					String dim = map.getString("LastRoadDim", "0-s");
+            		if(!dim.equals(pass.getWorld().type().side_key())){
+                		Print.chatbar(sender, "Last road was placed in &6DIM " + map.getInteger("dimension", -99999));
+                		Print.chatbar(sender, "You are currenctly in &6DIM " + player.world.provider.getDimension());
             			return;
             		}
             		map.rem("LastRoadDim");

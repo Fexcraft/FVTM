@@ -119,15 +119,15 @@ public class FVTM20 {
 			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
 				Player player = ctx.getSource().getPlayerOrException();
 				EntityW pass = UniEntity.getEntity(player);
-				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), pass.getWorld().type().side_key());
 				if(map == null || map.empty()){
 					pass.send("No last road data in item.");
 					return 0;
 				}
-				String dim = map.getString("LastRoadDim", "minecraft:overworld");
-				if(!dim.equals(player.level().dimension().location().toString())){
+				String dim = map.getString("LastRoadDim", "minecraft:overworld-s");
+				if(!dim.equals(pass.getWorld().type().side_key())){
 					pass.send("Last road was placed in &6DIM" + map.getString("LastRoadDim", "unknown"));
-					pass.send("You are currenctly in &6DIM" + player.level().dimension().location());
+					pass.send("You are currently in &6DIM" + pass.getWorld().type().side_key());
 					return 0;
 				}
 				map.rem("LastRoadDim");

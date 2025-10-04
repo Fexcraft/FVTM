@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -268,7 +269,8 @@ public class FVTM4 {
 
 		@SubscribeEvent
 		public static void onAttachWorldCaps(AttachCapabilitiesEvent<Level> event){
-			SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(event.getObject()));
+			WorldW lvl = WrapperHolder.getWorld(event.getObject());
+			SystemManager.initWorldSystems(lvl, lvl.type());
 		}
 
 		@SubscribeEvent

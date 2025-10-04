@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentItem;
@@ -11,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Lockable.LockableItem;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.resources.I18n;
@@ -94,7 +92,7 @@ public class MaterialItem extends Item implements ContentItem<Material>, Lockabl
     
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-    	if(!Static.dev()) return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    	if(!EnvInfo.DEV) return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         player.getHeldItem(hand).getItem().setDamage(player.getHeldItem(hand), player.getHeldItem(hand).getItemDamage() - 1); return EnumActionResult.SUCCESS;
     }
     

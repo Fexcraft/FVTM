@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper.InputType;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -524,7 +525,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			scanner.close();
 		}
 		catch(Exception e){
-			if(Static.dev()){
+			if(EnvInfo.DEV){
 				e.printStackTrace();
 				Static.stop();
 			}

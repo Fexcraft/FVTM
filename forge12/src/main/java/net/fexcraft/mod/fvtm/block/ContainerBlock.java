@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -12,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.inv.InvType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.util.GuiHandler;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraft.block.BlockContainer;
@@ -168,7 +168,7 @@ public class ContainerBlock extends BlockContainer {
                 }
                 return true;
             }
-            else if(Static.dev()){
+            else if(EnvInfo.DEV){
                 Print.debug(te.getContainerData() == null ? "No Container." : te.getContainerData().write(new NBTTagCompound()).toString());
             }
         }

@@ -27,10 +27,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.caps.*;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.UniChunk;
-import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.*;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -280,7 +277,7 @@ public class EventHandler {
 				flightdata.setInt(passenger.connection, 0);
 			}
 			catch(IllegalArgumentException | IllegalAccessException e){
-				if(Static.dev()){
+				if(EnvInfo.DEV){
 					e.printStackTrace();
 				}
 				flightdata_failed = true;

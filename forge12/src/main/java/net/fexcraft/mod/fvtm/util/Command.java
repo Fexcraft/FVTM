@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.impl.TagCWI;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -430,19 +431,19 @@ public class Command extends CommandBase {
             	break;
             }
             case "rrr": case "reload-railregion":{
-            	if(!Static.dev()) return;
+            	if(!EnvInfo.DEV) return;
             	((RailSystem)SystemManager.get(Systems.RAIL, getWorld(sender.getEntityWorld()))).sendReload("all", UniEntity.getEntity(sender.getCommandSenderEntity()));
             	Print.chat(sender, "&oRail-Regions Reloading.");
             	break;
             }
             case "rrs": case "reload-railsections":{
-            	if(!Static.dev()) return;
+            	if(!EnvInfo.DEV) return;
             	((RailSystem)SystemManager.get(Systems.RAIL, getWorld(sender.getEntityWorld()))).sendReload("sections", UniEntity.getEntity(sender.getCommandSenderEntity()));
             	Print.chat(sender, "&oRail-Sections Reloading.");
             	break;
             }
             case "vals":{
-            	if(!Static.dev() || !server.isSinglePlayer()) return;
+            	if(!EnvInfo.DEV || !server.isSinglePlayer()) return;
             	if(args.length < 3){
             		Print.chat(sender, VALS.get(args[1]));
             		return;

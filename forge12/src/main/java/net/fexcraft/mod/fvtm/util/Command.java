@@ -463,7 +463,7 @@ public class Command extends CommandBase {
 					String dim = map.getString("LastRoadDim", "0-s");
             		if(!dim.equals(pass.getWorld().type().side_key())){
                 		Print.chatbar(sender, "Last road was placed in &6DIM " + map.getInteger("dimension", -99999));
-                		Print.chatbar(sender, "You are currenctly in &6DIM " + player.world.provider.getDimension());
+                		Print.chatbar(sender, "You are currently in &6DIM " + player.world.provider.getDimension());
             			return;
             		}
             		map.rem("LastRoadDim");

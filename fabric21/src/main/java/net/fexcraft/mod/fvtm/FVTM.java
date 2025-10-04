@@ -54,6 +54,7 @@ import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.commands.CommandSourceStack;
@@ -252,8 +253,9 @@ public class FVTM implements ModInitializer {
 			SystemManager.onChunkUnload(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
 		});
 		ServerWorldEvents.LOAD.register((server, level) -> {
-			SystemManager.onAttachWorldCapabilities(WrapperHolder.getWorld(level));
-			SystemManager.onWorldLoad(WrapperHolder.getWorld(level));
+			WorldW world = WrapperHolder.getWorld(level);
+			SystemManager.initWorldSystems(world, world.type());
+			SystemManager.onWorldLoad(world);
 		});
 		ServerWorldEvents.UNLOAD.register((server, level) -> {
 			SystemManager.onWorldUnload(WrapperHolder.getWorld(level));
@@ -268,7 +270,8 @@ public class FVTM implements ModInitializer {
 			else{
 				RoadPlacingCache.onLogIn(handler.player.getGameProfile().getId());
 			}
-			SystemManager.syncPlayer(WrapperHolder.getWorld(handler.player.level()).dimkey(), UniEntity.getEntity(handler.player));
+			EntityW ple = UniEntity.getEntity(handler.player);
+			SystemManager.syncPlayer(ple.getWorld().type().side_key(), ple);
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			if(!handler.player.level().isClientSide){
@@ -276,7 +279,9 @@ public class FVTM implements ModInitializer {
 			}
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((old, neo, dim) -> {
-			if(dim) SystemManager.syncPlayer(WrapperHolder.getWorld(neo.level()).dimkey(), UniEntity.getEntity(neo));
+			if(!dim) return;
+			EntityW ple = UniEntity.getEntity(neo);
+			SystemManager.syncPlayer(ple.getWorld().type().side_key(), ple);
 		});
 		CommandRegistrationCallback.EVENT.register((dis, reg, env) -> dis.register(genCommand()));
 	}
@@ -317,15 +322,15 @@ public class FVTM implements ModInitializer {
 			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
 				Player player = ctx.getSource().getPlayerOrException();
 				EntityW pass = UniEntity.getEntity(player);
-				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), pass.getWorld().type().side_key());
 				if(map == null || map.empty()){
 					pass.send("No last road data in item.");
 					return 0;
 				}
-				String dim = map.getString("LastRoadDim", "minecraft:overworld");
-				if(!dim.equals(player.level().dimension().location().toString())){
+				String dim = map.getString("LastRoadDim", "minecraft:overworld-s");
+				if(!dim.equals(pass.getWorld().type().side_key())){
 					pass.send("Last road was placed in &6DIM" + map.getString("LastRoadDim", "unknown"));
-					pass.send("You are currenctly in &6DIM" + player.level().dimension().location());
+					pass.send("You are currently in &6DIM" + pass.getWorld().type().side_key());
 					return 0;
 				}
 				map.rem("LastRoadDim");

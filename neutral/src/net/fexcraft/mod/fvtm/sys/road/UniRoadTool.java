@@ -148,7 +148,7 @@ public class UniRoadTool {
 		if(com.has("RoadFill")){
 			road_b = UniStack.createStack(com.getCompound("RoadFill"));
 			flnk = CompatUtil.isValidFurenikus(road_b.getIDL());
-			vani = !road_b.getID().equals("fvtm:asphalt") && !road_b.isItemOf(ContentType.BLOCK.item_type);
+			vani = !flnk && !road_b.getID().equals("fvtm:asphalt") && !road_b.isItemOf(ContentType.BLOCK.item_type);
 		}
 		if(com.has("SlabFill")){
 			slab_b = UniStack.createStack(com.getCompound("SlabFill"));
@@ -259,7 +259,7 @@ public class UniRoadTool {
 				block = roadfill_b.get(i);
 				StackWrapper slb = slabfill_b == null || slabfill_b.isEmpty() ? slab_b : slabfill_b.get(i);
 				flnk = CompatUtil.isValidFurenikus(block.getIDL());
-				vani = !block.getID().equals("fvtm:asphalt") && !block.isItemOf(ContentType.BLOCK.item_type);;
+				vani = !flnk && !block.getID().equals("fvtm:asphalt") && !block.isItemOf(ContentType.BLOCK.item_type);;
 				roadFill(world, pass, roadfill.get(i), pos, block, slb, top_h, flnk, vani, map);
 			}
 		}

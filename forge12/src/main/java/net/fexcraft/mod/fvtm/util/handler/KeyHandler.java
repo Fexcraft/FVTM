@@ -102,11 +102,11 @@ public class KeyHandler {
         if(seat == null) return;
         boolean state = isKeyDown(minecraft.gameSettings.keyBindForward.getKeyCode());
         if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
-            seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
+            seat.onKeyPress(KeyPress.ACCELERATE, player, state);
         }
         state = isKeyDown(minecraft.gameSettings.keyBindBack.getKeyCode());
         if(state != seat.root.getKeyPressState(KeyPress.DECELERATE)){
-            seat.root.onKeyPress(KeyPress.DECELERATE, seat.seat, player, state, false);
+            seat.onKeyPress(KeyPress.DECELERATE, player, state);
         }
         if(isKeyDown(minecraft.gameSettings.keyBindLeft.getKeyCode())){
             seat.onKeyPress(KeyPress.TURN_LEFT, player);

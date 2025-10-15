@@ -76,7 +76,17 @@ public class SwivelPoint {
 	            	e.printStackTrace();
 	            }
 			}
-			else movers.add(new DefaultSwivelPointMover(map));
+			String type = map.getString("type", "default");
+			switch(type){
+				case "pointing_towards":{
+					movers.add(new PointingSwivelPointMover(map));
+					break;
+				}
+				case "default":
+				default:
+					movers.add(new DefaultSwivelPointMover(map));
+					break;
+			}
 		}
 		else if(!json.isArray()){
 			if(json.string_value().endsWith(".class")){

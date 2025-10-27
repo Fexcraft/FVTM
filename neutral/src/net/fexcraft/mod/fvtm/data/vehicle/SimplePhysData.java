@@ -7,6 +7,7 @@ import net.fexcraft.app.json.JsonMap;
  */
 public class SimplePhysData {
 
+	public boolean use_roll;
 	public float max_throttle;
 	public float min_throttle;
 	public float turn_left_mod;
@@ -25,6 +26,7 @@ public class SimplePhysData {
 		wheel_spring_strength = map.getFloat("WheelSpringStrength", 0.5f);
 		bouyancy = map.getFloat("Bouyancy", 0.25f);
 		trailer_adjustment_axe = map.getInteger("TrailerAdjustmentAxe", 1);
+		use_roll = map.getBoolean("UseRoll", true);
 	}
 
 }

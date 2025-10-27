@@ -15,4 +15,8 @@ public interface VehicleMovement {
 		return -Math.atan2(dx, dz);
 	}
 
+	public default boolean usesRoll(){
+		return true;
+	}
+
 }

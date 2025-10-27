@@ -993,7 +993,7 @@ public class VehicleInstance {
 			entity.setPos(conn);
 		}
 		double p = -Math.atan2(dy, dxz);
-		double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
+		double r = movement.usesRoll() ? Math.atan2(dry, Math.sqrt((drx * drx + drz * drz))) : 0;
 		pivot().set_rotation(y, p, r, false);
 		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 	}

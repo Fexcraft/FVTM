@@ -92,6 +92,11 @@ public class ClassicVehMove implements VehicleMovement {
 		if(!inst.data.getType().isTrailer() || inst.front == null) inst.alignToWheels();
 	}
 
+	@Override
+	public boolean usesRoll(){
+		return inst.spdata.use_roll;
+	}
+
 	public void assignWheels(){
 		inst.w_front_l = inst.w_front_r = inst.w_rear_l = inst.w_rear_r = new WheelTireData();
 		for(WheelTireData wheel : inst.wheeldata.values()){

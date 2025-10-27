@@ -9,11 +9,9 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.packet.Packet_SPUpdate;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.fvtm.util.Pivot;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 
@@ -35,6 +33,7 @@ public class SwivelPoint {
 	private Pivot cpivot = new Pivot();
 	private Pivot ppivot = new Pivot();
 	public ArrayList<SwivelPoint> subs = new ArrayList<>();
+	public boolean detached;
 	// sync
 	private static final int ticker = 5;
 	private int servticker;
@@ -47,6 +46,7 @@ public class SwivelPoint {
 		position = map.has("pos") ? ContentConfigUtil.getVector(map.getArray("pos")) : new V3D();
 		prevpos = position.copy();
 		rid = map.getString("parent", DEFAULT);
+		detached = map.getBoolean("detached", false);
 		cpivot.set_rotation(map.getFloat("yaw", 0), map.getFloat("pitch", 0), map.getFloat("roll", 0), true);
 		if(map.has("movers")){
 			movers = new ArrayList<>();
@@ -78,8 +78,8 @@ public class SwivelPoint {
 			}
 			String type = map.getString("type", "default");
 			switch(type){
-				case "pointing_towards":{
-					movers.add(new PointingSwivelPointMover(map));
+				case "z_hyd":{
+					movers.add(new ZHydSwivelPointMover(map));
 					break;
 				}
 				case "default":
@@ -177,15 +177,24 @@ public class SwivelPoint {
 	}
 
 	public void linkToParent(VehicleData data){
+		if(isVehicle()) return;
 		parent = data.getRotationPoint(rid);
 		if(parent.id.equals(id)) parent = null;
-		if(parent != null && !parent.subs.contains(this)) parent.subs.add(this);
+		if(detached){
+			if(!data.getRotationPoint(DEFAULT).subs.contains(this)){
+				data.getRotationPoint(DEFAULT).subs.add(this);
+			}
+		}
+		else{
+			if(parent != null && !parent.subs.contains(this)) parent.subs.add(this);
+		}
 	}
 
 	public SwivelPoint clone(String string){
 		SwivelPoint point = new SwivelPoint(id, rid);
 		point.position = new V3D(position.x, position.y, position.z);
 		point.prevpos = new V3D(prevpos.x, prevpos.y, prevpos.z);
+		point.detached = detached;
 		point.origin = string;
 		point.cpivot = cpivot.copy();
 		point.ppivot = ppivot.copy();

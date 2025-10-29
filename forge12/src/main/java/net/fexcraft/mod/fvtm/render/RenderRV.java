@@ -3,11 +3,8 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -70,11 +67,11 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		else{
 			DebugUtils.renderBB(0.5f, RGB.RED.packed);
 		}
+		EffectRenderer.renderVehicleInfo(rv.vehicle, rv.vehicle.entity.getPos(), rv.vehicle.data);
+		GL11.glPopMatrix();
 		if(rv.vehicle.data.getParts().size() > 0){
 			VehicleRenderer.renderPoint(rv.vehicle.point, rv, rv.vehicle.data, rv.vehicle.cache, ticks);
 		}
-		EffectRenderer.renderVehicleInfo(rv.vehicle, rv.vehicle.entity.getPos(), rv.vehicle.data);
-		GL11.glPopMatrix();
 		//
 		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
 		//EffectRenderer.renderContainerInfo(rv, rot);

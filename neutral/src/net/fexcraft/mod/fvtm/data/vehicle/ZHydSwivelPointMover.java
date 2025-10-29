@@ -43,7 +43,7 @@ public class ZHydSwivelPointMover implements SwivelPointMover {
 		here = point.getRelativeVector(loff);
 		ther = opoint.getRelativeVector(toff).sub(here);
 		point.getPivot().set_rot(-Math.atan2(ther.x, ther.z),
-			Math.atan2(Math.sqrt(ther.x * ther.x + ther.z * ther.z), ther.y) + ang,
+			Math.atan2(-Math.sqrt(ther.x * ther.x + ther.z * ther.z), ther.y) + ang,
 			0, false);
 	}
 

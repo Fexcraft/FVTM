@@ -99,11 +99,11 @@ public class VehicleRenderer {
 				TexUtil.bindTexture(vehicle.vehicle.data.getCurrentTexture());
 				DebugModels.SPHERE_RED.render(0.5f);
 			}
+			EffectRenderer.renderVehicleInfo(vehicle.vehicle, vehicle.vehicle.entity.getPos(), vehicle.vehicle.data);
+            GL11.glPopMatrix();
 			if(vehicle.vehicle.data.getParts().size() > 0){
 				renderPoint(vehicle.vehicle.point, vehicle, vehicle.vehicle.data, vehicle.vehicle.cache, ticks);
 			}
-			EffectRenderer.renderVehicleInfo(vehicle.vehicle, vehicle.vehicle.entity.getPos(), vehicle.vehicle.data);
-            GL11.glPopMatrix();
             //
             GL11.glPopMatrix();
             EffectRenderer.renderToggableInfo(vehicle, vehicle.vehicle.data);
@@ -131,8 +131,8 @@ public class VehicleRenderer {
 		if(parts == null) return;
 		GL11.glPushMatrix();
 		if(!point.isVehicle()){
-			V3D temp0 = point.getPos();
-			V3D temp1 = point.getPrevPos();
+			V3D temp0 = point.detached ? point.getRelativeVector(V3D.NULL) : point.getPos();
+			V3D temp1 = point.detached ? point.getRelativeVector(V3D.NULL) : point.getPrevPos();
 			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 			V3D rot = EffectRenderer.getRotations(point, ticks);
 			GL11.glTranslated(temp2.x, temp2.y, temp2.z);

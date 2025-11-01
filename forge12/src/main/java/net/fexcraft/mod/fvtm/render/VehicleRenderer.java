@@ -73,7 +73,7 @@ public class VehicleRenderer {
 				for(SwivelPoint point : vehicle.vehicle.data.getRotationPoints().values()){
 					V3D vec = point.getRelativeVector(0, 0.1f, 0);
 					GL11.glTranslated(vec.x, vec.y, vec.z);
-					DebugModels.SPHERE_GRY.render(1f);
+					DebugModels.SPHERE_GRY.render(0.5f);
 					GL11.glTranslated(-vec.x, -vec.y, -vec.z);
 				}
 			}
@@ -106,6 +106,7 @@ public class VehicleRenderer {
 			}
             //
             GL11.glPopMatrix();
+			renderDetachedPoints(vehicle, vehicle.vehicle.data, vehicle.vehicle.cache, ticks);
             EffectRenderer.renderToggableInfo(vehicle, vehicle.vehicle.data);
             //EffectRenderer.renderContainerInfo(vehicle, rot);
             EffectRenderer.renderSeatsAndInvs(vehicle.vehicle);
@@ -127,15 +128,16 @@ public class VehicleRenderer {
 	}
 
 	public static void renderPoint(SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+		if(point.detached) return;
 		ArrayList<Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
 		GL11.glPushMatrix();
 		if(!point.isVehicle()){
-			V3D temp0 = point.detached ? point.getRelativeVector(V3D.NULL) : point.getPos();
-			V3D temp1 = point.detached ? point.getRelativeVector(V3D.NULL) : point.getPrevPos();
+			V3D temp0 = point.getPos();
+			V3D temp1 = point.getPrevPos();
 			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
-			V3D rot = EffectRenderer.getRotations(point, ticks);
 			GL11.glTranslated(temp2.x, temp2.y, temp2.z);
+			V3D rot = EffectRenderer.getRotations(point, ticks);
 			GL11.glRotated(-rot.x, 0, 1, 0);
 			GL11.glRotated(-rot.y, 1, 0, 0);
 			GL11.glRotated(-rot.z, 0, 0, 1);
@@ -150,6 +152,33 @@ public class VehicleRenderer {
 		}
 		for(SwivelPoint sub : point.subs) renderPoint(sub, vehicle, data, cache, ticks);
 		GL11.glPopMatrix();
+	}
+
+	public static void renderDetachedPoints(RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+		for(SwivelPoint point : vehicle.vehicle.point.subs){
+			if(!point.detached) continue;
+			ArrayList<Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
+			if(parts == null) continue;
+			GL11.glPushMatrix();
+			V3D temp0 = point.getRelativeVector(V3D.NULL);
+			V3D temp1 = point.getPrevRelativeVector(V3D.NULL);
+			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
+			GL11.glTranslated(temp2.x, temp2.y, temp2.z);
+			V3D rot = EffectRenderer.getRotations(point, ticks);
+			GL11.glRotated(-rot.x, 0, 1, 0);
+			GL11.glRotated(-rot.y, 1, 0, 0);
+			GL11.glRotated(-rot.z, 0, 0, 1);
+			for(Entry<String, PartData> entry : parts){
+				TexUtil.bindTexture(entry.getValue().getCurrentTexture());
+				translate(entry.getValue().getInstalledPos());
+				entry.getValue().getInstalledRot().rotate112();
+				entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+				entry.getValue().getInstalledRot().rotate112R();
+				translateR(entry.getValue().getInstalledPos());
+			}
+			for(SwivelPoint sub : point.subs) renderPoint(sub, vehicle, data, cache, ticks);
+			GL11.glPopMatrix();
+		}
 	}
 
 	public static void renderPointSep(SwivelPoint point, VehicleInstance inst, ArrayList<String> parts, float ticks){

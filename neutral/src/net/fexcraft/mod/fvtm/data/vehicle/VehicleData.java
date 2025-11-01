@@ -248,7 +248,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 			for(String key : csp.keys()){
 				TagCW com = csp.getCompound(key);
 				if(rotpoints.containsKey(key)){
-					rotpoints.get(key).read(null, this, com);
+					rotpoints.get(key).read(rotpoints.get(key), this, com);
 				}
 				else{
 					rotpoints.put(key, new SwivelPoint(this, key, com));

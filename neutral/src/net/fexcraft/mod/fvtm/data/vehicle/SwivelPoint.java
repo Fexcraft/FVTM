@@ -270,12 +270,16 @@ public class SwivelPoint {
 		return getRelativeVector(vec.x, vec.y, vec.z);
 	}
 
-	public V3D getPrevRelativeVector(V3D root){
-		V3D rel = ppivot.get_vector(root);
+	public V3D getPrevRelativeVector(double x, double y, double z){
+		V3D rel = ppivot.get_vector(x, y, z);
 		if(parent != null){
 			return parent.getPrevRelativeVector(prevpos.add(rel));
 		}
 		return rel;
+	}
+
+	public V3D getPrevRelativeVector(V3D vec){
+		return getPrevRelativeVector(vec.x, vec.y, vec.z);
 	}
 
 	public final boolean isVehicle(){

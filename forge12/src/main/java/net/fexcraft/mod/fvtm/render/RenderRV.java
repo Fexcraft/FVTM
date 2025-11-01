@@ -19,6 +19,8 @@ import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
+import static net.fexcraft.mod.fvtm.render.VehicleRenderer.renderDetachedPoints;
+import static net.fexcraft.mod.fvtm.render.VehicleRenderer.renderPoint;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -38,6 +40,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		sepcache = rv.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
         GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
+		GL11.glPushMatrix();
 		V3D rot = EffectRenderer.getRotations(rv, ticks);
 		GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
@@ -70,8 +73,10 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		EffectRenderer.renderVehicleInfo(rv.vehicle, rv.vehicle.entity.getPos(), rv.vehicle.data);
 		GL11.glPopMatrix();
 		if(rv.vehicle.data.getParts().size() > 0){
-			VehicleRenderer.renderPoint(rv.vehicle.point, rv, rv.vehicle.data, rv.vehicle.cache, ticks);
+			renderPoint(rv.vehicle.point, rv, rv.vehicle.data, rv.vehicle.cache, ticks);
 		}
+		GL11.glPopMatrix();
+		renderDetachedPoints(rv, rv.vehicle.data, rv.vehicle.cache, ticks);
 		//
 		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
 		//EffectRenderer.renderContainerInfo(rv, rot);

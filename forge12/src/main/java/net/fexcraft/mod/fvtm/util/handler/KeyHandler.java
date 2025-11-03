@@ -136,7 +136,7 @@ public class KeyHandler {
         }
         state = isKeyDown(KeyHandler.brake.getKeyCode());
         if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-            seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
+            seat.onKeyPress(KeyPress.BRAKE, player, state);
         }
         //
         if(isKeyDown(KeyHandler.engineToggle.getKeyCode())){

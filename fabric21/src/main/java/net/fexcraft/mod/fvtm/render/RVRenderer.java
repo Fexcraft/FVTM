@@ -138,6 +138,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			renderSeats(pose, state.vehicle);
 		}
 		pose.popPose();
+		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		if(DebugUtils.ACTIVE){
 			Renderer21.light = 255;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
@@ -355,6 +356,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	public static void renderPoint(PoseStack pose, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+		if(point.detached) return;
 		ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
 		pose.pushPose();
@@ -381,6 +383,36 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		}
 		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
 		pose.popPose();
+	}
+
+	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+		for(SwivelPoint point : vehicle.vehicle.point.subs){
+			if(!point.detached) continue;
+			ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
+			if(parts == null) continue;
+			pose.pushPose();
+			V3D temp0 = point.getRelativeVector(V3D.NULL);
+			V3D temp1 = point.getPrevRelativeVector(V3D.NULL);
+			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
+			V3D rot = getRotations(point, ticks);
+			pose.translate(temp2.x, temp2.y, temp2.z);
+			pose.mulPose(new Quaternionf()
+				.rotateAxis((float)Static.toRadians(-rot.x), AY)
+				.rotateAxis((float)Static.toRadians(-rot.y), AX)
+				.rotateAxis((float)Static.toRadians(-rot.z), AZ)
+			);
+			for(Map.Entry<String, PartData> entry : parts){
+				if(entry.getValue().getType().getModel() == null) continue;
+				pose.pushPose();
+				FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
+				translate(pose, entry.getValue().getInstalledPos());
+				rotate(pose, entry.getValue().getInstalledRot());
+				entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+				pose.popPose();
+			}
+			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+			pose.popPose();
+		}
 	}
 
 	private static void translate(PoseStack pose, V3D pos){

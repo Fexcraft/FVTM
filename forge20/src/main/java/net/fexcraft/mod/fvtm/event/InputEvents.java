@@ -47,11 +47,11 @@ public class InputEvents {
 		if(seat == null) return;
 		boolean state = accelerate.isDown();
 		if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
-			seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
+			seat.onKeyPress(KeyPress.ACCELERATE, player, state);
 		}
 		state = decelerate.isDown();
 		if(state != seat.root.getKeyPressState(KeyPress.DECELERATE)){
-			seat.root.onKeyPress(KeyPress.DECELERATE, seat.seat, player, state, false);
+			seat.onKeyPress(KeyPress.DECELERATE, player, state);
 		}
 		if(turn_left.isDown()){
 			seat.onKeyPress(KeyPress.TURN_LEFT, player);
@@ -76,7 +76,7 @@ public class InputEvents {
 		}
 		state = brake.isDown();
 		if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-			seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
+			seat.onKeyPress(KeyPress.BRAKE, player, state);
 		}
 		if(engine_toggle.isDown()){
 			seat.onKeyPress(KeyPress.ENGINE, player);

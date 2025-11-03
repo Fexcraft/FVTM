@@ -168,11 +168,11 @@ public class FVTMC implements ClientModInitializer {
 		if(seat == null) return;
 		boolean state = minecraft.options.keyUp.isDown();
 		if(state != seat.root.getKeyPressState(KeyPress.ACCELERATE)){
-			seat.root.onKeyPress(KeyPress.ACCELERATE, seat.seat, player, state, false);
+			seat.onKeyPress(KeyPress.ACCELERATE, player, state);
 		}
 		state = minecraft.options.keyDown.isDown();
 		if(state != seat.root.getKeyPressState(KeyPress.DECELERATE)){
-			seat.root.onKeyPress(KeyPress.DECELERATE, seat.seat, player, state, false);
+			seat.onKeyPress(KeyPress.DECELERATE, player, state);
 		}
 		if(minecraft.options.keyLeft.isDown()){
 			seat.onKeyPress(KeyPress.TURN_LEFT, player);
@@ -197,7 +197,7 @@ public class FVTMC implements ClientModInitializer {
 		}
 		state = minecraft.options.keyJump.isDown() || brake.isDown();
 		if(state != seat.root.getKeyPressState(KeyPress.BRAKE)){
-			seat.root.onKeyPress(KeyPress.BRAKE, seat.seat, player, state, false);
+			seat.onKeyPress(KeyPress.BRAKE, player, state);
 		}
 		if(engine_toggle.isDown()){
 			seat.onKeyPress(KeyPress.ENGINE, player);

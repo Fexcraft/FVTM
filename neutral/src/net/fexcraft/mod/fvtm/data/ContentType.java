@@ -24,7 +24,7 @@ public enum ContentType {
 	CONSUMABLE(".consumable", "consumables", "fvtm:consumable", Consumable.class),
 	FUEL(".fuel", "fuels", null, Fuel.class),
 	BLOCK(".block", "blocks", "fvtm:block", Block.class),
-	MULTIBLOCK(".multiblock", "blocks", "fvtm:multiblock", null),
+	//MULTIBLOCK(".multiblock", "blocks", "fvtm:multiblock", null),
 	RAILGAUGE(".gauge", "railgauges", "fvtm:railgauge", RailGauge.class),
 	CLOTH(".cloth", "clothes", "fvtm:cloth", Cloth.class),
 	WIRE(".wire", "wires", "fvtm:wire", WireType.class),
@@ -67,7 +67,7 @@ public enum ContentType {
 			case CONSUMABLE: CONSUMABLES.register(content); return;
 			case FUEL: FUELS.register(content); return;
 			case BLOCK: BLOCKS.register(content); return;
-			case MULTIBLOCK: return;
+			//case MULTIBLOCK: return;
 			case RAILGAUGE: RAILGAUGES.register(content); return;
 			case CLOTH: CLOTHES.register(content); return;
 			case WIRE: WIRES.register(content); return;

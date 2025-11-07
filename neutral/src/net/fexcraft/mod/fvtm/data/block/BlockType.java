@@ -32,7 +32,7 @@ public enum BlockType {
 	GENERIC_ROAD_MARKER_4ROT(4),
 	GENERIC_ROAD_PATTERN(4),
 	GENERIC_ROAD_LINES(0),
-	MULTIBLOCK_4ROT(4),
+	//MULTIBLOCK_4ROT(4),
 	SIGNAL_4ROT(4),
 	SIGNAL_16ROT(16),
 	FORK2_SWITCH_4ROT(4),
@@ -117,9 +117,9 @@ public enum BlockType {
 		return ordinal() >= GENERIC_ROAD_MARKER.ordinal() && ordinal() <= GENERIC_ROAD_LINES.ordinal();
 	}
 
-	public boolean isMultiBlock(){
+	/*public boolean isMultiBlock(){
 		return this == MULTIBLOCK_4ROT;
-	}
+	}*/
 
 	public boolean isRailBlock(){
 		return this == SIGNAL_16ROT || this == SIGNAL_4ROT || this == FORK2_SWITCH_4ROT || this == FORK3_SWITCH_4ROT || this == DOUBLE_SWITCH_4ROT;

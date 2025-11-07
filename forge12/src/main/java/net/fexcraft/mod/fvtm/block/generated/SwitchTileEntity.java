@@ -99,7 +99,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
     public void invalidate(){
        super.invalidate();
-       if(junction != null) junction.entities.remove(this.pos);
+       //TODO if(junction != null) junction.entities.remove(this.pos);
     }
     
     @Override

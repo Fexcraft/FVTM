@@ -97,15 +97,15 @@ public class FvtmProperties {
             case GENERIC_4ROT:
             case GENERIC_4X4ROT:
             //case MULTIBLOCK_4ROT:
-            case SIGNAL_4ROT:
-            case FORK2_SWITCH_4ROT:
-            case FORK3_SWITCH_4ROT:
-            case DOUBLE_SWITCH_4ROT:
+            //case SIGNAL_4ROT:
+            //case FORK2_SWITCH_4ROT:
+            //case FORK3_SWITCH_4ROT:
+            //case DOUBLE_SWITCH_4ROT:
                 return FvtmProperties.FACING;
             case GENERIC_8ROT:
                 return FvtmProperties.ROTATION8;
             case GENERIC_16ROT:
-            case SIGNAL_16ROT:
+            //case SIGNAL_16ROT:
                 return FvtmProperties.ROTATION;
             case GENERIC_SIMPLE:
                 return null;

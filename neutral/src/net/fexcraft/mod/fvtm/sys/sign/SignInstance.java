@@ -73,14 +73,14 @@ public class SignInstance implements SysObj {
 
 	public void delete(){
 		TagCW com = TagCW.create();
-		com.set("pos", vec.pos.toLW());
+		com.set("pos", vec.pos.toIntegerArray());
 		com.set("dim", region.system.getWorldType().rec_key());
 		Packets.sendToAllTrackingPos(Packet_TagListener.class, region.system.getServerWorld(), vec.pos, "sign_rem", com);
 	}
 
 	public void updateClient(){
 		TagCW com = TagCW.create();
-		com.set("pos", vec.pos.toLW());
+		com.set("pos", vec.pos.toIntegerArray());
 		com.set("sign", write());
 		com.set("dim", region.system.getWorldType().rec_key());
 		Packets.sendToAllTrackingPos(Packet_TagListener.class, region.system.getServerWorld(), vec.pos, "sign_upd", com);

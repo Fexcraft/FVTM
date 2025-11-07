@@ -37,7 +37,6 @@ public class Junction implements SysObj {
 	public String station;
 	//
 	public EventHolder holder = new EventHolder(this);
-	public ArrayList<V3I> entities = new ArrayList<>();
 	//
 	protected AABB frustumbb;
 	//client side
@@ -120,13 +119,6 @@ public class Junction implements SysObj {
 				holder.listeners.get(type).add(new EventListener(lt.getString("key"), lt.getString("cond"), lt.getString("act"), arg));
 			}
 		}
-		entities.clear();
-		if(compound.has("LinkedBlocks")){
-			TagLW list = compound.getList("LinkedBlocks").local();
-			for(int i = 0; i < list.size(); i++){
-				entities.add(new V3I(list.getList(i)));
-			}
-		}
 	}
 
 	@Override
@@ -162,13 +154,6 @@ public class Junction implements SysObj {
 				list.add(lt);
 			}
 			if(!list.empty()) compound.set("Ev_" + type.key, list);
-		}
-		if(!entities.isEmpty()){
-			TagLW list = TagLW.create();
-			for(V3I pos : entities){
-				list.add(pos.toLW());
-			}
-			compound.set("LinkedBlocks", list);
 		}
 		return compound;
 	}
@@ -498,36 +483,36 @@ public class Junction implements SysObj {
 	}
 
 	private void updateLinkedTileEntities(boolean signal){
-		entities.removeIf(pos -> {
+		/*entities.removeIf(pos -> {
 			WorldW world = root.getServerWorld();
 			if(!world.isPositionLoaded(pos)) return false;
-			/*TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
 				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
 				if(ent.getJuncPos() == null || !ent.getJuncPos().equals(this.vecpos)) return true;
 				if(signal) ent.updateSignalState();
 				else ent.updateSwitchState();
 			}
-			else return true;*///TODO
+			else return true;
 			return false;
-		});
+		});*/
 	}
 
 	public void unlinkLinkedTileEntities(){
-		for(V3I pos : entities){
+		/*for(V3I pos : entities){
 			WorldW world = root.getServerWorld();
 			if(!world.isPositionLoaded(pos)) continue;
-			/*TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
 				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
 				if(!ent.getJuncPos().equals(this.vecpos)) continue;
 				ent.setJunction(null);
-			}*///TODO
-		}
+			}
+		}*/
 	}
 
 	public void addLinkedTileEntity(V3I pos){
-		if(!entities.contains(pos)) entities.add(pos);
+		//if(!entities.contains(pos)) entities.add(pos);
 	}
 
 	public int getIndex(PathKey key){

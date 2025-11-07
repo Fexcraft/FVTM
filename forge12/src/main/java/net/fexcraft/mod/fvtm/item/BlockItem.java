@@ -139,7 +139,7 @@ public class BlockItem extends ItemBlock16 implements ContentDataItem<Block, Blo
     
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-    	if(type.getBlockType().isMultiBlock()) return EnumActionResult.PASS;
+    	//if(type.getBlockType().isMultiBlock()) return EnumActionResult.PASS;
 		if(type.getBlockType().isRoadLayer()){
 			IBlockState state = world.getBlockState(pos);
 			if(state.getBlock() instanceof PlainBase){

@@ -96,7 +96,7 @@ public class FvtmProperties {
         switch(type){
             case GENERIC_4ROT:
             case GENERIC_4X4ROT:
-            case MULTIBLOCK_4ROT:
+            //case MULTIBLOCK_4ROT:
             case SIGNAL_4ROT:
             case FORK2_SWITCH_4ROT:
             case FORK3_SWITCH_4ROT:

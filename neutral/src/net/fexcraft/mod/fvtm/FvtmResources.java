@@ -201,7 +201,7 @@ public abstract class FvtmResources {
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.DECORATION);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONTAINER);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.BLOCK);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MULTIBLOCK);
+		//FvtmResources.INSTANCE.searchInPacksFor(ContentType.MULTIBLOCK);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.PART);
 		FvtmResources.INSTANCE.searchInPacksFor(ContentType.VEHICLE);
 	}

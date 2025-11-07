@@ -483,13 +483,13 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("sign_upd", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, tag.getString("dim"));
-			V3I pos = new V3I(tag.getList("pos"));
+			V3I pos = new V3I(tag.getIntArray("pos"), 0);
 			SystemRegion region = system.getRegions().get(pos, false);
 			if(region != null) region.add(pos).read(tag.getCompound("sign"));
 		});
 		LIS_CLIENT.put("sign_rem", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, tag.getString("dim"));
-			system.del(new V3I(tag.getList("pos")));
+			system.del(new V3I(tag.getIntArray("pos"), 0));
 		});
 		LIS_CLIENT.put("sync_reg", (tag, player) -> {
 			SystemManager.Systems sys = SystemManager.Systems.values()[tag.getInteger("sys")];

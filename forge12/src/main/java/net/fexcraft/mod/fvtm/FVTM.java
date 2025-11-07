@@ -131,7 +131,7 @@ public class FVTM {
 		StackWrapper.CONTENT_TYPES.put(ContentType.CONTAINER.item_type, stack -> ((ContainerItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.CONSUMABLE.item_type, stack -> ((ConsumableItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem)stack.getItem().direct()).getData(stack));
-		StackWrapper.CONTENT_TYPES.put(ContentType.MULTIBLOCK.item_type, stack -> ((MultiBlockItem)stack.getItem().direct()).getData(stack));
+		//StackWrapper.CONTENT_TYPES.put(ContentType.MULTIBLOCK.item_type, stack -> ((MultiBlockItem)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.RAILGAUGE.item_type, stack -> ((RailGaugeItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.CLOTH.item_type, stack -> ((ClothItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.WIRE.item_type, stack -> ((WireItem)stack.getItem().direct()).getContent());

@@ -127,7 +127,7 @@ public class MultiBlockItem extends Item implements ContentItem.ContentDataItem<
 
 	@Override
 	public ContentType getType(){
-		return ContentType.MULTIBLOCK;
+		return null;//ContentType.MULTIBLOCK;
 	}
 
 }

@@ -33,12 +33,12 @@ public enum BlockType {
 	GENERIC_ROAD_PATTERN(4),
 	GENERIC_ROAD_LINES(0),
 	//MULTIBLOCK_4ROT(4),
-	SIGNAL_4ROT(4),
-	SIGNAL_16ROT(16),
-	FORK2_SWITCH_4ROT(4),
-	FORK3_SWITCH_4ROT(4),
-	DOUBLE_SWITCH_4ROT(4),
-	GENERIC_POST_LIKE(4),
+	//SIGNAL_4ROT(4),
+	//SIGNAL_16ROT(16),
+	//FORK2_SWITCH_4ROT(4),
+	//FORK3_SWITCH_4ROT(4),
+	//DOUBLE_SWITCH_4ROT(4),
+	//GENERIC_POST_LIKE(4),
 	JACK_STAND(4),
 	;
 
@@ -121,9 +121,9 @@ public enum BlockType {
 		return this == MULTIBLOCK_4ROT;
 	}*/
 
-	public boolean isRailBlock(){
+	/*public boolean isRailBlock(){
 		return this == SIGNAL_16ROT || this == SIGNAL_4ROT || this == FORK2_SWITCH_4ROT || this == FORK3_SWITCH_4ROT || this == DOUBLE_SWITCH_4ROT;
-	}
+	}*/
 
 	public boolean is4Rot(){
 		return rotations == 4;

@@ -79,7 +79,7 @@ public class ContentConfigUtil {
 					switch(contype){
 						case VEHICLE: return ITL_VEHICLE;
 						case PART: return ITL_PART;
-						case MULTIBLOCK: return ITL_MBLOCK;
+						//case MULTIBLOCK: return ITL_MBLOCK;
 						default: return ITL_GENERAL;
 					}
 				}

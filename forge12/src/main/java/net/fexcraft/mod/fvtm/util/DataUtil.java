@@ -144,7 +144,7 @@ public class DataUtil {
 				if(net.fexcraft.mod.fvtm.util.TexUtil.isMissing(resloc)){
 					if(type == ContentType.VEHICLE) return RSLC_VEHICLE;
 					else if(type == ContentType.PART) return RSLC_PART;
-					else if(type == ContentType.MULTIBLOCK) return RSLC_MBLOCK;
+					//else if(type == ContentType.MULTIBLOCK) return RSLC_MBLOCK;
 					else return RSLC_GENERAL;
 				}
 			}

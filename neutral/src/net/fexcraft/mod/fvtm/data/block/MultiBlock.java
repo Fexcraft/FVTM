@@ -140,7 +140,7 @@ public class MultiBlock extends Content<MultiBlock> implements WithItem, ItemTex
 
 	@Override
 	public ContentType getContentType(){
-		return ContentType.MULTIBLOCK;
+		return null;//ContentType.MULTIBLOCK;
 	}
 
 	@Override

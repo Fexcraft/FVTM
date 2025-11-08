@@ -17,34 +17,49 @@ public class CondBuilderRoot {
 				case ATTRIBUTE:{
 					switch(key.mode){
 						case BOOL_EQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeBoolean(key.target, false) == cond.value.bool();
+							return (cond, data) -> data.vehicle.getAttributeBoolean(key.target, false) == cond.value().bool();
 						}
 						case BOOL_NEQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeBoolean(key.target, false) != cond.value.bool();
+							return (cond, data) -> data.vehicle.getAttributeBoolean(key.target, false) != cond.value().bool();
 						}
 						case NUMB_EQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) == cond.value.float_value();
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) == cond.value().float_value();
 						}
 						case NUMB_NEQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) != cond.value.float_value();
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) != cond.value().float_value();
 						}
 						case EQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeString(key.target, "null").equals(cond.value.string_value());
+							return (cond, data) -> data.vehicle.getAttributeString(key.target, "null").equals(cond.value().string_value());
 						}
 						case NEQUAL:{
-							return (cond, data) -> !data.vehicle.getAttributeString(key.target, "null").equals(cond.value.string_value());
+							return (cond, data) -> !data.vehicle.getAttributeString(key.target, "null").equals(cond.value().string_value());
 						}
 						case LEQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) <= cond.value.float_value();
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) <= cond.value().float_value();
 						}
 						case GEQUAL:{
-							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) >= cond.value.float_value();
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) >= cond.value().float_value();
 						}
 						case LESS:{
-							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) < cond.value.float_value();
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) < cond.value().float_value();
 						}
 						case GREATER:{
-							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) > cond.value.float_value();
+							return (cond, data) -> data.vehicle.getAttributeFloat(key.target, 0f) > cond.value().float_value();
+						}
+					}
+					break;
+				}
+				case VEHICLE_STATE:{
+					switch(key.target){
+						case "engine_on":{
+							if(key.mode.equal()) return (cond, data) -> data.vehent.engine != null && data.vehent.engine.isOn() == cond.value().bool();
+							if(key.mode.nequal()) return (cond, data) -> data.vehent.engine != null && data.vehent.engine.isOn() != cond.value().bool();
+							break;
+						}
+						case "has_driver":{
+							if(key.mode.equal()) return (cond, data) -> data.vehent.getDriver() != null == cond.value().bool();
+							if(key.mode.nequal()) return (cond, data) -> data.vehent.getDriver() == null == cond.value().bool();
+							break;
 						}
 					}
 					break;
@@ -61,36 +76,35 @@ public class CondBuilderRoot {
 					switch(key.mode){
 						case EQUAL:
 						case NUMB_EQUAL:{
-							return (cond, data) -> (int)data.args[1] == cond.value.integer_value();
+							return (cond, data) -> (int)data.args[1] == cond.value().integer_value();
 						}
 						case NEQUAL:
 						case NUMB_NEQUAL:{
-							return (cond, data) -> (int)data.args[1] != cond.value.integer_value();
+							return (cond, data) -> (int)data.args[1] != cond.value().integer_value();
 						}
 						case LEQUAL:{
-							return (cond, data) -> (int)data.args[1] <= cond.value.integer_value();
+							return (cond, data) -> (int)data.args[1] <= cond.value().integer_value();
 						}
 						case GEQUAL:{
-							return (cond, data) -> (int)data.args[1] >= cond.value.integer_value();
+							return (cond, data) -> (int)data.args[1] >= cond.value().integer_value();
 						}
 						case LESS:{
-							return (cond, data) -> (int)data.args[1] < cond.value.integer_value();
+							return (cond, data) -> (int)data.args[1] < cond.value().integer_value();
 						}
 						case GREATER:{
-							return (cond, data) -> (int)data.args[1] > cond.value.integer_value();
+							return (cond, data) -> (int)data.args[1] > cond.value().integer_value();
 						}
 					}
 				}
 				case MULTI:{
-					Conditional[] als = ConditionRegistry.getByTarget(key.target);
 					if(key.mode == CondMode.AND){
-						return (cond, data) -> als[0].isMet(cond, data) && als[1].isMet(cond, data);
+						return (cond, data) -> cond.conditions()[0].al.isMet(cond.conditions()[0], data) && cond.conditions()[1].al.isMet(cond.conditions()[1], data);
 					}
 					else if(key.mode == CondMode.ANN){
-						return (cond, data) -> als[0].isMet(cond, data) && !als[1].isMet(cond, data);
+						return (cond, data) -> cond.conditions()[0].al.isMet(cond.conditions()[0], data) && !cond.conditions()[1].al.isMet(cond.conditions()[1], data);
 					}
 					else if(key.mode == CondMode.OR){
-						return (cond, data) -> als[0].isMet(cond, data) || als[1].isMet(cond, data);
+						return (cond, data) -> cond.conditions()[0].al.isMet(cond.conditions()[0], data) || cond.conditions()[1].al.isMet(cond.conditions()[1], data);
 					}
 					else return COND_FALSE;
 				}
@@ -99,24 +113,24 @@ public class CondBuilderRoot {
 						case EQUAL:
 						case NUMB_EQUAL:
 						case BOOL_EQUAL:{
-							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() == cond.value.integer_value();
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() == cond.value().integer_value();
 						}
 						case NEQUAL:
 						case NUMB_NEQUAL:
 						case BOOL_NEQUAL:{
-							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() != cond.value.integer_value();
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() != cond.value().integer_value();
 						}
 						case LEQUAL:{
-							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() <= cond.value.integer_value();
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() <= cond.value().integer_value();
 						}
 						case GEQUAL:{
-							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() >= cond.value.integer_value();
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() >= cond.value().integer_value();
 						}
 						case LESS:{
-							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() < cond.value.integer_value();
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() < cond.value().integer_value();
 						}
 						case GREATER:{
-							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() > cond.value.integer_value();
+							return (cond, data) -> data.entity != null && data.entity.getWorld().getDayTime() > cond.value().integer_value();
 						}
 					}
 					break;

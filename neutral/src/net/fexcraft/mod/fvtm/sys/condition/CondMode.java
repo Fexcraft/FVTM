@@ -33,4 +33,12 @@ public enum CondMode {
 		return EQUAL;
 	}
 
+	public boolean equal(){
+		return this == EQUAL || this == BOOL_EQUAL || this == NUMB_EQUAL;
+	}
+
+	public boolean nequal(){
+		return this == NEQUAL || this == BOOL_NEQUAL || this == NUMB_NEQUAL;
+	}
+
 }

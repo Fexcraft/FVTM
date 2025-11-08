@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -146,6 +147,13 @@ public class EventActions {
 		JUNC_SWITCH_ACTIONS.add(EventAction.parse("rail_double_switch0"));
 		JUNC_SWITCH_ACTIONS.add(EventAction.parse("rail_double_switch1"));
 		//
+		new EventAction("vehicle_driver_break_block").set((data, lis, objs) -> {
+			if(data.vehent == null || data.vehent.getDriver() == null) return;
+			V3D pos = data.vehicle.getRotationPoint(lis.args[0])
+				.getRelativeVector(Double.parseDouble(lis.args[1]), Double.parseDouble(lis.args[2]), Double.parseDouble(lis.args[3]));
+			data.vehent.getDriver().breakBlockAt(data.vehent.getV3D().add(pos));
+		});
+ 		//
 		return new EventAction("none").set((d, l, o) -> {});
 	}
 

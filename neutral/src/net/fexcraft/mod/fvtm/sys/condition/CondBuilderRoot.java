@@ -98,7 +98,16 @@ public class CondBuilderRoot {
 				}
 				case MULTI:{
 					if(key.mode == CondMode.AND){
-						return (cond, data) -> cond.conditions()[0].al.isMet(cond.conditions()[0], data) && cond.conditions()[1].al.isMet(cond.conditions()[1], data);
+						return (cond, data) ->{
+							boolean pass = true;
+							for(Condition condition : cond.conditions()){
+								if(!condition.al.isMet(condition, data)){
+									pass = false;
+									break;
+								}
+							}
+							return pass;
+						};
 					}
 					else if(key.mode == CondMode.ANN){
 						return (cond, data) -> cond.conditions()[0].al.isMet(cond.conditions()[0], data) && !cond.conditions()[1].al.isMet(cond.conditions()[1], data);

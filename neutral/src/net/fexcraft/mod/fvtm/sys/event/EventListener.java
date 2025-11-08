@@ -20,7 +20,7 @@ public class EventListener {
 
 	public EventListener(JsonMap map){
 		type = EventType.parse(map.getString("type", "null"));
-		cond = map.get("cond").isArray() ? new Condition(map.get("cond").asArray()) : ConditionRegistry.parse(map.getString("cond", "true"));
+		cond = Condition.parse(map.get("cond"));
 		cond.link();
 		action = EventAction.parse(map.getString("action", "none"));
 		if(map.has("args")){
@@ -34,7 +34,7 @@ public class EventListener {
 
 	public EventListener(JsonArray arr){
 		type = EventType.parse(arr.get(0).string_value());
-		cond = arr.get(1).isArray() ? new Condition(arr.get(1).asArray()) : ConditionRegistry.parse(arr.get(1).string_value());
+		cond = Condition.parse(arr.get(1));
 		cond.link();
 		action = EventAction.parse(arr.get(2).string_value());
 		if(arr.size() > 3){
@@ -68,7 +68,7 @@ public class EventListener {
 	public String argString(){
 		StringBuilder str = new StringBuilder();
 		for(String arg : args){
-			if(str.length() > 0) str.append(" " + arg);
+			if(str.length() > 0) str.append(" ").append(arg);
 			else str.append(arg);
 		}
 		return str.toString();

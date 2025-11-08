@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPress;
 import net.fexcraft.mod.fvtm.packet.Packet_VehKeyPressState;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.event.EventType;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.rail.RailVehMovement;
@@ -933,6 +934,7 @@ public class VehicleInstance {
 				point.sendUpdatePacket(entity);
 			}
 		}
+		data.getEventHolder().run(EventType.VEHICLE_UPDATE, this, null);
 	}
 
 	private void updateSpeed(){
@@ -1080,6 +1082,13 @@ public class VehicleInstance {
 
 	public <VM extends VehicleMovement> VM vm(){
 		return (VM)movement;
+	}
+
+	public EntityW getDriver(){
+		for(SeatInstance seat : seats){
+			if(seat.seat.driver && seat.passenger() != null) return seat.passenger();
+		}
+		return null;
 	}
 
 	public static interface Holder {

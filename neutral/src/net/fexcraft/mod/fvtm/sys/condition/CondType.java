@@ -6,7 +6,8 @@ package net.fexcraft.mod.fvtm.sys.condition;
 public enum CondType {
 
 	ATTRIBUTE("attribute"),
-	PART_FUNC("part_func"),
+	//PART_FUNC("part_func"),
+	VEHICLE_STATE("vehicle_state"),
 	DAYTIME("day_time"),
 	BLOCKSTATE("blockstate"),
 	TRACK_FROM("track_from"),

@@ -21,7 +21,7 @@ public class ConditionRegistry {
 		CondKey key = new CondKey(CondType.CUSTOM, CondMode.BOOL_EQUAL, "true");
 		KEY_REG.put("fvtm:true", key);
 		KEY_REG.put("true", key);
-		Condition cond = new Condition(key, new JsonValue(true));
+		Condition cond = new SingleCondition(key, new JsonValue<>(true));
 		CONDITIONS.put(key.toString(), cond);
 		CONDITIONS.put("fvtm:true", cond);
 		CONDITIONS.put("true", cond);
@@ -29,7 +29,7 @@ public class ConditionRegistry {
 		key = new CondKey(CondType.CUSTOM, CondMode.BOOL_NEQUAL, "false");
 		KEY_REG.put("fvtm:false", key);
 		KEY_REG.put("false", key);
-		cond = new Condition(key, new JsonValue(false));
+		cond = new SingleCondition(key, new JsonValue<>(false));
 		CONDITIONS.put(key.toString(), cond);
 		CONDITIONS.put("fvtm:false", cond);
 		CONDITIONS.put("false", cond);
@@ -44,19 +44,19 @@ public class ConditionRegistry {
 	}
 
 	public static Condition parse(String cond){
-		return parse(cond, false);
-	}
-
-	public static Condition parse(String cond, boolean dash){
 		if(CONDITIONS.containsKey(cond)) return CONDITIONS.get(cond);
-		String[] arr = cond.split(dash ? "-" : " ");
+		String[] arr = cond.split(" ");
 		if(arr.length < 2) return CONDITIONS.get("fvtm:false");
-		return new Condition(arr);
+		return new SingleCondition(arr);
 	}
 
 	public static CondKey parseKey(String ctype, String tar, String cmode){
 		CondType type = CondType.parse(ctype);
 		CondMode mode = CondMode.parse(cmode);
+		return regKey(type, mode, tar);
+	}
+
+	public static CondKey regKey(CondType type, CondMode mode, String tar){
 		String key = type.key + "-" + mode + "-" + tar;
 		if(KEY_REG.containsKey(key)) return KEY_REG.get(key);
 		CondKey ck = new CondKey(type, mode, tar);
@@ -69,12 +69,13 @@ public class ConditionRegistry {
 		CONDITIONS.put(key, cond);
 	}
 
-	public static Conditional[] getByTarget(String target){
+	/*public static Conditional[] getByTarget(String target){
 		String[] tar = target.split(",");
 		Conditional[] als = new Conditional[tar.length];
 		for(int i = 0; i < tar.length; i++){
 			als[i] = parse(tar[i], true).link().al;
 		}
 		return als;
-	}
+	}*/
+
 }

@@ -27,7 +27,7 @@ public class Config extends ConfigBase {
 	public static boolean UNBREAKABLE_CONTAINERS;
 	public static boolean ROADTOOL_FOR_ALL;
 	public static boolean DISMOUNT_ON_LOGOUT;
-	public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
+	//public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 	public static int PACKET_RANGE;
 	//collision
 	public static boolean DISABLE_OBB;
@@ -94,27 +94,24 @@ public class Config extends ConfigBase {
 		String catw = "wire";
 		String cats = "sign";
 
-		entries.add(new ConfigEntry(this, catg, "dev_mode", new JsonValue(EnvInfo.DEV))
-			.info("If the FVTM Dev Mode (generally more logging) should be enabled.")
-			.cons((con, map) -> EnvInfo.DEV = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catg, "vehicles_need_fuel", new JsonValue(true))
 			.info("If vehicles need Fuel (in survival mode) to function.")
 			.cons((con, map) -> VEHICLES_NEED_FUEL = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catg, "vehicle_drop_contents", new JsonValue(false))
 			.info("If vehicles should drop their inventory contents upon being removed.")
 			.cons((con, map) -> VEHICLES_DROP_CONTENTS = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catg, "vehicle_drop_contents", new JsonValue(false))
+		entries.add(new ConfigEntry(this, catg, "unbreakable_containers", new JsonValue(false))
 			.info("If containers should be unbreakable (via tools/hand).")
 			.cons((con, map) -> UNBREAKABLE_CONTAINERS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catg, "road_tool_for_all", new JsonValue(false))
-			.info("When not using a Forge PermissionsAPI compatible permission manager, to allow any player to use the Road Placing Tool.")
+			.info("When not using a Forge PermissionsAPI compatible permission manager,", "to allow any player to use the Road Placing Tool.")
 			.cons((con, map) -> ROADTOOL_FOR_ALL = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catg, "dismount_on_logout", new JsonValue(true))
 			.info("If players should automatically dismount vehicles on log out (leaving server).")
 			.cons((con, map) -> DISMOUNT_ON_LOGOUT = con.getBoolean(map)));
-		entries.add(new ConfigEntry(this, catg, "traffic_sign_libraries", new JsonArray("default_fexcraft;http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json"))
-			.info("List of External Traffic Sign Libraries. Separate the ID from the URL using a semicolon.")
-			.cons((con, map) -> DEFAULT_TRAFFIC_SIGN_LIBRARIES = con.getJson(map).asArray().toStringArray()));
+		/*entries.add(new ConfigEntry(this, catg, "traffic_sign_libraries", new JsonArray("default_fexcraft;http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json"))
+			.info("List of External Traffic Sign Libraries", "Separate the ID from the URL using a semicolon.")
+			.cons((con, map) -> DEFAULT_TRAFFIC_SIGN_LIBRARIES = con.getJson(map).asArray().toStringArray()));*/
 		entries.add(new ConfigEntry(this, catg, "update_packet_range", new JsonValue(256)).rang(64, 4096)
 			.info("Range in which ranged update packets are sent.")
 			.cons((con, map) -> PACKET_RANGE = con.getInteger(map)));
@@ -127,10 +124,10 @@ public class Config extends ConfigBase {
 			.info("If light beam rendering should be disabled.")
 			.cons((con, map) -> DISABLE_LIGHT_BEAMS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catc, "render_vehicles_separately", new JsonValue(true))
-			.info("If vehicles should be rendered separately in a new render pass. Allows for higher view distance.")
+			.info("If vehicles should be rendered separately in a new render pass.", "Allows for higher view distance.")
 			.cons((con, map) -> RENDER_VEHICLES_SEPARATELY = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catc, "render_blocks_separately", new JsonValue(false))
-			.info("If blocks (with entity) should be rendered separately in a new render pass. Allows for higher view distance.")
+			.info("If blocks (with entity) should be rendered separately in a new render pass.", "Allows for higher view distance.")
 			.cons((con, map) -> RENDER_BLOCKS_SEPARATELY = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, catc, "disable_particles", new JsonValue(false))
 			.info("If FVTM particles (particle system) should be disabled.")
@@ -150,7 +147,7 @@ public class Config extends ConfigBase {
 			.info("Physics Motion Scale Multiplier.").rang(0.001f, 2f)
 			.cons((con, map) -> MOTION_SCALE = con.getFloat(map)));
 		entries.add(new ConfigEntry(this, catv, "sync_rate", new JsonValue(5))
-			.info("Entity sync rate in ticks. Lesser value means higher sync AND higher bandwidth. Higher value means slower sync and less bandwidth.").rang(1, 10)
+			.info("Entity sync rate in ticks. Lesser value means higher sync AND higher bandwidth.", "Higher value means slower sync and less bandwidth.").rang(1, 10)
 			.cons((con, map) -> VEHICLE_SYNC_RATE = (byte)con.getInteger(map)));
 		entries.add(new ConfigEntry(this, catv, "steer_reset_rate", new JsonValue(0.90))//0.95
 			.info("Steer multiplier per tick. 1 = no reset, 0 = full reset each tick.").rang(0, 1)
@@ -214,11 +211,11 @@ public class Config extends ConfigBase {
 			.cons((con, map) -> MAX_ROAD_LENGTH = con.getInteger(map))
 			.rang(4, 4096));
 		entries.add(new ConfigEntry(this, cato, "undo_cache_size", new JsonValue(8))
-			.info("How many roads should be remembered in the undo cache. Set '0' to disable the undo cache.")
+			.info("How many roads should be remembered in the undo cache.", "Set '0' to disable the undo cache.")
 			.cons((con, map) -> ROAD_UNDO_CACHE_SIZE = con.getInteger(map))
 			.rang(0, 32));
 		entries.add(new ConfigEntry(this, cato, "undo_cache_cleartime", new JsonValue(5))
-			.info("After how many minutes the undo cache of a player should reset. Useful if your players have unstable connection. Set to '0' for instant deletion.")
+			.info("After how many minutes the undo cache of a player should reset.", "Useful if your players have unstable connection.", "Set to '0' for instant deletion.")
 			.cons((con, map) -> ROAD_UNDO_CACHE_CLEARTIME = con.getInteger(map))
 			.rang(0, 60));
 

@@ -3,10 +3,11 @@
 	"package": "net.fexcraft.mod.fvtm.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"PackRepoMixin"
+		"PackRepoMixin",
+		"ClientAddEntityMixin"
 	],
 	"client": [
-		"ClientAddEntityMixin"
+	
 	],
 	"injectors": {
 		"defaultRequire": 1

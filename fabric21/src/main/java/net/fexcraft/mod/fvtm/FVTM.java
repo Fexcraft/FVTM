@@ -347,7 +347,7 @@ public class FVTM implements ModInitializer {
 				return 0;
 			})))
 			.then(Commands.literal("debug").executes(ctx -> {
-				DebugUtils.ACTIVE = !DebugUtils.ACTIVE;
+				Config.DEBUG_ACTIVE = !Config.DEBUG_ACTIVE;
 				return 0;
 			}))
 			.then(Commands.literal("catalog").executes(ctx -> {

@@ -18,7 +18,6 @@ import static net.fexcraft.lib.frl.Renderer.RENDERER;
  */
 public class DebugUtils {
 
-	public static boolean ACTIVE = false;
 	public static Vec3f CYNCOLOR = new Vec3f(0, 1, 1);
 	public static Vec3f REDCOLOR = new Vec3f(1, 0, 0);
 	public static Vec3f GRNCOLOR = new Vec3f(0, 1, 0);

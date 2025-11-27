@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -125,7 +126,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		//
 		//TODO toggle info
 		//TODO containers
-		if(DebugUtils.ACTIVE){
+		if(Config.DEBUG_ACTIVE){
 			/*Renderer21.set(RenderType.lines());
 			pose.pushPose();
 			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
@@ -139,7 +140,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		}
 		pose.popPose();
 		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
-		if(DebugUtils.ACTIVE){
+		if(Config.DEBUG_ACTIVE){
 			Renderer21.light = 255;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
 			for(OBB.OBBRef ref : state.vehicle.data.getBoundBoxes()){
@@ -180,7 +181,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 				inrange = true;
 				break;
 			}
-			if(DebugUtils.ACTIVE){
+			if(Config.DEBUG_ACTIVE){
 				pose.pushPose();
 				Renderer21.setColor(zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
 				pose.scale(zone.range, zone.range, zone.range);

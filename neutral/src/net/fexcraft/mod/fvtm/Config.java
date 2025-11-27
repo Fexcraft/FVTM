@@ -29,6 +29,8 @@ public class Config extends ConfigBase {
 	public static boolean DISMOUNT_ON_LOGOUT;
 	//public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 	public static int PACKET_RANGE;
+	//debug
+	public static boolean DEBUG_ACTIVE = false;
 	//collision
 	public static boolean DISABLE_OBB;
 	//client

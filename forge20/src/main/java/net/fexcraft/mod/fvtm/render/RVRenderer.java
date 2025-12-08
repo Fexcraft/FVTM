@@ -86,8 +86,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		V3D rot = getRotations(veh, tick);
 		pose.mulPose(new Quaternionf()
 			.rotateAxis((float)Static.toRadians(-rot.x), AY)
-			.rotateAxis((float)Static.toRadians(rot.y), AX)
-			.rotateAxis((float)Static.toRadians(rot.z), AZ)
+			.rotateAxis((float)Static.toRadians(-rot.y), AX)
+			.rotateAxis((float)Static.toRadians(-rot.z), AZ)
 		);
 		sepcache.set(veh.position().x, veh.position().y, veh.position().z, rot);
 		Renderer20.set(pose, buffer, light);

@@ -43,8 +43,8 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		GL11.glPushMatrix();
 		V3D rot = EffectRenderer.getRotations(rv, ticks);
 		GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
-		GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
-		GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
+		GL11.glRotated(-rot.y, 1.0F, 0.0F, 0.0F);
+		GL11.glRotated(-rot.z, 0.0F, 0.0F, 1.0F);
 		sepcache.set(x, y, z, rot);
 		if(Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
 			RootVehicle veh = Static.getServer().isSinglePlayer() ? (RootVehicle)Static.getServer().getWorld(rv.dimension).getEntityByID(rv.getEntityId()) : rv;

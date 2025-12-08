@@ -7,7 +7,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.FvtmPlayer;
@@ -144,7 +143,7 @@ public class FVTM20 {
 				return 0;
 			})))
 			.then(Commands.literal("debug").executes(ctx -> {
-				DebugUtils.ACTIVE = !DebugUtils.ACTIVE;
+				Config.DEBUG_ACTIVE = !Config.DEBUG_ACTIVE;
 				return 0;
 			}))
 			.then(Commands.literal("catalog").executes(ctx -> {

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -117,7 +118,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		//
 		//TODO toggle info
 		//TODO containers
-		if(DebugUtils.ACTIVE){
+		if(Config.DEBUG_ACTIVE){
 			/*Renderer20.set(RenderType.lines());
 			pose.pushPose();
 			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
@@ -158,7 +159,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				inrange = true;
 				break;
 			}
-			if(DebugUtils.ACTIVE){
+			if(Config.DEBUG_ACTIVE){
 				pose.pushPose();
 				Renderer20.setColor(zone.inRange(data, vehpos, ply) ? GRNCOLOR : GRYCOLOR);
 				pose.scale(zone.range, zone.range, zone.range);

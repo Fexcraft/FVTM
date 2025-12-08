@@ -80,8 +80,8 @@ public class VehicleRenderer {
             GL11.glPushMatrix();
 			V3D rot = EffectRenderer.getRotations(vehicle, ticks);
 			GL11.glRotated(-rot.x, 0.0F, 1.0F, 0.0F);
-			GL11.glRotated(rot.y, 1.0F, 0.0F, 0.0F);
-			GL11.glRotated(rot.z, 0.0F, 0.0F, 1.0F);
+			GL11.glRotated(-rot.y, 1.0F, 0.0F, 0.0F);
+			GL11.glRotated(-rot.z, 0.0F, 0.0F, 1.0F);
 			sepcache.set(x, y, z, rot);
             //
 	        int i = getBrightness(x, y, z), j = i % 65536, k = i / 65536;

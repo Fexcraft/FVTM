@@ -79,7 +79,7 @@ public class Packets21 extends Packets {
 			Level level = player.getWorld().local();
 			Entity ent = level.getEntity(tag.getInteger("entid"));
 			if(ent != null && ent instanceof DecorationEntity){
-				((DecorationEntity)ent).readAdditionalSaveData(tag.local());
+				((DecorationEntity)ent).readSpawnData(tag);
 			}
 		});
 		LIS_CLIENT.put("passenger_update", (tag, player) -> {

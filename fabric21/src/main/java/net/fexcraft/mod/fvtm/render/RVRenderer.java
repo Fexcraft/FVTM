@@ -94,8 +94,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		V3D rot = getRotations(state.entity, state.f);
 		pose.mulPose(new Quaternionf()
 			.rotateAxis((float)Static.toRadians(-rot.x), AY)
-			.rotateAxis((float)Static.toRadians(rot.y), AX)
-			.rotateAxis((float)Static.toRadians(rot.z), AZ)
+			.rotateAxis((float)Static.toRadians(-rot.y), AX)
+			.rotateAxis((float)Static.toRadians(-rot.z), AZ)
 		);
 		sepcache.set(state.entity.position().x, state.entity.position().y, state.entity.position().z, rot);
 		Renderer21.set(pose, buffer, light);

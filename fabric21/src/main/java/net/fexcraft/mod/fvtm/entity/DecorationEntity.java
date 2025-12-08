@@ -4,15 +4,22 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.fvtm.util.ClientAddEntity;
+import net.fexcraft.mod.fvtm.util.SpawnPacketEntity;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,7 +37,7 @@ import java.util.ArrayList;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DecorationEntity extends Entity {
+public class DecorationEntity extends Entity implements SpawnPacketEntity {
 
 	public ArrayList<DecorationData> decos = new ArrayList<>();
 	protected boolean locked;
@@ -43,10 +50,16 @@ public class DecorationEntity extends Entity {
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
 
 	}
+	@Override
+	public void recreateFromPacket(ClientboundAddEntityPacket packet){
+		super.recreateFromPacket(packet);
+		readSpawnData(((ClientAddEntity)packet).getFvtmData());
+	}
 
 	@Override
 	public void readAdditionalSaveData(ValueInput in){
 		decos.clear();
+		locked = in.getBooleanOr("locked", false);
 		var list = in.listOrEmpty("decorations", CompoundTag.CODEC);
 		if(!list.isEmpty()){
 			for(CompoundTag com : list){
@@ -57,19 +70,21 @@ public class DecorationEntity extends Entity {
 
 	@Override
 	protected void addAdditionalSaveData(ValueOutput out){
+		out.putBoolean("locked", locked);
 		if(decos.size() == 0) return;
 		var list = out.list("decorations", CompoundTag.CODEC);
 		for(DecorationData deco : this.decos) list.add(deco.write(TagCW.create()).local());
 	}
 
-	/*@Override
-	public void writeSpawnData(FriendlyByteBuf buffer){
+	@Override
+	public void writeSpawnData(TagCW com){
 		try{
-			buffer.writeBoolean(this.locked);
-			buffer.writeInt(this.decos.size());
-			for(DecorationData deco : this.decos){
-				buffer.writeNbt(deco.write(TagCW.create()).local());
+			com.set("locked", locked);
+			TagLW list = TagLW.create();
+			for(DecorationData deco : decos){
+				list.add(deco.write(TagCW.create()));
 			}
+			com.set("decorations", list);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -77,24 +92,19 @@ public class DecorationEntity extends Entity {
 	}
 
 	@Override
-	public void readSpawnData(FriendlyByteBuf buffer){
+	public void readSpawnData(TagCW com){
 		try{
-			locked = buffer.readBoolean();
+			locked = com.getBoolean("locked");
 			decos.clear();
-			int amount = buffer.readInt();
-			for(int i = 0; i < amount; i++){
-				this.decos.add(FvtmResources.getDecorationData(TagCW.wrap(buffer.readNbt())));
+			TagLW list = com.getList("decorations");
+			for(TagCW tag : list){
+				this.decos.add(FvtmResources.getDecorationData(tag));
 			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}*/
 
 	@Override
 	public boolean isPickable(){
@@ -106,15 +116,15 @@ public class DecorationEntity extends Entity {
 			return InteractionResult.PASS;
 		}
 		ItemStack stack = player.getItemInHand(hand);
-		/*if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isVehicleKey()){
+		if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isVehicleKey()){
 			this.locked = !this.locked;
-			player.sendSystemMessage(Component.literal("Toggled Deco Lock status."));
+			((ServerPlayer)player).sendSystemMessage(Component.literal("Toggled Deco Lock status."));
 			return InteractionResult.SUCCESS;
 		}
 		if(this.locked){
-			player.sendSystemMessage(Component.literal("Deco is locked."));
+			((ServerPlayer)player).sendSystemMessage(Component.literal("Deco is locked."));
 			return InteractionResult.SUCCESS;
-		}*/
+		}
 		if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
 			if(stack.getItem() instanceof DecorationItem){
 				DecorationData data = ((DecorationItem)stack.getItem()).getData(UniStack.getStack(stack));
@@ -133,7 +143,7 @@ public class DecorationEntity extends Entity {
 	public boolean hurtServer(ServerLevel level, DamageSource source, float am){
 		if(source.getDirectEntity() instanceof Player){
 			if(this.locked){
-				//TODO source.getDirectEntity().sendSystemMessage(Component.literal("Deco is locked."));
+				((ServerPlayer)source.getDirectEntity()).sendSystemMessage(Component.literal("Deco is locked."));
 				return true;
 			}
 			//ItemStack stack = getPickedResult(null);
@@ -156,7 +166,7 @@ public class DecorationEntity extends Entity {
 
 	public void updateClient(){
 		TagCW com = TagCW.create();
-		addAdditionalSaveData(com.local());
+		writeSpawnData(com);
 		com.set("entid", getId());
 		Packets.sendToAll(Packet_TagListener.class, "deco", TagCW.wrap(com));//TODO change to ranged packet
 	}

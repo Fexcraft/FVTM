@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireDecoItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -47,8 +48,8 @@ public class WireRenderer {
 		wiredata = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(event.getCamera().getEntity().level()), WireSystem.class);
 		if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getInstance().player.getMainHandItem();
-		holding_wire = DebugUtils.ACTIVE || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(getToolboxType(held)));
-		holding_slack = DebugUtils.ACTIVE || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(getToolboxType(held));
+		holding_wire = Config.DEBUG_ACTIVE || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(getToolboxType(held)));
+		holding_slack = Config.DEBUG_ACTIVE || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(getToolboxType(held));
 		if(held.getItem() instanceof WireDecoItem){
 			WireDecoItem item = (WireDecoItem)held.getItem();
 			holding_relaydeco = item.getContent().getType().equals("relay");
@@ -71,10 +72,10 @@ public class WireRenderer {
 				for(WireRelay relay : holder.relays.values()){
 					Renderer20.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check
-					if(DebugUtils.ACTIVE || holding_wire){
+					if(Config.DEBUG_ACTIVE || holding_wire){
 						DebugUtils.renderBB(relay.pos, holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 					}
-					if((DebugUtils.ACTIVE || holding_slack) && relay.wires.size() > 0){
+					if((Config.DEBUG_ACTIVE || holding_slack) && relay.wires.size() > 0){
 						for(Wire wire : relay.wires){
 							if(wire.copy) continue;
 							DebugUtils.renderBB(wire.getVectorPosition(wire.length * 0.5, false),

@@ -84,8 +84,8 @@ public class VehicleInstance {
 	public double throttle;
 	public double brake;
 	public double speed;
-	public V3D pos;
-	public V3D prev;
+	public V3D pos = new V3D();
+	public V3D prev = new V3D();
 	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
@@ -837,7 +837,7 @@ public class VehicleInstance {
 	public void onUpdate(){
 		driven = isDriverInstance();
 		boolean remote = entity.isOnClient();
-		if(!remote && !type.isRailVehicle()){
+		if(/*!remote &&*/ !type.isRailVehicle()){
 			checkWheelPresence(w_front_l.id);
 			checkWheelPresence(w_front_r.id);
 			checkWheelPresence(w_rear_l.id);
@@ -867,8 +867,8 @@ public class VehicleInstance {
 		if(steer_yaw > max_steering_yaw) steer_yaw = max_steering_yaw;
 		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
 		//
-		pos = entity.getPos();
-		prev = entity.getPrevPos();
+		prev.copy(pos);
+		pos.copy(entity.getPos());
 		rot = point.getPivot().toArray();
 		for(UniWheel wheel : wheels.values()){
 			if(wheel != null) wheel.updatePrevPos();
@@ -907,7 +907,7 @@ public class VehicleInstance {
 		}
 		updatePointsSeats();
 		if(!type.isRailVehicle()){
-			if(entity.isOnClient() ? driven : entity.pushTicks() % VEHICLE_SYNC_RATE == 0){
+			if(driven && (entity.isOnClient() || entity.pushTicks() % VEHICLE_SYNC_RATE == 0)){
 				sendUpdatePacket();
 			}
 		}
@@ -1025,7 +1025,7 @@ public class VehicleInstance {
 		V3D.add(pos, moveto);
 		entity.setPrevPos(pos);
 		entity.setPos(moveto);
-		pos = entity.getPos();
+		pos.copy(moveto);
 	}
 
 	protected void moveToWheel(UniWheel wheel){
@@ -1048,7 +1048,7 @@ public class VehicleInstance {
 		V3D wr = wheels.get(w_rear_r.id).pos();
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
 		moveto.set(0, 0, 0);
-		pos = entity.getPos();
+		pos.copy(entity.getPos());
 		for(UniWheel wheel : wheels.values()){
 			wheel.prepare();
 			wheel.yaw(pivot().deg_yaw());

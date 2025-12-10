@@ -190,8 +190,9 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 
 	@Override
 	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
-		WheelEntity wheel = new WheelEntity(vehicle.entity.local(), id);
-		world.spawnEntity(wheel);
+		//WheelEntity wheel = new WheelEntity(vehicle.entity.local(), id);
+		//world.spawnEntity(wheel);
+		UniWheelImpl wheel = new UniWheelImpl(vehicle, id);
 		return wheel;
 	}
 

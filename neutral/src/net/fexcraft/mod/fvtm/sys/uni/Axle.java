@@ -48,7 +48,7 @@ public class Axle {
 	public double getGrip(VehicleInstance vi){
 		double grip = 0;
 		for(WheelTireData wheel : wheels){
-			double gr = wheel.function.getGripFor(null, vi.entity.getWorld().isRainingAt(vi.wheels.get(wheel.id).pos()));
+			double gr = wheel.function.getGripFor(null, vi.entity.getWorld().isRainingAt(vi.wheels.get(wheel.id).pos));
 			if(wheel.slot.braking && vi.pbrake) gr *= wheel.function.brake_grip;
 			grip += gr;
 		}

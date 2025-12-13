@@ -68,7 +68,6 @@ public class ClassicVehMove implements VehicleMovement {
 				wm = wheel.wtd().move;
 				scal = (-Math.sin(-wyaw) * wm.x + -Math.cos(-wyaw) * wm.z) * 0.05;
 				wheel.prepare();
-				wheel.yaw(inst.pivot().deg_yaw());
 				if(inst.engine != null && cons && inst.throttle != 0){
 					scal += 0.05 * inst.throttle * (inst.throttle > 0 ? inst.spdata.max_throttle : inst.spdata.min_throttle) * inst.engine.getSphEngineSpeed();
 				}

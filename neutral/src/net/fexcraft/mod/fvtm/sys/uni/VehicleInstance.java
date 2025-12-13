@@ -884,9 +884,9 @@ public class VehicleInstance {
 			rot[2] = valDeg(rot[2] + (serv_rot[2] - rot[2]) / serv_sync);
 			steer_yaw += (serv_steer - steer_yaw) / serv_sync;
 			serv_sync--;
-			entity.setPos(pos);
 			pivot().set_rotation(rot[0], rot[1], rot[2], true);
 			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
+			entity.setPos(pos);
 		}
 		//alignToWheels();//process move requests from other sources
 		if(!driven){
@@ -944,7 +944,7 @@ public class VehicleInstance {
 
 	private void checkWheelPresence(String id){
 		if(!wheels.containsKey(id) || !wheels.get(id).isAdded()){
-			wheels.put(id, ((FvtmWorld)entity.getWorld()).spawnWheel(this, id));
+			wheels.put(id, new UniWheelImpl(this, id));
 		}
 	}
 
@@ -998,6 +998,7 @@ public class VehicleInstance {
 		double r = movement.usesRoll() ? -Math.atan2(dry, Math.sqrt((drx * drx + drz * drz))) : 0;
 		pivot().set_rotation(y, p, r, false);
 		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
+		entity.setPos(pos);
 	}
 
 	private void pullBackWheel(UniWheel wheel){

@@ -33,8 +33,8 @@ import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.pro.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.RailVehicle;
-import net.fexcraft.mod.fvtm.sys.pro.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
@@ -57,6 +57,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.command.CommandBase;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -209,7 +210,7 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:land_vehicle"), LandVehicle.class, "fvtm.land_vehicle", 0, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm.wheel", 100, this, 256, 1, false);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm.wheel", 100, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), RailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, false);
 		//
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
@@ -223,7 +224,7 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:block_seat"), BlockSeat.class, "fvtm.block_seat", 6001, this, 256, 60, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderRV::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderWheel::new);
+			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderWheel::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRV::new);
 			//
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
@@ -266,6 +267,10 @@ public class FVTM {
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
+		UniWheel.SET_STEP = uw -> {
+			Entity ent = uw.vehicle.entity.local();
+			ent.stepHeight = uw.wtd() == null ? uw.vehicle.data == null ? 1f : 0.5f : uw.wtd().function.step_height;
+		};
 	}
 
 	@Mod.EventHandler

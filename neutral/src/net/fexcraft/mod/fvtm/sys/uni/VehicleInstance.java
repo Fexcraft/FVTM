@@ -674,7 +674,6 @@ public class VehicleInstance {
 				func.inventory().clearAt(entity);
 			}
 		}
-		for(UniWheel wheel : wheels.values()) wheel.remove();
 		if(!type.isRailVehicle()){
 			if(front != null) front.rear = null;
 			if(rear != null) rear.front = null;
@@ -944,9 +943,7 @@ public class VehicleInstance {
 	}
 
 	private void checkWheelPresence(String id){
-		if(!wheels.containsKey(id) || !wheels.get(id).isAdded()){
-			wheels.put(id, new UniWheelImpl(this, id));
-		}
+		if(!wheels.containsKey(id)) wheels.put(id, new UniWheel(this, id));
 	}
 
 	private void onUpdateMovement(){
@@ -966,14 +963,14 @@ public class VehicleInstance {
 			movement.move(!VEHICLES_NEED_FUEL || !uf || creative);
 			//
 			try{
-				V3D fl = wheels.get(w_front_l.id).pos();
-				V3D fr = wheels.get(w_front_r.id).pos();
+				V3D fl = wheels.get(w_front_l.id).pos;
+				V3D fr = wheels.get(w_front_r.id).pos;
 				/*if(front != null){
 					fl = pivot().get_vector(w_front_l.pos).add(pos);
 					fr = pivot().get_vector(w_front_r.pos).add(pos);
 				}*/
-				V3D rl = wheels.get(w_rear_l.id).pos();
-				V3D rr = wheels.get(w_rear_r.id).pos();
+				V3D rl = wheels.get(w_rear_l.id).pos;
+				V3D rr = wheels.get(w_rear_r.id).pos;
 				if(fl == null) return;
 				fro.set((fl.x + fr.x) * 0.5, (fl.y + fr.y) * 0.5, (fl.z + fr.z) * 0.5);
 				rea.set((rl.x + rr.x) * 0.5, (rl.y + rr.y) * 0.5, (rl.z + rr.z) * 0.5);
@@ -1005,11 +1002,10 @@ public class VehicleInstance {
 
 	private void pullBackWheel(UniWheel wheel){
 		wheel.prepare();
-		wheel.yaw(pivot().deg_yaw());
 		V3D dest = pivot().get_vector(wheel.wtd().pos);
-		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
-		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
-		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
+		dest.x = (dest.x - (wheel.pos.x - pos.x)) * 0.25;
+		dest.y = (dest.y - (wheel.pos.y - pos.y)) * 0.25;
+		dest.z = (dest.z - (wheel.pos.z - pos.z)) * 0.25;
 		wheel.addMotion(dest.x, dest.y, dest.z);
 		wheel.move();
 		wheel.setMotion(0, 0, 0);
@@ -1033,9 +1029,9 @@ public class VehicleInstance {
 
 	protected void moveToWheel(UniWheel wheel){
 		V3D dest = pivot().get_vector(wheel.wtd().pos);
-		dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.25;
-		dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.25;
-		dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.25;
+		dest.x = (dest.x - (wheel.pos.x - pos.x)) * 0.25;
+		dest.y = (dest.y - (wheel.pos.y - pos.y)) * 0.25;
+		dest.z = (dest.z - (wheel.pos.z - pos.z)) * 0.25;
 		if(dest.length() > 0.001) V3D.sub(dest, moveto);
 	}
 
@@ -1047,18 +1043,17 @@ public class VehicleInstance {
 		V3D.add(front.getV3D(), conn);
 		entity.setPos(conn);
 		throttle = front.throttle;
-		V3D wl = wheels.get(w_rear_l.id).pos();
-		V3D wr = wheels.get(w_rear_r.id).pos();
+		V3D wl = wheels.get(w_rear_l.id).pos;
+		V3D wr = wheels.get(w_rear_r.id).pos;
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
 		moveto.set(0, 0, 0);
 		pos.copy(entity.getPos());
 		for(UniWheel wheel : wheels.values()){
 			wheel.prepare();
-			wheel.yaw(pivot().deg_yaw());
 			V3D dest = pivot().get_vector(wheel.wtd().pos);
-			dest.x = (dest.x - (wheel.pos().x - pos.x)) * 0.5;
-			dest.y = (dest.y - (wheel.pos().y - pos.y)) * 0.5;
-			dest.z = (dest.z - (wheel.pos().z - pos.z)) * 0.5;
+			dest.x = (dest.x - (wheel.pos.x - pos.x)) * 0.5;
+			dest.y = (dest.y - (wheel.pos.y - pos.y)) * 0.5;
+			dest.z = (dest.z - (wheel.pos.z - pos.z)) * 0.5;
 			wheel.addMotion(dest.x, dest.y, dest.z);
 			wheel.move();
 			moveToWheel(wheel);

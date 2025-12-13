@@ -188,11 +188,4 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		world.spawnEntity(new LandVehicle(truck.entity.local(), data, placer.local()));
 	}
 
-	@Override
-	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
-		WheelEntity wheel = new WheelEntity(vehicle.entity.local(), id);
-		world.spawnEntity(wheel);
-		return wheel;
-	}
-
 }

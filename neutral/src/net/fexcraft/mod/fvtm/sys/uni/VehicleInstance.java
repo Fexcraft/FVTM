@@ -84,8 +84,8 @@ public class VehicleInstance {
 	public double throttle;
 	public double brake;
 	public double speed;
-	public V3D pos;
-	public V3D prev;
+	public V3D pos = new V3D();
+	public V3D prev = new V3D();
 	public double[] rot;
 	public ArrayList<SeatInstance> seats = new ArrayList<>();
 	public HashMap<String, WheelTireData> wheeldata = new HashMap<>();
@@ -837,7 +837,7 @@ public class VehicleInstance {
 	public void onUpdate(){
 		driven = isDriverInstance();
 		boolean remote = entity.isOnClient();
-		if(!remote && !type.isRailVehicle()){
+		if(/*!remote &&*/ !type.isRailVehicle()){
 			checkWheelPresence(w_front_l.id);
 			checkWheelPresence(w_front_r.id);
 			checkWheelPresence(w_rear_l.id);
@@ -867,8 +867,8 @@ public class VehicleInstance {
 		if(steer_yaw > max_steering_yaw) steer_yaw = max_steering_yaw;
 		if(steer_yaw < -max_steering_yaw) steer_yaw = -max_steering_yaw;
 		//
-		pos = entity.getPos();
-		prev = entity.getPrevPos();
+		prev.copy(pos);
+		pos.copy(entity.getPos());
 		rot = point.getPivot().toArray();
 		for(UniWheel wheel : wheels.values()){
 			if(wheel != null) wheel.updatePrevPos();
@@ -884,9 +884,10 @@ public class VehicleInstance {
 			rot[2] = valDeg(rot[2] + (serv_rot[2] - rot[2]) / serv_sync);
 			steer_yaw += (serv_steer - steer_yaw) / serv_sync;
 			serv_sync--;
-			entity.setPos(pos);
 			pivot().set_rotation(rot[0], rot[1], rot[2], true);
 			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
+			entity.setPos(pos);
+			entity.setPrevPos(prev);
 		}
 		//alignToWheels();//process move requests from other sources
 		if(!driven){
@@ -907,7 +908,7 @@ public class VehicleInstance {
 		}
 		updatePointsSeats();
 		if(!type.isRailVehicle()){
-			if(entity.isOnClient() ? driven : entity.pushTicks() % VEHICLE_SYNC_RATE == 0){
+			if(driven && (entity.isOnClient() || entity.pushTicks() % VEHICLE_SYNC_RATE == 0)){
 				sendUpdatePacket();
 			}
 		}
@@ -944,7 +945,7 @@ public class VehicleInstance {
 
 	private void checkWheelPresence(String id){
 		if(!wheels.containsKey(id) || !wheels.get(id).isAdded()){
-			wheels.put(id, ((FvtmWorld)entity.getWorld()).spawnWheel(this, id));
+			wheels.put(id, new UniWheelImpl(this, id));
 		}
 	}
 
@@ -998,6 +999,8 @@ public class VehicleInstance {
 		double r = movement.usesRoll() ? -Math.atan2(dry, Math.sqrt((drx * drx + drz * drz))) : 0;
 		pivot().set_rotation(y, p, r, false);
 		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
+		entity.setPos(pos);
+		entity.setPrevPos(prev);
 	}
 
 	private void pullBackWheel(UniWheel wheel){
@@ -1025,7 +1028,7 @@ public class VehicleInstance {
 		V3D.add(pos, moveto);
 		entity.setPrevPos(pos);
 		entity.setPos(moveto);
-		pos = entity.getPos();
+		pos.copy(moveto);
 	}
 
 	protected void moveToWheel(UniWheel wheel){
@@ -1048,7 +1051,7 @@ public class VehicleInstance {
 		V3D wr = wheels.get(w_rear_r.id).pos();
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
 		moveto.set(0, 0, 0);
-		pos = entity.getPos();
+		pos.copy(entity.getPos());
 		for(UniWheel wheel : wheels.values()){
 			wheel.prepare();
 			wheel.yaw(pivot().deg_yaw());

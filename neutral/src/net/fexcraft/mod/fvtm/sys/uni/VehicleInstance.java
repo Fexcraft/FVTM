@@ -887,6 +887,7 @@ public class VehicleInstance {
 			pivot().set_rotation(rot[0], rot[1], rot[2], true);
 			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 			entity.setPos(pos);
+			entity.setPrevPos(prev);
 		}
 		//alignToWheels();//process move requests from other sources
 		if(!driven){
@@ -999,6 +1000,7 @@ public class VehicleInstance {
 		pivot().set_rotation(y, p, r, false);
 		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 		entity.setPos(pos);
+		entity.setPrevPos(prev);
 	}
 
 	private void pullBackWheel(UniWheel wheel){

@@ -49,7 +49,6 @@ public class ClientAddEntityMixin implements ClientAddEntity {
 	}
 
 	private boolean isFvtmEntity(EntityType<?> type){
-		if(type == Resources21.WHEEL_ENTITY) return true;
 		if(type == Resources21.VEHICLE_ENTITY) return true;
 		if(type == Resources21.RAIL_ENTITY) return true;
 		if(type == Resources21.ROAD_MARKER_ENTITY) return true;

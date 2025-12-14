@@ -91,14 +91,6 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("rail_marker")
 	);
-	public static final RegistryObject<EntityType<WheelEntity>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
-		EntityType.Builder.of((EntityType.EntityFactory<WheelEntity>)(type, level) -> new WheelEntity(type, level), MobCategory.CREATURE)
-			.sized(0.25F, 0.25F)
-			.setUpdateInterval(1)
-			.setTrackingRange(256)
-			.setShouldReceiveVelocityUpdates(false)
-			.build("wheel")
-	);
 	public static final RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
 		EntityType.Builder.of(RootVehicle::new, MobCategory.MISC)
 			.sized(1F, 1F)
@@ -247,12 +239,12 @@ public class FVTM4 {
 			}
 		}
 
-		@SubscribeEvent
+		/*@SubscribeEvent
 		public void onEntAttrEvent(EntityAttributeCreationEvent event) {
 			event.put(WHEEL_ENTITY.get(), Mob.createLivingAttributes()
 				.add(Attributes.MAX_HEALTH, Integer.MAX_VALUE)
 				.add(Attributes.KNOCKBACK_RESISTANCE, 20).build());
-		}
+		}*/
 
 	}
 

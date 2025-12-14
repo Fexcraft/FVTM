@@ -74,7 +74,6 @@ public class Resources21 extends FvtmResources {
 	//
 	public static ConcurrentHashMap<IDL, Block[]> ROAD_BLOCKS = new ConcurrentHashMap<>();
 	//
-	public static EntityType<WheelEntity> WHEEL_ENTITY;
 	public static EntityType<RootVehicle> VEHICLE_ENTITY;
 	public static EntityType<RailVehicle> RAIL_ENTITY;
 	public static EntityType<RoadMarker> ROAD_MARKER_ENTITY;

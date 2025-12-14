@@ -230,7 +230,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, I
 			Vec3d max = getPositionVector().add(zone.pos.x + r, zone.pos.y + r, zone.pos.z + r);
 			world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(min, max), ent -> ent instanceof EntityLivingBase).forEach(ent -> {
 				if(ent.isRiding() || checked.contains(ent)) return;
-				OBB bb = new OBB().set(net.fexcraft.mod.fvtm.data.block.AABB.wrap(ent.getEntityBoundingBox()));
+				OBB bb = new OBB().set(net.fexcraft.mod.uni.world.AABB.wrap(ent.getEntityBoundingBox()));
 				for(OBB obb : vehicle.obb.values()){
 					V3D res = CollisionUtil.check(bb, obb);
 					if(res != null){

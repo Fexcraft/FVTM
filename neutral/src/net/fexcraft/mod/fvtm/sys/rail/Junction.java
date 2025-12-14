@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.fvtm.sys.event.EventListener;
 import net.fexcraft.mod.fvtm.sys.event.EventType;
@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.WorldW;
 
 import java.util.ArrayList;
 

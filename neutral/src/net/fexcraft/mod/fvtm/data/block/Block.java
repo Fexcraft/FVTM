@@ -122,10 +122,10 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 			map.getMap("AABBs").entries().forEach(entry -> {
 				JsonArray value = entry.getValue().asArray();
 				if(value.get(0).isArray()){
-					ArrayList<AABB> list = new ArrayList<>();
+					ArrayList<net.fexcraft.mod.uni.world.AABB> list = new ArrayList<>();
 					for(JsonValue<?> elm : value.value){
 						JsonArray arr = elm.asArray();
-						list.add(AABB.create(arr.get(0).float_value(), arr.get(1).float_value(), arr.get(2).float_value(),
+						list.add(net.fexcraft.mod.uni.world.AABB.create(arr.get(0).float_value(), arr.get(1).float_value(), arr.get(2).float_value(),
 							arr.get(3).float_value(), arr.get(4).float_value(), arr.get(5).float_value()));
 					}
 					aabbs.put(entry.getKey(), new AABBs(list));
@@ -290,7 +290,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return model;
 	}
 
-	private static AABBs RAABB = new AABBs(AABB.create(-3, -3, -3, 3, 3, 3));
+	private static AABBs RAABB = new AABBs(net.fexcraft.mod.uni.world.AABB.create(-3, -3, -3, 3, 3, 3));
 
 	public AABBs getAABB(String type, String... states){
 		if(type.equals("selection")){

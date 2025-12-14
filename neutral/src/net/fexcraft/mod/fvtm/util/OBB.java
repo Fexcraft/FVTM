@@ -1,9 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 
 /**

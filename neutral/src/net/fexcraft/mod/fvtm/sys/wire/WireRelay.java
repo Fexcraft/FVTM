@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 /**

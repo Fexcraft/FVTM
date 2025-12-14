@@ -13,7 +13,7 @@ import net.fexcraft.mod.uni.world.CubeSide;
  */
 public class MB_Interact {
 	
-	private AABB aabb;
+	private net.fexcraft.mod.uni.world.AABB aabb;
 	private CubeSide sidefrom;
 	private V3I pos;
 	private String target;
@@ -26,7 +26,7 @@ public class MB_Interact {
 		target = array.get(4).string_value();
 		if(array.size() > 5){
 			if(array.get(5).isArray()){
-				aabb = AABB.create(array.get(5).asArray().toFloatArray());
+				aabb = net.fexcraft.mod.uni.world.AABB.create(array.get(5).asArray().toFloatArray());
 			}
 			else{
 				sidefrom = CubeSide.valueOf(array.get(5).string_value().toUpperCase());
@@ -38,7 +38,7 @@ public class MB_Interact {
 		return sidefrom == null && aabb == null;
 	}
 	
-	public AABB getBB(){
+	public net.fexcraft.mod.uni.world.AABB getBB(){
 		return aabb;
 	}
 	

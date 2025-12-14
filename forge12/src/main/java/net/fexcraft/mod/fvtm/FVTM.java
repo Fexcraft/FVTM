@@ -8,7 +8,7 @@ import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -141,8 +141,6 @@ public class FVTM {
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ItemStack)stack.direct()).getMetadata());
 		//UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
 		//ItemWrapper.SUPPLIER = item -> new IWIE((Item)item);
-		AABB.SUPPLIER = () -> new AABBI();
-		AABB.WRAPPER = obj -> new AABBI((AxisAlignedBB)obj);
 		InvHandlerItem.IMPL = InvHandlerItemImpl.class;
 		InvHandlerFluid.IMPL = InvHandlerFluidImpl.class;
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;

@@ -11,7 +11,6 @@ import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.*;
@@ -204,13 +203,6 @@ public class WorldWIE extends WorldWI implements FvtmWorld {
 		veh.vehicle.point.getPivot().copy(truck.point.getPivot());
 		veh.setPos(((Entity)truck.entity.local()).position());
 		level.addFreshEntity(veh);
-	}
-
-	@Override
-	public UniWheel spawnWheel(VehicleInstance vehicle, String id){
-		WheelEntity wheel = new WheelEntity(vehicle.entity.local(), id);
-		level.addFreshEntity(wheel);
-		return wheel;
 	}
 
 }

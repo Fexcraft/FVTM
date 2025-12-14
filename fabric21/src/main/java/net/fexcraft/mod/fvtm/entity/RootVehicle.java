@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,14 +42,14 @@ import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleInstance.Holder {
+public class RootVehicle extends LivingEntity implements SpawnPacketEntity, VehicleInstance.Holder {
 
 	public VehicleInstance vehicle;
 	public float rotZ = 0;
 	public float protZ = 0;
 	public boolean should_sit = true;
 
-	public RootVehicle(EntityType<?> type, Level level){
+	public RootVehicle(EntityType<? extends RootVehicle> type, Level level){
 		super(type, level);
 		vehicle = new VehicleInstance(new EntityWI(this), null);
 	}
@@ -61,7 +62,7 @@ public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleIns
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
-
+		super.defineSynchedData(builder);
 	}
 
 	public void initVD(VehicleData data){
@@ -136,6 +137,11 @@ public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleIns
 	}
 
 	@Override
+	public HumanoidArm getMainArm(){
+		return HumanoidArm.LEFT;
+	}
+
+	@Override
 	public boolean canBeCollidedWith(Entity entity){
 		return true;
 	}
@@ -180,9 +186,9 @@ public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleIns
 		ArrayList<Entity> checked = new ArrayList<>();
 		for(InteractZone zone : vehicle.data.getInteractZones().values()){
 			level().getEntities(this, AABB.ofSize(position().add(zone.pos.x, zone.pos.y, zone.pos.z), zone.range, zone.range, zone.range),
-				ent -> (ent instanceof LivingEntity) && !(ent instanceof WheelEntity)).forEach(entity -> {
+				ent -> ent instanceof LivingEntity).forEach(entity -> {
 				if(entity.getVehicle() != null || checked.contains(entity)) return;
-				OBB bb = new OBB().set(net.fexcraft.mod.fvtm.data.block.AABB.wrap(entity.getBoundingBox()));
+				OBB bb = new OBB().set(net.fexcraft.mod.uni.world.AABB.wrap(entity.getBoundingBox()));
 				for(OBB obb : vehicle.obb.values()){
 					var res = CollisionUtil.check(bb, obb);
 					if(res != null){

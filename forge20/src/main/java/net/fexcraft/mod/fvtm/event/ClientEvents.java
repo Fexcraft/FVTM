@@ -56,7 +56,6 @@ public class ClientEvents {
 		EntityRenderers.register(FVTM4.DECORATION_ENTITY.get(), ctx -> new DecoRenderer(ctx));
 		EntityRenderers.register(FVTM4.ROAD_MARKER_ENTITY.get(), ctx -> new RoadMarkerRenderer(ctx));
 		EntityRenderers.register(FVTM4.RAIL_MARKER_ENTITY.get(), ctx -> new RailMarkerRenderer(ctx));
-		EntityRenderers.register(FVTM4.WHEEL_ENTITY.get(), ctx -> new WheelRenderer(ctx));
 		EntityRenderers.register(FVTM4.VEHICLE_ENTITY.get(), ctx -> new RVRenderer(ctx));
 		EntityRenderers.register(FVTM4.RAILVEH_ENTITY.get(), ctx -> new RVRenderer(ctx));
 		//

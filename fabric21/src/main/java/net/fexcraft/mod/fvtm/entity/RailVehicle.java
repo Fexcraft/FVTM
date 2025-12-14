@@ -28,7 +28,7 @@ public class RailVehicle extends RootVehicle {
 	private double rrbogiedis;
 	private byte remtimer;
 
-	public RailVehicle(EntityType<?> type, Level world){
+	public RailVehicle(EntityType<RailVehicle> type, Level world){
 		super(type, world);
 		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(world));
 	}

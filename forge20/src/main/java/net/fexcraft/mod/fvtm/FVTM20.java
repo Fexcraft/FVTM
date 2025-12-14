@@ -12,16 +12,15 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.FvtmPlayer;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.sys.rail.LongDisRailUtil;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
@@ -40,6 +39,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
@@ -72,8 +73,6 @@ public class FVTM20 {
 		StackWrapper.CONTENT_TYPES.put(ContentType.SIGN.item_type, stack -> ((SignItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);
 		//UniStack.STACK_GETTER = obj -> SWIE.parse(obj);
-		AABB.SUPPLIER = () -> new AABBI();
-		AABB.WRAPPER = obj -> new AABBI((net.minecraft.world.phys.AABB)obj);
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
 			FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
@@ -92,6 +91,10 @@ public class FVTM20 {
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
+		UniWheel.SET_STEP = uw -> {
+			RootVehicle ent = uw.vehicle.entity.local();
+			ent.stepheight = uw.wtd() == null ? uw.vehicle.spdata == null ? 1f : uw.vehicle.spdata.wheel_step_height : uw.wtd().function.step_height;
+		};
 		//
 		FvtmResources.INSTANCE.init();
 	}

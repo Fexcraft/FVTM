@@ -4,6 +4,8 @@ import net.fexcraft.lib.common.math.V3D;
 
 import java.util.function.Consumer;
 
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.BB_WHEEL;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -31,6 +33,7 @@ public class UniWheel {
 		vehicle.entity.setOnGround(true);
 		vehicle.entity.setPrevPos(prev);
 		vehicle.entity.setPos(pos);
+		vehicle.entity.setBB(BB_WHEEL.offset(pos));
 		SET_STEP.accept(this);
 	}
 

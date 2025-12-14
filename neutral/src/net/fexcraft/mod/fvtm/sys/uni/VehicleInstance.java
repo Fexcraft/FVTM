@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeUtil;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.root.Sound;
@@ -106,6 +107,9 @@ public class VehicleInstance {
 	public static final float GRAVITY = 9.81f;
 	public static final float GRAVITY_20th = GRAVITY / 20;
 	public static final float GRAVITY_200th = GRAVITY / 200;
+	//
+	public static AABB BB_VEHICLE = AABB.create(-.45, 0, -.45, .45, .9, .45);
+	public static AABB BB_WHEEL = AABB.create(-.125, 0, -.125, .125, .25, .125);
 	//
 	public static final int INTERACT_SUCCESS = 1;
 	public static final int INTERACT_PASS = 0;
@@ -887,6 +891,7 @@ public class VehicleInstance {
 			for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 			entity.setPos(pos);
 			entity.setPrevPos(prev);
+			entity.setBB(BB_VEHICLE.offset(pos));
 		}
 		//alignToWheels();//process move requests from other sources
 		if(!driven){
@@ -998,6 +1003,7 @@ public class VehicleInstance {
 		for(UniWheel wheel : wheels.values()) if(wheel != null && wheel.wtd() != null) pullBackWheel(wheel);
 		entity.setPos(pos);
 		entity.setPrevPos(prev);
+		entity.setBB(BB_VEHICLE.offset(pos));
 	}
 
 	private void pullBackWheel(UniWheel wheel){

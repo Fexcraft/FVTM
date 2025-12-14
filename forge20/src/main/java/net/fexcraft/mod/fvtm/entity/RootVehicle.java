@@ -45,6 +45,7 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 	public VehicleInstance vehicle;
 	public float rotZ = 0;
 	public float protZ = 0;
+	public float stepheight;
 	public boolean should_sit = true;
 
 	public RootVehicle(EntityType<?> type, Level level){
@@ -173,9 +174,9 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 		ArrayList<Entity> checked = new ArrayList<>();
 		for(InteractZone zone : vehicle.data.getInteractZones().values()){
 			level().getEntities(this, AABB.ofSize(position().add(zone.pos.x, zone.pos.y, zone.pos.z), zone.range, zone.range, zone.range),
-				ent -> (ent instanceof LivingEntity) && !(ent instanceof WheelEntity)).forEach(entity -> {
+				ent -> ent instanceof LivingEntity).forEach(entity -> {
 				if(entity.getVehicle() != null || checked.contains(entity)) return;
-				OBB bb = new OBB().set(net.fexcraft.mod.fvtm.data.block.AABB.wrap(entity.getBoundingBox()));
+				OBB bb = new OBB().set(net.fexcraft.mod.uni.world.AABB.wrap(entity.getBoundingBox()));
 				for(OBB obb : vehicle.obb.values()){
 					var res = CollisionUtil.check(bb, obb);
 					if(res != null){
@@ -303,6 +304,11 @@ public class RootVehicle extends Entity implements IEntityAdditionalSpawnData, V
 
 	public void onPacket(EntityW player, TagCW packet){
 		//
+	}
+
+	@Override
+	public float getStepHeight(){
+		return stepheight;
 	}
 
 }

@@ -7,8 +7,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.*;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -17,21 +15,17 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.FCL;
-import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.FvtmPlayer;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.*;
-import net.fexcraft.mod.fvtm.handler.InteractionHandler;
-import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.Packets21;
 import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.*;
@@ -39,9 +33,9 @@ import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.rail.LongDisRailUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
-import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
@@ -49,10 +43,11 @@ import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.impl.AABBI;
 import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.fexcraft.mod.uni.inv.StackWrapper;
-import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.ui.UISlot;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -75,12 +70,8 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.BlockItem;
@@ -175,12 +166,12 @@ public class FVTM implements ModInitializer {
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
+		UniWheel.SET_STEP = uw -> {
+			RootVehicle ent = uw.vehicle.entity.local();
+			float stepheight = uw.wtd() == null ? 0.5f : uw.wtd().function.step_height;
+			ent.getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
+		};
 		//
-		Resources21.WHEEL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:wheel", new EntityType<>(WheelEntity::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
-			0, 256, 1, "fvtm.wheel", Optional.empty(), FeatureFlagSet.of()));
-		//FabricDefaultAttributeRegistry.register(Resources21.WHEEL_ENTITY, LivingEntity.createLivingAttributes().build());
 		Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
@@ -201,7 +192,7 @@ public class FVTM implements ModInitializer {
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
 			0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
-		FabricDefaultAttributeRegistry.register(Resources21.WHEEL_ENTITY, LivingEntity.createLivingAttributes());
+		FabricDefaultAttributeRegistry.register(Resources21.VEHICLE_ENTITY, LivingEntity.createLivingAttributes());
 		//
 		FvtmResources.INSTANCE.init();
 		for(Addon addon : FvtmRegistry.ADDONS){

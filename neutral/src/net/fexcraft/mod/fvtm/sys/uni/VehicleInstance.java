@@ -783,7 +783,8 @@ public class VehicleInstance {
 			List<EntityW> nearby = entity.getWorld().getEntities(pos, 10);
 			for(EntityW lent : nearby){
 				if(!lent.isLiving() || lent == player) continue;
-				if(lent.getLeash().direct() == player.direct()){
+				EntityW hent = lent.getLeash();
+				if(hent != null && hent.direct() == player.direct()){
 					Passenger lpass = UniEntity.getApp(lent, Passenger.class);
 					if(!seat.seat.allow(lpass.entity)){
 						player.bar("interact.fvtm.vehicle.seat_wrong_type", lent.getName());

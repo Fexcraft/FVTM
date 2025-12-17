@@ -14,14 +14,12 @@ import java.util.Map;
 public class MultiBlockData extends ContentData<MultiBlock, MultiBlockData> {
 
 	private LinkedHashMap<String, InvHandler> inventories = new LinkedHashMap<>();
-	private Object script;
 
 	public MultiBlockData(MultiBlock mblock){
 		super(mblock);
 		for(Map.Entry<String, InvHandler> entry : type.getDefInventories().entrySet()){
 			inventories.put(entry.getKey(), entry.getValue().gen(6));
 		}
-		//TODO create script
 	}
 
 	@Override
@@ -30,9 +28,6 @@ public class MultiBlockData extends ContentData<MultiBlock, MultiBlockData> {
 		for(Map.Entry<String, InvHandler> entry : inventories.entrySet()){
 			String pre = entry.getValue().getSavePrefix();
 			entry.getValue().save(compound, pre + entry.getKey());
-		}
-		if(script != null){
-			//TODO script write
 		}
 		compound.set("type", type.getIDS());
 		return compound;
@@ -44,9 +39,6 @@ public class MultiBlockData extends ContentData<MultiBlock, MultiBlockData> {
 			String pre = entry.getValue().getSavePrefix();
 			if(!compound.has(pre + entry.getKey())) continue;
 			entry.getValue().load(compound, pre + entry.getKey());
-		}
-		if(script != null){
-			//TODO script read
 		}
 		return this;
 	}
@@ -64,10 +56,6 @@ public class MultiBlockData extends ContentData<MultiBlock, MultiBlockData> {
 	public LinkedHashMap<String, InvHandler> getInventories(){
 		return inventories;
 	}
-
-	/*public BlockScript getScript(){
-		return null;
-	}*/
 
 	public InvHandler getInventory(String invid){
 		return inventories.get(invid);

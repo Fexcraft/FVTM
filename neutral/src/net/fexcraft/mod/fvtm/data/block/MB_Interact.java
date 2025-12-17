@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.uni.world.CubeSide;
 
 /**
@@ -13,23 +14,21 @@ import net.fexcraft.mod.uni.world.CubeSide;
  */
 public class MB_Interact {
 	
-	private net.fexcraft.mod.uni.world.AABB aabb;
+	private AABB aabb;
 	private CubeSide sidefrom;
 	private V3I pos;
 	private String target;
-	private boolean script;
 	
 	public MB_Interact(JsonArray array, V3I core){
 		pos = new V3I(array.toIntegerArray(), 0);
 		if(core != null) pos = pos.add(-core.z, -core.y, -core.x);
-		script = array.get(3).string_value().equals("script");
-		target = array.get(4).string_value();
-		if(array.size() > 5){
-			if(array.get(5).isArray()){
-				aabb = net.fexcraft.mod.uni.world.AABB.create(array.get(5).asArray().toFloatArray());
+		target = array.get(3).string_value();
+		if(array.size() > 4){
+			if(array.get(4).isArray()){
+				aabb = AABB.create(array.get(4).asArray().toFloatArray());
 			}
 			else{
-				sidefrom = CubeSide.valueOf(array.get(5).string_value().toUpperCase());
+				sidefrom = CubeSide.valueOf(array.get(4).string_value().toUpperCase());
 			}
 		}
 	}
@@ -38,7 +37,7 @@ public class MB_Interact {
 		return sidefrom == null && aabb == null;
 	}
 	
-	public net.fexcraft.mod.uni.world.AABB getBB(){
+	public AABB getBB(){
 		return aabb;
 	}
 	
@@ -72,14 +71,6 @@ public class MB_Interact {
 	
 	public String getTarget(){
 		return target;
-	}
-	
-	public boolean forScript(){
-		return script;
-	}
-	
-	public boolean forInventory(){
-		return !script;
 	}
 
 }

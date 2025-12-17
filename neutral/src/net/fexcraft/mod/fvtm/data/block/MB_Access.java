@@ -1,8 +1,5 @@
 package net.fexcraft.mod.fvtm.data.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.inv.InvHandler;

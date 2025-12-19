@@ -99,7 +99,7 @@ public class M_4ROT_TE extends BlockBase {
         	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(hit);//TODO aabb rotation
         	if(!pass && trigger.getSide() != null) pass = trigger.getSide(corestate.getValue(FACING).getIndex()) == CubeSide.fromIndex(side.getIndex(), null);
         	if(pass){
-        		if(trigger.forInventory()){
+        		/*if(trigger.forInventory()){
         			InvHandler handler = data.getInventory(trigger.getTarget());
         			if(handler == null){
         				Print.chat(player, "error_target_inventory_not_found");
@@ -107,13 +107,13 @@ public class M_4ROT_TE extends BlockBase {
         			}
         			openInventory(player, trigger.getTarget(), handler, core);
         			return true;
-        		}
+        		}*/
         		/*if(trigger.forScript() && data.getScript() != null){
         			data.getScript().onTrigger(data, trigger, player, hand, core, pos, side, hit);
         			return true;
         		}*/
         	}
-        	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
+        	//Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
     	}
     	if(te == null) return false;
     	for(CapabilityContainer capcon : te.getCapabilities(side)){

@@ -132,7 +132,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
     	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
     	if(world.getBlockState(pos).getBlock() instanceof JACK) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getDataFromTag(stack.getTagCompound());
-		if(data.getType().isTrailer() && !player.isSneaking()) return EnumActionResult.PASS;
+		if(data.getType().isTrailer() && !data.getType().getVehicleType().isRailVehicle() && !player.isSneaking()) return EnumActionResult.PASS;
 		EntityW ent = UniEntity.getEntity(player);
     	EntitySystem.spawnVehicle(ent, ent.getWorld(), new V3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ), data, UniStack.getStack(stack));
     	return EnumActionResult.SUCCESS;

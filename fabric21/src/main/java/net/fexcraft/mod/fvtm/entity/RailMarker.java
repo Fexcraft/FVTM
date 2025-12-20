@@ -104,6 +104,7 @@ public class RailMarker extends Entity implements SpawnPacketEntity {
 	@Override
 	public void baseTick(){
 		super.baseTick();
+		if(level().isClientSide) return;
 		if(queueid == null || !RailPlacingUtil.QUEUE.containsKey(queueid)) kill((ServerLevel)level());
 	}
 

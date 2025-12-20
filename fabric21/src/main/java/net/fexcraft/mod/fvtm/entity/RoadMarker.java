@@ -105,6 +105,7 @@ public class RoadMarker extends Entity implements SpawnPacketEntity {
 	@Override
 	public void baseTick(){
 		super.baseTick();
+		if(level().isClientSide) return;
 		if(queueid == null || !RoadPlacingUtil.QUEUE.containsKey(queueid)) kill((ServerLevel)level());
 	}
 

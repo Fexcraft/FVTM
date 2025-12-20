@@ -193,6 +193,7 @@ public class FVTM implements ModInitializer {
 			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
 			0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
 		FabricDefaultAttributeRegistry.register(Resources21.VEHICLE_ENTITY, LivingEntity.createLivingAttributes());
+		FabricDefaultAttributeRegistry.register(Resources21.RAIL_ENTITY, LivingEntity.createLivingAttributes());
 		//
 		FvtmResources.INSTANCE.init();
 		for(Addon addon : FvtmRegistry.ADDONS){

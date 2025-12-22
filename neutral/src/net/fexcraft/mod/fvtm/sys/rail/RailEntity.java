@@ -613,7 +613,8 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void alignEntity(boolean initial){
 		if(vehicle.entity == null) return;
-		vehicle.entity.setPos(pos);
+		vehicle.prev.copy(prev);
+		vehicle.pos.copy(pos);
 		/*if(initial){
 			entity.prevPosX = entity.lastTickPosX = entity.posX = pos.x;
 			entity.prevPosY = entity.lastTickPosY = entity.posY = pos.y;

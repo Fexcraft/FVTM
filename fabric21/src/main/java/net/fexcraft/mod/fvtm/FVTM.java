@@ -166,11 +166,11 @@ public class FVTM implements ModInitializer {
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
-		UniWheel.SET_STEP = uw -> {
+		/*UniWheel.SET_STEP = uw -> {
 			RootVehicle ent = uw.vehicle.entity.local();
 			float stepheight = uw.wtd() == null ? 0.5f : uw.wtd().function.step_height;
 			ent.getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
-		};
+		};*///TODO
 		//
 		Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
 			MobCategory.MISC, true, false, true, true,
@@ -192,8 +192,6 @@ public class FVTM implements ModInitializer {
 			MobCategory.MISC, true, false, true, true,
 			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
 			0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
-		FabricDefaultAttributeRegistry.register(Resources21.VEHICLE_ENTITY, LivingEntity.createLivingAttributes());
-		FabricDefaultAttributeRegistry.register(Resources21.RAIL_ENTITY, LivingEntity.createLivingAttributes());
 		//
 		FvtmResources.INSTANCE.init();
 		for(Addon addon : FvtmRegistry.ADDONS){

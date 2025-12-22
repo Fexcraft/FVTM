@@ -47,10 +47,6 @@ public enum KeyPress {
 		driver_only = list.contains("driver");
 		toggle_input = list.contains("input");
 	}
-
-	public boolean send_serv(boolean driver){
-		return sync && driver == driver_only;
-	}
 	
 	public boolean dismount(){
 		return this == DISMOUNT;

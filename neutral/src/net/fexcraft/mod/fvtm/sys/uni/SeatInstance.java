@@ -126,7 +126,7 @@ public class SeatInstance {
 			clicktimer += 10;
 			return true;
 		}
-		else if(key.toggable_input() && root.entity.isOnClient()){
+		else if(key.toggle_input && root.entity.isOnClient()){
 			if(clicktimer > 0) return false;
 			boolean bool = InteractionHandler.handle(key, root.data, root.iref(), this, player, StackWrapper.EMPTY);
 			clicktimer += 10;

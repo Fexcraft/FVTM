@@ -25,6 +25,8 @@ public class EventType {
 		JUNCTION_EVENTS.add(JUNC_SWITCH);
 		JUNCTION_EVENTS.add(JUNC_SIGNAL);
 	}
+	//
+	public static EventType KEY_PRESS = new EventType("key_press");
 
 	public final String key;
 

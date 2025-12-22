@@ -28,7 +28,7 @@ public class Handler_VehKeyPressState implements PacketHandler<Packet_VehKeyPres
 			VehicleInstance inst = VehicleInstance.Holder.getFromPlayer(player);
 			if(inst == null) return;
 			SeatInstance seat = inst.getSeatOf(player);
-			if(seat == null) return;
+			if(seat == null || seat.root.driven) return;
 			seat.root.onKeyPress(packet.keypress, seat.seat, player, packet.state, true);
 		};
 	}

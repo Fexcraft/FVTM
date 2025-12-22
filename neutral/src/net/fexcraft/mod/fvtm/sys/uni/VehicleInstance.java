@@ -823,7 +823,7 @@ public class VehicleInstance {
 	public boolean isDriverInstance(){
 		if(entity == null) return true;
 		if(type.isRailVehicle()) return !entity.isOnClient();
-		if(data.getType().isTrailer() && front != null) return front.driven;
+		if(front != null) return front.driven;
 		if(entity.isOnClient()){
 			for(SeatInstance seat : seats){
 				if(seat.seat.driver && seat.passenger_direct() == WrapperHolder.getClientPlayer().direct()) return true;
@@ -994,9 +994,9 @@ public class VehicleInstance {
 		double y = movement.yaw(dx, dz);
 		if(front != null){
 			V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
-			V3D.add(front.getV3D(), conn);
+			V3D.add(front.pos, conn);
 			y = -Math.atan2(rea.x - conn.x, rea.z - conn.z);
-			entity.setPos(conn);
+			pos.copy(conn);
 		}
 		double p = Math.atan2(dy, dxz);
 		double r = movement.usesRoll() ? -Math.atan2(dry, Math.sqrt((drx * drx + drz * drz))) : 0;
@@ -1044,17 +1044,15 @@ public class VehicleInstance {
 
 	/** for trailers */
 	protected void align(){
-		//entity.setPrevPos(entity.getPos());
-		//if(wheels.isEmpty() || front == null) return;
+		if(wheels.get(w_rear_l.id) == null) return;
 		V3D conn = front.pivot().get_vector(front.data.getConnectorFor(data.getType().getCategories()));
 		V3D.add(front.getV3D(), conn);
-		entity.setPos(conn);
+		pos.copy(conn);
 		throttle = front.throttle;
 		V3D wl = wheels.get(w_rear_l.id).pos;
 		V3D wr = wheels.get(w_rear_r.id).pos;
 		pivot().set_rotation(-Math.atan2((wl.x + wr.x) * 0.5 - conn.x, (wl.z + wr.z) * 0.5 - conn.z), pivot().pitch(), pivot().roll(), false);
 		moveto.set(0, 0, 0);
-		pos.copy(entity.getPos());
 		for(UniWheel wheel : wheels.values()){
 			wheel.prepare();
 			V3D dest = pivot().get_vector(wheel.wtd().pos);

@@ -149,11 +149,11 @@ public class VehicleInstance {
 		return point.getPrevPivot();
 	}
 
-	public boolean onKeyPress(KeyPress key, Seat seat, EntityW player, boolean state, boolean sync){
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityW player, boolean state, boolean is_sync_packet){
 		//TODO script key press event
-		if(!seat.driver && key.driver_only()) return false;
-		if(entity.isOnClient() && key.send_serv(seat.driver) && !sync){
-			if(key.synced() && key.sync_state()){
+		if(!seat.driver && key.driver_only) return false;
+		if(entity.isOnClient() && key.send_serv(seat.driver) && !is_sync_packet){
+			if(key.with_state){
 				Packets.send(Packet_VehKeyPressState.class, key, state, entity.getId(), player.getId());
 			}
 			else{

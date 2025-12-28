@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.FMFParser;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -25,10 +26,10 @@ public class FMFModelLoader implements ModelLoader {
 
 	@Override
 	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		Object[] stream = FvtmResources.getAssetInputStreamWithFallback(name);
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(name);
 		Model model = supplier.get();
-		JsonHandler.wrap(FMFParser.parse((DefaultModel)model, (InputStream)stream[0]), confdata);
-		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
+		JsonHandler.wrap(FMFParser.parse((DefaultModel)model, iswf.stream()), confdata);
+		iswf.close();
 		return new Object[]{ model, confdata };
 	}
 

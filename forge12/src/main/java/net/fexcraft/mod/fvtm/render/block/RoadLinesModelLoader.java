@@ -5,6 +5,7 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_PATTERN;
@@ -25,7 +26,6 @@ import net.minecraftforge.common.model.IModelState;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
 
@@ -180,13 +180,13 @@ public class RoadLinesModelLoader implements ICustomModelLoader {
 			if(bid.contains("#")) bid = bid.substring(0, bid.indexOf("#"));
 			Block block = FvtmRegistry.BLOCKS.get(bid);
 			ambocl = block.getModelData().getBoolean("AmbientOcclusion", false);
-			Object[] str = FvtmResources.getAssetInputStreamWithFallback(block.getID().space() + ":models/block/" + block.getID().path() + ".json");
-			JsonMap map = JsonHandler.parse((InputStream)str[0]).asMap().getMap("textures");
+			InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(block.getID().space() + ":models/block/" + block.getID().path() + ".json");
+			JsonMap map = JsonHandler.parse(iswf.stream()).asMap().getMap("textures");
 			tex = new ResourceLocation(map.getString("texture", "fvtm:block/asphalt"));
 			par = new ResourceLocation(map.getString("particle", "fvtm:block/asphalt"));
 			texs.add(tex);
 			texs.add(par);
-			for(int i = 1; i < str.length; i++) ((InputStream)str[i]).close();
+			iswf.close();
 		}
 
 		@Override

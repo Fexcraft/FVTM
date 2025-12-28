@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
-import net.fexcraft.mod.fvtm.model.Model;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.ModelLoader;
 
@@ -17,8 +17,8 @@ public class BlankModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		return new Object[]{ supplier.get(), confdata };
+	public boolean load(String loc, ModelData confdata, DefaultModel model) throws Exception {
+		return true;
 	}
 
 }

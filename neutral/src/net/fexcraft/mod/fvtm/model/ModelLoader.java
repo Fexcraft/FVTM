@@ -10,10 +10,10 @@ public interface ModelLoader {
 	public boolean accepts(String name, String suffix);
 
 	/**
-	 * @param name     the model address/resourcelocation
+	 * @param loc the model address/resourcelocation
 	 * @param data existing model data from config
-	 * @return the model, with optionally a (updated or overridden) ModelData object on 2nd index
+	 * @return if the loading was successful
 	 */
-	public Object[] load(String name, ModelData data, Supplier<Model> supplier) throws Exception;
+	public boolean load(String loc, ModelData data, DefaultModel model) throws Exception;
 
 }

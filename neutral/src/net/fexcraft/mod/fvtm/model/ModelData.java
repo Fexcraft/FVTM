@@ -34,22 +34,24 @@ public class ModelData extends JsonMap {
 			integrate(map.getMap(key));
 		}
 		if(has("Import")){
-			String mdr = get("Import").string_value();
-			if(FvtmRegistry.MODEL_DATAS.containsKey(mdr)){
-				integrate(FvtmRegistry.MODEL_DATAS.get(mdr));
-			}
-			else{
-				try{
-					InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(mdr);
-					ModelData nmd = new ModelData();
-					JsonMap imp = JsonHandler.parse(iswf.stream());
-					iswf.close();
-					nmd.integrate(imp);
-					integrate(nmd);
-					FvtmRegistry.MODEL_DATAS.put(mdr, nmd);
+			List<String> mds = get("Import").isArray() ? getArray("Import").toStringList() : Collections.singletonList(get("Import").string_value());
+			for(String mdr : mds){
+				if(FvtmRegistry.MODEL_DATAS.containsKey(mdr)){
+					integrate(FvtmRegistry.MODEL_DATAS.get(mdr));
 				}
-				catch(Exception e){
-					FvtmLogger.log(e, "loading modeldata root " + mdr);
+				else{
+					try{
+						InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(mdr);
+						ModelData nmd = new ModelData();
+						JsonMap imp = JsonHandler.parse(iswf.stream());
+						iswf.close();
+						nmd.integrate(imp);
+						integrate(nmd);
+						FvtmRegistry.MODEL_DATAS.put(mdr, nmd);
+					}
+					catch(Exception e){
+						FvtmLogger.log(e, "loading modeldata root " + mdr);
+					}
 				}
 			}
 		}

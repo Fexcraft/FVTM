@@ -451,14 +451,14 @@ public abstract class FvtmResources {
 
 	public abstract InputStream getAssetInputStream(IDL loc, boolean log);
 
-	public static Object[] getAssetInputStreamWithFallback(String loc){
+	public static InputStreamWithFallback getAssetInputStreamWithFallback(String loc){
 		return getAssetInputStreamWithFallback(IDLManager.getIDLCached(loc));
 	}
 
-	public static Object[] getAssetInputStreamWithFallback(IDL loc){
-		Closeable[] close = null;
+	public static InputStreamWithFallback getAssetInputStreamWithFallback(IDL loc){
 		InputStream stream = INSTANCE.getAssetInputStream(loc, false);
-		if(stream != null) return new Object[]{ stream };
+		if(stream != null) return new InputStreamWithFallback(stream);
+		Closeable[] close = null;
 		try{
 			Addon addon = getAddon(loc.space());
 			if(addon != null && addon.getLocation().isConfigPack()){
@@ -490,7 +490,40 @@ public abstract class FvtmResources {
 		catch(Throwable e){
 			FvtmLogger.log(e, "asset input steam of " + loc);
 		}
-		return close == null ? new Object[]{ stream } : new Object[]{ stream, close };
+		return new InputStreamWithFallback(stream, close);
+	}
+
+	public static class InputStreamWithFallback {
+
+		protected InputStream stream;
+		protected Closeable[] close;
+
+		public InputStreamWithFallback(InputStream stream){
+			this.stream = stream;
+		}
+
+		public InputStreamWithFallback(InputStream stream, Closeable... closeables){
+			this(stream);
+			close = closeables;
+		}
+
+		public InputStream stream(){
+			return stream;
+		}
+
+		/** To be used after the stream was processed. */
+		public void close(){
+			if(close == null) return;
+			for(Closeable c : close){
+				try{
+					c.close();
+				}
+				catch(IOException e){
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 	public abstract boolean isModPresent(String s);

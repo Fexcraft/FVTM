@@ -11,6 +11,7 @@ import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -39,10 +40,10 @@ public class ModelData extends JsonMap {
 			}
 			else{
 				try{
-					Object[] is = FvtmResources.getAssetInputStreamWithFallback(mdr);
+					InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(mdr);
 					ModelData nmd = new ModelData();
-					JsonMap imp = JsonHandler.parse((InputStream)is[0]);
-					if(is.length > 1) for(Closeable c : (Closeable[])is[1]) c.close();
+					JsonMap imp = JsonHandler.parse(iswf.stream());
+					iswf.close();
 					nmd.integrate(imp);
 					integrate(nmd);
 					FvtmRegistry.MODEL_DATAS.put(mdr, nmd);

@@ -1,11 +1,16 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.io.Closeable;
+import java.io.InputStream;
 import java.util.*;
 import java.util.function.Supplier;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.FvtmResources;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -25,9 +30,26 @@ public class ModelData extends JsonMap {
 	public ModelData(JsonMap map, String key){
 		this();
 		if(map.has(key)){
-			map = map.getMap(key);
-			for(Map.Entry<String, JsonValue<?>> entry : map.entries()){
-				add(entry.getKey(), entry.getValue().copy());
+			integrate(map.getMap(key));
+		}
+		if(has("Import")){
+			String mdr = get("Import").string_value();
+			if(FvtmRegistry.MODEL_DATAS.containsKey(mdr)){
+				integrate(FvtmRegistry.MODEL_DATAS.get(mdr));
+			}
+			else{
+				try{
+					Object[] is = FvtmResources.getAssetInputStreamWithFallback(mdr);
+					ModelData nmd = new ModelData();
+					JsonMap imp = JsonHandler.parse((InputStream)is[0]);
+					if(is.length > 1) for(Closeable c : (Closeable[])is[1]) c.close();
+					nmd.integrate(imp);
+					integrate(nmd);
+					FvtmRegistry.MODEL_DATAS.put(mdr, nmd);
+				}
+				catch(Exception e){
+					FvtmLogger.log(e, "loading modeldata root " + mdr);
+				}
 			}
 		}
 	}
@@ -50,6 +72,12 @@ public class ModelData extends JsonMap {
 	public boolean gsB(String key, Supplier<Boolean> val){
 		if(!has(key)) add(key, val.get());
 		return get(key).bool();
+	}
+
+	public void integrate(JsonMap map){
+		for(Map.Entry<String, JsonValue<?>> entry : map.entries()){
+			add(entry.getKey(), entry.getValue().copy());
+		}
 	}
 
 	//

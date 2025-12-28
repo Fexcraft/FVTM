@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -171,10 +172,10 @@ public class OldObjModelLoader implements ModelLoader {
 			objdata = INFO_CACHE.get(loc);
 		}
 		else{
-			Object[] stream = FvtmResources.getAssetInputStreamWithFallback(loc);
-			objdata = new ObjParser((InputStream)stream[0]).readComments(true).readModel(false).parse();
+			InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(loc);
+			objdata = new ObjParser(iswf.stream()).readComments(true).readModel(false).parse();
 			INFO_CACHE.put(loc, objdata);
-			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
+			iswf.close();
 			if(objdata.errors){
 				LOGGER.log("Error while loading OBJ model '" + loc + "'!");
 			}
@@ -186,9 +187,9 @@ public class OldObjModelLoader implements ModelLoader {
 		if(DATA_CACHE.containsKey(loc)){
 			return DATA_CACHE.get(loc);
 		}
-		Object[] stream = FvtmResources.getAssetInputStreamWithFallback(loc);
-		ObjModel objmod = new ObjParser((InputStream)stream[0]).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
-		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(loc);
+		ObjModel objmod = new ObjParser(iswf.stream()).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
+		iswf.close();
 		DATA_CACHE.put(loc, objmod);
 		return objmod;
 	}

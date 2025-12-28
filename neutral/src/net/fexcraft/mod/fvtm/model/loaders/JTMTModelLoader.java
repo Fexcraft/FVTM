@@ -1,14 +1,11 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
-import java.util.ArrayList;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.JsonToTMT;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -30,9 +27,8 @@ public class JTMTModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		DefaultModel model = (DefaultModel)supplier.get();
-		JsonMap map = JsonHandler.parse(FvtmResources.INSTANCE.getAssetInputStream(name, true), true).asMap();
+	public boolean load(String loc, ModelData confdata, DefaultModel model) throws Exception {
+		JsonMap map = JsonHandler.parse(FvtmResources.INSTANCE.getAssetInputStream(loc, true), true).asMap();
 		if(map.has("creators")){
 			map.getArray("creators").value.forEach(elm -> {
 				model.addToCreators(elm.string_value());
@@ -73,9 +69,9 @@ public class JTMTModelLoader implements ModelLoader {
         }
         catch(Throwable thr){
         	thr.printStackTrace();
-        	Static.stop();
+			return false;
         }
-		return new Object[]{ model, confdata };
+		return true;
 	}
 
 }

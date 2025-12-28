@@ -336,7 +336,6 @@ public abstract class FvtmResources {
 	private static boolean initialmodelload;
 
 	public void initModelLoaders(){
-		MODEL_LOADERS.add(new ClassModelLoader());
 		MODEL_LOADERS.add(new BlankModelLoader());
 		MODEL_LOADERS.add(new JTMTModelLoader());
 		MODEL_LOADERS.add(new FMFModelLoader());
@@ -386,16 +385,16 @@ public abstract class FvtmResources {
 			location = location.substring(6);
 			data.add("Baked", true);
 		}
-		Model model = null;
+		DefaultModel model = null;
 		if(MODELS.containsKey(location)){
 			try{
-				model = clazz.getConstructor().newInstance();
+				model = (DefaultModel)clazz.getConstructor().newInstance();
 				model.setGroups(MODELS.get(location).copyWithoutPrograms());
 				model.parse(data).lock();
 				return model;
 			}
 			catch(Throwable e){
-				FvtmLogger.log(e, "new model instance of " + clazz);
+				FvtmLogger.log(e, "[0] new model instance of " + clazz);
 				Static.stop();
 				return getEmptyModelForClass(clazz);
 			}
@@ -403,19 +402,16 @@ public abstract class FvtmResources {
 		ModelLoader loader = getModelLoader(location, FilenameUtils.getExtension(location));
 		if(loader == null) return getEmptyModelForClass(clazz);
 		try{
-			Object[] ret = loader.load(location, data, () -> {
-				try{
-					return clazz.getConstructor().newInstance();
-				}
-				catch(Throwable e){
-					FvtmLogger.log(e, "new model instance of " + clazz);
-					Static.stop();
-					return null;
-				}
-			});
-			if(ret.length == 0 || ret[0] == null) return getEmptyModelForClass(clazz);
-			model = (Model)ret[0];
-			if(ret.length > 1) data = (ModelData)ret[1];
+			try{
+				model = (DefaultModel)clazz.getConstructor().newInstance();
+			}
+			catch(Throwable e){
+				FvtmLogger.log(e, "[1] new model instance of " + clazz);
+				Static.stop();
+				return getEmptyModelForClass(clazz);
+			}
+			boolean success = loader.load(location, data, model);
+			if(!success) return getEmptyModelForClass(clazz);
 			MODELS.put(location, model.getGroups().copyWithoutPrograms());
 			data.location = location;
 			model.parse(data).lock();

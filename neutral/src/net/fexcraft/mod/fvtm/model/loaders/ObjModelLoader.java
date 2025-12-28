@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.gen.FRLObjParser;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
@@ -95,9 +96,9 @@ public class ObjModelLoader implements ModelLoader {
 		if(DATA_CACHE.containsKey(loc)){
 			return DATA_CACHE.get(loc);
 		}
-		Object[] stream = FvtmResources.getAssetInputStreamWithFallback(loc);
-		Map<String, ArrayList<Polyhedron>> polis = new FRLObjParser(loc.colon(), (InputStream)stream[0]).flipFaces(flip_f).flipUV(flip_u, flip_v).normals(norm).parse();
-		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(loc);
+		Map<String, ArrayList<Polyhedron>> polis = new FRLObjParser(loc.colon(), iswf.stream()).flipFaces(flip_f).flipUV(flip_u, flip_v).normals(norm).parse();
+		iswf.close();
 		DATA_CACHE.put(loc, polis);
 		return polis;
 	}

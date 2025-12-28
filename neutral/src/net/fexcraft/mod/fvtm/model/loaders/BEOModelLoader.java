@@ -9,13 +9,11 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.*;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 /**
  * All rights reserved. Only to be distributed within authorized mods.
@@ -45,13 +43,12 @@ public class BEOModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(name);
-		DefaultModel model = (DefaultModel)supplier.get();
+	public boolean load(String loc, ModelData confdata, DefaultModel model) throws Exception {
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(loc);
 		InputStream stream = iswf.stream();
 		//
 		int f0 = stream.read(), f1 = stream.read(), f2 = stream.read(), format = stream.read();
-		if(f0 != 6 || f1 != 2 || f2 != 15 || format < 0) return new Object[]{ model, confdata };
+		if(f0 != 6 || f1 != 2 || f2 != 15 || format < 0) return false;
 		int r;
 		while((r = stream.read()) > -1){
 			switch(r){
@@ -83,8 +80,7 @@ public class BEOModelLoader implements ModelLoader {
 		iswf.close();
 		vecs.clear();
 		uvs.clear();
-		//FMLCommonHandler.instance().exitJava(1, true);
-		return new Object[]{ model, confdata };
+		return true;
 	}
 
 	private static byte[] read(InputStream stream) throws IOException{

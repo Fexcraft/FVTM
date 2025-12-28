@@ -15,6 +15,7 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.BoxBuilder;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
@@ -37,11 +38,11 @@ public class SMPTBJavaModelLoader implements ModelLoader {
 
 	@Override
 	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		Object[] stream = FvtmResources.getAssetInputStreamWithFallback(name);
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(name);
 		DefaultModel model = (DefaultModel)supplier.get();
 		//
         String line = null;
-        Scanner scanner = new Scanner((InputStream)stream[0]);
+        Scanner scanner = new Scanner(iswf.stream());
         Pattern creator = Pattern.compile("\\/\\/ Model Creator: (.*)");
         Pattern groupdef = Pattern.compile("(.*) = new ModelRendererTurbo\\[\\d+\\];");
         Pattern declaration = Pattern.compile("(.*)\\[(\\d+)\\] = new ModelRendererTurbo\\(this, (\\d+), (\\d+), .*, .*\\);(.*)");
@@ -161,7 +162,7 @@ public class SMPTBJavaModelLoader implements ModelLoader {
         }
     	scanner.close();
     	//
-		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
+		iswf.close();
 		return new Object[]{ model, confdata };
 	}
 	

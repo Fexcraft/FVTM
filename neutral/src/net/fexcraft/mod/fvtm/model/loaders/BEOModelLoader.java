@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.*;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.*;
 
 import java.io.Closeable;
@@ -45,9 +46,9 @@ public class BEOModelLoader implements ModelLoader {
 
 	@Override
 	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		Object[] streams = FvtmResources.getAssetInputStreamWithFallback(name);
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(name);
 		DefaultModel model = (DefaultModel)supplier.get();
-		InputStream stream = (InputStream)streams[0];
+		InputStream stream = iswf.stream();
 		//
 		int f0 = stream.read(), f1 = stream.read(), f2 = stream.read(), format = stream.read();
 		if(f0 != 6 || f1 != 2 || f2 != 15 || format < 0) return new Object[]{ model, confdata };
@@ -79,7 +80,7 @@ public class BEOModelLoader implements ModelLoader {
 			}
 		}
 		//
-		if(streams.length > 1) for(Closeable c : (Closeable[])streams[1]) c.close();
+		iswf.close();
 		vecs.clear();
 		uvs.clear();
 		//FMLCommonHandler.instance().exitJava(1, true);

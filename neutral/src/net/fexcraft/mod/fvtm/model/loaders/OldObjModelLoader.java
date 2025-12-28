@@ -11,13 +11,10 @@ import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.function.Supplier;
 
 import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
 
@@ -56,13 +53,11 @@ public class OldObjModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		//if(Static.dev()) start = Time.getDate();
-		String[] filter = name.split(";");
-		String id = filter.length > 1 ? filter[filter.length - 1] : name;
-		IDL loc = IDLManager.getIDLCached(id);
-		ObjModel objdata = loadObjData(loc);
-		DefaultModel model = (DefaultModel)supplier.get();
+	public boolean load(String loc, ModelData confdata, DefaultModel model) throws Exception {
+		String[] filter = loc.split(";");
+		String id = filter.length > 1 ? filter[filter.length - 1] : loc;
+		IDL idl = IDLManager.getIDLCached(id);
+		ObjModel objdata = loadObjData(idl);
 		ArrayList<String> groups = new ArrayList<>();
 		boolean exclude = false;
 		if(filter.length > 1){
@@ -89,19 +84,19 @@ public class OldObjModelLoader implements ModelLoader {
 		boolean flip_v = confdata.gsB("FlipV", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(8))));
 		confdata.gsB(Model.SMOOTHSHADING, () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(9))));
 		boolean norm = confdata.gsB("SkipNormals", () -> Boolean.parseBoolean(ObjParser.getCommentValue(objdata, keys.get(10))));
-		addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
+		addObjGroups(model, idl, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
 		List<String> include = ObjParser.getCommentValues(objdata, new String[]{ keys.get(11) }, null);
 		if(confdata.has(Model.OBJ_INCLUDE)) include.addAll(confdata.getArray(Model.OBJ_INCLUDE).toStringList());
 		for(String str : include){
 			filter = str.split(";");
-			loc = IDLManager.getIDL(filter.length > 1 ? filter[filter.length - 1] : str);
+			idl = IDLManager.getIDL(filter.length > 1 ? filter[filter.length - 1] : str);
 			exclude = false;
 			groups.clear();
 			if(filter.length > 1){
 				if(filter[0].equals("!") || filter[0].equals("exclude")) exclude = true;
 				if(!exclude || filter.length > 2) for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
 			}
-			addObjGroups(model, loc, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
+			addObjGroups(model, idl, groups, exclude, flip_x, flip_f, flip_u, flip_v, norm);
 		}
 		//
 		fillList(objdata, confdata, 12, Model.PROGRAMS);
@@ -128,7 +123,7 @@ public class OldObjModelLoader implements ModelLoader {
 			}
 			else confdata.add(key, val);
 		}
-		return new Object[]{ model, confdata };
+		return true;
 	}
 
 	private void fillList(ObjModel model, ModelData data, int idx, String key){

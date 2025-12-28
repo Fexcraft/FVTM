@@ -2,11 +2,8 @@ package net.fexcraft.mod.fvtm.model.loaders;
 
 import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
 
-import java.io.Closeable;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +14,6 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelLoader;
@@ -37,9 +33,8 @@ public class SMPTBJavaModelLoader implements ModelLoader {
 	}
 
 	@Override
-	public Object[] load(String name, ModelData confdata, Supplier<Model> supplier) throws Exception {
-		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(name);
-		DefaultModel model = (DefaultModel)supplier.get();
+	public boolean load(String loc, ModelData confdata, DefaultModel model) throws Exception {
+		InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback(loc);
 		//
         String line = null;
         Scanner scanner = new Scanner(iswf.stream());
@@ -163,7 +158,7 @@ public class SMPTBJavaModelLoader implements ModelLoader {
     	scanner.close();
     	//
 		iswf.close();
-		return new Object[]{ model, confdata };
+		return true;
 	}
 	
 	private Vec3f newVec3f(String string1, String string2, String string3){

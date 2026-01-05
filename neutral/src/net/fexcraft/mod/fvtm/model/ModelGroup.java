@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
+
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -21,6 +24,8 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 	protected ArrayList<Program> pre_programs = new ArrayList<>();
 	protected ArrayList<Program> pst_programs = new ArrayList<>();
 
+	public V3D offset;
+
 	public final String name;
 	public float scale = Static.sixteenth;
 	public boolean visible = true;
@@ -34,9 +39,11 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 	}
 
 	public void render(ModelRenderData data){
+		if(offset != null) RENDERER.translate(offset.x, offset.y, offset.z);
 		if(has_pre_prog) for(Program program : pre_programs) program.pre(this, data);
 		if(visible) for(Polyhedron poly : this) poly.render();
 		if(has_pst_prog) for(Program program : pst_programs) program.post(this, data);
+		if(offset != null) RENDERER.translate(-offset.x, -offset.y, -offset.z);
 	}
 
 	public void render(){
@@ -84,7 +91,9 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 	//
 
 	public void translate(float x, float y, float z, boolean set){
-		if(set){
+		if(offset == null) offset = new V3D();
+		offset.set(x, y, z);
+		/*if(set){
 			for(Polyhedron poly : this) poly.pos(x, y, z);
 		}
 		else{
@@ -93,7 +102,7 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 				poly.posY += y;
 				poly.posZ += z;
 			}
-		}
+		}*/
 	}
 
 	public void scale(float flt){

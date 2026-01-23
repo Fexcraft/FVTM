@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.particle;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.frl.gen.Generator.Values.*;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
@@ -26,12 +27,12 @@ public class Particle {
 	public static Polyhedron cubemodel = new Polyhedron();
 	static{
 		cubemodel.newGen()
-				.set("x", -.5f)
-				.set("y", -.5f)
-				.set("z", -.5f)
-				.set("width", 1)
-				.set("height", 1)
-				.set("depth", 1)
+				.set(OFF_X, -.5f)
+				.set(OFF_Y, -.5f)
+				.set(OFF_Z, -.5f)
+				.set(WIDTH, 1)
+				.set(HEIGHT, 1)
+				.set(DEPTH, 1)
 				.make();
 	}
 

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
@@ -33,7 +34,7 @@ public abstract class PlainBase extends net.minecraft.block.Block {
 	public PlainBase(Block type){
 		super(BlockUtil.getMaterial(type), BlockUtil.getMapColor(type)); this.type = type;
 		this.setHardness(type.getHardness());
-		this.setLightLevel(type.getLightLevel());
+		this.lightValue = type.getLightLevel();
 		this.setResistance(type.getResistance());
 		this.setLightOpacity(type.getLightOpacity());
 		this.setHarvestLevel(type.getHarverestToolClass(), type.getHarverestToolLevel());

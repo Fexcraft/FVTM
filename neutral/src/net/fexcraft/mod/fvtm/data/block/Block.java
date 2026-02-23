@@ -80,9 +80,9 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 	protected String soundtype;
 	protected String conngroup;
 	protected float hardness;
-	protected float lightlevel;
 	protected float resistance;
 	protected float damage;
+	protected int lightlevel;
 	protected int lightopacity;
 	protected int harverest_level;
 	protected int maxstacksize;
@@ -157,7 +157,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		material = map.getString("Material", "ROCK");
 		mapcolor = map.getString("MapColor", "STONE");
 		hardness = map.getFloat("Hardness", 1f);
-		lightlevel = map.getFloat("LightLevel", 0f);
+		lightlevel = map.getInteger("LightLevel", 0);
 		resistance = map.getFloat("Resistance", 0f);
 		lightopacity = map.getInteger("LightOpacity", 0);
 		if(map.has("HarverestTool")){
@@ -358,7 +358,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 		return hardness;
 	}
 
-	public float getLightLevel(){
+	public int getLightLevel(){
 		return lightlevel;
 	}
 

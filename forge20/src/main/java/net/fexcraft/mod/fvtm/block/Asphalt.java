@@ -24,7 +24,7 @@ public class Asphalt extends Block {
 	public final int height;
 
 	public Asphalt(int height){
-		super(Properties.of().noOcclusion().explosionResistance(2000).strength(height == 0 ? 3 : 3f - 3f / height));
+		super(Properties.of().explosionResistance(2000).strength(height == 0 ? 3 : 3f - 3f / height));
 		this.height = height;
 
 	}

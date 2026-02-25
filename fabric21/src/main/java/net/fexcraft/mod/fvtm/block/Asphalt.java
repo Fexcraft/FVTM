@@ -30,7 +30,7 @@ public class Asphalt extends Block {
 	public final int height;
 
 	public Asphalt(Properties prop, int height){
-		super(prop.noOcclusion().explosionResistance(2000).strength(height == 0 ? 3 : 3f - 3f / height));
+		super(prop.explosionResistance(2000).strength(height == 0 ? 3 : 3f - 3f / height));
 		this.height = height;
 	}
 

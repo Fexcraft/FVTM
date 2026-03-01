@@ -22,10 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
-import java.util.List;
 import java.util.function.Consumer;
-
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -75,7 +72,7 @@ public class WireItem extends Item implements ContentItem<WireType> {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context){
-		if(context.getLevel().isClientSide || DISABLE_WIRES || context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+		if(context.getLevel().isClientSide || context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(context.getLevel()));
 		EntityW player = UniEntity.getEntity(context.getPlayer());
 		if(system == null){

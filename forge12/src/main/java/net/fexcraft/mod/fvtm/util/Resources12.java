@@ -5,6 +5,7 @@ import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.*;
@@ -221,26 +222,21 @@ public class Resources12 extends FvtmResources {
 	public void registerFvtmRecipes(){
 		//StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(ConstructorBlock.INSTANCE))
-			.add(new ItemStack(Blocks.IRON_BLOCK))
-			.add(new ItemStack(Items.COMPARATOR, 4))
-			.add(new ItemStack(Items.REPEATER, 8))
-			.add(new ItemStack(Items.REDSTONE, 16))
-			.add(new ItemStack(Items.BOOK, 2))
-			.add(new ItemStack(Blocks.LEVER, 8))
-			.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FuelFillerBlock.INSTANCE))
-			.add(new ItemStack(Blocks.IRON_BLOCK))
-			.add(new ItemStack(Blocks.HOPPER, 2))
-			.add(new ItemStack(Blocks.STONE_BUTTON,4))
-			.register();
-		/*FclRecipe.newBuilder(blockcat).output(new ItemStack(VPInfo.INSTANCE))
-			.add(new ItemStack(Blocks.IRON_BLOCK))
-			.add(new ItemStack(Items.BOOK, 16))
-			.add(new ItemStack(Items.REDSTONE, 4))
-			.add(new ItemStack(Blocks.LEVER, 4))
-			.add(new ItemStack(Items.GLASS_BOTTLE, 2))
-			.register();*/
+		if(Config.MD_VEHICLE){
+			FclRecipe.newBuilder(blockcat).output(new ItemStack(ConstructorBlock.INSTANCE))
+				.add(new ItemStack(Blocks.IRON_BLOCK))
+				.add(new ItemStack(Items.COMPARATOR, 4))
+				.add(new ItemStack(Items.REPEATER, 8))
+				.add(new ItemStack(Items.REDSTONE, 16))
+				.add(new ItemStack(Items.BOOK, 2))
+				.add(new ItemStack(Blocks.LEVER, 8))
+				.register();
+			FclRecipe.newBuilder(blockcat).output(new ItemStack(FuelFillerBlock.INSTANCE))
+				.add(new ItemStack(Blocks.IRON_BLOCK))
+				.add(new ItemStack(Blocks.HOPPER, 2))
+				.add(new ItemStack(Blocks.STONE_BUTTON,4))
+				.register();
+		}
 		//
 		String itemcat = "recipe.fvtm.items";
 		for(int i = 0; i < ToolboxType.values().length; i++){
@@ -248,11 +244,13 @@ public class Resources12 extends FvtmResources {
 				.add(new ItemStack(Items.IRON_INGOT, 6))
 				.register();
 		}
-		FclRecipe.newBuilder(itemcat).output(new ItemStack(JunctionToolItem.INSTANCE))
-			.add(new ItemStack(Items.IRON_INGOT, 4))
-			.add(new ItemStack(Items.REDSTONE, 2))
-			.add(new ItemStack(Blocks.LEVER, 2))
-			.register();
+		if(Config.MD_RAIL){
+			FclRecipe.newBuilder(itemcat).output(new ItemStack(JunctionToolItem.INSTANCE))
+				.add(new ItemStack(Items.IRON_INGOT, 4))
+				.add(new ItemStack(Items.REDSTONE, 2))
+				.add(new ItemStack(Blocks.LEVER, 2))
+				.register();
+		}
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -348,32 +346,39 @@ public class Resources12 extends FvtmResources {
 
 	@Override
 	public void registerFvtmBlocks(){
-		ConstructorBlock.INSTANCE = new ConstructorBlock();
-		ConstructorBlock.ITEM = new ItemBlock16(ConstructorBlock.INSTANCE);
-		ConstructorBlock.ITEM.setRegistryName(ConstructorBlock.INSTANCE.getRegistryName());
-		ConstructorBlock.ITEM.setTranslationKey(ConstructorBlock.INSTANCE.getTranslationKey());
-		GameRegistry.registerTileEntity(ConstructorEntity.class, new ResourceLocation("fvtm:constructor"));
-		//
-		FuelFillerBlock.INSTANCE = new FuelFillerBlock();
-		FuelFillerBlock.ITEM = new ItemBlock16(FuelFillerBlock.INSTANCE);
-		FuelFillerBlock.ITEM.setRegistryName(FuelFillerBlock.INSTANCE.getRegistryName());
-		FuelFillerBlock.ITEM.setTranslationKey(FuelFillerBlock.INSTANCE.getTranslationKey());
-		GameRegistry.registerTileEntity(FuelFillerEntity.class, new ResourceLocation("fvtm:fuel_filler"));
-		//
-		Asphalt.INSTANCE = new Asphalt();
-		Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
-		//
-		ContainerBlock.INSTANCE = new ContainerBlock();
-		GameRegistry.registerTileEntity(ContainerEntity.class, new ResourceLocation("fvtm:container"));
-		//
+		if(Config.MD_VEHICLE){
+			ConstructorBlock.INSTANCE = new ConstructorBlock();
+			ConstructorBlock.ITEM = new ItemBlock16(ConstructorBlock.INSTANCE);
+			ConstructorBlock.ITEM.setRegistryName(ConstructorBlock.INSTANCE.getRegistryName());
+			ConstructorBlock.ITEM.setTranslationKey(ConstructorBlock.INSTANCE.getTranslationKey());
+			GameRegistry.registerTileEntity(ConstructorEntity.class, new ResourceLocation("fvtm:constructor"));
+			//
+			FuelFillerBlock.INSTANCE = new FuelFillerBlock();
+			FuelFillerBlock.ITEM = new ItemBlock16(FuelFillerBlock.INSTANCE);
+			FuelFillerBlock.ITEM.setRegistryName(FuelFillerBlock.INSTANCE.getRegistryName());
+			FuelFillerBlock.ITEM.setTranslationKey(FuelFillerBlock.INSTANCE.getTranslationKey());
+			GameRegistry.registerTileEntity(FuelFillerEntity.class, new ResourceLocation("fvtm:fuel_filler"));
+		}
+		if(Config.MD_ROAD){
+			Asphalt.INSTANCE = new Asphalt();
+			Asphalt.ITEM = new AsphaltItem(Asphalt.INSTANCE);
+		}
+		if(Config.MD_CONTAINER){
+			ContainerBlock.INSTANCE = new ContainerBlock();
+			GameRegistry.registerTileEntity(ContainerEntity.class, new ResourceLocation("fvtm:container"));
+		}
 		if(EnvInfo.CLIENT) registerTESR();
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void registerTESR(){
-		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
-		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstructorEntity.class, new net.fexcraft.mod.fvtm.render.CatalogRenderer());
-		net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(FuelFillerEntity.class, new net.fexcraft.mod.fvtm.render.FuelFillerRenderer());
+		if(Config.MD_VEHICLE){
+			net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ConstructorEntity.class, new net.fexcraft.mod.fvtm.render.CatalogRenderer());
+			net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(FuelFillerEntity.class, new net.fexcraft.mod.fvtm.render.FuelFillerRenderer());
+		}
+		if(Config.MD_CONTAINER){
+			net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(ContainerEntity.class, new net.fexcraft.mod.fvtm.render.ContainerBlockRenderer());
+		}
 	}
 
 	@Override
@@ -501,6 +506,7 @@ public class Resources12 extends FvtmResources {
 
 	@SubscribeEvent
 	public void registerRecipes(RegistryEvent.Register<IRecipe> event){
+		if(!Config.MD_ROAD) return;
 		Ingredient a1 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 1));
 		Ingredient a2 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 2));
 		Ingredient a4 = Ingredient.fromStacks(new ItemStack(Asphalt.INSTANCE, 1, 4));

@@ -3,16 +3,11 @@ package net.fexcraft.mod.fvtm.event;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fexcraft.lib.common.math.*;
-import net.fexcraft.lib.frl.ColoredVertex;
-import net.fexcraft.lib.frl.Polygon;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.frl.Vertex;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -67,10 +62,6 @@ public class ForgeClientEvents {
 		//data.getType().getModel().render(DefaultModel.RENDERDATA);
 	}
 
-	public static Vec3f BLUE = new Vec3f(0, 0, 1);
-	public static Vec3f CYAN = new Vec3f(0, 1, 1);
-	public static Vec3f ORG = new Vec3f(1, 0.75f, 0);
-
 	@SubscribeEvent
 	public static void renderRoad(RenderLevelStageEvent event){
 		if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return;
@@ -88,7 +79,7 @@ public class ForgeClientEvents {
 		V3D vec0, vec1;
 		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
 		if(nroad.coords == null) nroad.genpreview();
-		Renderer20.setColor(BLUE);
+		Renderer20.setColor(COL_BLU);
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
 			vec0 = nroad.road.vecpath[j];
 			vec1 = nroad.road.vecpath[j + 1];
@@ -98,7 +89,7 @@ public class ForgeClientEvents {
 		}
 		int size = RoadPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
-		Renderer20.setColor(CYAN);
+		Renderer20.setColor(COL_CYN);
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
 			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
@@ -145,7 +136,7 @@ public class ForgeClientEvents {
 			pose.popPose();
 		}
 		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
-		Renderer20.setColor(CYAN);
+		Renderer20.setColor(COL_CYN);
 		pose.pushPose();
 		pose.translate(pos.getX() + v, pos.getY() + yy + 0.01, pos.getZ() + 0.5);
 		LLBB2.render();
@@ -155,7 +146,7 @@ public class ForgeClientEvents {
 		pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + v);
 		LLBB0.render();
 		pose.popPose();
-		Renderer20.setColor(ORG);
+		Renderer20.setColor(COL_ORG);
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
 		SPHERE.render();
@@ -179,7 +170,7 @@ public class ForgeClientEvents {
 		V3D vec0, vec1;
 		RailPlacingUtil.NewTrack conn = RailPlacingUtil.CL_CURRENT;
 		if(conn.preview == null) conn.genpreview();
-		Renderer20.setColor(BLUE);
+		Renderer20.setColor(COL_BLU);
 		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
 			vec0 = conn.track.vecpath[j];
 			vec1 = conn.track.vecpath[j + 1];
@@ -189,7 +180,7 @@ public class ForgeClientEvents {
 		}
 		int size = RailPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
-		Renderer20.setColor(CYAN);
+		Renderer20.setColor(COL_CYN);
 		for(int i = 1; i < size - 1; i++){
 			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
@@ -197,7 +188,7 @@ public class ForgeClientEvents {
 			LINE_POLY.vertices[1].pos(vec1.x, vec1.y - 0.05f, vec1.z);
 			LINE.render();
 		}
-		Renderer20.setColor(ORG);
+		Renderer20.setColor(COL_ORG);
 		for(ArrayList<V3D> l : conn.preview){
 			for(int j = 0; j < l.size() - 1; j++){
 				LINE_POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z);

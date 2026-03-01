@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.DecorationData;
@@ -18,7 +19,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer20.*;
+import static net.fexcraft.mod.fcl.util.Renderer20.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**

@@ -124,33 +124,36 @@ public class Resources20 extends FvtmResources {
 	public void registerFvtmRecipes(){
 		//StackWrapper.EMPTY = SWIE.parse(ItemStack.EMPTY);
 		String blockcat = "recipe.fvtm.blocks";
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM.get()))
-				.add(new ItemStack(Blocks.IRON_BLOCK))
-				.add(new ItemStack(Items.COMPARATOR, 4))
-				.add(new ItemStack(Items.REPEATER, 8))
-				.add(new ItemStack(Items.REDSTONE, 16))
-				.add(new ItemStack(Items.BOOK, 2))
-				.add(new ItemStack(Blocks.LEVER, 8))
-				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM.get()))
-			.add(new ItemStack(Blocks.IRON_BLOCK))
-			.add(new ItemStack(Blocks.HOPPER, 2))
-			.add(new ItemStack(Blocks.STONE_BUTTON,4))
-			.register();
-		//
 		String itemcat = "recipe.fvtm.items";
+		if(Config.MD_VEHICLE){
+			FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM.get()))
+					.add(new ItemStack(Blocks.IRON_BLOCK))
+					.add(new ItemStack(Items.COMPARATOR, 4))
+					.add(new ItemStack(Items.REPEATER, 8))
+					.add(new ItemStack(Items.REDSTONE, 16))
+					.add(new ItemStack(Items.BOOK, 2))
+					.add(new ItemStack(Blocks.LEVER, 8))
+					.register();
+			FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM.get()))
+				.add(new ItemStack(Blocks.IRON_BLOCK))
+				.add(new ItemStack(Blocks.HOPPER, 2))
+				.add(new ItemStack(Blocks.STONE_BUTTON,4))
+				.register();
+		}
+		if(Config.MD_RAIL){
+			FclRecipe.newBuilder(itemcat).output(new ItemStack(JUNCTION_TOOL.get()))
+				.add(new ItemStack(Items.IRON_INGOT, 2))
+				.add(new ItemStack(Items.COPPER_INGOT, 2))
+				.add(new ItemStack(Items.REDSTONE, 2))
+				.add(new ItemStack(Items.LEVER, 2))
+				.register();
+		}
 		for(int i = 0; i < TOOLBOX.length; i++){
 			FclRecipe.newBuilder(itemcat).output(new ItemStack(TOOLBOX[i].get()))
 				.add(new ItemStack(Items.IRON_INGOT, 4))
 				.add(new ItemStack(Items.COPPER_INGOT, 2))
 				.register();
 		}
-		FclRecipe.newBuilder(itemcat).output(new ItemStack(JUNCTION_TOOL.get()))
-			.add(new ItemStack(Items.IRON_INGOT, 2))
-			.add(new ItemStack(Items.COPPER_INGOT, 2))
-			.add(new ItemStack(Items.REDSTONE, 2))
-			.add(new ItemStack(Items.LEVER, 2))
-			.register();
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
@@ -243,27 +246,37 @@ public class Resources20 extends FvtmResources {
 
 	@Override
 	public void registerFvtmBlocks(){
-		for(int idx = 0; idx < ASPHALT.length; idx++){
-			int index = idx;
-			ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
+		if(Config.MD_ROAD){
+			for(int idx = 0; idx < ASPHALT.length; idx++){
+				int index = idx;
+				ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
+			}
 		}
-		CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
-		FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());
+		if(Config.MD_VEHICLE){
+			CONST_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("constructor", () -> new ConstructorBlock());
+			FUELFILLER_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("fuel_filler", () -> new FuelFillerBlock());
+		}
 	}
 
 	@Override
 	public void registerFvtmItems(){
-		ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
+		if(Config.MD_ROAD){
+			ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
+			for(int idx = 0; idx < ASPHALT.length; idx++){
+				int index = idx;
+				ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(ASPHALT[index].get(), new Item.Properties()));
+			}
+		}
+		if(Config.MD_RAIL){
+			JUNCTION_TOOL = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
+		}
+		if(Config.MD_VEHICLE){
+			CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(CONST_BLOCK.get(), new Item.Properties()));
+			FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FUELFILLER_BLOCK.get(), new Item.Properties()));
+		}
 		for(ToolboxType val : ToolboxType.values()){
 			TOOLBOX[val.idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_" + val.idx, () -> new ToolboxItem(val.idx));
 		}
-		JUNCTION_TOOL = FVTM4.ITEM_REGISTRY.get("fvtm").register("junction_tool", () -> new JunctionTool());
-		for(int idx = 0; idx < ASPHALT.length; idx++){
-			int index = idx;
-			ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(ASPHALT[index].get(), new Item.Properties()));
-		}
-		CONST_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("constructor", () -> new BlockItem(CONST_BLOCK.get(), new Item.Properties()));
-		FUELFILLER_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("fuel_filler", () -> new BlockItem(FUELFILLER_BLOCK.get(), new Item.Properties()));
 	}
 
 	@Override

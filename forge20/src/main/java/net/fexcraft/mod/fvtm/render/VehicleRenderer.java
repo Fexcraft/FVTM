@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.block.generated.JACK_BE;
 import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -18,10 +19,10 @@ import org.joml.Quaternionf;
 import java.util.Map;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fcl.util.Renderer20.*;
 import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.*;
-import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 import static net.fexcraft.mod.fvtm.util.BlockTypeImpl.getRot;
 

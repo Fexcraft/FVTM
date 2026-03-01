@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.mod.fcl.util.ExternalTextures;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -99,6 +100,7 @@ public class Resources21 extends FvtmResources {
 
 	@Override
 	public void createContentBlocks(){
+		if(!Config.MD_BLOCK) return;
 		BLOCKS.forEach(block -> {
 			if(block.getBlockType().isGenericRoad()){
 				for(int i = 0; i < 16; i++){
@@ -136,33 +138,36 @@ public class Resources21 extends FvtmResources {
 	@Override
 	public void registerFvtmRecipes(){
 		String blockcat = "recipe.fvtm.blocks";
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM))
-				.add(new ItemStack(Blocks.IRON_BLOCK))
-				.add(new ItemStack(Items.COMPARATOR, 4))
-				.add(new ItemStack(Items.REPEATER, 8))
-				.add(new ItemStack(Items.REDSTONE, 16))
-				.add(new ItemStack(Items.BOOK, 2))
-				.add(new ItemStack(Blocks.LEVER, 8))
-				.register();
-		FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM))
-			.add(new ItemStack(Blocks.IRON_BLOCK))
-			.add(new ItemStack(Blocks.HOPPER, 2))
-			.add(new ItemStack(Blocks.STONE_BUTTON,4))
-			.register();
-		//
 		String itemcat = "recipe.fvtm.items";
+		if(Config.MD_VEHICLE){
+			FclRecipe.newBuilder(blockcat).output(new ItemStack(CONST_BLOCK_ITEM))
+					.add(new ItemStack(Blocks.IRON_BLOCK))
+					.add(new ItemStack(Items.COMPARATOR, 4))
+					.add(new ItemStack(Items.REPEATER, 8))
+					.add(new ItemStack(Items.REDSTONE, 16))
+					.add(new ItemStack(Items.BOOK, 2))
+					.add(new ItemStack(Blocks.LEVER, 8))
+					.register();
+			FclRecipe.newBuilder(blockcat).output(new ItemStack(FUELFILLER_ITEM))
+				.add(new ItemStack(Blocks.IRON_BLOCK))
+				.add(new ItemStack(Blocks.HOPPER, 2))
+				.add(new ItemStack(Blocks.STONE_BUTTON,4))
+				.register();
+		}
+		if(Config.MD_RAIL){
+			FclRecipe.newBuilder(itemcat).output(new ItemStack(JUNCTION_TOOL))
+				.add(new ItemStack(Items.IRON_INGOT, 2))
+				.add(new ItemStack(Items.COPPER_INGOT, 2))
+				.add(new ItemStack(Items.REDSTONE, 2))
+				.add(new ItemStack(Items.LEVER, 2))
+				.register();
+		}
 		for(int i = 0; i < TOOLBOX.length; i++){
 			FclRecipe.newBuilder(itemcat).output(new ItemStack(TOOLBOX[i]))
 				.add(new ItemStack(Items.IRON_INGOT, 4))
 				.add(new ItemStack(Items.COPPER_INGOT, 2))
 				.register();
 		}
-		FclRecipe.newBuilder(itemcat).output(new ItemStack(JUNCTION_TOOL))
-			.add(new ItemStack(Items.IRON_INGOT, 2))
-			.add(new ItemStack(Items.COPPER_INGOT, 2))
-			.add(new ItemStack(Items.REDSTONE, 2))
-			.add(new ItemStack(Items.LEVER, 2))
-			.register();
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Item item){
@@ -256,29 +261,37 @@ public class Resources21 extends FvtmResources {
 	@Override
 	public void registerFvtmBlocks(){
 		Pair<Block, BlockItem> reg;
-		for(int idx = 0; idx < ASPHALT.length; idx++){
-			int index = idx;
-			reg = FVTM.regBlock("fvtm:asphalt_" + idx, prop -> new Asphalt(prop, index));
-			ASPHALT[idx] = (Asphalt)reg.getLeft();
-			ASPHALT_ITEM[idx] = reg.getRight();
+		if(Config.MD_ROAD){
+			for(int idx = 0; idx < ASPHALT.length; idx++){
+				int index = idx;
+				reg = FVTM.regBlock("fvtm:asphalt_" + idx, prop -> new Asphalt(prop, index));
+				ASPHALT[idx] = (Asphalt)reg.getLeft();
+				ASPHALT_ITEM[idx] = reg.getRight();
+			}
 		}
-		reg = FVTM.regBlock("fvtm:constructor", prop -> new ConstructorBlock(prop));
-		CONST_BLOCK = (ConstructorBlock)reg.getLeft();
-		CONST_BLOCK_ITEM = reg.getRight();
-		CONST_ENTITY = FVTM.regBlockEntity("fvtm:constructor", ConstructorEntity::new, CONST_BLOCK);
-		reg = FVTM.regBlock("fvtm:fuel_filler", prop -> new FuelFillerBlock(prop));
-		FUELFILLER_BLOCK = (FuelFillerBlock)reg.getLeft();
-		FUELFILLER_ITEM = reg.getRight();
-		FUELFILLER_ENTITY = FVTM.regBlockEntity("fvtm:fuel_filler", FuelFillerEntity::new, FUELFILLER_BLOCK);
+		if(Config.MD_VEHICLE){
+			reg = FVTM.regBlock("fvtm:constructor", prop -> new ConstructorBlock(prop));
+			CONST_BLOCK = (ConstructorBlock)reg.getLeft();
+			CONST_BLOCK_ITEM = reg.getRight();
+			CONST_ENTITY = FVTM.regBlockEntity("fvtm:constructor", ConstructorEntity::new, CONST_BLOCK);
+			reg = FVTM.regBlock("fvtm:fuel_filler", prop -> new FuelFillerBlock(prop));
+			FUELFILLER_BLOCK = (FuelFillerBlock)reg.getLeft();
+			FUELFILLER_ITEM = reg.getRight();
+			FUELFILLER_ENTITY = FVTM.regBlockEntity("fvtm:fuel_filler", FuelFillerEntity::new, FUELFILLER_BLOCK);
+		}
 	}
 
 	@Override
 	public void registerFvtmItems(){
-		ROAD_TOOL_ITEM = FVTM.regItem("fvtm:road_tool", prop -> new RoadToolItem(prop));
+		if(Config.MD_ROAD){
+			ROAD_TOOL_ITEM = FVTM.regItem("fvtm:road_tool", prop -> new RoadToolItem(prop));
+		}
+		if(Config.MD_RAIL){
+			JUNCTION_TOOL = FVTM.regItem("fvtm:junction_tool", prop -> new JunctionTool(prop));
+		}
 		for(ToolboxType val : ToolboxType.values()){
 			TOOLBOX[val.idx] = (ToolboxItem)FVTM.regItem("fvtm:toolbox_" + val.idx, prop -> new ToolboxItem(prop, val.idx));
 		}
-		JUNCTION_TOOL = FVTM.regItem("fvtm:junction_tool", prop -> new JunctionTool(prop));
 	}
 
 	@Override

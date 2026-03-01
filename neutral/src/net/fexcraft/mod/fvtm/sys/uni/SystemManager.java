@@ -110,20 +110,20 @@ public class SystemManager {
 			SYSTEMS_BY_WT.get(tk).put(Systems.ENTITY, ensys);*///TODO
 		}
 		//
-		if(!DISABLE_RAILS){
+		if(MD_RAIL){
 			if(!SYSTEMS_BY_ST.containsKey(Systems.RAIL)) SYSTEMS_BY_ST.put(Systems.RAIL, new ConcurrentHashMap<>());
 			RailSystem sys = new RailSystem(world, type, rootfolder);
 			SYSTEMS_BY_ST.get(Systems.RAIL).put(tk, sys);
 			SYSTEMS_BY_WT.get(tk).put(Systems.RAIL, sys);
 		}
 		//
-		if(!DISABLE_WIRES){
+		if(MD_WIRE){
 			if(!SYSTEMS_BY_ST.containsKey(Systems.WIRE)) SYSTEMS_BY_ST.put(Systems.WIRE, new ConcurrentHashMap<>());
 			WireSystem sys = new WireSystem(world, type, rootfolder);
 			SYSTEMS_BY_ST.get(Systems.WIRE).put(tk, sys);
 			SYSTEMS_BY_WT.get(tk).put(Systems.WIRE, sys);
 		}
-		if(!DISABLE_SIGNS){
+		if(MD_SIGN){
 			if(!SYSTEMS_BY_ST.containsKey(Systems.SIGN)) SYSTEMS_BY_ST.put(Systems.SIGN, new ConcurrentHashMap<>());
 			SignSystem sys = new SignSystem(world, type, rootfolder);
 			SYSTEMS_BY_ST.get(Systems.SIGN).put(tk, sys);

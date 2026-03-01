@@ -120,47 +120,48 @@ public class Config extends ConfigBase {
 			.info("Range in which ranged update packets are sent.")
 			.cons((con, map) -> PACKET_RANGE = con.getInteger(map)));
 
-		entries.add(new ConfigEntry(this, c_mod, "vehicles", new JsonValue(true))
+		//modules
+		entries.add(new ConfigEntry(this, c_mod, "vehicle", new JsonValue(true))
 			.info("Enable Vehicle related content? (Vehicles, Parts, Fuels)")
 			.cons((con, map) -> MD_VEHICLE = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "materials", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "material", new JsonValue(true))
 			.info("Enable Materials? Materials are general purpose Items. Materials usually should be enabled if you use vehicles.")
 			.cons((con, map) -> MD_MATERIAL = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "blocks", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "block", new JsonValue(true))
 			.info("Enable Blocks? This setting only applies to blocks from content packs.")
 			.cons((con, map) -> MD_BLOCK = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "containers", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "container", new JsonValue(true))
 			.info("Enable (Shipping) Containers?")
 			.cons((con, map) -> MD_CONTAINER = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "consumables", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "consumable", new JsonValue(true))
 			.info("Enable Consumables? Consumables are Food & Drink type Items.")
 			.cons((con, map) -> MD_CONSUMABLE = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "clothes", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "cloth", new JsonValue(true))
 			.info("Enable Clothes? Clothes are wearable Items.")
 			.cons((con, map) -> MD_CLOTH = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "decorations", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "decoration", new JsonValue(true))
 			.info("Enable Decorations?")
 			.cons((con, map) -> MD_DECORATION = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "wires", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "wire", new JsonValue(true))
 			.info("Enable Wires and Wire-System?")
 			.cons((con, map) -> MD_WIRE = con.getBoolean(map))
 			.req(false, true)
 		);
-		entries.add(new ConfigEntry(this, c_mod, "signs", new JsonValue(true))
+		entries.add(new ConfigEntry(this, c_mod, "sign", new JsonValue(true))
 			.info("Enable Signs and Sign-System?")
 			.cons((con, map) -> MD_SIGN = con.getBoolean(map))
 			.req(false, true)

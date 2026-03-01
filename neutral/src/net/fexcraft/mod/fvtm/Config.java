@@ -1,12 +1,9 @@
 package net.fexcraft.mod.fvtm;
 
-import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.uni.ConfigBase;
-import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.UniReg;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,8 +24,19 @@ public class Config extends ConfigBase {
 	public static boolean UNBREAKABLE_CONTAINERS;
 	public static boolean ROADTOOL_FOR_ALL;
 	public static boolean DISMOUNT_ON_LOGOUT;
-	//public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 	public static int PACKET_RANGE;
+	//modules
+	public static boolean MD_VEHICLE;
+	public static boolean MD_MATERIAL;
+	public static boolean MD_BLOCK;
+	public static boolean MD_CONTAINER;
+	public static boolean MD_CONSUMABLE;
+	public static boolean MD_DECORATION;
+	public static boolean MD_CLOTH;
+	public static boolean MD_WIRE;
+	public static boolean MD_SIGN;
+	public static boolean MD_RAIL;
+	public static boolean MD_ROAD;
 	//collision
 	public static boolean DISABLE_OBB;
 	//client
@@ -49,23 +57,19 @@ public class Config extends ConfigBase {
 	public static float BRAKE_DECR_PER_TICK;
 	public static float BRAKE_PER_PRESS_TICK;
 	//rail
-	public static boolean DISABLE_RAILS;
 	public static int RAIL_SAVE_INTERVAL;
 	public static int RAIL_SEGMENTATOR;
 	public static int MAX_RAIL_TRACK_LENGTH;
 	//road
-	public static boolean DISABLE_ROADS;
 	public static boolean STACK_ROADS_ON_CLICK;
 	public static int MAX_ROAD_LENGTH;
 	public static int ROAD_UNDO_CACHE_SIZE;
 	public static int ROAD_UNDO_CACHE_CLEARTIME;
 	//wire
-	public static boolean DISABLE_WIRES;
 	public static int MAX_WIRE_LENGTH;
 	public static float WIRE_SLACK_ADJUSTMENT;
 	public static int WIRE_SAVE_INTERVAL;
 	//signs
-	public static boolean DISABLE_SIGNS;
 	public static int SIGN_VIEW_DISTANCE;
 	public static int SIGN_SAVE_INTERVAL;
 
@@ -84,6 +88,7 @@ public class Config extends ConfigBase {
 	protected void fillEntries(){
 		//categories
 		String c_gen = "general";
+		String c_mod = "modules";
 		String c_clt = "client";
 		String c_col = "collision";
 		String c_veh = "vehicle";
@@ -113,6 +118,62 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, c_gen, "update_packet_range", new JsonValue(256)).rang(64, 4096)
 			.info("Range in which ranged update packets are sent.")
 			.cons((con, map) -> PACKET_RANGE = con.getInteger(map)));
+
+		entries.add(new ConfigEntry(this, c_mod, "vehicles", new JsonValue(true))
+			.info("Enable Vehicle related content? (Vehicles, Parts, Fuels)")
+			.cons((con, map) -> MD_VEHICLE = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "materials", new JsonValue(true))
+			.info("Enable Materials? Materials are general purpose Items. Materials usually should be enabled if you use vehicles.")
+			.cons((con, map) -> MD_MATERIAL = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "blocks", new JsonValue(true))
+			.info("Enable Blocks? This setting only applies to blocks from content packs.")
+			.cons((con, map) -> MD_BLOCK = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "containers", new JsonValue(true))
+			.info("Enable (Shipping) Containers?")
+			.cons((con, map) -> MD_CONTAINER = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "consumables", new JsonValue(true))
+			.info("Enable Consumables? Consumables are Food & Drink type Items.")
+			.cons((con, map) -> MD_CONSUMABLE = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "clothes", new JsonValue(true))
+			.info("Enable Clothes? Clothes are wearable Items.")
+			.cons((con, map) -> MD_CLOTH = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "decorations", new JsonValue(true))
+			.info("Enable Decorations?")
+			.cons((con, map) -> MD_DECORATION = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "wires", new JsonValue(true))
+			.info("Enable Wires and Wire-System?")
+			.cons((con, map) -> MD_WIRE = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "signs", new JsonValue(true))
+			.info("Enable Signs and Sign-System?")
+			.cons((con, map) -> MD_SIGN = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "rail", new JsonValue(true))
+			.info("Enable Rail-System? Vehicles should be enabled if you want to use the rail system.")
+			.cons((con, map) -> MD_RAIL = con.getBoolean(map))
+			.req(false, true)
+		);
+		entries.add(new ConfigEntry(this, c_mod, "road", new JsonValue(true))
+			.info("Enable Road-System and Road-Tool?")
+			.cons((con, map) -> MD_ROAD = con.getBoolean(map))
+			.req(false, true)
+		);
 
 		//client
 		entries.add(new ConfigEntry(this, c_clt, "render_out_of_view", new JsonValue(false))
@@ -173,9 +234,6 @@ public class Config extends ConfigBase {
 			.req(false, false));
 
 		//rail
-		entries.add(new ConfigEntry(this, c_rail, "disable", new JsonValue(false))
-			.info("If FVTM rail system should be disabled.")
-			.cons((con, map) -> DISABLE_RAILS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, c_rail, "save_interval", new JsonValue(5))
 			.info("Interval (in minutes) in which the rail system is saved and inactive regions unloaded.")
 			.cons((con, map) -> RAIL_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
@@ -198,9 +256,6 @@ public class Config extends ConfigBase {
 			.req(false, false));
 
 		//road
-		entries.add(new ConfigEntry(this, c_road, "disable", new JsonValue(false))
-			.info("If FVTM road system should be disabled.")
-			.cons((con, map) -> DISABLE_ROADS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, c_road, "stack_roads_on_click", new JsonValue(false))
 			.info("If road height of the held road item should be added to the interacted (non-full) road block.")
 			.cons((con, map) -> STACK_ROADS_ON_CLICK = con.getBoolean(map)));
@@ -218,9 +273,6 @@ public class Config extends ConfigBase {
 			.rang(0, 60));
 
 		//wire
-		entries.add(new ConfigEntry(this, c_wire, "disable", new JsonValue(false))
-			.info("If FVTM wire system should be disabled.")
-			.cons((con, map) -> DISABLE_WIRES = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, c_wire, "max_length", new JsonValue(64))
 			.info("Max total vector length of new placed wires.")
 			.cons((con, map) -> MAX_WIRE_LENGTH = con.getInteger(map))
@@ -235,9 +287,6 @@ public class Config extends ConfigBase {
 			.rang(1, 60));
 
 		//signs
-		entries.add(new ConfigEntry(this, c_sign, "disable", new JsonValue(false))
-			.info("If the FVTM sign system should be disabled.")
-			.cons((con, map) -> DISABLE_SIGNS = con.getBoolean(map)));
 		entries.add(new ConfigEntry(this, c_sign, "save_interval", new JsonValue(5))
 			.info("Interval (in minutes) in which the signs system is saved and inactive regions unloaded.")
 			.cons((con, map) -> SIGN_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)

@@ -29,8 +29,6 @@ public class Config extends ConfigBase {
 	public static boolean DISMOUNT_ON_LOGOUT;
 	//public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 	public static int PACKET_RANGE;
-	//debug
-	public static boolean DEBUG_ACTIVE = false;
 	//collision
 	public static boolean DISABLE_OBB;
 	//client
@@ -70,8 +68,6 @@ public class Config extends ConfigBase {
 	public static boolean DISABLE_SIGNS;
 	public static int SIGN_VIEW_DISTANCE;
 	public static int SIGN_SAVE_INTERVAL;
-	//deprecated
-	public static boolean OVERLAY_ON_BOTTOM;
 
 	public Config(File file){
 		super(file, "FVTM");
@@ -246,13 +242,6 @@ public class Config extends ConfigBase {
 			.info("Interval (in minutes) in which the signs system is saved and inactive regions unloaded.")
 			.cons((con, map) -> SIGN_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
 			.rang(1, 60));
-
-		//1.12 specific settings
-		if(UniReg.LOADER_VERSION.equals("1.12")){
-			entries.add(new ConfigEntry(this, c_gen, "default_overlay_on_bottom", new JsonValue(true))
-				.info("If the default steering overlay should be on bottom rather than on top of screen.")
-				.cons((con, map) -> OVERLAY_ON_BOTTOM = con.getBoolean(map)));
-		}
 	}
 
 	@Override

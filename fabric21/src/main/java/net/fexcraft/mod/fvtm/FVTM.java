@@ -172,26 +172,35 @@ public class FVTM implements ModInitializer {
 			ent.getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
 		};*///TODO
 		//
-		Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
-			0, 256, 1, "fvtm.vehicle", Optional.empty(), FeatureFlagSet.of()));
-		Resources21.RAIL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_vehicle", new EntityType<>(RailVehicle::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
-			0, 256, 1, "fvtm.rail_vehicle", Optional.empty(), FeatureFlagSet.of()));
-		Resources21.DECO_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:decoration", new EntityType<>(DecorationEntity::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
-			0, 256, 1, "fvtm.decoration", Optional.empty(), FeatureFlagSet.of()));
-		Resources21.RAIL_MARKER_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_marker", new EntityType<>(RailMarker::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
-			0, 256, 1, "fvtm.rail_marker", Optional.empty(), FeatureFlagSet.of()));
-		Resources21.ROAD_MARKER_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:road_marker", new EntityType<>(RoadMarker::new,
-			MobCategory.MISC, true, false, true, true,
-			ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
-			0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
+		if(Config.MD_VEHICLE){
+			Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,
+				MobCategory.MISC, true, false, true, true,
+				ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
+				0, 256, 1, "fvtm.vehicle", Optional.empty(), FeatureFlagSet.of()));
+
+			Resources21.RAIL_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_vehicle", new EntityType<>(RailVehicle::new,
+				MobCategory.MISC, true, false, true, true,
+				ImmutableSet.of(), EntityDimensions.fixed(1f, 1f),
+				0, 256, 1, "fvtm.rail_vehicle", Optional.empty(), FeatureFlagSet.of()));
+		}
+		if(Config.MD_DECORATION){
+			Resources21.DECO_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:decoration", new EntityType<>(DecorationEntity::new,
+				MobCategory.MISC, true, false, true, true,
+				ImmutableSet.of(), EntityDimensions.fixed(0.25f, 0.25f),
+				0, 256, 1, "fvtm.decoration", Optional.empty(), FeatureFlagSet.of()));
+		}
+		if(Config.MD_RAIL){
+			Resources21.RAIL_MARKER_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:rail_marker", new EntityType<>(RailMarker::new,
+				MobCategory.MISC, true, false, true, true,
+				ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
+				0, 256, 1, "fvtm.rail_marker", Optional.empty(), FeatureFlagSet.of()));
+		}
+		if(Config.MD_ROAD){
+			Resources21.ROAD_MARKER_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:road_marker", new EntityType<>(RoadMarker::new,
+				MobCategory.MISC, true, false, true, true,
+				ImmutableSet.of(), EntityDimensions.fixed(0.5f, 1f),
+				0, 256, 1, "fvtm.road_marker", Optional.empty(), FeatureFlagSet.of()));
+		}
 		//
 		FvtmResources.INSTANCE.init();
 		for(Addon addon : FvtmRegistry.ADDONS){
@@ -203,9 +212,11 @@ public class FVTM implements ModInitializer {
 		}
 		FvtmResources.INSTANCE.registerFvtmBlocks();
 		FvtmResources.INSTANCE.registerFvtmItems();
-		FvtmResources.INSTANCE.registerAttributes();
-		FvtmResources.INSTANCE.registerFunctions();
-		FvtmResources.INSTANCE.registerHandlers();
+		if(Config.MD_VEHICLE){
+			FvtmResources.INSTANCE.registerAttributes();
+			FvtmResources.INSTANCE.registerFunctions();
+			FvtmResources.INSTANCE.registerHandlers();
+		}
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();

@@ -1,25 +1,17 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
-import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
-import net.fexcraft.mod.fvtm.model.entity.RoadMarkerModel;
-import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
-import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.joml.Quaternionf;
-
-import static net.fexcraft.mod.fvtm.render.Renderer21.AZ;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

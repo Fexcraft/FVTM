@@ -190,20 +190,42 @@ public abstract class FvtmResources {
 	}
 
 	public void searchContent(){
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.FUEL);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MATERIAL);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONSUMABLE);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CLOTH);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.RAILGAUGE);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIREDECO);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.SIGN);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.DECORATION);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONTAINER);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.BLOCK);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.MULTIBLOCK);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.PART);
-		FvtmResources.INSTANCE.searchInPacksFor(ContentType.VEHICLE);
+		if(Config.MD_VEHICLE){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.FUEL);
+		}
+		if(Config.MD_MATERIAL){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.MATERIAL);
+		}
+		if(Config.MD_CONSUMABLE){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONSUMABLE);
+		}
+		if(Config.MD_CLOTH){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.CLOTH);
+		}
+		if(Config.MD_RAIL){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.RAILGAUGE);
+		}
+		if(Config.MD_WIRE){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIREDECO);
+		}
+		if(Config.MD_SIGN){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.SIGN);
+		}
+		if(Config.MD_DECORATION){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.DECORATION);
+		}
+		if(Config.MD_CONTAINER){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.CONTAINER);
+		}
+		if(Config.MD_BLOCK){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.BLOCK);
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.MULTIBLOCK);
+		}
+		if(Config.MD_VEHICLE){
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.PART);
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.VEHICLE);
+		}
 	}
 
 	public void searchInPacksFor(ContentType contype){

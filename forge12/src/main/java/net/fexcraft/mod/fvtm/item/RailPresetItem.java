@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -80,7 +78,7 @@ public class RailPresetItem extends Item implements ContentItem<RailGauge>, Junc
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || player.isSneaking() || DISABLE_RAILS){ return EnumActionResult.PASS; }
+        if(world.isRemote || player.isSneaking()){ return EnumActionResult.PASS; }
         RailSystem syscap =SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);

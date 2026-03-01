@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
@@ -27,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
+import static net.fexcraft.mod.fcl.util.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
-import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**

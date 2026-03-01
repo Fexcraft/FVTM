@@ -29,8 +29,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -58,7 +56,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World level, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-		if(level.isRemote || DISABLE_RAILS){
+		if(level.isRemote){
 			return EnumActionResult.PASS;
 		}
 		WorldW world = WrapperHolder.getWorld(level);

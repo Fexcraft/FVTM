@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -75,7 +73,7 @@ public class WireItem extends Item implements ContentItem<WireType>, JunctionGri
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || DISABLE_WIRES || hand != EnumHand.MAIN_HAND) return EnumActionResult.PASS;
+        if(world.isRemote || hand != EnumHand.MAIN_HAND) return EnumActionResult.PASS;
         WireSystem system = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
         if(system == null){
 			Print.chat(player, "&cWire System not found. Is it enabled?");

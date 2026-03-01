@@ -21,9 +21,6 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
-
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -71,7 +68,7 @@ public class WireItem extends Item implements ContentItem<WireType> {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context){
-		if(context.getLevel().isClientSide || DISABLE_WIRES || context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+		if(context.getLevel().isClientSide || context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(context.getLevel()));
 		EntityW player = UniEntity.getEntity(context.getPlayer());
 		if(system == null){

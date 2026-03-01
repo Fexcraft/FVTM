@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.item;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.minecraft.network.chat.Component.translatable;
 
 /**
@@ -50,7 +48,7 @@ public class JunctionTool extends Item implements JunctionGridItem {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context){
-		if(context.getLevel().isClientSide || DISABLE_RAILS) return InteractionResult.PASS;
+		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		WorldW world = WrapperHolder.getWorld(context.getLevel());
 		RailSystem railsys = SystemManager.get(SystemManager.Systems.RAIL, world);
 		Player player = context.getPlayer();

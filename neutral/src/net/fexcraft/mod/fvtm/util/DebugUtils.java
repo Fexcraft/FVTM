@@ -18,12 +18,12 @@ import static net.fexcraft.lib.frl.Renderer.RENDERER;
  */
 public class DebugUtils {
 
-	public static Vec3f CYNCOLOR = new Vec3f(0, 1, 1);
-	public static Vec3f REDCOLOR = new Vec3f(1, 0, 0);
-	public static Vec3f GRNCOLOR = new Vec3f(0, 1, 0);
-	public static Vec3f YLWCOLOR = new Vec3f(1, 1, 0);
-	public static Vec3f GRYCOLOR = new Vec3f(.8, .8, .8);
-	public static Vec3f ORGCOLOR = new Vec3f(.92, .52, 0);
+	public static float[] CYNCOLOR = new float[]{ 0, 1, 1 };
+	public static float[] REDCOLOR = new float[]{ 1, 0, 0 };
+	public static float[] GRNCOLOR = new float[]{ 0, 1, 0 };
+	public static float[] YLWCOLOR = new float[]{ 1, 1, 0 };
+	public static float[] GRYCOLOR = new float[]{ .8f, .8f, .8f };
+	public static float[] ORGCOLOR = new float[]{ .92f, .52f, 0 };
 	//
 	public static int COL_RED = 0xff0000;
 	public static int COL_GRN = 0x00ff00;

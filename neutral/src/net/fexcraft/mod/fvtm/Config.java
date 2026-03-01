@@ -24,6 +24,7 @@ public class Config extends ConfigBase {
 	public static boolean UNBREAKABLE_CONTAINERS;
 	public static boolean ROADTOOL_FOR_ALL;
 	public static boolean DISMOUNT_ON_LOGOUT;
+	public static boolean DEBUG_ACTIVE;
 	public static int PACKET_RANGE;
 	//modules
 	public static boolean MD_VEHICLE;

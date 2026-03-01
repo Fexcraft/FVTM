@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -70,7 +68,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || DISABLE_RAILS){ return EnumActionResult.PASS; }
+        if(world.isRemote){ return EnumActionResult.PASS; }
         RailSystem syscap = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world));
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");

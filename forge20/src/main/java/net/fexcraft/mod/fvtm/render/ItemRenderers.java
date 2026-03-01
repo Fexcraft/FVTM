@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.content.VehicleModel;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
@@ -15,8 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.NonNullLazy;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer20.*;
-import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
+import static net.fexcraft.mod.fcl.util.Renderer20.*;
+
 
 /**
  * @author Ferdinand Calo' (FEX___96)

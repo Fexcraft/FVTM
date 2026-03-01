@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
@@ -25,8 +26,8 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.mod.fcl.util.Renderer20.AY;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
-import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**

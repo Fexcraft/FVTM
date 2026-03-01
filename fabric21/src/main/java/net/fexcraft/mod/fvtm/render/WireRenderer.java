@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
@@ -44,7 +43,6 @@ public class WireRenderer {
 	private static boolean holding_deco;
 
 	public static void renderWires(WorldRenderContext event){
-		if(DISABLE_WIRES) return;
 		wiredata = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(event.camera().getEntity().level()), WireSystem.class);
 		if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getInstance().player.getMainHandItem();

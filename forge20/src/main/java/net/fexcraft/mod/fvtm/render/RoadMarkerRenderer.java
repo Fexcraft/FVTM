@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.model.entity.RoadMarkerModel;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -14,7 +15,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer20.*;
+import static net.fexcraft.mod.fcl.util.Renderer20.AZ;
+
 
 /**
  * @author Ferdinand Calo' (FEX___96)

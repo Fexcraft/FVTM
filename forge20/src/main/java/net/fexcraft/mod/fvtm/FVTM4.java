@@ -66,65 +66,30 @@ public class FVTM4 {
 
 	public static final String MODID = "fvtm";
 	private static Logger LOGGER4 = LogUtils.getLogger();
-	public static final HashMap<String, DeferredRegister<Item>> ITEM_REGISTRY = new HashMap<>();
+	//
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "fvtm");
+	public static final HashMap<String, DeferredRegister<Item>> ITEM_REGISTRY = new HashMap<>();
+	public static final HashMap<String, DeferredRegister<Block>> BLOCK_REGISTRY = new HashMap<>();
+	public static final HashMap<String, DeferredRegister<SoundEvent>> SOUND_REGISTY = new HashMap<>();
 	//
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, "fvtm");
-	public static final RegistryObject<EntityType<DecorationEntity>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
-		EntityType.Builder.of(DecorationEntity::new, MobCategory.MISC)
-			.sized(0.25F, 0.25F)
-			.setUpdateInterval(10)
-			.setTrackingRange(256)
-			.build("decoration")
-	);
-	public static final RegistryObject<EntityType<RoadMarker>> ROAD_MARKER_ENTITY = ENTITIES.register("road_marker", () ->
-		EntityType.Builder.of(RoadMarker::new, MobCategory.MISC)
-			.sized(0.24F, 0.48F)
-			.setUpdateInterval(10)
-			.setTrackingRange(256)
-			.build("road_marker")
-	);
-	public static final RegistryObject<EntityType<RailMarker>> RAIL_MARKER_ENTITY = ENTITIES.register("rail_marker", () ->
-		EntityType.Builder.of(RailMarker::new, MobCategory.MISC)
-			.sized(0.24F, 1F)
-			.setUpdateInterval(10)
-			.setTrackingRange(256)
-			.build("rail_marker")
-	);
-	public static final RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
-		EntityType.Builder.of(RootVehicle::new, MobCategory.MISC)
-			.sized(1F, 1F)
-			.setUpdateInterval(1)
-			.setTrackingRange(256)
-			.setShouldReceiveVelocityUpdates(false)
-			.build("vehicle")
-	);
-	public static final RegistryObject<EntityType<RailVehicle>> RAILVEH_ENTITY = ENTITIES.register("railveh", () ->
-		EntityType.Builder.of(RailVehicle::new, MobCategory.MISC)
-			.sized(1F, 1F)
-			.setUpdateInterval(1)
-			.setTrackingRange(256)
-			.build("railveh")
-	);
+	public static RegistryObject<EntityType<DecorationEntity>> DECORATION_ENTITY;
+	public static RegistryObject<EntityType<RoadMarker>> ROAD_MARKER_ENTITY;
+	public static RegistryObject<EntityType<RailMarker>> RAIL_MARKER_ENTITY;
+	public static RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY;
+	public static RegistryObject<EntityType<RailVehicle>> RAILVEH_ENTITY;
+	//
+	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
+	public static RegistryObject<BlockEntityType<ConstructorEntity>> CONST_ENTITY;
+	public static RegistryObject<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT;
+	public static RegistryObject<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY;
+	public static RegistryObject<BlockEntityType<JACK_BE>> JACK_ENTITY;
 	//
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("fvtm", "channel"))
 		.clientAcceptedVersions(pro -> true)
 		.serverAcceptedVersions(pro -> true)
 		.networkProtocolVersion(() -> "fvtm4")
 		.simpleChannel();
-	//
-	public static final HashMap<String, DeferredRegister<Block>> BLOCK_REGISTRY = new HashMap<>();
-	public static final HashMap<String, DeferredRegister<SoundEvent>> SOUND_REGISTY = new HashMap<>();
-	//
-	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
-	public static final RegistryObject<BlockEntityType<ConstructorEntity>> CONST_ENTITY = BLOCKENTS.register("constructor", () ->
-			BlockEntityType.Builder.of(ConstructorEntity::new, Resources20.CONST_BLOCK.get()).build(null));
-	public static final RegistryObject<BlockEntityType<FuelFillerEntity>> FUELFILLER_ENT = BLOCKENTS.register("fuel_filler", () ->
-		BlockEntityType.Builder.of(FuelFillerEntity::new, Resources20.FUELFILLER_BLOCK.get()).build(null));
-	public static final RegistryObject<BlockEntityType<BaseBlockEntity>> BLOCK_ENTITY = BLOCKENTS.register("blockbase", () ->
-		BlockEntityType.Builder.of(BaseBlockEntity::new, getBlockArray()).build(null));
-	public static final RegistryObject<BlockEntityType<JACK_BE>> JACK_ENTITY = BLOCKENTS.register("jack_stand", () ->
-		BlockEntityType.Builder.of(JACK_BE::new, getJackArray()).build(null));
 
 	private static Block[] getBlockArray(){
 		ArrayList<Block> list = new ArrayList<>();
@@ -168,8 +133,63 @@ public class FVTM4 {
 		bus.register(new PackAdder());
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(bus));
 		CREATIVE_MODE_TABS.register(bus);
+		//
+		if(Config.MD_DECORATION){
+			DECORATION_ENTITY = ENTITIES.register("decoration", () ->
+				EntityType.Builder.of(DecorationEntity::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F)
+					.setUpdateInterval(10)
+					.setTrackingRange(256)
+					.build("decoration")
+			);
+		}
+		if(Config.MD_ROAD){
+			ROAD_MARKER_ENTITY = ENTITIES.register("road_marker", () ->
+				EntityType.Builder.of(RoadMarker::new, MobCategory.MISC)
+					.sized(0.24F, 0.48F)
+					.setUpdateInterval(10)
+					.setTrackingRange(256)
+					.build("road_marker")
+			);
+		}
+		if(Config.MD_RAIL){
+			RAIL_MARKER_ENTITY = ENTITIES.register("rail_marker", () ->
+				EntityType.Builder.of(RailMarker::new, MobCategory.MISC)
+					.sized(0.24F, 1F)
+					.setUpdateInterval(10)
+					.setTrackingRange(256)
+					.build("rail_marker")
+			);
+		}
+		if(Config.MD_VEHICLE){
+			VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
+				EntityType.Builder.of(RootVehicle::new, MobCategory.MISC)
+					.sized(1F, 1F)
+					.setUpdateInterval(1)
+					.setTrackingRange(256)
+					.setShouldReceiveVelocityUpdates(false)
+					.build("vehicle")
+			);
+			RAILVEH_ENTITY = ENTITIES.register("railveh", () ->
+				EntityType.Builder.of(RailVehicle::new, MobCategory.MISC)
+					.sized(1F, 1F)
+					.setUpdateInterval(1)
+					.setTrackingRange(256)
+					.build("railveh")
+			);
+		}
 		ENTITIES.register(bus);
+		//
 		BLOCK_REGISTRY.values().forEach(reg -> reg.register(bus));
+		//
+		if(Config.MD_VEHICLE){
+			CONST_ENTITY = BLOCKENTS.register("constructor", () -> BlockEntityType.Builder.of(ConstructorEntity::new, Resources20.CONST_BLOCK.get()).build(null));
+			FUELFILLER_ENT = BLOCKENTS.register("fuel_filler", () ->	BlockEntityType.Builder.of(FuelFillerEntity::new, Resources20.FUELFILLER_BLOCK.get()).build(null));
+		}
+		if(Config.MD_BLOCK){
+			BLOCK_ENTITY = BLOCKENTS.register("blockbase", () -> BlockEntityType.Builder.of(BaseBlockEntity::new, getBlockArray()).build(null));
+			JACK_ENTITY = BLOCKENTS.register("jack_stand", () -> BlockEntityType.Builder.of(JACK_BE::new, getJackArray()).build(null));
+		}
 		BLOCKENTS.register(bus);
 		SOUND_REGISTY.values().forEach(reg -> reg.register(bus));
 	}

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.InteractZone;
@@ -38,8 +39,8 @@ import org.joml.Quaternionf;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static net.fexcraft.mod.fcl.util.Renderer21.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.Renderer21.*;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;

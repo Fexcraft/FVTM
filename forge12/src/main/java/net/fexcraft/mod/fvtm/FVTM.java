@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.block.generated.*;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
-import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -66,7 +65,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -83,6 +81,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.CONFIG;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.CONFIG_DIR;
 
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
@@ -179,13 +178,15 @@ public class FVTM {
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new Resources12(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);
-		CONFIG.addListener(() -> {
-			ContainerBlock.INSTANCE.setHardness(net.fexcraft.mod.fvtm.Config.UNBREAKABLE_CONTAINERS ? -1f : 8f);
-		});
-		ClothMaterial.MANAGER[0] = new ClothMaterialManager();
-		FvtmRegistry.NONE_CLOTH_MAT = IDLManager.getIDLCached("fvtm:none");
-		ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", FvtmRegistry.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
-		ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
+		if(Config.MD_CONTAINER){
+			CONFIG.addListener(() -> ContainerBlock.INSTANCE.setHardness(Config.UNBREAKABLE_CONTAINERS ? -1f : 8f));
+		}
+		if(Config.MD_CLOTH){
+			ClothMaterial.MANAGER[0] = new ClothMaterialManager();
+			FvtmRegistry.NONE_CLOTH_MAT = IDLManager.getIDLCached("fvtm:none");
+			ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", FvtmRegistry.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
+			ClothMaterial.MATERIALS.put(FvtmRegistry.NONE_CLOTH_MAT, new ClothMaterialWrapper(FvtmRegistry.NONE_CLOTH_MAT, NONE_MAT));
+		}
 		if(EnvInfo.CLIENT){
 			CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
@@ -193,47 +194,62 @@ public class FVTM {
 		}
 		//
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallablePacks());
-		FMLCommonHandler.instance().registerCrashCallable(new CrashCallableModels());
 		//
-		//TODO EntitySystem.add(new BasicSpawnSystem());
-		GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));
-		GameRegistry.registerTileEntity(SignalTileEntity.class, new ResourceLocation("fvtm:rail_signal"));
-		GameRegistry.registerTileEntity(SwitchTileEntity.class, new ResourceLocation("fvtm:rail_switch"));
-		GameRegistry.registerTileEntity(MultiblockTileEntity.class, new ResourceLocation("fvtm:multiblock"));
-		GameRegistry.registerTileEntity(MultiblockTickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
-		GameRegistry.registerTileEntity(JACK_TE.class, new ResourceLocation("fvtm:jack_stand"));
-		//GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
-		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
-		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
-		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
+		if(Config.MD_BLOCK){
+			GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));
+			GameRegistry.registerTileEntity(SignalTileEntity.class, new ResourceLocation("fvtm:rail_signal"));
+			GameRegistry.registerTileEntity(SwitchTileEntity.class, new ResourceLocation("fvtm:rail_switch"));
+			GameRegistry.registerTileEntity(MultiblockTileEntity.class, new ResourceLocation("fvtm:multiblock"));
+			GameRegistry.registerTileEntity(MultiblockTickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
+			GameRegistry.registerTileEntity(JACK_TE.class, new ResourceLocation("fvtm:jack_stand"));
+			CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:block_seat"), BlockSeat.class, "fvtm.block_seat", 6001, this, 256, 60, false);
+		}
+		if(Config.MD_CONTAINER){
+			CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
+		}
 		//
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:land_vehicle"), LandVehicle.class, "fvtm.land_vehicle", 0, this, 256, 1, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm.wheel", 100, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), RailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, false);
+		if(Config.MD_VEHICLE){
+			CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:land_vehicle"), LandVehicle.class, "fvtm.land_vehicle", 0, this, 256, 1, false);
+			//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm.wheel", 100, this, 256, 1, false);
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), RailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, false);
+		}
 		//
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trafficsign"), TrafficSignEntity.class, "fvtm.trafficsign", 7001, this, 256, 600, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:decoration"), DecorationEntity.class, "fvtm.decoration", 7002, this, 256, 600, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railmarker"), RailMarker.class, "fvtm.railmarker", 7003, this, 256, 5, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadmarker"), RoadMarker.class, "fvtm.roadmarker", 7004, this, 256, 5, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:junctionswitch"), JunctionSwitchEntity.class, "fvtm.junctionswitch", 7002, this, 256, 600, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:basic_landvehicle"), ULandVehicle.class, "fvtm.landvehicle", 9002, this, 256, 1, false);
+		if(Config.MD_DECORATION){
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:decoration"), DecorationEntity.class, "fvtm.decoration", 7002, this, 256, 600, false);
+		}
+		if(Config.MD_RAIL){
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railmarker"), RailMarker.class, "fvtm.railmarker", 7003, this, 256, 5, false);
+		}
+		if(Config.MD_ROAD){
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadmarker"), RoadMarker.class, "fvtm.roadmarker", 7004, this, 256, 5, false);
+		}
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:render_view"), RenderViewEntity.class, "fvtm.render_view", 6000, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:block_seat"), BlockSeat.class, "fvtm.block_seat", 6001, this, 256, 60, false);
 		if(event.getSide().isClient()){
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderRV::new);
-			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderWheel::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRV::new);
+			if(Config.MD_VEHICLE){
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderRV::new);
+				//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderWheel::new);
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRV::new);
+				MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
+			}
+			if(Config.MD_BLOCK){
+				BakedModelLoader.register();
+			}
+			if(Config.MD_DECORATION){
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
+			}
+			if(Config.MD_RAIL){
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailMarker.class, RenderRailMarker::new);
+			}
+			if(Config.MD_ROAD){
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadMarker.class, RenderRoadMarker::new);
+			}
 			//
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailMarker.class, RenderRailMarker::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadMarker.class, RenderRoadMarker::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RenderViewEntity.class, RenderView::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(BlockSeat.class, RenderEmpty::new);
 			//
 			CapabilityManager.INSTANCE.register(RenderCache.class, new RenderCacheHandler.Storage(), new RenderCacheHandler.Callable());
-			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
-			BakedModelLoader.register();
 		}
 		/*if(Static.dev()){
 			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:test_rail_ent"), RailTestEntity.class, "fvtm.test_rail_ent", 6000, this, 256, 1, true);
@@ -247,16 +263,18 @@ public class FVTM {
 		if(event.getSide().isClient()) Registerer12.regPacks();
 		FvtmResources.INSTANCE.registerFvtmBlocks();
 		FvtmResources.INSTANCE.registerFvtmItems();
-		FvtmResources.INSTANCE.registerAttributes();
-		FvtmResources.INSTANCE.registerFunctions();
-		FvtmResources.INSTANCE.registerHandlers();
+		if(Config.MD_VEHICLE){
+			FvtmResources.INSTANCE.registerAttributes();
+			FvtmResources.INSTANCE.registerFunctions();
+			FvtmResources.INSTANCE.registerHandlers();
+		}
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();
 		MinecraftForge.EVENT_BUS.register(new Registerer12());
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(new RenderViewHandler());
-		MinecraftForge.EVENT_BUS.register(new ResizeHandler());
+		if(Config.MD_VEHICLE) MinecraftForge.EVENT_BUS.register(new ResizeHandler());
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			FvtmResources.initModelSystem();
 		}
@@ -278,12 +296,18 @@ public class FVTM {
 		Perms.register();
 		if(event.getSide().isClient()){
 			net.minecraft.creativetab.CreativeTabs tab = (CreativeTabs)FvtmResources.INSTANCE.getCreativeTab("fvtm:default");
-			ConstructorBlock.INSTANCE.setCreativeTab(tab);
-			FuelFillerBlock.INSTANCE.setCreativeTab(tab);
-			JunctionToolItem.INSTANCE.setCreativeTab(tab);
-			RoadToolItem.INSTANCE.setCreativeTab(tab);
+			if(Config.MD_VEHICLE){
+				ConstructorBlock.INSTANCE.setCreativeTab(tab);
+				FuelFillerBlock.INSTANCE.setCreativeTab(tab);
+			}
+			if(Config.MD_RAIL){
+				JunctionToolItem.INSTANCE.setCreativeTab(tab);
+			}
+			if(Config.MD_ROAD){
+				RoadToolItem.INSTANCE.setCreativeTab(tab);
+				Asphalt.INSTANCE.setCreativeTab(tab);
+			}
 			ToolboxItem.INSTANCE.setCreativeTab(tab);
-			Asphalt.INSTANCE.setCreativeTab(tab);
 			//
 			if(DefaultPrograms.SIGNAL_TIMER[0] == null){
 				DefaultPrograms.setupSignalTimer();

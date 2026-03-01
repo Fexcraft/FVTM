@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -42,7 +41,6 @@ public class RailRenderer {
 	private static HashSet<Junction> juncset = new HashSet<>();
 
 	public static void renderRails(WorldRenderContext event){
-		if(DISABLE_RAILS) return;
 		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.camera().getEntity().level()));
 		if(sys == null) return;
 		Camera camera = event.camera();

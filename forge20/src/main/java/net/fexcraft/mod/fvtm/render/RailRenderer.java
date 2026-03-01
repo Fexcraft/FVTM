@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -24,7 +25,6 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.rad90;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -41,7 +41,7 @@ public class RailRenderer {
 
 	@SubscribeEvent
 	public static void renderRails(RenderLevelStageEvent event){
-		if(DISABLE_RAILS) return;
+		if(!Config.MD_RAIL) return;
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
 		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.getCamera().getEntity().level()));
 		if(sys == null) return;

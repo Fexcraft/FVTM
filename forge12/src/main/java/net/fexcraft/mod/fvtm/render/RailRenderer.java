@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.lib.common.Static.toDegrees;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -15,13 +14,12 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
-import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
@@ -148,7 +146,7 @@ public class RailRenderer {
     
     //@SubscribeEvent
     public static void renderRails(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
-    	if(DISABLE_RAILS) return;
+    	if(!Config.MD_RAIL) return;
 	    raildata = SystemManager.get(Systems.RAIL, WrapperHolder.getWorld(world), RailSystem.class);
 	    if(raildata == null || raildata.getRegions() == null) return;
         //if(raildata.isLoading()) return;

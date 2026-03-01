@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireDecoItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
@@ -59,7 +59,7 @@ public class WireRenderer {
 	private static V3D cubepos;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
-    	if(DISABLE_WIRES) return;
+    	if(!Config.MD_WIRE) return;
 	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getMinecraft().player.getHeldItemMainhand();

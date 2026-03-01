@@ -20,7 +20,6 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_WIRES;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
@@ -43,7 +42,7 @@ public class WireRenderer {
 
 	@SubscribeEvent
 	public static void renderWires(RenderLevelStageEvent event){
-		if(DISABLE_WIRES) return;
+		if(!Config.MD_WIRE) return;
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
 		wiredata = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(event.getCamera().getEntity().level()), WireSystem.class);
 		if(wiredata == null || wiredata.getRegions() == null) return;

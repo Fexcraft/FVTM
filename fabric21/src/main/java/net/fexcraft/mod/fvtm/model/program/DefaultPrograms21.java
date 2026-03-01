@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model.program;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
@@ -12,7 +13,6 @@ import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.Renderer21;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -24,8 +24,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
+import static net.fexcraft.mod.fcl.util.Renderer21.*;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
-import static net.fexcraft.mod.fvtm.render.Renderer21.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

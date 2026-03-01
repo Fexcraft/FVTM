@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.event;
 
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -53,30 +54,45 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event){
-		EntityRenderers.register(FVTM4.DECORATION_ENTITY.get(), ctx -> new DecoRenderer(ctx));
-		EntityRenderers.register(FVTM4.ROAD_MARKER_ENTITY.get(), ctx -> new RoadMarkerRenderer(ctx));
-		EntityRenderers.register(FVTM4.RAIL_MARKER_ENTITY.get(), ctx -> new RailMarkerRenderer(ctx));
-		EntityRenderers.register(FVTM4.VEHICLE_ENTITY.get(), ctx -> new RVRenderer(ctx));
-		EntityRenderers.register(FVTM4.RAILVEH_ENTITY.get(), ctx -> new RVRenderer(ctx));
+		if(Config.MD_DECORATION){
+			EntityRenderers.register(FVTM4.DECORATION_ENTITY.get(), ctx -> new DecoRenderer(ctx));
+		}
+		if(Config.MD_ROAD){
+			EntityRenderers.register(FVTM4.ROAD_MARKER_ENTITY.get(), ctx -> new RoadMarkerRenderer(ctx));
+		}
+		if(Config.MD_RAIL){
+			EntityRenderers.register(FVTM4.RAIL_MARKER_ENTITY.get(), ctx -> new RailMarkerRenderer(ctx));
+		}
+		if(Config.MD_VEHICLE){
+			EntityRenderers.register(FVTM4.VEHICLE_ENTITY.get(), ctx -> new RVRenderer(ctx));
+			if(Config.MD_RAIL){
+				EntityRenderers.register(FVTM4.RAILVEH_ENTITY.get(), ctx -> new RVRenderer(ctx));
+			}
+		}
 		//
 		minecraft = Minecraft.getInstance();
 	}
 
 	@SubscribeEvent
 	public static void renderInit(EntityRenderersEvent.RegisterRenderers event){
-		event.registerBlockEntityRenderer(FVTM4.CONST_ENTITY.get(), con -> new ConstRenderer());
-		event.registerBlockEntityRenderer(FVTM4.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
-		event.registerBlockEntityRenderer(FVTM4.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
-		event.registerBlockEntityRenderer(FVTM4.JACK_ENTITY.get(), con -> new BaseBlockRenderer());
-		for(Block block : FvtmRegistry.BLOCKS){
-			if(block.getBlockType().isRoadLayer()){
-				ItemBlockRenderTypes.setRenderLayer((net.minecraft.world.level.block.Block)block.getBlock(), RenderType.cutout());
+		if(Config.MD_VEHICLE){
+			event.registerBlockEntityRenderer(FVTM4.CONST_ENTITY.get(), con -> new ConstRenderer());
+			event.registerBlockEntityRenderer(FVTM4.FUELFILLER_ENT.get(), con -> new FuelFillerRenderer());
+		}
+		if(Config.MD_BLOCK){
+			event.registerBlockEntityRenderer(FVTM4.BLOCK_ENTITY.get(), con -> new BaseBlockRenderer());
+			event.registerBlockEntityRenderer(FVTM4.JACK_ENTITY.get(), con -> new BaseBlockRenderer());
+			for(Block block : FvtmRegistry.BLOCKS){
+				if(block.getBlockType().isRoadLayer()){
+					ItemBlockRenderTypes.setRenderLayer((net.minecraft.world.level.block.Block)block.getBlock(), RenderType.cutout());
+				}
 			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
+		if(!Config.MD_VEHICLE) return;
 		event.register(accelerate = new KeyMapping("key.fvtm.accelerate", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_W, category));
 		event.register(decelerate = new KeyMapping("key.fvtm.decelerate", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_S, category));
 		event.register(turn_left = new KeyMapping("key.fvtm.turn_left", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_A, category));
@@ -115,7 +131,7 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void modelLoaderReg(ModelEvent.RegisterGeometryLoaders event){
-		event.register("road_lines", new RoadLinesModelLoader());
+		if(Config.MD_BLOCK) event.register("road_lines", new RoadLinesModelLoader());
 	}
 
 }

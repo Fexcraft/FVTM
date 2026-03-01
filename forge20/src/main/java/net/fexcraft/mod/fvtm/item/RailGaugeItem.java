@@ -23,8 +23,6 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.fexcraft.mod.fvtm.Config.DISABLE_RAILS;
-
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -57,7 +55,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 
 	@Override
 	public InteractionResult useOn(UseOnContext context){
-		if(context.getLevel().isClientSide || DISABLE_RAILS) return InteractionResult.PASS;
+		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		WorldW world = WrapperHolder.getWorld(context.getLevel());
 		RailSystem railsys = SystemManager.get(Systems.RAIL, world);
 		if(railsys == null){

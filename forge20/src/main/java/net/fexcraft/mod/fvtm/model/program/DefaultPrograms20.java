@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
@@ -13,7 +14,6 @@ import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -25,8 +25,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
+import static net.fexcraft.mod.fcl.util.Renderer20.*;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
-import static net.fexcraft.mod.fvtm.render.Renderer20.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -221,12 +221,10 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 	public static class RGBCustom implements Program {
 
-		private Vec3f color = new Vec3f();
+		private float[] color;
 
 		public RGBCustom(float[] col){
-			color.x = col[0];
-			color.y = col[1];
-			color.z = col[2];
+			color = col;
 		}
 
 		@Override

@@ -6,7 +6,6 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.frl.GLO;
-import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.FvtmPlayer;
@@ -18,7 +17,6 @@ import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.sys.rail.LongDisRailUtil;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.uni.UniEntity;
@@ -39,8 +37,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
@@ -76,7 +72,6 @@ public class FVTM20 {
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
 			FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
-			Renderer.RENDERER = new Renderer20();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
 		FvtmResources.INSTANCE = new Resources20();

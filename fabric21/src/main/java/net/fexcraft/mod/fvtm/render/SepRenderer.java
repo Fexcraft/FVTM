@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
@@ -11,9 +12,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fcl.util.Renderer21.pose;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPointSep;
-import static net.fexcraft.mod.fvtm.render.Renderer21.pose;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 
 /**

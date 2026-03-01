@@ -102,9 +102,11 @@ public class FVTM20 {
 	public static void init1(){
 		FvtmResources.INSTANCE.registerFvtmBlocks();
 		FvtmResources.INSTANCE.registerFvtmItems();
-		FvtmResources.INSTANCE.registerAttributes();
-		FvtmResources.INSTANCE.registerFunctions();
-		FvtmResources.INSTANCE.registerHandlers();
+		if(Config.MD_VEHICLE){
+			FvtmResources.INSTANCE.registerAttributes();
+			FvtmResources.INSTANCE.registerFunctions();
+			FvtmResources.INSTANCE.registerHandlers();
+		}
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();

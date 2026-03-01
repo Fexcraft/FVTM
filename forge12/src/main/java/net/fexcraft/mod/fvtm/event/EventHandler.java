@@ -86,7 +86,9 @@ public class EventHandler {
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		WorldW world = WrapperHolder.getWorld(event.getObject());
 		SystemManager.initWorldSystems(world, world.type());
-		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
+		if(Config.MD_BLOCK){
+			event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
+		}
 	}
 	
 	@SubscribeEvent

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.block.generated.JACK_BE;
 import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -15,12 +16,12 @@ import org.joml.Quaternionf;
 import java.util.Map;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fcl.util.Renderer21.AY;
+import static net.fexcraft.mod.fcl.util.Renderer21.light;
 import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPoint;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderVehicleInfo;
-import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
-import static net.fexcraft.mod.fvtm.render.Renderer21.light;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.JACKS;
 import static net.fexcraft.mod.fvtm.util.BlockTypeImpl.getRot;
 

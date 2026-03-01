@@ -3,10 +3,10 @@ package net.fexcraft.mod.fvtm.ui;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.RVRenderer;
-import net.fexcraft.mod.fvtm.render.Renderer20;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleCatalog;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,8 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fvtm.render.Renderer20.*;
+import static net.fexcraft.mod.fcl.util.Renderer20.AX;
+import static net.fexcraft.mod.fcl.util.Renderer20.AY;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

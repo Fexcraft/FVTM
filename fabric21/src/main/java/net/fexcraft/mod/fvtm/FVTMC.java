@@ -17,6 +17,8 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
+import net.fexcraft.mod.fcl.FCL;
+import net.fexcraft.mod.fcl.FCLC;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.impl.Packets21;
@@ -72,8 +74,8 @@ public class FVTMC implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(){
 		EnvInfo.CLIENT = true;
-		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
-		Renderer.RENDERER = new Renderer21();
+		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);;
+		FCLC.INIT_COMPLETE.add(() -> Renderer.RENDERER = new Renderer21());
 		GLO.SUPPLIER = (() -> new GLObject());
 		ClientLifecycleEvents.CLIENT_STARTED.register(server -> {
 			FvtmResources.initModelSystem();
@@ -81,15 +83,25 @@ public class FVTMC implements ClientModInitializer {
 				DefaultPrograms.setupSignalTimer();
 			}
 		});
-		BlockEntityRenderers.register(Resources21.CONST_ENTITY, context -> new ConstRenderer());
-		BlockEntityRenderers.register(Resources21.FUELFILLER_ENTITY, context -> new FuelFillerRenderer());
-		BlockEntityRenderers.register(Resources21.BASE_ENTITY, context -> new BaseBlockRenderer());
-		BlockEntityRenderers.register(Resources21.JACK_ENTITY, context -> new BaseBlockRenderer());
-		EntityRendererRegistry.register(Resources21.VEHICLE_ENTITY, context -> new RVRenderer(context));
-		EntityRendererRegistry.register(Resources21.RAIL_ENTITY, context -> new RVRenderer(context));
-		EntityRendererRegistry.register(Resources21.ROAD_MARKER_ENTITY, context -> new RoadMarkerRenderer(context));
-		EntityRendererRegistry.register(Resources21.RAIL_MARKER_ENTITY, context -> new RailMarkerRenderer(context));
-		EntityRendererRegistry.register(Resources21.DECO_ENTITY, context -> new DecoRenderer(context));
+		if(Config.MD_VEHICLE){
+			BlockEntityRenderers.register(Resources21.CONST_ENTITY, context -> new ConstRenderer());
+			BlockEntityRenderers.register(Resources21.FUELFILLER_ENTITY, context -> new FuelFillerRenderer());
+			EntityRendererRegistry.register(Resources21.VEHICLE_ENTITY, context -> new RVRenderer(context));
+			EntityRendererRegistry.register(Resources21.RAIL_ENTITY, context -> new RVRenderer(context));
+		}
+		if(Config.MD_BLOCK){
+			BlockEntityRenderers.register(Resources21.BASE_ENTITY, context -> new BaseBlockRenderer());
+			BlockEntityRenderers.register(Resources21.JACK_ENTITY, context -> new BaseBlockRenderer());
+		}
+		if(Config.MD_ROAD){
+			EntityRendererRegistry.register(Resources21.ROAD_MARKER_ENTITY, context -> new RoadMarkerRenderer(context));
+		}
+		if(Config.MD_RAIL){
+			EntityRendererRegistry.register(Resources21.RAIL_MARKER_ENTITY, context -> new RailMarkerRenderer(context));
+		}
+		if(Config.MD_DECORATION){
+			EntityRendererRegistry.register(Resources21.DECO_ENTITY, context -> new DecoRenderer(context));
+		}
 		Packets21.PACKET_HANDLERS.add(() -> {
 			registerClientPacket(TAG_PACKET_TYPE, HTL);
 			registerClientPacket(VEHMOVE_PACKET_TYPE, HVM);
@@ -114,7 +126,7 @@ public class FVTMC implements ClientModInitializer {
 		KeyBindingHelper.registerKeyBinding(reset = new KeyMapping("key.fvtm.reset", InputConstants.Type.KEYSYM, InputConstants.KEY_SEMICOLON, category));
 		KeyBindingHelper.registerKeyBinding(brake = new KeyMapping("key.fvtm.brake", InputConstants.Type.KEYSYM, InputConstants.KEY_SPACE, category));
 		KeyBindingHelper.registerKeyBinding(pbrake = new KeyMapping("key.fvtm.pbrake", InputConstants.Type.KEYSYM, InputConstants.KEY_O, category));
-		ClientTickEvents.END_CLIENT_TICK.register(mc -> handleKeyboardInput(mc));
+		if(Config.MD_VEHICLE) ClientTickEvents.END_CLIENT_TICK.register(mc -> handleKeyboardInput(mc));
 		//
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, dir) -> {
 			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(player.getItemInHand(hand)))){
@@ -143,17 +155,30 @@ public class FVTMC implements ClientModInitializer {
 		ClientTickEvents.START_CLIENT_TICK.register(serv -> {
 			SystemManager.onClientTick();
 		});
-		WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
-		WorldRenderEvents.AFTER_ENTITIES.register(SepRenderer::renderSeparate);
-		WorldRenderEvents.AFTER_ENTITIES.register(VehicleRenderer::renderVehicles);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(RailRenderer::renderRails);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderGrid);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderRailPreview);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RoadRenderer::renderRoadPreview);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, VehicleHUD.ID, new VehicleHUD());
-
-		ModelLoadingPlugin.register(new BakingPlugin());
+		if(Config.MD_SIGN){
+			WorldRenderEvents.AFTER_ENTITIES.register(SignRenderer::renderSigns);
+		}
+		if(Config.MD_VEHICLE || Config.MD_BLOCK){
+			WorldRenderEvents.AFTER_ENTITIES.register(SepRenderer::renderSeparate);
+		}
+		if(Config.MD_VEHICLE){
+			WorldRenderEvents.AFTER_ENTITIES.register(VehicleRenderer::renderVehicles);
+			HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, VehicleHUD.ID, new VehicleHUD());
+		}
+		if(Config.MD_WIRE){
+			WorldRenderEvents.AFTER_TRANSLUCENT.register(WireRenderer::renderWires);
+		}
+		if(Config.MD_RAIL){
+			WorldRenderEvents.AFTER_TRANSLUCENT.register(RailRenderer::renderRails);
+			WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderGrid);
+			WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderRailPreview);
+		}
+		if(Config.MD_ROAD){
+			WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RoadRenderer::renderRoadPreview);
+		}
+		if(Config.MD_BLOCK){
+			ModelLoadingPlugin.register(new BakingPlugin());
+		}
 	}
 
 	public static <T extends CustomPacketPayload> void registerClientPacket(CustomPacketPayload.Type<T> type, PacketHandler ph){

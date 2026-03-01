@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
@@ -15,8 +16,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import org.joml.Quaternionf;
 
+import static net.fexcraft.mod.fcl.util.Renderer20.AY;
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
-import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

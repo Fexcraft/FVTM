@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import org.joml.Matrix4f;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
@@ -36,7 +35,6 @@ public class SignRenderer {
 	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
 	public static void renderSigns(WorldRenderContext event){
-		if(DISABLE_SIGNS) return;
 		sys = SystemManager.get(SystemManager.Systems.SIGN, WrapperHolder.getWorld(event.camera().getEntity().level()));
 		if(sys == null || event.matrixStack() == null) return;
 		Camera camera = event.camera();

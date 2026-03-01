@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
@@ -23,7 +24,6 @@ import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fvtm.Config.DISABLE_SIGNS;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.Renderer20.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
@@ -41,7 +41,7 @@ public class SignRenderer {
 
 	@SubscribeEvent
 	public static void renderSigns(RenderLevelStageEvent event){
-		if(DISABLE_SIGNS) return;
+		if(!Config.MD_SIGN) return;
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) return;
 		sys = SystemManager.get(SystemManager.Systems.SIGN, WrapperHolder.getWorld(event.getCamera().getEntity().level()));
 		if(sys == null) return;

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.event;
 
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.*;
@@ -36,29 +37,45 @@ public class Registerer12 {
 
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<net.minecraft.block.Block> event){
-		event.getRegistry().register(ConstructorBlock.INSTANCE);
-		event.getRegistry().register(FuelFillerBlock.INSTANCE);
-		event.getRegistry().register(Asphalt.INSTANCE);
-		event.getRegistry().register(ContainerBlock.INSTANCE);
+		if(Config.MD_VEHICLE){
+			event.getRegistry().register(ConstructorBlock.INSTANCE);
+			event.getRegistry().register(FuelFillerBlock.INSTANCE);
+		}
+		if(Config.MD_ROAD){
+			event.getRegistry().register(Asphalt.INSTANCE);
+		}
+		if(Config.MD_CONTAINER){
+			event.getRegistry().register(ContainerBlock.INSTANCE);
+		}
 	}
 
 	@SubscribeEvent
 	public void registerItems(RegistryEvent.Register<net.minecraft.item.Item> event){
-		event.getRegistry().register(ConstructorBlock.ITEM);
-		event.getRegistry().register(FuelFillerBlock.ITEM);
-		event.getRegistry().register(Asphalt.ITEM);
-		//
-		event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
+		if(Config.MD_VEHICLE){
+			event.getRegistry().register(ConstructorBlock.ITEM);
+			event.getRegistry().register(FuelFillerBlock.ITEM);
+		}
+		if(Config.MD_ROAD){
+			event.getRegistry().register(Asphalt.ITEM);
+			event.getRegistry().register(RoadToolItem.INSTANCE = new RoadToolItem());
+		}
+		if(Config.MD_RAIL){
+			event.getRegistry().register(JunctionToolItem.INSTANCE = new JunctionToolItem());
+		}
 		event.getRegistry().register(ToolboxItem.INSTANCE = new ToolboxItem());
-		event.getRegistry().register(JunctionToolItem.INSTANCE = new JunctionToolItem());
 		if(EnvInfo.CLIENT){
-			regModel(ConstructorBlock.ITEM);
-			regModel(FuelFillerBlock.ITEM);
-			regModel(Asphalt.ITEM, 16);
-			//
-			regModel(RoadToolItem.INSTANCE);
+			if(Config.MD_VEHICLE){
+				regModel(ConstructorBlock.ITEM);
+				regModel(FuelFillerBlock.ITEM);
+			}
+			if(Config.MD_ROAD){
+				regModel(Asphalt.ITEM, 16);
+				regModel(RoadToolItem.INSTANCE);
+			}
+			if(Config.MD_RAIL){
+				regModel(JunctionToolItem.INSTANCE);
+			}
 			regModel(ToolboxItem.INSTANCE, ToolboxType.values().length);
-			regModel(JunctionToolItem.INSTANCE);
 		}
 	}
 

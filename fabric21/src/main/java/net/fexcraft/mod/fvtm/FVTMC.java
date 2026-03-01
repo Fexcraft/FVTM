@@ -19,6 +19,7 @@ import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fcl.FCLC;
+import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.impl.Packets21;
@@ -74,8 +75,7 @@ public class FVTMC implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(){
 		EnvInfo.CLIENT = true;
-		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);;
-		FCLC.INIT_COMPLETE.add(() -> Renderer.RENDERER = new Renderer21());
+		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 		GLO.SUPPLIER = (() -> new GLObject());
 		ClientLifecycleEvents.CLIENT_STARTED.register(server -> {
 			FvtmResources.initModelSystem();

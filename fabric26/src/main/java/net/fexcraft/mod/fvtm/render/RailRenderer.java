@@ -1,37 +1,22 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.mod.fcl.util.Renderer21;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.QV3D;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.HitResult;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.mod.fcl.util.Renderer21.AY;
-import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -44,7 +29,7 @@ public class RailRenderer {
 	private static HashSet<Junction> juncset = new HashSet<>();
 
 	public static void renderRails(LevelRenderContext event){
-		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.camera().getEntity().level()));
+		/*sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.camera().getEntity().level()));
 		if(sys == null) return;
 		Camera camera = event.camera();
 		double cx = camera.getPosition().x;
@@ -97,7 +82,7 @@ public class RailRenderer {
 				renderRails(pose, junc);
 			}
 		}
-		pose.popPose();
+		pose.popPose();*/
 	}
 
 	private static void renderJuncModel(Junction junc, int idx, Polyhedron hed){
@@ -133,9 +118,9 @@ public class RailRenderer {
 			pose.translate(track.vecpath[0].x, track.vecpath[0].y, track.vecpath[0].z);
 			RailGaugeModel model = track.gauge.getModel();
 			if(track.railmodel == null) PathModelGenerator.generateTrackModel(track, model);
-			FvtmRenderTypes.setCutout(track.gauge.getRailTexture());
+			FvtmRenderTypes.getCutout(track.gauge.getRailTexture());
 			track.railmodel.render();
-			FvtmRenderTypes.setCutout(track.gauge.getTiesTexture());
+			FvtmRenderTypes.getCutout(track.gauge.getTiesTexture());
 			track.restmodel.render();
 			pose.popPose();
 		}
@@ -143,7 +128,7 @@ public class RailRenderer {
 	}
 
 	public static boolean renderGrid(LevelRenderContext event, BlockOutlineRenderState res){
-		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
+		/*if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return true;
 		PoseStack pose = event.matrixStack();
 		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
@@ -182,12 +167,12 @@ public class RailRenderer {
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
 		SPHERE.render();
-		pose.popPose();
+		pose.popPose();*/
 		return true;
 	}
 
 	public static boolean renderRailPreview(LevelRenderContext event, BlockOutlineRenderState res){
-		if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return true;
+		/*if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return true;
 		double cx = event.camera().getPosition().x;
 		double cy = event.camera().getPosition().y;
 		double cz = event.camera().getPosition().z;
@@ -226,7 +211,7 @@ public class RailRenderer {
 			}
 		}
 		Renderer21.resetColor();
-		pose.popPose();
+		pose.popPose();*/
 		return true;
 	}
 

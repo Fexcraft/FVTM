@@ -1,32 +1,13 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import net.fexcraft.mod.fcl.util.Renderer21;
-import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.item.WireDecoItem;
-import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -45,7 +26,7 @@ public class WireRenderer {
 	private static boolean holding_deco;
 
 	public static void renderWires(LevelRenderContext event){
-		wiredata = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(event.camera().getEntity().level()), WireSystem.class);
+		/*wiredata = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(event.camera().getEntity().level()), WireSystem.class);
 		if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getInstance().player.getMainHandItem();
 		holding_wire = Config.DEBUG_ACTIVE || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(getToolboxType(held)));
@@ -101,7 +82,7 @@ public class WireRenderer {
 				}
 			}
 		}
-		pose.popPose();
+		pose.popPose();*/
 	}
 
 	private static void renderWires(PoseStack pose, WireRelay relay){
@@ -112,7 +93,7 @@ public class WireRenderer {
 			if(wire.vecpath == null || wire.getWireType() == null) continue;
 			WireModel model = wire.getWireType().getModel();
 			if(wire.model == null) new WireMD(wire);
-			FvtmRenderTypes.setCutout(wire.getWireType().getTexture());
+			FvtmRenderTypes.getCutout(wire.getWireType().getTexture());
 			pose.translate(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
 			wire.model.wiremodel.render();
 			if(relay.getTile() != null){

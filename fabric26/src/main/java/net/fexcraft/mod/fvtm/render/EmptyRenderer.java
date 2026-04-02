@@ -2,9 +2,11 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -22,7 +24,7 @@ public class EmptyRenderer extends EntityRenderer<Entity, EntityRenderState> {
 	}
 
 	@Override
-	public void render(EntityRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
+	public void submit(EntityRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		//
 	}
 

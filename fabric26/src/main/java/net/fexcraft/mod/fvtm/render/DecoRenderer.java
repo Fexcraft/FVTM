@@ -12,8 +12,10 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer21.*;
@@ -42,16 +44,14 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity, FvtmRenderSta
 	}
 
 	@Override
-	public void render(FvtmRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
+	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
-		Renderer21.set(pose, buffer, light);
 		EntityW ent = UniEntity.getEntity(state.decoration);
 		for(DecorationData data : state.decoration.decos){
 			if(data.getType().getModel() == null){
 				//FvtmLogger.LOGGER.debug(data.modelid);
 				continue;
 			}
-			FvtmRenderTypes.setCutout(data.getCurrentTexture());
 			pose.pushPose();
 			pose.translate(data.offset.x16, data.offset.y16, data.offset.z16);
 			if(data.rotx != 0.0F || data.roty != 0.0F || data.rotz != 0.0F){
@@ -62,7 +62,7 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity, FvtmRenderSta
 				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
-			data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, ent));//TODO rendercache
+			RenderUtil26.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent), pose, FvtmRenderTypes.getCutout(data.getCurrentTexture()), nodecoll, state.lightCoords);
 			pose.popPose();
 		}
 		if(state.decoration.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){

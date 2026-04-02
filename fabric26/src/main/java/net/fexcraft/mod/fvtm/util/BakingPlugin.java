@@ -1,15 +1,9 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.block.Block;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class BakingPlugin implements ModelLoadingPlugin {
+public class BakingPlugin {} /*implements ModelLoadingPlugin {
 
 	@Override
 	public void initialize(Context context){
@@ -25,4 +19,4 @@ public class BakingPlugin implements ModelLoadingPlugin {
 		}
 	}
 
-}
+}*/

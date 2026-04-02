@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fcl.util.Renderer21;
@@ -10,7 +9,6 @@ import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-import net.minecraft.world.phys.HitResult;
 
 import java.util.ArrayList;
 
@@ -26,7 +24,7 @@ import static net.fexcraft.mod.fvtm.util.DebugUtils.LINE_POLY;
 public class RoadRenderer {
 
 	public static boolean renderRoadPreview(LevelRenderContext event, BlockOutlineRenderState res){
-		if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return true;
+		/*if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return true;
 		double cx = event.camera().getPosition().x;
 		double cy = event.camera().getPosition().y;
 		double cz = event.camera().getPosition().z;
@@ -64,7 +62,7 @@ public class RoadRenderer {
 				pose.popPose();
 			}
 		}
-		pose.popPose();
+		pose.popPose();*/
 		return true;
 	}
 

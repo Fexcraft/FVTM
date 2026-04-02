@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "net.fexcraft.mod.fvtm.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"PackRepoMixin",
+		"ClientAddEntityMixin"
+	],
+	"client": [
+	
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

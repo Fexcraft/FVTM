@@ -31,3 +31,5 @@ run/*
 # Yet Other
 old/
 src/main/resources/assets/fvtm/test/
+*gradlew.bat
+*gradlew

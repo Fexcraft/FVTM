@@ -27,7 +27,7 @@ import static net.fexcraft.mod.fvtm.model.block.BakedQuadData.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RoadLinesModel {
+public class RoadLinesModel {}/*{
 
 	public static class UnbakedLines implements BlockStateModel.UnbakedRoot {
 
@@ -168,4 +168,4 @@ public class RoadLinesModel {
 
 	}
 
-}
+}*/

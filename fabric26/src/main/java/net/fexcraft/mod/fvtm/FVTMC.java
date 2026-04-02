@@ -5,11 +5,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
@@ -17,10 +15,6 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fexcraft.lib.frl.GLO;
-import net.fexcraft.lib.frl.Renderer;
-import net.fexcraft.mod.fcl.FCL;
-import net.fexcraft.mod.fcl.FCLC;
-import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.impl.Packets21;
@@ -31,9 +25,7 @@ import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.util.BakingPlugin;
 import net.fexcraft.mod.fvtm.util.Resources21;
-import net.fexcraft.mod.fvtm.util.SpawnPacketEntity;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
@@ -46,9 +38,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 
 import static net.fexcraft.mod.fvtm.impl.Packets21.*;
 
@@ -71,7 +63,7 @@ public class FVTMC implements ClientModInitializer {
 	public static KeyMapping arrow_down;
 	public static KeyMapping arrow_left;
 	public static KeyMapping arrow_right;
-	public static final String category = "keycompound.fvtm.controls";
+	public static KeyMapping.Category category;
 
 	@Override
 	public void onInitializeClient(){
@@ -113,20 +105,21 @@ public class FVTMC implements ClientModInitializer {
 			Packets21.INSTANCE.initClient();
 		});
 		//
-		KeyBindingHelper.registerKeyBinding(engine_toggle = new KeyMapping("key.fvtm.engine", InputConstants.Type.KEYSYM, InputConstants.KEY_I, category));
-		KeyBindingHelper.registerKeyBinding(inventory_open = new KeyMapping("key.fvtm.vehicle_inventory", InputConstants.Type.KEYSYM, InputConstants.KEY_R, category));
-		KeyBindingHelper.registerKeyBinding(control = new KeyMapping("key.fvtm.vehicle_control", InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
-		KeyBindingHelper.registerKeyBinding(script_ui = new KeyMapping("key.fvtm.vehicle_scripts", InputConstants.Type.KEYSYM, InputConstants.KEY_G, category));
-		KeyBindingHelper.registerKeyBinding(lights_toggle = new KeyMapping("key.fvtm.vehicle_lights", InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
-		KeyBindingHelper.registerKeyBinding(trailer_toggle = new KeyMapping("key.fvtm.vehicle_trailer", InputConstants.Type.KEYSYM, InputConstants.KEY_0, category));
-		KeyBindingHelper.registerKeyBinding(wagon_toggle = new KeyMapping("key.fvtm.vehicle_wagon", InputConstants.Type.KEYSYM, InputConstants.KEY_MINUS, category));
-		KeyBindingHelper.registerKeyBinding(arrow_up = new KeyMapping("key.fvtm.arrow_up", InputConstants.Type.KEYSYM, InputConstants.KEY_UP, category));
-		KeyBindingHelper.registerKeyBinding(arrow_down = new KeyMapping("key.fvtm.arrow_down", InputConstants.Type.KEYSYM, InputConstants.KEY_DOWN, category));
-		KeyBindingHelper.registerKeyBinding(arrow_left = new KeyMapping("key.fvtm.arrow_left", InputConstants.Type.KEYSYM, InputConstants.KEY_LEFT, category));
-		KeyBindingHelper.registerKeyBinding(arrow_right = new KeyMapping("key.fvtm.arrow_right", InputConstants.Type.KEYSYM, InputConstants.KEY_RIGHT, category));
-		KeyBindingHelper.registerKeyBinding(reset = new KeyMapping("key.fvtm.reset", InputConstants.Type.KEYSYM, InputConstants.KEY_SEMICOLON, category));
-		KeyBindingHelper.registerKeyBinding(brake = new KeyMapping("key.fvtm.brake", InputConstants.Type.KEYSYM, InputConstants.KEY_SPACE, category));
-		KeyBindingHelper.registerKeyBinding(pbrake = new KeyMapping("key.fvtm.pbrake", InputConstants.Type.KEYSYM, InputConstants.KEY_O, category));
+		category = KeyMapping.Category.register(Identifier.tryParse("fvtm:controls"));
+		KeyMappingHelper.registerKeyMapping(engine_toggle = new KeyMapping("key.fvtm.engine", InputConstants.Type.KEYSYM, InputConstants.KEY_I, category));
+		KeyMappingHelper.registerKeyMapping(inventory_open = new KeyMapping("key.fvtm.vehicle_inventory", InputConstants.Type.KEYSYM, InputConstants.KEY_R, category));
+		KeyMappingHelper.registerKeyMapping(control = new KeyMapping("key.fvtm.vehicle_control", InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
+		KeyMappingHelper.registerKeyMapping(script_ui = new KeyMapping("key.fvtm.vehicle_scripts", InputConstants.Type.KEYSYM, InputConstants.KEY_G, category));
+		KeyMappingHelper.registerKeyMapping(lights_toggle = new KeyMapping("key.fvtm.vehicle_lights", InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
+		KeyMappingHelper.registerKeyMapping(trailer_toggle = new KeyMapping("key.fvtm.vehicle_trailer", InputConstants.Type.KEYSYM, InputConstants.KEY_0, category));
+		KeyMappingHelper.registerKeyMapping(wagon_toggle = new KeyMapping("key.fvtm.vehicle_wagon", InputConstants.Type.KEYSYM, InputConstants.KEY_MINUS, category));
+		KeyMappingHelper.registerKeyMapping(arrow_up = new KeyMapping("key.fvtm.arrow_up", InputConstants.Type.KEYSYM, InputConstants.KEY_UP, category));
+		KeyMappingHelper.registerKeyMapping(arrow_down = new KeyMapping("key.fvtm.arrow_down", InputConstants.Type.KEYSYM, InputConstants.KEY_DOWN, category));
+		KeyMappingHelper.registerKeyMapping(arrow_left = new KeyMapping("key.fvtm.arrow_left", InputConstants.Type.KEYSYM, InputConstants.KEY_LEFT, category));
+		KeyMappingHelper.registerKeyMapping(arrow_right = new KeyMapping("key.fvtm.arrow_right", InputConstants.Type.KEYSYM, InputConstants.KEY_RIGHT, category));
+		KeyMappingHelper.registerKeyMapping(reset = new KeyMapping("key.fvtm.reset", InputConstants.Type.KEYSYM, InputConstants.KEY_SEMICOLON, category));
+		KeyMappingHelper.registerKeyMapping(brake = new KeyMapping("key.fvtm.brake", InputConstants.Type.KEYSYM, InputConstants.KEY_SPACE, category));
+		KeyMappingHelper.registerKeyMapping(pbrake = new KeyMapping("key.fvtm.pbrake", InputConstants.Type.KEYSYM, InputConstants.KEY_O, category));
 		if(Config.MD_VEHICLE) ClientTickEvents.END_CLIENT_TICK.register(mc -> handleKeyboardInput(mc));
 		//
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, dir) -> {
@@ -178,7 +171,7 @@ public class FVTMC implements ClientModInitializer {
 			LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(RoadRenderer::renderRoadPreview);
 		}
 		if(Config.MD_BLOCK){
-			ModelLoadingPlugin.register(new BakingPlugin());
+			//TODO ModelLoadingPlugin.register(new BakingPlugin());
 		}
 	}
 

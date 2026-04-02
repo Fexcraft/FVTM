@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -24,7 +22,7 @@ import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 public class SepRenderer {
 
 	public static void renderSeparate(LevelRenderContext event){
-		if(VEHICLES.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;Camera camera = event.camera();
+		/*if(VEHICLES.size() == 0 && SORTED_BLK_QUEUE.size() == 0) return;Camera camera = event.camera();
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
@@ -65,12 +63,12 @@ public class SepRenderer {
 				pose.pushPose();
 				pose.translate(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY(), tile.getBlockPos().getZ() + 0.5);
 				//TODO rotate
-				sgroup.render(RENDERDATA.set(data, tile, null).rcs(null/*TODO*/));
+				sgroup.render(RENDERDATA.set(data, tile, null).rcs(null*//*TODO*//*));
 				pose.popPose();
 			}
 			pose.popPose();
 		}
-		clear();
+		clear();*/
 	}
 
 }

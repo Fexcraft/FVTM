@@ -4,14 +4,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -39,18 +41,14 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 	}
 
 	@Override
-	public void render(FvtmRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
+	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
-		Renderer21.set(pose, buffer, light);
-		FvtmRenderTypes.setCutout(texture);
-		RailMarkerModel.INST.base.render();
-		DefaultModel.RENDERDATA.texture = null;
-		FvtmRenderTypes.setGlow(texture);
-		RailMarkerModel.INST.glow.render();
-		FvtmRenderTypes.setGlow(texture);
+		RenderUtil26.render(RailMarkerModel.INST.base, RENDERDATA, pose, FvtmRenderTypes.getCutout(texture), nodecoll, state.lightCoords);
+		RENDERDATA.texture = null;
+		RenderUtil26.render(RailMarkerModel.INST.glow, RENDERDATA, pose, FvtmRenderTypes.getGlow(texture), nodecoll, state.lightCoords);
 		if(state.rail_marker.queueid == null){
 			Renderer21.setColor(RGB.BLACK);
-			RailMarkerModel.INST.arrow.render();
+			RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA, pose, FvtmRenderTypes.getGlow(texture), nodecoll, state.lightCoords);
 		}
 		else{
 			RailPlacingUtil.NewTrack road = RailPlacingUtil.QUEUE.get(state.rail_marker.queueid);
@@ -59,9 +57,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer21.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					FvtmRenderTypes.setGlow(texture);
-					RailMarkerModel.INST.arrow.render();
-					FvtmRenderTypes.setCutout(texture);
+					RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA, pose, FvtmRenderTypes.getGlow(texture), nodecoll, state.lightCoords);
 				}
 			}
 		}

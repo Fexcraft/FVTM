@@ -30,9 +30,11 @@ import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 
@@ -86,7 +88,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	@Override
-	public void render(FvtmRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
+	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		if(state.vehicle == null || state.vehicle.data == null) return;
 		if(state.vehicle.cache == null) state.vehicle.cache = new RenderCacheI();
 		sepcache = state.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
@@ -99,14 +101,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			.rotateAxis((float)Static.toRadians(-rot.z), AZ)
 		);
 		sepcache.set(state.entity.position().x, state.entity.position().y, state.entity.position().z, rot);
-		Renderer21.set(pose, buffer, light);
 		//
 		pose.pushPose();
 		Model vehmod = state.vehicle.data.getType().getModel();
-		FvtmRenderTypes.setCutout(state.vehicle.data.getCurrentTexture());
 		if(vehmod != null){
 			pose.pushPose();
-			vehmod.render(RENDERDATA.set(state.vehicle.data, state.vehicle, state.f).rc(state.vehicle.cache));
+			RenderUtil26.render(vehmod, RENDERDATA.set(state.vehicle.data, state.vehicle, state.f).rc(state.vehicle.cache),
+				pose, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), nodecoll, state.lightCoords);
 			pose.popPose();
 		}
 		else{
@@ -174,7 +175,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	public static boolean isInRange(PoseStack pose, V3D vehpos, VehicleData data){
-		FvtmRenderTypes.setLineStrip();
+		//FvtmRenderTypes.setLineStrip();
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
@@ -198,7 +199,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		PartData part = isNormalPart();
 		boolean red;
 		SwivelPoint point = null;
-		FvtmRenderTypes.setLines();
+		//FvtmRenderTypes.setLines();
 		if(part != null){
 			for(Map.Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
@@ -377,7 +378,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		for(Map.Entry<String, PartData> entry : parts){
 			if(entry.getValue().getType().getModel() == null) continue;
 			pose.pushPose();
-			FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
+			FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
 			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
@@ -406,7 +407,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			for(Map.Entry<String, PartData> entry : parts){
 				if(entry.getValue().getType().getModel() == null) continue;
 				pose.pushPose();
-				FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
+				FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture());
 				translate(pose, entry.getValue().getInstalledPos());
 				rotate(pose, entry.getValue().getInstalledRot());
 				entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
@@ -448,7 +449,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			if(!parts.contains(entry.getKey())) continue;
 			if(!entry.getValue().isInstalledOnSwivelPoint(point.id)) continue;
 			pose.pushPose();
-			FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
+			FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
 			entry.getValue().getType().getModel().render(RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());

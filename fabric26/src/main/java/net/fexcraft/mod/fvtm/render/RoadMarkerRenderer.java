@@ -10,8 +10,10 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer21.AZ;
@@ -42,10 +44,9 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, FvtmRenderSta
 	}
 
 	@Override
-	public void render(FvtmRenderState state, PoseStack pose, MultiBufferSource buffer, int light){
+	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
-		Renderer21.set(pose, buffer, light);
-		FvtmRenderTypes.setCutout(texture);
+		FvtmRenderTypes.getCutout(texture);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.rad180, AZ));
 		RoadMarkerModel.INST.marker.render();
 		if(state.road_marker.queueid == null){

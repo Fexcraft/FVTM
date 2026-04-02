@@ -19,7 +19,6 @@ import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
@@ -44,12 +43,12 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 			@Override
 			public void pre(ModelGroup list, ModelRenderData data){
-				old = rentype();
-				FvtmRenderTypes.setGlow(data.texture.getCurrentTexture());
+				old = REN_IN.type;
+				FvtmRenderTypes.getGlow(data.texture.getCurrentTexture());
 			}
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
-				FvtmRenderTypes.setDef(old);
+				REN_IN.type = old;
 			}
 			@Override
 			public RenderOrder order(){
@@ -197,7 +196,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 		LightBeam.LBR = new LightBeam.LBRender(){
 			@Override
 			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){
-				FvtmRenderTypes.setLB(data.texture.getCurrentTexture());
+				FvtmRenderTypes.getLB(data.texture.getCurrentTexture());
 				pose.pushPose();
 				if(beam.swivel == null || beam.swivel.equals("vehicle")){
 					RENDERER.translate(beam.pos);
@@ -499,13 +498,13 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			rentype = Renderer21.rentype();
-			FvtmRenderTypes.setCutout(idl);
+			rentype = REN_IN.type;
+			FvtmRenderTypes.getCutout(idl);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			FvtmRenderTypes.setDef(rentype);
+			REN_IN.type = rentype;
 		}
 
 		@Override
@@ -568,13 +567,13 @@ public class DefaultPrograms21 extends DefaultPrograms {
 	}
 
 	private static Font getFont(String key){
-		if(key == null) return Minecraft.getInstance().font;
-		else{
+		/*if(key == null)*/ return Minecraft.getInstance().font;
+		/*else{
 			if(!FONTS.containsKey(key)){
 				FONTS.put(key, new Font(res -> Minecraft.getInstance().fontManager.fontSets.getOrDefault(Identifier.tryParse(key), Minecraft.getInstance().fontManager.missingFontSet), true));
 			}
 			return FONTS.get(key);
-		}
+		}*/
 	}
 
 	public static class TextRenderer extends TextRendererBase {

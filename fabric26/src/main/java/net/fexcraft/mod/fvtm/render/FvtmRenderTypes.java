@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.Util;
 
@@ -19,73 +19,49 @@ public class FvtmRenderTypes {
 	protected static final HashMap<IDL, RenderType> LBS = new HashMap<>();
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false))
-			.setLightmapState(RenderStateShard.LIGHTMAP)
-			.setOverlayState(RenderStateShard.OVERLAY)
-			.createCompositeState(false);
-		return RenderType.create("fvtm:entity_cutout", 1536, true, false, RenderPipelines.ENTITY_CUTOUT, state);
+		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
+			.useLightmap().useOverlay().affectsCrumbling().setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).sortOnUpload().createRenderSetup();
+		return RenderType.create("fvtm:entity_cutout", setup);
 	});
 	private static final Function<IDL, RenderType> GLOW = Util.memoize(idl -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false))
-			.setLightmapState(RenderStateShard.LIGHTMAP)
-			.setOverlayState(RenderStateShard.OVERLAY)
-			.createCompositeState(false);
-		return RenderType.create("fvtm:glow", 1536, false, true, RenderPipelines.EYES, state);
+		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
+			.useLightmap().useOverlay().affectsCrumbling().setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).sortOnUpload().createRenderSetup();
+		return RenderType.create("fvtm:glow", setup);
 	});
 	private static final Function<IDL, RenderType> LIGHTBEAM = Util.memoize(idl -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setTextureState(new RenderStateShard.TextureStateShard(idl.local(), false))
-			.setLightmapState(RenderStateShard.NO_LIGHTMAP)
-			.setOverlayState(RenderStateShard.NO_OVERLAY)
-			.createCompositeState(false);
-		return RenderType.create("fvtm:lb", 1536, false, true, RenderPipelines.EYES, state);
+		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
+			.setOutline(RenderSetup.OutlineProperty.NONE).sortOnUpload().createRenderSetup();
+		return RenderType.create("fvtm:lb", setup);
 	});
 
-	public static void setCutout(IDL tex){
+	public static RenderType getCutout(IDL tex){
 		RenderType type = CUTOUTS.get(tex);
 		if(type != null){
-			Renderer21.rentype = type;
-			return;
+			return type;
 		}
 		type = CUTOUT.apply(tex);
 		CUTOUTS.put(tex, type);
-		Renderer21.rentype = type;
+		return type;
 	}
 
-	public static void setGlow(IDL tex){
+	public static RenderType getGlow(IDL tex){
 		RenderType type = GLOWS.get(tex);
 		if(type != null){
-			Renderer21.rentype = type;
-			return;
+			return type;
 		}
 		type = GLOW.apply(tex);
 		GLOWS.put(tex, type);
-		Renderer21.rentype = type;
+		return type;
 	}
 
-	public static void setLB(IDL tex){
+	public static RenderType getLB(IDL tex){
 		RenderType type = LBS.get(tex);
 		if(type != null){
-			Renderer21.rentype = type;
-			return;
+			return type;
 		}
 		type = LIGHTBEAM.apply(tex.local());
 		LBS.put(tex, type);
-		Renderer21.rentype = type;
-	}
-
-	public static void setLines(){
-		Renderer21.rentype = RenderType.lines();
-	}
-
-	public static void setLineStrip(){
-		Renderer21.rentype = RenderType.lineStrip();
-	}
-
-	public static void setDef(RenderType type){
-		Renderer21.rentype = type;
+		return type;
 	}
 
 }

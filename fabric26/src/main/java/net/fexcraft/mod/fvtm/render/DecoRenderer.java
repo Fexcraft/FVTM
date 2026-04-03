@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
@@ -11,7 +10,6 @@ import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -62,7 +60,8 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity, FvtmRenderSta
 				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
-			RenderUtil26.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent), pose, FvtmRenderTypes.getCutout(data.getCurrentTexture()), nodecoll, state.lightCoords);
+			RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(data.getCurrentTexture()), state.lightCoords);
+			RenderUtil26.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent));
 			pose.popPose();
 		}
 		if(state.decoration.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){

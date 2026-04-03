@@ -35,13 +35,14 @@ public class FuelFillerRenderer implements BlockEntityRenderer<FuelFillerEntity,
 
 	@Override
 	public void submit(BlockEntityRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
+		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(TEXTURE), state.lightCoords);
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);
 		Direction dir = state.blockState.getValue(FACING);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(dir.getAxis() == Direction.Axis.Z ? dir.toYRot() + 90 : dir.toYRot() - 90), AY));
 		if(MODEL == null) MODEL = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.fmf", new ModelData(), BlockModel.class);
-		if(MODEL != null) RenderUtil26.render(MODEL, DefaultModel.RENDERDATA.clear(), pose, FvtmRenderTypes.getCutout(TEXTURE), nodecoll, state.lightCoords);
-		else RenderUtil26.render(DebugUtils.SPHERE, pose, FvtmRenderTypes.getCutout(TEXTURE), nodecoll, state.lightCoords);
+		if(MODEL != null) RenderUtil26.render(MODEL, DefaultModel.RENDERDATA.clear());
+		else RenderUtil26.render(DebugUtils.SPHERE);
 		pose.popPose();
 	}
 

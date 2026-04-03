@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -17,6 +18,7 @@ public class FvtmRenderTypes {
 	protected static final HashMap<IDL, RenderType> CUTOUTS = new HashMap<>();
 	protected static final HashMap<IDL, RenderType> GLOWS = new HashMap<>();
 	protected static final HashMap<IDL, RenderType> LBS = new HashMap<>();
+	protected static RenderType WHITE;
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
 		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
@@ -62,6 +64,11 @@ public class FvtmRenderTypes {
 		type = LIGHTBEAM.apply(tex.local());
 		LBS.put(tex, type);
 		return type;
+	}
+
+	public static RenderType white(){
+		if(WHITE == null) WHITE = getCutout(FvtmResources.WHITE_TEXTURE);
+		return WHITE;
 	}
 
 }

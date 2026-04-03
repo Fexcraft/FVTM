@@ -43,12 +43,14 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 	@Override
 	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
-		RenderUtil26.render(RailMarkerModel.INST.base, RENDERDATA, pose, FvtmRenderTypes.getCutout(texture), nodecoll, state.lightCoords);
+		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(texture), state.lightCoords);
+		RenderUtil26.render(RailMarkerModel.INST.base, RENDERDATA);
 		RENDERDATA.texture = null;
-		RenderUtil26.render(RailMarkerModel.INST.glow, RENDERDATA, pose, FvtmRenderTypes.getGlow(texture), nodecoll, state.lightCoords);
+		RenderUtil26.type(FvtmRenderTypes.getGlow(texture));
+		RenderUtil26.render(RailMarkerModel.INST.glow, RENDERDATA);
 		if(state.rail_marker.queueid == null){
 			Renderer21.setColor(RGB.BLACK);
-			RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA, pose, FvtmRenderTypes.getGlow(texture), nodecoll, state.lightCoords);
+			RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA);
 		}
 		else{
 			RailPlacingUtil.NewTrack road = RailPlacingUtil.QUEUE.get(state.rail_marker.queueid);
@@ -57,7 +59,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer21.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA, pose, FvtmRenderTypes.getGlow(texture), nodecoll, state.lightCoords);
+					RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA);
 				}
 			}
 		}

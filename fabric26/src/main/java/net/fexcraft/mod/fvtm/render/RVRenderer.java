@@ -88,7 +88,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	@Override
-	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
+	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector noco, CameraRenderState camera){
 		if(state.vehicle == null || state.vehicle.data == null) return;
 		if(state.vehicle.cache == null) state.vehicle.cache = new RenderCacheI();
 		sepcache = state.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
@@ -107,15 +107,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		if(vehmod != null){
 			pose.pushPose();
 			RenderUtil26.render(vehmod, RENDERDATA.set(state.vehicle.data, state.vehicle, state.f).rc(state.vehicle.cache),
-				pose, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), nodecoll, state.lightCoords);
+				pose, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), noco, state.lightCoords);
 			pose.popPose();
 		}
 		else{
-			FvtmLogger.LOGGER.info("NO MODEL " + state.entity.getId() + " " + state.vehicle.data.getType().getID());
-			//TODO render "missing model" model
+			RenderUtil26.render(SPHERE, pose, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), noco, state.lightCoords);
 		}
 		if(state.vehicle.data.getParts().size() > 0){
-			renderPoint(pose, state.vehicle.point, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
+			renderPoint(pose, noco, state.vehicle.point, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		}
 		V3D vp = state.vehicle.getV3D();
 		if(isInRange(pose, vp, state.vehicle.data)){
@@ -141,7 +140,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			renderSeats(pose, state.vehicle);
 		}
 		pose.popPose();
-		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
+		renderDetachedPoints(pose, noco, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		if(Config.DEBUG_ACTIVE){
 			Renderer21.light = 255;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
@@ -222,9 +221,9 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 								pose.pushPose();
 								V3D vec = point.getRelativeVector(pes);
 								pose.translate(vec.x, vec.y, vec.z);
-								rotateRad(point.getPivot().yaw(), AY);
-								rotateRad(point.getPivot().pitch(), AX);
-								rotateRad(point.getPivot().roll(), AZ);
+								RENDERER.rotate(point.getPivot().deg_yaw(), 0, 1, 0);
+								RENDERER.rotate(point.getPivot().deg_pitch(), 1, 0, 0);
+								RENDERER.rotate(point.getPivot().deg_roll(), 0, 0, 1);
 							}
 							DebugUtils.renderBB(value.radius, red ? COL_RED : COL_CYN);
 							if(!point.isVehicle()) pose.popPose();
@@ -299,9 +298,9 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 					pose.pushPose();
 					pos = point.getRelativeVector(pos);
 					pose.translate(pos.x, pos.y, pos.z);
-					rotateDeg(pose, point.getPivot().deg_yaw(), AY);
-					rotateDeg(pose, point.getPivot().deg_pitch(), AX);
-					rotateDeg(pose, point.getPivot().deg_roll(), AZ);
+					RENDERER.rotate(point.getPivot().deg_yaw(), 0, 1, 0);
+					RENDERER.rotate(point.getPivot().deg_pitch(), 1, 0, 0);
+					RENDERER.rotate(point.getPivot().deg_roll(), 0, 0, 1);
 				}
 				DebugUtils.renderBB(red ? .25f : .125f, red ? COL_RED : COL_YLW);
 				if(!point.isVehicle()) pose.popPose();
@@ -358,7 +357,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		return new V3D(point.getPrevPivot().deg_yaw() + yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
 	}
 
-	public static void renderPoint(PoseStack pose, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderPoint(PoseStack pose, SubmitNodeCollector noco, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
 		if(point.detached) return;
 		ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
@@ -378,17 +377,17 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		for(Map.Entry<String, PartData> entry : parts){
 			if(entry.getValue().getType().getModel() == null) continue;
 			pose.pushPose();
-			FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache),
+				pose, FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()), noco, light);
 			pose.popPose();
 		}
-		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+		for(SwivelPoint sub : point.subs) renderPoint(pose, noco, sub, vehicle, data, cache, ticks);
 		pose.popPose();
 	}
 
-	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderDetachedPoints(PoseStack pose, SubmitNodeCollector noco, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
 		for(SwivelPoint point : vehicle.vehicle.point.subs){
 			if(!point.detached) continue;
 			ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
@@ -407,13 +406,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			for(Map.Entry<String, PartData> entry : parts){
 				if(entry.getValue().getType().getModel() == null) continue;
 				pose.pushPose();
-				FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture());
+				;
 				translate(pose, entry.getValue().getInstalledPos());
 				rotate(pose, entry.getValue().getInstalledRot());
-				entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+				RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache),
+					pose, FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()), noco, light);
 				pose.popPose();
 			}
-			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+			for(SwivelPoint sub : point.subs) renderPoint(pose, noco, sub, vehicle, data, cache, ticks);
 			pose.popPose();
 		}
 	}
@@ -431,7 +431,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		pose.mulPose(q);
 	}
 
-	public static void renderPointSep(PoseStack pose, SwivelPoint point, VehicleInstance inst, ArrayList<String> parts, float ticks){
+	public static void renderPointSep(PoseStack pose, SubmitNodeCollector noco, SwivelPoint point, VehicleInstance inst, ArrayList<String> parts, float ticks){
 		pose.pushPose();
 		if(!point.isVehicle()){
 			V3D temp0 = point.getPos();
@@ -449,13 +449,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			if(!parts.contains(entry.getKey())) continue;
 			if(!entry.getValue().isInstalledOnSwivelPoint(point.id)) continue;
 			pose.pushPose();
-			FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture());
+			;
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			entry.getValue().getType().getModel().render(RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());
+			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep(),
+				pose, FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()), noco, light);
 			pose.popPose();
 		}
-		for(SwivelPoint sub : point.subs) renderPointSep(pose, sub, inst, parts, ticks);
+		for(SwivelPoint sub : point.subs) renderPointSep(pose, noco, sub, inst, parts, ticks);
 		pose.popPose();
 	}
 

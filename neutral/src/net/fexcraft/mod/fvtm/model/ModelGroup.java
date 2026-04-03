@@ -46,6 +46,16 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 		if(offset != null) RENDERER.translate(-offset.x, -offset.y, -offset.z);
 	}
 
+	public void pre(ModelRenderData data){
+		if(offset != null) RENDERER.translate(offset.x, offset.y, offset.z);
+		if(has_pre_prog) for(Program program : pre_programs) program.pre(this, data);
+	}
+
+	public void post(ModelRenderData data){
+		if(has_pst_prog) for(Program program : pst_programs) program.post(this, data);
+		if(offset != null) RENDERER.translate(-offset.x, -offset.y, -offset.z);
+	}
+
 	public void render(){
 		if(visible) for(Polyhedron poly : this) poly.render();
 	}

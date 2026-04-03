@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
-import net.fexcraft.mod.fvtm.model.program.DefaultPrograms21;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms26;
 import net.fexcraft.mod.fvtm.render.Transforms21;
 import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
@@ -217,7 +217,7 @@ public class Resources21 extends FvtmResources {
 			}
 			return null;
 		});
-		DefaultPrograms21.init();
+		DefaultPrograms26.init();
 		ConditionalPrograms.init();
 	}
 

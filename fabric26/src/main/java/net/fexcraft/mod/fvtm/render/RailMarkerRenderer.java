@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
 import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
@@ -49,7 +49,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 		RenderUtil26.type(FvtmRenderTypes.getGlow(texture));
 		RenderUtil26.render(RailMarkerModel.INST.glow, RENDERDATA);
 		if(state.rail_marker.queueid == null){
-			Renderer21.setColor(RGB.BLACK);
+			Renderer26.setColor(RGB.BLACK);
 			RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA);
 		}
 		else{
@@ -58,12 +58,12 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, FvtmRenderSta
 				int index = road.indexOf(state.rail_marker.position);
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
-					Renderer21.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
+					Renderer26.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
 					RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA);
 				}
 			}
 		}
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		pose.popPose();
 	}
 

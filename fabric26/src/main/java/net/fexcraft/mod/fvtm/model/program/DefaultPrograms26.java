@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.model.program;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
@@ -23,13 +23,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
-import static net.fexcraft.mod.fcl.util.Renderer21.*;
+import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DefaultPrograms21 extends DefaultPrograms {
+public class DefaultPrograms26 extends DefaultPrograms {
 
 	private static HashMap<String, Font> FONTS = new HashMap<>();
 
@@ -43,12 +43,12 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 			@Override
 			public void pre(ModelGroup list, ModelRenderData data){
-				old = REN_IN.type;
+				old = Renderer26.type;
 				FvtmRenderTypes.getGlow(data.texture.getCurrentTexture());
 			}
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
-				REN_IN.type = old;
+				Renderer26.type = old;
 			}
 			@Override
 			public RenderOrder order(){
@@ -61,11 +61,11 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) Renderer21.setColor(data.color.getPrimaryColor());
+				if(data.color != null) Renderer26.setColor(data.color.getPrimaryColor());
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				Renderer21.resetColor();
+				Renderer26.resetColor();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
@@ -74,11 +74,11 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) Renderer21.setColor(data.color.getSecondaryColor());
+				if(data.color != null) Renderer26.setColor(data.color.getSecondaryColor());
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				Renderer21.resetColor();
+				Renderer26.resetColor();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new RGBCustom(RGB.WHITE));
@@ -232,12 +232,12 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			Renderer21.setColor(color);
+			Renderer26.setColor(color);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			Renderer21.resetColor();
+			Renderer26.resetColor();
 		}
 
 		@Override
@@ -262,12 +262,12 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			Renderer21.setColor(data.color.getColorChannel(channel));
+			Renderer26.setColor(data.color.getColorChannel(channel));
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			Renderer21.resetColor();
+			Renderer26.resetColor();
 		}
 
 		@Override
@@ -496,13 +496,13 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			rentype = REN_IN.type;
+			rentype = Renderer26.type;
 			FvtmRenderTypes.getCutout(idl);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			REN_IN.type = rentype;
+			Renderer26.type = rentype;
 		}
 
 		@Override
@@ -541,7 +541,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 				data.sign.getColorChannel("text").packed - 16777216, false, pose.pose(), cons,
 				Font.DisplayMode.SEE_THROUGH, overlay, light
 			);*/
-			Renderer21.resetColor();
+			Renderer26.resetColor();
 			RENDERER.pop();
 		}
 
@@ -604,7 +604,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			if(rot.z != 0.0F) RENDERER.rotate(rot.z, 0, 0, 1);
 			if(rot.x != 0.0F) RENDERER.rotate(rot.x, 1, 0, 0);
 			/*font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
-				color - 16777216, false, pose.last().pose(), Renderer21.buffer(),
+				color - 16777216, false, pose.last().pose(), Renderer26.buffer(),
 				glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, overlay, light
 			);*/
 			RENDERER.pop();

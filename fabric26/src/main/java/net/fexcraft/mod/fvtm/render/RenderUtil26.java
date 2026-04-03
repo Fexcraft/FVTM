@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -18,14 +18,14 @@ public class RenderUtil26 {
 	private static SubmitNodeCollector noco;
 
 	public static void set(PoseStack pose, SubmitNodeCollector nocoll, RenderType type, int lc){
-		Renderer21.stack = pose;
+		Renderer26.stack = pose;
 		noco = nocoll;
-		Renderer21.type = type;
-		Renderer21.light = lc;
+		Renderer26.type = type;
+		Renderer26.light = lc;
 	}
 
 	public static void type(RenderType type){
-		Renderer21.type = type;
+		Renderer26.type = type;
 	}
 
 	public static void render(Model model, ModelRenderData mdata){
@@ -36,37 +36,37 @@ public class RenderUtil26 {
 
 	public static void render(ModelGroup group, ModelRenderData mdata){
 		group.pre(mdata);
-		noco.submitCustomGeometry(Renderer21.stack, Renderer21.type, (last, cons) -> {
-			Renderer21.pose = last;
-			Renderer21.cons = cons;
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
 			group.render();
-			Renderer21.pose = null;
+			Renderer26.pose = null;
 		});
 		group.post(mdata);
 	}
 
 	public static void render(Polyhedron poly){
-		noco.submitCustomGeometry(Renderer21.stack, Renderer21.type, (last, cons) -> {
-			Renderer21.pose = last;
-			Renderer21.cons = cons;
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
 			RENDERER.render(poly);
-			Renderer21.pose = null;
+			Renderer26.pose = null;
 		});
 	}
 
 	public static void renderSphere(float scale, int col){
-		Renderer21.type = FvtmRenderTypes.white();
-		Renderer21.stack.pushPose();
-		Renderer21.stack.scale(scale, scale, scale);
-		noco.submitCustomGeometry(Renderer21.stack, FvtmRenderTypes.white(), (last, cons) -> {
+		Renderer26.type = FvtmRenderTypes.white();
+		Renderer26.stack.pushPose();
+		Renderer26.stack.scale(scale, scale, scale);
+		noco.submitCustomGeometry(Renderer26.stack, FvtmRenderTypes.white(), (last, cons) -> {
 			RENDERER.color(col);
-			Renderer21.pose = last;
-			Renderer21.cons = cons;
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
 			RENDERER.render(DebugUtils.SPHERE);
-			Renderer21.pose = null;
-			Renderer21.resetColor();
+			Renderer26.pose = null;
+			Renderer26.resetColor();
 		});
-		Renderer21.stack.popPose();
+		Renderer26.stack.popPose();
 	}
 
 }

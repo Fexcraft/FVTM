@@ -1,9 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fexcraft.lib.common.Static;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.model.Transforms;
-import org.joml.Quaternionf;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 
@@ -27,11 +25,11 @@ public class Transforms21 {
 		}
 
 		public void apply(){
-			Renderer21.pose.translate(this.x, this.y, this.z);
+			Renderer26.pose.translate(this.x, this.y, this.z);
 		}
 
 		public void deapply(){
-			Renderer21.pose.translate(-this.x, -this.y, -this.z);
+			Renderer26.pose.translate(-this.x, -this.y, -this.z);
 		}
 
 	}

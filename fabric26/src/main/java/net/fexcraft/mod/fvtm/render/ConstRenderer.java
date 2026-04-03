@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fcl.util.Renderer21.AY;
+import static net.fexcraft.mod.fcl.util.Renderer26.AY;
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
 
 /**

@@ -1,20 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import net.fexcraft.mod.fcl.util.Renderer21;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.ModelGroupList;
-import net.fexcraft.mod.fvtm.model.RenderCacheI;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.minecraft.client.Camera;
-import net.minecraft.world.level.block.entity.BlockEntity;
-
-import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fcl.util.Renderer21.pose;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPointSep;
-import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -26,7 +12,7 @@ public class SepRenderer {
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		if(VEHICLES.size() > 0){
 			pose.pushPose();
 			pose.translate(-cx, -cy, -cz);

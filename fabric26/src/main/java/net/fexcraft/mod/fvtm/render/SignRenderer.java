@@ -1,30 +1,8 @@
 package net.fexcraft.mod.fvtm.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import net.fexcraft.mod.fcl.util.Renderer21;
-import net.fexcraft.mod.fvtm.data.SignData;
-import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.fvtm.item.SignItem;
-import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.RenderCache;
-import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import org.joml.Matrix4f;
-
-import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fcl.util.Renderer21.AY;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -43,11 +21,11 @@ public class SignRenderer {
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.matrixStack();
-		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.SIGN_ADJREM.idx;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		for(SystemRegion<?, SignInstance> reg : sys.getRegions().values()){
 			for(SignInstance sign : reg.getObjects().values()){
 				//TODO distance check
@@ -67,7 +45,7 @@ public class SignRenderer {
 							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
-							Renderer21.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;
+							Renderer26.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;
 							pose.pushPose();
 							pose.translate(scom.offset.x, scom.offset.y, scom.offset.z);
 							if(scom.roty != 0f) RENDERER.rotate(scom.roty, 0, 1, 0);

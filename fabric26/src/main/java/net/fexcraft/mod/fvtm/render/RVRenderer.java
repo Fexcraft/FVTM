@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.InteractZone;
@@ -40,7 +40,7 @@ import org.joml.Quaternionf;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static net.fexcraft.mod.fcl.util.Renderer21.*;
+import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -127,13 +127,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		//TODO toggle info
 		//TODO containers
 		if(Config.DEBUG_ACTIVE){
-			/*Renderer21.set(RenderType.lines());
+			/*Renderer26.set(RenderType.lines());
 			pose.pushPose();
 			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
 			pose.scale(scale, scale, scale);
-			Renderer21.setColor(RGB.BLUE);
+			Renderer26.setColor(RGB.BLUE);
 			DebugUtils.SPHERE.render();
-			Renderer21.resetColor();
+			Renderer26.resetColor();
 			pose.popPose();*/
 			//
 			renderSeats(pose, state.vehicle);
@@ -141,7 +141,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		pose.popPose();
 		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		if(Config.DEBUG_ACTIVE){
-			Renderer21.light = 255;
+			Renderer26.light = 255;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
 			for(OBB.OBBRef ref : state.vehicle.data.getBoundBoxes()){
 				OBB obb = state.vehicle.obb.get(ref.key);
@@ -168,7 +168,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			}
 			DebugUtils.renderBB(pos, scale, COL_YLW);
 		}
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		pose.popPose();
 	}
 
@@ -302,7 +302,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 				else pose.translate(-pos.x, -pos.y, -pos.z);
 			}
 		}
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 	}
 
 	private static int isImpact(){

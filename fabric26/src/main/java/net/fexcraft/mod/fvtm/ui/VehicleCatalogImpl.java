@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import static net.fexcraft.mod.fcl.util.Renderer21.*;
+import static net.fexcraft.mod.fcl.util.Renderer26.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

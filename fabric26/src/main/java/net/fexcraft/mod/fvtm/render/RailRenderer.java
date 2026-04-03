@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
@@ -17,7 +17,6 @@ import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fcl.util.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -37,11 +36,11 @@ public class RailRenderer {
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.matrixStack();
-		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		FvtmRenderTypes.setCutout(WHITE_TEXTURE);
 		for(SystemRegion<RailSystem, Junction> reg : sys.getRegions().values()){
 			juncset.clear();
@@ -49,14 +48,14 @@ public class RailRenderer {
 			for(Junction junc : juncset){
 				pose.pushPose();
 				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);
-				Renderer21.RENDERER.light(junc.getV3D());
+				Renderer26.RENDERER.light(junc.getV3D());
 				if(junc.tracks.size() == 0 || holding){
 					DebugUtils.renderBB(0.25f, COL_ORG);
 				}
 				if(junc.tracks.size() > 0 && holding){
 					pose.translate(0, junc.tracks.get(0).gauge.getHeight(), 0);
 					FvtmRenderTypes.setCutout(WHITE_TEXTURE);
-					Renderer21.setColor(COL_GRY);
+					Renderer26.setColor(COL_GRY);
 					JUNC_CORE.render();
 					for(int i = 0; i < junc.tracks.size(); i++){
 						renderJuncModel(junc, i, JUNC_LINE);
@@ -91,7 +90,7 @@ public class RailRenderer {
 		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
 		RENDERER.push();
 		RENDERER.rotateRad((float)ang, 0, 1, 0);
-		Renderer21.setColor(RailJunction.TRACK_RGB[idx]);
+		Renderer26.setColor(RailJunction.TRACK_RGB[idx]);
 		hed.render();
 		RENDERER.pop();
 	}
@@ -101,16 +100,16 @@ public class RailRenderer {
 		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
 		RENDERER.push();
 		RENDERER.rotateRad((float)ang, 0, 1, 0);
-		Renderer21.setColor(RailJunction.TRACK_RGB[idx]);
+		Renderer26.setColor(RailJunction.TRACK_RGB[idx]);
 		JUNC_SIG_DIR.render();
-		Renderer21.setColor(col);
+		Renderer26.setColor(col);
 		JUNC_SIG_STATE.render();
 		RENDERER.pop();
 	}
 
 	private static void renderRails(PoseStack pose, Junction junc){
 		pose.pushPose();
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		for(int i = 0; i < junc.size(); i++){
 			if(i > 2) pose.translate(0, -0.02, 0);
 			if(junc.tracks.get(i).isOppositeCopy()) continue;
@@ -132,14 +131,14 @@ public class RailRenderer {
 		/*if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return true;
 		PoseStack pose = event.matrixStack();
-		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
+		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
 		QV3D vec = new QV3D(res.getLocation().x, res.getLocation().y, res.getLocation().z);
 		BlockPos pos = BlockPos.containing(res.getLocation());
 		double cx = event.camera().getPosition().x;
 		double cy = event.camera().getPosition().y;
 		double cz = event.camera().getPosition().z;
 		double yy = vec.y * 0.0625f;
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
@@ -154,7 +153,7 @@ public class RailRenderer {
 			pose.popPose();
 		}
 		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
-		Renderer21.setColor(COL_CYN);
+		Renderer26.setColor(COL_CYN);
 		pose.pushPose();
 		pose.translate(pos.getX() + v, pos.getY() + yy + 0.01, pos.getZ() + 0.5);
 		LLBB2.render();
@@ -164,7 +163,7 @@ public class RailRenderer {
 		pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + v);
 		LLBB0.render();
 		pose.popPose();
-		Renderer21.setColor(COL_ORG);
+		Renderer26.setColor(COL_ORG);
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
 		SPHERE.render();
@@ -178,14 +177,14 @@ public class RailRenderer {
 		double cy = event.camera().getPosition().y;
 		double cz = event.camera().getPosition().z;
 		PoseStack pose = event.matrixStack();
-		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
+		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
 		FvtmRenderTypes.setLines();
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;
 		RailPlacingUtil.NewTrack conn = RailPlacingUtil.CL_CURRENT;
 		if(conn.preview == null) conn.genpreview();
-		Renderer21.setColor(COL_BLU);
+		Renderer26.setColor(COL_BLU);
 		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
 			vec0 = conn.track.vecpath[j];
 			vec1 = conn.track.vecpath[j + 1];
@@ -195,7 +194,7 @@ public class RailRenderer {
 		}
 		int size = RailPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
-		Renderer21.setColor(COL_CYN);
+		Renderer26.setColor(COL_CYN);
 		for(int i = 1; i < size - 1; i++){
 			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
@@ -203,7 +202,7 @@ public class RailRenderer {
 			LINE_POLY.vertices[1].pos(vec1.x, vec1.y - 0.05f, vec1.z);
 			LINE.render();
 		}
-		Renderer21.setColor(COL_ORG);
+		Renderer26.setColor(COL_ORG);
 		for(ArrayList<V3D> l : conn.preview){
 			for(int j = 0; j < l.size() - 1; j++){
 				LINE_POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z);
@@ -211,7 +210,7 @@ public class RailRenderer {
 				LINE.render();
 			}
 		}
-		Renderer21.resetColor();
+		Renderer26.resetColor();
 		pose.popPose();*/
 		return true;
 	}

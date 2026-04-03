@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import org.joml.Quaternionf;
 
-import static net.fexcraft.mod.fcl.util.Renderer21.*;
+import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 
 /**

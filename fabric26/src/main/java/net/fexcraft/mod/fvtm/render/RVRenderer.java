@@ -29,7 +29,6 @@ import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -102,19 +101,19 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		);
 		sepcache.set(state.entity.position().x, state.entity.position().y, state.entity.position().z, rot);
 		//
+		RenderUtil26.set(pose, noco, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), state.lightCoords);
 		pose.pushPose();
 		Model vehmod = state.vehicle.data.getType().getModel();
 		if(vehmod != null){
 			pose.pushPose();
-			RenderUtil26.render(vehmod, RENDERDATA.set(state.vehicle.data, state.vehicle, state.f).rc(state.vehicle.cache),
-				pose, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), noco, state.lightCoords);
+			RenderUtil26.render(vehmod, RENDERDATA.set(state.vehicle.data, state.vehicle, state.f).rc(state.vehicle.cache));
 			pose.popPose();
 		}
 		else{
-			RenderUtil26.render(SPHERE, pose, FvtmRenderTypes.getCutout(state.vehicle.data.getCurrentTexture()), noco, state.lightCoords);
+			RenderUtil26.render(SPHERE);
 		}
 		if(state.vehicle.data.getParts().size() > 0){
-			renderPoint(pose, noco, state.vehicle.point, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
+			renderPoint(pose, state.vehicle.point, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		}
 		V3D vp = state.vehicle.getV3D();
 		if(isInRange(pose, vp, state.vehicle.data)){
@@ -140,7 +139,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			renderSeats(pose, state.vehicle);
 		}
 		pose.popPose();
-		renderDetachedPoints(pose, noco, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
+		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		if(Config.DEBUG_ACTIVE){
 			Renderer21.light = 255;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
@@ -150,7 +149,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 				for(V3D vert : obb.verts){
 					pose.pushPose();
 					RENDERER.translate(vert);
-					DebugUtils.renderSphere(0.025f, COL_CYN);
+					RenderUtil26.renderSphere(0.025f, COL_CYN);
 					pose.popPose();
 				}
 			}
@@ -174,7 +173,6 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	public static boolean isInRange(PoseStack pose, V3D vehpos, VehicleData data){
-		//FvtmRenderTypes.setLineStrip();
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
@@ -184,10 +182,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			}
 			if(Config.DEBUG_ACTIVE){
 				pose.pushPose();
-				Renderer21.setColor(zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
-				pose.scale(zone.range, zone.range, zone.range);
-				DebugUtils.SPHERE.render();
-				Renderer21.resetColor();
+				RenderUtil26.renderSphere(zone.range, zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
 				pose.popPose();
 			}
 		}
@@ -357,7 +352,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		return new V3D(point.getPrevPivot().deg_yaw() + yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
 	}
 
-	public static void renderPoint(PoseStack pose, SubmitNodeCollector noco, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderPoint(PoseStack pose, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
 		if(point.detached) return;
 		ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
@@ -379,15 +374,15 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			pose.pushPose();
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache),
-				pose, FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()), noco, light);
+			RenderUtil26.type(FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()));
+			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
 			pose.popPose();
 		}
-		for(SwivelPoint sub : point.subs) renderPoint(pose, noco, sub, vehicle, data, cache, ticks);
+		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
 		pose.popPose();
 	}
 
-	public static void renderDetachedPoints(PoseStack pose, SubmitNodeCollector noco, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
 		for(SwivelPoint point : vehicle.vehicle.point.subs){
 			if(!point.detached) continue;
 			ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
@@ -409,11 +404,11 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 				;
 				translate(pose, entry.getValue().getInstalledPos());
 				rotate(pose, entry.getValue().getInstalledRot());
-				RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache),
-					pose, FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()), noco, light);
+				RenderUtil26.type(FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()));
+				RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
 				pose.popPose();
 			}
-			for(SwivelPoint sub : point.subs) renderPoint(pose, noco, sub, vehicle, data, cache, ticks);
+			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
 			pose.popPose();
 		}
 	}
@@ -452,8 +447,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			;
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep(),
-				pose, FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()), noco, light);
+			RenderUtil26.type(FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()));
+			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());
 			pose.popPose();
 		}
 		for(SwivelPoint sub : point.subs) renderPointSep(pose, noco, sub, inst, parts, ticks);

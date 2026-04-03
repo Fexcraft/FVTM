@@ -127,15 +127,6 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		//TODO toggle info
 		//TODO containers
 		if(Config.DEBUG_ACTIVE){
-			/*Renderer26.set(RenderType.lines());
-			pose.pushPose();
-			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
-			pose.scale(scale, scale, scale);
-			Renderer26.setColor(RGB.BLUE);
-			DebugUtils.SPHERE.render();
-			Renderer26.resetColor();
-			pose.popPose();*/
-			//
 			renderSeats(pose, state.vehicle);
 		}
 		pose.popPose();
@@ -166,9 +157,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 			if(!seat.point.isVehicle()){
 				pos = seat.point.getRelativeVector(pos);
 			}
-			DebugUtils.renderBB(pos, scale, COL_YLW);
+			RenderUtil26.renderBB(pos, scale, COL_YLW);
 		}
-		Renderer26.resetColor();
 		pose.popPose();
 	}
 
@@ -220,7 +210,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 								RENDERER.rotate(point.getPivot().deg_pitch(), 1, 0, 0);
 								RENDERER.rotate(point.getPivot().deg_roll(), 0, 0, 1);
 							}
-							DebugUtils.renderBB(value.radius, red ? COL_RED : COL_CYN);
+							RenderUtil26.renderBB(value.radius, red ? COL_RED : COL_CYN);
 							if(!point.isVehicle()) pose.popPose();
 							else pose.translate(-pes.x, -pes.y, -pes.z);
 						}
@@ -234,7 +224,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 		if(tool > -1){
 			red = data.getType().getImpactWrenchLevel() > tool ;
 			for(WheelSlot slot : data.getWheelSlots().values()){
-				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : COL_CYN);
+				RenderUtil26.renderBB(slot.position, slot.max_radius, red ? COL_RED : COL_CYN);
 			}
 		}
 		part = isWheelOrTire();
@@ -253,7 +243,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 					if(!red) red = data.hasPart(entry.getKey() + ":tire");
 				}
 				slot = entry.getValue();
-				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
+				RenderUtil26.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 			}
 		}
 		part = isBogie();
@@ -264,20 +254,20 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 				green = part.getType().getInstallHandler().validInstall(FvtmLogger.NONE, part, entry.getKey(), data, true);
 				red = data.hasPart(entry.getKey());
 				slot = entry.getValue();
-				DebugUtils.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
+				RenderUtil26.renderBB(slot.position, slot.max_radius, red ? COL_RED : green ? COL_GRN : COL_CYN);
 			}
 		}
 		VehicleData trai = isVehicle();
 		if(trai != null && trai.getType().isTrailer()){
 			for(Map.Entry<String, V3D> entry : data.getConnectors().entrySet()){
 				red = !trai.getType().getCategories().contains(entry.getKey());
-				DebugUtils.renderBB(entry.getValue(), 0.8f, red ? COL_RED : COL_GRN);
+				RenderUtil26.renderBB(entry.getValue(), 0.8f, red ? COL_RED : COL_GRN);
 			}
 		}
 		//
 		tool = isToolbox();
 		if(tool > 0){
-			DebugUtils.renderBB(1, COL_ORG);
+			RenderUtil26.renderBB(1, COL_ORG);
 		}
 		if(tool > -1 && tool < 2){
 			V3D pos;
@@ -297,12 +287,11 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 					RENDERER.rotate(point.getPivot().deg_pitch(), 1, 0, 0);
 					RENDERER.rotate(point.getPivot().deg_roll(), 0, 0, 1);
 				}
-				DebugUtils.renderBB(red ? .25f : .125f, red ? COL_RED : COL_YLW);
+				RenderUtil26.renderBB(red ? .25f : .125f, red ? COL_RED : COL_YLW);
 				if(!point.isVehicle()) pose.popPose();
 				else pose.translate(-pos.x, -pos.y, -pos.z);
 			}
 		}
-		Renderer26.resetColor();
 	}
 
 	private static int isImpact(){

@@ -14,30 +14,36 @@ import static net.fexcraft.mod.fcl.util.Renderer21.REN_IN;
 public class RenderUtil26 {
 
 	public static void render(Model model, ModelRenderData mdata, PoseStack pose, RenderType type, SubmitNodeCollector nodecoll, int lc){
-		REN_IN.pose = pose;
+		REN_IN.stack = pose;
 		for(ModelGroup group : model.getGroups()){
-			for(Polyhedron<GLObject> poly : group){
-				REN_IN.transform(poly);
-				nodecoll.submitCustomGeometry(pose, type, (last, buffer) -> REN_IN.render(poly, last, type, buffer, lc));
-				pose.popPose();
-			}
+			render(group, mdata, pose, type, nodecoll, lc);
 		}
 	}
 
 	public static void render(ModelGroup group, ModelRenderData mdata, PoseStack pose, RenderType type, SubmitNodeCollector nodecoll, int lc){
-		REN_IN.pose = pose;
-		for(Polyhedron<GLObject> poly : group){
-			REN_IN.transform(poly);
-			nodecoll.submitCustomGeometry(pose, type, (last, buffer) -> REN_IN.render(poly, last, type, buffer, lc));
-			pose.popPose();
-		}
+		REN_IN.stack = pose;
+		REN_IN.type = type;
+		REN_IN.light = lc;
+		group.pre(mdata);
+		nodecoll.submitCustomGeometry(pose, type, (last, cons) -> {
+			REN_IN.pose = last;
+			REN_IN.cons = cons;
+			group.render();
+			REN_IN.pose = null;
+		});
+		group.post(mdata);
 	}
 
 	public static void render(Polyhedron poly, PoseStack pose, RenderType type, SubmitNodeCollector nodecoll, int lc){
-		REN_IN.pose = pose;
-		REN_IN.transform(poly);
-		nodecoll.submitCustomGeometry(pose, type, (last, buffer) -> REN_IN.render(poly, last, type, buffer, lc));
-		pose.popPose();
+		REN_IN.stack = pose;
+		REN_IN.type = type;
+		REN_IN.light = lc;
+		nodecoll.submitCustomGeometry(pose, type, (last, cons) -> {
+			REN_IN.pose = last;
+			REN_IN.cons = cons;
+			REN_IN.render(poly);
+			REN_IN.pose = null;
+		});
 	}
 
 }

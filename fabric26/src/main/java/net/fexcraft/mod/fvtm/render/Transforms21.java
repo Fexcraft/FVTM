@@ -5,6 +5,8 @@ import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import org.joml.Quaternionf;
 
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -49,12 +51,12 @@ public class Transforms21 {
 		}
 
 		public void apply(){
-			Renderer21.pose.pushPose();
-			Renderer21.pose.mulPose(new Quaternionf(this.x, this.y, this.z, Static.toRadians(this.angle)));
+			RENDERER.push();
+			RENDERER.rotate(angle, (int)x, (int)y, (int)z);
 		}
 
 		public void deapply(){
-			Renderer21.pose.popPose();
+			RENDERER.pop();
 		}
 
 	}
@@ -72,12 +74,12 @@ public class Transforms21 {
 		}
 
 		public void apply(){
-			Renderer21.pose.pushPose();
-			Renderer21.pose.scale(this.x, this.y, this.z);
+			RENDERER.push();
+			RENDERER.scale(x, y, z);
 		}
 
 		public void deapply(){
-			Renderer21.pose.popPose();
+			RENDERER.pop();
 		}
 
 	}

@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fcl.util.Renderer21.AY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
@@ -88,23 +89,23 @@ public class RailRenderer {
 	private static void renderJuncModel(Junction junc, int idx, Polyhedron hed){
 		V3D pos = junc.tracks.get(idx).getVectorPosition0(junc.tracks.get(idx).length * 0.5f, false);
 		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
-		Renderer21.pushPose();
-		Renderer21.rotateRad((float)ang, AY);
+		RENDERER.push();
+		RENDERER.rotateRad((float)ang, 0, 1, 0);
 		Renderer21.setColor(RailJunction.TRACK_RGB[idx]);
 		hed.render();
-		Renderer21.popPose();
+		RENDERER.pop();
 	}
 
 	private static void renderJuncSignal(Junction junc, int idx, RGB col){
 		V3D pos = junc.tracks.get(idx).getVectorPosition0(junc.tracks.get(idx).length * 0.5f, false);
 		double ang = -Math.atan2(junc.tracks.get(idx).vecpath[0].z - pos.z, junc.tracks.get(idx).vecpath[0].x - pos.x) - rad90;
-		Renderer21.pushPose();
-		Renderer21.rotateRad((float)ang, AY);
+		RENDERER.push();
+		RENDERER.rotateRad((float)ang, 0, 1, 0);
 		Renderer21.setColor(RailJunction.TRACK_RGB[idx]);
 		JUNC_SIG_DIR.render();
 		Renderer21.setColor(col);
 		JUNC_SIG_STATE.render();
-		Renderer21.popPose();
+		RENDERER.pop();
 	}
 
 	private static void renderRails(PoseStack pose, Junction junc){

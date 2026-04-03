@@ -106,20 +106,20 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				pushPose();
+				RENDERER.push();
 				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering){
-					rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+					RENDERER.rotate(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				}
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					if(wtd != null) rotateDeg(-wtd.rotation, AX);
+					if(wtd != null) RENDERER.rotate(-wtd.rotation, 1, 0, 0);
 				}
-				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
+				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				Renderer21.popPose();
+				RENDERER.pop();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
@@ -130,14 +130,14 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				pushPose();
+				RENDERER.push();
 				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
-				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
-				if(slot != null && slot.steering) rotateDeg(data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
+				if(slot != null && slot.steering) RENDERER.rotate(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				popPose();
+				RENDERER.pop();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
@@ -149,18 +149,18 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				pushPose();
+				RENDERER.push();
 				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
-				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+				if(slot != null && slot.steering) RENDERER.rotate(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				if(data.vehent != null){
 					wtd = data.vehent.wheeldata.get(data.part_category);
-					if(wtd != null) rotateDeg(-wtd.rotation, AX);
+					if(wtd != null) RENDERER.rotate(-wtd.rotation, 1, 0, 0);
 				}
-				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
+				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				popPose();
+				RENDERER.pop();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program() {
@@ -171,14 +171,14 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				pushPose();
+				RENDERER.push();
 				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
-				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
-				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
+				if(slot != null && slot.steering) RENDERER.rotate(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
-				popPose();
+				RENDERER.pop();
 			}
 		});
 		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 0));
@@ -188,7 +188,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f, false));
 		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f, false));
 		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f, false));
-		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, Float.valueOf(0f)));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
@@ -197,21 +197,21 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			@Override
 			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){
 				FvtmRenderTypes.getLB(data.texture.getCurrentTexture());
-				pose.pushPose();
+				RENDERER.push();
 				if(beam.swivel == null || beam.swivel.equals("vehicle")){
 					RENDERER.translate(beam.pos);
 				}
 				else{
 					SwivelPoint point = data.vehicle.getRotationPoint(beam.swivel);
 					V3D pos = point.getRelativeVector(beam.pos);
-					pose.translate(pos.x, pos.y, pos.z);
+					pose.translate((float)pos.x, (float)pos.y, (float)pos.z);
 				}
 				setColor(RGB.WHITE, 0.5f);
 			}
 
 			@Override
 			public void post(LightBeam beam, ModelGroup list, ModelRenderData data){
-				pose.popPose();
+				RENDERER.pop();
 			}
 		};
 		ModelGroup.PROGRAMS.add(new TextRenderer());
@@ -321,7 +321,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 	public static class AttributeRotator extends AttributeBased {
 
 		private float min, max, step = 1;
-		private Float current;
+		private float current = 0;
 		private int axis;
 		private boolean boolstatebased;
 		private boolean override;
@@ -357,7 +357,6 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			if(data.cache == null) return;
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			current = data.cache.get(this, FLOAT_SUPP);
-			if(current == null) current = 0f;
 			current = boolstatebased ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat() * step;
 			if(current > max) current = max;
 			if(current < min) current = min;
@@ -390,7 +389,7 @@ public class DefaultPrograms21 extends DefaultPrograms {
 
 		private boolean bool;
 		private float min, max, step;
-		private Float current;
+		private float current = 0;
 		private int axis;
 
 		public AttributeTranslator(String attribute, boolean boolstatebased, float min, float max, float step, int axis){
@@ -412,7 +411,6 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			if(data.cache == null) return;
 			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
 			current = data.cache.get(this, FLOAT_SUPP);
-			if(current == null) current = 0f;
 			current = bool ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat();
 			if(current > max) current = max;
 			if(current < min) current = min;
@@ -539,10 +537,10 @@ public class DefaultPrograms21 extends DefaultPrograms {
 				font = getFont(key);
 				if(font == null) return;
 			}
-			font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
-				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer21.buffer(),
+			/*font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
+				data.sign.getColorChannel("text").packed - 16777216, false, pose.pose(), cons,
 				Font.DisplayMode.SEE_THROUGH, overlay, light
-			);
+			);*/
 			Renderer21.resetColor();
 			RENDERER.pop();
 		}
@@ -605,10 +603,10 @@ public class DefaultPrograms21 extends DefaultPrograms {
 			if(rot.y != 0.0F) RENDERER.rotate(rot.y, 0, 1, 0);
 			if(rot.z != 0.0F) RENDERER.rotate(rot.z, 0, 0, 1);
 			if(rot.x != 0.0F) RENDERER.rotate(rot.x, 1, 0, 0);
-			font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
+			/*font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
 				color - 16777216, false, pose.last().pose(), Renderer21.buffer(),
 				glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, overlay, light
-			);
+			);*/
 			RENDERER.pop();
 		}
 

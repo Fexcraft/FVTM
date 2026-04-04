@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
@@ -21,6 +22,7 @@ import net.fexcraft.mod.fvtm.impl.Packets21;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.render.*;
+import net.fexcraft.mod.fvtm.render.state.LevelRS;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -64,6 +66,8 @@ public class FVTMC implements ClientModInitializer {
 	public static KeyMapping arrow_left;
 	public static KeyMapping arrow_right;
 	public static KeyMapping.Category category;
+	public static RenderStateDataKey<LevelRS> LEVEL_RS_KEY;
+	public static LevelRS LEVEL_RS = new LevelRS();
 
 	@Override
 	public void onInitializeClient(){
@@ -148,6 +152,11 @@ public class FVTMC implements ClientModInitializer {
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(serv -> {
 			SystemManager.onClientTick();
+		});
+		LEVEL_RS_KEY = RenderStateDataKey.create(() -> "fvtm");
+		LevelRenderEvents.END_EXTRACTION.register(e -> {
+			e.levelState().setData(LEVEL_RS_KEY, LEVEL_RS);
+			LEVEL_RS.level = e.level();
 		});
 		if(Config.MD_SIGN){
 			LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(SignRenderer::renderSigns);

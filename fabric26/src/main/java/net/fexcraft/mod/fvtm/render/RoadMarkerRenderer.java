@@ -47,12 +47,12 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, RoadMarkerRS>
 	@Override
 	public void submit(RoadMarkerRS state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
-		FvtmRenderTypes.getCutout(texture);
+		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(texture), state.lightCoords);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.rad180, AZ));
-		RoadMarkerModel.INST.marker.render();
+		RenderUtil26.render(RoadMarkerModel.INST.marker);
 		if(state.road_marker.queueid == null){
 			Renderer26.setColor(RGB.BLACK);
-			RoadMarkerModel.INST.arrow.render();
+			RenderUtil26.render(RoadMarkerModel.INST.arrow);
 		}
 		else{
 			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(state.road_marker.queueid);
@@ -61,7 +61,7 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, RoadMarkerRS>
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer26.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					RoadMarkerModel.INST.arrow.render();
+					RenderUtil26.render(RoadMarkerModel.INST.arrow);
 				}
 			}
 		}

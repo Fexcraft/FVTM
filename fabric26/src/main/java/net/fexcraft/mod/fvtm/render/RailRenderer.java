@@ -186,6 +186,7 @@ public class RailRenderer {
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
 		RenderUtil26.render(SPHERE);
+		Renderer26.resetColor();
 		pose.popPose();
 		return true;
 	}

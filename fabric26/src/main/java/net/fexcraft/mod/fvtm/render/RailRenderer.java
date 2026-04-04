@@ -5,18 +5,28 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.Renderer26;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.core.BlockPos;
 
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -28,20 +38,19 @@ public class RailRenderer {
 	private static boolean holding;
 	private static HashSet<Junction> juncset = new HashSet<>();
 
-	public static void renderRails(LevelRenderContext event){
-		/*sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(event.camera().getEntity().level()));
+	public static void renderRails(LevelRenderContext context){
+		ClientLevel level = context.levelState().getData(LEVEL_RS_KEY).level;
+		sys = SystemManager.get(SystemManager.Systems.RAIL, WrapperHolder.getWorld(level));
 		if(sys == null) return;
-		Camera camera = event.camera();
-		double cx = camera.getPosition().x;
-		double cy = camera.getPosition().y;
-		double cz = camera.getPosition().z;
-		PoseStack pose = event.matrixStack();
-		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		double cx = context.levelState().cameraRenderState.pos.x;
+		double cy = context.levelState().cameraRenderState.pos.y;
+		double cz = context.levelState().cameraRenderState.pos.z;
+		PoseStack pose = context.poseStack();
+		RenderUtil26.set(pose, context.submitNodeCollector(), FvtmRenderTypes.white(), 0);
 		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		Renderer26.resetColor();
-		FvtmRenderTypes.setCutout(WHITE_TEXTURE);
 		for(SystemRegion<RailSystem, Junction> reg : sys.getRegions().values()){
 			juncset.clear();
 			juncset.addAll(reg.getObjects().values());
@@ -50,13 +59,13 @@ public class RailRenderer {
 				pose.translate(junc.getV3D().x, junc.getV3D().y, junc.getV3D().z);
 				Renderer26.RENDERER.light(junc.getV3D());
 				if(junc.tracks.size() == 0 || holding){
-					DebugUtils.renderBB(0.25f, COL_ORG);
+					RenderUtil26.renderBB(0.25f, COL_ORG);
 				}
 				if(junc.tracks.size() > 0 && holding){
 					pose.translate(0, junc.tracks.get(0).gauge.getHeight(), 0);
-					FvtmRenderTypes.setCutout(WHITE_TEXTURE);
+					RenderUtil26.typeWhite();
 					Renderer26.setColor(COL_GRY);
-					JUNC_CORE.render();
+					RenderUtil26.render(JUNC_CORE);
 					for(int i = 0; i < junc.tracks.size(); i++){
 						renderJuncModel(junc, i, JUNC_LINE);
 					}
@@ -82,7 +91,7 @@ public class RailRenderer {
 				renderRails(pose, junc);
 			}
 		}
-		pose.popPose();*/
+		pose.popPose();
 	}
 
 	private static void renderJuncModel(Junction junc, int idx, Polyhedron hed){
@@ -91,7 +100,7 @@ public class RailRenderer {
 		RENDERER.push();
 		RENDERER.rotateRad((float)ang, 0, 1, 0);
 		Renderer26.setColor(RailJunction.TRACK_RGB[idx]);
-		hed.render();
+		RenderUtil26.render(hed);
 		RENDERER.pop();
 	}
 
@@ -101,9 +110,9 @@ public class RailRenderer {
 		RENDERER.push();
 		RENDERER.rotateRad((float)ang, 0, 1, 0);
 		Renderer26.setColor(RailJunction.TRACK_RGB[idx]);
-		JUNC_SIG_DIR.render();
+		RenderUtil26.render(JUNC_SIG_DIR);
 		Renderer26.setColor(col);
-		JUNC_SIG_STATE.render();
+		RenderUtil26.render(JUNC_SIG_STATE);
 		RENDERER.pop();
 	}
 
@@ -118,65 +127,75 @@ public class RailRenderer {
 			pose.translate(track.vecpath[0].x, track.vecpath[0].y, track.vecpath[0].z);
 			RailGaugeModel model = track.gauge.getModel();
 			if(track.railmodel == null) PathModelGenerator.generateTrackModel(track, model);
-			FvtmRenderTypes.getCutout(track.gauge.getRailTexture());
-			track.railmodel.render();
-			FvtmRenderTypes.getCutout(track.gauge.getTiesTexture());
-			track.restmodel.render();
+			RenderUtil26.type(FvtmRenderTypes.getCutout(track.gauge.getRailTexture()));
+			RenderUtil26.render(() -> {
+				for(int m = 0; m < track.railmodel.hedrons.length; m++){
+					Renderer.RENDERER.light(track.railmodel.positions[m]);
+					RENDERER.render(track.railmodel.hedrons[m]);
+				}
+			});
+			RenderUtil26.type(FvtmRenderTypes.getCutout(track.gauge.getTiesTexture()));
+			RenderUtil26.render(() -> {
+				for(int m = 0; m < track.restmodel.hedrons.length; m++){
+					Renderer.RENDERER.light(track.restmodel.positions[m]);
+					RENDERER.render(track.restmodel.hedrons[m]);
+				}
+			});
 			pose.popPose();
 		}
 		pose.popPose();
 	}
 
-	public static boolean renderGrid(LevelRenderContext event, BlockOutlineRenderState res){
-		/*if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
+	public static boolean renderGrid(LevelRenderContext context, BlockOutlineRenderState res){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return true;
-		PoseStack pose = event.matrixStack();
-		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
-		QV3D vec = new QV3D(res.getLocation().x, res.getLocation().y, res.getLocation().z);
-		BlockPos pos = BlockPos.containing(res.getLocation());
-		double cx = event.camera().getPosition().x;
-		double cy = event.camera().getPosition().y;
-		double cz = event.camera().getPosition().z;
+		PoseStack pose = context.poseStack();
+		RenderUtil26.set(pose, context.submitNodeCollector(), FvtmRenderTypes.white(), 255);
+		QV3D vec = new QV3D(res.pos().getX(), res.pos().getY(), res.pos().getZ());
+		BlockPos pos = BlockPos.containing(res.pos().getX(), res.pos().getY(), res.pos().getZ());
+		double cx = context.levelState().cameraRenderState.pos.x;
+		double cy = context.levelState().cameraRenderState.pos.y;
+		double cz = context.levelState().cameraRenderState.pos.z;
 		double yy = vec.y * 0.0625f;
 		Renderer26.resetColor();
-		FvtmRenderTypes.setCutout(FvtmRegistry.WHITE_TEXTURE);
+		RenderUtil26.typeWhite();
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		for(int i = 0; i < 4; i++){
 			pose.pushPose();
 			pose.translate(pos.getX() + (i * 0.25 + 0.125), pos.getY() + yy + 0.01, pos.getZ() + 0.5);
-			LLBB2.render();
+			RenderUtil26.render(LLBB2);
 			pose.popPose();
 			pose.pushPose();
 			pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + (i * 0.25 + 0.125));
-			LLBB0.render();
+			RenderUtil26.render(LLBB0);
 			pose.popPose();
 		}
 		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
 		Renderer26.setColor(COL_CYN);
 		pose.pushPose();
 		pose.translate(pos.getX() + v, pos.getY() + yy + 0.01, pos.getZ() + 0.5);
-		LLBB2.render();
+		RenderUtil26.render(LLBB2);
 		pose.popPose();
 		v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
 		pose.pushPose();
 		pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + v);
-		LLBB0.render();
+		RenderUtil26.render(LLBB0);
 		pose.popPose();
 		Renderer26.setColor(COL_ORG);
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
-		SPHERE.render();
-		pose.popPose();*/
+		RenderUtil26.render(SPHERE);
+		pose.popPose();
 		return true;
 	}
 
-	public static boolean renderRailPreview(LevelRenderContext event, BlockOutlineRenderState res){
+	public static boolean renderRailPreview(LevelRenderContext context, BlockOutlineRenderState res){
 		/*if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return true;
-		double cx = event.camera().getPosition().x;
-		double cy = event.camera().getPosition().y;
-		double cz = event.camera().getPosition().z;
-		PoseStack pose = event.matrixStack();
+		double cx = context.levelState().cameraRenderState.pos.x;
+		double cy = context.levelState().cameraRenderState.pos.y;
+		double cz = context.levelState().cameraRenderState.pos.z;
+		PoseStack pose = context.poseStack();
 		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
 		FvtmRenderTypes.setLines();
 		pose.pushPose();

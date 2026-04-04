@@ -6,6 +6,9 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.model.entity.RoadMarkerModel;
+import net.fexcraft.mod.fvtm.render.state.RailMarkerRS;
+import net.fexcraft.mod.fvtm.render.state.RoadMarkerRS;
+import net.fexcraft.mod.fvtm.render.state.VehicleRenderState;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -20,7 +23,7 @@ import static net.fexcraft.mod.fcl.util.Renderer26.AZ;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, FvtmRenderState> {
+public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, RoadMarkerRS> {
 
 	private IDL texture = IDLManager.getIDLCached("fvtm:textures/entity/roadmarker.png");
 	public static final RGB CYAN = new RGB(0, 255, 255);
@@ -31,19 +34,18 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, FvtmRenderSta
 	}
 
 	@Override
-	public FvtmRenderState createRenderState(){
-		return new FvtmRenderState();
+	public RoadMarkerRS createRenderState(){
+		return new RoadMarkerRS();
 	}
 
 	@Override
-	public void extractRenderState(RoadMarker entity, FvtmRenderState state, float f){
+	public void extractRenderState(RoadMarker entity, RoadMarkerRS state, float f){
 		super.extractRenderState(entity, state, f);
 		state.road_marker = entity;
-		state.f = f;
 	}
 
 	@Override
-	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
+	public void submit(RoadMarkerRS state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
 		FvtmRenderTypes.getCutout(texture);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.rad180, AZ));

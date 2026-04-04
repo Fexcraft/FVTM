@@ -31,6 +31,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity, B
 	public void extractRenderState(BaseBlockEntity ent, BlockRS state, float partialTicks, Vec3 cpos, ModelFeatureRenderer.CrumblingOverlay breakProgress){
 		BlockEntityRenderer.super.extractRenderState(ent, state, partialTicks, cpos, breakProgress);
 		state.fvtmData = ent.getBlockData();
+		state.blockEntity = ent;
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity, B
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
 		}
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(state.fvtmData.getCurrentTexture()), state.lightCoords);
-		RenderUtil26.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, state, null));
+		RenderUtil26.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, state.blockEntity, null));
  		//
 		pose.popPose();
 	}

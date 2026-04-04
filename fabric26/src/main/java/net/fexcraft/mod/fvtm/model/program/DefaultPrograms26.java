@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
+import net.fexcraft.mod.fvtm.render.RenderUtil26;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -215,6 +216,7 @@ public class DefaultPrograms26 extends DefaultPrograms {
 			}
 		};
 		ModelGroup.PROGRAMS.add(new TextRenderer());
+		ModelGroup.PROGRAMS.add(new JackStandProgram26());
 	}
 
 	public static class RGBCustom implements Program {
@@ -608,6 +610,15 @@ public class DefaultPrograms26 extends DefaultPrograms {
 				glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, overlay, light
 			);*/
 			RENDERER.pop();
+		}
+
+	}
+
+	public static class JackStandProgram26 extends JackStandProgram {
+
+		@Override
+		public void render(ModelGroup list, ModelRenderData data){
+			RenderUtil26.render(list, data);
 		}
 
 	}

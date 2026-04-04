@@ -274,27 +274,7 @@ public class DefaultPrograms {
 				return false;
 			}
 		});
-		ModelGroup.PROGRAMS.add(new Program(){
-			private boolean in;
-			public String id(){
-				return "fvtm:jack_stand";
-			}
-			public void pre(ModelGroup list, ModelRenderData data){
-				list.visible = true;
-				if(in || data.tile == null || ((JackEntity)data.tile).getCoords().size() < 2) return;
-				in = true;
-				for(V3D coord : ((JackEntity)data.tile).getCoords()){
-					RENDERER.translate(coord);
-					list.render(data);
-					RENDERER.translate(-coord.x, -coord.y, -coord.z);
-				}
-				list.visible = false;
-				in = false;
-			}
-			public boolean post(){
-				return false;
-			}
-		});
+		ModelGroup.PROGRAMS.add(new JackStandProgram());
 	}
 
 	public static void setupSignalTimer(){
@@ -796,6 +776,40 @@ public class DefaultPrograms {
 		}
 
 		public abstract TextRendererBase create();
+
+	}
+
+	public static class JackStandProgram implements Program {
+
+		private boolean in;
+
+		@Override
+		public String id(){
+			return "fvtm:jack_stand";
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+			if(in || data.tile == null || ((JackEntity)data.tile).getCoords().size() < 2) return;
+			in = true;
+			for(V3D coord : ((JackEntity)data.tile).getCoords()){
+				RENDERER.translate(coord);
+				render(list, data);
+				RENDERER.translate(-coord.x, -coord.y, -coord.z);
+			}
+			list.visible = false;
+			in = false;
+		}
+
+		public void render(ModelGroup list, ModelRenderData data){
+			list.render(data);
+		}
+
+		@Override
+		public boolean post(){
+			return false;
+		}
 
 	}
 

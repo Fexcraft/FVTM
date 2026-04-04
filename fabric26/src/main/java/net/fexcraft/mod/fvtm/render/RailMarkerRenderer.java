@@ -45,13 +45,13 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, RailMarkerRS>
 	public void submit(RailMarkerRS state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(texture), state.lightCoords);
-		RenderUtil26.render(RailMarkerModel.INST.base, RENDERDATA);
+		RenderUtil26.render(RailMarkerModel.INST.base);
 		RENDERDATA.texture = null;
 		RenderUtil26.type(FvtmRenderTypes.getGlow(texture));
-		RenderUtil26.render(RailMarkerModel.INST.glow, RENDERDATA);
+		RenderUtil26.render(RailMarkerModel.INST.glow);
 		if(state.rail_marker.queueid == null){
 			Renderer26.setColor(RGB.BLACK);
-			RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA);
+			RenderUtil26.render(RailMarkerModel.INST.arrow);
 		}
 		else{
 			RailPlacingUtil.NewTrack road = RailPlacingUtil.QUEUE.get(state.rail_marker.queueid);
@@ -60,7 +60,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, RailMarkerRS>
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer26.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					RenderUtil26.render(RailMarkerModel.INST.arrow, RENDERDATA);
+					RenderUtil26.render(RailMarkerModel.INST.arrow);
 				}
 			}
 		}

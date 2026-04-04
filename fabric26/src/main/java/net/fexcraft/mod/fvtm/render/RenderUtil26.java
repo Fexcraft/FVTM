@@ -39,7 +39,9 @@ public class RenderUtil26 {
 
 	public static void render(ModelGroup group, ModelRenderData mdata){
 		group.pre(mdata);
+		int col = Renderer26.color;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
 			group.render();
@@ -55,6 +57,17 @@ public class RenderUtil26 {
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
 			RENDERER.render(poly);
+			Renderer26.pose = null;
+		});
+	}
+
+	public static void render(Runnable run){
+		int col = Renderer26.color;
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+			Renderer26.setColor(col);
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
+			run.run();
 			Renderer26.pose = null;
 		});
 	}
@@ -130,6 +143,10 @@ public class RenderUtil26 {
 		RENDERER.translate(-scale, 0, 0);
 		render(LLBB2, col);
 		RENDERER.pop();
+	}
+
+	public static void typeWhite(){
+		type(FvtmRenderTypes.white());
 	}
 
 }

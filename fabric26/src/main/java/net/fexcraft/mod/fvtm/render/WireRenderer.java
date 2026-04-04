@@ -2,12 +2,25 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
+import net.fexcraft.mod.fvtm.item.WireDecoItem;
+import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
+import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
+import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
+import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
 import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -25,8 +38,8 @@ public class WireRenderer {
 	private static boolean holding_relaydeco;
 	private static boolean holding_deco;
 
-	public static void renderWires(LevelRenderContext event){
-		/*wiredata = SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(event.camera().getEntity().level()), WireSystem.class);
+	public static void renderWires(LevelRenderContext context){
+		wiredata = SystemManager.get(SystemManager.Systems.WIRE, context.levelState().getData(LEVEL_RS_KEY).key);
 		if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getInstance().player.getMainHandItem();
 		holding_wire = Config.DEBUG_ACTIVE || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(getToolboxType(held)));
@@ -38,42 +51,40 @@ public class WireRenderer {
 		}
 		else holding_relaydeco = holding_deco = false;
 		//
-		Camera camera = event.camera();
-		double cx = camera.getPosition().x;
-		double cy = camera.getPosition().y;
-		double cz = camera.getPosition().z;
+		double cx = context.levelState().cameraRenderState.pos.x;
+		double cy = context.levelState().cameraRenderState.pos.y;
+		double cz = context.levelState().cameraRenderState.pos.z;
+		PoseStack pose = context.poseStack();
+		RenderUtil26.set(pose, context.submitNodeCollector(), FvtmRenderTypes.white(), 0);
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		PoseStack pose = event.matrixStack();
-		FvtmRenderTypes.setCutout(FvtmResources.WHITE_TEXTURE);
-		Renderer26.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		for(SystemRegion<?, RelayHolder> reg : wiredata.getRegions().values()){
 			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){
-					Renderer26.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
+					//TODO Renderer26.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check
 					if(Config.DEBUG_ACTIVE || holding_wire){
-						DebugUtils.renderBB(relay.pos, holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
+						RenderUtil26.renderBB(relay.pos, holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 					}
 					if((Config.DEBUG_ACTIVE || holding_slack) && relay.wires.size() > 0){
 						for(Wire wire : relay.wires){
 							if(wire.copy) continue;
-							DebugUtils.renderBB(wire.getVectorPosition(wire.length * 0.5, false),
-								holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f,COL_ORG);
+							RenderUtil26.renderBB(wire.getVectorPosition(wire.length * 0.5, false),
+								holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_ORG);
 						}
 					}
 					if(relay.wires.size() > 0){
 						if(holding_slack || holding_deco){
 							for(Wire wire : relay.wires){
 								if(wire.copy) continue;
-								DebugUtils.renderBB(wire.getVectorPosition(wire.length * 0.5, false),
+								RenderUtil26.renderBB(wire.getVectorPosition(wire.length * 0.5, false),
 									holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_ORG);
 							}
 						}
 						if(holding_relaydeco){
 							for(Wire wire : relay.wires){
-								DebugUtils.renderBB(wire.getVectorPosition(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, false),
+								RenderUtil26.renderBB(wire.getVectorPosition(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, false),
 									holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
 							}
 						}
@@ -82,7 +93,7 @@ public class WireRenderer {
 				}
 			}
 		}
-		pose.popPose();*/
+		pose.popPose();
 	}
 
 	private static void renderWires(PoseStack pose, WireRelay relay){

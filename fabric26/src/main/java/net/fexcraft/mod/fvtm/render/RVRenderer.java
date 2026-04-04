@@ -416,7 +416,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		pose.mulPose(q);
 	}
 
-	public static void renderPointSep(PoseStack pose, SubmitNodeCollector noco, SwivelPoint point, VehicleInstance inst, ArrayList<String> parts, float ticks){
+	public static void renderPointSep(PoseStack pose, SwivelPoint point, VehicleInstance inst, ArrayList<String> parts, float ticks){
 		pose.pushPose();
 		if(!point.isVehicle()){
 			V3D temp0 = point.getPos();
@@ -441,7 +441,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 			RenderUtil26.render(entry.getValue().getType().getModel(), RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());
 			pose.popPose();
 		}
-		for(SwivelPoint sub : point.subs) renderPointSep(pose, noco, sub, inst, parts, ticks);
+		for(SwivelPoint sub : point.subs) renderPointSep(pose, sub, inst, parts, ticks);
 		pose.popPose();
 	}
 

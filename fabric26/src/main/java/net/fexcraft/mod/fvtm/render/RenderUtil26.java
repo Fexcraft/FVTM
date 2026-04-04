@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -39,17 +40,20 @@ public class RenderUtil26 {
 
 	public static void render(ModelGroup group, ModelRenderData mdata){
 		group.pre(mdata);
-		if(group.visible){
-			int col = Renderer26.color;
-			noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
-				Renderer26.setColor(col);
-				Renderer26.pose = last;
-				Renderer26.cons = cons;
-				group.render();
-				Renderer26.pose = null;
-			});
-		}
+		if(group.visible) render(group);
 		group.post(mdata);
+	}
+
+	//TODO add color param
+	public static void render(ModelGroup group){
+		int col = Renderer26.color;
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+			Renderer26.setColor(col);
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
+			group.render();
+			Renderer26.pose = null;
+		});
 	}
 
 	public static void render(Polyhedron poly){
@@ -87,6 +91,20 @@ public class RenderUtil26 {
 		});
 	}
 
+	public static void renderLine(double sx, double sy, double sz, double ex, double ey, double ez){
+		int col = Renderer26.color;
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+			Renderer26.setColor(col);
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
+			LINE_POLY.vertices[0].pos(sx, sy, sz);
+			LINE_POLY.vertices[1].pos(ex, ey, ez);
+			RENDERER.render(LINE);
+			Renderer26.pose = null;
+			Renderer26.resetColor();
+		});
+	}
+
 	public static void renderSphere(float scale, int col){
 		Renderer26.type = FvtmRenderTypes.white();
 		Renderer26.stack.pushPose();
@@ -100,6 +118,23 @@ public class RenderUtil26 {
 			Renderer26.resetColor();
 		});
 		Renderer26.stack.popPose();
+	}
+
+	public static void renderPane(float scale, int col){
+		Renderer26.type = FvtmRenderTypes.white();
+		float hs = scale * 0.5f;
+		RENDERER.push();
+		RENDERER.scale(scale, 1, scale);
+		RENDERER.translate(-hs, 0, -hs);
+		noco.submitCustomGeometry(Renderer26.stack, FvtmRenderTypes.white(), (last, cons) -> {
+			RENDERER.color(col);
+			Renderer26.pose = last;
+			Renderer26.cons = cons;
+			RENDERER.render(PANE);
+			Renderer26.pose = null;
+			Renderer26.resetColor();
+		});
+		RENDERER.pop();
 	}
 
 	public static void renderBB(V3D pos, float scale, int col){
@@ -153,4 +188,7 @@ public class RenderUtil26 {
 		type(FvtmRenderTypes.white());
 	}
 
+	public static void lines(){
+		type(RenderTypes.LINES);
+	}
 }

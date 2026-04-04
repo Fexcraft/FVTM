@@ -39,18 +39,21 @@ public class RenderUtil26 {
 
 	public static void render(ModelGroup group, ModelRenderData mdata){
 		group.pre(mdata);
-		int col = Renderer26.color;
-		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
-			Renderer26.setColor(col);
-			Renderer26.pose = last;
-			Renderer26.cons = cons;
-			group.render();
-			Renderer26.pose = null;
-		});
+		if(group.visible){
+			int col = Renderer26.color;
+			noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
+				Renderer26.setColor(col);
+				Renderer26.pose = last;
+				Renderer26.cons = cons;
+				group.render();
+				Renderer26.pose = null;
+			});
+		}
 		group.post(mdata);
 	}
 
 	public static void render(Polyhedron poly){
+		if(!poly.visible) return;
 		int col = Renderer26.color;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
@@ -73,6 +76,7 @@ public class RenderUtil26 {
 	}
 
 	public static void render(Polyhedron poly, int col){
+		if(!poly.visible) return;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;

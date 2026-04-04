@@ -23,10 +23,12 @@ import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.render.state.LevelRS;
+import net.fexcraft.mod.fvtm.render.state.OutlineRS;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
@@ -39,6 +41,7 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
@@ -68,6 +71,8 @@ public class FVTMC implements ClientModInitializer {
 	public static KeyMapping.Category category;
 	public static RenderStateDataKey<LevelRS> LEVEL_RS_KEY;
 	public static LevelRS LEVEL_RS = new LevelRS();
+	public static RenderStateDataKey<OutlineRS> OUTLINE_RS_KEY;
+	public static OutlineRS OUTLINE_RS = new OutlineRS();
 
 	@Override
 	public void onInitializeClient(){
@@ -156,28 +161,33 @@ public class FVTMC implements ClientModInitializer {
 		LEVEL_RS_KEY = RenderStateDataKey.create(() -> "fvtm");
 		LevelRenderEvents.END_EXTRACTION.register(e -> {
 			e.levelState().setData(LEVEL_RS_KEY, LEVEL_RS);
-			LEVEL_RS.level = e.level();
+			LEVEL_RS.key = WrapperHolder.getWorld(e.level()).type().side_key();
+		});
+		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((e, res) -> {
+			e.levelState().setData(OUTLINE_RS_KEY, OUTLINE_RS);
+			OUTLINE_RS.result = new QV3D(res.getLocation().x, res.getLocation().y, res.getLocation().z);
+			OUTLINE_RS.pos = BlockPos.containing(res.getLocation());
 		});
 		if(Config.MD_SIGN){
-			LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(SignRenderer::renderSigns);
+			LevelRenderEvents.COLLECT_SUBMITS.register(SignRenderer::renderSigns);
 		}
 		if(Config.MD_VEHICLE || Config.MD_BLOCK){
-			LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(SepRenderer::renderSeparate);
+			LevelRenderEvents.COLLECT_SUBMITS.register(SepRenderer::renderSeparate);
 		}
 		if(Config.MD_VEHICLE){
-			LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(VehicleRenderer::renderVehicles);
+			LevelRenderEvents.COLLECT_SUBMITS.register(VehicleRenderer::renderVehicles);
 			HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, VehicleHUD.ID, new VehicleHUD());
 		}
 		if(Config.MD_WIRE){
-			LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(WireRenderer::renderWires);
+			LevelRenderEvents.COLLECT_SUBMITS.register(WireRenderer::renderWires);
 		}
 		if(Config.MD_RAIL){
-			LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(RailRenderer::renderRails);
-			LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderGrid);
-			LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(RailRenderer::renderRailPreview);
+			LevelRenderEvents.COLLECT_SUBMITS.register(RailRenderer::renderRails);
+			LevelRenderEvents.COLLECT_SUBMITS.register(RailRenderer::renderGrid);
+			LevelRenderEvents.COLLECT_SUBMITS.register(RailRenderer::renderRailPreview);
 		}
 		if(Config.MD_ROAD){
-			LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(RoadRenderer::renderRoadPreview);
+			LevelRenderEvents.COLLECT_SUBMITS.register(RoadRenderer::renderRoadPreview);
 		}
 		if(Config.MD_BLOCK){
 			//TODO ModelLoadingPlugin.register(new BakingPlugin());

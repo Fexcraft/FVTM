@@ -6,7 +6,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.fexcraft.mod.fvtm.render.state.DecorationRS;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
@@ -18,11 +18,12 @@ import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DecoRenderer extends EntityRenderer<DecorationEntity, FvtmRenderState> {
+public class DecoRenderer extends EntityRenderer<DecorationEntity, DecorationRS> {
 
 	public DecoRenderer(EntityRendererProvider.Context context){
 		super(context);
@@ -30,26 +31,21 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity, FvtmRenderSta
 	}
 
 	@Override
-	public FvtmRenderState createRenderState(){
-		return new FvtmRenderState();
+	public DecorationRS createRenderState(){
+		return new DecorationRS();
 	}
 
 	@Override
-	public void extractRenderState(DecorationEntity entity, FvtmRenderState state, float f){
+	public void extractRenderState(DecorationEntity entity, DecorationRS state, float f){
 		super.extractRenderState(entity, state, f);
 		state.decoration = entity;
-		state.f = f;
 	}
 
 	@Override
-	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
+	public void submit(DecorationRS state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
 		pose.pushPose();
 		EntityW ent = UniEntity.getEntity(state.decoration);
 		for(DecorationData data : state.decoration.decos){
-			if(data.getType().getModel() == null){
-				//FvtmLogger.LOGGER.debug(data.modelid);
-				continue;
-			}
 			pose.pushPose();
 			pose.translate(data.offset.x16, data.offset.y16, data.offset.z16);
 			if(data.rotx != 0.0F || data.roty != 0.0F || data.rotz != 0.0F){
@@ -60,13 +56,18 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity, FvtmRenderSta
 				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
-			RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(data.getCurrentTexture()), state.lightCoords);
-			RenderUtil26.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent));
+			if(data.getType().getModel() == null){
+				RenderUtil26.renderBB(0.25f, COL_RED);
+			}
+			else{
+				RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(data.getCurrentTexture()), state.lightCoords);
+				RenderUtil26.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent));
+			}
 			pose.popPose();
 		}
 		if(state.decoration.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
 			pose.translate(0, 0.125f, 0.);
-			DebugUtils.renderBB(0.25f, COL_CYN);
+			RenderUtil26.renderBB(0.25f, COL_CYN);
 		}
 		pose.popPose();
 	}

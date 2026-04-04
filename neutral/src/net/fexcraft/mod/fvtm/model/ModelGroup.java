@@ -57,7 +57,7 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 	}
 
 	public void render(){
-		if(visible) for(Polyhedron poly : this) poly.render();
+		for(Polyhedron poly : this) poly.render();
 	}
 
 	public void addProgram(String str){

@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.RenderCacheI;
+import net.fexcraft.mod.fvtm.render.state.VehicleRenderState;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.*;
@@ -49,7 +50,7 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
+public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> {
 
 	private SeparateRenderCache.SepVehCache sepcache;
 
@@ -59,12 +60,12 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	@Override
-	public FvtmRenderState createRenderState(){
-		return new FvtmRenderState();
+	public VehicleRenderState createRenderState(){
+		return new VehicleRenderState();
 	}
 
 	@Override
-	public void extractRenderState(RootVehicle entity, FvtmRenderState state, float f){
+	public void extractRenderState(RootVehicle entity, VehicleRenderState state, float f){
 		super.extractRenderState(entity, state, f);
 		state.entity = entity;
 		state.vehicle = entity.vehicle;
@@ -87,7 +88,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, FvtmRenderState> {
 	}
 
 	@Override
-	public void submit(FvtmRenderState state, PoseStack pose, SubmitNodeCollector noco, CameraRenderState camera){
+	public void submit(VehicleRenderState state, PoseStack pose, SubmitNodeCollector noco, CameraRenderState camera){
 		if(state.vehicle == null || state.vehicle.data == null) return;
 		if(state.vehicle.cache == null) state.vehicle.cache = new RenderCacheI();
 		sepcache = state.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());

@@ -5,6 +5,7 @@ import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Util;
 
 import java.util.HashMap;
@@ -26,12 +27,12 @@ public class FvtmRenderTypes {
 		return RenderType.create("fvtm:entity_cutout", setup);
 	});
 	private static final Function<IDL, RenderType> GLOW = Util.memoize(idl -> {
-		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
+		RenderSetup setup = RenderSetup.builder(RenderPipelines.EYES).withTexture("Sampler0", idl.local())
 			.useLightmap().useOverlay().affectsCrumbling().setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).sortOnUpload().createRenderSetup();
 		return RenderType.create("fvtm:glow", setup);
 	});
 	private static final Function<IDL, RenderType> LIGHTBEAM = Util.memoize(idl -> {
-		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
+		RenderSetup setup = RenderSetup.builder(RenderPipelines.BEACON_BEAM_TRANSLUCENT).withTexture("Sampler0", idl.local())
 			.setOutline(RenderSetup.OutlineProperty.NONE).sortOnUpload().createRenderSetup();
 		return RenderType.create("fvtm:lb", setup);
 	});

@@ -26,7 +26,6 @@ import java.util.HashMap;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
-import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -46,7 +45,7 @@ public class DefaultPrograms26 extends DefaultPrograms {
 			@Override
 			public void pre(ModelGroup list, ModelRenderData data){
 				old = Renderer26.type;
-				FvtmRenderTypes.getGlow(data.texture.getCurrentTexture());
+				Renderer26.type = FvtmRenderTypes.getGlow(data.texture.getCurrentTexture());
 			}
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
@@ -198,7 +197,7 @@ public class DefaultPrograms26 extends DefaultPrograms {
 		LightBeam.LBR = new LightBeam.LBRender(){
 			@Override
 			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){
-				FvtmRenderTypes.getLB(data.texture.getCurrentTexture());
+				Renderer26.type = FvtmRenderTypes.getLB(data.texture.getCurrentTexture());
 				RENDERER.push();
 				if(beam.swivel == null || beam.swivel.equals("vehicle")){
 					RENDERER.translate(beam.pos);
@@ -539,10 +538,10 @@ public class DefaultPrograms26 extends DefaultPrograms {
 				font = getFont(key);
 				if(font == null) return;
 			}
-			/*font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
-				data.sign.getColorChannel("text").packed - 16777216, false, pose.pose(), cons,
+			font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
+				data.sign.getColorChannel("text").packed - 16777216, false, stack.last().pose(), Minecraft.getInstance().renderBuffers().bufferSource(),
 				Font.DisplayMode.SEE_THROUGH, overlay, light
-			);*/
+			);
 			Renderer26.resetColor();
 			RENDERER.pop();
 		}
@@ -605,10 +604,10 @@ public class DefaultPrograms26 extends DefaultPrograms {
 			if(rot.y != 0.0F) RENDERER.rotate(rot.y, 0, 1, 0);
 			if(rot.z != 0.0F) RENDERER.rotate(rot.z, 0, 0, 1);
 			if(rot.x != 0.0F) RENDERER.rotate(rot.x, 1, 0, 0);
-			/*font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
-				color - 16777216, false, pose.last().pose(), Renderer26.buffer(),
+			font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
+				color - 16777216, false, stack.last().pose(), Minecraft.getInstance().renderBuffers().bufferSource(),
 				glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, overlay, light
-			);*/
+			);
 			RENDERER.pop();
 		}
 

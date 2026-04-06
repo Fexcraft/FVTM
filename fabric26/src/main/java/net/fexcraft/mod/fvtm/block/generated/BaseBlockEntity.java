@@ -24,7 +24,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Optional;
 
-import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.PROP_ROT16;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -93,7 +93,10 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 
 	@Override
 	public int getMeta(){
-		return getBlockState().getValue(PROP_ROT16);
+		if(data.getBlockType().is4Rot()) return getBlockState().getValue(FACING).ordinal();
+		if(data.getBlockType().is8Rot()) return getBlockState().getValue(PROP_ROT8);
+		if(data.getBlockType().is16Rot()) return getBlockState().getValue(PROP_ROT16);
+		return 0;
 	}
 
 	@Override

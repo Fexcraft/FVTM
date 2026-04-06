@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.AY;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.BlockTypeImpl.getRot;
 
 /**
@@ -45,7 +46,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity, B
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
 		}
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(state.fvtmData.getCurrentTexture()), state.lightCoords);
-		RenderUtil26.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, state.blockEntity, null));
+		RENDER_UTIL.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, state.blockEntity, null));
  		//
 		pose.popPose();
 	}

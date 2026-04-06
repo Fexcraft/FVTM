@@ -19,6 +19,7 @@ import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.AY;
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.FACING;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -41,8 +42,8 @@ public class ConstRenderer implements BlockEntityRenderer<ConstructorEntity, Blo
 		Direction dir = state.blockState.getValue(FACING);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(dir.getAxis() == Direction.Axis.Z ? dir.toYRot() + 90 : dir.toYRot() - 90), AY));
 		if(MODEL == null) MODEL = (BlockModel)FvtmResources.getModel("fvtm:models/block/catalog.fmf", new ModelData(), BlockModel.class);
-		if(MODEL != null) RenderUtil26.render(MODEL, DefaultModel.RENDERDATA.clear());
-		else RenderUtil26.render(DebugUtils.SPHERE);
+		if(MODEL != null) RENDER_UTIL.render(MODEL, DefaultModel.RENDERDATA.clear());
+		else RENDER_UTIL.render(DebugUtils.SPHERE);
 		pose.popPose();
 	}
 

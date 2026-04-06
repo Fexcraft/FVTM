@@ -4,6 +4,8 @@ import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
 
 import java.util.ArrayList;
 
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -49,7 +51,7 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 
 		@Override
 		public void render(ModelRenderData data){
-			for(ModelGroup group : this) group.render(data);
+			for(ModelGroup group : this) RENDER_UTIL.render(group, data);
 		}
 
 		@Override
@@ -72,7 +74,7 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 		@Override
 		public void render(ModelRenderData data){
 			if(data.separaterender){
-				for(ModelGroup group : this) group.render(data);
+				for(ModelGroup group : this) RENDER_UTIL.render(group, data);
 				return;
 			}
 			if(data.cache == null) return;

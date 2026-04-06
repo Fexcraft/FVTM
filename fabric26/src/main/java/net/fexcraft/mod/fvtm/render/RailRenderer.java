@@ -26,6 +26,7 @@ import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
 import static net.fexcraft.mod.fvtm.FVTMC.OUTLINE_RS_KEY;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -63,7 +64,7 @@ public class RailRenderer {
 					pose.translate(0, junc.tracks.get(0).gauge.getHeight(), 0);
 					RenderUtil26.typeWhite();
 					Renderer26.setColor(COL_GRY);
-					RenderUtil26.render(JUNC_CORE);
+					RENDER_UTIL.render(JUNC_CORE);
 					for(int i = 0; i < junc.tracks.size(); i++){
 						renderJuncModel(junc, i, JUNC_LINE);
 					}
@@ -98,7 +99,7 @@ public class RailRenderer {
 		RENDERER.push();
 		RENDERER.rotateRad((float)ang, 0, 1, 0);
 		Renderer26.setColor(RailJunction.TRACK_RGB[idx]);
-		RenderUtil26.render(hed);
+		RENDER_UTIL.render(hed);
 		RENDERER.pop();
 	}
 
@@ -108,9 +109,9 @@ public class RailRenderer {
 		RENDERER.push();
 		RENDERER.rotateRad((float)ang, 0, 1, 0);
 		Renderer26.setColor(RailJunction.TRACK_RGB[idx]);
-		RenderUtil26.render(JUNC_SIG_DIR);
+		RENDER_UTIL.render(JUNC_SIG_DIR);
 		Renderer26.setColor(col);
-		RenderUtil26.render(JUNC_SIG_STATE);
+		RENDER_UTIL.render(JUNC_SIG_STATE);
 		RENDERER.pop();
 	}
 
@@ -163,28 +164,28 @@ public class RailRenderer {
 		for(int i = 0; i < 4; i++){
 			pose.pushPose();
 			pose.translate(pos.getX() + (i * 0.25 + 0.125), pos.getY() + yy + 0.01, pos.getZ() + 0.5);
-			RenderUtil26.render(LLBB2);
+			RENDER_UTIL.render(LLBB2);
 			pose.popPose();
 			pose.pushPose();
 			pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + (i * 0.25 + 0.125));
-			RenderUtil26.render(LLBB0);
+			RENDER_UTIL.render(LLBB0);
 			pose.popPose();
 		}
 		double v = vec.x < 0 ? (-vec.x - 16) * -0.0625 : vec.x * 0.0625;
 		Renderer26.setColor(COL_CYN);
 		pose.pushPose();
 		pose.translate(pos.getX() + v, pos.getY() + yy + 0.01, pos.getZ() + 0.5);
-		RenderUtil26.render(LLBB2);
+		RENDER_UTIL.render(LLBB2);
 		pose.popPose();
 		v = vec.z < 0 ? (-vec.z - 16) * -0.0625 : vec.z * 0.0625;
 		pose.pushPose();
 		pose.translate(pos.getX() + 0.5, pos.getY() + yy + 0.01, pos.getZ() + v);
-		RenderUtil26.render(LLBB0);
+		RENDER_UTIL.render(LLBB0);
 		pose.popPose();
 		Renderer26.setColor(COL_ORG);
 		pose.translate(vec.vec.x, vec.vec.y, vec.vec.z);
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
-		RenderUtil26.render(SPHERE);
+		RENDER_UTIL.render(SPHERE);
 		Renderer26.resetColor();
 		pose.popPose();
 		return true;
@@ -207,7 +208,7 @@ public class RailRenderer {
 		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
 			vec0 = conn.track.vecpath[j];
 			vec1 = conn.track.vecpath[j + 1];
-			RenderUtil26.renderLine(vec0.x, vec0.y + 0.1f, vec0.z, vec1.x, vec1.y + 0.1f, vec1.z);
+			RENDER_UTIL.renderLine(vec0.x, vec0.y + 0.1f, vec0.z, vec1.x, vec1.y + 0.1f, vec1.z);
 		}
 		int size = RailPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
@@ -215,12 +216,12 @@ public class RailRenderer {
 		for(int i = 1; i < size - 1; i++){
 			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
-			RenderUtil26.renderLine(arr[0], arr[1] - 0.05f, arr[2], vec1.x, vec1.y - 0.05f, vec1.z);
+			RENDER_UTIL.renderLine(arr[0], arr[1] - 0.05f, arr[2], vec1.x, vec1.y - 0.05f, vec1.z);
 		}
 		Renderer26.setColor(COL_ORG);
 		for(ArrayList<V3D> l : conn.preview){
 			for(int j = 0; j < l.size() - 1; j++){
-				RenderUtil26.renderLine((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z, (vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
+				RENDER_UTIL.renderLine((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z, (vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
 			}
 		}
 		Renderer26.resetColor();

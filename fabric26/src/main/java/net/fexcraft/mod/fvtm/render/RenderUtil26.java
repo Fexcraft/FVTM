@@ -17,7 +17,7 @@ import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RenderUtil26 {
+public class RenderUtil26 extends RenderUtil {
 
 	private static SubmitNodeCollector noco;
 
@@ -32,20 +32,9 @@ public class RenderUtil26 {
 		Renderer26.type = type;
 	}
 
-	public static void render(Model model, ModelRenderData mdata){
-		for(ModelGroup group : model.getGroups()){
-			render(group, mdata);
-		}
-	}
-
-	public static void render(ModelGroup group, ModelRenderData mdata){
-		group.pre(mdata);
-		if(group.visible) render(group);
-		group.post(mdata);
-	}
-
 	//TODO add color param
-	public static void render(ModelGroup group){
+	@Override
+	public void render(ModelGroup group){
 		int col = Renderer26.color;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
@@ -56,7 +45,8 @@ public class RenderUtil26 {
 		});
 	}
 
-	public static void render(Polyhedron poly){
+	@Override
+	public void render(Polyhedron poly){
 		if(!poly.visible) return;
 		int col = Renderer26.color;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {

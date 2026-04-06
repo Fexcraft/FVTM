@@ -6,9 +6,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.model.entity.RoadMarkerModel;
-import net.fexcraft.mod.fvtm.render.state.RailMarkerRS;
 import net.fexcraft.mod.fvtm.render.state.RoadMarkerRS;
-import net.fexcraft.mod.fvtm.render.state.VehicleRenderState;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -19,6 +17,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.AZ;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -49,10 +48,10 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, RoadMarkerRS>
 		pose.pushPose();
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(texture), state.lightCoords);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.rad180, AZ));
-		RenderUtil26.render(RoadMarkerModel.INST.marker);
+		RENDER_UTIL.render(RoadMarkerModel.INST.marker);
 		if(state.road_marker.queueid == null){
 			Renderer26.setColor(RGB.BLACK);
-			RenderUtil26.render(RoadMarkerModel.INST.arrow);
+			RENDER_UTIL.render(RoadMarkerModel.INST.arrow);
 		}
 		else{
 			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(state.road_marker.queueid);
@@ -61,7 +60,7 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker, RoadMarkerRS>
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer26.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					RenderUtil26.render(RoadMarkerModel.INST.arrow);
+					RENDER_UTIL.render(RoadMarkerModel.INST.arrow);
 				}
 			}
 		}

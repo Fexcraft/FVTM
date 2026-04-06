@@ -7,6 +7,8 @@ import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -51,13 +53,13 @@ public class PathModelPositioned {
 		for(int m = 0; m < hedrons.length; m++){
 			Renderer.RENDERER.light(positions[m]);
 			Renderer.RENDERER.color(0xffffffff);
-			hedrons[m].render();
+			RENDER_UTIL.render(hedrons[m]);
 		}
 	}
 
 	public void renderPlain(){
 		for(int m = 0; m < hedrons.length; m++){
-			hedrons[m].render();
+			RENDER_UTIL.render(hedrons[m]);
 		}
 	}
 

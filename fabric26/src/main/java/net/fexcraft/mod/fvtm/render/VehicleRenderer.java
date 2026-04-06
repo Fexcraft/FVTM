@@ -20,6 +20,7 @@ import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPoint;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderVehicleInfo;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.JACKS;
 import static net.fexcraft.mod.fvtm.util.BlockTypeImpl.getRot;
 
@@ -52,7 +53,7 @@ public class VehicleRenderer {
 			RenderUtil26.type(FvtmRenderTypes.getCutout(jack.getVehicle().getCurrentTexture()));
 			if(vehmod != null){
 				pose.pushPose();
-				RenderUtil26.render(vehmod, RENDERDATA.set(jack.getVehicle(), null, 1).rc(null));
+				RENDER_UTIL.render(vehmod, RENDERDATA.set(jack.getVehicle(), null, 1).rc(null));
 				pose.popPose();
 			}
 			if(jack.getVehicle().getParts().size() > 0){

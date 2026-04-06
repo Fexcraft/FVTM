@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -47,7 +48,7 @@ public class UniWireRenderer {
 				RENDERER.translate(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
 				//RENDERER.rotate(wire.model.start_angle, 0, 1, 0);
 				RENDERER.bind(wire.model.deco_s.getTexture());
-				wire.model.deco_s.getModel().render(RENDERDATA.set(data, relay.getTile(), null));
+				RENDER_UTIL.render(wire.model.deco_s.getModel(), RENDERDATA.set(data, relay.getTile(), null));
 				RENDERER.pop();
 			}
 			if(wire.model.deco_e != null){
@@ -58,7 +59,7 @@ public class UniWireRenderer {
 				RENDERER.translate(wire.vecpath[l].x - cx, wire.vecpath[l].y - cy, wire.vecpath[l].z - cz);
 				//RENDERER.rotate(wire.model.end_angle, 0, 1, 0);
 				RENDERER.bind(wire.model.deco_e.getTexture());
-				wire.model.deco_e.getModel().render(RENDERDATA.set(data, relay.getTile(), null));
+				RENDER_UTIL.render(wire.model.deco_e.getModel(), RENDERDATA.set(data, relay.getTile(), null));
 				RENDERER.pop();
 			}
 			if(wire.model.deco_d.size() > 0){
@@ -72,7 +73,7 @@ public class UniWireRenderer {
 								RENDERER.translate(vec.x - cx, vec.y - cy, vec.z - cz);
 								wm.transforms.apply();
 								RENDERER.bind(dm.getValue().getTexture());
-								list.render(RENDERDATA.set(data, relay.getTile(), null));
+								RENDER_UTIL.render(list, RENDERDATA.set(data, relay.getTile(), null));
 								wm.transforms.deapply();
 								RENDERER.pop();
 							}
@@ -82,7 +83,7 @@ public class UniWireRenderer {
 							RENDERER.translate(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
 							wm.transforms.apply();
 							RENDERER.bind(dm.getValue().getTexture());
-							list.render(RENDERDATA.set(data, relay.getTile(), null));
+							RENDER_UTIL.render(list, RENDERDATA.set(data, relay.getTile(), null));
 							wm.transforms.deapply();
 							RENDERER.pop();
 						}

@@ -20,6 +20,7 @@ import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fcl.util.Renderer26.AY;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -71,7 +72,7 @@ public class SignRenderer {
 							if(scom.rotx != 0f) RENDERER.rotate(scom.rotx, 1, 0, 0);
 							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) pose.scale(scom.sclx, scom.scly, scom.sclz);
 							RenderUtil26.type(FvtmRenderTypes.getCutout(scom.getTexture().getTexture()));
-							RenderUtil26.render(scom.getType().getModel(), RENDERDATA.set(scom, sign).rc(cache));
+							RENDER_UTIL.render(scom.getType().getModel(), RENDERDATA.set(scom, sign).rc(cache));
 							pose.popPose();
 						}
 					}

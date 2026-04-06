@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import org.lwjgl.opengl.GL11;
 
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -73,7 +75,7 @@ public class ClothModel extends DefaultModel {
 		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(ModelGroup list : groups){
 			if(!data.cloth_groups.contains(list.name)) continue;
-			list.render(data);
+			RENDER_UTIL.render(list, data);
 		}
 		transforms.deapply();
 	}

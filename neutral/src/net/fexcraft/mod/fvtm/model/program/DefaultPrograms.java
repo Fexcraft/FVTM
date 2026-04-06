@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
 import static net.fexcraft.mod.fvtm.Config.SIGNAL_INTERVAL;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -795,15 +796,11 @@ public class DefaultPrograms {
 			in = true;
 			for(V3D coord : ((JackEntity)data.tile).getCoords()){
 				RENDERER.translate(coord);
-				render(list, data);
+				RENDER_UTIL.render(list, data);
 				RENDERER.translate(-coord.x, -coord.y, -coord.z);
 			}
 			list.visible = false;
 			in = false;
-		}
-
-		public void render(ModelGroup list, ModelRenderData data){
-			list.render(data);
 		}
 
 		@Override

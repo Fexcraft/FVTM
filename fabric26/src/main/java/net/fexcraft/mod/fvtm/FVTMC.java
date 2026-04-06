@@ -77,6 +77,7 @@ public class FVTMC implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(){
 		EnvInfo.CLIENT = true;
+		RenderUtil.RENDER_UTIL = new RenderUtil26();
 		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 		GLO.SUPPLIER = (() -> new GLObject());
 		ClientLifecycleEvents.CLIENT_STARTED.register(server -> {

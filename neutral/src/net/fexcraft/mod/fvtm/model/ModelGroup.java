@@ -38,6 +38,7 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 		this.name = name;
 	}
 
+	@Deprecated
 	public void render(ModelRenderData data){
 		if(offset != null) RENDERER.translate(offset.x, offset.y, offset.z);
 		if(has_pre_prog) for(Program program : pre_programs) program.pre(this, data);

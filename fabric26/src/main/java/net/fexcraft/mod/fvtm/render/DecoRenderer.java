@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
+import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -61,7 +62,7 @@ public class DecoRenderer extends EntityRenderer<DecorationEntity, DecorationRS>
 			}
 			else{
 				RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(data.getCurrentTexture()), state.lightCoords);
-				RenderUtil26.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent));
+				RENDER_UTIL.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent));
 			}
 			pose.popPose();
 		}

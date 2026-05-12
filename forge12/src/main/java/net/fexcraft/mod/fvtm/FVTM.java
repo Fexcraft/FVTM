@@ -285,7 +285,7 @@ public class FVTM {
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
 		UniWheel.SET_STEP = uw -> {
 			Entity ent = uw.vehicle.entity.local();
-			ent.stepHeight = uw.wtd() == null ? uw.vehicle.data == null ? 1f : 0.5f : uw.wtd().function.step_height;
+			ent.stepHeight = uw.wtd() == null ? 0.6f : uw.wtd().function.step_height;
 		};
 	}
 

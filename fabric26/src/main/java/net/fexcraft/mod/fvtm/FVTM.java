@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.fvtm.ui.RoadSlot;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
@@ -163,11 +164,11 @@ public class FVTM implements ModInitializer {
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
-		/*UniWheel.SET_STEP = uw -> {
+		UniWheel.SET_STEP = uw -> {
 			RootVehicle ent = uw.vehicle.entity.local();
-			float stepheight = uw.wtd() == null ? 0.5f : uw.wtd().function.step_height;
-			ent.getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
-		};*///TODO
+			ent.stepheight = uw.wtd() == null ? 0.6f : uw.wtd().function.step_height;
+			//ent.getAttributes().getInstance(Attributes.STEP_HEIGHT).setBaseValue(stepheight);
+		};
 		//
 		if(Config.MD_VEHICLE){
 			Resources21.VEHICLE_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, "fvtm:vehicle", new EntityType<>(RootVehicle::new,

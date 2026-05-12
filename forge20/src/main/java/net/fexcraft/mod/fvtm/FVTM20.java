@@ -88,7 +88,7 @@ public class FVTM20 {
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
 		UniWheel.SET_STEP = uw -> {
 			RootVehicle ent = uw.vehicle.entity.local();
-			ent.stepheight = uw.wtd() == null ? uw.vehicle.spdata == null ? 1f : uw.vehicle.spdata.wheel_step_height : uw.wtd().function.step_height;
+			ent.stepheight = uw.wtd() == null ? uw.vehicle.spdata == null ? 0.6f : uw.vehicle.spdata.wheel_step_height : uw.wtd().function.step_height;
 		};
 		//
 		FvtmResources.INSTANCE.init();

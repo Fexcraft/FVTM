@@ -48,6 +48,7 @@ public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleIns
 	public float rotZ = 0;
 	public float protZ = 0;
 	public boolean should_sit = true;
+	public float stepheight = 0.6f;
 
 	public RootVehicle(EntityType<? extends RootVehicle> type, Level level){
 		super(type, level);
@@ -326,6 +327,11 @@ public class RootVehicle extends Entity implements SpawnPacketEntity, VehicleIns
 
 	public void onPacket(EntityW player, TagCW packet){
 		//
+	}
+
+	@Override
+	public float maxUpStep(){
+		return stepheight;
 	}
 
 }

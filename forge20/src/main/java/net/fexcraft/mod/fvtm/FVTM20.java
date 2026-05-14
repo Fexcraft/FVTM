@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.FvtmPlayer;
@@ -20,7 +19,6 @@ import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.sys.rail.LongDisRailUtil;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -72,7 +70,6 @@ public class FVTM20 {
 		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
 			FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
-			GLO.SUPPLIER = (() -> new GLObject());
 		}
 		FvtmResources.INSTANCE = new Resources20();
 		LoopedSound.ACTIVATE = sound -> {

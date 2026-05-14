@@ -16,7 +16,6 @@ import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.program.AnimationPrograms.AnimationRoot;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms.ConditionBased;
-import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import org.lwjgl.opengl.GL11;
 
@@ -226,7 +225,7 @@ public class DefaultModel implements Model {
 							args.length > 5 ? Float.parseFloat(args[5]) : 0,
 							args.length > 6 ? Float.parseFloat(args[6]) : 0
 					);
-					for(Polyhedron<?> poly : group){
+					for(Polyhedron poly : group){
 						for(Polygon poli : poly.polygons){
 							for(Vertex vert : poli.vertices){
 								vert.vector = vert.vector.sub(vector);
@@ -248,7 +247,7 @@ public class DefaultModel implements Model {
 				try{
 					ModelGroup group = groups.get(args[0]);
 					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-					for(Polyhedron<?> poly : group){
+					for(Polyhedron poly : group){
 						for(Polygon poli : poly.polygons){
 							for(Vertex vert : poli.vertices){
 								vert.vector = vert.vector.sub(vector);
@@ -320,7 +319,7 @@ public class DefaultModel implements Model {
 	@Override
 	public void clearGLData(){//static pipeline
 		for(ModelGroup group : groups){
-			for(Polyhedron<GLObject> poly : group){
+			for(Polyhedron poly : group){
 				if(poly.glId == null) continue;
 				GL11.glDeleteLists(poly.glId, 1);
 			}

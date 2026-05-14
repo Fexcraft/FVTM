@@ -15,11 +15,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.impl.Packets21;
-import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.render.state.LevelRS;
@@ -79,7 +77,6 @@ public class FVTMC implements ClientModInitializer {
 		EnvInfo.CLIENT = true;
 		RenderUtil.RENDER_UTIL = new RenderUtil26();
 		FvtmRegistry.CONFIG.addListener(DefaultPrograms::setupSignalTimer);
-		GLO.SUPPLIER = (() -> new GLObject());
 		ClientLifecycleEvents.CLIENT_STARTED.register(server -> {
 			FvtmResources.initModelSystem();
 			if(DefaultPrograms.SIGNAL_TIMER[0] == null){

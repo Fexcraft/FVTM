@@ -2,10 +2,7 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.common.math.AxisRotator;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.frl.ColoredVertex;
-import net.fexcraft.lib.frl.Polygon;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.frl.Vertex;
+import net.fexcraft.lib.frl.*;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.model.*;
@@ -122,7 +119,7 @@ public class BakedModelImpl implements IBakedModel {
                 }
             }
             if(sprite == null) sprite = deftex;
-            for(Polyhedron<GLObject> poly : group){
+            for(Polyhedron poly : group){
                 model.bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
                 for(Polygon poli : poly.polygons){
                     boolean tri = poli.vertices.length == 3;
@@ -179,7 +176,7 @@ public class BakedModelImpl implements IBakedModel {
         return root.tex_sprites.get(tempres.get(name));
     }
 
-    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron<GLObject> poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture, BakedPrograms.ColorSetter colorprog){
+    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture, BakedPrograms.ColorSetter colorprog){
         for(int e = 0; e < format.getElementCount(); e++){
             switch(format.getElement(e).getUsage()){
                 case POSITION:
@@ -213,7 +210,7 @@ public class BakedModelImpl implements IBakedModel {
                     if(!set) builder.put(e, 1, 1, 1, 1);
                     break;
                 case UV:
-                    if(!poly.glObj.textured){
+                    if(!poly.glObj(GLObject.class).textured){
                         builder.put(e, texture.getInterpolatedU(0), texture.getInterpolatedV(0), 0, 1);
                     }
                     else{

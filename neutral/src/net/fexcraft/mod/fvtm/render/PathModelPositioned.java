@@ -24,7 +24,7 @@ public class PathModelPositioned {
 		hedrons = new Polyhedron[i];
 		positions = new V3D[i];
 		for(int k = 0; k < i; k++){
-			hedrons[k] = new Polyhedron<>();
+			hedrons[k] = new Polyhedron();
 			//if(colour != null) turbos[k].setColor(colour);
 			positions[k] = path.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? path.length - 0.125f : k, false);
 		}
@@ -37,7 +37,7 @@ public class PathModelPositioned {
 		hedrons = new Polyhedron[i];
 		positions = new V3D[i];
 		for(int k = 0; k < i; k++){
-			hedrons[k] = new Polyhedron<>();
+			hedrons[k] = new Polyhedron();
 			//if(colour != null) turbos[k].setColor(colour);
 			positions[k] = wire.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? wire.length - 0.125f : k, false);
 		}

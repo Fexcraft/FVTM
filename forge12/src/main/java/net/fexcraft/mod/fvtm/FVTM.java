@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.generated.*;
@@ -22,7 +21,6 @@ import net.fexcraft.mod.fvtm.event.Registerer12;
 import net.fexcraft.mod.fvtm.event.RenderViewHandler;
 import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -81,7 +79,6 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
 import static net.fexcraft.mod.fvtm.FvtmRegistry.CONFIG;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.CONFIG_DIR;
 
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
@@ -172,9 +169,6 @@ public class FVTM {
 			sound.localsound = new LoopSound(SoundCategory.NEUTRAL, sound);
 			net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound((ISound)sound.localsound);
 		};
-		if(EnvInfo.CLIENT){
-			GLO.SUPPLIER = () -> new GLObject();
-		}
 		FvtmRegistry.init("1.12", event.getModConfigurationDirectory());
 		FvtmResources.INSTANCE = new Resources12(event.getAsmData());
 		MinecraftForge.EVENT_BUS.register(FvtmResources.INSTANCE);

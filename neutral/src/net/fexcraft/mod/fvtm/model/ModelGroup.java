@@ -14,7 +14,7 @@ import static net.fexcraft.lib.frl.Renderer.RENDERER;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
+public class ModelGroup extends ArrayList<Polyhedron> {
 
 	public static final ProgramRegistry PROGRAMS = new ProgramRegistry();
 	public static final ModelGroup EMPTY = new ModelGroup("empty");
@@ -164,14 +164,8 @@ public class ModelGroup extends ArrayList<Polyhedron<GLObject>> {
 		}
 	}
 
-	@Override
-	public boolean add(Polyhedron<GLObject> poly){
-		if(poly.glObj == null) poly.glObj = new GLObject();
-		return super.add(poly);
-	}
-
 	public boolean add(ModelRendererTurbo mrt){
-		return add(new Polyhedron<GLObject>().importMRT(mrt, false, 0.0625f));
+		return add(new Polyhedron().importMRT(mrt, false, 0.0625f));
 	}
 
     public <P extends Program> P getProgram(String key){

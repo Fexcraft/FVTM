@@ -5,8 +5,6 @@ import net.fexcraft.lib.common.math.*;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
-import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
@@ -80,7 +78,7 @@ public class PathModelGenerator {
 				angle = -Math.atan2(last.x - vec.x, last.z - vec.z);
 				vec = track.getVectorPosition0(accu, false);
 				if(model.get("ties") != null){
-					for(Polyhedron<GLObject> hedron : model.get("ties")){
+					for(Polyhedron hedron : model.get("ties")){
 						for(Polygon poly : hedron.polygons){
 							TexturedVertex[] verts = new TexturedVertex[poly.vertices.length];
 							for(int m = 0; m < verts.length; m++){

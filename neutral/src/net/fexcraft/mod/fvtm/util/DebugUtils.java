@@ -44,7 +44,9 @@ public class DebugUtils {
 	public static Polyhedron JUNC_SIG_STATE = new Polyhedron();
 	public static Polyhedron JUNC_SIG_DIR = new Polyhedron();
 	public static Polyhedron LINE = new Polyhedron();
+	public static Polyhedron LINE_2D = new Polyhedron();
 	public static Polygon LINE_POLY;
+	public static Polygon[] LINE_POLY_2D = new Polygon[2];
 	static{
 		/*CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
 		CUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 0, 1) }));
@@ -74,8 +76,12 @@ public class DebugUtils {
 			.addShapeBox(-4, 0, 1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0), false, sixteenth);
 		JUNC_SIG_STATE.importMRT(new ModelRendererTurbo(JUNC_SIG_STATE, 0, 0, 1, 1)
 			.addShapeBox(-4, 0, -1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), false, sixteenth);
-		LINE_POLY = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f())});
+		LINE_POLY = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()) });
 		LINE.polygons.add(LINE_POLY);
+		LINE_POLY_2D[0] = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()) });
+		LINE_POLY_2D[1] = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()) });
+		LINE_2D.polygons.add(LINE_POLY_2D[0]);
+		LINE_2D.polygons.add(LINE_POLY_2D[1]);
 	}
 
 	public static void renderBB(float scale, int col){
@@ -170,6 +176,18 @@ public class DebugUtils {
 		SPHERE.render();
 		RENDERER.pop();
 		RENDERER.color(0xffffffff);
+	}
+
+	public static void renderLine2D(double sx, double sy, double sz, double ex, double ey, double ez){
+		LINE_POLY_2D[0].vertices[0].pos(sx, sy, sz);
+		LINE_POLY_2D[0].vertices[1].pos(ex, ey, ez);
+		LINE_POLY_2D[0].vertices[2].pos(ex, ey - 0.01f, ez);
+		LINE_POLY_2D[0].vertices[3].pos(sx, sy - 0.01f, sz);
+		LINE_POLY_2D[1].vertices[1].pos(sx, sy, sz);
+		LINE_POLY_2D[1].vertices[0].pos(ex, ey, ez);
+		LINE_POLY_2D[1].vertices[3].pos(ex, ey - 0.01f, ez);
+		LINE_POLY_2D[1].vertices[2].pos(sx, sy - 0.01f, sz);
+		RENDERER.render(LINE_2D);
 	}
 
 }

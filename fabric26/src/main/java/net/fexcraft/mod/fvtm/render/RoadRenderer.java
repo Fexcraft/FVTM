@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 
@@ -22,30 +23,29 @@ public class RoadRenderer {
 		double cz = context.levelState().cameraRenderState.pos.z;
 		PoseStack pose = context.poseStack();
 		RenderUtil26.set(pose, context.submitNodeCollector(), null, 255);
-		//RenderUtil26.lines();
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
-		//V3D vec0, vec1;
 		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
 		if(nroad.coords == null) nroad.genpreview();
-		/*Renderer26.setColor(COL_BLU);
+		Renderer26.setColor(COL_BLU);
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
-			vec0 = nroad.road.vecpath[j];
-			vec1 = nroad.road.vecpath[j + 1];
-			LINE_POLY.vertices[0].pos(vec0.x, vec0.y + 1.25, vec0.z);
-			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
-			LINE.render();
+			RenderUtil26.renderLine(
+				nroad.road.vecpath[j].x, nroad.road.vecpath[j].y + 1.25f, nroad.road.vecpath[j].z,
+				nroad.road.vecpath[j + 1].x, nroad.road.vecpath[j + 1].y + 1.25f, nroad.road.vecpath[j + 1].z);
 		}
 		int size = RoadPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
 		Renderer26.setColor(COL_CYN);
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
-			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
+			var vec = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
 			LINE_POLY.vertices[0].pos(arr[0], arr[1] + 1.25, arr[2]);
-			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
+			LINE_POLY.vertices[1].pos(vec.x, vec.y + 1.25, vec.z);
 			LINE.render();
-		}*/
+			RenderUtil26.renderLine(
+				arr[0], arr[1] + 1.25, arr[2],
+				vec.x, vec.y + 1.25f, vec.z);
+		}
 		for(ArrayList<QV3D> coords : nroad.coords){
 			for(QV3D coord : coords){
 				pose.pushPose();

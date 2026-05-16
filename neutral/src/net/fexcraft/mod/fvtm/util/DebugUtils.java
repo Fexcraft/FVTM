@@ -65,7 +65,7 @@ public class DebugUtils {
 		LLBB1.importMRT(new ModelRendererTurbo(LLBB1, 0, 0, 1, 1).addBox(-0.1f, -8, -0.1f, 0.2f, 16, 0.2f), false, sixteenth);
 		LLBB2.importMRT(new ModelRendererTurbo(LLBB2, 0, 0, 1, 1).addBox(-0.1f, -0.1f, -8, 0.2f, 0.2f, 16), false, sixteenth);
 		PANE.importMRT(new ModelRendererTurbo(PANE, 0, 0, 1, 1).addBox(-8, 0, -8, 16, 0.2f, 16), false, sixteenth);
-		SPHERE.importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8), false, 1);
+		SPHERE.importMRT(new ModelRendererTurbo(null, 0, 0, 1, 1).addSphere(0, 0, 0, 1, 16, 16, 1, 1), false, 1);
 		JUNC_CORE.importMRT(new ModelRendererTurbo(JUNC_CORE, 0, 0, 1, 1).newCylinderBuilder()
 			.setPosition(0, 0, 0).setRadius(0.5f, 0.125f).setLength(0.5f).setSegments(8, 0).setScale(1.1f, 1.1f).setDirection(4).build(), false, sixteenth);
 		JUNC_LINE.importMRT(new ModelRendererTurbo(JUNC_LINE, 0, 0, 1, 1).addBox(-0.125f, 0, 0.5f, 0.25f, 0.25f, 8), false, sixteenth);
@@ -169,7 +169,7 @@ public class DebugUtils {
 	}
 
 	public static void renderSphere(float scale, int col){
-		RENDERER.bind(FvtmResources.WHITE_TEXTURE);
+		RENDERER.bind(FvtmResources.SPHERE_TEXTURE);
 		RENDERER.color(col);
 		RENDERER.push();
 		RENDERER.scale(scale, scale, scale);

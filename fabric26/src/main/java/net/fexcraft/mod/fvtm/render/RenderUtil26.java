@@ -4,12 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.mod.fcl.util.Renderer26;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -95,10 +93,10 @@ public class RenderUtil26 extends RenderUtil {
 	}
 
 	public static void renderSphere(float scale, int col){
-		Renderer26.type = FvtmRenderTypes.white();
+		Renderer26.type = FvtmRenderTypes.sphere();
 		Renderer26.stack.pushPose();
 		Renderer26.stack.scale(scale, scale, scale);
-		noco.submitCustomGeometry(Renderer26.stack, FvtmRenderTypes.white(), (last, cons) -> {
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			RENDERER.color(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
@@ -115,7 +113,7 @@ public class RenderUtil26 extends RenderUtil {
 		RENDERER.push();
 		RENDERER.scale(scale, 1, scale);
 		RENDERER.translate(-hs, 0, -hs);
-		noco.submitCustomGeometry(Renderer26.stack, FvtmRenderTypes.white(), (last, cons) -> {
+		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			RENDERER.color(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;

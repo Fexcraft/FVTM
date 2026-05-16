@@ -200,7 +200,6 @@ public class RailRenderer {
 		double cz = context.levelState().cameraRenderState.pos.z;
 		PoseStack pose = context.poseStack();
 		RenderUtil26.set(pose, context.submitNodeCollector(), null, 255);
-		RenderUtil26.lines();
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;

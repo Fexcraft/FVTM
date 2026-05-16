@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
 import net.fexcraft.mod.fvtm.render.state.OutlineRS;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -20,6 +21,7 @@ import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import static net.fexcraft.lib.common.Static.*;
@@ -192,7 +194,7 @@ public class RailRenderer {
 	}
 
 	public static boolean renderRailPreview(LevelRenderContext context){
-		/*if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return true;
+		if(RailPlacingUtil.CL_CURRENT == null || RailPlacingUtil.CL_CURRENT.points.size() < 2) return true;
 		double cx = context.levelState().cameraRenderState.pos.x;
 		double cy = context.levelState().cameraRenderState.pos.y;
 		double cz = context.levelState().cameraRenderState.pos.z;
@@ -208,7 +210,7 @@ public class RailRenderer {
 		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
 			vec0 = conn.track.vecpath[j];
 			vec1 = conn.track.vecpath[j + 1];
-			RENDER_UTIL.renderLine(vec0.x, vec0.y + 0.1f, vec0.z, vec1.x, vec1.y + 0.1f, vec1.z);
+			RenderUtil26.renderLine(vec0.x, vec0.y + 0.1f, vec0.z, vec1.x, vec1.y + 0.1f, vec1.z);
 		}
 		int size = RailPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
@@ -216,16 +218,16 @@ public class RailRenderer {
 		for(int i = 1; i < size - 1; i++){
 			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
-			RENDER_UTIL.renderLine(arr[0], arr[1] - 0.05f, arr[2], vec1.x, vec1.y - 0.05f, vec1.z);
+			RenderUtil26.renderLine(arr[0], arr[1] - 0.05f, arr[2], vec1.x, vec1.y - 0.05f, vec1.z);
 		}
 		Renderer26.setColor(COL_ORG);
 		for(ArrayList<V3D> l : conn.preview){
 			for(int j = 0; j < l.size() - 1; j++){
-				RENDER_UTIL.renderLine((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z, (vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
+				RenderUtil26.renderLine((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z, (vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
 			}
 		}
 		Renderer26.resetColor();
-		pose.popPose();*///TODO
+		pose.popPose();
 		return true;
 	}
 

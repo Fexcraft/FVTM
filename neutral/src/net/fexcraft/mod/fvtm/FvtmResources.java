@@ -67,6 +67,7 @@ public abstract class FvtmResources {
 	public static File FVTM_CONFIG_DIR;
 	public static final IDL NULL_TEXTURE = IDLManager.getIDLNamed("No Texture;fvtm:textures/entity/null.png");
 	public static final IDL WHITE_TEXTURE = IDLManager.getIDLNamed("No Texture;fvtm:textures/entity/white.png");
+	public static final IDL SPHERE_TEXTURE = IDLManager.getIDLNamed("Sphere;fvtm:textures/entity/sphere.png");
 
 	public void init(){
 		FVTM_CONFIG_DIR = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/");

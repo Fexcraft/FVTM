@@ -83,13 +83,12 @@ public class RenderUtil26 extends RenderUtil {
 
 	public static void renderLine(double sx, double sy, double sz, double ex, double ey, double ez){
 		int col = Renderer26.color;
+		Renderer26.type = FvtmRenderTypes.white();
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
-			LINE_POLY.vertices[0].pos(sx, sy, sz);
-			LINE_POLY.vertices[1].pos(ex, ey, ez);
-			RENDERER.render(LINE);
+			DebugUtils.renderLine2D(sx, sy, sz, ex, ey, ez);
 			Renderer26.pose = null;
 			Renderer26.resetColor();
 		});
@@ -178,7 +177,4 @@ public class RenderUtil26 extends RenderUtil {
 		type(FvtmRenderTypes.white());
 	}
 
-	public static void lines(){
-		type(RenderTypes.LINES);
-	}
 }

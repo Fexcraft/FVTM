@@ -5,7 +5,6 @@ import net.fexcraft.mod.uni.IDL;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Util;
 
 import java.util.HashMap;
@@ -20,6 +19,7 @@ public class FvtmRenderTypes {
 	protected static final HashMap<IDL, RenderType> GLOWS = new HashMap<>();
 	protected static final HashMap<IDL, RenderType> LBS = new HashMap<>();
 	protected static RenderType WHITE;
+	protected static RenderType SPHERE;
 
 	private static final Function<IDL, RenderType> CUTOUT = Util.memoize(idl -> {
 		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_CULL).withTexture("Sampler0", idl.local())
@@ -70,6 +70,11 @@ public class FvtmRenderTypes {
 	public static RenderType white(){
 		if(WHITE == null) WHITE = getCutout(FvtmResources.WHITE_TEXTURE);
 		return WHITE;
+	}
+
+	public static RenderType sphere(){
+		if(SPHERE == null) SPHERE = getCutout(FvtmResources.SPHERE_TEXTURE);
+		return SPHERE;
 	}
 
 }

@@ -97,7 +97,7 @@ public class RenderUtil26 extends RenderUtil {
 		Renderer26.stack.pushPose();
 		Renderer26.stack.scale(scale, scale, scale);
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
-			RENDERER.color(col);
+			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
 			RENDERER.render(DebugUtils.SPHERE);

@@ -26,6 +26,11 @@ public class FvtmRenderTypes {
 			.useLightmap().useOverlay().affectsCrumbling().setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).sortOnUpload().createRenderSetup();
 		return RenderType.create("fvtm:entity_cutout", setup);
 	});
+	private static final Function<IDL, RenderType> CUTOUT_NOCULL = Util.memoize(idl -> {
+		RenderSetup setup = RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT).withTexture("Sampler0", idl.local())
+			.useLightmap().useOverlay().affectsCrumbling().setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).sortOnUpload().createRenderSetup();
+		return RenderType.create("fvtm:entity_cutout_nocull", setup);
+	});
 	private static final Function<IDL, RenderType> GLOW = Util.memoize(idl -> {
 		RenderSetup setup = RenderSetup.builder(RenderPipelines.EYES).withTexture("Sampler0", idl.local())
 			.useLightmap().useOverlay().affectsCrumbling().setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE).sortOnUpload().createRenderSetup();
@@ -73,7 +78,9 @@ public class FvtmRenderTypes {
 	}
 
 	public static RenderType sphere(){
-		if(SPHERE == null) SPHERE = getCutout(FvtmResources.SPHERE_TEXTURE);
+		if(SPHERE == null){
+			SPHERE = CUTOUT_NOCULL.apply(FvtmResources.SPHERE_TEXTURE);
+		}
 		return SPHERE;
 	}
 

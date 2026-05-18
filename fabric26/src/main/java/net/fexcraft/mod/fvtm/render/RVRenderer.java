@@ -112,7 +112,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 			pose.popPose();
 		}
 		else{
-			RENDER_UTIL.render(SPHERE);
+			RenderUtil26.renderSphere(1, COL_RED);
 		}
 		if(state.vehicle.data.getParts().size() > 0){
 			renderPoint(pose, state.vehicle.point, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
@@ -168,14 +168,9 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
-			if(zone.inRange(data, vehpos, ply)){
-				inrange = true;
-				break;
-			}
+			if(!inrange && zone.inRange(data, vehpos, ply)) inrange = true;
 			if(Config.DEBUG_ACTIVE){
-				pose.pushPose();
 				RenderUtil26.renderSphere(zone.range, zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
-				pose.popPose();
 			}
 		}
 		return inrange;

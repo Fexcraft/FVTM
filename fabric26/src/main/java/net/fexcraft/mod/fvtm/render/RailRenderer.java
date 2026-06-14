@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -151,7 +152,7 @@ public class RailRenderer {
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return true;
 		PoseStack pose = context.poseStack();
-		RenderUtil26.set(pose, context.submitNodeCollector(), FvtmRenderTypes.white(), 255);
+		RenderUtil26.set(pose, context.submitNodeCollector(), FvtmRenderTypes.white(), LightCoordsUtil.FULL_BRIGHT);
 		OutlineRS ol = context.levelState().getData(OUTLINE_RS_KEY);
 		QV3D vec = ol.result;
 		BlockPos pos = ol.pos;
@@ -199,7 +200,7 @@ public class RailRenderer {
 		double cy = context.levelState().cameraRenderState.pos.y;
 		double cz = context.levelState().cameraRenderState.pos.z;
 		PoseStack pose = context.poseStack();
-		RenderUtil26.set(pose, context.submitNodeCollector(), null, 255);
+		RenderUtil26.set(pose, context.submitNodeCollector(), null, LightCoordsUtil.FULL_BRIGHT);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;

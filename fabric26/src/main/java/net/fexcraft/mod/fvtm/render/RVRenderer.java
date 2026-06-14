@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 
@@ -134,7 +135,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		pose.popPose();
 		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
 		if(Config.DEBUG_ACTIVE){
-			Renderer26.light = 255;
+			Renderer26.light = LightCoordsUtil.FULL_BRIGHT;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
 			for(OBB.OBBRef ref : state.vehicle.data.getBoundBoxes()){
 				OBB obb = state.vehicle.obb.get(ref.key);

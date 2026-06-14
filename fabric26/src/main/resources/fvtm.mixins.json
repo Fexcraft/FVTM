@@ -7,7 +7,7 @@
 		"ClientAddEntityMixin"
 	],
 	"client": [
-	
+		"MinceraftMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

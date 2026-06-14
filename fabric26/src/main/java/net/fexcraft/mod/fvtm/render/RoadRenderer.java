@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.minecraft.util.LightCoordsUtil;
 
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ public class RoadRenderer {
 		double cy = context.levelState().cameraRenderState.pos.y;
 		double cz = context.levelState().cameraRenderState.pos.z;
 		PoseStack pose = context.poseStack();
-		RenderUtil26.set(pose, context.submitNodeCollector(), null, 255);
+		RenderUtil26.set(pose, context.submitNodeCollector(), null, LightCoordsUtil.FULL_BRIGHT);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
@@ -39,9 +40,6 @@ public class RoadRenderer {
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
 			var vec = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
-			LINE_POLY.vertices[0].pos(arr[0], arr[1] + 1.25, arr[2]);
-			LINE_POLY.vertices[1].pos(vec.x, vec.y + 1.25, vec.z);
-			LINE.render();
 			RenderUtil26.renderLine(
 				arr[0], arr[1] + 1.25, arr[2],
 				vec.x, vec.y + 1.25f, vec.z);

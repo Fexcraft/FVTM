@@ -34,10 +34,12 @@ public class RenderUtil26 extends RenderUtil {
 	@Override
 	public void render(ModelGroup group){
 		int col = Renderer26.color;
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			group.render();
 			Renderer26.pose = null;
 		});
@@ -47,10 +49,12 @@ public class RenderUtil26 extends RenderUtil {
 	public void render(Polyhedron poly){
 		if(!poly.visible) return;
 		int col = Renderer26.color;
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			RENDERER.render(poly);
 			Renderer26.pose = null;
 		});
@@ -58,10 +62,12 @@ public class RenderUtil26 extends RenderUtil {
 
 	public static void render(Runnable run){
 		int col = Renderer26.color;
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			run.run();
 			Renderer26.pose = null;
 		});
@@ -69,10 +75,12 @@ public class RenderUtil26 extends RenderUtil {
 
 	public static void render(Polyhedron poly, int col){
 		if(!poly.visible) return;
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			RENDERER.render(poly);
 			Renderer26.pose = null;
 			Renderer26.resetColor();
@@ -82,10 +90,12 @@ public class RenderUtil26 extends RenderUtil {
 	public static void renderLine(double sx, double sy, double sz, double ex, double ey, double ez){
 		int col = Renderer26.color;
 		Renderer26.type = FvtmRenderTypes.white();
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			DebugUtils.renderLine2D(sx, sy, sz, ex, ey, ez);
 			Renderer26.pose = null;
 			Renderer26.resetColor();
@@ -96,10 +106,12 @@ public class RenderUtil26 extends RenderUtil {
 		Renderer26.type = FvtmRenderTypes.sphere();
 		Renderer26.stack.pushPose();
 		Renderer26.stack.scale(scale, scale, scale);
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			RENDERER.render(DebugUtils.SPHERE);
 			Renderer26.pose = null;
 			Renderer26.resetColor();
@@ -113,10 +125,12 @@ public class RenderUtil26 extends RenderUtil {
 		RENDERER.push();
 		RENDERER.scale(scale, 1, scale);
 		RENDERER.translate(-hs, 0, -hs);
+		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			RENDERER.color(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
+			Renderer26.light = lig;
 			RENDERER.render(PANE);
 			Renderer26.pose = null;
 			Renderer26.resetColor();

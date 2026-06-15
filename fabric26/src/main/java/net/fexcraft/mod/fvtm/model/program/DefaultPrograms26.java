@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.RenderUtil26;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;

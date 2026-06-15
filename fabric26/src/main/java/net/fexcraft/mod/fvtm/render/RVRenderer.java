@@ -130,7 +130,9 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		//TODO toggle info
 		//TODO containers
 		if(Config.DEBUG_ACTIVE){
+			Renderer26.light = LightCoordsUtil.FULL_BRIGHT;
 			renderSeats(pose, state.vehicle);
+			Renderer26.light = state.lightCoords;
 		}
 		pose.popPose();
 		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);

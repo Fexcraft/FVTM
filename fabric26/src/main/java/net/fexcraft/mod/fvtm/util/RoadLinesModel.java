@@ -1,14 +1,18 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_PATTERN;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
@@ -27,7 +31,7 @@ import static net.fexcraft.mod.fvtm.model.block.BakedQuadData.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RoadLinesModel {}/*{
+public class RoadLinesModel {
 
 	public static class UnbakedLines implements BlockStateModel.UnbakedRoot {
 
@@ -63,31 +67,36 @@ public class RoadLinesModel {}/*{
 			}
 		};
 		private TextureAtlasSprite sprite;
-		private TextureAtlasSprite particle;
+		private Material.Baked particle;
 		private LineModelPart part;
 		private BlockState state;
 
 		public BakedLines(UnbakedLines root, BlockState blkst, ModelBaker baker){
 			state = blkst;
 			var model = baker.getModel(root.texmodel);
-			sprite = baker.sprites().get(model.getTopTextureSlots().getMaterial("texture"), MDN);
-			particle = baker.sprites().get(model.getTopTextureSlots().getMaterial("particle"), MDN);
+			sprite = baker.materials().get(model.getTopTextureSlots().getMaterial("texture"), MDN).sprite();
+			particle = baker.materials().get(model.getTopTextureSlots().getMaterial("particle"), MDN);
 			part = new LineModelPart(this);
 		}
 
 		@Override
-		public void collectParts(RandomSource randomSource, List<BlockModelPart> list){
-			list.add(part);
+		public void collectParts(RandomSource random, List<BlockStateModelPart> output){
+			output.add(part);
 		}
 
 		@Override
-		public TextureAtlasSprite particleIcon(){
+		public Material.Baked particleMaterial(){
 			return particle;
+		}
+
+		@Override
+		public int materialFlags(){
+			return 0;
 		}
 
 	}
 
-	public static class LineModelPart implements BlockModelPart {
+	public static class LineModelPart implements BlockStateModelPart {
 
 		private static MutableQuad view = new MutableQuad();
 		private BakedLines root;
@@ -149,8 +158,13 @@ public class RoadLinesModel {}/*{
 		}
 
 		@Override
-		public TextureAtlasSprite particleIcon(){
+		public Material.Baked particleMaterial(){
 			return root.particle;
+		}
+
+		@Override
+		public @BakedQuad.MaterialFlags int materialFlags(){
+			return 0;
 		}
 
 	}
@@ -168,4 +182,4 @@ public class RoadLinesModel {}/*{
 
 	}
 
-}*/
+}

@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
@@ -123,12 +124,12 @@ public class EffectRenderer {
             for(int i = 0; i < SORTED_BLK_QUEUE.size(); i++){
 				SeparateModelGroupList sgroup = SORTED_BLK_QUEUE.get(i);
             	BlockData data = SORTED_BLK_DATA.get(i);
-            	TileEntity tile = (TileEntity)SORTED_BLK_ENTITY.get(i);
+            	FvtmBlockEntity tile = (FvtmBlockEntity)SORTED_BLK_ENTITY.get(i);
                 GL11.glPushMatrix();
-                GL11.glTranslated(tile.getPos().getX() + 0.5, tile.getPos().getY(), tile.getPos().getZ() + 0.5);
-                GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0.0F, 1.0F, 0.0F);
+                GL11.glTranslated(tile.getV3I().x + 0.5, tile.getV3I().y, tile.getV3I().z + 0.5);
+                GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getMeta()), 0.0F, 1.0F, 0.0F);
                 //GL11.glRotatef(180f, 0f, 0f, 1f);
-                sgroup.render(RENDERDATA.set(data, tile, null).rcs(tile.getCapability(RENDERCACHE, null)));
+                sgroup.render(RENDERDATA.set(data, tile, null).rcs(((TileEntity)tile).getCapability(RENDERCACHE, null)));
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();

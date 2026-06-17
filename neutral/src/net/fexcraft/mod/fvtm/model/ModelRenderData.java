@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -14,6 +15,7 @@ import net.fexcraft.mod.fvtm.sys.event.EventData;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.StateWrapper;
 
 import java.util.ArrayList;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
  */
 public class ModelRenderData extends EventData {
 
-	public Object blockstate;
+	public StateWrapper blockstate;
 	public float partialticks;
 	//
 	public ContainerData container;
@@ -77,19 +79,19 @@ public class ModelRenderData extends EventData {
 	}
 
 
-	public ModelRenderData set(ContainerData data, Object tileent){
+	public ModelRenderData set(ContainerData data, FvtmBlockEntity tileent){
 		container = data;
-		tile = tileent;
+		block_entity = tileent;
 		color = data;
 		texture = data;
 		return this;
 	}
 
 
-	public ModelRenderData set(BlockData data, Object tileent, Object state){
+	public ModelRenderData set(BlockData data, FvtmBlockEntity tileent, StateWrapper state){
 		entity = null;
 		block = data;
-		tile = tileent;
+		block_entity = tileent;
 		color = data;
 		texture = data;
 		blockstate = state;

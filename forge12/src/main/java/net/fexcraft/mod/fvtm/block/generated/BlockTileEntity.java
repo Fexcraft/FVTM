@@ -28,6 +28,7 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 	
 	public byte meta = -1;
 	public BlockData data;
+    private V3I vpos;
 	
 	public BlockTileEntity(BlockBase type){
 		data = new BlockData(type.type);
@@ -42,7 +43,8 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 
     @Override
     public V3I getV3I(){
-        return new V3I(pos.getX(), pos.getY(), pos.getZ());
+        if(vpos == null) vpos = new V3I(pos.getX(), pos.getY(), pos.getZ());
+        return vpos;
     }
 
     @Override

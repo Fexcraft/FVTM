@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import static net.fexcraft.mod.uni.world.WrapperHolder.mutPos;
 
-public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
+public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity, FvtmBlockEntity.SwitchBE {
 	
 	protected QV3D juncpos;
 	protected Junction junction;

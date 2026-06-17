@@ -82,7 +82,7 @@ public class BoolBlockFunction extends BlockFunction {
 	}
 
 	public boolean valOf(String key){
-		return bools.containsValue(key) ? bools.get(key) : false;
+		return bools.containsKey(key) && bools.get(key);
 	}
 
 	public void toggle(FvtmBlockEntity tile, String key, Boolean to){

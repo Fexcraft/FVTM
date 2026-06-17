@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
+import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 
@@ -20,7 +21,7 @@ public class BakedModelLoader {
 		net.minecraftforge.client.model.ModelLoaderRegistry.registerLoader(net.fexcraft.mod.fvtm.render.block.RoadLinesModelLoader.INSTANCE);
 	}
 
-	public static ArrayList<ModelGroup> getPolygons(BlockModel model, IBlockState state, EnumFacing side, long rand){
+	public static ArrayList<ModelGroup> getPolygons(BlockModel model, StateWrapper state, EnumFacing side, long rand){
         ArrayList<ModelGroup> list = new ArrayList<>();
 		for(ModelGroup group : model.groups){
             if(group.has_pre_prog){
@@ -32,7 +33,7 @@ public class BakedModelLoader {
 		return list;
 	}
 
-    public static void reset(BlockModel model, IBlockState state, EnumFacing side, long rand){
+    public static void reset(BlockModel model, StateWrapper state, EnumFacing side, long rand){
         for(ModelGroup group : model.groups){
             if(group.has_pst_prog){
                 for(Program program : group.getPstPrograms()) program.post(group, DefaultModel.RENDERDATA.set(null, null, state));

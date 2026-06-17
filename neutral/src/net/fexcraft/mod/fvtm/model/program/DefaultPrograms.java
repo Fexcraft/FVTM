@@ -262,14 +262,15 @@ public class DefaultPrograms {
 		}).register());
 		//
 		WirePrograms.init();
+		BlockCondPrograms.init();
 		//
 		ModelGroup.PROGRAMS.add(new Program(){
 			public String id(){
 				return "fvtm:vehicle_on_jack";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.tile == null || ((JackEntity)data.tile).getVehicle() == null) return;
-				SeparateRenderCache.insert((JackEntity)data.tile);
+				if(data.block_entity == null || ((JackEntity)data.block_entity).getVehicle() == null) return;
+				SeparateRenderCache.insert((JackEntity)data.block_entity);
 			}
 			public boolean post(){
 				return false;
@@ -792,9 +793,9 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			list.visible = true;
-			if(in || data.tile == null || ((JackEntity)data.tile).getCoords().size() < 2) return;
+			if(in || data.block_entity == null || ((JackEntity)data.block_entity).getCoords().size() < 2) return;
 			in = true;
-			for(V3D coord : ((JackEntity)data.tile).getCoords()){
+			for(V3D coord : ((JackEntity)data.block_entity).getCoords()){
 				RENDERER.translate(coord);
 				RENDER_UTIL.render(list, data);
 				RENDERER.translate(-coord.x, -coord.y, -coord.z);

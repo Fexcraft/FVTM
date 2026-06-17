@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.program.BakedPrograms;
+import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -89,12 +90,12 @@ public class BakedModelImpl implements IBakedModel {
             }
         }
         quads.put(statekey, newquads);
-        BakedModelLoader.reset(model, state, side, rand);
+        BakedModelLoader.reset(model, StateWrapper.of(state), side, rand);
         return newquads;
     }
 
     private void getQuads(BlockModel model, List<BakedQuad> newquads, IBlockState state, EnumFacing side, long rand){
-        ArrayList<ModelGroup> groups = BakedModelLoader.getPolygons(model, state, side, rand);
+        ArrayList<ModelGroup> groups = BakedModelLoader.getPolygons(model, StateWrapper.of(state), side, rand);
         BakedModelLoader.convertTransforms(model, root.block, state);
         TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){

@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity.SignalBE;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
@@ -31,7 +31,7 @@ public class BlockPrograms {
         ModelGroup.PROGRAMS.add(new BlockFacePlayer(0, 0, 0));
         ModelGroup.PROGRAMS.add(new DefaultPrograms12.AlwaysGlow(){
             public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-                return data.tile != null && ((SignalTileEntity)data.tile).getSignalState() == 1;
+                return data.block_entity != null && ((SignalBE)data.block_entity).getSignalState() == 1;
             }
             public String id(){
                 return "fvtm:basic_signal_clear";
@@ -39,7 +39,7 @@ public class BlockPrograms {
         });
         ModelGroup.PROGRAMS.add(new DefaultPrograms12.AlwaysGlow(){
             public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-                return data.tile == null || ((SignalTileEntity)data.tile).getSignalState() == 0;
+                return data.block_entity == null || ((SignalBE)data.block_entity).getSignalState() == 0;
             }
             public String id(){
                 return "fvtm:basic_signal_stop";
@@ -236,8 +236,8 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.tile == null) return;
-            list.visible = (((TileEntity)data.tile).getBlockMetadata() / 4) == equals;
+            if(data.block_entity == null) return;
+            list.visible = (((TileEntity)data.block_entity).getBlockMetadata() / 4) == equals;
         }
 
         @Override
@@ -267,8 +267,8 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.tile == null) return;
-            list.visible = ((TileEntity)data.tile).getBlockMetadata() == equals;
+            if(data.block_entity == null) return;
+            list.visible = data.block_entity.getMeta() == equals;
         }
 
         @Override
@@ -298,16 +298,16 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.tile == null){
+            if(data.block_entity == null){
                 GLUtils112.translate(pos);
                 return;
             }
             GL11.glPushMatrix();
-            GL11.glRotated(-data.block.getType().getBlockType().getRotationFor(((TileEntity)data.tile).getBlockMetadata()), 0, 1, 0);
+            GL11.glRotated(-data.block.getType().getBlockType().getRotationFor(((TileEntity)data.block_entity).getBlockMetadata()), 0, 1, 0);
             GLUtils112.translate(pos);
-            double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.tile).getPos().getX() + 0.5F + pos.x);
-            double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.tile).getPos().getZ() + 0.5F + pos.y);
-            double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (((TileEntity)data.tile).getPos().getY() + pos.y);
+            double d0 = Minecraft.getMinecraft().player.posX - (((TileEntity)data.block_entity).getPos().getX() + 0.5F + pos.x);
+            double d1 = Minecraft.getMinecraft().player.posZ - (((TileEntity)data.block_entity).getPos().getZ() + 0.5F + pos.y);
+            double d2 = Minecraft.getMinecraft().player.posY + Minecraft.getMinecraft().player.eyeHeight - (((TileEntity)data.block_entity).getPos().getY() + pos.y);
             d2 = Math.atan2(d2, Math.sqrt(d0 * d0 + d1 * d1));
             d0 = MathHelper.atan2(d1, d0);
             GL11.glRotated(-Static.toDegrees(d0) - 90, 0, 1, 0);
@@ -316,7 +316,7 @@ public class BlockPrograms {
 
         @Override
         public void post(ModelGroup list, ModelRenderData data){
-            if(data.tile == null){
+            if(data.block_entity == null){
                 GLUtils112.translateR(pos);
                 return;
             }

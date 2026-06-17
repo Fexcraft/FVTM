@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.event;
 
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -18,7 +19,7 @@ public class EventData {
 	public Object[] args;
 	//
 	public EntityW entity;
-	public Object tile;
+	public FvtmBlockEntity block_entity;
 
 	public EventData set(VehicleInstance inst, EntityW passenger, EventHolder root, EventHolder hol, Object... objs){
 		vehent = inst;

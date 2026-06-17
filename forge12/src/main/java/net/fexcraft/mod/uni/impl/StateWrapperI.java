@@ -43,8 +43,28 @@ public class StateWrapperI extends StateWrapper {
     }
 
     @Override
+    public Object getProperty(String key){
+        for(IProperty<?> prop : state.getPropertyKeys()){
+            if(prop.getName().equals(key)) return prop;
+        }
+        return null;
+    }
+
+    @Override
     public <V> V getValue(Object prop){
         return (V)state.getValue((IProperty<?>)prop);
+    }
+
+    @Override
+    public <V> V getValue(String fvtm_key){
+        if(!PROP_REGISTRY.containsKey(fvtm_key)) return null;
+        return (V)state.getValue((IProperty<?>)PROP_REGISTRY.get(fvtm_key));
+    }
+
+    @Override
+    public <V> V getValue(String fvtm_key, Class<V> type){
+        if(!PROP_REGISTRY.containsKey(fvtm_key)) return null;
+        return (V)state.getValue((IProperty<?>)PROP_REGISTRY.get(fvtm_key));
     }
 
     @Override

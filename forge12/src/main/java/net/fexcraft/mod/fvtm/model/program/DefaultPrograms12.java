@@ -218,8 +218,8 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:bind_block_4x4rot_texture";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.texture == null || data.tile == null) return;
-				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata() / 4));
+				if(data.texture == null || data.block_entity == null) return;
+				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.block_entity).getBlockMetadata() / 4));
 			}
 			public boolean post(){
 				return false;
@@ -230,7 +230,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:bind_block_variant_texture";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.tile).getBlockMetadata()));
+				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.block_entity).getBlockMetadata()));
 			}
 			public boolean post(){
 				return false;
@@ -1284,8 +1284,8 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.tile == null) return;
-			var = (InvHandlerVar)((MultiblockTileEntity)data.tile).getMultiBlockData().getInventory(inv);
+			if(data.block_entity == null) return;
+			var = (InvHandlerVar)((MultiblockTileEntity)data.block_entity).getMultiBlockData().getInventory(inv);
 			if(var == null || var.stackAt(index).empty()) return;
 			bdata = ((ItemStack)var.stackAt(index).direct()).getCapability(Capabilities.VAPDATA, null).getBlockData();
 			if(bdata.getType().getModel() == null) return;

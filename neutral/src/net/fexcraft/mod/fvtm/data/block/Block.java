@@ -153,7 +153,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 				}
 			}
 		}
-		blocktype = BlockType.valueOf(map.getString("BlockType", "GENERIC_SIMPLE"));
+		blocktype = BlockType.parse(map.getString("BlockType", null));
 		material = map.getString("Material", "ROCK");
 		mapcolor = map.getString("MapColor", "STONE");
 		hardness = map.getFloat("Hardness", 1f);

@@ -49,6 +49,15 @@ public enum BlockType {
 		rotations = rots;
 	}
 
+	public static BlockType parse(String key){
+		if(key == null) return GENERIC_SIMPLE;
+		key = key.toUpperCase();
+		for(BlockType type : values()){
+			if(type.name().equals(key)) return type;
+		}
+		return GENERIC_SIMPLE;
+	}
+
 	@FunctionalInterface
 	public static interface GetBlockTypeImpl {
 

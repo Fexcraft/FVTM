@@ -39,7 +39,7 @@ public class Packets20F extends Packets20 {
 				return packet;
 			},
 			(packet, context) -> {
-				context.get().enqueueWork(getRunnable(packet, context, HTL));
+				context.get().enqueueWork(() -> getRunnable(packet, context, HTL).run());
 				context.get().setPacketHandled(true);
 			});
 		FVTM4.CHANNEL.registerMessage(2, Packet_VehMove.class,

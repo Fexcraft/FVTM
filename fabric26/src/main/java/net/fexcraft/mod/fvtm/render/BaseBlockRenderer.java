@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.render.state.BlockRS;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -46,7 +47,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity, B
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
 		}
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(state.fvtmData.getCurrentTexture()), state.lightCoords);
-		RENDER_UTIL.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, state.blockEntity, null));
+		RENDER_UTIL.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, (FvtmBlockEntity)state.blockEntity, null));
  		//
 		pose.popPose();
 	}

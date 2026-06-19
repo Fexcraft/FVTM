@@ -13,9 +13,11 @@ public class RenderUtil {
 	public static RenderUtil RENDER_UTIL = new RenderUtil();
 
 	public void render(Model model, ModelRenderData mdata){
+		model.getTransforms().apply();
 		for(ModelGroup group : model.getGroups()){
 			render(group, mdata);
 		}
+		model.getTransforms().deapply();
 	}
 
 	public void render(ModelGroup group, ModelRenderData mdata){

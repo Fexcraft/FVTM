@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
 import net.fexcraft.mod.fvtm.model.RenderCacheI;
@@ -61,9 +62,9 @@ public class SepRenderer {
 			for(int i = 0; i < SORTED_BLK_QUEUE.size(); i++){
 				ModelGroupList.SeparateModelGroupList sgroup = SORTED_BLK_QUEUE.get(i);
 				BlockData data = SORTED_BLK_DATA.get(i);
-				BlockEntity tile = (BlockEntity)SORTED_BLK_ENTITY.get(i);
+				FvtmBlockEntity tile = (FvtmBlockEntity)SORTED_BLK_ENTITY.get(i);
 				pose.pushPose();
-				pose.translate(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY(), tile.getBlockPos().getZ() + 0.5);
+				pose.translate(tile.getV3I().x + 0.5, tile.getV3I().y, tile.getV3I().z + 0.5);
 				//TODO rotate
 				sgroup.render(RENDERDATA.set(data, tile, null).rcs(null/*TODO*/));
 				pose.popPose();

@@ -46,4 +46,6 @@ public interface Model {
 
 	public ModelGroupList getSeparateGroups();
 
+	public Transforms getTransforms();
+
 }

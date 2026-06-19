@@ -331,6 +331,11 @@ public class DefaultModel implements Model {
 		return sorted.get(RenderOrder.SEPARATE);
 	}
 
+	@Override
+	public Transforms getTransforms(){
+		return transforms;
+	}
+
 	private static Program parseProgram(String[] args) throws Exception {
 		return parseProgram(args, 1);
 	}

@@ -27,11 +27,18 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 	private UniStack unistack = null;
 
 	public MaterialItem(Properties prop, Material material){
-		super(prop
-			.stacksTo(material.isFuelContainer() ? 1 : material.getMaxStack())
-			.durability(material.getMaxHealth()));
-			//.defaultDurability(material.getMaxHealth()));
+		super(genProp(prop, material));
 		this.material = material;
+	}
+
+	private static Properties genProp(Properties prop, Material material){
+		if(material.getMaxHealth() > 0){
+			prop.durability(material.getMaxHealth());
+		}
+		else{
+			prop.stacksTo(material.isFuelContainer() ? 1 : material.getMaxStack());
+		}
+		return prop;
 	}
 
 	@Override

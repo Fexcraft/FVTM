@@ -9,7 +9,9 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.common.utils.CallbackContainer;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -20,6 +22,7 @@ import net.fexcraft.mod.uni.packet.PacketHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -87,6 +90,15 @@ public class Packets21 extends Packets {
 			if(ent == null) return;
 			((Passenger)UniEntity.getEntity(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
 		});
+		LIS_CLIENT.put("block_func_sync", (tag, player) -> {
+			Level world = player.getWorld().local();
+			BlockPos pos = BlockPos.of(tag.getLong("pos"));
+			BaseBlockEntity tile = (BaseBlockEntity)world.getBlockEntity(pos);
+			if(tile != null){
+				TagCW data = tag.getCompound("data");
+				for(BlockFunction func : tile.getBlockData().getFunctions()) func.load(data);
+			}
+		});
 	}
 
 	private void register(){
@@ -118,13 +130,25 @@ public class Packets21 extends Packets {
 	}
 
 	@Override
-	public void send(BlockData blockdata, WorldW world, V3I pos){
+	public void send(BlockData blockdata, WorldW world, V3I vec){
+		Packets.sendToAllTrackingPos(PKT_TAG, world, vec, "block_func_sync", getBlockFuncData(blockdata, new BlockPos(vec.x, vec.y, vec.z)));
+	}
 
+	private TagCW getBlockFuncData(BlockData blockdata, BlockPos pos){
+		TagCW com = TagCW.create();
+		com.set("pos", pos.asLong());
+		TagCW data = TagCW.create();
+		for(BlockFunction func : blockdata.getFunctions()) func.save(data);
+		com.set("data", data);
+		return com;
 	}
 
 	@Override
-	public void send(WorldW world, V3I pos){
-
+	public void send(WorldW world, V3I vec){
+		BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+		BaseBlockEntity tile = (BaseBlockEntity)((Level)world.direct()).getBlockEntity(pos);
+		if(tile == null) return;
+		send(tile.getBlockData(), world, vec);
 	}
 
 	@Override

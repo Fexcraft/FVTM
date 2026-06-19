@@ -262,6 +262,7 @@ public class DefaultPrograms {
 		}).register());
 		//
 		WirePrograms.init();
+		BlockPrograms.init();
 		BlockCondPrograms.init();
 		//
 		ModelGroup.PROGRAMS.add(new Program(){

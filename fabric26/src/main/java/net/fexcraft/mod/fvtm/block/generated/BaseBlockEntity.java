@@ -32,6 +32,7 @@ import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 
 	public BlockData data;
+	public V3I vpos;
 
 	public BaseBlockEntity(BlockPos pos, BlockState state){
 		super(Resources21.BASE_ENTITY, pos, state);
@@ -88,7 +89,8 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 
 	@Override
 	public V3I getV3I(){
-		return new V3I(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+		if(vpos == null) vpos = new V3I(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+		return vpos;
 	}
 
 	@Override

@@ -72,7 +72,7 @@ public class VehicleCatalogCon extends ContainerInterface {
 		for(Map.Entry<String, Integer> entry : preset.recipe.entrySet()){
 			StackWrapper stack = FvtmResources.newStack(FvtmRegistry.getItem(entry.getKey()));
 			stack.count(entry.getValue());
-			stacks.add(stack);
+			stacks.add(stack.updateTag(stack.directTag()));
 		}
 		return stacks;
 	}
@@ -87,7 +87,10 @@ public class VehicleCatalogCon extends ContainerInterface {
 		ArrayList<StackWrapper> copy = new ArrayList<>();
 		for(int idx = 0; idx < player.entity.getInventorySize(); idx++){
 			StackWrapper wrp = player.entity.getStackAt(idx);
-			if(!wrp.empty()) copy.add(wrp.copy());
+			if(!wrp.empty()){
+				StackWrapper cp = wrp.copy();
+				copy.add(cp.updateTag(cp.directTag()));
+			}
 		}
 		for(StackWrapper stack : stacks){
 			int am = stack.count();
@@ -117,7 +120,7 @@ public class VehicleCatalogCon extends ContainerInterface {
 		ArrayList<StackWrapper> copy = new ArrayList<>();
 		for(int idx = 0; idx < player.entity.getInventorySize(); idx++){
 			StackWrapper wrp = player.entity.getStackAt(idx);
-			if(!wrp.empty()) copy.add(wrp);
+			if(!wrp.empty()) copy.add(wrp.updateTag(wrp.directTag()));
 		}
 		for(StackWrapper stack : stacks){
 			if(stack.empty()) continue;

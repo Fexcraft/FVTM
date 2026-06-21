@@ -55,7 +55,7 @@ public class BakedModelLoader {
             for(int i = 0; i < list.size(); i++){
                 Transforms.TF_Rotate rot = list.get(i);
                 model.bk.rot_tf[i] = AxisRotator.newDefInstance();
-                model.bk.rot_tf[i].setAngles(rot.y * rot.angle, rot.z * rot.angle, rot.x * rot.angle);
+                model.bk.rot_tf[i].setAngles(rot.y * -rot.angle, rot.z * -rot.angle, rot.x * -rot.angle);
             }
         }
         if(model.transforms.hasTranslate()){

@@ -423,6 +423,7 @@
 
 	"fvtm.spawn.simple.no_engine": "\u00A79Vehicle does not have an Engine installed!",
 	"fvtm.spawn.simple.no_seats": "\u00A79Vehicle does not have any Seats!",
+	"fvtm.spawn.simple.missing_wheels": "\u00A79Vehicle does not have at least 4 wheels installed!",
 	"fvtm.spawn.simple.no_data": "\u00A79Vehicle does not have simple-physics data configured!",
 
 	"fvtm.rail.long_distance.no_permission": "This is an Operator tool.",

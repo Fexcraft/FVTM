@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.*;
+import net.fexcraft.mod.fvtm.util.BakedModelLoader;
 import net.fexcraft.mod.fvtm.util.RoadLinesModelLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -131,7 +132,10 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void modelLoaderReg(ModelEvent.RegisterGeometryLoaders event){
-		if(Config.MD_BLOCK) event.register("road_lines", new RoadLinesModelLoader());
+		if(Config.MD_BLOCK){
+			event.register("road_lines", new RoadLinesModelLoader());
+			event.register("baked", new BakedModelLoader());
+		}
 	}
 
 }

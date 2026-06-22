@@ -98,7 +98,7 @@ public class Transforms {
 	
 	public static class TF_Translate implements Transformer {
 		
-		private float x, y, z;
+		public float x, y, z;
 		
 		public TF_Translate(float xx, float yy, float zz){
 			x = xx; y = yy; z = zz;
@@ -118,7 +118,7 @@ public class Transforms {
 	
 	public static class TF_Rotate implements Transformer {
 		
-		public final float x, y, z, angle;
+		public float x, y, z, angle;
 		
 		public TF_Rotate(float xx, float yy, float zz, float angle){
 			x = xx; y = yy; z = zz; this.angle = angle;
@@ -140,7 +140,7 @@ public class Transforms {
 	
 	public static class TF_Scale implements Transformer {
 		
-		private float x, y, z;
+		public float x, y, z;
 		
 		public TF_Scale(float xx, float yy, float zz){
 			x = xx; y = yy; z = zz;

@@ -159,7 +159,7 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 		}
 
 		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
-			Vec3f vec = vert.vector.add(poly.posX, poly.posY, poly.posZ);
+			Vec3f vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
 			if(model.defrot) vec = bk.rot_meta.getRelativeVector(vec);
 			if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec = rot.getRelativeVector(vec);
 			builder.vertex(

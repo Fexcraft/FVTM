@@ -69,7 +69,6 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 		private HashMap<IDL, TextureAtlasSprite> textures = new HashMap<>();
 		private Block block;
 		private BlockModel model;
-		private BakedTransformData bk;
 		private TextureAtlasSprite sprite;
 		private TextureAtlasSprite particle;
 
@@ -77,7 +76,6 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 			try{
 				block = FvtmRegistry.BLOCKS.get(rl.toString().replace(":block/", ":"));
 				model = (BlockModel)block.getModel();
-				bk = new BakedTransformData();
 				rl = ResourceLocation.tryParse(block.getDefaultTextures().get(0).colon().replace(".png", "").replace("textures/", ""));
 				sprite = function.apply(new Material(TextureAtlas.LOCATION_BLOCKS, rl));
 				particle = sprite;
@@ -103,6 +101,7 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 		@Override
 		public List<BakedQuad> getQuads(BlockState state, Direction direction, RandomSource random){
 			List<BakedQuad> quads = new ArrayList<>();
+			BakedTransformData bk = new BakedTransformData();
 			try{
 				ArrayList<ModelGroup> groups = getPolygons(model, StateWrapper.of(state));
 				BakedModelLoader.convertTransforms(model, bk, state);
@@ -142,11 +141,11 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 							QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();
 							baker.setDirection(Direction.NORTH);
 							baker.setSprite(texs);
-							addVertex(baker, poly, poli.vertices[0], vec2, texs, colorprog);
-							addVertex(baker, poly, poli.vertices[1], vec2, texs, colorprog);
-							addVertex(baker, poly, poli.vertices[2], vec2, texs, colorprog);
-							if(tri) addVertex(baker, poly, poli.vertices[2], vec2, texs, colorprog);
-							else addVertex(baker, poly, poli.vertices[3], vec2, texs, colorprog);
+							addVertex(baker, poly, poli.vertices[0], vec2, texs, bk, colorprog);
+							addVertex(baker, poly, poli.vertices[1], vec2, texs, bk, colorprog);
+							addVertex(baker, poly, poli.vertices[2], vec2, texs, bk, colorprog);
+							if(tri) addVertex(baker, poly, poli.vertices[2], vec2, texs, bk, colorprog);
+							else addVertex(baker, poly, poli.vertices[3], vec2, texs, bk, colorprog);
 							quads.add(baker.getQuad());
 						}
 					}
@@ -159,7 +158,7 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 			return quads;
 		}
 
-		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite sprite, BakedPrograms.ColorSetter colorprog){
+		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
 			Vec3f vec = vert.vector.add(poly.posX, poly.posY, poly.posZ);
 			if(model.defrot) vec = bk.rot_meta.getRelativeVector(vec);
 			if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec = rot.getRelativeVector(vec);
@@ -232,7 +231,6 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 	}
 
 	public static void convertTransforms(BlockModel model, BakedTransformData bk, BlockState state){
-		//bk = new BakedTransformData();
 		bk.rot_poly = new Axis3DL();
 		bk.rot_meta = new Axis3DL();
 		if(state != null){

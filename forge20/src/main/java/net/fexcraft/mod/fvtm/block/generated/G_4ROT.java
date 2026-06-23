@@ -1,11 +1,16 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.Static;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
@@ -30,5 +35,23 @@ public class G_4ROT extends PlainBase {
 		return defaultBlockState().setValue(FACING, type.isRandomRot() ? Direction.values()[Static.random.nextInt(4) + 2] : context.getPlayer().getDirection().getOpposite());
 	}
 
+	@Override
+	protected void fillVoxelShapes(){
+		super.fillVoxelShapes();
+		for(Direction dir : FACING.getPossibleValues()){
+			vshapes.put("facing=", Shapes.create(type.getAABB("default", "facing=" + dir.getName()).get(0)));
+			collision.put("facing=", Shapes.create(type.getAABB("collision", "facing=" + dir.getName()).get(0)));
+		}
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
+		return vshapes.getOrDefault("facing=" + state.getValue(FACING).name(), vshapes.get("normal"));
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
+		return collision.getOrDefault("facing=" + state.getValue(FACING).name(), collision.get("normal"));
+	}
 
 }

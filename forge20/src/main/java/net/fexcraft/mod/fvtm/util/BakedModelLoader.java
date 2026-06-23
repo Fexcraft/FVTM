@@ -77,11 +77,11 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 				block = FvtmRegistry.BLOCKS.get(rl.toString().replace(":block/", ":"));
 				model = (BlockModel)block.getModel();
 				rl = ResourceLocation.tryParse(block.getDefaultTextures().get(0).colon().replace(".png", "").replace("textures/", ""));
-				sprite = function.apply(new Material(TextureAtlas.LOCATION_BLOCKS, rl));
-				particle = sprite;
+				sprite = particle = function.apply(new Material(TextureAtlas.LOCATION_BLOCKS, rl));
 				for(IDL dt : block.getDefaultTextures()){
 					rl = ResourceLocation.tryParse(dt.colon().replace(".png", "").replace("textures/", ""));
 					textures.put(dt, function.apply(new Material(TextureAtlas.LOCATION_BLOCKS, rl)));
+					if(dt.name().equals("particle")) particle = textures.get(dt);
 				}
 			}
 			catch(Exception e){

@@ -29,7 +29,6 @@ public class BlockModel extends DefaultModel {
 	public boolean bindtex = true;
 	public boolean defrot;
 	public boolean rootrender;
-	public BakedTransformData bk;
 	public HashMap<String, String> tg;
 	public boolean grouptexname;
 

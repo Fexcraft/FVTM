@@ -10,10 +10,16 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.fexcraft.mod.uni.world.WrapperHolder.*;
 
@@ -22,11 +28,14 @@ import static net.fexcraft.mod.uni.world.WrapperHolder.*;
  */
 public class PlainBase extends net.minecraft.world.level.block.Block {
 
+	protected ConcurrentHashMap<String, VoxelShape> vshapes = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, VoxelShape> collision = new ConcurrentHashMap<>();
 	public Block type;
 
 	public PlainBase(Properties prop, Block type){
 		super(getProps(prop, type));
 		this.type = type;
+		fillVoxelShapes();
 	}
 
 	private static Properties getProps(Properties prop, Block type){
@@ -39,6 +48,21 @@ public class PlainBase extends net.minecraft.world.level.block.Block {
 		if(type.getBlockType().isRoadLayer()) prop.noCollision();
 		if(type.getBlockType().isJackStand()) prop.noOcclusion();
 		return prop;
+	}
+
+	protected void fillVoxelShapes(){
+		vshapes.put("normal", Shapes.create(type.getAABB("default", "normal").get(0)));
+		collision.put("normal", Shapes.create(type.getAABB("collision", "normal").get(0)));
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
+		return vshapes.get("normal");
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
+		return collision.get("normal");
 	}
 
 	@Override

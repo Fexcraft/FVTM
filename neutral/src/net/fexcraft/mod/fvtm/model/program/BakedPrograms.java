@@ -53,13 +53,16 @@ public class BakedPrograms {
     public static class ColorSetter extends BakedProgram {
 
         public final float[] color;
+        public final int int_color;
 
         public ColorSetter(int col){
-            color = new RGB(col).toFloatArray();
+            color = new RGB(int_color = col).toFloatArray();
         }
 
         public ColorSetter(String col){
-            color = new RGB(col).toFloatArray();
+            RGB rgb = new RGB(col);
+            int_color = rgb.packed;
+            color = rgb.toFloatArray();
         }
 
         @Override

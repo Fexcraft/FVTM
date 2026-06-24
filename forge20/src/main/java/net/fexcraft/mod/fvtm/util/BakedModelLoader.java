@@ -65,7 +65,7 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 
 	public static class BakedGeo implements BakedModel {
 
-		private static BakedPrograms.ColorSetter colorprog = null;
+		private BakedPrograms.ColorSetter colorprog = null;
 		private HashMap<IDL, TextureAtlasSprite> textures = new HashMap<>();
 		private Block block;
 		private BlockModel model;

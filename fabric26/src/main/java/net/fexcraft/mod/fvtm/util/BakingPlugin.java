@@ -1,13 +1,18 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.minecraft.client.resources.model.ModelDebugName;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class BakingPlugin implements ModelLoadingPlugin {
+
+	public static ModelDebugName MDN = () -> "FVTM:MDN";
 
 	@Override
 	public void initialize(Context context){
@@ -30,6 +35,19 @@ public class BakingPlugin implements ModelLoadingPlugin {
 				});
 			}
 		}
+	}
+
+	public static class MutableQuad extends MutableQuadViewImpl {
+
+		public MutableQuad(){
+			data = new int[EncodingFormat.TOTAL_STRIDE];
+		}
+
+		@Override
+		protected void emitDirectly(){
+			//
+		}
+
 	}
 
 }

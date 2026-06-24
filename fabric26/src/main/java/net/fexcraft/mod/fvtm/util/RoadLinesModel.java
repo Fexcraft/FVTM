@@ -1,16 +1,14 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_LINES;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_MARKER4;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_PATTERN;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.util.BakingPlugin.MutableQuad;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
@@ -27,6 +25,7 @@ import java.util.List;
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 import static net.fexcraft.mod.fvtm.model.block.BakedQuadData.*;
+import static net.fexcraft.mod.fvtm.util.BakingPlugin.MDN;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -60,12 +59,6 @@ public class RoadLinesModel {
 
 	public static class BakedLines implements BlockStateModel {
 
-		private static ModelDebugName MDN = new ModelDebugName() {
-			@Override
-			public String debugName(){
-				return "MDN";
-			}
-		};
 		private TextureAtlasSprite sprite;
 		private Material.Baked particle;
 		private LineModelPart part;
@@ -98,7 +91,6 @@ public class RoadLinesModel {
 
 	public static class LineModelPart implements BlockStateModelPart {
 
-		private static MutableQuad view = new MutableQuad();
 		private BakedLines root;
 
 		public LineModelPart(BakedLines lines){
@@ -107,6 +99,8 @@ public class RoadLinesModel {
 
 		@Override
 		public List<BakedQuad> getQuads(@Nullable Direction direction){
+			MutableQuad view = new MutableQuad();
+			view.clear();
 			int hei = root.state == null ? 0 : root.state.getValue(PROP_HEIGHT);
 			boolean hl = root.state.getBlock() instanceof G_ROAD_LINES;
 			double[][] uv = uv_full;
@@ -148,7 +142,6 @@ public class RoadLinesModel {
 				view.color(i, 0xffffffff);
 			}
 			quads.add(view.toBakedQuad(root.sprite));
-			view.clear();
 			return quads;
 		}
 
@@ -165,19 +158,6 @@ public class RoadLinesModel {
 		@Override
 		public @BakedQuad.MaterialFlags int materialFlags(){
 			return 0;
-		}
-
-	}
-
-	public static class MutableQuad extends MutableQuadViewImpl {
-
-		public MutableQuad(){
-			data = new int[EncodingFormat.TOTAL_STRIDE];
-		}
-
-		@Override
-		protected void emitDirectly(){
-			//
 		}
 
 	}

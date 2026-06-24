@@ -101,8 +101,15 @@ public class G_ROAD_LINES extends PlainBase {
 		return false;
 	}
 
+	protected void fillVoxelShapes(){}
+
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
+		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
 		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
 	}
 

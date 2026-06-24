@@ -15,16 +15,10 @@ public class Transforms21 {
 
 	public static final TF_RescaleNormal TF_RESCALE_NORMAL = new TF_RescaleNormal();
 
-	public static class TF_Translate implements Transforms.Transformer {
-
-		private float x;
-		private float y;
-		private float z;
+	public static class TF_Translate extends Transforms.TF_Translate {
 
 		public TF_Translate(float xx, float yy, float zz){
-			this.x = xx;
-			this.y = yy;
-			this.z = zz;
+			super(xx, yy, zz);
 		}
 
 		public void apply(){
@@ -37,30 +31,30 @@ public class Transforms21 {
 
 	}
 
-	public static class TF_Rotate implements Transforms.Transformer {
-
+	public static class TF_Rotate extends Transforms.TF_Rotate {
 
 		private int axe;
-		private float angle;
+		private float ang;
 
-		public TF_Rotate(float xx, float yy, float zz, float ang){
+		public TF_Rotate(float xx, float yy, float zz, float an){
+			super(xx, yy, zz, an);
 			axe = xx > 0 ? 0 : yy > 0 ? 1 : 2;
-			angle = Static.toRadians(ang);
+			ang = Static.toRadians(an);
 		}
 
 		public void apply(){
 			Renderer26.stack.pushPose();
 			switch(axe){
 				case 0: {
-					Renderer26.stack.mulPose(new Quaternionf().rotateAxis(angle, AX));
+					Renderer26.stack.mulPose(new Quaternionf().rotateAxis(ang, AX));
 					break;
 				}
 				case 1: {
-					Renderer26.stack.mulPose(new Quaternionf().rotateAxis(angle, AY));
+					Renderer26.stack.mulPose(new Quaternionf().rotateAxis(ang, AY));
 					break;
 				}
 				case 2: {
-					Renderer26.stack.mulPose(new Quaternionf().rotateAxis(angle, AZ));
+					Renderer26.stack.mulPose(new Quaternionf().rotateAxis(ang, AZ));
 					break;
 				}
 			}
@@ -72,16 +66,10 @@ public class Transforms21 {
 
 	}
 
-	public static class TF_Scale implements Transforms.Transformer {
-
-		private float x;
-		private float y;
-		private float z;
+	public static class TF_Scale extends Transforms.TF_Scale {
 
 		public TF_Scale(float xx, float yy, float zz){
-			this.x = xx;
-			this.y = yy;
-			this.z = zz;
+			super(xx, yy, zz);
 		}
 
 		public void apply(){

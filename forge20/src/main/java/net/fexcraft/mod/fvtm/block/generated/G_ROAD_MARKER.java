@@ -41,8 +41,15 @@ public class G_ROAD_MARKER extends PlainBase {
 		return val;
 	}
 
+	protected void fillVoxelShapes(){}
+
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
+		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
 		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
 	}
 

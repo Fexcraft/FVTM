@@ -40,7 +40,15 @@ public class G_ROAD extends PlainBase {
 	}
 
 	@Override
+	protected void fillVoxelShapes(){}
+
+	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
+		return SHAPES[height];
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
 		return SHAPES[height];
 	}
 

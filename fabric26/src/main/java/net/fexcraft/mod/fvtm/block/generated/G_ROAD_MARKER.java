@@ -10,8 +10,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.LOWER_SHAPES;
-import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.PROP_HEIGHT;
+import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -41,7 +40,15 @@ public class G_ROAD_MARKER extends PlainBase {
 	}
 
 	@Override
+	protected void fillVoxelShapes(){}
+
+	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx){
+		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx){
 		return LOWER_SHAPES[state.getValue(PROP_HEIGHT)];
 	}
 

@@ -35,9 +35,7 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
 	@Override
 	public void onServerTick(){
-		for(SystemRegion reg : regions.values()){
-			//TODO
-		}
+		//for(SystemRegion reg : regions.values()){}
 	}
 
 	@Override
@@ -129,7 +127,7 @@ public class SignSystem extends DetachedSystem<SignSystem, SignInstance> {
 
 	@Override
 	public void readRegion(SystemRegion<SignSystem, SignInstance> region, TagCW com){
-		if(!com.has("Signs")) return;;
+		if(!com.has("Signs")) return;
 		region.getObjects().clear();
 		TagLW list = com.getList("Signs");
 		for(TagCW tag : list){

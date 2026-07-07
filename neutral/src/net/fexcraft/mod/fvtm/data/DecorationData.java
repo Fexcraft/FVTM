@@ -1,25 +1,14 @@
 package net.fexcraft.mod.fvtm.data;
 
-import static net.fexcraft.mod.fvtm.FvtmRegistry.DECORATIONS;
-import static net.fexcraft.mod.fvtm.FvtmRegistry.WHITE_TEXTURE;
-
-import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.ModelData;
-import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 /**

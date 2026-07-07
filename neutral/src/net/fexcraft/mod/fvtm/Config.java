@@ -73,6 +73,9 @@ public class Config extends ConfigBase {
 	//signs
 	public static int SIGN_VIEW_DISTANCE;
 	public static int SIGN_SAVE_INTERVAL;
+	//deco
+	public static int DECO_VIEW_DISTANCE;
+	public static int DECO_SAVE_INTERVAL;
 
 	public Config(File file){
 		super(file, "FVTM");
@@ -97,6 +100,7 @@ public class Config extends ConfigBase {
 		String c_road = "road";
 		String c_wire = "wire";
 		String c_sign = "sign";
+		String c_deco = "deco";
 
 		entries.add(new ConfigEntry(this, c_gen, "vehicles_need_fuel", new JsonValue(true))
 			.info("If vehicles need Fuel (in survival mode) to function.")
@@ -199,6 +203,9 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, c_clt, "sign_view_distance", new JsonValue(300))
 			.info("View distance for road/traffic signs.").rang(1, 40960)
 			.cons((con, map) -> SIGN_VIEW_DISTANCE = con.getInteger(map)));
+		entries.add(new ConfigEntry(this, c_clt, "decoration_view_distance", new JsonValue(128))
+			.info("View distance for decorations.").rang(1, 40960)
+			.cons((con, map) -> DECO_VIEW_DISTANCE = con.getInteger(map)));
 
 		//general vehicle
 		entries.add(new ConfigEntry(this, c_veh, "land_prototype", new JsonValue(false))
@@ -292,6 +299,12 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, c_sign, "save_interval", new JsonValue(5))
 			.info("Interval (in minutes) in which the signs system is saved and inactive regions unloaded.")
 			.cons((con, map) -> SIGN_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
+			.rang(1, 60));
+
+		//decos
+		entries.add(new ConfigEntry(this, c_deco, "save_interval", new JsonValue(5))
+			.info("Interval (in minutes) in which the decoration system is saved and inactive regions unloaded.")
+			.cons((con, map) -> DECO_SAVE_INTERVAL = con.getInteger(map) * (int)MIN_MS)
 			.rang(1, 60));
 	}
 

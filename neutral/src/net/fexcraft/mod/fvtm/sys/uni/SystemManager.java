@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -129,6 +130,12 @@ public class SystemManager {
 			SYSTEMS_BY_ST.get(Systems.SIGN).put(tk, sys);
 			SYSTEMS_BY_WT.get(tk).put(Systems.SIGN, sys);
 		}
+		if(MD_DECORATION){
+			if(!SYSTEMS_BY_ST.containsKey(Systems.DECO)) SYSTEMS_BY_ST.put(Systems.DECO, new ConcurrentHashMap<>());
+			DecoSystem sys = new DecoSystem(world, type, rootfolder);
+			SYSTEMS_BY_ST.get(Systems.DECO).put(tk, sys);
+			SYSTEMS_BY_WT.get(tk).put(Systems.DECO, sys);
+		}
 		//
 		WORLDS.put(type.side_key(), world);
 	}
@@ -196,7 +203,7 @@ public class SystemManager {
 
 	public static enum Systems {
 		
-		RAIL, ROAD, WIRE, ENTITY, SIGN
+		RAIL, ROAD, WIRE, ENTITY, SIGN, DECO
 		
 	}
 

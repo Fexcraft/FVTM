@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Decoration;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
-import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -53,20 +52,6 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 			}
 		}
 		tooltip.add(GenericUtils.format("&9Rightclick on a block to place this decoration."));
-	}
-
-	@Override
-	public InteractionResult useOn(UseOnContext context){
-		if(context.getLevel().isClientSide) return InteractionResult.PASS;
-		ItemStack stack = context.getItemInHand();
-		DecorationEntity decoen = FVTM4.DECORATION_ENTITY.get().create(context.getLevel());
-		DecorationData data = getDataFromTag(stack.getTag());
-		if(data != null) decoen.decos.add(data);
-		decoen.setPos(context.getClickLocation());
-		context.getLevel().addFreshEntity(decoen);
-		if(!context.getPlayer().isCreative()) stack.shrink(1);
-		//EntityUtil.get(context.getPlayer()).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));*///TODO
-		return InteractionResult.SUCCESS;
 	}
 
 	@Override

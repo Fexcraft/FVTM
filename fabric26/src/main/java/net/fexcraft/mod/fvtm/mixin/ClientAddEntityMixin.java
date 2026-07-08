@@ -53,7 +53,6 @@ public class ClientAddEntityMixin implements ClientAddEntity {
 		if(type == Resources21.RAIL_ENTITY) return true;
 		if(type == Resources21.ROAD_MARKER_ENTITY) return true;
 		if(type == Resources21.RAIL_MARKER_ENTITY) return true;
-		if(type == Resources21.DECO_ENTITY) return true;
 		return false;
 	}
 

@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
@@ -489,6 +490,16 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("sign_rem", (tag, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, tag.getString("dim"));
+			system.del(new V3I(tag.getIntArray("pos"), 0));
+		});
+		LIS_CLIENT.put("deco_upd", (tag, player) -> {
+			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, tag.getString("dim"));
+			V3I pos = new V3I(tag.getIntArray("pos"), 0);
+			SystemRegion region = system.getRegions().get(pos, false);
+			if(region != null) region.add(pos).read(tag.getCompound("deco"));
+		});
+		LIS_CLIENT.put("deco_rem", (tag, player) -> {
+			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, tag.getString("dim"));
 			system.del(new V3I(tag.getIntArray("pos"), 0));
 		});
 		LIS_CLIENT.put("sync_reg", (tag, player) -> {

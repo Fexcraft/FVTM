@@ -55,9 +55,6 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event){
-		if(Config.MD_DECORATION){
-			EntityRenderers.register(FVTM4.DECORATION_ENTITY.get(), ctx -> new DecoRenderer(ctx));
-		}
 		if(Config.MD_ROAD){
 			EntityRenderers.register(FVTM4.ROAD_MARKER_ENTITY.get(), ctx -> new RoadMarkerRenderer(ctx));
 		}

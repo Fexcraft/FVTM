@@ -1,11 +1,10 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
@@ -37,7 +36,7 @@ public class SignRenderer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		for(SystemRegion<?, SignInstance> reg : sys.getRegions().values()){
 			for(SignInstance sign : reg.getObjects().values()){
-				//TODO distance check
+				if(sign.vec.vec.dis(cx, cy, cz) > Config.SIGN_VIEW_DISTANCE) continue;
 				GL11.glPushMatrix();
 				GL11.glTranslated(sign.vec.vec.x - cx, sign.vec.vec.y - cy, sign.vec.vec.z - cz);
 				if(sign.components.size() == 0){
@@ -54,7 +53,7 @@ public class SignRenderer {
 							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
-							int i = DecorationRenderer.getBrightness(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z), j = i % 65536, k = i / 65536;
+							int i = DecoRenderer.getBrightness(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z), j = i % 65536, k = i / 65536;
 							OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0F, k / 1.0F);
 							GL11.glPushMatrix();
 							GLUtils112.translate(scom.offset);

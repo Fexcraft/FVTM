@@ -12,7 +12,6 @@ import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.block.generated.BaseBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -77,13 +76,6 @@ public class Packets21 extends Packets {
 	@Override
 	public void initClient(){
 		super.initClient();
-		LIS_CLIENT.put("deco", (tag, player) -> {
-			Level level = player.getWorld().local();
-			Entity ent = level.getEntity(tag.getInteger("entid"));
-			if(ent != null && ent instanceof DecorationEntity){
-				((DecorationEntity)ent).readSpawnData(tag);
-			}
-		});
 		LIS_CLIENT.put("passenger_update", (tag, player) -> {
 			Level level = player.getWorld().local();
 			Entity ent = level.getEntity(tag.getInteger("entity"));

@@ -340,7 +340,7 @@ public class InteractionHandler {
 		return true;
 	}
 
-	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type };
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type, ContentType.DECORATION.item_type };
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;

@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -59,6 +61,10 @@ public class ToolboxItem extends Item {
 				tooltip.add(Component.literal("Sign Adjustment and Removal Toolbox"));
 				break;
 			}
+			case 6:{
+				tooltip.add(Component.literal("Decoration Adjustment and Removal Toolbox"));
+				break;
+			}
 		}
 	}
 
@@ -75,21 +81,37 @@ public class ToolboxItem extends Item {
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
 		var type = ((ToolboxItem)stack.getItem()).var;
-		if(type != ToolboxType.SIGN_ADJREM.idx || context.getPlayer().isShiftKeyDown()) return InteractionResult.PASS;
-		EntityW ply = UniEntity.getEntity(context.getPlayer());
-		QV3D vec = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
-		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
-		if(system == null){
-			ply.send("sign system not found");
-			return InteractionResult.FAIL;
+		if(type == ToolboxType.SIGN_ADJREM.idx && !context.getPlayer().isShiftKeyDown()){
+			EntityW ply = UniEntity.getEntity(context.getPlayer());
+			QV3D vec = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
+			if(system == null){
+				ply.send("sign system not found");
+				return InteractionResult.FAIL;
+			}
+			SignInstance inst = system.get(vec.pos);
+			if(inst == null){
+				inst = system.add(vec.pos);
+				inst.vec = vec;
+				inst.yaw = -context.getHorizontalDirection().toYRot() + 90;
+				inst.yaw *= Static.rad1;
+				inst.updateClient();
+			}
 		}
-		SignInstance inst = system.get(vec.pos);
-		if(inst == null){
-			inst = system.add(vec.pos);
-			inst.vec = vec;
-			inst.yaw = -context.getHorizontalDirection().toYRot() + 90;
-			inst.yaw *= Static.rad1;
-			inst.updateClient();
+		if(type == ToolboxType.DECO_ADJREM.idx && !context.getPlayer().isShiftKeyDown()){
+			EntityW ply = UniEntity.getEntity(context.getPlayer());
+			QV3D vec = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
+			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, ply.getWorld());
+			if(system == null){
+				ply.send("deco system not found");
+				return InteractionResult.FAIL;
+			}
+			DecoInstance inst = system.get(vec.pos);
+			if(inst == null){
+				inst = system.add(vec.pos);
+				inst.vec = vec;
+				inst.updateClient();
+			}
 		}
 		return InteractionResult.SUCCESS;
 	}

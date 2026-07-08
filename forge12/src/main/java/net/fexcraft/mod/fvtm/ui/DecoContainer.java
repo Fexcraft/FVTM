@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.DecorationEntity;
-import net.fexcraft.mod.uni.Pos;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -56,11 +56,11 @@ public class DecoContainer extends ContainerInterface {
 			}
 			case "pos":{
 				DecorationData deco = entity.decos.get(com.getInteger("idx"));
-				Pos pos = null;
+				V3D pos = null;
 				switch(com.getInteger("axis")){
-					case 0: pos = new Pos(com.getFloat("value"), deco.offset.y, deco.offset.z); break;
-					case 1: pos = new Pos(deco.offset.x, com.getFloat("value"), deco.offset.z); break;
-					case 2: pos = new Pos(deco.offset.x, deco.offset.y, com.getFloat("value")); break;
+					case 0: pos = new V3D(com.getFloat("value"), deco.offset.y, deco.offset.z); break;
+					case 1: pos = new V3D(deco.offset.x, com.getFloat("value"), deco.offset.z); break;
+					case 2: pos = new V3D(deco.offset.x, deco.offset.y, com.getFloat("value")); break;
 					default: return;
 				}
 				deco.offset = pos;

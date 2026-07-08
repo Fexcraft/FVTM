@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.mod.fcl.util.Renderer26;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
@@ -47,7 +48,7 @@ public class SignRenderer {
 		Renderer26.resetColor();
 		for(SystemRegion<?, SignInstance> reg : sys.getRegions().values()){
 			for(SignInstance sign : reg.getObjects().values()){
-				//TODO distance check
+				if(sign.vec.pos.dis(cx, cy, cz) > Config.SIGN_VIEW_DISTANCE) continue;
 				pose.pushPose();
 				pose.translate(sign.vec.vec.x, sign.vec.vec.y, sign.vec.vec.z);
 				if(sign.components.size() == 0){

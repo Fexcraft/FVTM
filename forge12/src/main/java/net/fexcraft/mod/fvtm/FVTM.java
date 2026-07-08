@@ -180,9 +180,6 @@ public class FVTM {
 			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:rail_vehicle"), RailVehicle.class, "fvtm.rail_vehicle", 1, this, 256, 1, false);
 		}
 		//
-		if(Config.MD_DECORATION){
-			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:decoration"), DecorationEntity.class, "fvtm.decoration", 7002, this, 256, 600, false);
-		}
 		if(Config.MD_RAIL){
 			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railmarker"), RailMarker.class, "fvtm.railmarker", 7003, this, 256, 5, false);
 		}
@@ -199,9 +196,6 @@ public class FVTM {
 			}
 			if(Config.MD_BLOCK){
 				BakedModelLoader.register();
-			}
-			if(Config.MD_DECORATION){
-				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(DecorationEntity.class, RenderDecoration::new);
 			}
 			if(Config.MD_RAIL){
 				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailMarker.class, RenderRailMarker::new);

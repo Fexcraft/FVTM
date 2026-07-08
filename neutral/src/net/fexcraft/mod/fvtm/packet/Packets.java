@@ -6,10 +6,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.Sign;
-import net.fexcraft.mod.fvtm.data.SignData;
+import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
@@ -19,6 +16,7 @@ import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -239,6 +237,24 @@ public abstract class Packets {
 			}
 			else{
 				player.openUI(UIKeys.SIGN_EDITOR, pos.pos);
+			}
+		});
+		LIS_SERVER.put("deco_interact", (com, player) -> {
+			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, player.getWorld());
+			QV3D pos = new QV3D(com, "pos");
+			if(com.getBoolean("remove")){
+				system.del(pos.pos);
+			}
+			else if(com.getBoolean("item")){
+				Decoration deco = player.getHeldItem(true).getContent(ContentType.DECORATION.item_type);
+				DecorationData data = new DecorationData(deco).read(player.getHeldItem(true).directTag());
+				DecoInstance inst = system.get(pos.pos);
+				inst.decorations.add(data);
+				inst.updateClient();
+				if(!player.isCreative()) player.getHeldItem(true).decr(1);
+			}
+			else{
+				player.openUI(UIKeys.DECORATION_EDITOR, pos.pos);
 			}
 		});
 		LIS_SERVER.put("sync_reg", (com, player) -> {

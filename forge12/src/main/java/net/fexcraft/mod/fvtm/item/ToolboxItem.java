@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.mod.fvtm.data.ToolboxType;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -68,6 +70,10 @@ public class ToolboxItem extends Item {
 				tooltip.add("Sign Adjustment and Removal Toolbox");
 				break;
 			}
+			case 6:{
+				tooltip.add("Decoration Adjustment and Removal Toolbox");
+				break;
+			}
 			default: break;
 		}
 	}
@@ -93,20 +99,36 @@ public class ToolboxItem extends Item {
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(world.isRemote) return EnumActionResult.PASS;
 		ItemStack stack = player.getHeldItem(hand);
-		if(stack.getItemDamage() != ToolboxType.SIGN_ADJREM.idx || player.isSneaking()) return EnumActionResult.PASS;
-		EntityW ply = UniEntity.getEntity(player);
-		QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
-		SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
-		if(system == null){
-			ply.send("sign system not found");
-			return EnumActionResult.FAIL;
+		if(stack.getItemDamage() == ToolboxType.SIGN_ADJREM.idx && !player.isSneaking()){
+			EntityW ply = UniEntity.getEntity(player);
+			QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
+			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
+			if(system == null){
+				ply.send("sign system not found");
+				return EnumActionResult.FAIL;
+			}
+			SignInstance inst = system.get(vec.pos);
+			if(inst == null){
+				inst = system.add(vec.pos);
+				inst.vec = vec;
+				inst.yaw = -facing.getHorizontalAngle() - 90;
+				inst.updateClient();
+			}
 		}
-		SignInstance inst = system.get(vec.pos);
-		if(inst == null){
-			inst = system.add(vec.pos);
-			inst.vec = vec;
-			inst.yaw = -facing.getHorizontalAngle() - 90;
-			inst.updateClient();
+		if(stack.getItemDamage() == ToolboxType.DECO_ADJREM.idx && !player.isSneaking()){
+			EntityW ply = UniEntity.getEntity(player);
+			QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
+			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, ply.getWorld());
+			if(system == null){
+				ply.send("deco system not found");
+				return EnumActionResult.FAIL;
+			}
+			DecoInstance inst = system.get(vec.pos);
+			if(inst == null){
+				inst = system.add(vec.pos);
+				inst.vec = vec;
+				inst.updateClient();
+			}
 		}
 		return EnumActionResult.SUCCESS;
 	}

@@ -101,9 +101,6 @@ public class FVTMC implements ClientModInitializer {
 		if(Config.MD_RAIL){
 			EntityRendererRegistry.register(Resources21.RAIL_MARKER_ENTITY, context -> new RailMarkerRenderer(context));
 		}
-		if(Config.MD_DECORATION){
-			EntityRendererRegistry.register(Resources21.DECO_ENTITY, context -> new DecoRenderer(context));
-		}
 		Packets21.PACKET_HANDLERS.add(() -> {
 			registerClientPacket(TAG_PACKET_TYPE, HTL);
 			registerClientPacket(VEHMOVE_PACKET_TYPE, HVM);
@@ -168,6 +165,9 @@ public class FVTMC implements ClientModInitializer {
 			OUTLINE_RS.result = new QV3D(res.getLocation().x, res.getLocation().y, res.getLocation().z);
 			OUTLINE_RS.pos = BlockPos.containing(res.getLocation());
 		});
+		if(Config.MD_DECORATION){
+			LevelRenderEvents.COLLECT_SUBMITS.register(DecoRenderer::renderDecos);
+		}
 		if(Config.MD_SIGN){
 			LevelRenderEvents.COLLECT_SUBMITS.register(SignRenderer::renderSigns);
 		}

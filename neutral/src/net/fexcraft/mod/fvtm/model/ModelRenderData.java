@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.event.EventData;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -37,6 +38,7 @@ public class ModelRenderData extends EventData {
 	public DecorationData decoration;
 	public SignData sign;
 	public SignInstance sign_inst;
+	public DecoInstance deco_inst;
 	public TextureableItem<Cloth> cloth_item;
 	public ArrayList<String> cloth_groups;
 	public boolean separaterender;
@@ -100,9 +102,9 @@ public class ModelRenderData extends EventData {
 	}
 
 
-	public ModelRenderData set(DecorationData data, EntityW ent){
+	public ModelRenderData set(DecorationData data, DecoInstance inst){
 		decoration = data;
-		entity = ent;
+		deco_inst = inst;
 		color = data;
 		return this;
 	}

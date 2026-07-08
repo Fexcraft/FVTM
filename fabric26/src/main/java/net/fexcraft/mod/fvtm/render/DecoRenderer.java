@@ -1,74 +1,79 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fexcraft.lib.common.Static;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fexcraft.mod.fcl.util.Renderer26;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.entity.DecorationEntity;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.render.state.DecorationRS;
-import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.fvtm.data.ToolboxType;
+import net.fexcraft.mod.fvtm.item.SignItem;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
+import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
+import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
+import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DecoRenderer extends EntityRenderer<DecorationEntity, DecorationRS> {
+public class DecoRenderer {
 
-	public DecoRenderer(EntityRendererProvider.Context context){
-		super(context);
-		shadowRadius = 0.125F;
-	}
+	private static DecoSystem sys;
+	private static boolean holding;
 
-	@Override
-	public DecorationRS createRenderState(){
-		return new DecorationRS();
-	}
-
-	@Override
-	public void extractRenderState(DecorationEntity entity, DecorationRS state, float f){
-		super.extractRenderState(entity, state, f);
-		state.decoration = entity;
-	}
-
-	@Override
-	public void submit(DecorationRS state, PoseStack pose, SubmitNodeCollector nodecoll, CameraRenderState camera){
+	public static void renderDecos(LevelRenderContext context){
+		sys = SystemManager.get(SystemManager.Systems.DECO, context.levelState().getData(LEVEL_RS_KEY).key);
+		if(sys == null) return;
+		double cx = context.levelState().cameraRenderState.pos.x;
+		double cy = context.levelState().cameraRenderState.pos.y;
+		double cz = context.levelState().cameraRenderState.pos.z;
+		PoseStack pose = context.poseStack();
+		RenderUtil26.set(pose, context.submitNodeCollector(), FvtmRenderTypes.white(), 0);
+		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.SIGN_ADJREM.idx;
 		pose.pushPose();
-		EntityW ent = UniEntity.getEntity(state.decoration);
-		for(DecorationData data : state.decoration.decos){
-			pose.pushPose();
-			pose.translate(data.offset.x16, data.offset.y16, data.offset.z16);
-			if(data.rotx != 0.0F || data.roty != 0.0F || data.rotz != 0.0F){
-				pose.mulPose(new Quaternionf()
-					.rotateAxis(Static.toRadians(data.roty), AY)
-					.rotateAxis(Static.toRadians(data.rotx), AX)
-					.rotateAxis(Static.toRadians(data.rotz), AZ)
-				);
+		pose.translate(-cx, -cy, -cz);
+		Renderer26.resetColor();
+		for(SystemRegion<?, DecoInstance> reg : sys.getRegions().values()){
+			for(DecoInstance deco : reg.getObjects().values()){
+				if(deco.vec.pos.dis(cx, cy, cz) > Config.DECO_VIEW_DISTANCE) continue;
+				pose.pushPose();
+				pose.translate(deco.vec.vec.x, deco.vec.vec.y, deco.vec.vec.z);
+				if(deco.decorations.size() == 0){
+					RenderUtil26.renderBB(0.5f, COL_ORG);
+				}
+				else{
+					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SignItem){
+						RenderUtil26.renderBB(0.5f, COL_ORG);
+					}
+					RenderCache cache = deco.getRenderCache();
+					for(DecorationData dcom : deco.decorations){
+						if(dcom.getType().getModel() == null){
+							RenderUtil26.renderBB(0.25f, COL_RED);
+						}
+						else{
+							pose.pushPose();
+							pose.translate(dcom.offset.x, dcom.offset.y, dcom.offset.z);
+							if(dcom.roty != 0f) RENDERER.rotate(dcom.roty, 0, 1, 0);
+							if(dcom.rotz != 0f) RENDERER.rotate(dcom.rotz, 0, 0, 1);
+							if(dcom.rotx != 0f) RENDERER.rotate(dcom.rotx, 1, 0, 0);
+							if(dcom.sclx != 1f || dcom.scly != 1f || dcom.sclz != 1f) pose.scale(dcom.sclx, dcom.scly, dcom.sclz);
+							RenderUtil26.type(FvtmRenderTypes.getCutout(dcom.getTexture().getTexture()));
+							RENDER_UTIL.render(dcom.getType().getModel(), RENDERDATA.set(dcom, deco).rc(cache));
+							pose.popPose();
+						}
+					}
+				}
+				pose.popPose();
 			}
-			pose.scale(data.sclx, data.scly, data.sclz);
-			if(data.getType().getModel() == null){
-				RenderUtil26.renderBB(0.25f, COL_RED);
-			}
-			else{
-				RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(data.getCurrentTexture()), state.lightCoords);
-				RENDER_UTIL.render(data.getType().getModel(), DefaultModel.RENDERDATA.set(data, ent));
-			}
-			pose.popPose();
-		}
-		if(state.decoration.decos.size() == 0 || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
-			pose.translate(0, 0.125f, 0.);
-			RenderUtil26.renderBB(0.25f, COL_CYN);
 		}
 		pose.popPose();
 	}

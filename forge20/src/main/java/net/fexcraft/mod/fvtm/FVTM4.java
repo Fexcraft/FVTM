@@ -73,7 +73,6 @@ public class FVTM4 {
 	public static final HashMap<String, DeferredRegister<SoundEvent>> SOUND_REGISTY = new HashMap<>();
 	//
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, "fvtm");
-	public static RegistryObject<EntityType<DecorationEntity>> DECORATION_ENTITY;
 	public static RegistryObject<EntityType<RoadMarker>> ROAD_MARKER_ENTITY;
 	public static RegistryObject<EntityType<RailMarker>> RAIL_MARKER_ENTITY;
 	public static RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY;
@@ -134,15 +133,6 @@ public class FVTM4 {
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(bus));
 		CREATIVE_MODE_TABS.register(bus);
 		//
-		if(Config.MD_DECORATION){
-			DECORATION_ENTITY = ENTITIES.register("decoration", () ->
-				EntityType.Builder.of(DecorationEntity::new, MobCategory.MISC)
-					.sized(0.25F, 0.25F)
-					.setUpdateInterval(10)
-					.setTrackingRange(256)
-					.build("decoration")
-			);
-		}
 		if(Config.MD_ROAD){
 			ROAD_MARKER_ENTITY = ENTITIES.register("road_marker", () ->
 				EntityType.Builder.of(RoadMarker::new, MobCategory.MISC)
@@ -274,7 +264,7 @@ public class FVTM4 {
 		@SubscribeEvent
 		public static void onAttachEntityCaps(AttachCapabilitiesEvent<Entity> event){
 			if(!EnvInfo.CLIENT) return;
-			if(event.getObject() instanceof DecorationEntity || event.getObject() instanceof RootVehicle){
+			if(event.getObject() instanceof RootVehicle){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheProvider(event.getObject()));
 			}
 		}

@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
-import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -64,13 +63,6 @@ public class PacketsImpl extends Packets {
 		FvtmLogger.LOGGER.log("Done initialising Packet Handler.");
 		FvtmLogger.LOGGER.log("Starting Packet Listener registration.");
 		if(EnvInfo.CLIENT){
-			LIS_CLIENT.put("deco", (tag, player) -> {
-				World world = player.getWorld().local();
-				Entity ent = world.getEntityByID(tag.getInteger("entid"));
-				if(ent != null && ent instanceof DecorationEntity){
-					((DecorationEntity)ent).readEntityFromNBT(tag.local());
-				}
-			});
 			LIS_CLIENT.put("block_func_sync", (tag, player) -> {
 				World world = player.getWorld().local();
 				BlockPos pos = BlockPos.fromLong(tag.getLong("pos"));

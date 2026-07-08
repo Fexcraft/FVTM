@@ -4,36 +4,47 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.entity.DecorationEntity;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
-import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.ArrayList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class DecoContainer extends ContainerInterface {
 
-	protected DecorationEntity entity;
-	protected DecorationData selected;
+	protected DecoSystem system;
+	protected ArrayList<DecorationData> decos = new ArrayList<>();
+	protected DecoInstance inst;
 
 	public DecoContainer(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
-		entity = (DecorationEntity)((EntityPlayer)player.entity.direct()).world.getEntityByID(pos.x);
+		try{
+			system = SystemManager.get(SystemManager.Systems.DECO, player.entity.getWorld());
+			inst = system.get(pos);
+			decos.addAll(inst.decorations);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public Object get(String key, Object... objs){
 		switch(key){
 			case "decos.size":{
-				return entity.decos.size();
+				return decos.size();
 			}
 			case "decos.key":{
-				return entity.decos.get((int)objs[0]).getType().getIDS();
+				return decos.get((int)objs[0]).getType().getIDS();
 			}
 			case "decos.at":{
-				return entity.decos.get((int)objs[0]);
+				return decos.get((int)objs[0]);
 			}
 		}
 		return null;
@@ -44,7 +55,8 @@ public class DecoContainer extends ContainerInterface {
 		String task = com.getString("task");
 		switch(task){
 			case "rem":{
-				entity.decos.remove(com.getInteger("idx"));
+				DecorationData deco = decos.remove(com.getInteger("idx"));
+				if(deco != null) inst.decorations.remove(deco);
 				if(!client){
 					SEND_TO_CLIENT.accept(com, player);
 				}
@@ -55,7 +67,7 @@ public class DecoContainer extends ContainerInterface {
 				return;
 			}
 			case "pos":{
-				DecorationData deco = entity.decos.get(com.getInteger("idx"));
+				DecorationData deco = decos.get(com.getInteger("idx"));
 				V3D pos = null;
 				switch(com.getInteger("axis")){
 					case 0: pos = new V3D(com.getFloat("value"), deco.offset.y, deco.offset.z); break;
@@ -68,7 +80,7 @@ public class DecoContainer extends ContainerInterface {
 				break;
 			}
 			case "rot":{
-				DecorationData deco = entity.decos.get(com.getInteger("idx"));
+				DecorationData deco = decos.get(com.getInteger("idx"));
 				switch(com.getInteger("axis")){
 					case 0: deco.rotx = com.getFloat("value"); break;
 					case 1: deco.roty = com.getFloat("value"); break;
@@ -79,7 +91,7 @@ public class DecoContainer extends ContainerInterface {
 				break;
 			}
 			case "scale":{
-				DecorationData deco = entity.decos.get(com.getInteger("idx"));
+				DecorationData deco = decos.get(com.getInteger("idx"));
 				switch(com.getInteger("axis")){
 					case 0: deco.sclx = com.getFloat("value"); break;
 					case 1: deco.scly = com.getFloat("value"); break;
@@ -90,7 +102,7 @@ public class DecoContainer extends ContainerInterface {
 				break;
 			}
 			case "tex":{
-				DecorationData deco = entity.decos.get(com.getInteger("idx"));
+				DecorationData deco = decos.get(com.getInteger("idx"));
 				int sel = com.getInteger("sel");
 				if(sel >= 0 && sel < deco.getType().getDefaultTextures().size()){
 					deco.getTexture().setSelectedTexture(sel, null, false);
@@ -103,7 +115,7 @@ public class DecoContainer extends ContainerInterface {
 				break;
 			}
 			case "color":{
-				DecorationData deco = entity.decos.get(com.getInteger("idx"));
+				DecorationData deco = decos.get(com.getInteger("idx"));
 				deco.getColorChannel(com.getString("channel")).packed = com.getInteger("rgb");
 				if(!client) SEND_TO_CLIENT.accept(com, player);
 				else{
@@ -118,9 +130,7 @@ public class DecoContainer extends ContainerInterface {
 	@Override
 	public void onClosed(){
 		super.onClosed();
-		if(entity != null && !entity.world.isRemote){
-			entity.updateClient();
-		}
+		if(inst != null && !player.entity.isOnClient()) inst.updateClient();
 	}
 
 }

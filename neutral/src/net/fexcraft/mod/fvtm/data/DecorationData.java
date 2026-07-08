@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.uni.Pos;
@@ -18,7 +19,7 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 
 	private TreeMap<String, RGB> channels = new TreeMap<>();
 	protected Textureable texture;
-	public Pos offset = new Pos(0, 0, 0);
+	public V3D offset = new V3D(0, 0, 0);
 	public float rotx, roty, rotz;
 	public float sclx = 1, scly = 1, sclz = 1;
 	public int size = 8;
@@ -74,7 +75,7 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 			}
 			return this;
 		}
-		offset = new Pos(compound.getFloat("offx"), compound.getFloat("offy"), compound.getFloat("offz"));
+		offset = new V3D(compound.getFloat("offx"), compound.getFloat("offy"), compound.getFloat("offz"));
 		if(compound.has("rotx")) rotx = compound.getFloat("rotx");
 		if(compound.has("roty")) roty = compound.getFloat("roty");
 		if(compound.has("rotz")) rotz = compound.getFloat("rotz");

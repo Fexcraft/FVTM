@@ -9,6 +9,8 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.WireDeco;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.uni.world.AABB;
 import net.fexcraft.mod.fvtm.data.inv.FvtmInv;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -347,6 +349,7 @@ public class InteractionHandler {
 		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
 		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIREDECO.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK))) return handleWire(world, pass.entity, key, stack);
 		if(stack.isItemOf(ContentType.SIGN.item_type) || (is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM))) return handleSign(world, pass.entity, key, stack);
+		if(stack.isItemOf(ContentType.DECORATION.item_type) || (is_toolbox && eq(getToolboxType(stack), DECO_ADJREM))) return handleDeco(world, pass.entity, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.entity.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass.entity, stack)) return true;
@@ -373,6 +376,32 @@ public class InteractionHandler {
 					Packets.send(Packet_TagListener.class, "sign_interact", com);
 					cooldown = Time.getDate() + 20;
 					last = "sign";
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean handleDeco(FvtmWorld world, EntityW pass, KeyPress key, StackWrapper stack){
+		if(last.equals("deco") && Time.getDate() < cooldown) return false;
+		if(key.mouse_main()) return false;
+		boolean di = stack.isItemOf(ContentType.DECORATION.item_type);
+		DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, (WorldW)world);
+		V3D evec = pass.getEyeVec();
+		V3D lvec = evec.add(pass.getLookVec().multiply(5));
+		float size = 0.25f;
+		for(SystemRegion<?, DecoInstance> reg : system.getRegions().values()){
+			for(DecoInstance deco : reg.getObjects().values()){
+				aabb = AABB.create(deco.vec.vec.x - size, deco.vec.vec.y - size, deco.vec.vec.z - size, deco.vec.vec.x + size, deco.vec.vec.y + size, deco.vec.vec.z + size);
+				if(contains(evec, lvec, aabb)){
+					TagCW com = TagCW.create();
+					deco.vec.write(com, "pos");
+					if(pass.isShiftDown()) com.set("remove", true);
+					if(di) com.set("item", true);
+					Packets.send(Packet_TagListener.class, "deco_interact", com);
+					cooldown = Time.getDate() + 20;
+					last = "deco";
 					return true;
 				}
 			}

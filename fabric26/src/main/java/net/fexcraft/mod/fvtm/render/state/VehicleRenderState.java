@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.render.state;
 
-import net.fexcraft.mod.fvtm.entity.DecorationEntity;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;

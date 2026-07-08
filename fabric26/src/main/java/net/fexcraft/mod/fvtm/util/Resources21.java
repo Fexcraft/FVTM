@@ -79,7 +79,6 @@ public class Resources21 extends FvtmResources {
 	public static EntityType<RailVehicle> RAIL_ENTITY;
 	public static EntityType<RoadMarker> ROAD_MARKER_ENTITY;
 	public static EntityType<RailMarker> RAIL_MARKER_ENTITY;
-	public static EntityType<DecorationEntity> DECO_ENTITY;
 
 	public static void addItem(String idl, Item item){
 		String[] split = idl.split(":");

@@ -32,6 +32,7 @@ public class RenderUtil26 extends RenderUtil {
 
 	@Override
 	public void render(ModelGroup group, ModelRenderData data){
+		group.pre(data);
 		int col = Renderer26.color;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			Renderer26.setColor(col);
@@ -41,6 +42,7 @@ public class RenderUtil26 extends RenderUtil {
 			group.render();
 			Renderer26.pose = null;
 		});
+		group.post(data);
 	}
 
 	//TODO add color param

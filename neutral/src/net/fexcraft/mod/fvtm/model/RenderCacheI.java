@@ -1,10 +1,5 @@
 package net.fexcraft.mod.fvtm.model;
 
-import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.ModelRenderData;
-import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.model.RenderCache;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -15,6 +10,7 @@ import java.util.function.Function;
 public class RenderCacheI implements RenderCache {
 
 	protected LinkedHashMap<Program, Object> objects = new LinkedHashMap<>();
+	protected int light;
 
 	public RenderCacheI(){}
 
@@ -44,6 +40,17 @@ public class RenderCacheI implements RenderCache {
 			return null;
 		}
 		return (V)objects.put(prog, value);
+	}
+
+	@Override
+	public int light(){
+		return light;
+	}
+
+	@Override
+	public RenderCache light(int i){
+		light = i;
+		return this;
 	}
 
 }

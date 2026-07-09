@@ -23,4 +23,8 @@ public interface RenderCache {
 	/** Set object to `null` to remove the entry. Otherwise, it updates the cache. */
 	public <V> V set(Program prog, V value);
 
+	public int light();
+
+	public RenderCache light(int i);
+
 }

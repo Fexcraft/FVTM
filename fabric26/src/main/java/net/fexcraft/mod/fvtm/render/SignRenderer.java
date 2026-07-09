@@ -13,8 +13,11 @@ import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.joml.Matrix4f;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
@@ -33,10 +36,12 @@ public class SignRenderer {
 	private static SignSystem sys;
 	private static boolean holding;
 	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+	private static Level level;
 
 	public static void renderSigns(LevelRenderContext context){
 		sys = SystemManager.get(SystemManager.Systems.SIGN, context.levelState().getData(LEVEL_RS_KEY).key);
 		if(sys == null) return;
+		level = WrapperHolder.getClientWorld().local();
 		double cx = context.levelState().cameraRenderState.pos.x;
 		double cy = context.levelState().cameraRenderState.pos.y;
 		double cz = context.levelState().cameraRenderState.pos.z;
@@ -65,7 +70,7 @@ public class SignRenderer {
 							RenderUtil26.renderBB(0.25f, COL_RED);
 						}
 						else{
-							//TODO Renderer26.light = LevelRenderer.getLightCoords(null, pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z));;
+							cache.light(LevelRenderer.getLightCoords(level, pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z)));
 							pose.pushPose();
 							pose.translate(scom.offset.x, scom.offset.y, scom.offset.z);
 							if(scom.roty != 0f) RENDERER.rotate(scom.roty, 0, 1, 0);

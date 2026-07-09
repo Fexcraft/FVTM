@@ -13,7 +13,11 @@ import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
@@ -29,10 +33,13 @@ public class DecoRenderer {
 
 	private static DecoSystem sys;
 	private static boolean holding;
+	private static BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+	private static Level level;
 
 	public static void renderDecos(LevelRenderContext context){
 		sys = SystemManager.get(SystemManager.Systems.DECO, context.levelState().getData(LEVEL_RS_KEY).key);
 		if(sys == null) return;
+		level = WrapperHolder.getClientWorld().local();
 		double cx = context.levelState().cameraRenderState.pos.x;
 		double cy = context.levelState().cameraRenderState.pos.y;
 		double cz = context.levelState().cameraRenderState.pos.z;
@@ -60,6 +67,7 @@ public class DecoRenderer {
 							RenderUtil26.renderBB(0.25f, COL_RED);
 						}
 						else{
+							cache.light(LevelRenderer.getLightCoords(level, pos.set(deco.vec.pos.x, deco.vec.pos.y, deco.vec.pos.z)));
 							pose.pushPose();
 							pose.translate(dcom.offset.x, dcom.offset.y, dcom.offset.z);
 							if(dcom.roty != 0f) RENDERER.rotate(dcom.roty, 0, 1, 0);

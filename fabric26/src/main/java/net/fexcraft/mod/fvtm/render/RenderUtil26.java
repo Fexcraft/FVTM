@@ -17,7 +17,7 @@ import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
  */
 public class RenderUtil26 extends RenderUtil {
 
-	private static SubmitNodeCollector noco;
+	public static SubmitNodeCollector noco;
 
 	public static void set(PoseStack pose, SubmitNodeCollector nocoll, RenderType type, int lc){
 		Renderer26.stack = pose;

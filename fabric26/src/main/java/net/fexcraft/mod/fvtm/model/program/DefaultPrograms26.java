@@ -13,12 +13,14 @@ import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
+import net.fexcraft.mod.fvtm.render.RenderUtil26;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
@@ -537,10 +539,8 @@ public class DefaultPrograms26 extends DefaultPrograms {
 				font = getFont(key);
 				if(font == null) return;
 			}
-			font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
-				data.sign.getColorChannel("text").packed - 16777216, false, stack.last().pose(), Minecraft.getInstance().renderBuffers().bufferSource(),
-				Font.DisplayMode.SEE_THROUGH, overlay, light
-			);
+			RenderUtil26.noco.submitText(stack, data.sign.centered ? -font.width(data.sign.text) / 2f : 0, 0, Component.literal(data.sign.text).getVisualOrderText(),
+				false, Font.DisplayMode.SEE_THROUGH, light, data.sign.getColorChannel("text").packed - 16777216, 0, 0);
 			Renderer26.resetColor();
 			RENDERER.pop();
 		}
@@ -603,10 +603,8 @@ public class DefaultPrograms26 extends DefaultPrograms {
 			if(rot.y != 0.0F) RENDERER.rotate(rot.y, 0, 1, 0);
 			if(rot.z != 0.0F) RENDERER.rotate(rot.z, 0, 0, 1);
 			if(rot.x != 0.0F) RENDERER.rotate(rot.x, 1, 0, 0);
-			font.drawInBatch(width > 0 ? font.plainSubstrByWidth(text, width) : text, centered ? -font.width(text) * 0.5f : 0, 0,
-				color - 16777216, false, stack.last().pose(), Minecraft.getInstance().renderBuffers().bufferSource(),
-				glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, overlay, light
-			);
+			RenderUtil26.noco.submitText(stack, centered ? -font.width(text) * 0.5f : 0, 0, Component.literal(width > 0 ? font.plainSubstrByWidth(text, width) : text).getVisualOrderText(),
+				false, glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, light, data.sign.getColorChannel("text").packed - 16777216, 0, 0);
 			RENDERER.pop();
 		}
 

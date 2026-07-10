@@ -128,7 +128,7 @@ public class FVTMC implements ClientModInitializer {
 		KeyMappingHelper.registerKeyMapping(pbrake = new KeyMapping("key.fvtm.pbrake", InputConstants.Type.KEYSYM, InputConstants.KEY_O, category));
 		if(Config.MD_VEHICLE) ClientTickEvents.END_CLIENT_TICK.register(mc -> handleKeyboardInput(mc));
 		//
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, dir) -> {
+		/*AttackBlockCallback.EVENT.register((player, world, hand, pos, dir) -> {
 			if(hand == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, UniStack.getStack(player.getItemInHand(hand)))){
 				return InteractionResult.SUCCESS;
 			}
@@ -145,7 +145,7 @@ public class FVTMC implements ClientModInitializer {
 				return InteractionResult.SUCCESS;
 			}
 			return InteractionResult.PASS;
-		});
+		});*/
 		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 			SystemManager.onChunkLoad(WrapperHolder.getWorld(level), UniChunk.getChunk(chunk));
 		});

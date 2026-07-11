@@ -100,18 +100,9 @@ public class ToolboxItem extends Item {
 		}
 		if(type == ToolboxType.DECO_ADJREM.idx && !context.getPlayer().isShiftKeyDown()){
 			EntityW ply = UniEntity.getEntity(context.getPlayer());
-			QV3D vec = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
-			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, ply.getWorld());
-			if(system == null){
-				ply.send("deco system not found");
-				return InteractionResult.FAIL;
-			}
-			DecoInstance inst = system.get(vec.pos);
-			if(inst == null){
-				inst = system.add(vec.pos);
-				inst.vec = vec;
-				inst.updateClient();
-			}
+			SystemManager.run(SystemManager.Systems.DECO, ply.getWorld(), DecoSystem.class, sys -> {
+				sys.addNewDeco(ply, null, new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z));
+			});
 		}
 		return InteractionResult.SUCCESS;
 	}

@@ -5,11 +5,16 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Decoration;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
+import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.fvtm.util.Resources21;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -71,6 +76,16 @@ public class DecorationItem extends Item implements ContentItem.ContentDataItem<
 	@Override
 	public DecorationData getData(TagCW compound){
 		return new DecorationData(deco).read(compound);
+	}
+
+	@Override
+	public InteractionResult useOn(UseOnContext context){
+		if(context.getLevel().isClientSide() || context.getPlayer().isShiftKeyDown()) return InteractionResult.PASS;
+		EntityW ply = UniEntity.getEntity(context.getPlayer());
+		SystemManager.run(SystemManager.Systems.DECO, ply.getWorld(), DecoSystem.class, sys -> {
+			sys.addNewDeco(ply, UniStack.getStack(context.getItemInHand()), new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z));
+		});
+		return InteractionResult.SUCCESS;
 	}
 
 }

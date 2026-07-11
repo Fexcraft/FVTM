@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -90,6 +91,21 @@ public class SystemManager {
 
 	public static <T extends DetachedSystem> T get(Systems sysid, WorldW world, Class<T> clazz){
 		return get(sysid, world);
+	}
+
+	public static <T extends DetachedSystem> void run(Systems sysid, WorldW world, Consumer<T> cons){
+		T sys = get(sysid, world);
+		if(sys != null) sys.run(cons);
+	}
+
+	public static <T extends DetachedSystem> void run(Systems sysid, String key, Consumer<T> cons){
+		T sys = get(sysid, key);
+		if(sys != null) sys.run(cons);
+	}
+
+	public static <T extends DetachedSystem> void run(Systems sysid, WorldW world, Class<T> clazz, Consumer<T> cons){
+		T sys = get(sysid, world);
+		if(sys != null) sys.run(cons);
 	}
 
 	private static boolean loaded(String skey){

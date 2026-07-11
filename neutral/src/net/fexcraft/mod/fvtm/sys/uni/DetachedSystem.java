@@ -10,6 +10,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 
 import java.io.File;
 import java.util.Timer;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -139,6 +140,10 @@ public abstract class DetachedSystem<S extends DetachedSystem<S, V>, V extends S
 
 	public WorldType getWorldType(){
 		return wtype;
+	}
+
+	public <T extends DetachedSystem<S, V>> void run(Consumer<DetachedSystem<S, V>> cons){
+		cons.accept(this);
 	}
 
 }

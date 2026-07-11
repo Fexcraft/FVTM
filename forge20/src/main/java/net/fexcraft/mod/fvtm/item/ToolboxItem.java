@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;

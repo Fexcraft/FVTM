@@ -4,13 +4,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.common.Static;
-import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
-import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
-import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;

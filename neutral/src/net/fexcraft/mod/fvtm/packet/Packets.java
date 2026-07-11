@@ -16,7 +16,6 @@ import net.fexcraft.mod.fvtm.handler.AttrReqHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler.TireData;
-import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -245,14 +244,14 @@ public abstract class Packets {
 			if(com.getBoolean("remove")){
 				system.del(pos.pos);
 			}
-			else if(com.getBoolean("item")){
+			/*else if(com.getBoolean("item")){
 				Decoration deco = player.getHeldItem(true).getContent(ContentType.DECORATION.item_type);
 				DecorationData data = new DecorationData(deco).read(player.getHeldItem(true).directTag());
 				DecoInstance inst = system.get(pos.pos);
 				inst.decorations.add(data);
 				inst.updateClient();
 				if(!player.isCreative()) player.getHeldItem(true).decr(1);
-			}
+			}*/
 			else{
 				player.openUI(UIKeys.DECORATION_EDITOR, pos.pos);
 			}

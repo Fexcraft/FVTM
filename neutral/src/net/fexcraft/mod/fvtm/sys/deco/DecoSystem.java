@@ -92,11 +92,22 @@ public class DecoSystem extends DetachedSystem<DecoSystem, DecoInstance> {
 			inst = add(vec.pos);
 			inst.vec = vec;
 			if(stack != null && stack.isItemOf(ContentType.DECORATION.item_type)){
-				inst.decorations.add(new DecorationData(stack.getContent(ContentType.DECORATION.item_type)));
-				inst.decorations.peek().roty = -ent.getYaw();
+				insertDeco(inst, ent, stack, vec);
 			}
 			inst.updateClient();
 		}
+		else if(stack != null && stack.isItemOf(ContentType.DECORATION.item_type)){
+			insertDeco(inst, ent, stack, vec);
+			inst.updateClient();
+		}
+	}
+
+	private void insertDeco(DecoInstance inst, EntityW ent, StackWrapper stack, QV3D vec){
+		DecorationData data = new DecorationData(stack.getContent(ContentType.DECORATION.item_type)).read(stack.directTag());
+		data.roty = -ent.getYaw();
+		data.offset = inst.vec.vec.sub(vec.vec);
+		inst.decorations.add(data);
+		if(!ent.isCreative()) stack.decr(1);
 	}
 
 	public static class TimedTask extends TimerTask {

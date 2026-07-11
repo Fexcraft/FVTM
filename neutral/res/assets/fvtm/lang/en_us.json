@@ -86,6 +86,7 @@
 	"item.fvtm.toolbox_3": "FVTM Wire Removal Toolbox",
 	"item.fvtm.toolbox_4": "FVTM Wire Slack Toolbox",
 	"item.fvtm.toolbox_5": "FVTM Sign Editor Toolbox",
+	"item.fvtm.toolbox_6": "FVTM Decoration Editor Toolbox",
 
 	"ui.fvtm.toolbox.painter.info": "Here you can edit your vehicle/block/container's color.",
 	"ui.fvtm.toolbox.texture.info": "Here you can select your vehicle/block/container's texture.",

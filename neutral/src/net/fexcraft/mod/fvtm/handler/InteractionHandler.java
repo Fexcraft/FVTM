@@ -340,7 +340,7 @@ public class InteractionHandler {
 		return true;
 	}
 
-	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type, ContentType.DECORATION.item_type };
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type };
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
@@ -349,7 +349,7 @@ public class InteractionHandler {
 		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
 		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIREDECO.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK))) return handleWire(world, pass.entity, key, stack);
 		if(stack.isItemOf(ContentType.SIGN.item_type) || (is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM))) return handleSign(world, pass.entity, key, stack);
-		if(stack.isItemOf(ContentType.DECORATION.item_type) || (is_toolbox && eq(getToolboxType(stack), DECO_ADJREM))) return handleDeco(world, pass.entity, key, stack);
+		if((is_toolbox && eq(getToolboxType(stack), DECO_ADJREM))) return handleDeco(world, pass.entity, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.entity.getPos());
 		for(Entry<VehicleData, InteractRef> veh : vehs.entrySet()){
 			if(handle(key, veh.getKey(), veh.getValue(), pass.getSeatOn(), pass.entity, stack)) return true;
@@ -386,7 +386,7 @@ public class InteractionHandler {
 	private static boolean handleDeco(FvtmWorld world, EntityW pass, KeyPress key, StackWrapper stack){
 		if(last.equals("deco") && Time.getDate() < cooldown) return false;
 		if(key.mouse_main()) return false;
-		boolean di = stack.isItemOf(ContentType.DECORATION.item_type);
+		//boolean di = stack.isItemOf(ContentType.DECORATION.item_type);
 		DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, (WorldW)world);
 		V3D evec = pass.getEyeVec();
 		V3D lvec = evec.add(pass.getLookVec().multiply(5));
@@ -398,7 +398,7 @@ public class InteractionHandler {
 					TagCW com = TagCW.create();
 					deco.vec.write(com, "pos");
 					if(pass.isShiftDown()) com.set("remove", true);
-					if(di) com.set("item", true);
+					//if(di) com.set("item", true);
 					Packets.send(Packet_TagListener.class, "deco_interact", com);
 					cooldown = Time.getDate() + 20;
 					last = "deco";

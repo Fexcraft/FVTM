@@ -3,13 +3,18 @@ package net.fexcraft.mod.fvtm.sys.deco;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
+import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.ChunkW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldType;
 import net.fexcraft.mod.uni.world.WorldW;
 
@@ -79,6 +84,19 @@ public class DecoSystem extends DetachedSystem<DecoSystem, DecoInstance> {
 	@Override
 	public String getRegFolderName(){
 		return "decoregions";
+	}
+
+	public void addNewDeco(EntityW ent, StackWrapper stack, QV3D vec){
+		DecoInstance inst = get(vec.pos);
+		if(inst == null){
+			inst = add(vec.pos);
+			inst.vec = vec;
+			if(stack != null && stack.isItemOf(ContentType.DECORATION.item_type)){
+				inst.decorations.add(new DecorationData(stack.getContent(ContentType.DECORATION.item_type)));
+				inst.decorations.peek().roty = -ent.getYaw();
+			}
+			inst.updateClient();
+		}
 	}
 
 	public static class TimedTask extends TimerTask {

@@ -70,6 +70,14 @@ public class DecoInstance implements SysObj {
 
 	public void delete(){
 		if(region.system.getWorldType().client()) return;
+		for(DecorationData data : decorations){
+			try{
+				region.system.getServerWorld().drop(data.getNewStack(), vec.vec);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		TagCW com = TagCW.create();
 		com.set("pos", vec.pos.toIntegerArray());
 		com.set("dim", region.system.getWorldType().rec_key());

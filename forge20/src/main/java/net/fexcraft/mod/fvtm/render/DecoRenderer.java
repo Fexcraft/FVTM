@@ -5,6 +5,7 @@ import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
+import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
@@ -63,7 +64,7 @@ public class DecoRenderer {
 					DebugUtils.renderBB(0.5f, COL_ORG);
 				}
 				else{
-					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SignItem){
+					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
 						DebugUtils.renderBB(0.5f, COL_ORG);
 					}
 					RenderCache cache = deco.getRenderCache();

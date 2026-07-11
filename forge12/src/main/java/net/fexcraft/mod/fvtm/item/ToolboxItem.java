@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
@@ -117,18 +116,9 @@ public class ToolboxItem extends Item {
 		}
 		if(stack.getItemDamage() == ToolboxType.DECO_ADJREM.idx && !player.isSneaking()){
 			EntityW ply = UniEntity.getEntity(player);
-			QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
-			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, ply.getWorld());
-			if(system == null){
-				ply.send("deco system not found");
-				return EnumActionResult.FAIL;
-			}
-			DecoInstance inst = system.get(vec.pos);
-			if(inst == null){
-				inst = system.add(vec.pos);
-				inst.vec = vec;
-				inst.updateClient();
-			}
+			SystemManager.run(SystemManager.Systems.DECO, ply.getWorld(), DecoSystem.class, sys -> {
+				sys.addNewDeco(ply, null, new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ));
+			});
 		}
 		return EnumActionResult.SUCCESS;
 	}

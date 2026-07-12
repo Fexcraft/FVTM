@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
@@ -68,7 +69,7 @@ public class DecoRenderer {
 							RenderUtil26.renderBB(0.25f, COL_RED);
 						}
 						else{
-							cache.light(LevelRenderer.getLightCoords(level, pos.set(deco.vec.pos.x, deco.vec.pos.y, deco.vec.pos.z)));
+							cache.light(LevelRenderer.getLightCoords(level, pos.set(deco.vec.pos.x + dcom.offset.x, deco.vec.pos.y +  + dcom.offset.y + sixteenth, deco.vec.pos.z + dcom.offset.z)));
 							pose.pushPose();
 							pose.translate(dcom.offset.x, dcom.offset.y, dcom.offset.z);
 							if(dcom.roty != 0f) RENDERER.rotate(dcom.roty, 0, 1, 0);

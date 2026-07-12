@@ -24,6 +24,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
@@ -73,7 +74,7 @@ public class DecoRenderer {
 							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
-							Renderer20.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(deco.vec.pos.x, deco.vec.pos.y, deco.vec.pos.z));;
+							Renderer20.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(deco.vec.pos.x + dcom.offset.x, deco.vec.pos.y +  + dcom.offset.y + sixteenth, deco.vec.pos.z + dcom.offset.z));
 							pose.pushPose();
 							pose.translate(dcom.offset.x, dcom.offset.y, dcom.offset.z);
 							if(dcom.roty != 0f) RENDERER.rotate(dcom.roty, 0, 1, 0);

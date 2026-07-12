@@ -51,7 +51,7 @@ public class DecoRenderer {
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
 		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
-		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.SIGN_ADJREM.idx;
+		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.DECO_ADJREM.idx;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		Renderer20.resetColor();

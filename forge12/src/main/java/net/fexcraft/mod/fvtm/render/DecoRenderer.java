@@ -21,6 +21,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
@@ -57,7 +58,7 @@ public class DecoRenderer {
 							DebugUtils.renderBB(0.25f, COL_RED);
 						}
 						else{
-							int i = getBrightness(deco.vec.pos.x, deco.vec.pos.y, deco.vec.pos.z), j = i % 65536, k = i / 65536;
+							int i = getBrightness(deco.vec.pos.x + dcom.offset.x, deco.vec.pos.y +  + dcom.offset.y + sixteenth, deco.vec.pos.z + dcom.offset.z), j = i % 65536, k = i / 65536;
 							OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0F, k / 1.0F);
 							GL11.glPushMatrix();
 							GLUtils112.translate(dcom.offset);

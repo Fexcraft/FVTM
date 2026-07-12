@@ -13,6 +13,8 @@ import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -199,7 +201,7 @@ public class DecoEditor extends UserInterface {
 		if(id.startsWith("pos")){
 			int ax = Integer.parseInt(id.substring(3));
 			float val = fields.get(id).number();
-			val += am > 0 ? -1 : 1;
+			val += am > 0 ? -sixteenth : sixteenth;
 			fields.get("pos" + ax).text(val + "");
 			onAction(button, id, mx, my, 0);
 			return true;
@@ -215,7 +217,7 @@ public class DecoEditor extends UserInterface {
 		else if(id.startsWith("scl")){
 			int ax = Integer.parseInt(id.substring(3));
 			float val = fields.get(id).number();
-			val += am > 0 ? -1 : 1;
+			val += am > 0 ? -sixteenth : sixteenth;
 			fields.get("scl" + ax).text(val + "");
 			onAction(button, id, mx, my, 0);
 			return true;

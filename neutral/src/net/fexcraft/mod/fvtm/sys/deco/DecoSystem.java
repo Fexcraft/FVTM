@@ -105,7 +105,7 @@ public class DecoSystem extends DetachedSystem<DecoSystem, DecoInstance> {
 	private void insertDeco(DecoInstance inst, EntityW ent, StackWrapper stack, QV3D vec){
 		DecorationData data = new DecorationData(stack.getContent(ContentType.DECORATION.item_type)).read(stack.directTag());
 		data.roty = -ent.getYaw();
-		data.offset = inst.vec.vec.sub(vec.vec);
+		data.offset = vec.vec.sub(inst.vec.vec);
 		inst.decorations.add(data);
 		if(!ent.isCreative()) stack.decr(1);
 	}

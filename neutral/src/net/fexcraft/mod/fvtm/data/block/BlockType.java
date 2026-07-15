@@ -91,6 +91,28 @@ public enum BlockType {
 		}
 		return 0;
 	}
+
+	public int getUvLockRot(int state){
+		if(rotations == 4){
+			switch(state){
+				case 2: return 1;
+				case 3: return -1;
+				case 4: return 2;
+				case 5: return 0;
+			}
+		}
+		else if(rotations == 44){
+			state %= 4;
+			switch(state){
+				case 0: return 1;
+				case 1: return -1;
+				case 2: return 2;
+				case 3: return 0;
+			}
+		}
+		return 0;
+	}
+
 	public double getRelayRotFor(int state){
 		if(rotations == 4){
 			switch(state){

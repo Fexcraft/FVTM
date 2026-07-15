@@ -14,6 +14,7 @@ public class BakedPrograms {
     public static void init(){
         ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
         ModelGroup.PROGRAMS.add(new ColorSetter(0x32a852));
+        ModelGroup.PROGRAMS.add(new UVLock());
     }
 
     public static abstract class BakedProgram implements Program {
@@ -73,6 +74,17 @@ public class BakedPrograms {
         @Override
         public Program parse(String[] args){
             return new ColorSetter(args[0]);
+        }
+
+    }
+
+    public static class UVLock extends BakedProgram {
+
+        public UVLock(){}
+
+        @Override
+        public String id(){
+            return "fvtm:baked_uv_lock";
         }
 
     }

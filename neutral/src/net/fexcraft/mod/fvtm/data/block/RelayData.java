@@ -72,7 +72,7 @@ public class RelayData {
 
 	public float getSize(String key){
 		Float size = sizes.get(key);
-		return size == null ? 1 : size;
+		return size == null ? 0.125f : size;
 	}
 
 }

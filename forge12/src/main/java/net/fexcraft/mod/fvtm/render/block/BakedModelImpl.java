@@ -43,6 +43,8 @@ public class BakedModelImpl implements IBakedModel {
     //
     protected Float normal;
     private static BakedPrograms.ColorSetter colorprog = null;
+    private static BakedPrograms.UVLock uvlockprog = null;
+    private static int uvrot;
 
     public BakedModelImpl(ResourceLocation modellocation, ModelImpl state, VertexFormat vformat, BlockModel blockmodel) {
         modelloc = modellocation;
@@ -99,9 +101,11 @@ public class BakedModelImpl implements IBakedModel {
         ArrayList<ModelGroup> groups = BakedModelLoader.getPolygons(model, StateWrapper.of(state), side, rand);
         BakedTransformData bk = new BakedTransformData();
         BakedModelLoader.convertTransforms(model, bk, root.block, state);
+        uvrot = root.block.getBlockType().getUvLockRot(state.getBlock().getMetaFromState(state));
         TextureAtlasSprite sprite = null;
         for(ModelGroup group : groups){
             colorprog = group.getProgram("fvtm:set_color");
+            uvlockprog = group.getProgram("fvtm:baked_uv_lock");
             if(model.grouptexname){
                 sprite = getTex(root, group.name);
             }
@@ -136,11 +140,11 @@ public class BakedModelImpl implements IBakedModel {
                     builder.setContractUVs(true);
                     builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
                     builder.setTexture(sprite);
-                    putVertexData(model, builder, poly, poli.vertices[0], vec2, sprite, bk, colorprog);
-                    putVertexData(model, builder, poly, poli.vertices[1], vec2, sprite, bk, colorprog);
-                    putVertexData(model, builder, poly, poli.vertices[2], vec2, sprite, bk, colorprog);
-                    if(tri) putVertexData(model, builder, poly, poli.vertices[2], vec2, sprite, bk, colorprog);
-                    else putVertexData(model, builder, poly, poli.vertices[3], vec2, sprite, bk, colorprog);
+                    putVertexData(model, builder, poly, poli, 0, vec2, sprite, bk, colorprog);
+                    putVertexData(model, builder, poly, poli, 1, vec2, sprite, bk, colorprog);
+                    putVertexData(model, builder, poly, poli, 2, vec2, sprite, bk, colorprog);
+                    if(tri) putVertexData(model, builder, poly, poli, 2, vec2, sprite, bk, colorprog);
+                    else putVertexData(model, builder, poly, poli, 3, vec2, sprite, bk, colorprog);
                     newquads.add(builder.build());
                 }
             }
@@ -179,7 +183,8 @@ public class BakedModelImpl implements IBakedModel {
         return root.tex_sprites.get(tempres.get(name));
     }
 
-    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite texture, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron poly, Polygon poli, int vi, Vec3f norm, TextureAtlasSprite texture, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+        Vertex vert = poli.vertices[vi];
         for(int e = 0; e < format.getElementCount(); e++){
             switch(format.getElement(e).getUsage()){
                 case POSITION:
@@ -215,6 +220,15 @@ public class BakedModelImpl implements IBakedModel {
                 case UV:
                     if(!poly.glObj(GLObject.class).textured){
                         builder.put(e, texture.getInterpolatedU(0), texture.getInterpolatedV(0), 0, 1);
+                    }
+                    else if(uvlockprog != null){
+                        float u, v;
+                        vi += uvrot;
+                        if(vi < 0) vi += 4;
+                        if(vi > 3) vi -= 4;
+                        u = poli.vertices[vi].u;
+                        v = poli.vertices[vi].v;
+                        builder.put(e, texture.getInterpolatedU(u * 16), texture.getInterpolatedV(v * 16), 0, 1);
                     }
                     else{
                         builder.put(e, texture.getInterpolatedU(vert.u * 16), texture.getInterpolatedV(vert.v * 16), 0, 1);

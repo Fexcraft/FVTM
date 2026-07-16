@@ -259,7 +259,6 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		AnimationPrograms.init();
 		OpenGlPrograms.init();
 		BlockPrograms.init();
-		BakedPrograms.init();
 		//
 		LBR = new LBRender(){
 			@Override

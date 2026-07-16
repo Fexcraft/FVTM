@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fexcraft.lib.common.math.AxisRotator;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polygon;
@@ -76,6 +74,8 @@ public class BakedBlockModel {
 		private BlockState state;
 
 		private BakedPrograms.ColorSetter colorprog = null;
+		private BakedPrograms.UVLock uvlockprog = null;
+		private int uvrot;
 		private HashMap<IDL, TextureAtlasSprite> textures = new HashMap<>();
 		private Block block;
 		private BlockModel model;
@@ -145,9 +145,11 @@ public class BakedBlockModel {
 			try{
 				ArrayList<ModelGroup> groups = getPolygons(root.model, StateWrapper.of(root.state));
 				convertTransforms(root.model, bk, root.state);
+				root.uvrot = BlockTypeImpl.getUvRot(root.state);
 				TextureAtlasSprite texs = null;
 				for(ModelGroup group : groups){
 					root.colorprog = group.getProgram("fvtm:set_color");
+					root.uvlockprog = group.getProgram("fvtm:baked_uv_lock");
 					if(root.model.grouptexname){
 						texs = root.getTex(group.name);
 					}
@@ -180,11 +182,11 @@ public class BakedBlockModel {
 							if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
 							MutableQuad quad = new MutableQuad();
 							quad.clear();
-							addVertex(quad, 0, poly, poli.vertices[0], vec2, texs, bk, root.colorprog);
-							addVertex(quad, 1, poly, poli.vertices[1], vec2, texs, bk, root.colorprog);
-							addVertex(quad, 2, poly, poli.vertices[2], vec2, texs, bk, root.colorprog);
-							if(tri) addVertex(quad, 3, poly, poli.vertices[2], vec2, texs, bk, root.colorprog);
-							else addVertex(quad, 3, poly, poli.vertices[3], vec2, texs, bk, root.colorprog);
+							addVertex(quad, 0, poly, poli, 0, vec2, texs, bk, root.colorprog);
+							addVertex(quad, 1, poly, poli, 1, vec2, texs, bk, root.colorprog);
+							addVertex(quad, 2, poly, poli, 2, vec2, texs, bk, root.colorprog);
+							if(tri) addVertex(quad, 3, poly, poli, 2, vec2, texs, bk, root.colorprog);
+							else addVertex(quad, 3, poly, poli, 3, vec2, texs, bk, root.colorprog);
 							quads.add(quad.toBakedQuad(texs));
 						}
 					}
@@ -197,7 +199,8 @@ public class BakedBlockModel {
 			return quads;
 		}
 
-		private void addVertex(MutableQuad quad, int vi, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+		private void addVertex(MutableQuad quad, int vi, Polyhedron poly, Polygon poli, int vx, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+			Vertex vert = poli.vertices[vx];
 			Vec3f vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
 			if(root.model.defrot) vec = bk.rot_meta.getRelativeVector(vec);
 			if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec = rot.getRelativeVector(vec);
@@ -213,7 +216,18 @@ public class BakedBlockModel {
 			else{
 				quad.color(vi, colorprog.int_color + 0xff000000);
 			}
-			quad.uv(vi, sprite.getU(vert.u), sprite.getV(vert.v));
+			if(root.uvlockprog != null){
+				float u, v;
+				vx += root.uvrot;
+				if(vx < 0) vx += 4;
+				if(vx > 3) vx -= 4;
+				u = poli.vertices[vx].u;
+				v = poli.vertices[vx].v;
+				quad.uv(vi, sprite.getU(u), sprite.getV(v));
+			}
+			else{
+				quad.uv(vi, sprite.getU(vert.u), sprite.getV(vert.v));
+			}
 		}
 
 		@Override

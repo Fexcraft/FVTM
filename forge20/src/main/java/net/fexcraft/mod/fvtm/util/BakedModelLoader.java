@@ -66,6 +66,8 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 	public static class BakedGeo implements BakedModel {
 
 		private BakedPrograms.ColorSetter colorprog = null;
+		private BakedPrograms.UVLock uvlockprog = null;
+		private int uvrot;
 		private HashMap<IDL, TextureAtlasSprite> textures = new HashMap<>();
 		private Block block;
 		private BlockModel model;
@@ -105,9 +107,11 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 			try{
 				ArrayList<ModelGroup> groups = getPolygons(model, StateWrapper.of(state));
 				BakedModelLoader.convertTransforms(model, bk, state);
+				uvrot = BlockTypeImpl.getUvRot(state);
 				TextureAtlasSprite texs = null;
 				for(ModelGroup group : groups){
 					colorprog = group.getProgram("fvtm:set_color");
+					uvlockprog = group.getProgram("fvtm:baked_uv_lock");
 					if(model.grouptexname){
 						texs = getTex(group.name);
 					}
@@ -141,11 +145,11 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 							QuadBakingVertexConsumer.Buffered baker = new QuadBakingVertexConsumer.Buffered();
 							baker.setDirection(Direction.NORTH);
 							baker.setSprite(texs);
-							addVertex(baker, poly, poli.vertices[0], vec2, texs, bk, colorprog);
-							addVertex(baker, poly, poli.vertices[1], vec2, texs, bk, colorprog);
-							addVertex(baker, poly, poli.vertices[2], vec2, texs, bk, colorprog);
-							if(tri) addVertex(baker, poly, poli.vertices[2], vec2, texs, bk, colorprog);
-							else addVertex(baker, poly, poli.vertices[3], vec2, texs, bk, colorprog);
+							addVertex(baker, poly, poli, 0, vec2, texs, bk, colorprog);
+							addVertex(baker, poly, poli, 1, vec2, texs, bk, colorprog);
+							addVertex(baker, poly, poli, 2, vec2, texs, bk, colorprog);
+							if(tri) addVertex(baker, poly, poli, 2, vec2, texs, bk, colorprog);
+							else addVertex(baker, poly, poli, 3, vec2, texs, bk, colorprog);
 							quads.add(baker.getQuad());
 						}
 					}
@@ -158,7 +162,8 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 			return quads;
 		}
 
-		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Vertex vert, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Polygon poli, int vi, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+			Vertex vert = poli.vertices[vi];
 			Vec3f vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
 			if(model.defrot) vec = bk.rot_meta.getRelativeVector(vec);
 			if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec = rot.getRelativeVector(vec);
@@ -174,7 +179,18 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 			else{
 				builder.color(colorprog.color[0], colorprog.color[1], colorprog.color[2], colorprog.color[3]);
 			}
-			builder.uv(sprite.getU(vert.u * 16), sprite.getV(vert.v * 16));
+			if(uvlockprog != null){
+				float u, v;
+				vi += uvrot;
+				if(vi < 0) vi += 4;
+				if(vi > 3) vi -= 4;
+				u = poli.vertices[vi].u;
+				v = poli.vertices[vi].v;
+				builder.uv(sprite.getU(u * 16), sprite.getV(v * 16));
+			}
+			else{
+				builder.uv(sprite.getU(vert.u * 16), sprite.getV(vert.v * 16));
+			}
 			builder.endVertex();
 		}
 

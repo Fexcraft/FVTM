@@ -264,6 +264,7 @@ public class DefaultPrograms {
 		WirePrograms.init();
 		BlockPrograms.init();
 		BlockCondPrograms.init();
+		BakedPrograms.init();
 		//
 		ModelGroup.PROGRAMS.add(new Program(){
 			public String id(){

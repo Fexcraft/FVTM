@@ -46,4 +46,17 @@ public class BlockTypeImpl {
 		return 0;
 	}
 
+	public static int getUvRot(BlockState state){
+		BlockType type = ((PlainBase)state.getBlock()).type.getBlockType();
+		if(type.rotations == 4 || type.rotations == 44){
+			switch(state.getValue(FACING).ordinal()){
+				case 2: return 1;
+				case 3: return -1;
+				case 4: return 2;
+				case 5: return 0;
+			}
+		}
+		return 0;
+	}
+
 }

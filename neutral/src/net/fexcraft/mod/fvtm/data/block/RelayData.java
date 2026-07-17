@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.fexcraft.app.json.JsonArray;
@@ -20,7 +21,7 @@ public class RelayData {
 	
 	public boolean input, output;
 	public LinkedHashMap<String, V3D> conns = new LinkedHashMap<>();
-	public HashMap<String, ArrayList<String>> types = new HashMap<>();
+	public HashMap<String, List<String>> types = new HashMap<>();
 	public HashMap<String, Integer> limits = new HashMap<>();
 	public HashMap<String, Float> sizes = new HashMap<>();
 

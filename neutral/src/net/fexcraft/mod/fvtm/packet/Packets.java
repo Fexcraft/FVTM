@@ -464,7 +464,7 @@ public abstract class Packets {
 		});
 		LIS_CLIENT.put("wire_upd_holder", (tag, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, tag.getString("dim"));
-			V3I pos = tag.getV3I("pos");
+			V3I pos = tag.getV3I("Pos");
 			RelayHolder holder = system.getHolder(pos);
 			if(holder != null) holder.read(tag);
 			else{

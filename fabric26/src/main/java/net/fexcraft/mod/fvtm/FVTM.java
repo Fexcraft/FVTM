@@ -124,7 +124,7 @@ public class FVTM implements ModInitializer {
 		StackWrapper.ITEM_TYPES.put(ContentType.RAILGAUGE.item_type, item -> item instanceof RailGaugeItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.TOOLBOX.item_type, item -> item instanceof ToolboxItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.WIRE.item_type, item -> item instanceof WireItem);
-		StackWrapper.ITEM_TYPES.put(ContentType.WIREDECO.item_type, item -> item instanceof WireDecoItem);
+		StackWrapper.ITEM_TYPES.put(ContentType.WIRE_COMPONENT.item_type, item -> item instanceof WireCompItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.DECORATION.item_type, item -> item instanceof DecorationItem);
 		StackWrapper.ITEM_TYPES.put(ContentType.SIGN.item_type, item -> item instanceof SignItem);
 		StackWrapper.CONTENT_TYPES.put(ContentType.PART.item_type, stack -> ((PartItem)stack.getItem().direct()).getData(stack));
@@ -136,7 +136,7 @@ public class FVTM implements ModInitializer {
 		StackWrapper.CONTENT_TYPES.put(ContentType.BLOCK.item_type, stack -> ((BlockItem21)stack.getItem().direct()).getData(stack));
 		StackWrapper.CONTENT_TYPES.put(ContentType.RAILGAUGE.item_type, stack -> ((RailGaugeItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.WIRE.item_type, stack -> ((WireItem)stack.getItem().direct()).getContent());
-		StackWrapper.CONTENT_TYPES.put(ContentType.WIREDECO.item_type, stack -> ((WireDecoItem)stack.getItem().direct()).getContent());
+		StackWrapper.CONTENT_TYPES.put(ContentType.WIRE_COMPONENT.item_type, stack -> ((WireCompItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.DECORATION.item_type, stack -> ((DecorationItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.SIGN.item_type, stack -> ((SignItem)stack.getItem().direct()).getContent());
 		StackWrapper.CONTENT_TYPES.put(ContentType.TOOLBOX.item_type, stack -> ((ToolboxItem)stack.getItem().direct()).var);

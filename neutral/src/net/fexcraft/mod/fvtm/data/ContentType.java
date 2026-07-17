@@ -28,7 +28,7 @@ public enum ContentType {
 	RAILGAUGE(".gauge", "railgauges", "fvtm:railgauge", RailGauge.class),
 	CLOTH(".cloth", "clothes", "fvtm:cloth", Cloth.class),
 	WIRE(".wire", "wires", "fvtm:wire", WireType.class),
-	WIREDECO(".wiredeco", "wires", "fvtm:wiredeco", WireDeco.class),
+	WIRE_COMPONENT(".comp", "wires", "fvtm:wirecomp", WireComponent.class),
 	DECORATION(".deco", "decos", "fvtm:decoration", Decoration.class),
 	SIGN(".sign", "signs", "fvtm:sign", Sign.class),
 	RECIPE(".json", "recipes", null, Recipe.class),
@@ -71,7 +71,7 @@ public enum ContentType {
 			case RAILGAUGE: RAILGAUGES.register(content); return;
 			case CLOTH: CLOTHES.register(content); return;
 			case WIRE: WIRES.register(content); return;
-			case WIREDECO: WIREDECOS.register(content); return;
+			case WIRE_COMPONENT: WIRE_COMPS.register(content); return;
 			case DECORATION: DECORATIONS.register(content); return;
 			case RECIPE: RECIPES.register(content); return;
 			case SIGN: SIGNS.register(content); return;

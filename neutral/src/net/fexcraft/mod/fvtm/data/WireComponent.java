@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WireDeco extends Content<WireDeco> implements WithItem {
+public class WireComponent extends Content<WireComponent> implements WithItem {
 
 	protected String type;
 	protected IDL texture;
@@ -24,17 +24,19 @@ public class WireDeco extends Content<WireDeco> implements WithItem {
 	protected String modelid;
 	protected String ctab;
 	protected List<String> accepts;
+	//public Float subrelay;
 
-	public WireDeco(){}
+	public WireComponent(){}
 
 	@Override
-	public WireDeco parse(JsonMap map){
+	public WireComponent parse(JsonMap map){
 		if((pack = ContentConfigUtil.getAddon(map)) == null) return null;
 		if((id = ContentConfigUtil.getID(pack, map)) == null) return null;
 		//
 		name = map.getString("Name", "Unnamed Wire Decoration");
 		description = ContentConfigUtil.getStringList(map, "Description");
 		type = map.getString("Type", "relay");
+		//subrelay = map.getFloat("SubRelay", 1f);
 		texture = ContentConfigUtil.getTextures(map).get(0);
 		accepts = ContentConfigUtil.getStringList(map, "Accepts");
 		if(accepts.isEmpty()) accepts.add("universal");
@@ -48,7 +50,7 @@ public class WireDeco extends Content<WireDeco> implements WithItem {
 
 	@Override
 	public ContentType getContentType(){
-		return ContentType.WIREDECO;
+		return ContentType.WIRE_COMPONENT;
 	}
 
 	@Override

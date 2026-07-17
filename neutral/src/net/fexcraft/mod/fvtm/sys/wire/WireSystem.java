@@ -13,7 +13,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.packet.Packets;
@@ -163,7 +163,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 	}
 
 	public void onRelayWireDeco(TagCW com, EntityW player){
-		WireDeco deco = player.getHeldItem(true).getContent(ContentType.WIREDECO.item_type);
+		WireComponent deco = player.getHeldItem(true).getContent(ContentType.WIRE_COMPONENT.item_type);
 		if(deco == null){
 			player.bar("deco null on server");
 			return;
@@ -179,6 +179,11 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		//
 		wire.getRelay().updateClient();
 		player.bar("interact.fvtm.relay.wire_deco_added", deco.getType());
+		//
+		/*if(deco.subrelay > 0){
+			wire.getRelay().getHolder().add(wire.key.toString(), wire.getVectorPosition(deco.subrelay, false), true);
+			//TODO send holder update
+		}*/
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

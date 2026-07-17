@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.item.WireDecoItem;
+import net.fexcraft.mod.fvtm.item.WireCompItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
@@ -50,8 +50,8 @@ public class WireRenderer {
 		held = Minecraft.getInstance().player.getMainHandItem();
 		holding_wire = Config.DEBUG_ACTIVE || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(getToolboxType(held)));
 		holding_slack = Config.DEBUG_ACTIVE || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(getToolboxType(held));
-		if(held.getItem() instanceof WireDecoItem){
-			WireDecoItem item = (WireDecoItem)held.getItem();
+		if(held.getItem() instanceof WireCompItem){
+			WireCompItem item = (WireCompItem)held.getItem();
 			holding_relaydeco = item.getContent().getType().equals("relay");
 			holding_deco = !holding_relaydeco;
 		}

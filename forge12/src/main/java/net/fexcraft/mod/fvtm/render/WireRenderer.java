@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.item.WireDecoItem;
+import net.fexcraft.mod.fvtm.item.WireCompItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -65,8 +65,8 @@ public class WireRenderer {
 		held = Minecraft.getMinecraft().player.getHeldItemMainhand();
 		holding_wire = Command.OTHER || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
 		holding_slack = Command.OTHER || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
-		if(held.getItem() instanceof WireDecoItem){
-			WireDecoItem item = (WireDecoItem)held.getItem();
+		if(held.getItem() instanceof WireCompItem){
+			WireCompItem item = (WireCompItem)held.getItem();
 			holding_relaydeco = item.getContent().getType().equals("relay");
 			holding_deco = !holding_relaydeco;
 		}

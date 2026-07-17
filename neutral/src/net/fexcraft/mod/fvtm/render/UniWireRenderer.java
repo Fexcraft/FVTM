@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
@@ -64,7 +64,7 @@ public class UniWireRenderer {
 			}
 			if(wire.model.deco_d.size() > 0){
 				WireModel wm;
-				for(Map.Entry<String, WireDeco> dm : wire.decos.entrySet()){
+				for(Map.Entry<String, WireComponent> dm : wire.decos.entrySet()){
 					wm = dm.getValue().getModel();
 					for(ModelGroup list : wm.groups){
 						if(wire.model.deco_d.get(dm.getKey()).containsKey(list.name)){

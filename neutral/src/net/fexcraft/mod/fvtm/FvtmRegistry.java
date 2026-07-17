@@ -61,7 +61,7 @@ public class FvtmRegistry {
 	public static final Registry<Block> BLOCKS = new Registry<>();
 	public static final Registry<Cloth> CLOTHES = new Registry<>();
 	public static final Registry<WireType> WIRES = new Registry<>();
-	public static final Registry<WireDeco> WIREDECOS = new Registry<>();
+	public static final Registry<WireComponent> WIRE_COMPS = new Registry<>();
 	public static final Registry<Container> CONTAINERS = new Registry<>();
 	public static final Registry<RailGauge> RAILGAUGES = new Registry<>();
 	public static final Registry<MultiBlock> MULTIBLOCKS = new Registry<>();

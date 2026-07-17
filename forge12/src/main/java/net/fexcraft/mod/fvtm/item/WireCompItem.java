@@ -16,11 +16,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class WireDecoItem extends Item implements ContentItem<WireDeco>, JunctionGridItem {
+public class WireCompItem extends Item implements ContentItem<WireComponent>, JunctionGridItem {
 
-	private WireDeco wire;
+	private WireComponent wire;
 
-    public WireDecoItem(WireDeco type){
+    public WireCompItem(WireComponent type){
 		super();
 		wire = type;
 		setHasSubtypes(true);
@@ -38,7 +38,7 @@ public class WireDecoItem extends Item implements ContentItem<WireDeco>, Junctio
         for(String s : wire.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
         }
-		tooltip.add(Formatter.format("&9DecoType: &7" + wire.getType()));
+		tooltip.add(Formatter.format("&9Component Type: &7" + wire.getType()));
         tooltip.add(Formatter.format("&9Accepts: &7"));
 		for(String str : wire.getCompatible()){
 			tooltip.add(Formatter.format("- " + str));
@@ -46,13 +46,13 @@ public class WireDecoItem extends Item implements ContentItem<WireDeco>, Junctio
     }
 
 	@Override
-	public WireDeco getContent(){
+	public WireComponent getContent(){
 		return wire;
 	}
 
 	@Override
 	public ContentType getType(){
-		return ContentType.WIREDECO;
+		return ContentType.WIRE_COMPONENT;
 	}
 
 }

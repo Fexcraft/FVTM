@@ -208,7 +208,7 @@ public abstract class FvtmResources {
 		}
 		if(Config.MD_WIRE){
 			FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);
-			FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIREDECO);
+			FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE_COMPONENT);
 		}
 		if(Config.MD_SIGN){
 			FvtmResources.INSTANCE.searchInPacksFor(ContentType.SIGN);
@@ -375,7 +375,7 @@ public abstract class FvtmResources {
 		BLOCKS.forEach(block -> block.loadModel());
 		CLOTHES.forEach(cloth -> cloth.loadModel());
 		WIRES.forEach(wire -> wire.loadModel());
-		WIREDECOS.forEach(deco -> deco.loadModel());
+		WIRE_COMPS.forEach(deco -> deco.loadModel());
 		CONTAINERS.forEach(con -> con.loadModel());
 		RAILGAUGES.forEach(rail -> rail.loadModel());
 		DECORATIONS.forEach(deco -> deco.loadModel());

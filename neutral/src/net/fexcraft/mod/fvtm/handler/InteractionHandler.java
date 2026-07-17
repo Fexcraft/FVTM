@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.data.attribute.AttrBox;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
@@ -340,14 +340,14 @@ public class InteractionHandler {
 		return true;
 	}
 
-	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIREDECO.item_type, ContentType.SIGN.item_type };
+	private static String[] NON_EMPTY_VALID = new String[]{ ContentType.VEHICLE.item_type, ContentType.PART.item_type, ContentType.MATERIAL.item_type, ContentType.TOOLBOX.item_type, StackWrapper.IT_LEAD, ContentType.WIRE.item_type, ContentType.WIRE_COMPONENT.item_type, ContentType.SIGN.item_type };
 
 	public static boolean handle(KeyPress key, StackWrapper stack){
 		if(!stack.empty() && !stack.isItemOfAny(NON_EMPTY_VALID)) return false;
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
 		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
-		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIREDECO.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK))) return handleWire(world, pass.entity, key, stack);
+		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIRE_COMPONENT.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK))) return handleWire(world, pass.entity, key, stack);
 		if(stack.isItemOf(ContentType.SIGN.item_type) || (is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM))) return handleSign(world, pass.entity, key, stack);
 		if((is_toolbox && eq(getToolboxType(stack), DECO_ADJREM))) return handleDeco(world, pass.entity, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.entity.getPos());
@@ -435,8 +435,8 @@ public class InteractionHandler {
 		if(last.equals("wire") && Time.getDate() < cooldown) return false;
 		WIT type;
 		if(stack.isItemOf(ContentType.WIRE.item_type)) type = WIT.WIRE;
-		else if(stack.isItemOf(ContentType.WIREDECO.item_type)){
-			WireDeco deco = stack.getContent(ContentType.WIREDECO.item_type);
+		else if(stack.isItemOf(ContentType.WIRE_COMPONENT.item_type)){
+			WireComponent deco = stack.getContent(ContentType.WIRE_COMPONENT.item_type);
 			type = deco.isRelayType() ? WIT.DECO_RELAY : WIT.DECO;
 		}
 		else type = WIRE_SLACK.eq(getToolboxType(stack)) ? WIT.SLACK : WIT.REMOVAL;

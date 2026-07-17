@@ -1,15 +1,13 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.WireDeco;
+import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.data.WireType;
-import net.fexcraft.mod.fvtm.render.PathModelPositioned;
 import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
@@ -32,7 +30,7 @@ public class Wire {
 	protected WireType type;
 	public boolean copy;
 	public float slack = 0;
-	public LinkedHashMap<String, WireDeco> decos;
+	public LinkedHashMap<String, WireComponent> decos;
 	public WireMD model;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, V3D s_v, V3D e_v){
@@ -129,7 +127,7 @@ public class Wire {
 			TagLW list = compound.getList("decos");
 			for(int i = 0; i < list.size(); i++){
 				String[] split = list.getString(i).split(";");
-				WireDeco deco = FvtmRegistry.WIREDECOS.get(split[1]);
+				WireComponent deco = FvtmRegistry.WIRE_COMPS.get(split[1]);
 				if(deco == null) continue;;
 				decos.put(split[0], deco);
 			}
@@ -164,7 +162,7 @@ public class Wire {
 		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
 		if(decos != null && decos.size() > 0){
 			TagLW list = TagLW.create();
-			for(Entry<String, WireDeco> entry : decos.entrySet()){
+			for(Entry<String, WireComponent> entry : decos.entrySet()){
 				list.add(entry.getKey() + ";" + entry.getValue().getIDS());
 			}
 			compound.set("decos", list);

@@ -24,7 +24,7 @@ public class WireComponent extends Content<WireComponent> implements WithItem {
 	protected String modelid;
 	protected String ctab;
 	protected List<String> accepts;
-	//public Float subrelay;
+	public Float subrelay;
 
 	public WireComponent(){}
 
@@ -36,7 +36,7 @@ public class WireComponent extends Content<WireComponent> implements WithItem {
 		name = map.getString("Name", "Unnamed Wire Decoration");
 		description = ContentConfigUtil.getStringList(map, "Description");
 		type = map.getString("Type", "relay");
-		//subrelay = map.getFloat("SubRelay", 1f);
+		subrelay = map.getFloat("SubRelay", 0f);
 		texture = ContentConfigUtil.getTextures(map).get(0);
 		accepts = ContentConfigUtil.getStringList(map, "Accepts");
 		if(accepts.isEmpty()) accepts.add("universal");

@@ -93,12 +93,12 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			player.send("error.wire-type.null");
 			return;
 		}
-		ArrayList<String> list = holder.ref().types.get(relay.getKey());
+		List<String> list = holder.ref().types.getOrDefault(relay.getKey(), Collections.EMPTY_LIST);
 		if(!list.isEmpty() && !list.contains(type.getType())){
 			player.send("interact.fvtm.relay.wire_not_compatible");
 			return;
 		}
-		int l = holder.ref().limits.get(relay.getKey());
+		int l = holder.ref().limits.getOrDefault(relay.getKey(), 0);
 		if(l > 0 && relay.size() > l){
 			player.send("interact.fvtm.relay.full");
 			return;
@@ -180,7 +180,8 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		player.bar("interact.fvtm.relay.wire_deco_added", deco.getType());
 		//
 		if(deco.subrelay > 0){
-			wire.getRelay().getHolder().add(wire.key.toString(), wire.getVectorPosition(deco.subrelay, false), true);
+			boolean end = type.equals("relay_end");
+			wire.getRelay().getHolder().add(wire.key.toString() + (end ? "_e" : "_s"), wire.getVectorPosition(deco.subrelay, end), true);
 			updateClient("holder", null, wire.getRelay().getHolder().pos, null);
 		}
 		else{

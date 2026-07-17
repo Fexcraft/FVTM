@@ -177,13 +177,15 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		if(wire.decos == null) wire.decos = new LinkedHashMap<>();
 		wire.decos.put(type, deco);
 		//
-		wire.getRelay().updateClient();
 		player.bar("interact.fvtm.relay.wire_deco_added", deco.getType());
 		//
-		/*if(deco.subrelay > 0){
+		if(deco.subrelay > 0){
 			wire.getRelay().getHolder().add(wire.key.toString(), wire.getVectorPosition(deco.subrelay, false), true);
-			//TODO send holder update
-		}*/
+			updateClient("holder", null, wire.getRelay().getHolder().pos, null);
+		}
+		else{
+			wire.getRelay().updateClient();
+		}
 	}
 
 	public static class WireMap extends TreeMap<String, WireUnit> {

@@ -76,4 +76,14 @@ public class RelayData {
 		return size == null ? 0.125f : size;
 	}
 
+	public List<String> getTypes(String key){
+		if(key.contains("@")) key = key.substring(0, key.indexOf("@"));
+		return types.get(key);
+	}
+
+	public int getLimits(String key){
+		if(key.contains("@")) key = key.substring(0, key.indexOf("@"));
+		return limits.get(key);
+	}
+
 }

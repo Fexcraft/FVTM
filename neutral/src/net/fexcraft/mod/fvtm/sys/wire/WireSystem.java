@@ -93,12 +93,12 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			player.send("error.wire-type.null");
 			return;
 		}
-		List<String> list = holder.ref().types.getOrDefault(relay.getKey(), Collections.EMPTY_LIST);
+		List<String> list = holder.ref().getTypes(relay.getKey());
 		if(!list.isEmpty() && !list.contains(type.getType())){
 			player.send("interact.fvtm.relay.wire_not_compatible");
 			return;
 		}
-		int l = holder.ref().limits.getOrDefault(relay.getKey(), 0);
+		int l = holder.ref().getLimits(relay.getKey());
 		if(l > 0 && relay.size() > l){
 			player.send("interact.fvtm.relay.full");
 			return;
@@ -170,18 +170,18 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		}
 		Wire wire = getWire(new WireKey(com));
 		if(!deco.accepts(wire.type.getType())){
-			player.bar("interact.fvtm.relay.wire_deco_not_compatible");
+			player.bar("interact.fvtm.relay.wire_comp_not_compatible");
 			return;
 		}
 		String type = com.has("as") ? com.getString("as") : deco.getType();
 		if(wire.decos == null) wire.decos = new LinkedHashMap<>();
 		wire.decos.put(type, deco);
 		//
-		player.bar("interact.fvtm.relay.wire_deco_added", deco.getType());
+		player.bar("interact.fvtm.relay.wire_comp_added", deco.getType());
 		//
 		if(deco.subrelay > 0){
 			boolean end = type.equals("relay_end");
-			wire.getRelay().getHolder().add(wire.key.toString() + (end ? "_e" : "_s"), wire.getVectorPosition(deco.subrelay, end), true);
+			wire.getRelay().getHolder().add(wire.relay.key + (end ? "@e" : "@s"), wire.getVectorPosition(deco.subrelay, end), true);
 			updateClient("holder", null, wire.getRelay().getHolder().pos, null);
 		}
 		else{

@@ -245,6 +245,8 @@
 	"interact.fvtm.relay.wire_duplicate": "\u00A7cWire has same start/end as another wire.",
 	"interact.fvtm.relay.wire_created": "\u00A7aWire created.",
 	"interact.fvtm.relay.wire_slack": "\u00A7aWire slack changed to %s.",
+	"interact.fvtm.relay.wire_comp_not_compatible": "\u00A7bWire Component not compatible with Wire/Relay.",
+	"interact.fvtm.relay.wire_comp_added": "\u00A7aWire Component Added",
 
 	"interact.fvtm.rail_marker.junction_created": "\u00a7o> Junction Created.",
 	"interact.fvtm.rail_marker.start_junction_created": "\u00a7o> Start Junction Created.",

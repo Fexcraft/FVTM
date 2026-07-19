@@ -222,13 +222,19 @@ public class BakedModelImpl implements IBakedModel {
                         builder.put(e, texture.getInterpolatedU(0), texture.getInterpolatedV(0), 0, 1);
                     }
                     else if(uvlockprog != null){
-                        float u, v;
-                        vi += uvrot;
-                        if(vi < 0) vi += 4;
-                        if(vi > 3) vi -= 4;
-                        u = poli.vertices[vi].u;
-                        v = poli.vertices[vi].v;
-                        builder.put(e, texture.getInterpolatedU(u * 16), texture.getInterpolatedV(v * 16), 0, 1);
+                        if(uvlockprog.full){
+                            float[] uv = BakedPrograms.rotateUV(vert.u, vert.v, uvrot);
+                            builder.put(e, texture.getInterpolatedU(uv[0] * 16), texture.getInterpolatedV(uv[1] * 16), 0, 1);
+                        }
+                        else{
+                            float u, v;
+                            vi += uvrot;
+                            if(vi < 0) vi += 4;
+                            if(vi > 3) vi -= 4;
+                            u = poli.vertices[vi].u;
+                            v = poli.vertices[vi].v;
+                            builder.put(e, texture.getInterpolatedU(u * 16), texture.getInterpolatedV(v * 16), 0, 1);
+                        }
                     }
                     else{
                         builder.put(e, texture.getInterpolatedU(vert.u * 16), texture.getInterpolatedV(vert.v * 16), 0, 1);

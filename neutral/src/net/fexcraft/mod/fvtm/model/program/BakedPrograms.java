@@ -11,10 +11,14 @@ import net.fexcraft.mod.fvtm.model.Program;
  */
 public class BakedPrograms {
 
+    public static UVLock UVLOCK;
+    public static UVLock UVLOCK_FULL;
+
     public static void init(){
         ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
         ModelGroup.PROGRAMS.add(new ColorSetter(0x32a852));
-        ModelGroup.PROGRAMS.add(new UVLock());
+        ModelGroup.PROGRAMS.add(UVLOCK = new UVLock(false));
+        ModelGroup.PROGRAMS.add(UVLOCK_FULL = new UVLock(true));
     }
 
     public static abstract class BakedProgram implements Program {
@@ -80,13 +84,31 @@ public class BakedPrograms {
 
     public static class UVLock extends BakedProgram {
 
-        public UVLock(){}
+        public boolean full;
+
+        public UVLock(boolean bool){
+            full = bool;
+        }
 
         @Override
         public String id(){
             return "fvtm:baked_uv_lock";
         }
 
+        @Override
+        public Program parse(String[] args){
+            return args.length == 0 || !Boolean.parseBoolean(args[0]) ? UVLOCK : UVLOCK_FULL;
+        }
+    }
+
+    public static float[] rotateUV(float u, float v, int rot){
+        switch(rot){
+            case -1: return new float[]{ v, 1 - u };
+            case 1: return new float[]{ 1 - v, u };
+            case 2: return new float[]{ 1 - u, 1 - v };
+            case 0:
+            default: return new float[]{ u, v };
+        }
     }
 
 }

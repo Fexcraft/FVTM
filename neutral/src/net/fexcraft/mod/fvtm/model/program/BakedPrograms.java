@@ -103,8 +103,8 @@ public class BakedPrograms {
 
     public static float[] rotateUV(float u, float v, int rot){
         switch(rot){
-            case -1: return new float[]{ v, 1 - u };
-            case 1: return new float[]{ 1 - v, u };
+            case 1: return new float[]{ v, 1 - u };
+            case -1: return new float[]{ 1 - v, u };
             case 2: return new float[]{ 1 - u, 1 - v };
             case 0:
             default: return new float[]{ u, v };

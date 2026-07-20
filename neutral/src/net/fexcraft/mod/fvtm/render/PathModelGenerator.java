@@ -157,9 +157,9 @@ public class PathModelGenerator {
 		wire.model.end_angle = Static.toDegrees(wire.model.end_angle) - 90;
 		wire.model.start_angle = wire.model.end_angle + 180;
 		//
-		if(wire.decos == null) return;
-		if(wire.decos.containsKey("relay_start")) wire.model.deco_s = wire.decos.get("relay_start");
-		if(wire.decos.containsKey("relay_end")) wire.model.deco_e = wire.decos.get("relay_end");
+		if(wire.comps == null) return;
+		if(wire.comps.containsKey("relay_start")) wire.model.deco_s = wire.comps.get("relay_start");
+		if(wire.comps.containsKey("relay_end")) wire.model.deco_e = wire.comps.get("relay_end");
 		float hwl = wire.length / 2;
 		if(wire.model.deco_s != null){
 			float len = getLongestDownward(wire.model.deco_s.getModel());

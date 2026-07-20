@@ -64,7 +64,7 @@ public class UniWireRenderer {
 			}
 			if(wire.model.deco_d.size() > 0){
 				WireModel wm;
-				for(Map.Entry<String, WireComponent> dm : wire.decos.entrySet()){
+				for(Map.Entry<String, WireComponent> dm : wire.comps.entrySet()){
 					wm = dm.getValue().getModel();
 					for(ModelGroup list : wm.groups){
 						if(wire.model.deco_d.get(dm.getKey()).containsKey(list.name)){

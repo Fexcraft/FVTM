@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -183,11 +184,26 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		//
 		player.bar("interact.fvtm.relay.wire_comp_added", deco.getType());
 		//
-		if(deco.subrelay > 0){
+		if(deco.getSubRelays().size() > 0){
 			boolean end = type.equals("relay_end");
 			WireRelay relay = getRelay(end ? wire.okey : wire.key);
-			relay.getHolder().add(end ? wire.okey : wire.key, null, wire.getVectorPosition(deco.subrelay, end), true);
-			relay.getHolder().updateClient();
+			for(WireComponent.SubRelay sr : deco.getSubRelays()){
+				V3D pos;
+				if(sr.slack){
+					pos = wire.getVectorPosition(sr.distance, end);
+				}
+				else{
+					pos = wire.vecpath[end ? wire.vecpath.length - 1 : 0].distance(wire.vecpath[end ? 0 : wire.vecpath.length - 1], sr.distance);
+				}
+				/*if(!sr.offset.isNull()){
+					M4DW mat = M4DW.create();
+					double rad = Math.atan2(wire.vecpath[0].x - wire.vecpath[wire.vecpath.length - 1].x, wire.vecpath[0].z - wire.vecpath[wire.vecpath.length - 1].z);
+					mat.setRadians(end ? -rad : rad, 0, 0);
+					pos = pos.add(mat.rotate(sr.offset));
+				}*/
+				relay.getHolder().add(end ? wire.okey : wire.key, null, pos, true);
+				relay.getHolder().updateClient();
+			}
 		}
 		else{
 			wire.getRelay().updateClient();

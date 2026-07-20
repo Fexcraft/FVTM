@@ -12,7 +12,8 @@ import net.fexcraft.mod.uni.tag.TagCW;
  *
  */
 public class WireRelay {
-	
+
+	public WireKey origin;
 	protected String key;
 	public V3D pos = new V3D();
 	public ArrayList<Wire> wires;
@@ -49,6 +50,7 @@ public class WireRelay {
 			}
 		}
 		pos = compound.getV3D("Pos");
+		origin = compound.has("Origin") ? new WireKey(compound.getCompound("Origin")) : null;
 		frustumbb = null;
 		return this;
 	}
@@ -61,6 +63,9 @@ public class WireRelay {
 		compound.set("Wires", wires.size());
 		compound.set("Key", key);
 		compound.set("Pos", pos);
+		if(origin != null){
+			compound.set("Origin", origin.save(null));
+		}
 		return compound;
 	}
 	
@@ -96,6 +101,7 @@ public class WireRelay {
 		if(firstcall){
 			WireRelay relay = holder.getRegion().system.getRelay(wire.key.start_relay.equals(key) ? wire.okey : wire.key);
 			if(relay != null) relay.remove(wire.okey, false);
+			holder.onWireRem(wire.key);
 		}
 		else this.checkWireSectionConsistency();
 	}

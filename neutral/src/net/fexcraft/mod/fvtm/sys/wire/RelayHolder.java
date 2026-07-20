@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
@@ -34,16 +37,28 @@ public class RelayHolder implements SysObj {
 		this.region = region;
 	}
 
-	public WireRelay add(String key, V3D vec, boolean override){
-		if(relays.containsKey(key)){
-			if(override){
-				remove(key);
+	public WireRelay add(WireKey origin, String key, V3D vec, boolean override){
+		if(origin != null){
+			key = genRelayKey();
+		}
+		else{
+			if(relays.containsKey(key)){
+				if(override){
+					remove(key);
+				}
+				else return get(key);
 			}
-			else return get(key);
 		}
 		WireRelay relay = new WireRelay(this, key, vec);
+		if(origin != null) relay.origin = origin;
 		relays.put(key, relay);
 		return relay;
+	}
+
+	private String genRelayKey(){
+		String key = "@" + UUID.randomUUID().toString().substring(0, 7);
+		if(relays.containsKey(key)) return genRelayKey();
+		return key;
 	}
 
 	public WireRelay get(String key){
@@ -52,6 +67,20 @@ public class RelayHolder implements SysObj {
 	
 	public WireRelay remove(String relkey){
 		return relays.remove(relkey);
+	}
+
+	public void onWireRem(WireKey key){
+		ArrayList<WireRelay> rem = new ArrayList<>();
+		for(WireRelay relay : relays.values()){
+			if(relay.origin != null && relay.origin.equals(key)){
+				rem.add(relay);
+			}
+		}
+		if(rem.size() > 0){
+			for(WireRelay relay : rem) relay.clear();
+			relays.values().removeAll(rem);
+			updateClient();
+		}
 	}
 
 	public boolean contains(String key){
@@ -90,6 +119,7 @@ public class RelayHolder implements SysObj {
 	public void read(TagCW compound){
 		pos = compound.getV3I("Pos");
 		TagLW list = compound.getList("Relays");
+		relays.clear();
 		for(TagCW tag : list){
 			WireRelay relay = new WireRelay(this).read(tag);
 			relays.put(tag.getString("Key"), relay);
@@ -120,7 +150,7 @@ public class RelayHolder implements SysObj {
 	public void integrate(FvtmBlockEntity tile){
 		blockref = tile.getBlockData().getType();
 		for(Entry<String, V3D> entry : blockref.getRelayData().getVectors(tile).entrySet()){
-			add(entry.getKey(), entry.getValue(), false);
+			add(null, entry.getKey(), entry.getValue(), false);
 		}
 	}
 
@@ -130,6 +160,26 @@ public class RelayHolder implements SysObj {
 
 	public RelayData ref(){
 		return blockref.getRelayData();
+	}
+
+	public List<String> getTypes(WireRelay rel){
+		String key = rel.origin != null ? getRootOrigin(rel.origin).key : rel.key;
+		return ref().types.get(key);
+	}
+
+	private WireRelay getRootOrigin(WireKey origin){
+		WireRelay rel = relays.get(origin.start_relay);
+		if(rel.origin != null) return getRootOrigin(rel.origin);
+		return rel;
+	}
+
+	public int getLimits(WireRelay rel){
+		String key = rel.origin != null ? getRootOrigin(rel.origin).key : rel.key;
+		return ref().limits.get(key);
+	}
+
+	public void updateClient(){
+		region.system.updateClient("holder", null, pos, null);
 	}
 
 }

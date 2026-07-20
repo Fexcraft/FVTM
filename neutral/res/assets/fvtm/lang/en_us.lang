@@ -89,6 +89,7 @@ interact.fvtm.relay.wire_duplicate=&cWire has same start/end as another wire.
 interact.fvtm.relay.wire_created=&aWire created.
 interact.fvtm.relay.wire_slack=&aWire slack changed to %s.
 interact.fvtm.relay.wire_comp_not_compatible=&bWire Component not compatible with Wire/Relay.
+interact.fvtm.relay.wire_comp_present=&bWire Component of same type already present.
 interact.fvtm.relay.wire_comp_added=&aWire Component Added
 
 interact.fvtm.rail_marker.junction_created=&o> Junction Created.

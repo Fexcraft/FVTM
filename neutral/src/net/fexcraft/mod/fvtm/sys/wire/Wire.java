@@ -30,7 +30,7 @@ public class Wire {
 	protected WireType type;
 	public boolean copy;
 	public float slack = 0;
-	public LinkedHashMap<String, WireComponent> decos;
+	public LinkedHashMap<String, WireComponent> comps;
 	public WireMD model;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, V3D s_v, V3D e_v){
@@ -122,18 +122,19 @@ public class Wire {
 		copy = compound.has("copy") && compound.getBoolean("copy");
 		this.length = compound.has("length") ? compound.getFloat("length") : calcLength();
 		//TODO if(relay != null) unit = getUnit(compound.getLong("section"));
-		if(compound.has("decos")){
-			if(decos == null) decos = new LinkedHashMap<>();
-			TagLW list = compound.getList("decos");
+		if(compound.has("comps") || compound.has("decos")){
+			if(comps == null) comps = new LinkedHashMap<>();
+			TagLW list = compound.getList("comps");
+			if(list.direct() == null || list.empty()) list = compound.getList("decos");
 			for(int i = 0; i < list.size(); i++){
 				String[] split = list.getString(i).split(";");
 				WireComponent deco = FvtmRegistry.WIRE_COMPS.get(split[1]);
 				if(deco == null) continue;;
-				decos.put(split[0], deco);
+				comps.put(split[0], deco);
 			}
 		}
 		else{
-			decos = null;
+			comps = null;
 		}
 		model = null;
 		return this;
@@ -160,12 +161,12 @@ public class Wire {
 		if(copy) compound.set("copy", copy);
 		if(type != null) compound.set("wiretype", type.getIDS());
 		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
-		if(decos != null && decos.size() > 0){
+		if(comps != null && comps.size() > 0){
 			TagLW list = TagLW.create();
-			for(Entry<String, WireComponent> entry : decos.entrySet()){
+			for(Entry<String, WireComponent> entry : comps.entrySet()){
 				list.add(entry.getKey() + ";" + entry.getValue().getIDS());
 			}
-			compound.set("decos", list);
+			compound.set("comps", list);
 		}
 		return compound;
 	}

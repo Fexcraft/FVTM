@@ -32,9 +32,9 @@ public class WireMD {
 		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());//, getWireBreak(wire));
 		deco_d = new HashMap<>();
 		//deco_g = new HashMap<>();
-		if(wire.decos == null) return;
+		if(wire.comps == null) return;
 		WireComponent deco;
-		for(Map.Entry<String, WireComponent> entry : wire.decos.entrySet()){
+		for(Map.Entry<String, WireComponent> entry : wire.comps.entrySet()){
 			deco = entry.getValue();
 			deco_d.put(entry.getKey(), new HashMap<>());
 			//deco_g.put(entry.getKey(), new HashMap<>());
@@ -49,8 +49,8 @@ public class WireMD {
 	}
 
 	private WireBreak getWireBreak(Wire wire){
-		if(wire.decos == null) return null;
-		for(WireComponent value : wire.decos.values()){
+		if(wire.comps == null) return null;
+		for(WireComponent value : wire.comps.values()){
 			if(value.getModel() == null) continue;
 			for(ModelGroup group : value.getModel().getGroups()){
 				for(Program prog : group.getAllPrograms()){

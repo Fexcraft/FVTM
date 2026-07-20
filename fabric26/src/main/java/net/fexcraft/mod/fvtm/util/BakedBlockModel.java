@@ -217,13 +217,19 @@ public class BakedBlockModel {
 				quad.color(vi, colorprog.int_color + 0xff000000);
 			}
 			if(root.uvlockprog != null){
-				float u, v;
-				vx += root.uvrot;
-				if(vx < 0) vx += 4;
-				if(vx > 3) vx -= 4;
-				u = poli.vertices[vx].u;
-				v = poli.vertices[vx].v;
-				quad.uv(vi, sprite.getU(u), sprite.getV(v));
+				if(root.uvlockprog.full){
+					float[] uv = BakedPrograms.rotateUV(vert.u, vert.v, root.uvrot);
+					quad.uv(vi, sprite.getU(uv[0]), sprite.getV(uv[1]));
+				}
+				else{
+					float u, v;
+					vx += root.uvrot;
+					if(vx < 0) vx += 4;
+					if(vx > 3) vx -= 4;
+					u = poli.vertices[vx].u;
+					v = poli.vertices[vx].v;
+					quad.uv(vi, sprite.getU(u), sprite.getV(v));
+				}
 			}
 			else{
 				quad.uv(vi, sprite.getU(vert.u), sprite.getV(vert.v));

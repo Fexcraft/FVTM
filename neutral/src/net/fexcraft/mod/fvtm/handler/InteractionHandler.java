@@ -461,7 +461,7 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								wr.key.save(com);
 								com.set("up", key.mouse_right());
-								Packets.send(Packet_TagListener.class, type.deco() ? "relay_wire_deco" : "relay_wire_slack", com);
+								Packets.send(Packet_TagListener.class, type.deco() ? "relay_wire_comp" : "relay_wire_slack", com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;
@@ -479,7 +479,7 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								com.set("as", "relay_start");
 								wr.key.save(com);
-								Packets.send(Packet_TagListener.class, "relay_wire_deco", com);
+								Packets.send(Packet_TagListener.class, "relay_wire_comp", com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;
@@ -492,7 +492,7 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								com.set("as", "relay_end");
 								wr.key.save(com);
-								Packets.send(Packet_TagListener.class, "relay_wire_deco", com);
+								Packets.send(Packet_TagListener.class, "relay_wire_comp", com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;

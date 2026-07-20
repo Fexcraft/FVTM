@@ -93,12 +93,12 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			player.send("error.wire-type.null");
 			return;
 		}
-		List<String> list = holder.ref().getTypes(relay.getKey());
+		List<String> list = holder.getTypes(relay);
 		if(!list.isEmpty() && !list.contains(type.getType())){
 			player.send("interact.fvtm.relay.wire_not_compatible");
 			return;
 		}
-		int l = holder.ref().getLimits(relay.getKey());
+		int l = holder.getLimits(relay);
 		if(l > 0 && relay.size() > l){
 			player.send("interact.fvtm.relay.full");
 			return;
@@ -162,7 +162,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		player.bar("interact.fvtm.relay.wire_slack", wire0.slack);
 	}
 
-	public void onRelayWireDeco(TagCW com, EntityW player){
+	public void onRelayWireComp(TagCW com, EntityW player){
 		WireComponent deco = player.getHeldItem(true).getContent(ContentType.WIRE_COMPONENT.item_type);
 		if(deco == null){
 			player.bar("deco null on server");
@@ -174,15 +174,20 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			return;
 		}
 		String type = com.has("as") ? com.getString("as") : deco.getType();
-		if(wire.decos == null) wire.decos = new LinkedHashMap<>();
-		wire.decos.put(type, deco);
+		if(wire.comps == null) wire.comps = new LinkedHashMap<>();
+		if(wire.comps.containsKey(type)){
+			player.bar("interact.fvtm.relay.wire_comp_present");
+			return;
+		}
+		wire.comps.put(type, deco);
 		//
 		player.bar("interact.fvtm.relay.wire_comp_added", deco.getType());
 		//
 		if(deco.subrelay > 0){
 			boolean end = type.equals("relay_end");
-			wire.getRelay().getHolder().add(wire.relay.key + (end ? "@e" : "@s"), wire.getVectorPosition(deco.subrelay, end), true);
-			updateClient("holder", null, wire.getRelay().getHolder().pos, null);
+			WireRelay relay = getRelay(end ? wire.okey : wire.key);
+			relay.getHolder().add(end ? wire.okey : wire.key, null, wire.getVectorPosition(deco.subrelay, end), true);
+			relay.getHolder().updateClient();
 		}
 		else{
 			wire.getRelay().updateClient();

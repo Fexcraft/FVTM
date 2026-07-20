@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -10,6 +12,7 @@ import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +27,7 @@ public class WireComponent extends Content<WireComponent> implements WithItem {
 	protected String modelid;
 	protected String ctab;
 	protected List<String> accepts;
-	public Float subrelay;
+	protected List<SubRelay> subrelays = new ArrayList<>();
 
 	public WireComponent(){}
 
@@ -36,7 +39,18 @@ public class WireComponent extends Content<WireComponent> implements WithItem {
 		name = map.getString("Name", "Unnamed Wire Decoration");
 		description = ContentConfigUtil.getStringList(map, "Description");
 		type = map.getString("Type", "relay");
-		subrelay = map.getFloat("SubRelay", 0f);
+		if(map.has("SubRelay")){
+			JsonValue elm = map.get("SubRelay");
+			if(elm.isMap()){
+				subrelays.add(new SubRelay(elm.asMap()));
+			}
+			else subrelays.add(new SubRelay(elm.float_value()));
+		}
+		if(map.has("SubRelays")){
+			for(JsonValue<?> val : map.getArray("SubRelays").value){
+				subrelays.add(new SubRelay(val.asMap()));
+			}
+		}
 		texture = ContentConfigUtil.getTextures(map).get(0);
 		accepts = ContentConfigUtil.getStringList(map, "Accepts");
 		if(accepts.isEmpty()) accepts.add("universal");
@@ -96,6 +110,30 @@ public class WireComponent extends Content<WireComponent> implements WithItem {
 
 	public boolean isRelayType(){
 		return type.equals("relay");
+	}
+
+	public List<SubRelay> getSubRelays(){
+		return subrelays;
+	}
+
+	public static class SubRelay {
+
+		public float distance;
+		public V3D offset;
+		public boolean slack;
+
+		public SubRelay(float dis){
+			distance = dis;
+			offset = new V3D();
+			slack = true;
+		}
+
+		public SubRelay(JsonMap map){
+			distance = map.getFloat("distance", 1);
+			offset = map.has("offset") ? ContentConfigUtil.getVector(map.getArray("offset")) : new V3D();
+			slack = map.getBoolean("slack", true);
+		}
+
 	}
 
 }

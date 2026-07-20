@@ -211,9 +211,9 @@ public abstract class Packets {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			system.onRelayWireSlack(com, player);
 		});
-		LIS_SERVER.put("relay_wire_deco", (com, player) -> {
+		LIS_SERVER.put("relay_wire_comp", (com, player) -> {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
-			system.onRelayWireDeco(com, player);
+			system.onRelayWireComp(com, player);
 		});
 		LIS_SERVER.put("open_inv", (com, player) -> {
 			Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)player.getWorld()).getInteractRef(com);

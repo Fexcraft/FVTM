@@ -34,22 +34,24 @@ public class RelayData {
 		}
 		JsonMap points = map.getMap("points");
 		for(Entry<String, JsonValue<?>> entry : points.entries()){
+			String key = entry.getKey();
+			while(key.startsWith("@")) key = key.substring(1);
 			if(entry.getValue().isArray()){
 				JsonArray array = entry.getValue().asArray();
 				float x = array.get(0).float_value();
 				float y = array.get(1).float_value();
 				float z = array.get(2).float_value();
-				conns.put(entry.getKey(), new V3D(x, y, z));
-				limits.put(entry.getKey(), array.size() > 3 ? array.get(3).integer_value() : 0);
-				types.put(entry.getKey(), array.size() > 4 ? array.get(4).asArray().toStringList() : new ArrayList<>());
-				sizes.put(entry.getKey(), array.size() > 5 ? array.get(5).float_value() * 0.5f : 0.125f);
+				conns.put(key, new V3D(x, y, z));
+				limits.put(key, array.size() > 3 ? array.get(3).integer_value() : 0);
+				types.put(key, array.size() > 4 ? array.get(4).asArray().toStringList() : new ArrayList<>());
+				sizes.put(key, array.size() > 5 ? array.get(5).float_value() * 0.5f : 0.125f);
 			}
 			else{
 				JsonMap val = entry.getValue().asMap();
-				conns.put(entry.getKey(), ContentConfigUtil.getVector(val.getArray("pos")));
-				limits.put(entry.getKey(), val.getInteger("limit", 0));
-				types.put(entry.getKey(), val.getArray("types").toStringList());
-				sizes.put(entry.getKey(), val.getFloat("size", 0.25f) * 0.5f);
+				conns.put(key, ContentConfigUtil.getVector(val.getArray("pos")));
+				limits.put(key, val.getInteger("limit", 0));
+				types.put(key, val.getArray("types").toStringList());
+				sizes.put(key, val.getFloat("size", 0.25f) * 0.5f);
 			}
 		}
 	}
@@ -74,16 +76,6 @@ public class RelayData {
 	public float getSize(String key){
 		Float size = sizes.get(key);
 		return size == null ? 0.125f : size;
-	}
-
-	public List<String> getTypes(String key){
-		if(key.contains("@")) key = key.substring(0, key.indexOf("@"));
-		return types.get(key);
-	}
-
-	public int getLimits(String key){
-		if(key.contains("@")) key = key.substring(0, key.indexOf("@"));
-		return limits.get(key);
 	}
 
 }

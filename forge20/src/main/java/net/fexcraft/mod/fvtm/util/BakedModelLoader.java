@@ -180,13 +180,19 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 				builder.color(colorprog.color[0], colorprog.color[1], colorprog.color[2], colorprog.color[3]);
 			}
 			if(uvlockprog != null){
-				float u, v;
-				vi += uvrot;
-				if(vi < 0) vi += 4;
-				if(vi > 3) vi -= 4;
-				u = poli.vertices[vi].u;
-				v = poli.vertices[vi].v;
-				builder.uv(sprite.getU(u * 16), sprite.getV(v * 16));
+				if(uvlockprog.full){
+					float[] uv = BakedPrograms.rotateUV(vert.u, vert.v, uvrot);
+					builder.uv(sprite.getU(uv[0] * 16), sprite.getV(uv[1] * 16));
+				}
+				else {
+					float u, v;
+					vi += uvrot;
+					if(vi < 0) vi += 4;
+					if(vi > 3) vi -= 4;
+					u = poli.vertices[vi].u;
+					v = poli.vertices[vi].v;
+					builder.uv(sprite.getU(u * 16), sprite.getV(v * 16));
+				}
 			}
 			else{
 				builder.uv(sprite.getU(vert.u * 16), sprite.getV(vert.v * 16));

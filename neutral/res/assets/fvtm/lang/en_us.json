@@ -246,6 +246,7 @@
 	"interact.fvtm.relay.wire_created": "\u00A7aWire created.",
 	"interact.fvtm.relay.wire_slack": "\u00A7aWire slack changed to %s.",
 	"interact.fvtm.relay.wire_comp_not_compatible": "\u00A7bWire Component not compatible with Wire/Relay.",
+	"interact.fvtm.relay.wire_comp_present": "\u00A7bWire Component of same type already present.",
 	"interact.fvtm.relay.wire_comp_added": "\u00A7aWire Component Added",
 
 	"interact.fvtm.rail_marker.junction_created": "\u00a7o> Junction Created.",

@@ -10,8 +10,6 @@ import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 
-import java.util.Map;
-
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
@@ -41,50 +39,52 @@ public class UniWireRenderer {
 			RENDERER.pop();
 			data = relay.getTile() == null ? null : ((FvtmBlockEntity)relay.getTile()).getBlockData();
 			CURRENT = wire;
-			if(wire.model.deco_s != null){
+			if(wire.model.comp_s != null){
 				ANGLE = wire.model.start_angle;
 				ANGLE_DOWN = wire.model.start_angle_down;
 				RENDERER.push();
 				RENDERER.translate(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
 				//RENDERER.rotate(wire.model.start_angle, 0, 1, 0);
-				RENDERER.bind(wire.model.deco_s.getTexture());
-				RENDER_UTIL.render(wire.model.deco_s.getModel(), RENDERDATA.set(data, relay.getTile(), null));
+				RENDERER.bind(wire.model.comp_s.getTexture());
+				RENDER_UTIL.render(wire.model.comp_s.getModel(), RENDERDATA.set(data, relay.getTile(), null));
 				RENDERER.pop();
 			}
-			if(wire.model.deco_e != null){
+			if(wire.model.comp_e != null){
 				ANGLE = wire.model.end_angle;
 				ANGLE_DOWN = wire.model.end_angle_down;
 				int l = wire.vecpath.length - 1;
 				RENDERER.push();
 				RENDERER.translate(wire.vecpath[l].x - cx, wire.vecpath[l].y - cy, wire.vecpath[l].z - cz);
 				//RENDERER.rotate(wire.model.end_angle, 0, 1, 0);
-				RENDERER.bind(wire.model.deco_e.getTexture());
-				RENDER_UTIL.render(wire.model.deco_e.getModel(), RENDERDATA.set(data, relay.getTile(), null));
+				RENDERER.bind(wire.model.comp_e.getTexture());
+				RENDER_UTIL.render(wire.model.comp_e.getModel(), RENDERDATA.set(data, relay.getTile(), null));
 				RENDERER.pop();
 			}
-			if(wire.model.deco_d.size() > 0){
-				WireModel wm;
-				for(Map.Entry<String, WireComponent> dm : wire.comps.entrySet()){
-					wm = dm.getValue().getModel();
-					for(ModelGroup list : wm.groups){
-						if(wire.model.deco_d.get(dm.getKey()).containsKey(list.name)){
-							for(V3D vec : wire.model.deco_d.get(dm.getKey()).get(list.name)){
+			if(wire.model.comp_d.size() > 0){
+				WireComponent com;
+				WireModel cpm;
+				for(String comkey : wire.model.comp_d.keySet()){
+					com = wire.comps.get(comkey);
+					cpm = com.getModel();
+					for(ModelGroup list : cpm.groups){
+						if(wire.model.comp_d.get(comkey).containsKey(list.name)){
+							for(V3D vec : wire.model.comp_d.get(comkey).get(list.name)){
 								RENDERER.push();
 								RENDERER.translate(vec.x - cx, vec.y - cy, vec.z - cz);
-								wm.transforms.apply();
-								RENDERER.bind(dm.getValue().getTexture());
+								cpm.transforms.apply();
+								RENDERER.bind(com.getTexture());
 								RENDER_UTIL.render(list, RENDERDATA.set(data, relay.getTile(), null));
-								wm.transforms.deapply();
+								cpm.transforms.deapply();
 								RENDERER.pop();
 							}
 						}
 						else{
 							RENDERER.push();
-							RENDERER.translate(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-							wm.transforms.apply();
-							RENDERER.bind(dm.getValue().getTexture());
+							RENDERER.translate(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
+							cpm.transforms.apply();
+							RENDERER.bind(com.getTexture());
 							RENDER_UTIL.render(list, RENDERDATA.set(data, relay.getTile(), null));
-							wm.transforms.deapply();
+							cpm.transforms.deapply();
 							RENDERER.pop();
 						}
 					}

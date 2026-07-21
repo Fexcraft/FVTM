@@ -6,8 +6,6 @@ import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireCompItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
-import net.fexcraft.mod.fvtm.model.content.WireMD;
-import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.sys.wire.*;
@@ -27,10 +25,6 @@ import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
  */
 public class WireRenderer {
 
-	public static Wire CURRENT;
-	public static double ANGLE = 0;
-	public static double ANGLE_DOWN = 0;
-	//
 	private static WireSystem wiredata;
 	private static ItemStack held;
 	private static boolean holding_wire;
@@ -91,34 +85,6 @@ public class WireRenderer {
 					}
 					UniWireRenderer.renderRelay(relay, 0, 0, 0);
 				}
-			}
-		}
-		pose.popPose();
-	}
-
-	private static void renderWires(PoseStack pose, WireRelay relay){
-		pose.pushPose();
-		for(int i = 0; i < relay.size(); i++){
-			if(relay.wires.get(i).copy) continue;
-			Wire wire = relay.wires.get(i);
-			if(wire.vecpath == null || wire.getWireType() == null) continue;
-			WireModel model = wire.getWireType().getModel();
-			if(wire.model == null) new WireMD(wire);
-			FvtmRenderTypes.getCutout(wire.getWireType().getTexture());
-			pose.translate(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-			wire.model.wiremodel.render();
-			if(relay.getTile() != null){
-				CURRENT = wire;
-				ANGLE = wire.model.end_angle;
-				if(wire.model.deco_s != null){
-					ANGLE_DOWN = wire.model.start_angle_down;
-					//TODO wire deco
-				}
-				if(wire.model.deco_e != null){
-					ANGLE_DOWN = wire.model.end_angle_down;
-					//TODO wire deco
-				}
-				//TODO wire deco
 			}
 		}
 		pose.popPose();

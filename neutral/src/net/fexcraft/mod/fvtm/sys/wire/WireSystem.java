@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.*;
+import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -195,12 +196,11 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 				else{
 					pos = wire.vecpath[end ? wire.vecpath.length - 1 : 0].distance(wire.vecpath[end ? 0 : wire.vecpath.length - 1], sr.distance);
 				}
-				/*if(!sr.offset.isNull()){
-					M4DW mat = M4DW.create();
+				if(!sr.offset.isNull()){
 					double rad = Math.atan2(wire.vecpath[0].x - wire.vecpath[wire.vecpath.length - 1].x, wire.vecpath[0].z - wire.vecpath[wire.vecpath.length - 1].z);
-					mat.setRadians(end ? -rad : rad, 0, 0);
-					pos = pos.add(mat.rotate(sr.offset));
-				}*/
+					double[] d3 = VecUtil.rotate(sr.offset.toDoubleArray(), (end ? -rad : rad), 0, 1, 0);
+					pos = pos.add(d3[0], d3[1], d3[2]);
+				}
 				relay.getHolder().add(end ? wire.okey : wire.key, null, pos, true);
 				relay.getHolder().updateClient();
 			}

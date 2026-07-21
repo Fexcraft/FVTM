@@ -4,13 +4,10 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockFunction;
 import net.fexcraft.mod.fvtm.item.BlockItem21;
-import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
-import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Resources21;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.world.StateWrapper;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -48,14 +45,6 @@ public class BlockBase extends PlainBase implements EntityBlock {
 		BaseBlockEntity base = (BaseBlockEntity)entity;
 		base.data = ((BlockItem21)stack.getItem()).getData(UniStack.getStack(stack));
 		base.regRelay();
-	}
-
-	@Deprecated
-	public void onRemove(BlockState state0, Level level, BlockPos pos, BlockState state1, boolean bool){
-		if(type.hasRelay() && SystemManager.active(SystemManager.Systems.WIRE)){
-			SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(level), WireSystem.class).deregister(level.getBlockEntity(pos));
-		}
-		//TODO super.onRemove(state0, level, pos, state1, bool);
 	}
 
 	@Override

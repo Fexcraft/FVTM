@@ -158,18 +158,18 @@ public class PathModelGenerator {
 		wire.model.start_angle = wire.model.end_angle + 180;
 		//
 		if(wire.comps == null) return;
-		if(wire.comps.containsKey("relay_start")) wire.model.deco_s = wire.comps.get("relay_start");
-		if(wire.comps.containsKey("relay_end")) wire.model.deco_e = wire.comps.get("relay_end");
+		if(wire.comps.containsKey("relay_start")) wire.model.comp_s = wire.comps.get("relay_start");
+		if(wire.comps.containsKey("relay_end")) wire.model.comp_e = wire.comps.get("relay_end");
 		float hwl = wire.length / 2;
-		if(wire.model.deco_s != null){
-			float len = getLongestDownward(wire.model.deco_s.getModel());
+		if(wire.model.comp_s != null){
+			float len = getLongestDownward(wire.model.comp_s.getModel());
 			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
 			double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model.start_angle_down = (float)-Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model.start_angle_down = Static.toDegrees(wire.model.start_angle_down);
 		}
-		if(wire.model.deco_e != null){
-			float len = getLongestDownward(wire.model.deco_e.getModel());
+		if(wire.model.comp_e != null){
+			float len = getLongestDownward(wire.model.comp_e.getModel());
 			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
 			double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model.end_angle_down = (float)-Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));

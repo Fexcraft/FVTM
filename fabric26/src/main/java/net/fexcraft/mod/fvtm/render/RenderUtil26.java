@@ -38,7 +38,7 @@ public class RenderUtil26 extends RenderUtil {
 			Renderer26.setColor(col);
 			Renderer26.pose = last;
 			Renderer26.cons = cons;
-			Renderer26.light = data.cache.light();
+			Renderer26.light = data.cache == null ? 0 : data.cache.light();
 			group.render();
 			Renderer26.pose = null;
 		});

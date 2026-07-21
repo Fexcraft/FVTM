@@ -23,25 +23,23 @@ public class WireMD {
 	public PathModelPositioned wiremodel;
 	public double start_angle, end_angle;
 	public double start_angle_down, end_angle_down;
-	public WireComponent deco_s, deco_e;
-	public HashMap<String, HashMap<String, ArrayList<V3D>>> deco_d;
-	//public HashMap<String, HashMap<String, ArrayList<Polyhedron>>> deco_g;
+	public WireComponent comp_s, comp_e;
+	public HashMap<String, HashMap<String, ArrayList<V3D>>> comp_d;
 
 	public WireMD(Wire wire){
 		wire.model = this;
 		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());//, getWireBreak(wire));
-		deco_d = new HashMap<>();
-		//deco_g = new HashMap<>();
+		comp_d = new HashMap<>();
 		if(wire.comps == null) return;
 		WireComponent deco;
 		for(Map.Entry<String, WireComponent> entry : wire.comps.entrySet()){
+			if(entry.getKey().startsWith("relay_")) continue;
 			deco = entry.getValue();
-			deco_d.put(entry.getKey(), new HashMap<>());
-			//deco_g.put(entry.getKey(), new HashMap<>());
+			comp_d.put(entry.getKey(), new HashMap<>());
 			for(ModelGroup list : deco.getModel().groups){
 				for(Program program : list.getAllPrograms()){
 					if(program instanceof WirePrograms.SpacedDeco == false) continue;
-					deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(wire.getRelay(), wire, list, entry.getKey(), true));
+					comp_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(wire.getRelay(), wire, list, entry.getKey(), true));
 					break;
 				}
 			}

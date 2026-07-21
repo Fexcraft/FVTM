@@ -101,9 +101,9 @@ public class WireRelay {
 		if(firstcall){
 			WireRelay relay = holder.getRegion().system.getRelay(wire.key.start_relay.equals(key) ? wire.okey : wire.key);
 			if(relay != null) relay.remove(wire.okey, false);
-			holder.onWireRem(wire.key);
 		}
 		else this.checkWireSectionConsistency();
+		holder.onWireRem(wire.key);
 	}
 
 	private void remove(WireKey key, boolean firstcall){

@@ -25,6 +25,7 @@ public class WirePrograms {
 	public static void init(){
 		ModelGroup.PROGRAMS.add(new RotateY(0));
 		ModelGroup.PROGRAMS.add(ROTATED);
+		ModelGroup.PROGRAMS.add(new SlackAngled(0));
 		ModelGroup.PROGRAMS.add(new DownwardAngled(0));
 		ModelGroup.PROGRAMS.add(new SpacedDeco(new JsonMap()));
 		ModelGroup.PROGRAMS.add(new WireBreak(0, 0));
@@ -79,20 +80,20 @@ public class WirePrograms {
 		}
 		
 	};
-	
-	public static class DownwardAngled implements Program {
-		
+
+	public static class SlackAngled implements Program {
+
 		private float length;
-		
-		public DownwardAngled(float length){
+
+		public SlackAngled(float length){
 			this.length = length;
 		}
 
 		@Override
 		public String id(){
-			return "fvtm:wire_downward_angled";
+			return "fvtm:wire_slack_angled";
 		}
-		
+
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			RENDERER.rotate(ANGLE_DOWN, 0, 0, 1);
@@ -110,6 +111,19 @@ public class WirePrograms {
 
 		public float length(){
 			return length;
+		}
+
+	}
+	
+	public static class DownwardAngled extends SlackAngled {
+		
+		public DownwardAngled(float length){
+			super(length);
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:wire_downward_angled";
 		}
 		
 	}

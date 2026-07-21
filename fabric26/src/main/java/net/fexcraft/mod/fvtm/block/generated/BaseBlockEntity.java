@@ -106,4 +106,11 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 		return WrapperHolder.getWorld(level);
 	}
 
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state){
+		super.preRemoveSideEffects(pos, state);
+		if(data.getType().hasRelay() && SystemManager.active(SystemManager.Systems.WIRE)){
+			SystemManager.get(SystemManager.Systems.WIRE, WrapperHolder.getWorld(level), WireSystem.class).deregister(this);
+		}
+	}
 }

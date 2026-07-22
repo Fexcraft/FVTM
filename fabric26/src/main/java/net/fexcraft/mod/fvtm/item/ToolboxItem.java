@@ -50,7 +50,7 @@ public class ToolboxItem extends Item {
 				break;
 			}
 			case 3:{
-				cons.accept(Component.literal("Wire removal Toolbox"));
+				cons.accept(Component.literal("Wire Removal Toolbox"));
 				break;
 			}
 			case 4:{
@@ -63,6 +63,10 @@ public class ToolboxItem extends Item {
 			}
 			case 6:{
 				cons.accept(Component.literal("Decoration Adjustment and Removal Toolbox"));
+				break;
+			}
+			case 7:{
+				cons.accept(Component.literal("Wire Component Removal Toolbox"));
 				break;
 			}
 		}

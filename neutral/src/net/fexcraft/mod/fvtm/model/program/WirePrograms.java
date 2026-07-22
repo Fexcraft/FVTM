@@ -27,7 +27,8 @@ public class WirePrograms {
 		ModelGroup.PROGRAMS.add(ROTATED);
 		ModelGroup.PROGRAMS.add(new SlackAngled(0));
 		ModelGroup.PROGRAMS.add(new DownwardAngled(0));
-		ModelGroup.PROGRAMS.add(new SpacedDeco(new JsonMap()));
+		ModelGroup.PROGRAMS.add(new SpacedComponent(new JsonMap()));
+		ModelGroup.PROGRAMS.add(new SpacedDecoration(new JsonMap()));
 		ModelGroup.PROGRAMS.add(new WireBreak(0, 0));
 		//ModelGroup.PROGRAMS.add(new CatenaryDropper(new JsonMap()));
 	}
@@ -106,7 +107,7 @@ public class WirePrograms {
 
 		@Override
 		public Program parse(String[] args){
-			return new DownwardAngled(args.length > 0 ? Float.parseFloat(args[0]) : sixteenth/*, args.length > 1 ? Boolean.parseBoolean(args[1]) : false*/);
+			return new SlackAngled(args.length > 0 ? Float.parseFloat(args[0]) : sixteenth/*, args.length > 1 ? Boolean.parseBoolean(args[1]) : false*/);
 		}
 
 		public float length(){
@@ -162,7 +163,7 @@ public class WirePrograms {
 		}
 	}
 	
-	public static class SpacedDeco implements Program {
+	public static class SpacedComponent implements Program {
 		
 		protected boolean symmetric;
 		protected boolean centered;
@@ -171,7 +172,7 @@ public class WirePrograms {
 		protected float between_spacing = 1f;
 		protected int limit = 0;
 		
-		public SpacedDeco(JsonMap map){
+		public SpacedComponent(JsonMap map){
 			symmetric = map.getBoolean("symmetric", false);
 			centered = map.getBoolean("centered", false);
 			center_spacing = map.getFloat("center_spacing", 0.5f);
@@ -182,7 +183,7 @@ public class WirePrograms {
 
 		@Override
 		public String id(){
-			return "fvtm:wire_spaced_deco";
+			return "fvtm:wire_spaced_component";
 		}
 
 		@Override
@@ -197,12 +198,12 @@ public class WirePrograms {
 
 		@Override
 		public Program parse(JsonMap map){
-			return new SpacedDeco(map);
+			return new SpacedComponent(map);
 		}
 
 		@Override
 		public Program parse(String[] args){
-			return new SpacedDeco(new JsonMap());
+			return new SpacedComponent(new JsonMap());
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -239,8 +240,21 @@ public class WirePrograms {
 		}
 		
 	}
+
+	public static class SpacedDecoration extends SpacedComponent {
+
+		public SpacedDecoration(JsonMap map){
+			super(map);
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:wire_spaced_deco";
+		}
+
+	}
 	
-	/*public static class CatenaryDropper extends SpacedDeco {
+	/*public static class CatenaryDropper extends SpacedComponent {
 		
 		public Vec3f[][] model = new Vec3f[4][];
 		public float sx;

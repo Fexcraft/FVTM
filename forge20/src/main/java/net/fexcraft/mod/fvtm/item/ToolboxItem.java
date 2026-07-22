@@ -49,7 +49,7 @@ public class ToolboxItem extends Item {
 				break;
 			}
 			case 3:{
-				tooltip.add(Component.literal("Wire removal Toolbox"));
+				tooltip.add(Component.literal("Wire Removal Toolbox"));
 				break;
 			}
 			case 4:{
@@ -62,6 +62,10 @@ public class ToolboxItem extends Item {
 			}
 			case 6:{
 				tooltip.add(Component.literal("Decoration Adjustment and Removal Toolbox"));
+				break;
+			}
+			case 7:{
+				tooltip.add(Component.literal("Wire Component Removal Toolbox"));
 				break;
 			}
 		}

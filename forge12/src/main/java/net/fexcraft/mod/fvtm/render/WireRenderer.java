@@ -27,8 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_REMOVAL;
-import static net.fexcraft.mod.fvtm.data.ToolboxType.WIRE_SLACK;
+import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 
 public class WireRenderer {
@@ -54,8 +53,9 @@ public class WireRenderer {
 	private static ItemStack held;
 	private static boolean holding_wire;
 	private static boolean holding_slack;
-	private static boolean holding_relaydeco;
-	private static boolean holding_deco;
+	private static boolean holding_comp_rem;
+	private static boolean holding_comp_relay;
+	private static boolean holding_comp;
 	private static V3D cubepos;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
@@ -65,12 +65,13 @@ public class WireRenderer {
 		held = Minecraft.getMinecraft().player.getHeldItemMainhand();
 		holding_wire = Command.OTHER || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
 		holding_slack = Command.OTHER || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
+		holding_comp_rem = held.getItem() instanceof ToolboxItem && WIRE_COMPONENT.eq(held.getItemDamage());
 		if(held.getItem() instanceof WireCompItem){
 			WireCompItem item = (WireCompItem)held.getItem();
-			holding_relaydeco = item.getContent().getType().equals("relay");
-			holding_deco = !holding_relaydeco;
+			holding_comp_relay = item.getContent().getType().equals("relay");
+			holding_comp = !holding_comp_relay;
 		}
-		else holding_relaydeco = holding_deco = false;
+		else holding_comp_relay = holding_comp = false;
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -86,7 +87,7 @@ public class WireRenderer {
 						GL11.glPopMatrix();
                 	}
 					if(relay.wires.size() > 0){
-						if(holding_slack || holding_deco){
+						if(holding_slack || holding_comp || holding_comp_rem){
 							for(Wire wire : relay.wires){
 								if(wire.copy) continue;
 								cubepos = wire.getVectorPosition(wire.length * 0.5, false);
@@ -96,7 +97,7 @@ public class WireRenderer {
 								GL11.glPopMatrix();
 							}
 						}
-						if(holding_relaydeco){
+						if(holding_comp_relay || holding_comp_rem){
 							for(Wire wire : relay.wires){
 								cubepos = wire.getVectorPosition(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, false);
 								GL11.glPushMatrix();

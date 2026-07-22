@@ -91,6 +91,7 @@ interact.fvtm.relay.wire_slack=&aWire slack changed to %s.
 interact.fvtm.relay.wire_comp_not_compatible=&bWire Component not compatible with Wire/Relay.
 interact.fvtm.relay.wire_comp_present=&bWire Component of same type already present.
 interact.fvtm.relay.wire_comp_added=&aWire Component Added
+interact.fvtm.relay.wire_comp_removed=&aWire Component Removed &7(%s)
 
 interact.fvtm.rail_marker.junction_created=&o> Junction Created.
 interact.fvtm.rail_marker.start_junction_created=&o> Start Junction Created.

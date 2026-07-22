@@ -215,6 +215,10 @@ public abstract class Packets {
 			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
 			system.onRelayWireComp(com, player);
 		});
+		LIS_SERVER.put("relay_wire_comp_rem", (com, player) -> {
+			WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, player.getWorld());
+			system.onRelayWireCompRem(com, player);
+		});
 		LIS_SERVER.put("open_inv", (com, player) -> {
 			Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)player.getWorld()).getInteractRef(com);
 			FvtmInv inv = ref.getKey().getInvByIdx(com.getInteger("inventory"));

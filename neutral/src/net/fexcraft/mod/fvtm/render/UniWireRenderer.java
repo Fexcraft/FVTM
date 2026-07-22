@@ -63,6 +63,8 @@ public class UniWireRenderer {
 			if(wire.model.comp_d.size() > 0){
 				WireComponent com;
 				WireModel cpm;
+				ANGLE = wire.model.start_angle;
+				ANGLE_DOWN = 0;
 				for(String comkey : wire.model.comp_d.keySet()){
 					com = wire.comps.get(comkey);
 					cpm = com.getModel();

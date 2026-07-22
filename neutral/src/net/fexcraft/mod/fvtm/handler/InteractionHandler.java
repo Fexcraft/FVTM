@@ -347,7 +347,7 @@ public class InteractionHandler {
 		world = WrapperHolder.getClientWorld();
 		Passenger pass = world.getClientPassenger();
 		is_toolbox = stack.isItemOf(ContentType.TOOLBOX.item_type);
-		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIRE_COMPONENT.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK))) return handleWire(world, pass.entity, key, stack);
+		if(stack.isItemOfAny(ContentType.WIRE.item_type, ContentType.WIRE_COMPONENT.item_type) || (is_toolbox && eq(getToolboxType(stack), WIRE_REMOVAL, WIRE_SLACK, WIRE_COMPONENT))) return handleWire(world, pass.entity, key, stack);
 		if(stack.isItemOf(ContentType.SIGN.item_type) || (is_toolbox && eq(getToolboxType(stack), SIGN_ADJREM))) return handleSign(world, pass.entity, key, stack);
 		if((is_toolbox && eq(getToolboxType(stack), DECO_ADJREM))) return handleDeco(world, pass.entity, key, stack);
 		Map<VehicleData, InteractRef> vehs = world.getVehicleDatas(pass.entity.getPos());
@@ -411,7 +411,7 @@ public class InteractionHandler {
 
 	private enum WIT {//wire interact type
 
-		WIRE, DECO_RELAY, DECO, SLACK, REMOVAL;
+		WIRE, COMP_RELAY, COMP, COMP_REM, SLACK, REMOVAL;
 
 		public boolean slack(){
 			return this == SLACK;
@@ -421,14 +421,33 @@ public class InteractionHandler {
 			return this == WIRE;
 		}
 
-		public boolean deco(){
-			return this == DECO;
+		public boolean comp(){
+			return this == COMP;
 		}
 
-		public boolean relay(){
-			return this == DECO_RELAY;
+		public boolean comp_relay(){
+			return this == COMP_RELAY;
 		}
 
+		public boolean comp_rem(){
+			return this == COMP_REM;
+		}
+
+		public boolean rem(){
+			return this == REMOVAL;
+		}
+
+		public String packet_key(){
+			switch(this){
+				case WIRE: return "relay_interact";
+				case COMP_RELAY:
+				case COMP: return "relay_wire_comp";
+				case COMP_REM: return "relay_wire_comp_rem";
+				case SLACK: return "relay_wire_slack";
+				case REMOVAL: return "relay_remove";
+				default: return "relay_type_error";
+			}
+		}
 	}
 
 	private static boolean handleWire(FvtmWorld world, EntityW pass, KeyPress key, StackWrapper stack){
@@ -437,9 +456,9 @@ public class InteractionHandler {
 		if(stack.isItemOf(ContentType.WIRE.item_type)) type = WIT.WIRE;
 		else if(stack.isItemOf(ContentType.WIRE_COMPONENT.item_type)){
 			WireComponent deco = stack.getContent(ContentType.WIRE_COMPONENT.item_type);
-			type = deco.isRelayType() ? WIT.DECO_RELAY : WIT.DECO;
+			type = deco.isRelayType() ? WIT.COMP_RELAY : WIT.COMP;
 		}
-		else type = WIRE_SLACK.eq(getToolboxType(stack)) ? WIT.SLACK : WIT.REMOVAL;
+		else type = WIRE_SLACK.eq(getToolboxType(stack)) ? WIT.SLACK : WIRE_COMPONENT.eq(getToolboxType(stack)) ? WIT.COMP_REM : WIT.REMOVAL;
 		if(key.mouse_main() && !type.slack()) return false;
 		WireSystem system = SystemManager.get(SystemManager.Systems.WIRE, (WorldW)world);
 		V3D evec = pass.getEyeVec();
@@ -450,7 +469,7 @@ public class InteractionHandler {
 			for(RelayHolder holder : reg.getObjects().values()){
 				for(WireRelay relay : holder.relays.values()){
 					size = holder.hasRef() ? holder.ref().getSize(relay.getKey()) : 0.0125f;
-					if(type.slack() || type.deco()){
+					if(type.slack() || type.comp() || type.comp_rem()){
 						for(Wire wr : relay.wires){
 							if(wr.copy) continue;
 							cen = wr.getVectorPosition(wr.length * 0.5, false);
@@ -461,14 +480,14 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								wr.key.save(com);
 								com.set("up", key.mouse_right());
-								Packets.send(Packet_TagListener.class, type.deco() ? "relay_wire_comp" : "relay_wire_slack", com);
+								Packets.send(Packet_TagListener.class, type.packet_key(), com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;
 							}
 						}
 					}
-					else if(type.relay()){
+					if(type.comp_relay() || type.comp_rem()){
 						for(Wire wr : relay.wires){
 							if(wr.copy) continue;
 							cen = wr.getVectorPosition(size, false);
@@ -479,7 +498,7 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								com.set("as", "relay_start");
 								wr.key.save(com);
-								Packets.send(Packet_TagListener.class, "relay_wire_comp", com);
+								Packets.send(Packet_TagListener.class, type.packet_key(), com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;
@@ -492,20 +511,20 @@ public class InteractionHandler {
 								com.set("relay", relay.getKey());
 								com.set("as", "relay_end");
 								wr.key.save(com);
-								Packets.send(Packet_TagListener.class, "relay_wire_comp", com);
+								Packets.send(Packet_TagListener.class, type.packet_key(), com);
 								cooldown = Time.getDate() + 20;
 								last = "wire";
 								return true;
 							}
 						}
 					}
-					else{
+					if(type.wire() || type.rem()){
 						aabb = AABB.create(relay.pos.x - size, relay.pos.y - size, relay.pos.z - size, relay.pos.x + size, relay.pos.y + size, relay.pos.z + size);
 						if(contains(evec, lvec, aabb)){
 							TagCW com = TagCW.create();
 							com.set("holder", holder.pos, false);
 							com.set("relay", relay.getKey());
-							Packets.send(Packet_TagListener.class, type.wire() ? "relay_interact" : "relay_remove", com);
+							Packets.send(Packet_TagListener.class, type.packet_key(), com);
 							cooldown = Time.getDate() + 20;
 							last = "wire";
 							return true;

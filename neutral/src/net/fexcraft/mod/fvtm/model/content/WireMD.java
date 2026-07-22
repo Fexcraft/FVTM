@@ -38,8 +38,8 @@ public class WireMD {
 			comp_d.put(entry.getKey(), new HashMap<>());
 			for(ModelGroup list : deco.getModel().groups){
 				for(Program program : list.getAllPrograms()){
-					if(program instanceof WirePrograms.SpacedDeco == false) continue;
-					comp_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(wire.getRelay(), wire, list, entry.getKey(), true));
+					if(program instanceof WirePrograms.SpacedComponent == false) continue;
+					comp_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedComponent)program).generate(wire.getRelay(), wire, list, entry.getKey(), true));
 					break;
 				}
 			}

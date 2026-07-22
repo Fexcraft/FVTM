@@ -210,6 +210,38 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 		}
 	}
 
+	public void onRelayWireCompRem(TagCW com, EntityW player){
+		Wire wire = getWire(new WireKey(com));
+		if(wire.comps == null) return;
+		String type = com.has("as") ? com.getString("as") : null;
+		if(type != null){
+			boolean end = type.equals("relay_end");
+			onWireComponentRemoval(player, wire.relay, end ? wire.okey : wire.key, wire.comps.remove(type));
+		}
+		else{
+			String key = null;
+			for(String cs : wire.comps.keySet()){
+				if(!cs.startsWith("relay_")){
+					key = cs;
+					break;
+				}
+			}
+			if(key == null) return;
+			onWireComponentRemoval(player, wire.relay, wire.key, wire.comps.remove(key));
+		}
+	}
+
+	private void onWireComponentRemoval(EntityW player, WireRelay relay, WireKey key, WireComponent removed){
+		if(removed == null) return;
+		player.bar("interact.fvtm.relay.wire_comp_removed", removed.getName());
+		if(removed.getSubRelays().size() > 0){
+			relay.holder.onWireRem(key);
+		}
+		else{
+			relay.updateClient();
+		}
+	}
+
 	public static class WireMap extends TreeMap<String, WireUnit> {
 		
 		private WireSystem data;

@@ -12,6 +12,7 @@ public enum ToolboxType {
 	WIRE_SLACK(4),
 	SIGN_ADJREM(5),
 	DECO_ADJREM(6),
+	WIRE_COMPONENT(7),
 	;
 
 	public final int idx;

@@ -1,14 +1,12 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.data.block.RelayData;
@@ -165,6 +163,11 @@ public class RelayHolder implements SysObj {
 	public List<String> getTypes(WireRelay rel){
 		String key = rel.origin != null ? getRootOrigin(rel.origin).key : rel.key;
 		return ref().types.get(key);
+	}
+
+	public boolean isValidType(WireRelay rel, WireType wire){
+		List<String> list = getTypes(rel);
+		return list != null && (list.isEmpty() || list.contains(wire.getType()));
 	}
 
 	private WireRelay getRootOrigin(WireKey origin){

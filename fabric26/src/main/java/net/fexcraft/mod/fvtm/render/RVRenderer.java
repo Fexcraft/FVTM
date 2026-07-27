@@ -210,7 +210,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 								RENDERER.rotate(point.getPivot().deg_pitch(), 1, 0, 0);
 								RENDERER.rotate(point.getPivot().deg_roll(), 0, 0, 1);
 							}
-							RenderUtil26.renderBB(value.radius, red ? COL_RED : COL_CYN);
+							RENDER_UTIL.renderBB(value.radius, red ? COL_RED : COL_CYN);
 							if(!point.isVehicle()) pose.popPose();
 							else pose.translate(-pes.x, -pes.y, -pes.z);
 						}
@@ -267,7 +267,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		//
 		tool = isToolbox();
 		if(tool > 0){
-			RenderUtil26.renderBB(1, COL_ORG);
+			RENDER_UTIL.renderBB(1, COL_ORG);
 		}
 		if(tool > -1 && tool < 2){
 			V3D pos;
@@ -287,7 +287,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 					RENDERER.rotate(point.getPivot().deg_pitch(), 1, 0, 0);
 					RENDERER.rotate(point.getPivot().deg_roll(), 0, 0, 1);
 				}
-				RenderUtil26.renderBB(red ? .25f : .125f, red ? COL_RED : COL_YLW);
+				RENDER_UTIL.renderBB(red ? .25f : .125f, red ? COL_RED : COL_YLW);
 				if(!point.isVehicle()) pose.popPose();
 				else pose.translate(-pos.x, -pos.y, -pos.z);
 			}

@@ -170,9 +170,9 @@ public class PathModelGenerator {
 		}
 		if(wire.model.comp_e != null){
 			float len = getLongestDownward(wire.model.comp_e.getModel());
-			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
-			//double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
-			double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
+			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
+			double dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
+			//double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model.end_angle_down = (float)-Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model.end_angle_down = Static.toDegrees(wire.model.end_angle_down);
 		}

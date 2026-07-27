@@ -5,7 +5,6 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireCompItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -28,6 +27,7 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
+import static net.fexcraft.mod.fvtm.render.UniWireRenderer.DATA;
 
 public class WireRenderer {
 
@@ -47,32 +47,26 @@ public class WireRenderer {
 			}
 		}
 	}
-	
+
 	private static WireSystem wiredata;
-	private static WireComponent comp;
 	private static ItemStack held;
-	private static boolean holding_wire;
-	private static boolean holding_rem;
-	private static boolean holding_slack;
-	private static boolean holding_comp_rem;
-	private static boolean holding_comp_relay;
-	private static boolean holding_comp;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(!Config.MD_WIRE) return;
 	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getMinecraft().player.getHeldItemMainhand();
-		holding_wire = Command.OTHER || held.getItem() instanceof WireItem;
-		holding_rem = Command.OTHER || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
-		holding_slack = Command.OTHER || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
-		holding_comp_rem = held.getItem() instanceof ToolboxItem && WIRE_COMPONENT.eq(held.getItemDamage());
+		DATA.ih_wire = held.getItem() instanceof WireItem;
+		if(DATA.ih_wire) DATA.wiretype = ((WireItem)held.getItem()).getContent();
+		DATA.ih_tb_rem = held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage());
+		DATA.ih_tb_slack = held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
+		DATA.ih_tb_comp = held.getItem() instanceof ToolboxItem && WIRE_COMPONENT.eq(held.getItemDamage());
 		if(held.getItem() instanceof WireCompItem){
-			comp = ((WireCompItem)held.getItem()).getContent();
-			holding_comp_relay = comp.getType().equals("relay");
-			holding_comp = !holding_comp_relay;
+			DATA.comp = ((WireCompItem)held.getItem()).getContent();
+			DATA.ih_comp_relay = DATA.comp.getType().equals("relay");
+			DATA.ih_comp = !DATA.ih_comp_relay;
 		}
-		else holding_comp_relay = holding_comp = false;
+		else DATA.ih_comp_relay = DATA.ih_comp = false;
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -82,7 +76,7 @@ public class WireRenderer {
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
 					if(Command.OTHER) renderDebugRelay(relay, cx, cy, cz);
-					else UniWireRenderer.renderRelay(holder, relay, cx, cy, cz, holding_wire, holding_rem, holding_slack, holding_comp, holding_comp_relay, holding_comp_rem, comp);
+					else UniWireRenderer.renderRelay(holder, relay, cx, cy, cz, DATA);
             	}
         	}
         }

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import static net.fexcraft.lib.common.Static.rad180;
 import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
 import static net.fexcraft.mod.fvtm.Config.WIRE_SAVE_INTERVAL;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
@@ -19,7 +20,6 @@ import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -197,9 +197,12 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 					pos = wire.vecpath[end ? wire.vecpath.length - 1 : 0].distance(wire.vecpath[end ? 0 : wire.vecpath.length - 1], sr.distance);
 				}
 				if(!sr.offset.isNull()){
-					double rad = Math.atan2(wire.vecpath[0].x - wire.vecpath[wire.vecpath.length - 1].x, wire.vecpath[0].z - wire.vecpath[wire.vecpath.length - 1].z);
-					double[] d3 = VecUtil.rotate(sr.offset.toDoubleArray(), (end ? -rad : rad), 0, 1, 0);
-					pos = pos.add(d3[0], d3[1], d3[2]);
+					double rad = -Math.atan2(wire.vecpath[0].x - wire.vecpath[wire.vecpath.length - 1].x, wire.vecpath[0].z - wire.vecpath[wire.vecpath.length - 1].z);
+					if(end) rad = rad + rad180;
+					double c = Math.cos(rad), s = Math.sin(rad);
+					double x = c * sr.offset.x - s * sr.offset.z;
+					double z = s * sr.offset.x + c * sr.offset.z;
+					pos = pos.add(x, sr.offset.y, z);
 				}
 				relay.getHolder().add(end ? wire.okey : wire.key, null, pos, true);
 				relay.getHolder().updateClient();

@@ -7,12 +7,14 @@ import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
+import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -22,8 +24,47 @@ public class UniWireRenderer {
 	public static Wire CURRENT;
 	public static double ANGLE;
 	public static double ANGLE_DOWN;
+	private static V3D cubepos;
+	private static int color;
 
-	public static void renderRelay(WireRelay relay, double cx, double cy, double cz){
+	public static void renderRelay(RelayHolder holder, WireRelay relay, double cx, double cy, double cz, boolean ih_wire, boolean ih_rem, boolean ih_slack, boolean ih_comp, boolean ih_comp_relay, boolean ih_comp_rem, WireComponent comp){
+		if(ih_wire || (ih_rem && relay.wires.size() > 0)){
+			RENDERER.push();
+			RENDERER.translate(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
+			RENDER_UTIL.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, ih_wire ? COL_CYN : COL_ORG);
+			RENDERER.pop();
+		}
+		if(relay.wires.size() > 0){
+			if(ih_slack || ih_comp || ih_comp_rem){
+				for(Wire wire : relay.wires){
+					if(wire.copy || (ih_comp_rem && wire.noComponents())) continue;
+					color = ih_comp ? (wire.hasComponent(comp.getType()) ? COL_RED : COL_CYN) : COL_ORG;
+					cubepos = wire.getVectorPosition(wire.length * 0.5, false);
+					RENDERER.push();
+					RENDERER.translate(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
+					RENDER_UTIL.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, color);
+					RENDERER.pop();
+				}
+			}
+			if(ih_comp_relay || ih_comp_rem){
+				for(Wire wire : relay.wires){
+					if(wire.copy || (ih_comp_rem && wire.noComponents())) continue;
+					color = wire.hasComponent("relay_start") ? ih_comp_rem ? COL_ORG : COL_RED : ih_comp_rem ? COL_RED : COL_CYN;
+					cubepos = wire.getVectorPosition(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, false);
+					RENDERER.push();
+					RENDERER.translate(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
+					RENDER_UTIL.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, color);
+					RENDERER.pop();
+					//
+					color = wire.hasComponent("relay_end") ? ih_comp_rem ? COL_ORG : COL_RED : ih_comp_rem ? COL_RED : COL_CYN;
+					cubepos = wire.getVectorPosition(wire.length - (holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f), false);
+					RENDERER.push();
+					RENDERER.translate(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
+					RENDER_UTIL.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, color);
+					RENDERER.pop();
+				}
+			}
+		}
 		BlockData data;
 		RENDERER.push();
 		RENDERER.clear_color();

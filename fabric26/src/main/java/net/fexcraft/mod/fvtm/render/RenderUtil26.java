@@ -155,11 +155,12 @@ public class RenderUtil26 extends RenderUtil {
 
 	public static void renderBB(V3D pos, float scale, int col){
 		RENDERER.translate(pos.x, pos.y, pos.z);
-		renderBB(scale, col);
+		RENDER_UTIL.renderBB(scale, col);
 		RENDERER.translate(-pos.x, -pos.y, -pos.z);
 	}
 
-	public static void renderBB(float scale, int col){
+	@Override
+	public void renderBB(float scale, int col){
 		Renderer26.type = FvtmRenderTypes.white();
 		float hs = scale * 0.5f;
 		//

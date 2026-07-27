@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireCompItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -16,7 +17,6 @@ import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
-import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 
 public class WireRenderer {
 
@@ -50,25 +49,27 @@ public class WireRenderer {
 	}
 	
 	private static WireSystem wiredata;
+	private static WireComponent comp;
 	private static ItemStack held;
 	private static boolean holding_wire;
+	private static boolean holding_rem;
 	private static boolean holding_slack;
 	private static boolean holding_comp_rem;
 	private static boolean holding_comp_relay;
 	private static boolean holding_comp;
-	private static V3D cubepos;
     
     public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(!Config.MD_WIRE) return;
 	    wiredata = SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world));
 	    if(wiredata == null || wiredata.getRegions() == null) return;
 		held = Minecraft.getMinecraft().player.getHeldItemMainhand();
-		holding_wire = Command.OTHER || held.getItem() instanceof WireItem || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
+		holding_wire = Command.OTHER || held.getItem() instanceof WireItem;
+		holding_rem = Command.OTHER || (held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(held.getItemDamage()));
 		holding_slack = Command.OTHER || held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(held.getItemDamage());
 		holding_comp_rem = held.getItem() instanceof ToolboxItem && WIRE_COMPONENT.eq(held.getItemDamage());
 		if(held.getItem() instanceof WireCompItem){
-			WireCompItem item = (WireCompItem)held.getItem();
-			holding_comp_relay = item.getContent().getType().equals("relay");
+			comp = ((WireCompItem)held.getItem()).getContent();
+			holding_comp_relay = comp.getType().equals("relay");
 			holding_comp = !holding_comp_relay;
 		}
 		else holding_comp_relay = holding_comp = false;
@@ -80,35 +81,8 @@ public class WireRenderer {
         	for(RelayHolder holder : reg.getObjects().values()){
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
-                	if(Command.OTHER || holding_wire){// || relay.wires.isEmpty()){
-						GL11.glPushMatrix();
-						GL11.glTranslated(relay.pos.x - cx, relay.pos.y - cy, relay.pos.z - cz);
-						DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
-						GL11.glPopMatrix();
-                	}
-					if(relay.wires.size() > 0){
-						if(holding_slack || holding_comp || holding_comp_rem){
-							for(Wire wire : relay.wires){
-								if(wire.copy) continue;
-								cubepos = wire.getVectorPosition(wire.length * 0.5, false);
-								GL11.glPushMatrix();
-								GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
-								DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
-								GL11.glPopMatrix();
-							}
-						}
-						if(holding_comp_relay || holding_comp_rem){
-							for(Wire wire : relay.wires){
-								cubepos = wire.getVectorPosition(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, false);
-								GL11.glPushMatrix();
-								GL11.glTranslated(cubepos.x - cx, cubepos.y - cy, cubepos.z - cz);
-								DebugUtils.renderBB(holder.hasRef() ? holder.ref().getSize(relay.getKey()) * 2 : 0.25f, COL_CYN);
-								GL11.glPopMatrix();
-							}
-						}
-					}
 					if(Command.OTHER) renderDebugRelay(relay, cx, cy, cz);
-					else UniWireRenderer.renderRelay(relay, cx, cy, cz);
+					else UniWireRenderer.renderRelay(holder, relay, cx, cy, cz, holding_wire, holding_rem, holding_slack, holding_comp, holding_comp_relay, holding_comp_rem, comp);
             	}
         	}
         }

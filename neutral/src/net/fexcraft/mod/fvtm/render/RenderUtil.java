@@ -4,6 +4,7 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,6 +33,10 @@ public class RenderUtil {
 
 	public void render(Polyhedron poly){
 		poly.render();
+	}
+
+	public void renderBB(float scale, int color){
+		DebugUtils.renderBB(scale, color);
 	}
 
 }

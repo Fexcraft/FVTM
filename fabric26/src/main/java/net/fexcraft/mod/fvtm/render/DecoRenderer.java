@@ -57,16 +57,16 @@ public class DecoRenderer {
 				pose.pushPose();
 				pose.translate(deco.vec.vec.x, deco.vec.vec.y, deco.vec.vec.z);
 				if(deco.decorations.size() == 0){
-					RenderUtil26.renderBB(0.5f, COL_ORG);
+					RENDER_UTIL.renderBB(0.5f, COL_ORG);
 				}
 				else{
 					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
-						RenderUtil26.renderBB(0.5f, COL_ORG);
+						RENDER_UTIL.renderBB(0.5f, COL_ORG);
 					}
 					RenderCache cache = deco.getRenderCache();
 					for(DecorationData dcom : deco.decorations){
 						if(dcom.getType().getModel() == null){
-							RenderUtil26.renderBB(0.25f, COL_RED);
+							RENDER_UTIL.renderBB(0.25f, COL_RED);
 						}
 						else{
 							cache.light(LevelRenderer.getLightCoords(level, pos.set(deco.vec.pos.x + dcom.offset.x, deco.vec.pos.y +  + dcom.offset.y + sixteenth, deco.vec.pos.z + dcom.offset.z)));

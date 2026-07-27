@@ -261,4 +261,13 @@ public class Wire {
 		return passed;
 	}
 
+	public boolean noComponents(){
+		return comps == null || comps.isEmpty();
+	}
+
+	public boolean hasComponent(String key){
+		if(comps == null) return false;
+		return comps.containsKey(key);
+	}
+
 }

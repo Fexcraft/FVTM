@@ -8,11 +8,14 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.JackEntity;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
+import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -172,6 +175,98 @@ public class DefaultPrograms {
 			});
 		}
 		//
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+			private WheelTireData wtd;
+
+			public String id(){
+				return "fvtm:wheel_auto_all";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
+				if(slot != null && slot.steering){
+					list.rotateGroup(-data.vehicle().getAttribute("steering_angle").asFloat(), 1, false);
+				}
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
+					if(wtd != null) list.rotateGroup(-wtd.rotation, 0, false);
+				}
+				if(slot != null && slot.mirror) list.rotateGroup(-180, 1, false);
+			}
+
+			@Override
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_steering";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
+				if(slot != null && slot.mirror) list.rotateGroup(-180, 1, false);
+				if(slot != null && slot.steering) list.rotateGroup(data.vehicle().getAttribute("steering_angle").asFloat(), 1, false);
+			}
+
+			@Override
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+			private WheelTireData wtd;
+
+			public String id(){
+				return "fvtm:wheel_auto_all_opposite";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
+				if(slot != null && slot.steering) list.rotateGroup(-data.vehicle().getAttribute("steering_angle").asFloat(), 1, false);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
+					if(wtd != null) list.rotateGroup(-wtd.rotation, 0, false);
+				}
+				if(slot != null && slot.mirror) list.rotateGroup(-180, 1, false);
+			}
+
+			@Override
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_steering_opposite";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
+				if(slot != null && slot.mirror) list.rotateGroup(-180, 1, false);
+				if(slot != null && slot.steering) list.rotateGroup(-data.vehicle().getAttribute("steering_angle").asFloat(), 1, false);
+			}
+
+			@Override
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 0));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f, false));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f, false));
+		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f, false));
+		//
 		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
 				return data.vehicle().getLightsState() && data.vehicle().getAttribute("forward").asBoolean();
@@ -193,10 +288,11 @@ public class DefaultPrograms {
 				return "fvtm:bogie_auto";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
+				list.rotate(0, data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0);
 			}
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
+			@Override
+			public boolean post(){
+				return false;
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -204,10 +300,11 @@ public class DefaultPrograms {
 				return "fvtm:bogie_auto_opposite";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
+				list.rotate(0, -data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0);
 			}
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
+			@Override
+			public boolean post(){
+				return false;
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -215,10 +312,11 @@ public class DefaultPrograms {
 				return "fvtm:bogie_front";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle().getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+				list.rotate(0, data.vehicle().getAttribute("bogie_front_angle").asFloat(), 0);
 			}
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle().getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+			@Override
+			public boolean post(){
+				return false;
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -226,10 +324,23 @@ public class DefaultPrograms {
 				return "fvtm:bogie_rear";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle().getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+				list.rotate(0, data.vehicle().getAttribute("bogie_rear_angle").asFloat(), 0);
 			}
+			@Override
+			public boolean post(){
+				return false;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program(){
+			public String id(){
+				return "fvtm:hide";
+			}
+			public void pre(ModelGroup list, ModelRenderData data){
+				list.visible = false;
+			}
+			@Override
 			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle().getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+				list.visible = true;
 			}
 		});
 		//
@@ -516,20 +627,20 @@ public class DefaultPrograms {
 			if(current == null) current = 0f;
 			current = bool ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat();
 			if(current > max) current = max; if(current < min) current = min;
-			RENDERER.translate(
+			list.translate(
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
-				axis == 2 ? current * Static.sixteenth : 0);
+				axis == 2 ? current * Static.sixteenth : 0, false);
 			data.cache.set(this, current);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(data.cache == null || attr == null) return;
-			RENDERER.translate(
+			list.translate(
 				axis == 0 ? current * -Static.sixteenth : 0,
 				axis == 1 ? current * -Static.sixteenth : 0,
-				axis == 2 ? current * -Static.sixteenth : 0);
+				axis == 2 ? current * -Static.sixteenth : 0, false);
 		}
 
 		@Override
@@ -638,13 +749,12 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.push();
-			if(data.sign() != null) RENDERER.scale(1, data.sign().height, data.sign().width);
+			if(data.sign() != null) list.scale(1, data.sign().height, data.sign().width);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			RENDERER.pop();
+			list.scale(1, 1, 1);
 		}
 
 		@Override
@@ -675,13 +785,12 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.push();
-			if(data.sign() != null && list.visible) RENDERER.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1);
+			if(data.sign() != null && list.visible) list.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1);
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			RENDERER.pop();
+			list.scale(1, 1, 1);
 		}
 
 		@Override
@@ -708,16 +817,18 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.push();
 			if(data.sign() != null && list.visible){
-				RENDERER.translate(0, data.sign().height * hs, data.sign().width * ws);
-				RENDERER.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1);
+				list.translate(0, data.sign().height * hs, data.sign().width * ws);
+				list.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1, true);
 			}
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			RENDERER.pop();
+			if(data.sign() != null && list.visible){
+				list.scale(1, 1, 1);
+				list.translate(0, -data.sign().height * hs, -data.sign().width * ws);
+			}
 		}
 
 		@Override
@@ -745,15 +856,16 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			RENDERER.push();
 			if(data.sign() != null && list.visible){
-				RENDERER.translate(0, data.sign().height * hs, data.sign().width * ws);
+				list.translate(0, data.sign().height * hs, data.sign().width * ws);
 			}
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			RENDERER.pop();
+			if(data.sign() != null && list.visible){
+				list.translate(0, -data.sign().height * hs, -data.sign().width * ws);
+			}
 		}
 
 		@Override
@@ -970,6 +1082,52 @@ public class DefaultPrograms {
 		@Override
 		public boolean post(){
 			return false;
+		}
+
+		@Override
+		public RenderOrder order(){
+			return RenderOrder.BLENDED;
+		}
+
+	}
+
+	public static class SteeringWheel implements Program {
+
+		private byte axis;
+		private float ratio, rotated;
+		private boolean apply;
+		private String id;
+
+		public SteeringWheel(int axis, float ratio){
+			this(axis, ratio, true);
+		}
+
+		public SteeringWheel(int axis, float ratio, boolean override){
+			this.axis = (byte)axis;
+			this.ratio = ratio;
+			id = axis == 0 && ratio == 0 ? "fvtm:steering_base" : "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z") + (override ? "" : "_no_apply");
+			this.apply = override;
+		}
+
+		@Override
+		public String id(){
+			return id;
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			list.rotate(rotated = -data.vehicle().getAttribute("steering_angle").asFloat() * ratio, axis, apply);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			list.rotate(rotated, axis, apply);
+		}
+
+
+		@Override
+		public Program parse(String[] args){
+			return new SteeringWheel(Integer.parseInt(args[0]), Float.parseFloat(args[1]));
 		}
 
 	}

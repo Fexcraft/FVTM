@@ -8,6 +8,14 @@ public enum RenderOrder {
 	NORMAL,
 	BLENDED,
 	LAST,
-	SEPARATE
+	SEPARATE;
+
+	public boolean blended(){
+		return this == BLENDED;
+	}
+
+	public boolean not_blended(){
+		return this != BLENDED;
+	}
 
 }

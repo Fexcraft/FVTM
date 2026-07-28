@@ -28,13 +28,16 @@ public class WireMD extends ModelRenderData {
 	public WireComponent comp_s, comp_e;
 	public HashMap<String, HashMap<String, ArrayList<V3D>>> comp_d;
 	public FvtmBlockEntity block_entity;
+	public WCRD rd_s, rd_e, rd_c;
 	public Wire wire;
 
 	public WireMD(Wire wire){
+		super();
 		(this.wire = wire).model = this;
 		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());//, getWireBreak(wire));
 		comp_d = new HashMap<>();
 		if(wire.comps == null) return;
+		rd_c = new WireMD.WCRD(this, start_angle, 0);
 		WireComponent deco;
 		for(Map.Entry<String, WireComponent> entry : wire.comps.entrySet()){
 			if(entry.getKey().startsWith("relay_")) continue;
@@ -76,6 +79,28 @@ public class WireMD extends ModelRenderData {
 	@Override
 	public Wire wire(){
 		return wire;
+	}
+
+	public static class WCRD extends ModelRenderData {
+
+		public double angle, slack;
+
+		public WCRD(WireMD md, double ang, double slk){
+			super(md.cache);
+			angle = ang;
+			slack = slk;
+		}
+
+		@Override
+		public double wire_angle(){
+			return angle;
+		}
+
+		@Override
+		public double wire_slack(){
+			return slack;
+		}
+
 	}
 
 }

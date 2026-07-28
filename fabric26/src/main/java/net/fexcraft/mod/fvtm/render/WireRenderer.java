@@ -2,8 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.data.WireComponent;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireCompItem;
 import net.fexcraft.mod.fvtm.item.WireItem;
@@ -56,7 +54,7 @@ public class WireRenderer {
 				for(WireRelay relay : holder.relays.values()){
 					//TODO Renderer26.light = LevelRenderer.getLightColor(camera.getEntity().level(), pos.set(relay.pos.x, relay.pos.y + 0.1, relay.pos.z));
 					//TODO frustum check
-					UniWireRenderer.renderRelay(holder, relay, 0, 0, 0, DATA);
+					UniWireRenderer.renderRelay(holder, relay, 0, 0, 0, DATA, 0f);
 				}
 			}
 		}

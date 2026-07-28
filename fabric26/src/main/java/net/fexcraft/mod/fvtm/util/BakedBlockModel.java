@@ -9,10 +9,7 @@ import net.fexcraft.mod.fcl.util.Axis3DL;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.ModelGroup;
-import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.model.Transforms;
+import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.model.content.BlockModel.BakedTransformData;
 import net.fexcraft.mod.fvtm.model.program.BakedPrograms;
@@ -257,7 +254,7 @@ public class BakedBlockModel {
 		ArrayList<ModelGroup> list = new ArrayList<>();
 		for(ModelGroup group : model.groups){
 			if(group.has_pre_prog){
-				for(Program program : group.getPrePrograms()) program.pre(group, DefaultModel.RENDERDATA.set(null, null, state));
+				for(Program program : group.getPrePrograms()) program.pre(group, ModelRenderData.getStateRD(state));
 			}
 			if(!group.visible) continue;
 			list.add(group);
@@ -268,7 +265,7 @@ public class BakedBlockModel {
 	public static void reset(BlockModel model, StateWrapper state){
 		for(ModelGroup group : model.groups){
 			if(group.has_pst_prog){
-				for(Program program : group.getPstPrograms()) program.post(group, DefaultModel.RENDERDATA.set(null, null, state));
+				for(Program program : group.getPstPrograms()) program.post(group, ModelRenderData.getStateRD(state));
 			}
 		}
 	}

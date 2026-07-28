@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.sys.sign;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.SignData;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
@@ -20,7 +19,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SignInstance implements SysObj {
 
 	public ConcurrentLinkedQueue<SignData> components = new ConcurrentLinkedQueue<>();
-	private RenderCache cache;
 	public SystemRegion<SignSystem, SignInstance> region;
 	public float yaw;
 	public QV3D vec;
@@ -84,11 +82,6 @@ public class SignInstance implements SysObj {
 		com.set("sign", write());
 		com.set("dim", region.system.getWorldType().rec_key());
 		Packets.sendToAllTrackingPos(Packet_TagListener.class, region.system.getServerWorld(), vec.pos, "sign_upd", com);
-	}
-
-	public RenderCache getRenderCache(){
-		if(cache == null) cache = new RenderCache();
-		return cache;
 	}
 
 }

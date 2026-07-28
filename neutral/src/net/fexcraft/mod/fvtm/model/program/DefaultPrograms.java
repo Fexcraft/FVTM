@@ -52,7 +52,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState();
+				return data.vehicle().getLightsState();
 			}
 
 			public String id(){
@@ -61,7 +61,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState();
+				return data.vehicle().getLightsState();
 			}
 
 			public String id(){
@@ -70,7 +70,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState() || (data.vehent != null && data.vehent.isBraking());
+				return data.vehicle().getLightsState() || (data.vehent() != null && data.vehent().isBraking());
 			}
 
 			public String id(){
@@ -79,7 +79,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getFogLightsState();
+				return data.vehicle().getFogLightsState();
 			}
 
 			public String id(){
@@ -88,7 +88,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLongLightsState();
+				return data.vehicle().getLongLightsState();
 			}
 
 			public String id(){
@@ -97,7 +97,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return (data.entity != null && data.vehent.isBraking());
+				return (data.vehent() != null && data.vehent().isBraking());
 			}
 
 			public String id(){
@@ -106,7 +106,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getThrottle() < -0.01;
+				return data.vehicle().getThrottle() < -0.01;
 			}
 
 			public String id(){
@@ -115,7 +115,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
+				return SIGNAL_TOGGLE[0] && (data.vehicle().getTurnLightLeft() || data.vehicle().getWarningLights());
 			}
 
 			public String id(){
@@ -124,7 +124,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
+				return SIGNAL_TOGGLE[0] && (data.vehicle().getTurnLightRight() || data.vehicle().getWarningLights());
 			}
 
 			public String id(){
@@ -133,7 +133,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return SIGNAL_TOGGLE[0] && data.vehicle.getWarningLights();
+				return SIGNAL_TOGGLE[0] && data.vehicle().getWarningLights();
 			}
 
 			public String id(){
@@ -142,8 +142,8 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
-				else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+				if(data.vehicle().getTurnLightLeft() || data.vehicle().getWarningLights()) return SIGNAL_TOGGLE[0];
+				else return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01;
 			}
 
 			public String id(){
@@ -152,8 +152,8 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow() {
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
-				else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+				if(data.vehicle().getTurnLightRight() || data.vehicle().getWarningLights()) return SIGNAL_TOGGLE[0];
+				else return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01;
 			}
 
 			public String id(){
@@ -174,7 +174,7 @@ public class DefaultPrograms {
 		//
 		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean();
+				return data.vehicle().getLightsState() && data.vehicle().getAttribute("forward").asBoolean();
 			}
 			public String id(){
 				return "fvtm:lights_rail_forward";
@@ -182,7 +182,7 @@ public class DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new AlwaysGlow(){
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean();
+				return data.vehicle().getLightsState() && !data.vehicle().getAttribute("forward").asBoolean();
 			}
 			public String id(){
 				return "fvtm:lights_rail_backward";
@@ -193,10 +193,10 @@ public class DefaultPrograms {
 				return "fvtm:bogie_auto";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(-data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -204,10 +204,10 @@ public class DefaultPrograms {
 				return "fvtm:bogie_auto_opposite";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(-data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle.getAttribute(data.part_category + "_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(data.vehicle().getAttribute(data.part_category() + "_angle").asFloat(), 0, 1, 0);
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -215,10 +215,10 @@ public class DefaultPrograms {
 				return "fvtm:bogie_front";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(data.vehicle().getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle.getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(-data.vehicle().getAttribute("bogie_front_angle").asFloat(), 0, 1, 0);
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -226,10 +226,10 @@ public class DefaultPrograms {
 				return "fvtm:bogie_rear";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(data.vehicle().getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.rotate(-data.vehicle.getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
+				RENDERER.rotate(-data.vehicle().getAttribute("bogie_rear_angle").asFloat(), 0, 1, 0);
 			}
 		});
 		//
@@ -248,23 +248,23 @@ public class DefaultPrograms {
 		ModelGroup.PROGRAMS.add(SignCorner.INST[0]);
 		//
 		ModelGroup.PROGRAMS.add(new LightBeam());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_lights").setPredicate(data -> data.vehicle.getLightsState()).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_front_lights").setPredicate(data -> data.vehicle.getLightsState() && !data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> (data.vehent != null && data.vehent.isBraking())).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_long_lights").setPredicate(data -> data.vehicle.getLongLightsState() && !data.vehicle.getFogLightsState()).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_fog_lights").setPredicate(data -> data.vehicle.getFogLightsState()).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_reverse_lights").setPredicate(data -> data.vehicle.getThrottle() < -0.01).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_signal_left").setPredicate(data -> SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights())).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_signal_right").setPredicate(data -> SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights())).register());
-		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_warning_lights").setPredicate(data -> SIGNAL_TOGGLE[0] && data.vehicle.getWarningLights()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_lights").setPredicate(data -> data.vehicle().getLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_front_lights").setPredicate(data -> data.vehicle().getLightsState() && !data.vehicle().getLongLightsState() && !data.vehicle().getFogLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights").setPredicate(data -> (data.vehent() != null && data.vehent().isBraking())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_long_lights").setPredicate(data -> data.vehicle().getLongLightsState() && !data.vehicle().getFogLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_fog_lights").setPredicate(data -> data.vehicle().getFogLightsState()).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_reverse_lights").setPredicate(data -> data.vehicle().getThrottle() < -0.01).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_signal_left").setPredicate(data -> SIGNAL_TOGGLE[0] && (data.vehicle().getTurnLightLeft() || data.vehicle().getWarningLights())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_signal_right").setPredicate(data -> SIGNAL_TOGGLE[0] && (data.vehicle().getTurnLightRight() || data.vehicle().getWarningLights())).register());
+		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_warning_lights").setPredicate(data -> SIGNAL_TOGGLE[0] && data.vehicle().getWarningLights()).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights_signal_left").setPredicate(data -> {
-			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
-			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+			if(data.vehicle().getTurnLightLeft() || data.vehicle().getWarningLights()) return SIGNAL_TOGGLE[0];
+			return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01;
 		}).register());
 		ModelGroup.PROGRAMS.add(new LightBeam("fvtm:lb_back_lights_signal_right").setPredicate(data -> {
-			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
-			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+			if(data.vehicle().getTurnLightRight() || data.vehicle().getWarningLights()) return SIGNAL_TOGGLE[0];
+			return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01;
 		}).register());
 		//
 		WirePrograms.init();
@@ -277,8 +277,8 @@ public class DefaultPrograms {
 				return "fvtm:vehicle_on_jack";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.block_entity == null || ((JackEntity)data.block_entity).getVehicle() == null) return;
-				SeparateRenderCache.insert((JackEntity)data.block_entity);
+				if(data.block_entity() == null || ((JackEntity)data.block_entity()).getVehicle() == null) return;
+				SeparateRenderCache.insert((JackEntity)data.block_entity());
 			}
 			public boolean post(){
 				return false;
@@ -370,7 +370,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup group, ModelRenderData data){
-			attr = data.vehicle.getAttribute(attribute);
+			attr = data.vehicle().getAttribute(attribute);
 			if(did = did()){
 				GLOW.pre(group, data);
 				did = true;
@@ -456,7 +456,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			if((attr = data.vehicle().getAttribute(attribute)) == null) return;
 			current = data.cache.get(this, FLOAT_SUPP);
 			if(current == null) current = 0f;
 			current = boolstatebased ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat() * step;
@@ -511,7 +511,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			if((attr = data.vehicle().getAttribute(attribute)) == null) return;
 			current = data.cache.get(this, FLOAT_SUPP);
 			if(current == null) current = 0f;
 			current = bool ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat();
@@ -560,7 +560,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getAttributeBoolean(attribute, !equals) != equals) list.visible = false;
+			if(data.vehicle().getAttributeBoolean(attribute, !equals) != equals) list.visible = false;
 		}
 
 		@Override
@@ -586,7 +586,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(!data.part_category.equals(group)) list.visible = false;
+			if(!data.part_category().equals(group)) list.visible = false;
 		}
 
 		@Override
@@ -613,7 +613,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			for(String str : groups) if(str.equals(data.part_category)) return; list.visible = false;
+			for(String str : groups) if(str.equals(data.part_category())) return; list.visible = false;
 		}
 
 		@Override
@@ -639,7 +639,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			RENDERER.push();
-			if(data.sign != null) RENDERER.scale(1, data.sign.height, data.sign.width);
+			if(data.sign() != null) RENDERER.scale(1, data.sign().height, data.sign().width);
 		}
 
 		@Override
@@ -676,7 +676,7 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			RENDERER.push();
-			if(data.sign != null && list.visible) RENDERER.scale(1, height ? data.sign.height : 1, width ? data.sign.width : 1);
+			if(data.sign() != null && list.visible) RENDERER.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1);
 		}
 
 		@Override
@@ -709,9 +709,9 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			RENDERER.push();
-			if(data.sign != null && list.visible){
-				RENDERER.translate(0, data.sign.height * hs, data.sign.width * ws);
-				RENDERER.scale(1, height ? data.sign.height : 1, width ? data.sign.width : 1);
+			if(data.sign() != null && list.visible){
+				RENDERER.translate(0, data.sign().height * hs, data.sign().width * ws);
+				RENDERER.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1);
 			}
 		}
 
@@ -746,8 +746,8 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			RENDERER.push();
-			if(data.sign != null && list.visible){
-				RENDERER.translate(0, data.sign.height * hs, data.sign.width * ws);
+			if(data.sign() != null && list.visible){
+				RENDERER.translate(0, data.sign().height * hs, data.sign().width * ws);
 			}
 		}
 
@@ -780,8 +780,8 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.sign == null) return;
-			if(data.sign.sides[side]) list.visible = false;
+			if(data.sign() == null) return;
+			if(data.sign().sides[side]) list.visible = false;
 		}
 
 		@Override
@@ -811,12 +811,12 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.sign == null) return;
+			if(data.sign() == null) return;
 			switch(corner){
-				case 0: list.visible = !(data.sign.sides[0] || data.sign.sides[1]); break;
-				case 1: list.visible = !(data.sign.sides[0] || data.sign.sides[2]); break;
-				case 2: list.visible = !(data.sign.sides[2] || data.sign.sides[3]); break;
-				case 3: list.visible = !(data.sign.sides[1] || data.sign.sides[3]); break;
+				case 0: list.visible = !(data.sign().sides[0] || data.sign().sides[1]); break;
+				case 1: list.visible = !(data.sign().sides[0] || data.sign().sides[2]); break;
+				case 2: list.visible = !(data.sign().sides[2] || data.sign().sides[3]); break;
+				case 3: list.visible = !(data.sign().sides[1] || data.sign().sides[3]); break;
 			}
 		}
 
@@ -956,9 +956,9 @@ public class DefaultPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			list.visible = true;
-			if(in || data.block_entity == null || ((JackEntity)data.block_entity).getCoords().size() < 2) return;
+			if(in || data.block_entity() == null || ((JackEntity)data.block_entity()).getCoords().size() < 2) return;
 			in = true;
-			for(V3D coord : ((JackEntity)data.block_entity).getCoords()){
+			for(V3D coord : ((JackEntity)data.block_entity()).getCoords()){
 				RENDERER.translate(coord);
 				RENDER_UTIL.render(list, data);
 				RENDERER.translate(-coord.x, -coord.y, -coord.z);

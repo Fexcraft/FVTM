@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.SignRD;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UIField;
 
@@ -25,6 +26,7 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 	public V3D offset = new V3D(0, 0, 0);
 	public float rotx, roty, rotz;
 	public float sclx = 1, scly = 1, sclz = 1;
+	public SignRD renderdata;
 	//
 	public String text, form;
 	public boolean centered;
@@ -223,6 +225,11 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 	@Override
 	public Textureable.TextureHolder getTexHolder(){
 		return type;
+	}
+
+	public SignRD renderdata(){
+		if(renderdata == null) renderdata = new SignRD(this);
+		return renderdata;
 	}
 
 }

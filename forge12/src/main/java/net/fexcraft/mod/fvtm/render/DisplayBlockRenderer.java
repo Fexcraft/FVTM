@@ -4,7 +4,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
@@ -13,8 +12,6 @@ import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.lwjgl.opengl.GL11;
-
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 @fTESR
 public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntity> {
@@ -42,19 +39,19 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 	heightoffset /= vehicledata.getWheelPositions().size();
                 }
                 GL11.glTranslated(0, -heightoffset, 0);
-                modvec.render(RENDERDATA.set(vehicledata, null, ticks).rc(cache));
+                modvec.render(vehicledata.renderdata().update(null, ticks));
                 vehicledata.getParts().forEach((key, partdata) -> {
                     TexUtil.bindTexture(partdata.getCurrentTexture());
                 	if(partdata.isInstalledOnSwivelPoint()){
                 		GL11.glPushMatrix();
                 		AnotherUtil.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-                        partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, partdata, key, ticks).rc(cache));
+                        partdata.getType().getModel().render(partdata.renderdata().update(vehicledata.renderdata(), key, ticks));
         	            GL11.glPopMatrix();
                 	}
                 	else{
 						GLUtils112.translate(partdata.getInstalledPos());
                     	partdata.getInstalledRot().rotate112();
-                		partdata.getType().getModel().render(RENDERDATA.set(vehicledata, null, partdata, key, ticks).rc(cache));
+                		partdata.getType().getModel().render(partdata.renderdata().update(vehicledata.renderdata(), key, ticks));
                     	partdata.getInstalledRot().rotate112R();
 						GLUtils112.translateR(partdata.getInstalledPos());
                 	}

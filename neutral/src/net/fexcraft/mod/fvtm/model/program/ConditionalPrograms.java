@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
+import net.fexcraft.mod.fvtm.sys.condition.MRDWrapper;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -48,7 +49,7 @@ public class ConditionalPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return cond.al.isMet(cond, data);
+			return cond.al.isMet(cond, MRDWrapper.WRAPPER.update(data));
 		}
 
 	}
@@ -58,7 +59,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState();
+			return data.vehicle().getLightsState();
 		}
 		
 	}
@@ -69,7 +70,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01 || (data.vehent != null && data.vehent.isBraking());//TODO rear+brake lights instead
+			return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01 || (data.vehent() != null && data.vehent().isBraking());//TODO rear+brake lights instead
 		}
 		
 	}
@@ -80,7 +81,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehent != null && data.vehent.isBraking();
+			return data.vehent() != null && data.vehent().isBraking();
 		}
 		
 	}
@@ -89,7 +90,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getFogLightsState();
+			return data.vehicle().getFogLightsState();
 		}
 		
 	}
@@ -98,7 +99,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLongLightsState();
+			return data.vehicle().getLongLightsState();
 		}
 		
 	}
@@ -107,7 +108,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getThrottle() < -0.01;
+			return data.vehicle().getThrottle() < -0.01;
 		}
 		
 	}
@@ -116,7 +117,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && data.vehicle.getAttribute("forward").asBoolean();
+			return data.vehicle().getLightsState() && data.vehicle().getAttribute("forward").asBoolean();
 		}
 		
 	}
@@ -125,7 +126,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.vehicle.getLightsState() && !data.vehicle.getAttribute("forward").asBoolean();
+			return data.vehicle().getLightsState() && !data.vehicle().getAttribute("forward").asBoolean();
 		}
 		
 	}
@@ -134,7 +135,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights());
+			return SIGNAL_TOGGLE[0] && (data.vehicle().getTurnLightLeft() || data.vehicle().getWarningLights());
 		}
 		
 	}
@@ -143,7 +144,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return SIGNAL_TOGGLE[0] && (data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights());
+			return SIGNAL_TOGGLE[0] && (data.vehicle().getTurnLightRight() || data.vehicle().getWarningLights());
 		}
 		
 	}
@@ -152,7 +153,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return SIGNAL_TOGGLE[0] && data.vehicle.getWarningLights();
+			return SIGNAL_TOGGLE[0] && data.vehicle().getWarningLights();
 		}
 		
 	}
@@ -164,8 +165,8 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getTurnLightLeft() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
-			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+			if(data.vehicle().getTurnLightLeft() || data.vehicle().getWarningLights()) return SIGNAL_TOGGLE[0];
+			else return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01;
 		}
 		
 	}
@@ -174,8 +175,8 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			if(data.vehicle.getTurnLightRight() || data.vehicle.getWarningLights()) return SIGNAL_TOGGLE[0];
-			else return data.vehicle.getLightsState() || data.vehicle.getThrottle() < -0.01;
+			if(data.vehicle().getTurnLightRight() || data.vehicle().getWarningLights()) return SIGNAL_TOGGLE[0];
+			else return data.vehicle().getLightsState() || data.vehicle().getThrottle() < -0.01;
 		}
 		
 	}
@@ -193,7 +194,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.part_category.equals(group);
+			return data.part_category().equals(group);
 		}
 		
 		@Override
@@ -213,7 +214,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			for(String str : groups) if(str.equals(data.part_category)) return true;
+			for(String str : groups) if(str.equals(data.part_category())) return true;
 			return false;
 		}
 		

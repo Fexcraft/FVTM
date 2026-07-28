@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fcl.util.Renderer20;
-import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.Model;
@@ -16,7 +15,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fcl.util.Renderer20.pose;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPointSep;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 
@@ -38,8 +36,8 @@ public class SepRenderer {
 			pose.translate(-cx, -cy, -cz);
 			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
-				inst.rendercache();
-				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
+				inst.data.renderdata().update(inst, event.getPartialTick());
+				SepVehCache cache = inst.rendercache().get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 				pose.pushPose();
 				pose.translate(cache.pos[0], cache.pos[1], cache.pos[2]);
 				RENDERER.rotate((float)-cache.rot.x, 0, 1, 0);
@@ -49,7 +47,7 @@ public class SepRenderer {
 				if(vehmod != null && vehmod.getSeparateGroups() != null){
 					pose.pushPose();
 					FvtmRenderTypes.setCutout(inst.data.getCurrentTexture());
-					vehmod.getSeparateGroups().render(RENDERDATA.set(inst, event.getPartialTick()).rc(inst.cache).sep());
+					vehmod.getSeparateGroups().render(inst.data.renderdata.sep());
 					pose.popPose();
 				}
 				if(cache.parts.size() > 0){
@@ -69,7 +67,7 @@ public class SepRenderer {
 				pose.pushPose();
 				pose.translate(tile.getV3I().x + 0.5, tile.getV3I().y, tile.getV3I().z + 0.5);
 				//TODO rotate
-				sgroup.render(RENDERDATA.set(data, tile, null).rcs(null/*TODO*/));
+				sgroup.render(data.renderdata().update(tile, event.getPartialTick()).sep());
 				pose.popPose();
 			}
 			pose.popPose();

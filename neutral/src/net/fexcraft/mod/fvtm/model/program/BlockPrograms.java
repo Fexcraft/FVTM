@@ -25,7 +25,7 @@ public class BlockPrograms {
         ModelGroup.PROGRAMS.add(new BlockVariantVisible(0));
         ModelGroup.PROGRAMS.add(new DefaultPrograms.AlwaysGlow(){
             public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-                return data.block_entity != null && ((SignalBE)data.block_entity).getSignalState() == 1;
+                return data.block_entity() != null && ((SignalBE)data.block_entity()).getSignalState() == 1;
             }
             public String id(){
                 return "fvtm:basic_signal_clear";
@@ -33,7 +33,7 @@ public class BlockPrograms {
         });
         ModelGroup.PROGRAMS.add(new DefaultPrograms.AlwaysGlow(){
             public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-                return data.block_entity == null || ((SignalBE)data.block_entity).getSignalState() == 0;
+                return data.block_entity() == null || ((SignalBE)data.block_entity()).getSignalState() == 0;
             }
             public String id(){
                 return "fvtm:basic_signal_stop";
@@ -91,10 +91,10 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.cache == null || data.block == null) return;
+            if(data.cache == null || data.block() == null) return;
             current = data.cache.get(this, FLOAT_SUPP);
             if(current == null) current = 0f;
-            current = data.block.getFunctionBool(key) == equals ? current + step : current - step;
+            current = data.block().getFunctionBool(key) == equals ? current + step : current - step;
             if(current > max) current = max;
             if(current < min) current = min;
             list.rotate(current + defrot, axis, override);
@@ -103,7 +103,7 @@ public class BlockPrograms {
 
         @Override
         public void post(ModelGroup list, ModelRenderData data){
-            if(data.cache == null || data.block == null) return;
+            if(data.cache == null || data.block() == null) return;
             list.rotate(override ? defrot : -(current + defrot), axis, override);
             current = 0f;
         }
@@ -146,10 +146,10 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.cache == null || data.block == null) return;
+            if(data.cache == null || data.block() == null) return;
             current = data.cache.get(this, FLOAT_SUPP);
             if(current == null) current = 0f;
-            current = data.block.getFunctionBool(key) == bool ? current + step : current - step;
+            current = data.block().getFunctionBool(key) == bool ? current + step : current - step;
             if(current > max) current = max; if(current < min) current = min;
             //GL11.glPushMatrix();
             Renderer.RENDERER.translate(
@@ -161,7 +161,7 @@ public class BlockPrograms {
 
         @Override
         public void post(ModelGroup list, ModelRenderData data){
-            if(data.cache == null || data.block == null) return;
+            if(data.cache == null || data.block() == null) return;
             Renderer.RENDERER.translate(
                     axis == 0 ? current * -sixteenth : 0,
                     axis == 1 ? current * -sixteenth : 0,
@@ -199,8 +199,8 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.block == null) return;
-            if(data.block.getFunctionBool(key) != equals) list.visible = false;
+            if(data.block() == null) return;
+            if(data.block().getFunctionBool(key) != equals) list.visible = false;
         }
 
         @Override
@@ -230,8 +230,8 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.block_entity == null) return;
-            list.visible = data.block_entity.getMeta() / 4 == equals;
+            if(data.block_entity() == null) return;
+            list.visible = data.block_entity().getMeta() / 4 == equals;
         }
 
         @Override
@@ -261,8 +261,8 @@ public class BlockPrograms {
 
         @Override
         public void pre(ModelGroup list, ModelRenderData data){
-            if(data.block_entity == null) return;
-            list.visible = data.block_entity.getMeta() == equals;
+            if(data.block_entity() == null) return;
+            list.visible = data.block_entity().getMeta() == equals;
         }
 
         @Override

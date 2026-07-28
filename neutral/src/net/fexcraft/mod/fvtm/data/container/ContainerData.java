@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
-import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.ContainerRD;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 import java.util.Map.Entry;
@@ -24,6 +24,7 @@ public class ContainerData extends ContentData<Container, ContainerData> impleme
 	protected Textureable texture;
 	private InvHandler inventory;
 	protected Lockable lock;
+	public ContainerRD renderdata;
 	
 	public ContainerData(Container type){
 		super(type);
@@ -114,6 +115,11 @@ public class ContainerData extends ContentData<Container, ContainerData> impleme
 	@Override
 	public TextureHolder getTexHolder(){
 		return type;
+	}
+
+	public ContainerRD renderdata(){
+		if(renderdata == null) renderdata = new ContainerRD(this);
+		return renderdata;
 	}
 
 }

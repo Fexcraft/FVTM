@@ -12,7 +12,11 @@ import java.util.function.Function;
 public class RenderCache {
 
 	protected LinkedHashMap<Program, Object> objects = new LinkedHashMap<>();
-	protected int light;
+	protected ModelRenderData data;
+
+	public RenderCache(ModelRenderData root){
+		data = root;
+	}
 
 	public Map<Program, Object> map(){
 		return objects;
@@ -27,7 +31,7 @@ public class RenderCache {
 	public <V> V get(Program prog, Function<ModelRenderData, V> def){
 		V obj = (V)objects.get(prog);
 		if(obj == null){
-			objects.put(prog, obj = def.apply(DefaultModel.RENDERDATA));
+			objects.put(prog, obj = def.apply(data /*== null ? DefaultModel.RENDERDATA : data*/));
 		}
 		return obj;
 	}
@@ -41,13 +45,8 @@ public class RenderCache {
 		return (V)objects.put(prog, value);
 	}
 
-	public int light(){
-		return light;
-	}
-
-	public RenderCache light(int i){
-		light = i;
-		return this;
+	public ModelRenderData renderdata(){
+		return data;
 	}
 
 }

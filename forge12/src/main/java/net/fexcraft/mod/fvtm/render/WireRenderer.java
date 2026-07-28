@@ -76,7 +76,7 @@ public class WireRenderer {
             	for(WireRelay relay : holder.relays.values()){
             		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB().local())) continue;
 					if(Command.OTHER) renderDebugRelay(relay, cx, cy, cz);
-					else UniWireRenderer.renderRelay(holder, relay, cx, cy, cz, DATA);
+					else UniWireRenderer.renderRelay(holder, relay, cx, cy, cz, DATA, partialticks);
             	}
         	}
         }

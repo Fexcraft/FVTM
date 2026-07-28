@@ -17,7 +17,6 @@ import java.util.Map;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fcl.util.Renderer26.AY;
 import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderPoint;
 import static net.fexcraft.mod.fvtm.render.RVRenderer.renderVehicleInfo;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
@@ -41,6 +40,7 @@ public class VehicleRenderer {
 		for(Map.Entry<V3D, JackEntity> entry : JACKS.entrySet()){
 			JACK_BE jack = (JACK_BE)entry.getValue();
 			if(jack.getVehicle() == null) continue;
+			jack.getVehicle().renderdata().update(null, 0f);
 			pose.pushPose();
 			RENDERER.translate(entry.getKey());
 			pose.mulPose(new Quaternionf()
@@ -53,11 +53,11 @@ public class VehicleRenderer {
 			RenderUtil26.type(FvtmRenderTypes.getCutout(jack.getVehicle().getCurrentTexture()));
 			if(vehmod != null){
 				pose.pushPose();
-				RENDER_UTIL.render(vehmod, RENDERDATA.set(jack.getVehicle(), null, 1).rc(null));
+				RENDER_UTIL.render(vehmod, jack.getVehicle().renderdata());
 				pose.popPose();
 			}
 			if(jack.getVehicle().getParts().size() > 0){
-				renderPoint(pose, jack.getVehicle().getRotationPoint(DEFAULT), null, jack.getVehicle(), null, 1);
+				renderPoint(pose, jack.getVehicle().getRotationPoint(DEFAULT), jack.getVehicle(), 1);
 			}
 			renderVehicleInfo(pose, jack.getVehiclePos(), jack.getVehicle());
 			pose.popPose();

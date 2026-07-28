@@ -5,7 +5,6 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -22,7 +21,6 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -52,7 +50,6 @@ public class DecoRenderer {
 					if(holding || Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof DecorationItem){
 						DebugUtils.renderBB(0.5f, COL_CYN);
 					}
-					RenderCache cache = deco.getRenderCache();
 					for(DecorationData dcom : deco.decorations){
 						if(dcom.getType().getModel() == null){
 							DebugUtils.renderBB(0.25f, COL_RED);
@@ -67,7 +64,7 @@ public class DecoRenderer {
 							if(dcom.rotx != 0f) GL11.glRotatef(dcom.rotx, 1, 0, 0);
 							if(dcom.sclx != 1f || dcom.scly != 1f || dcom.sclz != 1f) GL11.glScalef(dcom.sclx, dcom.scly, dcom.sclz);
 							TexUtil.bindTexture(dcom.getTexture().getTexture());
-							dcom.getType().getModel().render(RENDERDATA.set(dcom, deco).rc(cache));
+							dcom.getType().getModel().render(dcom.renderdata().update(deco, ticks));
 							GL11.glPopMatrix();
 						}
 					}

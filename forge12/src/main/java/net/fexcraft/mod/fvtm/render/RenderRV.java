@@ -16,7 +16,6 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.render.VehicleRenderer.renderDetachedPoints;
@@ -36,8 +35,8 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
     @Override
     public void doRender(RootVehicle rv, double x, double y, double z, float entity_yaw, float ticks){
         if(RENDER_VEHICLES_SEPARATELY || rv.vehicle.data == null || rv.vehicle.point == null) return;
-		rv.vehicle.rendercache();
-		sepcache = rv.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
+		rv.vehicle.data.renderdata().update(rv.vehicle, ticks);
+		sepcache = rv.vehicle.rendercache().get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
         GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		GL11.glPushMatrix();
@@ -64,7 +63,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		if(vehmod != null){
 			GL11.glPushMatrix();
 			TexUtil.bindTexture(rv.vehicle.data.getCurrentTexture());
-			vehmod.render(RENDERDATA.set(rv.vehicle, ticks).rc(rv.vehicle.cache));
+			vehmod.render(rv.vehicle.data.renderdata);
 			GL11.glPopMatrix();
 		}
 		else{
@@ -73,10 +72,10 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
 		EffectRenderer.renderVehicleInfo(rv.vehicle, rv.vehicle.entity.getPos(), rv.vehicle.data);
 		GL11.glPopMatrix();
 		if(rv.vehicle.data.getParts().size() > 0){
-			renderPoint(rv.vehicle.point, rv, rv.vehicle.data, rv.vehicle.cache, ticks);
+			renderPoint(rv.vehicle.point, rv, rv.vehicle.data, ticks);
 		}
 		GL11.glPopMatrix();
-		renderDetachedPoints(rv, rv.vehicle.data, rv.vehicle.cache, ticks);
+		renderDetachedPoints(rv, rv.vehicle.data, ticks);
 		//
 		EffectRenderer.renderToggableInfo(rv, rv.vehicle.data);
 		//EffectRenderer.renderContainerInfo(rv, rot);

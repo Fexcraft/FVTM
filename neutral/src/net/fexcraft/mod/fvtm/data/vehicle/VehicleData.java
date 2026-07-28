@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.root.*;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.function.part.*;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.VehicleRD;
 import net.fexcraft.mod.fvtm.sys.event.EventHolder;
 import net.fexcraft.mod.fvtm.util.OBB.OBBRef;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -59,6 +60,7 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 	protected Lockable lock;
 	protected EventHolder holder;
 	protected String displayname;
+	public VehicleRD renderdata;
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -878,6 +880,11 @@ public class VehicleData extends ContentData<Vehicle, VehicleData> implements Co
 
 	public List<OBBRef> getBoundBoxes(){
 		return boundboxes;
+	}
+
+	public VehicleRD renderdata(){
+		if(renderdata == null) renderdata = new VehicleRD(this);
+		return renderdata;
 	}
 
 }

@@ -3,11 +3,11 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -43,7 +43,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
         TexUtil.bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
         GL11.glPushMatrix();
         GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getBlockMetadata()), 0, 1, 0);
-        if(model.rootrender) model.render(BlockModel.RENDERDATA.set(data, tile, null).rc(tile.rendercache()));
+        if(model.rootrender) model.render(data.renderdata().update(tile, partialticks));
         if(model.state_models.size() > 0){
             IBlockState state = tile.getWorld().getBlockState(tile.getPos());
             for(IProperty<?> prop : tile.getBlockType().getBlockState().getProperties()){
@@ -51,7 +51,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
                 if(model.state_models.containsKey(str)){
                     ArrayList<BlockModel> list = model.state_models.get(str);
                     for(BlockModel statemodel : list){
-                        statemodel.render(BlockModel.RENDERDATA);
+                        statemodel.render(data.renderdata().update(StateWrapper.of(state)));
                     }
                 }
             }

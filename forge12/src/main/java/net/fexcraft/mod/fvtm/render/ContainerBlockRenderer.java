@@ -3,13 +3,10 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.lwjgl.opengl.GL11;
-
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 
 @fTESR
 public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerEntity> {
@@ -56,7 +53,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         if(condata != null){
             if(condata.getType().getModel() != null){
                 TexUtil.bindTexture(condata.getCurrentTexture());
-                condata.getType().getModel().render(RENDERDATA.set(condata, null/*te*/)/*.rc(te.getCapability(Capabilities.RENDERCACHE, null))*/);
+                condata.getType().getModel().render(condata.renderdata().update(null/*te*/, partialticks));//TODO
             }
         }
         GL11.glPopMatrix();

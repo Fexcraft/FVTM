@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
@@ -46,7 +45,6 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker, RailMarkerRS>
 		pose.pushPose();
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(texture), state.lightCoords);
 		RENDER_UTIL.render(RailMarkerModel.INST.base);
-		RENDERDATA.texture = null;
 		RenderUtil26.type(FvtmRenderTypes.getGlow(texture));
 		RENDER_UTIL.render(RailMarkerModel.INST.glow);
 		if(state.rail_marker.queueid == null){

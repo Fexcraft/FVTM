@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fcl.util.Renderer20;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.content.VehicleModel;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -55,9 +54,9 @@ public class ItemRenderers {
 				//
 				pose.pushPose();
 				pose.mulPose(new Quaternionf().rotateAxis(-Static.rad90, AY));
-				model.render(DefaultModel.RENDERDATA.set(via.data, null, 0));
+				model.render(via.data.renderdata().update(null, 0f));
 				if(via.data.getParts().size() > 0){
-					RVRenderer.renderPoint(pose, via.data.getRotationPoint("vehicle"), null, via.data, null, 0);
+					RVRenderer.renderPoint(pose, via.data.getRotationPoint("vehicle"), via.data, 0);
 				}
 				pose.popPose();
 				//

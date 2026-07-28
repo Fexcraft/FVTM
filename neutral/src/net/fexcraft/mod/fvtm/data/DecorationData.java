@@ -8,7 +8,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
-import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.DecorationRD;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.uni.tag.TagCW;
 
@@ -23,6 +23,7 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 	public float rotx, roty, rotz;
 	public float sclx = 1, scly = 1, sclz = 1;
 	public int size = 8;
+	public DecorationRD renderdata;
 	
 	public DecorationData(Decoration deco){
 		super(deco);
@@ -110,6 +111,11 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 	@Override
 	public Textureable.TextureHolder getTexHolder(){
 		return type;
+	}
+
+	public DecorationRD renderdata(){
+		if(renderdata == null) renderdata = new DecorationRD(this);
+		return renderdata;
 	}
 
 }

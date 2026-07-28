@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -29,7 +28,6 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
 	
 	public byte meta = -1;
 	public BlockData data;
-    public RenderCache cache;
     private V3I vpos;
 	
 	public BlockTileEntity(BlockBase type){
@@ -147,12 +145,6 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         if(data.getType().hasRelay() && SystemManager.active(Systems.WIRE)){
         	SystemManager.get(Systems.WIRE, WrapperHolder.getWorld(world), WireSystem.class).unregister(this);
         }
-	}
-
-    @Override
-	public RenderCache rendercache(){
-        if(cache == null) cache = new RenderCache();
-        return cache;
 	}
 
 }

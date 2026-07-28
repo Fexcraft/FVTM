@@ -39,18 +39,18 @@ public class RenderRailMarker extends Render<RailMarker> implements IRenderFacto
         GL11.glPushMatrix();
 	    TexUtil.bindTexture(texture);
 	    RailMarkerModel.INST.base.render();
-		DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+		DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
 		RailMarkerModel.INST.glow.render();
-		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
 	    NewTrack track = RailPlacingUtil.QUEUE.get(entity.queueid);
 	    if(track != null){
 	    	int index = track.indexOf(entity.position);
 	    	boolean arrow = index == track.selected || index == 0 || index == track.points.size() - 1;
 	    	if(arrow){
 				(index == track.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED).glColorApply();
-				DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+				DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
 				RailMarkerModel.INST.arrow.render();
-				DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA);
+				DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
 				RGB.glColorReset();
 	    	}
 	    }

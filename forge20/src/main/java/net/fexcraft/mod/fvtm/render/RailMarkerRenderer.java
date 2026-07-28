@@ -33,7 +33,6 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 		Renderer20.set(pose, buffer, light);
 		FvtmRenderTypes.setCutout(texture);
 		RailMarkerModel.INST.base.render();
-		DefaultModel.RENDERDATA.texture = null;
 		FvtmRenderTypes.setGlow(texture);
 		RailMarkerModel.INST.glow.render();
 		FvtmRenderTypes.setGlow(texture);

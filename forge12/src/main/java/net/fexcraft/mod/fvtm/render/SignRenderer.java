@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -46,7 +45,6 @@ public class SignRenderer {
 					if(holding || Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof SignItem){
 						DebugUtils.renderBB(0.5f, COL_CYN);
 					}
-					RenderCache cache = sign.getRenderCache();
 					GL11.glRotatef(sign.yaw, 0, 1, 0);
 					for(SignData scom : sign.components){
 						if(scom.getType().getModel() == null){
@@ -62,7 +60,7 @@ public class SignRenderer {
 							if(scom.rotx != 0f) GL11.glRotatef(scom.rotx, 1, 0, 0);
 							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) GL11.glScalef(scom.sclx, scom.scly, scom.sclz);
 							TexUtil.bindTexture(scom.getTexture().getTexture());
-							scom.getType().getModel().render(RENDERDATA.set(scom, sign).rc(cache));
+							scom.getType().getModel().render(scom.renderdata().update(sign, ticks));
 							GL11.glPopMatrix();
 						}
 					}

@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.function.block.BoolBlockFunction;
-import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.BlockRD;
 import net.fexcraft.mod.uni.tag.TagCW;
 
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ public class BlockData extends ContentData<Block, BlockData> implements TextureU
     protected ArrayList<BlockFunction> functions = new ArrayList<>();
     protected BoolBlockFunction boolfunc = null;
     protected Object invfunc;
+    public BlockRD renderdata;
 
     public BlockData(Block block){
         super(block);
@@ -134,5 +135,10 @@ public class BlockData extends ContentData<Block, BlockData> implements TextureU
 	public BlockType getBlockType(){
         return type.blocktype;
 	}
+
+    public BlockRD renderdata(){
+        if(renderdata == null) renderdata = new BlockRD(this);
+        return renderdata;
+    }
 
 }

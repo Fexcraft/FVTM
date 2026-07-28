@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
 import net.fexcraft.mod.fvtm.model.*;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.BlockRD;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.fexcraft.mod.fvtm.util.GLUtils112;
@@ -57,7 +58,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:rgb_primary";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) data.color.getPrimaryColor().glColorApply();
+				if(data.color() != null) data.color().getPrimaryColor().glColorApply();
 			}
 			public void post(ModelGroup list, ModelRenderData data){
 				RGB.glColorReset();
@@ -68,7 +69,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:rgb_secondary";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) data.color.getSecondaryColor().glColorApply();
+				if(data.color() != null) data.color().getSecondaryColor().glColorApply();
 			}
 			public void post(ModelGroup list, ModelRenderData data){
 				RGB.glColorReset();
@@ -98,23 +99,23 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_all";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.steering){
-					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+					GL11.glRotatef(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				}
-				if(data.vehent != null){
-					wtd = data.vehent.wheeldata.get(data.part_category);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
 					if(wtd != null) GL11.glRotatef(-wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-				if(data.vehent != null){
-					wtd = data.vehent.wheeldata.get(data.part_category);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
 					if(wtd != null) GL11.glRotatef(wtd.rotation, 1, 0, 0);
 				}
-				if(slot != null && slot.steering) GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+				if(slot != null && slot.steering) GL11.glRotatef(data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -124,14 +125,14 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_steering";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 				if(slot != null && slot.steering)
-					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+					GL11.glRotatef(data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
 				if(slot != null && slot.steering)
-					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+					GL11.glRotatef(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
 			}
 		});
@@ -143,23 +144,23 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_all_opposite";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.steering)
-					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
-				if(data.vehent != null){
-					wtd = data.vehent.wheeldata.get(data.part_category);
+					GL11.glRotatef(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
 					if(wtd != null) GL11.glRotatef(wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
-				if(data.vehent != null){
-					wtd = data.vehent.wheeldata.get(data.part_category);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
 					if(wtd != null) GL11.glRotatef(-wtd.rotation, 1, 0, 0);
 				}
 				if(slot != null && slot.steering)
-					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+					GL11.glRotatef(data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
 		});
 		ModelGroup.PROGRAMS.add(new Program(){
@@ -169,14 +170,14 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:wheel_auto_steering_opposite";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.mirror) GL11.glRotatef(180f, 0, 1, 0);
 				if(slot != null && slot.steering)
-					GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+					GL11.glRotatef(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 			}
 			public void post(ModelGroup list, ModelRenderData data){
 				if(slot != null && slot.steering)
-					GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat(), 0, 1, 0);
+					GL11.glRotatef(data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
 				if(slot != null && slot.mirror) GL11.glRotatef(-180f, 0, 1, 0);
 			}
 		});
@@ -204,7 +205,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:bind_selected_texture";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				TexUtil.bindTexture(data.texture.getCurrentTexture());
+				TexUtil.bindTexture(data.texture().getCurrentTexture());
 			}
 			public boolean post(){
 				return false;
@@ -215,8 +216,8 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:bind_block_4x4rot_texture";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.texture == null || data.block_entity == null) return;
-				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.block_entity).getBlockMetadata() / 4));
+				if(data.texture() == null || data.block_entity() == null) return;
+				TexUtil.bindTexture(data.texture().getTexHolder().getDefaultTextures().get(((TileEntity)data.block_entity()).getBlockMetadata() / 4));
 			}
 			public boolean post(){
 				return false;
@@ -227,7 +228,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 				return "fvtm:bind_block_variant_texture";
 			}
 			public void pre(ModelGroup list, ModelRenderData data){
-				TexUtil.bindTexture(data.texture.getTexHolder().getDefaultTextures().get(((TileEntity)data.block_entity).getBlockMetadata()));
+				TexUtil.bindTexture(data.texture().getTexHolder().getDefaultTextures().get(((TileEntity)data.block_entity()).getBlockMetadata()));
 			}
 			public boolean post(){
 				return false;
@@ -269,7 +270,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 					RENDERER.translate(beam.pos);
 				}
 				else{
-					SwivelPoint point = data.vehicle.getRotationPoint(beam.swivel);
+					SwivelPoint point = data.vehicle().getRotationPoint(beam.swivel);
 					V3D pos = point.getRelativeVector(beam.pos);
 					GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 					GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
@@ -342,7 +343,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			data.color.getColorChannel(channel).glColorApply();
+			data.color().getColorChannel(channel).glColorApply();
 		}
 		
 		@Override
@@ -481,7 +482,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotate(rotated = -data.vehicle.getAttribute("steering_angle").asFloat() * ratio, axis, apply);
+			list.rotate(rotated = -data.vehicle().getAttribute("steering_angle").asFloat() * ratio, axis, apply);
 		}
 		
 		@Override
@@ -514,12 +515,12 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(data.vehicle.getAttribute("steering_angle").asFloat() * ratio, x, y, z);
+			GL11.glRotatef(data.vehicle().getAttribute("steering_angle").asFloat() * ratio, x, y, z);
 		}
 		
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			GL11.glRotatef(-data.vehicle.getAttribute("steering_angle").asFloat() * ratio, x, y, z);
+			GL11.glRotatef(-data.vehicle().getAttribute("steering_angle").asFloat() * ratio, x, y, z);
 		}
 		
 
@@ -652,7 +653,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		AlwaysGlow glow = new AlwaysGlow(){
 			@Override
 			public boolean shouldGlow(ModelGroup list, ModelRenderData data){
-				return data.vehicle.getAttribute(attr_id).asBoolean();
+				return data.vehicle().getAttribute(attr_id).asBoolean();
 			}
 		};
 		CUSTOM_LIGHTS.put(attr_id, glow);
@@ -694,9 +695,9 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			if((attr = data.vehicle().getAttribute(attribute)) == null) return;
 			current = attr.asFloat() < minval ? minval : attr.asFloat();
-			if(current > maxval((Entity)data.entity, data.vehicle)) current = maxval;
+			if(current > maxval((Entity)data.entity(), data.vehicle())) current = maxval;
 			list.rotate(minrot + ((current - minval) / valdiff()) * rotdiff, axis, true);
 		}
 
@@ -895,7 +896,7 @@ public class DefaultPrograms12 extends DefaultPrograms {
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(attrid != null){
-				attr = data.vehicle.getAttribute(attrid);
+				attr = data.vehicle().getAttribute(attrid);
 				if(attr == null) return;
 				text = attr.asString();
 			}
@@ -1118,25 +1119,24 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		private BlockData bdata, odata;
 		private InvHandlerVar var;
-		private Model model;
+		private BlockRD rdata;
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.block_entity == null) return;
-			var = (InvHandlerVar)((MultiblockTileEntity)data.block_entity).getMultiBlockData().getInventory(inv);
+			if(data.block_entity() == null) return;
+			rdata = data.as();
+			var = (InvHandlerVar)((MultiblockTileEntity)data.block_entity()).getMultiBlockData().getInventory(inv);
 			if(var == null || var.stackAt(index).empty()) return;
 			bdata = ((ItemStack)var.stackAt(index).direct()).getCapability(Capabilities.VAPDATA, null).getBlockData();
 			if(bdata.getType().getModel() == null) return;
 			pos.translate();
 			TexUtil.bindTexture(bdata.getTexture().getTexture());
-			odata = data.block;
-			data.block = bdata;
-			data.color = bdata;
+			odata = data.block();
+			rdata.block = bdata;
 			bdata.getType().getModel().render(data);
 			pos.translateR();
-			data.block = odata;
-			data.color = odata;
-			TexUtil.bindTexture(data.block.getTexture().getTexture());
+			rdata.block = odata;
+			TexUtil.bindTexture(data.block().getTexture().getTexture());
 		}
 
 		@Override
@@ -1362,13 +1362,13 @@ public class DefaultPrograms12 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.sign == null || data.sign.text == null || data.sign.text.length() == 0) return;
+			if(data.sign() == null || data.sign().text == null || data.sign().text.length() == 0) return;
 			GlStateManager.pushMatrix();
 			GlStateManager.scale(-0.025F, -0.025F, 0.025F);
 			GlStateManager.rotate(90, 0, 1, 0);
 			/*if(glow)*/ GlStateManager.disableLighting();
 			if(font == null) font = getFont(key);
-			font.drawString(data.sign.text, data.sign.centered ? -font.getStringWidth(data.sign.text) / 2 : 0, 0, data.sign.getColorChannel("text").packed - 16777216);
+			font.drawString(data.sign().text, data.sign().centered ? -font.getStringWidth(data.sign().text) / 2 : 0, 0, data.sign().getColorChannel("text").packed - 16777216);
 			/*if(glow)*/ GlStateManager.enableLighting();
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.popMatrix();

@@ -17,7 +17,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.util.TexUtil.bindTexture;
 
 /**
@@ -76,12 +75,12 @@ public class BlkItemModel12 implements FCLItemModel {
         }
         GL11.glScalef(scal[0], scal[1], scal[2]);
         bindTexture(model.bindtex ? data.getCurrentTexture() : FvtmRegistry.WHITE_TEXTURE);
-        model.render(RENDERDATA.set(data, null, null));
+        model.render(data.renderdata().update(null, 0f));
         Block block = ((ItemBlock)item.getItem()).getBlock();
         for(IProperty<?> property : block.getBlockState().getProperties()){
             ArrayList<BlockModel> models = model.state_models.get(property.getName() + "=" + block.getStateFromMeta(item.getMetadata()).getValue(property));
             if(models == null) continue;
-            for(BlockModel mod : models) mod.render(RENDERDATA);
+            for(BlockModel mod : models) mod.render(data.renderdata());
         }
         GL11.glPopMatrix();
 	}

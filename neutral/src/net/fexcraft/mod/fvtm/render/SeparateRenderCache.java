@@ -3,14 +3,12 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.JackEntity;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SeparateRenderCache {
@@ -27,7 +25,7 @@ public class SeparateRenderCache {
 	public static void clear(){
 		VEHICLES.removeIf(veh -> veh.entity == null || veh.entity.isRemoved());
 		for(VehicleInstance vehicle : VEHICLES){
-			((SepVehCache)vehicle.cache.get(SEP_VEH_CACHE)).clear();
+			((SepVehCache)vehicle.rendercache().get(SEP_VEH_CACHE)).clear();
 		}
 		//
 		SORTED_BLK_QUEUE.clear();
@@ -57,10 +55,10 @@ public class SeparateRenderCache {
 		}
 	}
 
-	public static void add(VehicleInstance vehent, String part){
-		if(!VEHICLES.contains(vehent)) VEHICLES.add(vehent);
-		if(part != null){
-			((SepVehCache)vehent.cache.get(SEP_VEH_CACHE)).parts.add(part);
+	public static void add(ModelRenderData data){
+		if(!VEHICLES.contains(data.vehent())) VEHICLES.add(data.vehent());
+		if(data.part_category() != null){
+			((SepVehCache)data.vehent().rendercache().get(SEP_VEH_CACHE)).parts.add(data.part_category());
 		}
 	}
 

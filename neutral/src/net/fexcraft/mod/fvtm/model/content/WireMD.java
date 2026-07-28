@@ -2,7 +2,9 @@ package net.fexcraft.mod.fvtm.model.content;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.WireComponent;
+import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms.WireBreak;
@@ -18,16 +20,18 @@ import java.util.Map;
  * Wire Model Data
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WireMD {
+public class WireMD extends ModelRenderData {
 
 	public PathModelPositioned wiremodel;
 	public double start_angle, end_angle;
 	public double start_angle_down, end_angle_down;
 	public WireComponent comp_s, comp_e;
 	public HashMap<String, HashMap<String, ArrayList<V3D>>> comp_d;
+	public FvtmBlockEntity block_entity;
+	public Wire wire;
 
 	public WireMD(Wire wire){
-		wire.model = this;
+		(this.wire = wire).model = this;
 		PathModelGenerator.generateWireModel(wire, wire.getWireType().getModel());//, getWireBreak(wire));
 		comp_d = new HashMap<>();
 		if(wire.comps == null) return;
@@ -59,4 +63,18 @@ public class WireMD {
 		return null;
 	}
 
+	public ModelRenderData update(FvtmBlockEntity tile, float ticks){
+		block_entity = tile;
+		return update(ticks);
+	}
+
+	@Override
+	public FvtmBlockEntity block_entity(){
+		return block_entity;
+	}
+
+	@Override
+	public Wire wire(){
+		return wire;
+	}
 }

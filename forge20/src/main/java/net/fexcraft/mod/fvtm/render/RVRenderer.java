@@ -5,7 +5,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.InteractZone;
@@ -24,7 +23,6 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
@@ -45,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static net.fexcraft.mod.fcl.util.Renderer20.*;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
@@ -80,8 +77,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	@Override
 	public void render(RootVehicle veh, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		if(veh.vehicle == null || veh.vehicle.data == null) return;
-		veh.vehicle.rendercache();
-		sepcache = veh.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
+		veh.vehicle.data.renderdata().update(veh.vehicle, tick);
+		sepcache = veh.vehicle.rendercache().get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 		pose.pushPose();
 		//pose.translate(0, 0, 0);
 		V3D rot = getRotations(veh, tick);
@@ -98,7 +95,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		FvtmRenderTypes.setCutout(veh.vehicle.data.getCurrentTexture());
 		if(vehmod != null){
 			pose.pushPose();
-			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh.vehicle, tick).rc(veh.vehicle.cache));
+			vehmod.render(veh.vehicle.data.renderdata);
 			pose.popPose();
 		}
 		else{
@@ -106,7 +103,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			//TODO render "missing model" model
 		}
 		if(veh.vehicle.data.getParts().size() > 0){
-			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, veh.vehicle.cache, tick);
+			renderPoint(pose, veh.vehicle.point, veh.vehicle.data, tick);
 		}
 		V3D vp = veh.vehicle.getV3D();
 		if(isInRange(pose, vp, veh.vehicle.data)){
@@ -132,7 +129,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			renderSeats(pose, veh.vehicle);
 		}
 		pose.popPose();
-		renderDetachedPoints(pose, veh, veh.vehicle.data, veh.vehicle.cache, tick);
+		renderDetachedPoints(pose, veh, veh.vehicle.data, tick);
 	}
 
 	private void renderSeats(PoseStack pose, VehicleInstance vehicle){
@@ -334,7 +331,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		return new V3D(point.getPrevPivot().deg_yaw() + yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
 	}
 
-	public static void renderPoint(PoseStack pose, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderPoint(PoseStack pose, SwivelPoint point, VehicleData data, float ticks){
 		if(point.detached) return;
 		ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
@@ -357,14 +354,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+			entry.getValue().getType().getModel().render(entry.getValue().renderdata().update(data.renderdata, entry.getKey(), ticks));
 			pose.popPose();
 		}
-		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, data, ticks);
 		pose.popPose();
 	}
 
-	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, float ticks){
 		for(SwivelPoint point : vehicle.vehicle.point.subs){
 			if(!point.detached) continue;
 			ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
@@ -386,10 +383,10 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
 				translate(pose, entry.getValue().getInstalledPos());
 				rotate(pose, entry.getValue().getInstalledRot());
-				entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+				entry.getValue().getType().getModel().render(entry.getValue().renderdata().update(data.renderdata, entry.getKey(), ticks));
 				pose.popPose();
 			}
-			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, data, ticks);
 			pose.popPose();
 		}
 	}
@@ -415,7 +412,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			entry.getValue().getType().getModel().render(RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());
+			entry.getValue().getType().getModel().render(entry.getValue().renderdata().update(inst.data.renderdata, entry.getKey(), ticks).sep());
 			pose.popPose();
 		}
 		for(SwivelPoint sub : point.subs) renderPointSep(pose, sub, inst, parts, ticks);

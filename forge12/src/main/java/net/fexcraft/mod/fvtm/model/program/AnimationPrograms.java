@@ -48,7 +48,7 @@ public class AnimationPrograms {
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
 			if(data.cache == null) return;
-			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			if((attr = data.vehicle().getAttribute(attribute)) == null) return;
 			active.clear();
 			collectActive(list, data);
 			for(Program program : active){

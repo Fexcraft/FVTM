@@ -78,14 +78,14 @@ public abstract class ModelGroupList extends ArrayList<ModelGroup> {
 				return;
 			}
 			if(data.cache == null) return;
-			if(data.vehicle == null){
-				if(data.block_entity == null || data.block == null) return;
+			if(data.vehent() == null){
+				if(data.block_entity() == null || data.block() == null) return;
 				SeparateRenderCache.SORTED_BLK_QUEUE.add(this);
-				SeparateRenderCache.SORTED_BLK_DATA.add(data.block);
-				SeparateRenderCache.SORTED_BLK_ENTITY.add(data.block_entity);
+				SeparateRenderCache.SORTED_BLK_DATA.add(data.block());
+				SeparateRenderCache.SORTED_BLK_ENTITY.add(data.block_entity());
 			}
 			else{
-				SeparateRenderCache.add(data.vehent, data.part_category);
+				SeparateRenderCache.add(data);
 			}
 		}
 

@@ -4,6 +4,9 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
+import net.fexcraft.mod.fvtm.model.ModelRenderData;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.BlockRD;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.ClothRD;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -22,7 +25,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class ClothItem extends ItemArmor implements ItemTextureable.TextureableItem<Cloth> {
-	
+
+	public ClothRD renderdata;
 	private Cloth cloth;
 	
 	public ClothItem(Cloth cloth){
@@ -67,6 +71,11 @@ public class ClothItem extends ItemArmor implements ItemTextureable.TextureableI
 	private static final DecimalFormat df = new DecimalFormat("##.##");
 	public static String format(double d){
 		return df.format(d);
+	}
+
+	public ClothRD renderdata(){
+		if(renderdata == null) renderdata = new ClothRD(this);
+		return renderdata;
 	}
 
 }

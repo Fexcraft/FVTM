@@ -7,9 +7,7 @@ import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
-import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -23,7 +21,6 @@ import net.minecraft.world.level.Level;
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
@@ -63,13 +60,11 @@ public class DecoRenderer {
 					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
 						RENDER_UTIL.renderBB(0.5f, COL_ORG);
 					}
-					RenderCache cache = deco.getRenderCache();
 					for(DecorationData dcom : deco.decorations){
 						if(dcom.getType().getModel() == null){
 							RENDER_UTIL.renderBB(0.25f, COL_RED);
 						}
 						else{
-							cache.light(LevelRenderer.getLightCoords(level, pos.set(deco.vec.pos.x + dcom.offset.x, deco.vec.pos.y +  + dcom.offset.y + sixteenth, deco.vec.pos.z + dcom.offset.z)));
 							pose.pushPose();
 							pose.translate(dcom.offset.x, dcom.offset.y, dcom.offset.z);
 							if(dcom.roty != 0f) RENDERER.rotate(dcom.roty, 0, 1, 0);
@@ -77,7 +72,8 @@ public class DecoRenderer {
 							if(dcom.rotx != 0f) RENDERER.rotate(dcom.rotx, 1, 0, 0);
 							if(dcom.sclx != 1f || dcom.scly != 1f || dcom.sclz != 1f) pose.scale(dcom.sclx, dcom.scly, dcom.sclz);
 							RenderUtil26.type(FvtmRenderTypes.getCutout(dcom.getTexture().getTexture()));
-							RENDER_UTIL.render(dcom.getType().getModel(), RENDERDATA.set(dcom, deco).rc(cache));
+							RENDER_UTIL.render(dcom.getType().getModel(), dcom.renderdata().update(deco, 0f)
+								.light(LevelRenderer.getLightCoords(level, pos.set(deco.vec.pos.x + dcom.offset.x, deco.vec.pos.y +  + dcom.offset.y + sixteenth, deco.vec.pos.z + dcom.offset.z))));
 							pose.popPose();
 						}
 					}

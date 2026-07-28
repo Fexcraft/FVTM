@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.uni.world.WorldW;
 
 /**
@@ -16,8 +15,6 @@ public interface FvtmBlockEntity {
     public int getMeta();
 
 	public WorldW getWorldW();
-
-	public RenderCache rendercache();
 
 	public static interface SignalBE {
 

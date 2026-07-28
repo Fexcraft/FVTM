@@ -30,7 +30,7 @@ public class DefaultModel implements Model {
 
 	public static DefaultModel LAST;
 	public static final DefaultModel EMPTY = new DefaultModel();
-	public static final ModelRenderData RENDERDATA = new ModelRenderData();
+	public static final ModelRenderData RENDERDATA_BLANK = new ModelRenderData();
 	public TreeMap<RenderOrder, ModelGroupList> sorted = new TreeMap<>();
 	public ModelGroupList groups = new DefaultModelGroupList();
 	private List<String> authors = new ArrayList<>();

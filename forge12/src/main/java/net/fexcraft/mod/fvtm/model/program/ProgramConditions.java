@@ -12,14 +12,14 @@ public class ProgramConditions {
 	private static EngineFunction enginefunc;
 	
 	public static final BiPredicate<ModelGroup, ModelRenderData> ENGINE_ON = (group, data) -> {
-		if(data.entity == null || !data.vehicle.hasPart("engine")) return false;
-		enginefunc = data.vehicle.getPart("engine").getFunction("fvtm:engine");
+		if(data.entity() == null || !data.vehicle().hasPart("engine")) return false;
+		enginefunc = data.vehicle().getPart("engine").getFunction("fvtm:engine");
 		return enginefunc != null && enginefunc.isOn();
 	};
 	
 	public static final BiPredicate<ModelGroup, ModelRenderData> ENGINE_OFF = (group, data) -> {
-		if(data.entity == null || !data.vehicle.hasPart("engine")) return false;
-		enginefunc = data.vehicle.getPart("engine").getFunction("fvtm:engine");
+		if(data.entity() == null || !data.vehicle().hasPart("engine")) return false;
+		enginefunc = data.vehicle().getPart("engine").getFunction("fvtm:engine");
 		return enginefunc == null || !enginefunc.isOn();
 	};
 	

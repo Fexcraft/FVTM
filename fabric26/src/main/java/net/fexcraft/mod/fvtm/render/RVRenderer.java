@@ -22,7 +22,6 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.render.state.VehicleRenderState;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -42,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static net.fexcraft.mod.fcl.util.Renderer26.*;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -91,8 +89,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 	@Override
 	public void submit(VehicleRenderState state, PoseStack pose, SubmitNodeCollector noco, CameraRenderState camera){
 		if(state.vehicle == null || state.vehicle.data == null) return;
-		state.vehicle.rendercache();
-		sepcache = state.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
+		state.vehicle.data.renderdata().update(state.vehicle, state.f).light(state.lightCoords);
+		sepcache = state.vehicle.rendercache().get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 		pose.pushPose();
 		//pose.translate(0, 0, 0);
 		V3D rot = getRotations(state.entity, state.f);
@@ -108,14 +106,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		Model vehmod = state.vehicle.data.getType().getModel();
 		if(vehmod != null){
 			pose.pushPose();
-			RENDER_UTIL.render(vehmod, RENDERDATA.set(state.vehicle.data, state.vehicle, state.f).rc(state.vehicle.cache));
+			RENDER_UTIL.render(vehmod, state.vehicle.data.renderdata);
 			pose.popPose();
 		}
 		else{
 			RenderUtil26.renderSphere(1, COL_RED);
 		}
 		if(state.vehicle.data.getParts().size() > 0){
-			renderPoint(pose, state.vehicle.point, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
+			renderPoint(pose, state.vehicle.point, state.vehicle.data, state.f);
 		}
 		V3D vp = state.vehicle.getV3D();
 		if(isInRange(pose, vp, state.vehicle.data)){
@@ -134,7 +132,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 			Renderer26.light = state.lightCoords;
 		}
 		pose.popPose();
-		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.vehicle.cache, state.f);
+		renderDetachedPoints(pose, state.entity, state.vehicle.data, state.f);
 		if(Config.DEBUG_ACTIVE){
 			Renderer26.light = LightCoordsUtil.FULL_BRIGHT;
 			pose.translate(-state.entity.position().x, -state.entity.position().y, -state.entity.position().z);
@@ -340,7 +338,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 		return new V3D(point.getPrevPivot().deg_yaw() + yaw * ticks, point.getPrevPivot().deg_pitch() + pitch * ticks, point.getPrevPivot().deg_roll() + roll * ticks);
 	}
 
-	public static void renderPoint(PoseStack pose, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderPoint(PoseStack pose, SwivelPoint point, VehicleData data, float ticks){
 		if(point.detached) return;
 		ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
@@ -363,14 +361,14 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
 			RenderUtil26.type(FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()));
-			RENDER_UTIL.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+			RENDER_UTIL.render(entry.getValue().getType().getModel(), entry.getValue().renderdata().update(data.renderdata, entry.getKey(), ticks).light(data.renderdata.light));
 			pose.popPose();
 		}
-		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, data, ticks);
 		pose.popPose();
 	}
 
-	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
+	public static void renderDetachedPoints(PoseStack pose, RootVehicle vehicle, VehicleData data, float ticks){
 		for(SwivelPoint point : vehicle.vehicle.point.subs){
 			if(!point.detached) continue;
 			ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
@@ -389,14 +387,13 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 			for(Map.Entry<String, PartData> entry : parts){
 				if(entry.getValue().getType().getModel() == null) continue;
 				pose.pushPose();
-				;
 				translate(pose, entry.getValue().getInstalledPos());
 				rotate(pose, entry.getValue().getInstalledRot());
 				RenderUtil26.type(FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()));
-				RENDER_UTIL.render(entry.getValue().getType().getModel(), RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, entry.getValue(), entry.getKey(), ticks).rc(cache));
+				RENDER_UTIL.render(entry.getValue().getType().getModel(), entry.getValue().renderdata().update(data.renderdata, entry.getKey(), ticks).light(data.renderdata.light));
 				pose.popPose();
 			}
-			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
+			for(SwivelPoint sub : point.subs) renderPoint(pose, sub, data, ticks);
 			pose.popPose();
 		}
 	}
@@ -432,11 +429,10 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 			if(!parts.contains(entry.getKey())) continue;
 			if(!entry.getValue().isInstalledOnSwivelPoint(point.id)) continue;
 			pose.pushPose();
-			;
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
 			RenderUtil26.type(FvtmRenderTypes.getCutout(entry.getValue().getCurrentTexture()));
-			RENDER_UTIL.render(entry.getValue().getType().getModel(), RENDERDATA.set(inst.data, inst, entry.getValue(), entry.getKey(), ticks).rc(inst.cache).sep());
+			RENDER_UTIL.render(entry.getValue().getType().getModel(), entry.getValue().renderdata().update(inst.data.renderdata, entry.getKey(), ticks).light(inst.data.renderdata.light).sep());
 			pose.popPose();
 		}
 		for(SwivelPoint sub : point.subs) renderPointSep(pose, sub, inst, parts, ticks);

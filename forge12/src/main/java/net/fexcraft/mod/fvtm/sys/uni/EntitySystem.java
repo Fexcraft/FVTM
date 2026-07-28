@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.entity.ParticleEntity;
 import net.fexcraft.mod.fvtm.function.part.ParticleEmitterFunction;
 import net.fexcraft.mod.fvtm.function.part.ParticleEmitterFunction.EmitterData;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.sys.condition.MRDWrapper;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.uni.world.ChunkW;
 import net.fexcraft.mod.uni.world.WorldType;
@@ -180,7 +181,7 @@ public class EntitySystem extends DetachedSystem {
 		}
 
 		public boolean invalid(Collection<ParticleEntity> particles, int mul){
-			if(edata.getCondition() == null || edata.getCondition().al.isMet(edata.getCondition(), DefaultModel.RENDERDATA.set(vehicle.vehicle, data, part, 0))){
+			if(edata.getCondition() == null || edata.getCondition().al.isMet(edata.getCondition(), MRDWrapper.WRAPPER.set(vehicle.vehicle))){
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.vehicle.data.getRotationPoint(data.getSwivelPointInstalledOn());

@@ -3,9 +3,7 @@ package net.fexcraft.mod.fvtm.model.program;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fcl.util.Renderer20;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
@@ -46,7 +44,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			@Override
 			public void pre(ModelGroup list, ModelRenderData data){
 				old = rentype();
-				FvtmRenderTypes.setGlow(data.texture.getCurrentTexture());
+				FvtmRenderTypes.setGlow(data.texture().getCurrentTexture());
 			}
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
@@ -63,7 +61,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) Renderer20.setColor(data.color.getPrimaryColor());
+				if(data.color() != null) Renderer20.setColor(data.color().getPrimaryColor());
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
@@ -76,7 +74,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			}
 
 			public void pre(ModelGroup list, ModelRenderData data){
-				if(data.color != null) Renderer20.setColor(data.color.getSecondaryColor());
+				if(data.color() != null) Renderer20.setColor(data.color().getSecondaryColor());
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
@@ -109,12 +107,12 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.steering){
-					rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+					rotateDeg(-data.vehicle().getAttribute("steering_angle").asFloat(), AY);
 				}
-				if(data.vehent != null){
-					wtd = data.vehent.wheeldata.get(data.part_category);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
 					if(wtd != null) rotateDeg(-wtd.rotation, AX);
 				}
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
@@ -133,9 +131,9 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
-				if(slot != null && slot.steering) rotateDeg(data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+				if(slot != null && slot.steering) rotateDeg(data.vehicle().getAttribute("steering_angle").asFloat(), AY);
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
@@ -152,10 +150,10 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
-				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
-				if(data.vehent != null){
-					wtd = data.vehent.wheeldata.get(data.part_category);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
+				if(slot != null && slot.steering) rotateDeg(-data.vehicle().getAttribute("steering_angle").asFloat(), AY);
+				if(data.vehent() != null){
+					wtd = data.vehent().wheeldata.get(data.part_category());
 					if(wtd != null) rotateDeg(-wtd.rotation, AX);
 				}
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
@@ -174,9 +172,9 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
+				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
-				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+				if(slot != null && slot.steering) rotateDeg(-data.vehicle().getAttribute("steering_angle").asFloat(), AY);
 			}
 
 			public void post(ModelGroup list, ModelRenderData data){
@@ -195,13 +193,13 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		LightBeam.LBR = new LightBeam.LBRender(){
 			@Override
 			public void pre(LightBeam beam, ModelGroup list, ModelRenderData data){
-				FvtmRenderTypes.setLB(data.texture.getCurrentTexture());
+				FvtmRenderTypes.setLB(data.texture().getCurrentTexture());
 				pose.pushPose();
 				if(beam.swivel == null || beam.swivel.equals("vehicle")){
 					RENDERER.translate(beam.pos);
 				}
 				else{
-					SwivelPoint point = data.vehicle.getRotationPoint(beam.swivel);
+					SwivelPoint point = data.vehicle().getRotationPoint(beam.swivel);
 					V3D pos = point.getRelativeVector(beam.pos);
 					pose.translate(pos.x, pos.y, pos.z);
 				}
@@ -261,7 +259,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			Renderer20.setColor(data.color.getColorChannel(channel));
+			Renderer20.setColor(data.color().getColorChannel(channel));
 		}
 
 		@Override
@@ -301,7 +299,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotate(rotated = -data.vehicle.getAttribute("steering_angle").asFloat() * ratio, axis, apply);
+			list.rotate(rotated = -data.vehicle().getAttribute("steering_angle").asFloat() * ratio, axis, apply);
 		}
 
 		@Override
@@ -370,7 +368,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.sign == null || data.sign.text == null || data.sign.text.length() == 0) return;
+			if(data.sign() == null || data.sign().text == null || data.sign().text.length() == 0) return;
 			RENDERER.push();
 			RENDERER.scale(-0.025F, -0.025F, 0.025F);
 			RENDERER.rotate(90, 0, 1, 0);
@@ -378,8 +376,8 @@ public class DefaultPrograms20 extends DefaultPrograms {
 				font = getFont(key);
 				if(font == null) return;
 			}
-			font.drawInBatch(data.sign.text, data.sign.centered ? -font.width(data.sign.text) / 2 : 0, 0,
-				data.sign.getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer20.buffer(),
+			font.drawInBatch(data.sign().text, data.sign().centered ? -font.width(data.sign().text) / 2 : 0, 0,
+				data.sign().getColorChannel("text").packed - 16777216, false, pose.last().pose(), Renderer20.buffer(),
 				Font.DisplayMode.NORMAL, overlay, light
 			);
 			Renderer20.resetColor();
@@ -427,7 +425,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
 			if(attrid != null){
-				attr = data.vehicle.getAttribute(attrid);
+				attr = data.vehicle().getAttribute(attrid);
 				if(attr == null) return;
 				text = attr.asString();
 			}

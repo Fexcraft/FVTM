@@ -60,7 +60,6 @@ public class VehicleInstance {
 	public VehicleInstance front, rear;
 	public SwivelPoint point;
 	private InteractRef ref;
-	public RenderCache cache;
 	//
 	public double[] serv_pos = new double[3];
 	public double[] serv_rot = new double[3];
@@ -1095,8 +1094,7 @@ public class VehicleInstance {
 	}
 
 	public RenderCache rendercache(){
-		if(cache == null) cache = new RenderCache();
-		return cache;
+		return data == null ? null : data.renderdata().cache;
 	}
 
 	public static interface Holder {

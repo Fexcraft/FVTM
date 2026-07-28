@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
+import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -48,12 +48,12 @@ public class TileRenderer {
 			float i = getBrightness(tile.getPos()), j = i % 65536f, k = i / 65536f;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 			//
-			RenderCache cache = tile.rendercache();
 			BlockModel model = (BlockModel)tile.getBlockData().getType().getModel();
+			BlockData data = tile.getBlockData();
 			if(model != null){
 				GL11.glPushMatrix();
 				TexUtil.bindTexture(tile.getBlockData().getCurrentTexture());
-				if(model.rootrender) model.render(BlockModel.RENDERDATA.set(tile.getBlockData(), tile, null).rc(cache));
+				if(model.rootrender) model.render(data.renderdata().update(tile, ticks));
 				if(model.state_models.size() > 0){
 					IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 					for(IProperty<?> prop : tile.getBlockType().getBlockState().getProperties()){
@@ -61,7 +61,7 @@ public class TileRenderer {
 						if(model.state_models.containsKey(str)){
 							ArrayList<BlockModel> list = model.state_models.get(str);
 							for(BlockModel statemodel : list){
-								statemodel.render(BlockModel.RENDERDATA);
+								statemodel.render(data.renderdata().update(StateWrapper.of(state)));
 							}
 						}
 					}

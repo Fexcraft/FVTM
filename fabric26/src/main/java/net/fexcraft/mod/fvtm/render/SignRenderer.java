@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -23,7 +22,6 @@ import org.joml.Matrix4f;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fcl.util.Renderer26.AY;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
@@ -63,14 +61,12 @@ public class SignRenderer {
 					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SignItem){
 						RENDER_UTIL.renderBB(0.5f, COL_ORG);
 					}
-					RenderCache cache = sign.getRenderCache();
 					pose.mulPose(new Matrix4f().rotate(sign.yaw, AY));
 					for(SignData scom : sign.components){
 						if(scom.getType().getModel() == null){
 							RENDER_UTIL.renderBB(0.25f, COL_RED);
 						}
 						else{
-							cache.light(LevelRenderer.getLightCoords(level, pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z)));
 							pose.pushPose();
 							pose.translate(scom.offset.x, scom.offset.y, scom.offset.z);
 							if(scom.roty != 0f) RENDERER.rotate(scom.roty, 0, 1, 0);
@@ -78,7 +74,8 @@ public class SignRenderer {
 							if(scom.rotx != 0f) RENDERER.rotate(scom.rotx, 1, 0, 0);
 							if(scom.sclx != 1f || scom.scly != 1f || scom.sclz != 1f) pose.scale(scom.sclx, scom.scly, scom.sclz);
 							RenderUtil26.type(FvtmRenderTypes.getCutout(scom.getTexture().getTexture()));
-							RENDER_UTIL.render(scom.getType().getModel(), RENDERDATA.set(scom, sign).rc(cache));
+							RENDER_UTIL.render(scom.getType().getModel(), scom.renderdata().update(sign, 0f)
+								.light(LevelRenderer.getLightCoords(level, pos.set(sign.vec.pos.x, sign.vec.pos.y, sign.vec.pos.z))));
 							pose.popPose();
 						}
 					}

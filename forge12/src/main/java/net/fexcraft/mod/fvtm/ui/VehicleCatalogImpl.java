@@ -32,8 +32,8 @@ public class VehicleCatalogImpl extends VehicleCatalog  {
 		RGB.glColorReset();
 		GlStateManager.disableLighting();
 		TexUtil.bindTexture(data.getCurrentTexture());
-		veh.getModel().render(DefaultModel.RENDERDATA.set(data, null, null, null, ticks));
-		VehicleRenderer.renderPoint(data.getRotationPoint("vehicle"), null, data, null, ticks);
+		veh.getModel().render(data.renderdata().update(null, ticks));
+		VehicleRenderer.renderPoint(data.getRotationPoint("vehicle"), null, data, ticks);
 		GL11.glPopMatrix();
 	}
 

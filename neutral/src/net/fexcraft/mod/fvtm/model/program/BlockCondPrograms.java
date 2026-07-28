@@ -33,7 +33,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.block_entity != null && ((SignalBE)data.block_entity).getSignalState() > 0;
+			return data.block_entity() != null && ((SignalBE)data.block_entity()).getSignalState() > 0;
 		}
 
 	}
@@ -42,7 +42,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.block_entity != null && ((SwitchBE)data.block_entity).getSwitch0State();
+			return data.block_entity() != null && ((SwitchBE)data.block_entity()).getSwitch0State();
 		}
 
 	}
@@ -59,7 +59,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.block_entity != null && ((SwitchBE)data.block_entity).getSwitch2State() == tracked;
+			return data.block_entity() != null && ((SwitchBE)data.block_entity()).getSwitch2State() == tracked;
 		}
 
 		@Override
@@ -82,7 +82,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.block_entity != null && ((SwitchBE)data.block_entity).isDoubleSwitchState(switch0, switch1);
+			return data.block_entity() != null && ((SwitchBE)data.block_entity()).isDoubleSwitchState(switch0, switch1);
 		}
 
 		@Override
@@ -105,7 +105,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.block_entity != null && ((SwitchBE)data.block_entity).isDoubleSwitchStateOnSide(side, state);
+			return data.block_entity() != null && ((SwitchBE)data.block_entity()).isDoubleSwitchStateOnSide(side, state);
 		}
 
 		@Override
@@ -128,7 +128,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.block_entity != null && data.block_entity.getBlockData().getFunctionBool(key) == val;
+			return data.block_entity() != null && data.block_entity().getBlockData().getFunctionBool(key) == val;
 		}
 
 		@Override
@@ -154,7 +154,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue("facing", Object.class) == side) == val;
+			return data.block_state() != null && (data.block_state().getValue("facing", Object.class) == side) == val;
 		}
 
 		@Override
@@ -180,7 +180,7 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			return data.blockstate != null && (data.blockstate.getValue("rotation", Integer.class) == rot) == val;
+			return data.block_state() != null && (data.block_state().getValue("rotation", Integer.class) == rot) == val;
 		}
 
 		@Override
@@ -205,8 +205,8 @@ public class BlockCondPrograms {
 
 		@Override
 		public boolean test(ModelGroup list, ModelRenderData data){
-			if(data.blockstate == null) return false;
-			return (data.blockstate.getValue(data.blockstate.getProperty(key)).toString().equals(value)) == bool;
+			if(data.block_state() == null) return false;
+			return (data.block_state().getValue(data.block_state().getProperty(key)).toString().equals(value)) == bool;
 		}
 
 		@Override

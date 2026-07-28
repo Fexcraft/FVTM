@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fcl.util.Renderer20;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.RVRenderer;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleCatalog;
@@ -44,8 +43,8 @@ public class VehicleCatalogImpl extends VehicleCatalog {
         RenderSystem.runAsFancy(() -> {
             Renderer20.set(gg.pose(), gg.bufferSource(), 15728880);
             FvtmRenderTypes.setCutout(data.getCurrentTexture());
-            veh.getModel().render(DefaultModel.RENDERDATA.set(data, null, null, null, ticks));
-            RVRenderer.renderPoint(gg.pose(), data.getRotationPoint("vehicle"), null, data, null, ticks);
+            veh.getModel().render(data.renderdata().update(null, ticks));
+            RVRenderer.renderPoint(gg.pose(), data.getRotationPoint("vehicle"), data, ticks);
         });
         gg.flush();
         gg.pose().popPose();

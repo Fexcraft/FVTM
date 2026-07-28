@@ -26,7 +26,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
-import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -68,7 +67,6 @@ public class DecoRenderer {
 					if(holding || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof DecorationItem){
 						DebugUtils.renderBB(0.5f, COL_ORG);
 					}
-					RenderCache cache = deco.getRenderCache();
 					for(DecorationData dcom : deco.decorations){
 						if(dcom.getType().getModel() == null){
 							DebugUtils.renderBB(0.25f, COL_RED);
@@ -82,7 +80,7 @@ public class DecoRenderer {
 							if(dcom.rotx != 0f) RENDERER.rotate(dcom.rotx, 1, 0, 0);
 							if(dcom.sclx != 1f || dcom.scly != 1f || dcom.sclz != 1f) pose.scale(dcom.sclx, dcom.scly, dcom.sclz);
 							FvtmRenderTypes.setCutout(dcom.getTexture().getTexture());
-							dcom.getType().getModel().render(RENDERDATA.set(dcom, deco).rc(cache));
+							dcom.getType().getModel().render(dcom.renderdata().update(deco, event.getPartialTick()));
 							pose.popPose();
 						}
 					}

@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.sys.deco;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
@@ -21,7 +20,6 @@ public class DecoInstance implements SysObj {
 
 	public ConcurrentLinkedQueue<DecorationData> decorations = new ConcurrentLinkedQueue<>();
 	public SystemRegion<DecoSystem, DecoInstance> region;
-	private RenderCache cache;
 	public QV3D vec;
 
 	public DecoInstance(SystemRegion<DecoSystem, DecoInstance> reg){
@@ -89,11 +87,6 @@ public class DecoInstance implements SysObj {
 		com.set("deco", write());
 		com.set("dim", region.system.getWorldType().rec_key());
 		Packets.sendToAllTrackingPos(Packet_TagListener.class, region.system.getServerWorld(), vec.pos, "deco_upd", com);
-	}
-
-	public RenderCache getRenderCache(){
-		if(cache == null) cache = new RenderCache();
-		return cache;
 	}
 
 }

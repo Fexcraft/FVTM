@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.fvtm.model.ModelRenderData.PartRD;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.fvtm.util.SaveUtils;
 import net.fexcraft.mod.uni.IDL;
@@ -28,6 +29,7 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 	protected Rot currentrot = new Rot();
 	protected String rotpoint;
 	protected String source = DEF_SOURCE;
+	protected PartRD renderdata;
 
 	public PartData(Part type){
 		super(type);
@@ -173,6 +175,11 @@ public class PartData extends ContentData<Part, PartData> implements TextureUser
 
 	public String getSource(){
 		return source;
+	}
+
+	public PartRD renderdata(){
+		if(renderdata == null) renderdata = new PartRD(this);
+		return renderdata;
 	}
 
 }

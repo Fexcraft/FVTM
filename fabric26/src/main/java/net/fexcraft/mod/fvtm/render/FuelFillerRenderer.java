@@ -42,7 +42,7 @@ public class FuelFillerRenderer implements BlockEntityRenderer<FuelFillerEntity,
 		Direction dir = state.blockState.getValue(FACING);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(dir.getAxis() == Direction.Axis.Z ? dir.toYRot() + 90 : dir.toYRot() - 90), AY));
 		if(MODEL == null) MODEL = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.fmf", new ModelData(), BlockModel.class);
-		if(MODEL != null) RENDER_UTIL.render(MODEL, DefaultModel.RENDERDATA.clear());
+		if(MODEL != null) RENDER_UTIL.render(MODEL, DefaultModel.RENDERDATA_BLANK);
 		else RENDER_UTIL.render(DebugUtils.SPHERE);
 		pose.popPose();
 	}

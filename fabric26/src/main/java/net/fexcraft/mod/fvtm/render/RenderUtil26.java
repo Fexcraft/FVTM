@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.mod.fcl.util.Renderer26;
@@ -8,8 +9,10 @@ import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import org.joml.Quaternionf;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.mod.fcl.util.Renderer26.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -32,15 +35,25 @@ public class RenderUtil26 extends RenderUtil {
 
 	@Override
 	public void render(ModelGroup group, ModelRenderData data){
+		if(group.has_pre_prog) for(Program program : group.getPrePrograms()) if(program.order().blended()) program.pre(group, data);
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
-			group.pre(data);
-			Renderer26.pose = last;
+			if(group.offset != null) RENDERER.translate(group.offset.x, group.offset.y, group.offset.z);
+			if(group.has_pre_prog) for(Program program : group.getPrePrograms()) if(program.order().not_blended()) program.pre(group, data);
+			if(group.rotation.notNull()) last.rotate(new Quaternionf()
+				.rotateAxis((float)Static.toRadians(group.rotation.y), AY)
+				.rotateAxis((float)Static.toRadians(group.rotation.x), AX)
+				.rotateAxis((float)Static.toRadians(group.rotation.z), AZ));
+			if(group.scale.notOne()) last.scale((float)group.scale.x, (float)group.scale.y, (float)group.scale.z);
+ 			Renderer26.pose = last;
 			Renderer26.cons = cons;
 			if(data.light != 0) Renderer26.light = data.light;
 			group.render();
 			Renderer26.pose = null;
-			group.post(data);
+			if(group.has_pst_prog) for(Program program : group.getPstPrograms()) if(program.order().not_blended()) program.post(group, data);
+			group.rotation.set(0, 0, 0);
+			if(group.offset != null) group.offset.set(0, 0, 0);
 		});
+		if(group.has_pst_prog) for(Program program : group.getPstPrograms()) if(program.order().blended()) program.post(group, data);
 	}
 
 	//TODO add color param

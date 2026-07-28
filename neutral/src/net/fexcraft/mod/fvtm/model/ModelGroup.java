@@ -24,10 +24,11 @@ public class ModelGroup extends ArrayList<Polyhedron> {
 	protected ArrayList<Program> pre_programs = new ArrayList<>();
 	protected ArrayList<Program> pst_programs = new ArrayList<>();
 
-	public V3D offset;
+	public V3D offset = new V3D();
+	public V3D rotation = new V3D();
+	public V3D scale = new V3D(1, 1, 1);
 
 	public final String name;
-	public float scale = Static.sixteenth;
 	public boolean visible = true;
 	public boolean has_pre_prog = false;
 	public boolean has_pst_prog = false;
@@ -48,13 +49,25 @@ public class ModelGroup extends ArrayList<Polyhedron> {
 	}
 
 	public void pre(ModelRenderData data){
-		if(offset != null) RENDERER.translate(offset.x, offset.y, offset.z);
+		RENDERER.push();
 		if(has_pre_prog) for(Program program : pre_programs) program.pre(this, data);
+		if(offset != null) RENDERER.translate(offset.x, offset.y, offset.z);
+		if(rotation.notNull()){
+			RENDERER.rotate(rotation.y, 0, 1, 0);
+			RENDERER.rotate(rotation.x, 1, 0, 0);
+			RENDERER.rotate(rotation.z, 0, 0, 1);
+		}
+		if(scale.notOne()){
+			RENDERER.scale(scale.x, scale.y, scale.z);
+		}
 	}
 
 	public void post(ModelRenderData data){
 		if(has_pst_prog) for(Program program : pst_programs) program.post(this, data);
-		if(offset != null) RENDERER.translate(-offset.x, -offset.y, -offset.z);
+		rotation.set(0, 0, 0);
+		scale.set(1, 1, 1);
+		//if(offset != null) RENDERER.translate(-offset.x, -offset.y, -offset.z);
+		RENDERER.pop();
 	}
 
 	public void render(){
@@ -101,9 +114,21 @@ public class ModelGroup extends ArrayList<Polyhedron> {
 	
 	//
 
-	public void translate(float x, float y, float z, boolean set){
+	public void translate(double x, double y, double z){
 		if(offset == null) offset = new V3D();
-		offset.set(x, y, z);
+		offset.x += x;
+		offset.y += y;
+		offset.z += z;
+	}
+
+	public void translate(double x, double y, double z, boolean set){
+		if(offset == null) offset = new V3D();
+		if(set) offset.set(x, y, z);
+		else{
+			offset.x += x;
+			offset.y += y;
+			offset.z += z;
+		}
 		/*if(set){
 			for(Polyhedron poly : this) poly.pos(x, y, z);
 		}
@@ -116,8 +141,17 @@ public class ModelGroup extends ArrayList<Polyhedron> {
 		}*/
 	}
 
-	public void scale(float flt){
-		scale = flt;
+	public void scale(double x, double y, double z){
+		scale(x, y, z, false);
+	}
+
+	public void scale(double x, double y, double z, boolean set){
+		if(set) scale.set(x, y, z);
+		else{
+			scale.x *= x;
+			scale.y *= y;
+			scale.z *= z;
+		}
 	}
 
 	public void rotate(float x, float y, float z){
@@ -161,6 +195,36 @@ public class ModelGroup extends ArrayList<Polyhedron> {
 			else{
 				for(Polyhedron poly : this) poly.rotZ += value;
 			}
+		}
+	}
+
+	public void rotateGroup(double x, double y, double z){
+		rotation.x += x;
+		rotation.y += y;
+		rotation.z += z;
+	}
+
+	public void rotateGroup(double x, double y, double z, boolean set){
+		if(set) rotation.set(x, y, z);
+		else{
+			rotation.x += x;
+			rotation.y += y;
+			rotation.z += z;
+		}
+	}
+
+	public void rotateGroup(double value, int axis, boolean set){
+		if(axis == 0){
+			if(set) rotation.x = value;
+			else rotation.x += value;
+		}
+		else if(axis == 1){
+			if(set) rotation.y = value;
+			else rotation.y += value;
+		}
+		else{
+			if(set) rotation.z = value;
+			else rotation.z += value;
 		}
 	}
 

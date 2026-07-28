@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model.program;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
@@ -13,6 +14,7 @@ import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.SeparateRenderCache;
 import net.fexcraft.mod.fvtm.util.ContentConfigUtil;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ import java.util.function.Predicate;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.DISABLE_LIGHT_BEAMS;
 import static net.fexcraft.mod.fvtm.Config.SIGNAL_INTERVAL;
+import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 
 /**
@@ -232,6 +235,9 @@ public class DefaultPrograms {
 		//
 		ModelGroup.PROGRAMS.add(new AttributeLights("", false));
 		ModelGroup.PROGRAMS.add(new AttributeSignalLights("", 0, false));
+		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));
+		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));
+		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));
 		ModelGroup.PROGRAMS.add(new IDSpecific(""));
 		ModelGroup.PROGRAMS.add(new IDSpecificArray(""));
 		ModelGroup.PROGRAMS.add(new SignBase());
@@ -410,6 +416,161 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new AttributeSignalLights(args[0], args.length > 1 ? Integer.parseInt(args[1]) : 1, args.length > 2 && Boolean.parseBoolean(args[2]));
+		}
+
+	}
+
+	public static class AttributeRotator extends AttributeBased {
+
+		private float min, max, step = 1;
+		private Float current;
+		private int axis;
+		private boolean boolstatebased;
+		private boolean override;
+		private float defrot;
+
+		public AttributeRotator(String attribute, boolean boolstatebased, float mn, float mx, float step, int axis, Float defrot){
+			super(attribute);
+			this.boolstatebased = boolstatebased;
+			this.override = true;
+			this.min = mn;
+			this.max = mx;
+			this.step = step;
+			this.axis = axis;
+			this.defrot = defrot == null ? 0 : defrot;
+			if(min == max || (min == 0f && max == 0f)){
+				min = -180; max = 180;
+			}
+		}
+
+		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot, boolean notadditive){
+			this(attribute, boolstatebased, min, max, step, axis, defrot);
+			this.override = notadditive;
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:attribute_rotator";
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			current = data.cache.get(this, FLOAT_SUPP);
+			if(current == null) current = 0f;
+			current = boolstatebased ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat() * step;
+			if(current > max) current = max;
+			if(current < min) current = min;
+			list.rotate(current + defrot, axis, override);
+			data.cache.set(this, current);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || attr == null) return;
+			list.rotate(override ? defrot : -(current + defrot), axis, override);
+			current = 0f;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			String attr = args[0];
+			boolean boolstate = Boolean.parseBoolean(args[1]);
+			float min = Float.parseFloat(args[2]);
+			float max = Float.parseFloat(args[3]);
+			float step = Float.parseFloat(args[4]);
+			int axis = Integer.parseInt(args[5]);
+			Float defrot = args.length > 6 && NumberUtils.isCreatable(args[6]) ? Float.parseFloat(args[6]) : null;
+			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
+		}
+
+	}
+
+	public static class AttributeTranslator extends AttributeBased {
+
+		private boolean bool;
+		private float min, max, step;
+		private Float current;
+		private int axis;
+
+		public AttributeTranslator(String attribute, boolean boolstatebased, float min, float max, float step, int axis){
+			super(attribute);
+			this.bool = boolstatebased;
+			this.axis = axis;
+			this.step = step;
+			this.min = min;
+			this.max = max;
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:attribute_translator";
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.cache == null) return;
+			if((attr = data.vehicle.getAttribute(attribute)) == null) return;
+			current = data.cache.get(this, FLOAT_SUPP);
+			if(current == null) current = 0f;
+			current = bool ? (attr.asBoolean() ? current + step : current - step) : attr.asFloat();
+			if(current > max) current = max; if(current < min) current = min;
+			RENDERER.translate(
+				axis == 0 ? current * Static.sixteenth : 0,
+				axis == 1 ? current * Static.sixteenth : 0,
+				axis == 2 ? current * Static.sixteenth : 0);
+			data.cache.set(this, current);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			if(data.cache == null || attr == null) return;
+			RENDERER.translate(
+				axis == 0 ? current * -Static.sixteenth : 0,
+				axis == 1 ? current * -Static.sixteenth : 0,
+				axis == 2 ? current * -Static.sixteenth : 0);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			String attr = args[0];
+			boolean boolstate = Boolean.parseBoolean(args[1]);
+			float min = Float.parseFloat(args[2]);
+			float max = Float.parseFloat(args[3]);
+			float step = Float.parseFloat(args[4]);
+			int axis = Integer.parseInt(args[5]);
+			return new AttributeTranslator(attr, boolstate, min, max, step, axis);
+		}
+
+	}
+
+	public static class AttributeVisible implements Program {
+
+		private String attribute;
+		private boolean equals;
+
+		public AttributeVisible(String attribute, boolean equals){
+			this.attribute = attribute;
+			this.equals = equals;
+		}
+
+		@Override
+		public String id(){ return "fvtm:attribute_visible"; }
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			if(data.vehicle.getAttributeBoolean(attribute, !equals) != equals) list.visible = false;
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			list.visible = true;
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new AttributeVisible(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
 		}
 
 	}

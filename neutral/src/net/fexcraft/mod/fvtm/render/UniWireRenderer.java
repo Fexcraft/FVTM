@@ -33,8 +33,6 @@ public class UniWireRenderer {
 
 	}
 
-	public static double ANGLE;
-	public static double ANGLE_DOWN;
 	public static UniWireRenderData DATA = new UniWireRenderData();
 	private static V3D cubepos;
 	private static int color;
@@ -93,31 +91,25 @@ public class UniWireRenderer {
 			RENDERER.pop();
 			wire.model.update(tile, ticks);
 			if(wire.model.comp_s != null){
-				ANGLE = wire.model.start_angle;
-				ANGLE_DOWN = wire.model.start_angle_down;
 				RENDERER.push();
 				RENDERER.translate(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
 				//RENDERER.rotate(wire.model.start_angle, 0, 1, 0);
 				RENDERER.bind(wire.model.comp_s.getTexture());
-				RENDER_UTIL.render(wire.model.comp_s.getModel(), wire.model);
+				RENDER_UTIL.render(wire.model.comp_s.getModel(), wire.model.rd_s);
 				RENDERER.pop();
 			}
 			if(wire.model.comp_e != null){
-				ANGLE = wire.model.end_angle;
-				ANGLE_DOWN = wire.model.end_angle_down;
 				int l = wire.vecpath.length - 1;
 				RENDERER.push();
 				RENDERER.translate(wire.vecpath[l].x - cx, wire.vecpath[l].y - cy, wire.vecpath[l].z - cz);
 				//RENDERER.rotate(wire.model.end_angle, 0, 1, 0);
 				RENDERER.bind(wire.model.comp_e.getTexture());
-				RENDER_UTIL.render(wire.model.comp_e.getModel(), wire.model);
+				RENDER_UTIL.render(wire.model.comp_e.getModel(), wire.model.rd_e);
 				RENDERER.pop();
 			}
 			if(wire.model.comp_d.size() > 0){
 				WireComponent com;
 				WireModel cpm;
-				ANGLE = wire.model.start_angle;
-				ANGLE_DOWN = 0;
 				for(String comkey : wire.model.comp_d.keySet()){
 					com = wire.comps.get(comkey);
 					cpm = com.getModel();
@@ -128,7 +120,7 @@ public class UniWireRenderer {
 								RENDERER.translate(vec.x - cx, vec.y - cy, vec.z - cz);
 								cpm.transforms.apply();
 								RENDERER.bind(com.getTexture());
-								RENDER_UTIL.render(list, wire.model);
+								RENDER_UTIL.render(list, wire.model.rd_c);
 								cpm.transforms.deapply();
 								RENDERER.pop();
 							}
@@ -138,7 +130,7 @@ public class UniWireRenderer {
 							RENDERER.translate(wire.vecpath[0].x - cx, wire.vecpath[0].y - cy, wire.vecpath[0].z - cz);
 							cpm.transforms.apply();
 							RENDERER.bind(com.getTexture());
-							RENDER_UTIL.render(list, wire.model);
+							RENDER_UTIL.render(list, wire.model.rd_c);
 							cpm.transforms.deapply();
 							RENDERER.pop();
 						}

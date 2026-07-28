@@ -152,7 +152,7 @@ public class BlockPrograms {
             current = data.block().getFunctionBool(key) == bool ? current + step : current - step;
             if(current > max) current = max; if(current < min) current = min;
             //GL11.glPushMatrix();
-            Renderer.RENDERER.translate(
+            list.translate(
                 axis == 0 ? current * sixteenth : 0,
                 axis == 1 ? current * sixteenth : 0,
                 axis == 2 ? current * sixteenth : 0);
@@ -162,7 +162,7 @@ public class BlockPrograms {
         @Override
         public void post(ModelGroup list, ModelRenderData data){
             if(data.cache == null || data.block() == null) return;
-            Renderer.RENDERER.translate(
+            list.translate(
                     axis == 0 ? current * -sixteenth : 0,
                     axis == 1 ? current * -sixteenth : 0,
                     axis == 2 ? current * -sixteenth : 0);

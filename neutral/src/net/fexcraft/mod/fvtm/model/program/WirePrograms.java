@@ -11,8 +11,6 @@ import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import java.util.ArrayList;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
-import static net.fexcraft.mod.fvtm.render.UniWireRenderer.ANGLE;
-import static net.fexcraft.mod.fvtm.render.UniWireRenderer.ANGLE_DOWN;
 
 /**
  * 
@@ -71,7 +69,7 @@ public class WirePrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotateGroup(0, ANGLE, 0);
+			list.rotateGroup(0, data.wire_angle(), 0);
 		}
 
 		@Override
@@ -96,7 +94,7 @@ public class WirePrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotateGroup(0, 0, ANGLE_DOWN);
+			list.rotateGroup(0, 0, data.wire_slack());
 		}
 
 		@Override

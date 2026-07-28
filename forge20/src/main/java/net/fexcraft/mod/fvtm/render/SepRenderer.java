@@ -38,7 +38,7 @@ public class SepRenderer {
 			pose.translate(-cx, -cy, -cz);
 			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
-				if(inst.cache == null) inst.cache = FVTM4.getRenderCache(inst.entity.local());
+				inst.rendercache();
 				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 				pose.pushPose();
 				pose.translate(cache.pos[0], cache.pos[1], cache.pos[2]);

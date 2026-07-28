@@ -23,7 +23,6 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
-import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.fexcraft.mod.fvtm.render.state.VehicleRenderState;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -92,7 +91,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle, VehicleRenderState> 
 	@Override
 	public void submit(VehicleRenderState state, PoseStack pose, SubmitNodeCollector noco, CameraRenderState camera){
 		if(state.vehicle == null || state.vehicle.data == null) return;
-		if(state.vehicle.cache == null) state.vehicle.cache = new RenderCacheI();
+		state.vehicle.rendercache();
 		sepcache = state.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 		pose.pushPose();
 		//pose.translate(0, 0, 0);

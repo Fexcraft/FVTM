@@ -36,7 +36,7 @@ public class RenderRV extends Render<RootVehicle> implements IRenderFactory<Root
     @Override
     public void doRender(RootVehicle rv, double x, double y, double z, float entity_yaw, float ticks){
         if(RENDER_VEHICLES_SEPARATELY || rv.vehicle.data == null || rv.vehicle.point == null) return;
-		if(rv.vehicle.cache == null) rv.vehicle.cache = rv.getCapability(Capabilities.RENDERCACHE, null);
+		rv.vehicle.rendercache();
 		sepcache = rv.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
         GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);

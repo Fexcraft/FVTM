@@ -68,7 +68,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.model.DebugModels.*;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
@@ -95,7 +94,7 @@ public class EffectRenderer {
             GL11.glTranslated(-cx, -cy, -cz);
 			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
-				if(inst.cache == null) inst.cache = ((Entity)inst.entity.direct()).getCapability(Capabilities.RENDERCACHE, null);
+				inst.rendercache();
 				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 				GL11.glPushMatrix();
 				GL11.glTranslated(cache.pos[0], cache.pos[1], cache.pos[2]);
@@ -129,7 +128,7 @@ public class EffectRenderer {
                 GL11.glTranslated(tile.getV3I().x + 0.5, tile.getV3I().y, tile.getV3I().z + 0.5);
                 GL11.glRotated(data.getType().getBlockType().getRotationFor(tile.getMeta()), 0.0F, 1.0F, 0.0F);
                 //GL11.glRotatef(180f, 0f, 0f, 1f);
-                sgroup.render(RENDERDATA.set(data, tile, null).rcs(((TileEntity)tile).getCapability(RENDERCACHE, null)));
+                sgroup.render(RENDERDATA.set(data, tile, null).rcs(tile.rendercache()));
             	GL11.glPopMatrix();
             }
             GL11.glPopMatrix();

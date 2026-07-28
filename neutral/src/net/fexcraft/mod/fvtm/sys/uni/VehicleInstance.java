@@ -1094,6 +1094,11 @@ public class VehicleInstance {
 		return null;
 	}
 
+	public RenderCache rendercache(){
+		if(cache == null) cache = new RenderCache();
+		return cache;
+	}
+
 	public static interface Holder {
 
 		public VehicleInstance getVehicleInstance();

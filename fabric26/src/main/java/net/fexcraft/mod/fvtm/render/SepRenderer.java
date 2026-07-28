@@ -7,9 +7,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList;
-import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
@@ -35,7 +33,7 @@ public class SepRenderer {
 			pose.translate(-cx, -cy, -cz);
 			for(VehicleInstance inst : VEHICLES){
 				if(inst.entity == null) continue;
-				if(inst.cache == null) inst.cache = new RenderCacheI();
+				inst.rendercache();
 				SepVehCache cache = inst.cache.get(SEP_VEH_CACHE, data -> new SepVehCache());
 				pose.pushPose();
 				pose.translate(cache.pos[0], cache.pos[1], cache.pos[2]);

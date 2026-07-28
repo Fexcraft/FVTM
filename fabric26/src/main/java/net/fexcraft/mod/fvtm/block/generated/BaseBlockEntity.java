@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.FvtmBlockEntity;
+import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Resources21;
@@ -31,6 +32,7 @@ import static net.fexcraft.mod.fvtm.block.generated.FvtmProperties.*;
  */
 public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 
+	public RenderCache cache;
 	public BlockData data;
 	public V3I vpos;
 
@@ -104,6 +106,12 @@ public class BaseBlockEntity extends BlockEntity implements FvtmBlockEntity {
 	@Override
 	public WorldW getWorldW(){
 		return WrapperHolder.getWorld(level);
+	}
+
+	@Override
+	public RenderCache rendercache(){
+		if(cache == null) cache = new RenderCache();
+		return cache;
 	}
 
 	@Override

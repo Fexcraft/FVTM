@@ -80,7 +80,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	@Override
 	public void render(RootVehicle veh, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		if(veh.vehicle == null || veh.vehicle.data == null) return;
-		if(veh.vehicle.cache == null) veh.vehicle.cache = FVTM4.getRenderCache(veh);
+		veh.vehicle.rendercache();
 		sepcache = veh.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
 		pose.pushPose();
 		//pose.translate(0, 0, 0);

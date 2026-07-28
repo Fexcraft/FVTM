@@ -35,7 +35,7 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity> {
 		if(rot != 0d){
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
 		}
-		data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, tile, null));
+		data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, tile, null).rc(tile.rendercache()));
  		//
 		pose.popPose();
 	}

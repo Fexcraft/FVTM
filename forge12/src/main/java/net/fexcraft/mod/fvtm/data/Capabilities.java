@@ -13,10 +13,6 @@ public class Capabilities {
 	@CapabilityInject(VehicleAndPartDataCache.class)
 	public static final Capability<VehicleAndPartDataCache> VAPDATA = null;
 	
-	/** For VehicleEntities and eventually other, client side only.  */
-	@CapabilityInject(RenderCache.class)
-	public static final Capability<RenderCache> RENDERCACHE = null;
-	
 	/** For Vehicles which can transport Containers */
 	@CapabilityInject(ContainerHolder.class)
 	public static final Capability<ContainerHolder> CONTAINER = null;

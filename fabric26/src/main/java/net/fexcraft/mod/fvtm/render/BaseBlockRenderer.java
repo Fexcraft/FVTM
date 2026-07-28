@@ -46,8 +46,9 @@ public class BaseBlockRenderer implements BlockEntityRenderer<BaseBlockEntity, B
 		if(rot != 0d){
 			pose.mulPose(new Quaternionf().rotateAxis((float)Static.toRadians(rot), AY));
 		}
+		FvtmBlockEntity tile = (FvtmBlockEntity)state.blockEntity;
 		RenderUtil26.set(pose, nodecoll, FvtmRenderTypes.getCutout(state.fvtmData.getCurrentTexture()), state.lightCoords);
-		RENDER_UTIL.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, (FvtmBlockEntity)state.blockEntity, null));
+		RENDER_UTIL.render(state.fvtmData.getType().getModel(), DefaultModel.RENDERDATA.set(state.fvtmData, tile, null).rc(tile.rendercache()));
  		//
 		pose.popPose();
 	}

@@ -27,7 +27,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         GL11.glRotatef(te.getBlockMetadata() * 22.5f, 0, 1, 0);
 		TexUtil.bindTexture(FvtmRegistry.NULL_TEXTURE);
-        RenderCache cache = te.getCapability(Capabilities.RENDERCACHE, null);
+        RenderCache cache = null;//te.getCapability(Capabilities.RENDERCACHE, null);
         heightoffset = 0;
         //
         if(te.getVehicleData() != null){

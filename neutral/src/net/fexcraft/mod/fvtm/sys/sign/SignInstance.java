@@ -4,7 +4,6 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.model.RenderCache;
-import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SysObj;
@@ -88,7 +87,7 @@ public class SignInstance implements SysObj {
 	}
 
 	public RenderCache getRenderCache(){
-		if(cache == null) cache = new RenderCacheI();
+		if(cache == null) cache = new RenderCache();
 		return cache;
 	}
 

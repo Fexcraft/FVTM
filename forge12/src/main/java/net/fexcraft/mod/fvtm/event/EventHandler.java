@@ -1,20 +1,14 @@
 package net.fexcraft.mod.fvtm.event;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.block.ContainerEntity;
-import net.fexcraft.mod.fvtm.block.DisplayEntity;
-import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -31,17 +25,13 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -90,12 +80,12 @@ public class EventHandler {
 		}
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onAttachChunkCapabilities(AttachCapabilitiesEvent<Chunk> event){
 		//
-	}
+	}*/
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
 		if(event.getObject().world == null) return;
 		if(event.getObject() instanceof ContainerHolderWrapper){
@@ -112,15 +102,15 @@ public class EventHandler {
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 			}
 		}
-	}
+	}*/
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> event){
 		if(Static.side().isClient() && (event.getObject() instanceof DisplayEntity ||
 			event.getObject() instanceof BlockTileEntity || event.getObject() instanceof ContainerEntity)){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
-	}
+	}*/
 	
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event){

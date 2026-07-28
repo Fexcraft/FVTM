@@ -48,7 +48,7 @@ public class TileRenderer {
 			float i = getBrightness(tile.getPos()), j = i % 65536f, k = i / 65536f;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 			//
-			RenderCache cache = tile.getCapability(Capabilities.RENDERCACHE, null);
+			RenderCache cache = tile.rendercache();
 			BlockModel model = (BlockModel)tile.getBlockData().getType().getModel();
 			if(model != null){
 				GL11.glPushMatrix();

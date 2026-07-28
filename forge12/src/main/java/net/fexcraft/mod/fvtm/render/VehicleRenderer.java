@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.block.generated.JACK_TE;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.block.JackEntity;
@@ -32,7 +31,6 @@ import java.util.Map.Entry;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
-import static net.fexcraft.mod.fvtm.data.Capabilities.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.JACKS;
@@ -61,7 +59,7 @@ public class VehicleRenderer {
         	if(entity instanceof RootVehicle == false) continue;
         	RootVehicle vehicle = (RootVehicle)entity;
 			if(vehicle.vehicle.data == null) continue;
-			if(vehicle.vehicle.cache == null) vehicle.vehicle.cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
+			vehicle.vehicle.rendercache();
 			sepcache = vehicle.vehicle.cache.get(SEP_VEH_CACHE, data -> new SeparateRenderCache.SepVehCache());
             x = vehicle.lastTickPosX + (vehicle.posX - vehicle.lastTickPosX) * ticks;
             y = vehicle.lastTickPosY + (vehicle.posY - vehicle.lastTickPosY) * ticks;
@@ -232,15 +230,14 @@ public class VehicleRenderer {
 			if(vehmod != null){
 				GL11.glPushMatrix();
 				TexUtil.bindTexture(jack.getVehicle().getCurrentTexture());
-				vehmod.render(RENDERDATA.set(jack.getVehicle(), null, ticks).rc(jack.getCapability(RENDERCACHE, null)));
+				vehmod.render(RENDERDATA.set(jack.getVehicle(), null, ticks).rc(jack.rendercache()));
 				GL11.glPopMatrix();
 			}
 			else{
 				DebugUtils.renderBB(0.5f, RGB.RED.packed);
 			}
 			if(jack.getVehicle().getParts().size() > 0){
-				VehicleRenderer.renderPoint(jack.getVehicle().getRotationPoint(DEFAULT), null,
-					jack.getVehicle(), jack.getCapability(RENDERCACHE, null), ticks);
+				VehicleRenderer.renderPoint(jack.getVehicle().getRotationPoint(DEFAULT), null, jack.getVehicle(), jack.rendercache(), ticks);
 			}
 			EffectRenderer.renderVehicleInfo(null, entry.getKey(), jack.getVehicle());
 			//

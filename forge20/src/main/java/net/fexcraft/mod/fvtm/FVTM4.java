@@ -262,14 +262,6 @@ public class FVTM4 {
 	public static class Events {
 
 		@SubscribeEvent
-		public static void onAttachEntityCaps(AttachCapabilitiesEvent<Entity> event){
-			if(!EnvInfo.CLIENT) return;
-			if(event.getObject() instanceof RootVehicle){
-				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheProvider(event.getObject()));
-			}
-		}
-
-		@SubscribeEvent
 		public static void onAttachWorldCaps(AttachCapabilitiesEvent<Level> event){
 			WorldW lvl = WrapperHolder.getWorld(event.getObject());
 			SystemManager.initWorldSystems(lvl, lvl.type());
@@ -280,10 +272,6 @@ public class FVTM4 {
 			event.getDispatcher().register(FVTM20.genCommand());
 		}
 
-	}
-
-	public static RenderCache getRenderCache(Entity entity){
-		return entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
 	}
 
 }

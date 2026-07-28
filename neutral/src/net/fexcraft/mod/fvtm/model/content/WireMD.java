@@ -77,4 +77,5 @@ public class WireMD extends ModelRenderData {
 	public Wire wire(){
 		return wire;
 	}
+
 }

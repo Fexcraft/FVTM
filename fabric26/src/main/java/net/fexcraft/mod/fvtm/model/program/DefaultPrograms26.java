@@ -81,111 +81,6 @@ public class DefaultPrograms26 extends DefaultPrograms {
 		});
 		ModelGroup.PROGRAMS.add(new RGBCustom(RGB.WHITE));
 		ModelGroup.PROGRAMS.add(new RGBChannel("custom"));
-		ModelGroup.PROGRAMS.add(new Program() {
-			public String id(){
-				return "fvtm:hide";
-			}
-
-			public void pre(ModelGroup list, ModelRenderData data){
-				list.visible = false;
-			}
-
-			@Override
-			public void post(ModelGroup list, ModelRenderData data){
-				list.visible = true;
-			}
-		});
-		ModelGroup.PROGRAMS.add(new Program() {
-			private WheelSlot slot;
-			private WheelTireData wtd;
-
-			public String id(){
-				return "fvtm:wheel_auto_all";
-			}
-
-			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.push();
-				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
-				if(slot != null && slot.steering){
-					RENDERER.rotate(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
-				}
-				if(data.vehent() != null){
-					wtd = data.vehent().wheeldata.get(data.part_category());
-					if(wtd != null) RENDERER.rotate(-wtd.rotation, 1, 0, 0);
-				}
-				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
-			}
-
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.pop();
-			}
-		});
-		ModelGroup.PROGRAMS.add(new Program() {
-			private WheelSlot slot;
-
-			public String id(){
-				return "fvtm:wheel_auto_steering";
-			}
-
-			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.push();
-				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
-				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
-				if(slot != null && slot.steering) RENDERER.rotate(data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
-			}
-
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.pop();
-			}
-		});
-		ModelGroup.PROGRAMS.add(new Program() {
-			private WheelSlot slot;
-			private WheelTireData wtd;
-
-			public String id(){
-				return "fvtm:wheel_auto_all_opposite";
-			}
-
-			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.push();
-				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
-				if(slot != null && slot.steering) RENDERER.rotate(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
-				if(data.vehent() != null){
-					wtd = data.vehent().wheeldata.get(data.part_category());
-					if(wtd != null) RENDERER.rotate(-wtd.rotation, 1, 0, 0);
-				}
-				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
-			}
-
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.pop();
-			}
-		});
-		ModelGroup.PROGRAMS.add(new Program() {
-			private WheelSlot slot;
-
-			public String id(){
-				return "fvtm:wheel_auto_steering_opposite";
-			}
-
-			public void pre(ModelGroup list, ModelRenderData data){
-				RENDERER.push();
-				slot = data.part().getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle());
-				if(slot != null && slot.mirror) RENDERER.rotate(-180, 0, 1, 0);
-				if(slot != null && slot.steering) RENDERER.rotate(-data.vehicle().getAttribute("steering_angle").asFloat(), 0, 1, 0);
-			}
-
-			public void post(ModelGroup list, ModelRenderData data){
-				RENDERER.pop();
-			}
-		});
-		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 0));
-		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f));
-		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f));
-		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f));
-		ModelGroup.PROGRAMS.add(new SteeringWheel(2, 1f, false));
-		ModelGroup.PROGRAMS.add(new SteeringWheel(0, 1f, false));
-		ModelGroup.PROGRAMS.add(new SteeringWheel(1, 1f, false));
 		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
 		ModelGroup.PROGRAMS.add(new SignText());
 		LightBeam.LBR = new LightBeam.LBRender(){
@@ -272,47 +167,6 @@ public class DefaultPrograms26 extends DefaultPrograms {
 
 	}
 
-	public static class SteeringWheel implements Program {
-
-		private byte axis;
-		private float ratio, rotated;
-		private boolean apply;
-		private String id;
-
-		public SteeringWheel(int axis, float ratio){
-			this(axis, ratio, true);
-		}
-
-		public SteeringWheel(int axis, float ratio, boolean override){
-			this.axis = (byte)axis;
-			this.ratio = ratio;
-			id = axis == 0 && ratio == 0 ? "fvtm:steering_base" : "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z") + (override ? "" : "_no_apply");
-			this.apply = override;
-		}
-
-		@Override
-		public String id(){
-			return id;
-		}
-
-		@Override
-		public void pre(ModelGroup list, ModelRenderData data){
-			list.rotate(rotated = -data.vehicle().getAttribute("steering_angle").asFloat() * ratio, axis, apply);
-		}
-
-		@Override
-		public void post(ModelGroup list, ModelRenderData data){
-			list.rotate(rotated, axis, apply);
-		}
-
-
-		@Override
-		public Program parse(String[] args){
-			return new SteeringWheel(Integer.parseInt(args[0]), Float.parseFloat(args[1]));
-		}
-
-	}
-
 	public static class TextureBinder implements Program {
 
 		private IDL idl;
@@ -386,6 +240,11 @@ public class DefaultPrograms26 extends DefaultPrograms {
 		}
 
 		@Override
+		public RenderOrder order(){
+			return RenderOrder.BLENDED;
+		}
+
+		@Override
 		public Program parse(String[] args){
 			if(args.length > 0){
 				String key = args[0];
@@ -443,6 +302,10 @@ public class DefaultPrograms26 extends DefaultPrograms {
 			RENDERER.pop();
 		}
 
+		@Override
+		public RenderOrder order(){
+			return RenderOrder.BLENDED;
+		}
 	}
 
 }

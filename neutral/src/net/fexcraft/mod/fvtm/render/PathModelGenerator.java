@@ -8,6 +8,7 @@ import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
+import net.fexcraft.mod.fvtm.model.content.WireMD;
 import net.fexcraft.mod.fvtm.model.content.WireModel;
 import net.fexcraft.mod.fvtm.model.program.WirePrograms;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -167,6 +168,7 @@ public class PathModelGenerator {
 			double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model.start_angle_down = (float)-Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model.start_angle_down = Static.toDegrees(wire.model.start_angle_down);
+			wire.model.rd_s = new WireMD.WCRD(wire.model, wire.model.start_angle, wire.model.start_angle_down);
 		}
 		if(wire.model.comp_e != null){
 			float len = getLongestDownward(wire.model.comp_e.getModel());
@@ -175,6 +177,7 @@ public class PathModelGenerator {
 			//double dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model.end_angle_down = (float)-Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model.end_angle_down = Static.toDegrees(wire.model.end_angle_down);
+			wire.model.rd_e = new WireMD.WCRD(wire.model, wire.model.end_angle, wire.model.end_angle_down);
 		}
 	}
 

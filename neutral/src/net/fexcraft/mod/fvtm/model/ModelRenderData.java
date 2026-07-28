@@ -28,10 +28,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ModelRenderData {
 
 	public static ConcurrentHashMap<StateWrapper, StateRD> STATE_WRAPPERS = new ConcurrentHashMap<>();
-	public RenderCache cache = new RenderCache(this);
+	public RenderCache cache;
 	public boolean separaterender;
 	public float partialticks;
 	public int light;
+
+	public ModelRenderData(){
+		cache = new RenderCache(this);
+	}
+
+	public ModelRenderData(RenderCache rc){
+		cache = rc;
+	}
 
 	public ModelRenderData update(float ticks){
 		separaterender = false;
@@ -110,6 +118,14 @@ public class ModelRenderData {
 		return null;
 	}
 
+	public double wire_angle(){
+		return 0;
+	}
+
+	public double wire_slack(){
+		return 0;
+	}
+
 	public List<String> cloth_groups(){
 		return null;
 	}
@@ -128,6 +144,7 @@ public class ModelRenderData {
 		public VehicleData vehicle;
 
 		public VehicleRD(VehicleData data){
+			super();
 			vehicle = data;
 		}
 
@@ -169,6 +186,7 @@ public class ModelRenderData {
 		public String category;
 
 		public PartRD(PartData data){
+			super();
 			part = data;
 		}
 
@@ -221,6 +239,7 @@ public class ModelRenderData {
 		public BlockData block;
 
 		public BlockRD(BlockData data){
+			super();
 			block = data;
 		}
 
@@ -267,6 +286,7 @@ public class ModelRenderData {
 		public SignData sign;
 
 		public SignRD(SignData data){
+			super();
 			sign = data;
 		}
 
@@ -298,6 +318,7 @@ public class ModelRenderData {
 		public DecorationData deco;
 
 		public DecorationRD(DecorationData data){
+			super();
 			deco = data;
 		}
 
@@ -329,6 +350,7 @@ public class ModelRenderData {
 		public ContainerData container;
 
 		public ContainerRD(ContainerData data){
+			super();
 			container = data;
 		}
 
@@ -367,6 +389,7 @@ public class ModelRenderData {
 		public Object item;
 
 		public ClothRD(TextureableItem<Cloth> item){
+			super();
 			cloth_item = item;
 		}
 
@@ -388,6 +411,7 @@ public class ModelRenderData {
 		private StateWrapper state;
 
 		public StateRD(StateWrapper wrapper){
+			super(null);
 			state = wrapper;
 		}
 

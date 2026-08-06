@@ -817,7 +817,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.sign() != null && list.visible){
+			if(data.sign() != null /*&& list.visible*/){
 				list.translate(0, data.sign().height * hs, data.sign().width * ws);
 				list.scale(1, height ? data.sign().height : 1, width ? data.sign().width : 1, true);
 			}
@@ -825,7 +825,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			if(data.sign() != null && list.visible){
+			if(data.sign() != null /*&& list.visible*/){
 				list.scale(1, 1, 1);
 				list.translate(0, -data.sign().height * hs, -data.sign().width * ws);
 			}
@@ -856,14 +856,14 @@ public class DefaultPrograms {
 
 		@Override
 		public void pre(ModelGroup list, ModelRenderData data){
-			if(data.sign() != null && list.visible){
+			if(data.sign() != null /*&& list.visible*/){
 				list.translate(0, data.sign().height * hs, data.sign().width * ws);
 			}
 		}
 
 		@Override
 		public void post(ModelGroup list, ModelRenderData data){
-			if(data.sign() != null && list.visible){
+			if(data.sign() != null /*&& list.visible*/){
 				list.translate(0, -data.sign().height * hs, -data.sign().width * ws);
 			}
 		}

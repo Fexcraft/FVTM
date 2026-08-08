@@ -13,7 +13,7 @@ public class FvtmInvFluid extends FvtmInv {
 	public UniFluidTank tank;
 
 	public FvtmInvFluid(){
-		super(InvType.ITEM);
+		super(InvType.FLUID);
 	}
 
 	@Override

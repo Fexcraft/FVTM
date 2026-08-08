@@ -37,13 +37,13 @@ public class RenderUtil26 extends RenderUtil {
 	public void render(ModelGroup group, ModelRenderData data){
 		if(group.has_pre_prog) for(Program program : group.getPrePrograms()) if(program.order().blended()) program.pre(group, data);
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
-			if(group.offset != null) RENDERER.translate(group.offset.x, group.offset.y, group.offset.z);
 			if(group.has_pre_prog) for(Program program : group.getPrePrograms()) if(program.order().not_blended()) program.pre(group, data);
+			if(group.offset != null) last.translate((float)group.offset.x, (float)group.offset.y, (float)group.offset.z);
 			if(group.rotation.notNull()) last.rotate(new Quaternionf()
 				.rotateAxis((float)Static.toRadians(group.rotation.y), AY)
 				.rotateAxis((float)Static.toRadians(group.rotation.x), AX)
 				.rotateAxis((float)Static.toRadians(group.rotation.z), AZ));
-			if(group.scale.notOne()) last.scale((float)group.scale.x, (float)group.scale.y, (float)group.scale.z);
+			last.scale((float)group.scale.x, (float)group.scale.y, (float)group.scale.z);
  			Renderer26.pose = last;
 			Renderer26.cons = cons;
 			if(data.light != 0) Renderer26.light = data.light;

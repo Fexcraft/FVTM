@@ -27,6 +27,7 @@ item.fvtm.junction_tool.none=&aNo Junction Position Cached.
 item.fvtm.junction_tool.nosys=&aRailSystem not found on this Level.
 item.fvtm.junction_tool.nojunc=&cNo junction at this position.
 item.fvtm.junction_tool.fulljunc=&cDisconnect all tracks before removing a Junction.
+item.fvtm.junction_tool.remtrack=&c&oRemoving last Track...
 item.fvtm.junction_tool.remjunc=&c&oRemoving Junction...
 item.fvtm.junction_tool.reset=&7&oResetting previous Cached Position.
 item.fvtm.junction_tool.cached=&a&lJunction Position Cached.

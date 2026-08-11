@@ -31,6 +31,7 @@
 	"item.fvtm.junction_tool.nosys": "\u00A7aRailSystem not found on this Level.",
 	"item.fvtm.junction_tool.nojunc": "\u00A7cNo junction at this position.",
 	"item.fvtm.junction_tool.fulljunc": "\u00A7cDisconnect all tracks before removing a Junction.",
+	"item.fvtm.junction_tool.remtrack": "\u00A7c\u00A7oRemoving last Track...",
 	"item.fvtm.junction_tool.remjunc": "\u00A7c\u00A7oRemoving Junction...",
 	"item.fvtm.junction_tool.reset": "\u00A77\u00A7oResetting previous Cached Position.",
 	"item.fvtm.junction_tool.cached": "\u00A7a\u00A7lJunction Position Cached.",

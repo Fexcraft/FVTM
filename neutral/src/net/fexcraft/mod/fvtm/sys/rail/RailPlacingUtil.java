@@ -304,6 +304,9 @@ public class RailPlacingUtil {
 							}
 						}
 					}
+					if(player.isShiftDown()){
+						place(sys, player, gauge, vector);
+					}
 				}
 				else player.send("interact.fvtm.rail_marker.no_start_junction");
 			}

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.road;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.road.UniRoadTool.Road;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.TAG_KEY;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.gen;
@@ -29,6 +29,7 @@ public class RoadPlacingUtil {
 	public static NewRoad CL_CURRENT = null;
 
 	public static void place(WorldW world, EntityW pass, TagCW com, QV3D vector){
+		if(infoIfNoPerm(pass, vector.pos)) return;
 		UUID roadid = CURRENT.get(pass.getUUID());
 		if(!com.has(TAG_KEY)){
 			pass.send("interact.fvtm.road_tool.empty");

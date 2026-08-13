@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.CompatUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -113,6 +114,10 @@ public class UniRoadTool {
 	public static boolean placeRoad(EntityW pass, StackWrapper stack, Road _road){
 		if(_road.length > MAX_ROAD_LENGTH){
 			pass.bar("interact.fvtm.road_tool.too_long");
+			return false;
+		}
+		if(!UniPerm.has(pass, "fvtm.admin")){
+			pass.send("no `fvtm.admin` perm");
 			return false;
 		}
 		TagCW com = stack.directTag().getCompound(TAG_KEY);

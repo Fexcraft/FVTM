@@ -102,6 +102,7 @@ interact.fvtm.rail_marker.remove_signal=&9Please remove the signal first.
 interact.fvtm.rail_marker.junction_full=&9Junction reached track limit (4)
 interact.fvtm.rail_marker.cache_reset=&c&oPoint cache reset.
 interact.fvtm.rail_marker.too_long=&cTrack length exceeds the configured max length.
+interact.fvtm.rail_marker.no_perm_on_pos=&cNo Permission to place track at %s
 interact.fvtm.rail_marker.track_created=&o> Track Created.
 interact.fvtm.rail_marker.no_start_junction=&cNo Junction at starting point found!
 interact.fvtm.rail_marker.missing_materials=&eNot enough materials to create Track!
@@ -416,6 +417,9 @@ fvtm.rail.long_distance.finished=Done! %s tracks created on a distance of %s.
 fvtm.rail.long_distance.info=This tool is best for straight paths!
 fvtm.rail.long_distance.segments=Segmentation: %sm
 fvtm.rail.long_distance.points=Selected Points:
+
+# Other
+fvtm.info.noposperm=&cNo Permission on this Position
 
 # Items
 item.fvtm:road_tool.name=Road Tool

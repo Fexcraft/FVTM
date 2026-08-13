@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import static net.fexcraft.lib.common.Static.rad180;
-import static net.fexcraft.mod.fvtm.Config.MAX_WIRE_LENGTH;
-import static net.fexcraft.mod.fvtm.Config.WIRE_SAVE_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.*;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 
 import java.io.File;
@@ -76,6 +75,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	public void onRelayInteract(TagCW com, EntityW player){
 		RelayHolder holder = getHolder(com.getV3I("holder"));
+		if(infoIfNoPerm(player, holder.pos)) return;
 		if(holder == null){
 			player.send("error.holder.null");
 			return;
@@ -135,6 +135,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	public void onRelayRemove(TagCW com, EntityW player){
 		RelayHolder holder = getHolder(com.getV3I("holder"));
+		if(infoIfNoPerm(player, holder.pos)) return;
 		if(holder == null){
 			player.send("error.holder.null");
 			return;
@@ -152,6 +153,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	public void onRelayWireSlack(TagCW com, EntityW player){
 		Wire wire0 = getWire(new WireKey(com));
+		if(infoIfNoPerm(player, wire0.relay.holder.pos)) return;
 		Wire wire1 = getWire(wire0.okey);
 		wire0.slack += com.getBoolean("up") ? -Config.WIRE_SLACK_ADJUSTMENT : Config.WIRE_SLACK_ADJUSTMENT;
 		if(wire0.slack > 8) wire0.slack = 8;
@@ -171,6 +173,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 			return;
 		}
 		Wire wire = getWire(new WireKey(com));
+		if(infoIfNoPerm(player, wire.relay.holder.pos)) return;
 		if(!deco.accepts(wire.type.getType())){
 			player.bar("interact.fvtm.relay.wire_comp_not_compatible");
 			return;
@@ -215,6 +218,7 @@ public class WireSystem extends DetachedSystem<WireSystem, RelayHolder> {
 
 	public void onRelayWireCompRem(TagCW com, EntityW player){
 		Wire wire = getWire(new WireKey(com));
+		if(infoIfNoPerm(player, wire.relay.holder.pos)) return;
 		if(wire.comps == null) return;
 		String type = com.has("as") ? com.getString("as") : null;
 		if(type != null){

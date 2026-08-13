@@ -3,7 +3,10 @@ package net.fexcraft.mod.fvtm;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.uni.ConfigBase;
+import net.fexcraft.mod.uni.UniPerm;
+import net.fexcraft.mod.uni.world.EntityW;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,6 +82,7 @@ public class Config extends ConfigBase {
 
 	public Config(File file){
 		super(file, "FVTM");
+		UniPerm.register("fvtm.admin", 4);
 	}
 
 	@Override
@@ -313,6 +317,16 @@ public class Config extends ConfigBase {
 		PACK_FOLDERS.clear();
 		if(!map.has("pack_folders")) return;
 		map.getArray("pack_folders").value.forEach(val -> PACK_FOLDERS.add(new File(val.string_value())));
+	}
+
+	public static boolean infoIfNoPerm(EntityW ent, V3I pos){
+		if(UniPerm.can_interact(ent, pos)){
+			return false;
+		}
+		else{
+			ent.bar("fvtm.info.noposperm");
+			return true;
+		}
 	}
 
 

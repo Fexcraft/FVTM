@@ -26,6 +26,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -105,6 +107,7 @@ public class ToolboxItem extends Item {
 		if(stack.getItemDamage() == ToolboxType.SIGN_ADJREM.idx && !player.isSneaking()){
 			EntityW ply = UniEntity.getEntity(player);
 			QV3D vec = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
+			if(infoIfNoPerm(ply, vec.pos)) return EnumActionResult.SUCCESS;
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
 			if(system == null){
 				ply.send("sign system not found");

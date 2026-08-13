@@ -260,6 +260,7 @@
 	"interact.fvtm.rail_marker.junction_full": "\u00a79Junction reached track limit (4)",
 	"interact.fvtm.rail_marker.cache_reset": "\u00a7c\u00a7oPoint cache reset.",
 	"interact.fvtm.rail_marker.too_long": "\u00a7cTrack length exceeds the configured max length.",
+	"interact.fvtm.rail_marker.no_perm_on_pos": "\u00a7cNo Permission to place track at %s",
 	"interact.fvtm.rail_marker.track_created": "\u00a7o> Track Created.",
 	"interact.fvtm.rail_marker.no_start_junction": "\u00a7cNo Junction at starting point found!",
 	"interact.fvtm.rail_marker.missing_materials": "\u00a7eNot enough materials to create Track!",
@@ -444,6 +445,7 @@
 	"fvtm.rail.long_distance.finished": "Done! %s tracks created on a distance of %s.",
 	"fvtm.rail.long_distance.info": "This tool is best for straight paths!",
 	"fvtm.rail.long_distance.segments": "Segmentation: %sm",
-	"fvtm.rail.long_distance.points": "Selected Points:"
+	"fvtm.rail.long_distance.points": "Selected Points:",
 
+	"fvtm.info.noposperm": "\u00A7cNo Permission on this Position"
 }

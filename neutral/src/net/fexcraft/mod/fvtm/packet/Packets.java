@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -227,6 +229,7 @@ public abstract class Packets {
 		LIS_SERVER.put("sign_interact", (com, player) -> {
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, player.getWorld());
 			QV3D pos = new QV3D(com, "pos");
+			if(infoIfNoPerm(player, pos.pos)) return;
 			if(com.getBoolean("remove")){
 				system.del(pos.pos);
 			}
@@ -245,6 +248,7 @@ public abstract class Packets {
 		LIS_SERVER.put("deco_interact", (com, player) -> {
 			DecoSystem system = SystemManager.get(SystemManager.Systems.DECO, player.getWorld());
 			QV3D pos = new QV3D(com, "pos");
+			if(infoIfNoPerm(player, pos.pos)) return;
 			if(com.getBoolean("remove")){
 				system.del(pos.pos);
 			}
@@ -272,7 +276,7 @@ public abstract class Packets {
 			ent.runIfPresent(Passenger.class, pass -> pass.sendPassUpdate(ent.entity.getId(), pass.vehicle, pass.seat));
 		});
 		LIS_SERVER.put("attach_trailer", (com, player) -> {
-			UniEntity ent = player.getWorld().getUniEntity(com.getInteger("ent"));
+			//UniEntity ent = player.getWorld().getUniEntity(com.getInteger("ent"));
 			Map.Entry<VehicleData, InteractRef> ref = ((FvtmWorld)player.getWorld()).getInteractRef(com);
 			if(!ref.getValue().isVehicle()){
 				player.send("interact.fvtm.vehicle.wheel_remove");

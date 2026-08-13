@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
-import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
@@ -19,8 +18,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
-import java.util.List;
 import java.util.function.Consumer;
+
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -88,6 +88,7 @@ public class ToolboxItem extends Item {
 		if(type == ToolboxType.SIGN_ADJREM.idx && !context.getPlayer().isShiftKeyDown()){
 			EntityW ply = UniEntity.getEntity(context.getPlayer());
 			QV3D vec = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
+			if(infoIfNoPerm(ply, vec.pos)) return InteractionResult.SUCCESS;
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
 			if(system == null){
 				ply.send("sign system not found");

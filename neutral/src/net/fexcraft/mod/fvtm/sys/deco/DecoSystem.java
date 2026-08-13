@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.TimerTask;
 
 import static net.fexcraft.mod.fvtm.Config.DECO_SAVE_INTERVAL;
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 
 /**
  * "Decoration System"
@@ -87,6 +88,7 @@ public class DecoSystem extends DetachedSystem<DecoSystem, DecoInstance> {
 	}
 
 	public void addNewDeco(EntityW ent, StackWrapper stack, QV3D vec){
+		if(infoIfNoPerm(ent, vec.pos)) return;
 		DecoInstance inst = get(vec.pos);
 		if(inst == null){
 			inst = add(vec.pos);

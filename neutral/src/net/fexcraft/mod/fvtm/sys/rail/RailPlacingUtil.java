@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
 
@@ -8,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.mod.fvtm.FvtmLogger;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -31,6 +33,7 @@ public class RailPlacingUtil {
 	public static NewTrack CL_CURRENT = null;
 
 	public static void place(RailSystem system, EntityW pass, RailGauge gauge, QV3D vector){
+		if(infoIfNoPerm(pass, vector.pos)) return;
 		UUID trackid = CURRENT.get(pass.getUUID());
 		if(trackid == null){
 			UUID newid = genId();
@@ -162,6 +165,7 @@ public class RailPlacingUtil {
 		}
 
 		public void create(EntityW player, QV3D vector){
+			if(infoIfNoPerm(player, vector.pos)) return;
 			RailSystem sys = SystemManager.get(Systems.RAIL, player.getWorld());
 			Junction junc = sys.getJunction(vector.pos, true);
 			UUID current = CURRENT.get(player.getUUID());
@@ -180,7 +184,7 @@ public class RailPlacingUtil {
 			if(!player.isCreative()){
 				List<StackWrapper> stacks = player.copyInventory();
 				for(RailGauge.UseMat mat : ntrack.gauge.getMaterials()){
-					FvtmLogger.marker(mat.id, mat.tag, mat.amount);
+					//FvtmLogger.marker(mat.id, mat.tag, mat.amount);
 					if(mat.tag){
 						List<StackWrapper> tag = UniStack.getTagAsList(mat.id);
 						if(tag.isEmpty()) continue;
@@ -263,6 +267,14 @@ public class RailPlacingUtil {
 				if(track.length > MAX_RAIL_TRACK_LENGTH){
 					player.send("interact.fvtm.rail_marker.too_long");
 					return;
+				}
+				V3I mut = new V3I();
+				for(float f = 0; f < track.length; f += 0.5f){
+					V3D vec = track.getVectorPosition(f, false);
+					if(!UniPerm.can_place(player, mut.set((int)vec.x, (int)vec.y, (int)vec.z))){
+						player.send("interact.fvtm.rail_marker.no_perm_on_pos", mut.toString());
+						return;
+					}
 				}
 				//track.blockless = DISABLE_RAIL_BLOCKS;
 				Junction second = sys.getJunction(track.start.pos);

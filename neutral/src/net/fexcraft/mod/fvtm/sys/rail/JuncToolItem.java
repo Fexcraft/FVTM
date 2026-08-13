@@ -7,12 +7,15 @@ import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class JuncToolItem {
 
 	public static boolean onUse(WorldW world, EntityW player, StackWrapper stack, QV3D vec){
+		if(infoIfNoPerm(player, vec.pos)) return true;
 		RailSystem sys = SystemManager.get(SystemManager.Systems.RAIL, world);
 		if(sys == null){
 			player.bar("item.fvtm.junction_tool.nosys");

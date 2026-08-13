@@ -21,6 +21,8 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -87,6 +89,7 @@ public class ToolboxItem extends Item {
 		if(type == ToolboxType.SIGN_ADJREM.idx && !context.getPlayer().isShiftKeyDown()){
 			EntityW ply = UniEntity.getEntity(context.getPlayer());
 			QV3D vec = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
+			if(infoIfNoPerm(ply, vec.pos)) return InteractionResult.SUCCESS;
 			SignSystem system = SystemManager.get(SystemManager.Systems.SIGN, ply.getWorld());
 			if(system == null){
 				ply.send("sign system not found");

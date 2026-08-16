@@ -1,0 +1,99 @@
+{
+	"_info_": "Rail Preset Editor UI",
+	"background": false,
+	"size": [ 248, 72 ],
+	"tabs": {
+		"main": {
+			"texture": "fvtm:textures/gui/rail_preset.png",
+			"size": [ 248, 72 ],
+			"pos": [ 0, 0 ],
+			"buttons": [
+				"add", "import", "export", "prev", "next",
+				"rem", "on", "off", "s4", "s8", "s16"
+			],
+			"texts": [
+				"gauge", "status"
+			],
+			"fields": [
+				"name"
+			]
+		}
+	},
+	"buttons": {
+		"add": {
+			"pos": [ 7, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.add"
+		},
+		"import": {
+			"pos": [ 20, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.import"
+		},
+		"export": {
+			"pos": [ 33, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.export"
+		},
+		"prev": {
+			"pos": [ 46, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.prev"
+		},
+		"next": {
+			"pos": [ 59, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.next"
+		},
+		"rem": {
+			"pos": [ 72, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.remove"
+		},
+		"on": {
+			"pos": [ 91, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.on"
+		},
+		"off": {
+			"pos": [ 104, 53 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.off"
+		},
+		"s4": {
+			"pos": [ 203, 39 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.s4"
+		},
+		"s8": {
+			"pos": [ 216, 39 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.s8"
+		},
+		"s16": {
+			"pos": [ 229, 39 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.s16"
+		}
+	},
+	"texts": {
+		"gauge": {
+			"pos": [ 9, 9 ],
+			"size": [ 230, 8 ],
+			"autoscale": true
+		},
+		"status": {
+			"pos": [ 9, 25 ],
+			"size": [ 230, 8 ],
+			"autoscale": true
+		}
+	},
+	"fields": {
+		"name": {
+			"size": [ 192, 10 ],
+			"pos": [ 8, 40 ],
+			"background": true,
+			"max-length": 32
+		}
+	}
+}

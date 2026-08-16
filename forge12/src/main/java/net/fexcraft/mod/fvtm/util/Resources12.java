@@ -12,7 +12,6 @@ import net.fexcraft.mod.fvtm.block.*;
 import net.fexcraft.mod.fvtm.block.Asphalt.AsphaltItem;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
@@ -36,7 +35,6 @@ import net.fexcraft.mod.fvtm.render.block.RoadLinesModelLoader;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.FclRecipe;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.inv.ItemWrapper;
@@ -209,10 +207,10 @@ public class Resources12 extends FvtmResources {
 		CONTAINERS.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), new ContainerItem(con))));
 		RAILGAUGES.forEach(rail -> {
 			rail.setItemWrapper(wrapwrapper(rail.getID(), new RailGaugeItem(rail)));
-			if(rail.getPresets() == null) return;
+			/*if(rail.getPresets() == null) return;
 			for(RailGauge.Preset preset : rail.getPresets()){
 				wrapwrapper(IDLManager.getIDLCached(rail.getIDS() + "." + preset.name.toLowerCase()), new RailPresetItem(rail, preset));
-			}
+			}*/
 		});
 		DECORATIONS.forEach(deco -> deco.setItemWrapper(wrapwrapper(deco.getID(), new DecorationItem(deco))));
 		SIGNS.forEach(sign -> sign.setItemWrapper(wrapwrapper(sign.getID(), new SignItem(sign))));

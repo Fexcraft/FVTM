@@ -205,6 +205,7 @@ public abstract class FvtmResources {
 		}
 		if(Config.MD_RAIL){
 			FvtmResources.INSTANCE.searchInPacksFor(ContentType.RAILGAUGE);
+			RailGauge.loadPresets();
 		}
 		if(Config.MD_WIRE){
 			FvtmResources.INSTANCE.searchInPacksFor(ContentType.WIRE);

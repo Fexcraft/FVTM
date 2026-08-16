@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -51,6 +52,11 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag){
         for(String s : gauge.getDescription()) tooltip.add(Formatter.format(I18n.format(s)));
+		if(stack.hasTagCompound() && stack.getTagCompound().getBoolean("fvtm:preset_mode")){
+			tooltip.add(I18n.format("item.fvtm.railgauge.preset_mode"));
+			tooltip.add(I18n.format("item.fvtm.railgauge.preset", stack.getTagCompound().getString("fvtm:rail_preset")));
+
+		}
         tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.width", gauge.getWidth())));
         if(gauge.getCompatible().size() > 0){
 			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.compatible")));
@@ -75,7 +81,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	        return EnumActionResult.FAIL;
         }
         QV3D vector = new QV3D(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
-		RailPlacingUtil.place(syscap, UniEntity.getEntity(player), gauge, vector);
+		RailPlacingUtil.place(syscap, UniEntity.getEntity(player), UniStack.getStack(player.getHeldItem(hand)), gauge, vector);
 		return EnumActionResult.SUCCESS;
     }
 

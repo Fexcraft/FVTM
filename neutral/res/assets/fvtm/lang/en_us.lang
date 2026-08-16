@@ -299,9 +299,14 @@ ui.fvtm.rail_preset_editor.next=Select Next Preset
 ui.fvtm.rail_preset_editor.remove=Remove Selected Preset
 ui.fvtm.rail_preset_editor.on=Enable Preset Placing Mode on this Item
 ui.fvtm.rail_preset_editor.off=Disable Preset Placing Mode on this Item
+ui.fvtm.rail_preset_editor.save=Save Preset Changes
 ui.fvtm.rail_preset_editor.s4=Set preset to 4 Rotations Mode
 ui.fvtm.rail_preset_editor.s8=Set preset to 8 Rotations Mode
 ui.fvtm.rail_preset_editor.s16=Set preset to 16 Rotations Mode
+ui.fvtm.rail_preset_editor.gauge=Gauge: %s
+ui.fvtm.rail_preset_editor.no_presets=Please create a Preset, currently there is none.
+ui.fvtm.rail_preset_editor.none_sel=Please select a Preset first.
+ui.fvtm.rail_preset_editor.selected=N: %s | I: %s | R: %s
 
 ui.fvtm.decoration_editor.position=Position Offset
 ui.fvtm.decoration_editor.rotation=Rotation (Degrees)

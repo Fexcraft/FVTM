@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
+import net.fexcraft.mod.fvtm.ui.rail.RailPresetEditorCon;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -374,6 +375,10 @@ public class RailPlacingUtil {
 	}
 
 	private static void placePreset(RailSystem system, EntityW player, StackWrapper stack, RailGauge gauge, QV3D vector){
+
+	}
+
+	public static void createPreset(RailPresetEditorCon menu){
 
 	}
 

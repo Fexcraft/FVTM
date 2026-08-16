@@ -18,8 +18,9 @@ public class UIKeys {
 	public static final int ID12_TOOLBOX_TEXTURE = 601;
 	public static final int ID12_VEHICLE_CATALOG = 610;
 	public static final int ID12_RAIL_JUNCTION = 701;
-	public static final int ID12_RAIL_SIGNAL = 704;
 	public static final int ID12_RAIL_JUNC_EVENTS = 706;
+	public static final int ID12_RAIL_SIGNAL = 704;
+	public static final int ID12_RAIL_PRESET = 707;
 	public static final int ID12_ROAD_TOOL = 702;
 	public static final int ID12_ROAD_TOOL_CUSTOM = 703;
 	public static final int ID12_ENTITY_SYSTEM_CHOOSE = 705;
@@ -49,6 +50,7 @@ public class UIKeys {
 	public static final UIKey RAIL_JUNCTION = new UIKey(ID12_RAIL_JUNCTION, "fvtm:rail_junction");
 	public static final UIKey RAIL_SIGNAL = new UIKey(ID12_RAIL_SIGNAL, "fvtm:rail_signal");
 	public static final UIKey RAIL_JUNC_EVENTS = new UIKey(ID12_RAIL_JUNC_EVENTS, "fvtm:rail_junc_events");
+	public static final UIKey RAIL_PRESET = new UIKey(ID12_RAIL_PRESET, "fvtm:rail_preset_editor");
 	public static final UIKey ROAD_TOOL = new UIKey(ID12_ROAD_TOOL, "fvtm:road_tool");
 	public static final UIKey ROAD_TOOL_CUSTOM = new UIKey(ID12_ROAD_TOOL_CUSTOM, "fvtm:road_tool_custom");
 	public static final UIKey ENTITY_SYSTEM_CHOOSE = new UIKey(ID12_ENTITY_SYSTEM_CHOOSE, "fvtm:entity_system_choose");
@@ -95,6 +97,8 @@ public class UIKeys {
 		UniReg.registerMenu(RAIL_SIGNAL, "fvtm:uis/rail_signal", RailSignalContainer.class);
 		UniReg.registerUI(RAIL_JUNC_EVENTS, RailJuncEvents.class);
 		UniReg.registerMenu(RAIL_JUNC_EVENTS, "fvtm:uis/rail_junction_events", RailJuncEventsCon.class);
+		UniReg.registerUI(RAIL_PRESET, RailPresetEditor.class);
+		UniReg.registerMenu(RAIL_PRESET, "fvtm:uis/rail_preset_editor", RailPresetEditorCon.class);
 		UniReg.registerUI(ROAD_TOOL, RoadToolUI.class);
 		UniReg.registerMenu(ROAD_TOOL, "fvtm:uis/road_tool", RoadToolCon.class);
 		UniReg.registerUI(ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);

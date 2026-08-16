@@ -9,7 +9,7 @@
 			"pos": [ 0, 0 ],
 			"buttons": [
 				"add", "import", "export", "prev", "next",
-				"rem", "on", "off", "s4", "s8", "s16"
+				"rem", "on", "off", "save", "s4", "s8", "s16"
 			],
 			"texts": [
 				"gauge", "status"
@@ -60,6 +60,11 @@
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.rail_preset_editor.off"
 		},
+		"save": {
+			"pos": [ 190, 39 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.rail_preset_editor.save"
+		},
 		"s4": {
 			"pos": [ 203, 39 ],
 			"size": [ 12, 12 ],
@@ -90,7 +95,7 @@
 	},
 	"fields": {
 		"name": {
-			"size": [ 192, 10 ],
+			"size": [ 179, 10 ],
 			"pos": [ 8, 40 ],
 			"background": true,
 			"max-length": 32

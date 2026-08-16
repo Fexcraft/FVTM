@@ -1,11 +1,12 @@
 package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.app.json.JsonValue;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
@@ -17,8 +18,8 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextureable {
 
+	public static final ArrayList<Preset> PRESETS = new ArrayList<>();
 	public static final float DEFWIDTH = 1.875f;
 	//
 	protected float width;
@@ -42,7 +44,7 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 	protected String modelid, ctab;
 	protected RailGaugeModel model;
 	protected ModelData modeldata;
-	protected ArrayList<Preset> presets;
+	//protected ArrayList<Preset> presets;
 	protected IDL itemtexloc;
 	
 	public RailGauge(){}
@@ -80,44 +82,47 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		//
         this.ctab = map.getString("CreativeTab", "default");
         this.itemtexloc = ContentConfigUtil.getItemTexture(id, getContentType(), map);
-		//
-		if(map.has("Presets")){
-			presets = new ArrayList<>();
-			map.get("Presets").asArray().value.forEach(val -> {
-				try{
-					JsonMap mep = val.asMap();
-					JsonArray path = mep.getArray("path");
-					JsonArray temp;
-					Preset pre = new Preset();
-					pre.path = new QV3D[path.size()];
-					for(int i = 0; i < pre.path.length; i++){
-						temp = path.get(i).asArray();
-						double x = temp.get(0).float_value();
-						double y = temp.get(1).float_value();
-						double z = temp.get(2).float_value();
-						pre.path[i] = new QV3D(x, y, z);
-					}
-					pre.name = mep.get("name").string_value().toLowerCase();
-					pre.segmentation = mep.getInteger("segmentation", pre.segmentation);
-					presets.add(pre);
-				}
-				catch(Exception e){
-					FvtmLogger.log("Failed to load a RailGauge Preset for '" + id.colon() + "'!");
-					FvtmLogger.log("JSON: " + JsonHandler.toString(val, JsonHandler.PrintOption.FLAT));
-					e.printStackTrace();
-					Static.halt();
-				}
-			});
-		}
 		return this;
 	}
 
 	public static class Preset {
 
+		public RailGauge gauge;
 		public QV3D[] path;
 		public String name;
-		public int segmentation = 4;
+		public int rot = 4;
 
+		public JsonMap save(boolean withname){
+			JsonMap set = new JsonMap();
+			JsonArray path = new JsonArray();
+			for(QV3D vec : this.path){
+				path.add(new JsonArray.Flat(vec.vec.x, vec.vec.y, vec.vec.z));
+			}
+			set.add("gauge", gauge.getIDS());
+			if(withname) set.add("name", name);
+			set.add("path", path);
+			set.add("rot", rot);
+			return set;
+		}
+
+		public Preset load(String key, JsonMap map){
+			JsonArray path = map.getArray("path");
+			JsonArray temp;
+			Preset pre = new Preset();
+			pre.path = new QV3D[path.size()];
+			for(int i = 0; i < pre.path.length; i++){
+				temp = path.get(i).asArray();
+				double x = temp.get(0).float_value();
+				double y = temp.get(1).float_value();
+				double z = temp.get(2).float_value();
+				pre.path[i] = new QV3D(x, y, z);
+			}
+			pre.gauge = FvtmRegistry.RAILGAUGES.get(map.get("gauge").string_value());
+			if(pre.gauge == null) pre.gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
+			pre.name = key;
+			pre.rot = map.getInteger("rot", pre.rot);
+			return this;
+		}
 	}
 
 	public static class UseMat {
@@ -215,8 +220,36 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		return ctab;
 	}
 
-	public ArrayList<Preset> getPresets(){
+	/*public ArrayList<Preset> getPresets(){
 		return presets;
+	}*/
+
+	public static void loadPresets(){
+		File file = new File(FvtmRegistry.CONFIG_DIR, "fvtm-rail-presets.json");
+		if(!file.exists()) return;
+		JsonMap map = JsonHandler.parse(file);
+		if(!map.has("presets")) return;
+		for(Map.Entry<String, JsonValue<?>> entry : map.getMap("presets").value.entrySet()){
+			try{
+				PRESETS.add(new Preset().load(entry.getKey(), entry.getValue().asMap()));
+			}
+			catch(Exception e){
+				FvtmLogger.log("Failed to load a RailGauge Preset '" + entry.getKey() + "'!");
+				FvtmLogger.log("JSON: " + JsonHandler.toString(entry.getValue(), JsonHandler.PrintOption.FLAT));
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void savePresets(){
+		JsonMap presets = new JsonMap();
+		for(Preset preset : PRESETS){
+			presets.add(preset.name, preset.save(false));
+		}
+		JsonMap map = new JsonMap();
+		map.add("presets", presets);
+		map.add("saved", Time.getAsString(Time.getDate()));
+		JsonHandler.print(new File(FvtmRegistry.CONFIG_DIR, "fvtm-rail-presets.json"), map);
 	}
 
 }

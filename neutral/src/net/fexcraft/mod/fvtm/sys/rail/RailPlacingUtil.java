@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.inv.StackWrapper;
@@ -32,8 +33,18 @@ public class RailPlacingUtil {
 	public static final ConcurrentHashMap<UUID, UUID> CURRENT = new ConcurrentHashMap<>();
 	public static NewTrack CL_CURRENT = null;
 
-	public static void place(RailSystem system, EntityW pass, RailGauge gauge, QV3D vector){
+	public static void place(RailSystem system, EntityW pass, StackWrapper stack, RailGauge gauge, QV3D vector){
 		if(infoIfNoPerm(pass, vector.pos)) return;
+		if(stack != null){
+			if(pass.isShiftDown()){
+				pass.openUI(UIKeys.RAIL_PRESET, 0, 0, 0);
+				return;
+			}
+			if(stack.directTag().getBoolean("fvtm:preset_mode")){
+				placePreset(system, pass, stack, gauge, vector);
+				return;
+			}
+		}
 		UUID trackid = CURRENT.get(pass.getUUID());
 		if(trackid == null){
 			UUID newid = genId();
@@ -67,7 +78,7 @@ public class RailPlacingUtil {
 		//
 		FvtmResources.INSTANCE.spawnRailMarker(pass.getWorld(), vector, trackid);
 	}
-	
+
 	private static UUID genId(){
 		UUID uuid = UUID.randomUUID();
 		while(QUEUE.contains(uuid) || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) uuid = UUID.randomUUID();
@@ -317,7 +328,7 @@ public class RailPlacingUtil {
 						}
 					}
 					if(player.isShiftDown()){
-						place(sys, player, gauge, vector);
+						place(sys, player, null, gauge, vector);
 					}
 				}
 				else player.send("interact.fvtm.rail_marker.no_start_junction");
@@ -359,6 +370,10 @@ public class RailPlacingUtil {
 				preview.get(1).add(vec.add(grv(angle, new V3D(half, 0, 0))));
 			}
 		}
+
+	}
+
+	private static void placePreset(RailSystem system, EntityW player, StackWrapper stack, RailGauge gauge, QV3D vector){
 
 	}
 

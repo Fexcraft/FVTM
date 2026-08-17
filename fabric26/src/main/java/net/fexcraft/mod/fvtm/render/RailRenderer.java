@@ -8,7 +8,10 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
+import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.render.state.OutlineRS;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
@@ -18,6 +21,9 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemRegion;
 import net.fexcraft.mod.fvtm.ui.rail.RailJunction;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
@@ -148,6 +154,9 @@ public class RailRenderer {
 		pose.popPose();
 	}
 
+	private static StackWrapper stack;
+	private static RailGauge.Preset preset;
+
 	public static boolean renderGrid(LevelRenderContext context){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return true;
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return true;
@@ -191,6 +200,24 @@ public class RailRenderer {
 		RENDER_UTIL.render(SPHERE);
 		Renderer26.resetColor();
 		pose.popPose();
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof RailGaugeItem){
+			stack = UniStack.getStack(Minecraft.getInstance().player.getMainHandItem());
+			if(!stack.hasTag() || !stack.directTag().getBoolean("fvtm:preset_mode")) return true;
+			preset = RailGauge.getPreset(stack.directTag().getString("fvtm:rail_preset"));
+			if(preset == null) return true;
+			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
+			deg = (int)(Minecraft.getInstance().player.getYRot() / deg) * deg;
+			QV3D qv;
+			pose.pushPose();
+			pose.translate(vec.vec.x - cx, vec.vec.y - cy, vec.vec.z - cz);
+			for(int i = 0; i < preset.path.length; i++){
+				qv = new QV3D(VecUtil.rotByDeg(deg, preset.path[i].vec));
+				pose.translate(qv.vec.x, qv.vec.y - 1, qv.vec.z);
+				RENDER_UTIL.render(RailMarkerModel.INST.arrow);
+				pose.translate(-qv.vec.x, -qv.vec.y + 1, -qv.vec.z);
+			}
+			pose.popPose();
+		}
 		return true;
 	}
 

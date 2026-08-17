@@ -34,8 +34,8 @@ item.fvtm.junction_tool.cached=&a&lJunction Position Cached.
 item.fvtm.railgauge.width=&9Gauge/Width: &7%s
 item.fvtm.railgauge.compatible=&9Compatible with:
 item.fvtm.railgauge.materials=&9Materials (per Block length*)
-item.fvtm.railgauge.preset_mode=\u00A76Preset Mode is \u00A7aactive.
-item.fvtm.railgauge.preset=\u00A76Preset: \u00A7%s
+item.fvtm.railgauge.preset_mode=&6Preset Mode is &aactive.
+item.fvtm.railgauge.preset=&6Preset: &7%s
 
 cmd.fvtm.get-key.is-locked=&cPlease unlock the Vehicle first.
 cmd.fvtm.get-key.not-driver=&eYou need to be the driver to get a key.

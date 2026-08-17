@@ -127,7 +127,7 @@ public class RailRenderer {
 			double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
 			double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
 			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
-			deg = (int)(player.rotationYaw / deg) * deg;
+			deg = Math.floor(player.rotationYaw / deg + 0.5) * deg;
 			QV3D qv;
 			GlStateManager.disableTexture2D();
 			GL11.glPushMatrix();

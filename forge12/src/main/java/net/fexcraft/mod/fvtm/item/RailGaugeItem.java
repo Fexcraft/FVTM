@@ -53,8 +53,8 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag){
         for(String s : gauge.getDescription()) tooltip.add(Formatter.format(I18n.format(s)));
 		if(stack.hasTagCompound() && stack.getTagCompound().getBoolean("fvtm:preset_mode")){
-			tooltip.add(I18n.format("item.fvtm.railgauge.preset_mode"));
-			tooltip.add(I18n.format("item.fvtm.railgauge.preset", stack.getTagCompound().getString("fvtm:rail_preset")));
+			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.preset_mode")));
+			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.preset", stack.getTagCompound().getString("fvtm:rail_preset"))));
 
 		}
         tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.width", gauge.getWidth())));

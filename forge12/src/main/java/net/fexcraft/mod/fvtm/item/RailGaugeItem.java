@@ -55,7 +55,6 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 		if(stack.hasTagCompound() && stack.getTagCompound().getBoolean("fvtm:preset_mode")){
 			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.preset_mode")));
 			tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.preset", stack.getTagCompound().getString("fvtm:rail_preset"))));
-
 		}
         tooltip.add(Formatter.format(I18n.format("item.fvtm.railgauge.width", gauge.getWidth())));
         if(gauge.getCompatible().size() > 0){

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import static net.fexcraft.lib.common.Static.rad90;
-import static net.fexcraft.lib.common.Static.toDegrees;
+import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
@@ -17,7 +16,10 @@ import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
+import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -44,6 +46,7 @@ public class RailRenderer {
     
 	private JunctionGridItem jitem;
     private ItemStack stack;
+	private RailGauge.Preset preset;
     //private QV3D[] vecs;
 	//
 	public static final RGB MIDDLE_GRAY = new RGB(127, 127, 127);
@@ -114,7 +117,32 @@ public class RailRenderer {
             //
             GlStateManager.enableTexture2D();
             //GL11.glTranslated(x, y, z);
-    	} else return;
+    	}
+		if(stack.getItem() instanceof RailGaugeItem && stack.hasTagCompound() && stack.getTagCompound().getBoolean("fvtm:preset_mode")){
+			preset = RailGauge.getPreset(stack.getTagCompound().getString("fvtm:rail_preset"));
+			if(preset == null) return;
+			QV3D vec = new QV3D(event.getTarget().hitVec.x, event.getTarget().hitVec.y, event.getTarget().hitVec.z);
+			EntityPlayer player = event.getPlayer();
+			double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
+			double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
+			double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
+			deg = (int)(player.rotationYaw / deg) * deg;
+			QV3D qv;
+			GlStateManager.disableTexture2D();
+			GL11.glPushMatrix();
+			GL11.glTranslated(vec.vec.x - x, vec.vec.y - y, vec.vec.z - z);
+			for(int i = 0; i < preset.path.length; i++){
+				qv = new QV3D(VecUtil.rotByDeg(deg, preset.path[i].vec));
+				GLUtils112.translate(qv.vec);
+				GL11.glTranslated(0, -1, 0);
+				RailMarkerModel.INST.arrow.render();
+				GL11.glTranslated(0, 1, 0);
+				GLUtils112.translateR(qv.vec);
+			}
+			GL11.glPopMatrix();
+			GlStateManager.enableTexture2D();
+		}
     }
 
 	protected static final ModelRendererTurbo model, model0, model1, junction_core, railentcore;

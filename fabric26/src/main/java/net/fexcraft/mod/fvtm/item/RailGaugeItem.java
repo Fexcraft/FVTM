@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.network.chat.Component;
@@ -38,6 +40,11 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay disp, Consumer<Component> cons, TooltipFlag flag){
 		for(String desc : gauge.getDescription()) cons.accept(Component.translatable(desc));
+		StackWrapper sw = UniStack.getStack(stack);
+		if(sw.directTag().getBoolean("fvtm:preset_mode")){
+			cons.accept(Component.translatable("item.fvtm.railgauge.preset_mode"));
+			cons.accept(Component.translatable("item.fvtm.railgauge.preset", sw.directTag().getString("fvtm:rail_preset")));
+		}
 		cons.accept(Component.translatable("item.fvtm.railgauge.width", gauge.getWidth()));
 		if(gauge.getCompatible().size() > 0){
 			cons.accept(Component.translatable("item.fvtm.railgauge.compatible"));
@@ -63,7 +70,7 @@ public class RailGaugeItem extends Item implements ContentItem<RailGauge>, Junct
 			return InteractionResult.FAIL;
 		}
 		QV3D vector = new QV3D(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
-		RailPlacingUtil.place(railsys, UniEntity.getEntity(context.getPlayer()), gauge, vector);
+		RailPlacingUtil.place(railsys, UniEntity.getEntity(context.getPlayer()), UniStack.getStack(context.getItemInHand()), gauge, vector);
 		return InteractionResult.SUCCESS;
 	}
 

@@ -38,10 +38,10 @@ public class Track extends Path {
 
 	private void setunit(){
 		if(junction == null) return;
-		Long id = null;
+		Long id;
 		if(junction.size() == 0){
-			junction = junction.root.getJunction(end.pos);
-			id = junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId();
+			Junction junc = junction.root.getJunction(end.pos);
+			id = junc == null || junc.size() == 0 ? null : junc.tracks.get(0).unit.getSectionId();
 		}
 		else id = junction.tracks.get(0).unit.getSectionId();
 		unit = getUnit(id);

@@ -41,6 +41,7 @@ public class RailPresetEditor extends UserInterface {
 		switch(id){
 			case "add":{
 				RailPlacingUtil.createPreset(menu);
+				RailGauge.savePresets();
 				select(RailGauge.PRESETS.size() - 1);
 				return true;
 			}
@@ -48,6 +49,7 @@ public class RailPresetEditor extends UserInterface {
 				try{
 					JsonMap map = JsonHandler.parse(root.getClipboard(), true).asMap();
 					RailGauge.PRESETS.add(new RailGauge.Preset().load(map.getString("name", UUID.randomUUID().toString()), map));
+					RailGauge.savePresets();
 					select(RailGauge.PRESETS.size() - 1);
 				}
 				catch(Exception e){
@@ -82,6 +84,7 @@ public class RailPresetEditor extends UserInterface {
 			case "rem":{
 				if(nosets() || nosel()) return true;
 				RailGauge.PRESETS.remove(selected);
+				RailGauge.savePresets();
 				if(RailGauge.PRESETS.isEmpty()){
 					select(-1);
 				}

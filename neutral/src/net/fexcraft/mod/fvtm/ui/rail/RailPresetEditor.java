@@ -30,8 +30,8 @@ public class RailPresetEditor extends UserInterface {
 	public void init(){
 		selected = -1;
 		if(menu.stack.directTag().has("fvtm:rail_preset")){
-			selected = menu.stack.directTag().getInteger("fvtm:rail_preset");
-			if(selected >= RailGauge.PRESETS.size()) selected = RailGauge.PRESETS.size() - 1;
+			RailGauge.Preset set = RailGauge.getPreset(menu.stack.directTag().getString("fvtm:rail_preset"));
+			selected = RailGauge.PRESETS.indexOf(set);
 		}
 		select(selected);
 	}
@@ -86,8 +86,7 @@ public class RailPresetEditor extends UserInterface {
 					select(-1);
 				}
 				else{
-					selected -= 1;
-					if(selected < 0) selected = 0;
+					select(selected - 1 < 0 ? 0 : selected - 1);
 				}
 				return true;
 			}
@@ -95,7 +94,7 @@ public class RailPresetEditor extends UserInterface {
 				if(nosel()) return true;
 				TagCW com = TagCW.create();
 				com.set("task", "on");
-				com.set("sel", selected);
+				com.set("sel", RailGauge.PRESETS.get(selected).name);
 				SEND_TO_SERVER.accept(com);
 				return true;
 			}
@@ -117,21 +116,21 @@ public class RailPresetEditor extends UserInterface {
 				if(nosel()) return true;
 				RailGauge.Preset set = RailGauge.PRESETS.get(selected);
 				set.rot = 4;
-				texts.get("status").value(texts.get("status").value() + "*");
+				texts.get("status").transval("ui.fvtm.rail_preset_editor.selected", set.name, selected, set.rot + "*");
 				return true;
 			}
 			case "s8":{
 				if(nosel()) return true;
 				RailGauge.Preset set = RailGauge.PRESETS.get(selected);
 				set.rot = 8;
-				texts.get("status").value(texts.get("status").value() + "*");
+				texts.get("status").transval("ui.fvtm.rail_preset_editor.selected", set.name, selected, set.rot + "*");
 				return true;
 			}
 			case "16":{
 				if(nosel()) return true;
 				RailGauge.Preset set = RailGauge.PRESETS.get(selected);
 				set.rot = 16;
-				texts.get("status").value(texts.get("status").value() + "*");
+				texts.get("status").transval("ui.fvtm.rail_preset_editor.selected", set.name, selected, set.rot + "*");
 				return true;
 			}
 		}
@@ -156,20 +155,21 @@ public class RailPresetEditor extends UserInterface {
 
 	private void select(int i){
 		selected = i;
+		TagCW com = TagCW.create();
+		com.set("task", "sel");
 		if(selected < 0 || selected > RailGauge.PRESETS.size()){
 			texts.get("gauge").transval("ui.fvtm.rail_preset_editor.gauge", "none");
 			texts.get("status").transval("ui.fvtm.rail_preset_editor.selected", "none", selected, 0);
 			fields.get("name").text("");
+			com.set("nosel", true);
 		}
 		else{
 			RailGauge.Preset set = RailGauge.PRESETS.get(selected);
 			texts.get("gauge").transval("ui.fvtm.rail_preset_editor.gauge", set.gauge.getName());
 			texts.get("status").transval("ui.fvtm.rail_preset_editor.selected", set.name, selected, set.rot);
 			fields.get("name").text(set.name);
+			com.set("sel", set.name);
 		}
-		TagCW com = TagCW.create();
-		com.set("task", "sel");
-		com.set("sel", selected);
 		SEND_TO_SERVER.accept(com);
 	}
 

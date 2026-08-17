@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.Config.MAX_RAIL_TRACK_LENGTH;
 import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 import static net.fexcraft.mod.fvtm.packet.Packets.PKT_TAG;
 import static net.fexcraft.mod.fvtm.sys.road.UniRoadTool.grv;
+import static net.fexcraft.mod.uni.ui.ContainerInterface.SEND_TO_SERVER;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -379,7 +380,33 @@ public class RailPlacingUtil {
 	}
 
 	public static void createPreset(RailPresetEditorCon menu){
-
+		NewTrack track = CL_CURRENT;
+		if(track == null){
+			menu.player.entity.send("error.no_track");
+			return;
+		}
+		if(track.points.size() < 2){
+			menu.player.entity.send("error.less_than_two_points");
+			return;
+		}
+		ArrayList<V3D> points = new ArrayList<>();
+		V3D start = track.points.get(0).vec;
+		points.add(new V3D());
+		for(int i = 1; i < track.points.size(); i++){
+			points.add(track.points.get(i).vec.sub(start));
+		}
+		RailGauge.Preset preset = new RailGauge.Preset();
+		preset.path = new QV3D[points.size()];
+		for(int i = 0; i < points.size(); i++){
+			preset.path[i] = new QV3D(points.get(i));
+		}
+		preset.name = "preset_" + UUID.randomUUID().toString().substring(0, 7);
+		preset.rot = 4;
+		preset.gauge = track.gauge;
+		RailGauge.PRESETS.add(preset);
+		TagCW com = TagCW.create();
+		com.set("task", "reset");
+		SEND_TO_SERVER.accept(com);
 	}
 
 }

@@ -105,7 +105,7 @@ public class RailPlacingUtil {
 
 		public NewTrack(EntityW player, RailGauge.Preset preset, QV3D vector){
 			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
-			deg = (int)(player.getYaw() / deg) * deg;
+			deg = Math.floor(player.getYaw() / deg + 0.5) * deg;
 			for(QV3D vec : preset.path){
 				points.add(new QV3D(vector.vec.add(VecUtil.rotByDeg(deg, vec.vec))));
 			}

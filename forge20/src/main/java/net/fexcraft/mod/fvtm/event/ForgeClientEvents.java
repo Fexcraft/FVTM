@@ -6,7 +6,10 @@ import net.fexcraft.lib.common.math.*;
 import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
@@ -14,6 +17,9 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.ui.VehicleOverlay;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.uni.inv.StackWrapper;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -108,6 +114,9 @@ public class ForgeClientEvents {
 		pose.popPose();
 	}
 
+	private static StackWrapper stack;
+	private static RailGauge.Preset preset;
+
 	@SubscribeEvent
 	public static void renderGrid(RenderHighlightEvent event){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return;
@@ -151,6 +160,25 @@ public class ForgeClientEvents {
 		pose.scale(thirtysecondth, thirtysecondth, thirtysecondth);
 		SPHERE.render();
 		pose.popPose();
+		//
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof RailGaugeItem){
+			stack = UniStack.getStack(Minecraft.getInstance().player.getMainHandItem());
+			if(!stack.hasTag() || !stack.directTag().getBoolean("fvtm:preset_mode")) return;
+			preset = RailGauge.getPreset(stack.directTag().getString("fvtm:rail_preset"));
+			if(preset == null) return;
+			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
+			deg = (int)(Minecraft.getInstance().player.getYRot() / deg) * deg;
+			QV3D qv;
+			pose.pushPose();
+			pose.translate(vec.vec.x - cx, vec.vec.y - cy, vec.vec.z - cz);
+			for(int i = 0; i < preset.path.length; i++){
+				qv = new QV3D(VecUtil.rotByDeg(deg, preset.path[i].vec));
+				pose.translate(qv.vec.x, qv.vec.y - 1, qv.vec.z);
+				RailMarkerModel.INST.arrow.render();
+				pose.translate(-qv.vec.x, -qv.vec.y + 1, -qv.vec.z);
+			}
+			pose.popPose();
+		}
 	}
 
 	@SubscribeEvent

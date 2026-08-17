@@ -48,7 +48,7 @@ public class RailPresetEditor extends UserInterface {
 				try{
 					JsonMap map = JsonHandler.parse(root.getClipboard(), true).asMap();
 					RailGauge.PRESETS.add(new RailGauge.Preset().load(map.getString("name", UUID.randomUUID().toString()), map));
-					selected = RailGauge.PRESETS.size() - 1;
+					select(RailGauge.PRESETS.size() - 1);
 				}
 				catch(Exception e){
 					menu.player.entity.send("errors during preset import");

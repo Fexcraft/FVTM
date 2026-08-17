@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.ui.rail.RailPresetEditorCon;
 import net.fexcraft.mod.fvtm.util.QV3D;
+import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.inv.StackWrapper;
 import net.fexcraft.mod.uni.inv.UniStack;
@@ -100,6 +101,15 @@ public class RailPlacingUtil {
 			points.add(vector);
 			this.gauge = gauge;
 			id = uuid;
+		}
+
+		public NewTrack(EntityW player, RailGauge.Preset preset, QV3D vector){
+			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
+			deg = (int)(player.getYaw() / deg) * deg;
+			for(QV3D vec : preset.path){
+				points.add(new QV3D(vector.vec.add(VecUtil.rotByDeg(deg, vec.vec))));
+			}
+			gauge = preset.gauge;
 		}
 
 		public void add(QV3D vector){
@@ -192,59 +202,11 @@ public class RailPlacingUtil {
 				player.send("no_queue_entry / 1");
 				return;
 			}
-			HashMap<String, List<StackWrapper>> tags = new HashMap<>();
 			HashMap<RailGauge.UseMat, int[]> needs = new HashMap<>();
+			HashMap<String, List<StackWrapper>> tags = fillTags(needs);
 			if(!player.isCreative()){
 				List<StackWrapper> stacks = player.copyInventory();
-				for(RailGauge.UseMat mat : ntrack.gauge.getMaterials()){
-					//FvtmLogger.marker(mat.id, mat.tag, mat.amount);
-					if(mat.tag){
-						List<StackWrapper> tag = UniStack.getTagAsList(mat.id);
-						if(tag.isEmpty()) continue;
-						tags.put(mat.id, tag);
-					}
-					double v = mat.amount * ntrack.track.length;
-					int n = (int)v + ((v % 1 > 0) ? 1 : 0);
-					needs.put(mat, new int[]{ n, 0, 0 });
-				}
-				boolean missing = false;
-				for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
-					if(entry.getKey().tag){
-						List<StackWrapper> tag = tags.get(entry.getKey().id);
-						for(StackWrapper stack : stacks){
-							if(stack.empty()) continue;
-							for(StackWrapper stag : tag){
-								if(stack.getID().equals(stag.getID())){
-									fillFound(entry.getValue(), 1, stack);
-									break;
-								}
-							}
-						}
-					}
-					else{
-						for(StackWrapper stack : stacks){
-							if(stack.empty()) continue;
-							if(stack.getID().equals(entry.getKey().id)){
-								fillFound(entry.getValue(), 1, stack);
-							}
-						}
-					}
-					if(entry.getValue()[0] > entry.getValue()[1]) missing = true;
-				}
-				if(missing){
-					player.send("interact.fvtm.rail_marker.missing_materials");
-					for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
-						if(entry.getKey().tag){
-							StackWrapper stack = tags.get(entry.getKey().id).get(0);
-							player.send("interact.fvtm.rail_marker.material_tag_entry", stack.getName(), entry.getKey().id, entry.getValue()[1], entry.getValue()[0]);
-						}
-						else{
-							StackWrapper stack = UniStack.createStack(FvtmRegistry.getItem(entry.getKey().id));
-							player.send("interact.fvtm.rail_marker.material_entry", stack.getName(), entry.getValue()[1], entry.getValue()[0]);
-						}
-					}
-					return;
-				}
+				if(fillNeeds(player, tags, needs)) return;
 			}
 			if(junc == null){
 				sys.addJunction(vector);
@@ -259,7 +221,7 @@ public class RailPlacingUtil {
 					player.send("interact.fvtm.rail_marker.end_junction_created");
 				}
 			}
-			if(!junc.tracks.isEmpty() && junc.tracks.size() < 2 && !junc.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
+			if(junc.tracks.size() == 1 && !junc.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
 				player.send("interact.fvtm.rail_marker.incompatible_gauge");
 				return;
 			}
@@ -298,37 +260,27 @@ public class RailPlacingUtil {
 				}
 				if(second != null){
 					//if(!TrackPlacer.set(player, null, track).place()/*.blocks(!track.blockless)*/.consume().result()) return;
+					if(second.tracks.size() == 1 && !second.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
+						player.send("interact.fvtm.rail_marker.incompatible_gauge");
+						return;
+					}
+					if(second.hasSignals()){
+						player.send("interact.fvtm.rail_marker.remove_signal");
+						return;
+					}
+					if(second.tracks.size() >= 4){
+						player.send("interact.fvtm.rail_marker.junction_full");
+						player.send("interact.fvtm.rail_marker.cache_reset");
+						ntrack.reset();
+						return;
+					}
 					second.addnew(track);
 					junc.addnew(track.createOppositeCopy());
 					second.checkTrackSectionConsistency();
 					player.send("interact.fvtm.rail_marker.track_created");
 					ntrack.reset();
 					//
-					StackWrapper stack;
-					for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
-						if(entry.getKey().tag){
-							List<StackWrapper> tag = tags.get(entry.getKey().id);
-							for(int i = 0; i < player.getInventorySize(); i++){
-								stack = player.getStackAt(i);
-								if(stack.empty()) continue;
-								for(StackWrapper stag : tag){
-									if(stack.getID().equals(stag.getID())){
-										fillFound(entry.getValue(), 2, stack);
-										break;
-									}
-								}
-							}
-						}
-						else{
-							for(int i = 0; i < player.getInventorySize(); i++){
-								stack = player.getStackAt(i);
-								if(stack.empty()) continue;
-								if(stack.getID().equals(entry.getKey().id)){
-									fillFound(entry.getValue(), 2, stack);
-								}
-							}
-						}
-					}
+					consume(player, tags, needs);
 					if(player.isShiftDown()){
 						place(sys, player, null, gauge, vector);
 					}
@@ -337,7 +289,7 @@ public class RailPlacingUtil {
 			}
 		}
 
-		private void fillFound(int[] arr, int idx, StackWrapper stack){
+		public static void fillFound(int[] arr, int idx, StackWrapper stack){
 			int need = arr[0] - arr[idx];
 			if(need <= 0) return;
 			if(need > stack.count()){
@@ -373,10 +325,177 @@ public class RailPlacingUtil {
 			}
 		}
 
+		public boolean fillNeeds(EntityW player, HashMap<String, List<StackWrapper>> tags, HashMap<RailGauge.UseMat, int[]> needs){
+			List<StackWrapper> stacks = player.copyInventory();
+			boolean missing = false;
+			for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
+				if(entry.getKey().tag){
+					List<StackWrapper> tag = tags.get(entry.getKey().id);
+					for(StackWrapper stack : stacks){
+						if(stack.empty()) continue;
+						for(StackWrapper stag : tag){
+							if(stack.getID().equals(stag.getID())){
+								fillFound(entry.getValue(), 1, stack);
+								break;
+							}
+						}
+					}
+				}
+				else{
+					for(StackWrapper stack : stacks){
+						if(stack.empty()) continue;
+						if(stack.getID().equals(entry.getKey().id)){
+							fillFound(entry.getValue(), 1, stack);
+						}
+					}
+				}
+				if(entry.getValue()[0] > entry.getValue()[1]) missing = true;
+			}
+			if(missing){
+				player.send("interact.fvtm.rail_marker.missing_materials");
+				for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
+					if(entry.getKey().tag){
+						StackWrapper stack = tags.get(entry.getKey().id).get(0);
+						player.send("interact.fvtm.rail_marker.material_tag_entry", stack.getName(), entry.getKey().id, entry.getValue()[1], entry.getValue()[0]);
+					}
+					else{
+						StackWrapper stack = UniStack.createStack(FvtmRegistry.getItem(entry.getKey().id));
+						player.send("interact.fvtm.rail_marker.material_entry", stack.getName(), entry.getValue()[1], entry.getValue()[0]);
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+
+		public void consume(EntityW player, HashMap<String, List<StackWrapper>> tags, HashMap<RailGauge.UseMat,int[]> needs){
+			StackWrapper stack;
+			for(Map.Entry<RailGauge.UseMat, int[]> entry : needs.entrySet()){
+				if(entry.getKey().tag){
+					List<StackWrapper> tag = tags.get(entry.getKey().id);
+					for(int i = 0; i < player.getInventorySize(); i++){
+						stack = player.getStackAt(i);
+						if(stack.empty()) continue;
+						for(StackWrapper stag : tag){
+							if(stack.getID().equals(stag.getID())){
+								fillFound(entry.getValue(), 2, stack);
+								break;
+							}
+						}
+					}
+				}
+				else{
+					for(int i = 0; i < player.getInventorySize(); i++){
+						stack = player.getStackAt(i);
+						if(stack.empty()) continue;
+						if(stack.getID().equals(entry.getKey().id)){
+							fillFound(entry.getValue(), 2, stack);
+						}
+					}
+				}
+			}
+		}
+
+		public HashMap<String, List<StackWrapper>> fillTags(HashMap<RailGauge.UseMat, int[]> needs){
+			HashMap<String, List<StackWrapper>> tags = new HashMap<>();
+			for(RailGauge.UseMat mat : gauge.getMaterials()){
+				if(mat.tag){
+					List<StackWrapper> tag = UniStack.getTagAsList(mat.id);
+					if(tag.isEmpty()) continue;
+					tags.put(mat.id, tag);
+				}
+				double v = mat.amount * track.length;
+				int n = (int)v + ((v % 1 > 0) ? 1 : 0);
+				needs.put(mat, new int[]{ n, 0, 0 });
+			}
+			return tags;
+		}
+
 	}
 
-	private static void placePreset(RailSystem system, EntityW player, StackWrapper stack, RailGauge gauge, QV3D vector){
-
+	private static void placePreset(RailSystem system, EntityW player, StackWrapper is, RailGauge gauge, QV3D vector){
+		if(infoIfNoPerm(player, vector.pos)) return;
+		if(!is.hasTag() || !is.directTag().getBoolean("fvtm:preset_mode")){
+			player.send("error, no preset selected");
+			return;
+		}
+		RailSystem sys = SystemManager.get(Systems.RAIL, player.getWorld());
+		Junction j_start = sys.getJunction(vector.pos, true);
+		RailGauge.Preset preset = RailGauge.getPreset(is.directTag().getString("fvtm:rail_preset"));
+		if(preset == null){
+			player.send("error, preset not found");
+			return;
+		}
+		boolean nn = j_start != null;
+		if(nn) vector = j_start.getPos();
+		NewTrack ntrack = new NewTrack(player, preset, vector);
+		ntrack.gentrack();
+		HashMap<RailGauge.UseMat, int[]> needs = new HashMap<>();
+		HashMap<String, List<StackWrapper>> tags = ntrack.fillTags(needs);
+		if(!player.isCreative()){
+			if(ntrack.fillNeeds(player, tags, needs)) return;
+		}
+		if(!nn){
+			sys.addJunction(vector);
+			j_start = sys.getJunction(vector.pos, true);
+			j_start.updateVecPos(vector);
+			player.send("interact.fvtm.rail_marker.start_junction_created");
+		}
+		if(j_start.tracks.size() == 1 && !j_start.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
+			player.send("interact.fvtm.rail_marker.incompatible_gauge");
+			return;
+		}
+		if(j_start.hasSignals()){
+			player.send("interact.fvtm.rail_marker.remove_signal");
+			return;
+		}
+		if(j_start.tracks.size() >= 4){
+			player.send("interact.fvtm.rail_marker.junction_full");
+		}
+		else{
+			QV3D[] arr = ntrack.points.toArray(new QV3D[0]);
+			if(nn) arr[0] = j_start.getPos();
+			Track track = new Track(j_start, arr, gauge);
+			if(track.length > MAX_RAIL_TRACK_LENGTH){
+				player.send("interact.fvtm.rail_marker.too_long");
+				return;
+			}
+			V3I mut = new V3I();
+			for(float f = 0; f < track.length; f += 0.5f){
+				V3D vec = track.getVectorPosition(f, false);
+				if(!UniPerm.can_place(player, mut.set((int)vec.x, (int)vec.y, (int)vec.z))){
+					player.send("interact.fvtm.rail_marker.no_perm_on_pos", mut.toString());
+					return;
+				}
+			}
+			Junction j_end = sys.getJunction(track.end.pos);
+			if(j_end == null){
+				sys.addJunction(track.end);
+				j_end = sys.getJunction(track.end.pos, true);
+				player.send("interact.fvtm.rail_marker.end_junction_created");
+			}
+			if(j_end != null){
+				if(j_end.tracks.size() == 1 && !j_end.tracks.get(0).isCompatibleGauge(ntrack.gauge)){
+					player.send("interact.fvtm.rail_marker.incompatible_gauge");
+					return;
+				}
+				if(j_end.hasSignals()){
+					player.send("interact.fvtm.rail_marker.remove_signal");
+					return;
+				}
+				if(j_end.tracks.size() >= 4){
+					player.send("interact.fvtm.rail_marker.junction_full");
+					return;
+				}
+				j_start.addnew(track);
+				j_end.addnew(track.createOppositeCopy());
+				j_start.checkTrackSectionConsistency();
+				player.send("interact.fvtm.rail_marker.track_created");
+				//
+				ntrack.consume(player, tags, needs);
+			}
+			else player.send("interact.fvtm.rail_marker.no_start_junction");
+		}
 	}
 
 	public static void createPreset(RailPresetEditorCon menu){

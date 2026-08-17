@@ -206,7 +206,7 @@ public class RailRenderer {
 			preset = RailGauge.getPreset(stack.directTag().getString("fvtm:rail_preset"));
 			if(preset == null) return true;
 			double deg = preset.rot == 4 ? 90 : preset.rot == 8 ? 45 : 22.5;
-			deg = (int)(Minecraft.getInstance().player.getYRot() / deg) * deg;
+			deg = Math.floor(Minecraft.getInstance().player.getYRot() / deg + 0.5) * deg;
 			QV3D qv;
 			pose.pushPose();
 			pose.translate(vec.vec.x - cx, vec.vec.y - cy, vec.vec.z - cz);

@@ -106,21 +106,20 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		}
 
 		public Preset load(String key, JsonMap map){
-			JsonArray path = map.getArray("path");
+			JsonArray arr = map.getArray("path");
 			JsonArray temp;
-			Preset pre = new Preset();
-			pre.path = new QV3D[path.size()];
-			for(int i = 0; i < pre.path.length; i++){
-				temp = path.get(i).asArray();
+			path = new QV3D[arr.size()];
+			for(int i = 0; i < path.length; i++){
+				temp = arr.get(i).asArray();
 				double x = temp.get(0).float_value();
 				double y = temp.get(1).float_value();
 				double z = temp.get(2).float_value();
-				pre.path[i] = new QV3D(x, y, z);
+				path[i] = new QV3D(x, y, z);
 			}
-			pre.gauge = FvtmRegistry.RAILGAUGES.get(map.get("gauge").string_value());
-			if(pre.gauge == null) pre.gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
-			pre.name = key;
-			pre.rot = map.getInteger("rot", pre.rot);
+			gauge = FvtmRegistry.RAILGAUGES.get(map.get("gauge").string_value());
+			if(gauge == null) gauge = FvtmRegistry.RAILGAUGES.get(FvtmRegistry.STANDARD_GAUGE);
+			name = key;
+			rot = map.getInteger("rot", rot);
 			return this;
 		}
 	}
@@ -250,6 +249,13 @@ public class RailGauge extends Content<RailGauge> implements WithItem, ItemTextu
 		map.add("presets", presets);
 		map.add("saved", Time.getAsString(Time.getDate()));
 		JsonHandler.print(new File(FvtmRegistry.CONFIG_DIR, "fvtm-rail-presets.json"), map);
+	}
+
+	public static Preset getPreset(String string){
+		for(Preset preset : PRESETS){
+			if(preset.name.equals(string)) return preset;
+		}
+		return null;
 	}
 
 }

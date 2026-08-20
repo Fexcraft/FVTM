@@ -27,102 +27,43 @@ public class RoadToolUI extends UserInterface {
 	@Override
 	public void predraw(float ticks, int mx, int my){
 		if(rtc.custom_road){
-			texts.get("road_fill").value("ui.fvtm.road_tool.road_fill_custom");
-			texts.get("road_fill").translate();
+			texts.get("road").value("C" + rtc.rt_width);
 		}
 		else if(rtc.inventory.empty(0)){
-			texts.get("road_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("road_fill").translate();
+			texts.get("road").value("OFF");
 		}
 		else{
-			texts.get("road_fill").value(rtc.inventory.get(0).getName());
+			texts.get("road").value("" + rtc.rt_width);
 		}
-		texts.get("road_width").value("ui.fvtm.road_tool.road_fill_width");
-		texts.get("road_width").translate(rtc.rt_width);
-		texts.get("slab_width").value("ui.fvtm.road_tool.slab_fill_width");
-		texts.get("slab_width").translate(rtc.rt_width);
 		//
 		if(rtc.custom_slab){
-			texts.get("slab_fill").value("ui.fvtm.road_tool.slab_fill_custom");
-			texts.get("slab_fill").translate();
+			texts.get("slab").value("C" + rtc.rt_width);
 		}
 		else if(rtc.inventory.empty(6)){
-			texts.get("slab_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("slab_fill").translate();
+			texts.get("slab").value("OFF");
 		}
 		else{
-			texts.get("slab_fill").value(rtc.inventory.get(6).getName());
+			texts.get("slab").value("" + rtc.rt_width);
 		}
  		//
-		if(rtc.inventory.empty(1)){
-			texts.get("ground_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("ground_fill").translate();
-		}
-		else{
-			texts.get("ground_fill").value(rtc.inventory.get(1).getName());
-		}
-		texts.get("ground_status").value("ui.fvtm.road_tool.ground_fill_" + (rtc.bot_on ? "enabled" : "disabled"));
-		texts.get("ground_status").translate();
+		texts.get("ground").value(rtc.bot_on && !rtc.inventory.empty(1) ? "ON" : "OFF");
 		//
-		if(rtc.inventory.empty(2)){
-			texts.get("left_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("left_fill").translate();
+		if(rtc.inventory.empty(2) || rtc.lheight < 1){
+			texts.get("left").value("OFF");
 		}
 		else{
-			texts.get("left_fill").value(rtc.inventory.get(2).getName());
-		}
-		if(rtc.lheight > 0){
-			texts.get("left_size").value("ui.fvtm.road_tool.left_fill_size");
-			texts.get("left_size").translate(rtc.lheight);
-		}
-		else{
-			texts.get("left_size").value("ui.fvtm.road_tool.left_fill_disabled");
-			texts.get("left_size").translate();
+			texts.get("left").value("" + rtc.lheight);
 		}
 		//
-		if(rtc.inventory.empty(3)){
-			texts.get("right_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("right_fill").translate();
+		if(rtc.inventory.empty(3) || rtc.rheight < 1){
+			texts.get("right").value("OFF");
 		}
 		else{
-			texts.get("right_fill").value(rtc.inventory.get(3).getName());
-		}
-		if(rtc.rheight > 0){
-			texts.get("right_size").value("ui.fvtm.road_tool.right_fill_size");
-			texts.get("right_size").translate(rtc.rheight);
-		}
-		else{
-			texts.get("right_size").value("ui.fvtm.road_tool.right_fill_disabled");
-			texts.get("right_size").translate();
+			texts.get("right").value("" + rtc.rheight);
 		}
 		//
-		if(rtc.custom_top){
-			texts.get("top_fill").value("ui.fvtm.road_tool.top_fill_custom");
-			texts.get("top_fill").translate();
-		}
-		else if(rtc.inventory.empty(4)){
-			texts.get("top_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("top_fill").translate();
-		}
-		else{
-			texts.get("top_fill").value(rtc.inventory.get(4).getName());
-		}
-		texts.get("top_status").value("ui.fvtm.road_tool.top_fill_" + (rtc.top_on ? "enabled" : "disabled"));
-		texts.get("top_status").translate();
-		//
-		if(rtc.custom_lines){
-			texts.get("lines_fill").value("ui.fvtm.road_tool.lines_fill_custom");
-			texts.get("lines_fill").translate();
-		}
-		else if(rtc.inventory.empty(5)){
-			texts.get("lines_fill").value("ui.fvtm.road_tool.no_fill_block");
-			texts.get("lines_fill").translate();
-		}
-		else{
-			texts.get("lines_fill").value(rtc.inventory.get(5).getName());
-		}
-		texts.get("lines_status").value("ui.fvtm.road_tool.lines_fill_" + (rtc.lin_on ? "enabled" : "disabled"));
-		texts.get("lines_status").translate();
+		texts.get("top").value(rtc.top_on ? rtc.custom_top ? "C:ON" : "ON" : "OFF");
+		texts.get("lines").value(rtc.lin_on ? rtc.custom_lines ? "C:ON" : "ON" : "OFF");
 	}
 
 	@Override

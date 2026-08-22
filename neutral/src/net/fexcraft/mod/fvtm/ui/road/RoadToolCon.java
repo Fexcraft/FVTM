@@ -136,7 +136,7 @@ public class RoadToolCon extends ContainerInterface {
 				custom_slab = rtg.has("CustomSlabFill");
 				custom_top = rtg.has("CustomTopFill");
 				custom_lines = rtg.has("CustomLinesFill");
-				if(!client) SEND_TO_CLIENT.accept(rtg, player);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
 		}

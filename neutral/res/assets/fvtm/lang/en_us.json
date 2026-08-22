@@ -301,6 +301,13 @@
 	"ui.fvtm.road_tool.road_slab_info1": "\u00A76Slab blocks are only used if",
 	"ui.fvtm.road_tool.road_slab_info2": "\u00A76you choose non-road blocks",
 	"ui.fvtm.road_tool.road_slab_info3": "\u00A76for the road layer!",
+	"ui.fvtm.road_tool.road_info": "\u00A76Road Layer",
+	"ui.fvtm.road_tool.slab_info": "\u00A76Slab Layer",
+	"ui.fvtm.road_tool.ground_info": "\u00A76Ground Layer",
+	"ui.fvtm.road_tool.left_info": "\u00A76Left Wall",
+	"ui.fvtm.road_tool.right_info": "\u00A76Right Wall",
+	"ui.fvtm.road_tool.top_info": "\u00A76Top/Roof Layer",
+	"ui.fvtm.road_tool.lines_info": "\u00A76Line Layer",
 
     "ui.fvtm.road_tool_custom.scroll_left": "Scroll Left",
     "ui.fvtm.road_tool_custom.scroll_right": "Scroll Right",

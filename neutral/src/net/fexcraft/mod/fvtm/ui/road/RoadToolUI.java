@@ -1,16 +1,16 @@
 package net.fexcraft.mod.fvtm.ui.road;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.common.utils.Formatter;
-import net.fexcraft.mod.fvtm.sys.road.UniRoadTool;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
+import net.fexcraft.mod.uni.ui.UIText;
 import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.util.List;
+import java.util.Map;
 
-import static net.fexcraft.mod.uni.ui.ContainerInterface.sendToServer;
+import static net.fexcraft.mod.uni.ui.ContainerInterface.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -214,6 +214,9 @@ public class RoadToolUI extends UserInterface {
 			for(int i = 0; i < 4; i++){
 				list.add(container.TRANSLATOR.apply("ui.fvtm.road_tool.road_slab_info" + i));
 			}
+		}
+		for(Map.Entry<String, UIText> entry : texts.entrySet()){
+			if(entry.getValue().hovered(gLeft, gTop, mx, my)) list.add(TRANSLATOR.apply("ui.fvtm.road_tool." + entry.getKey() + "_info"));
 		}
 	}
 

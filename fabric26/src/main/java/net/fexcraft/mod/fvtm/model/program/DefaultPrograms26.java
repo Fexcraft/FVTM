@@ -298,7 +298,7 @@ public class DefaultPrograms26 extends DefaultPrograms {
 			if(rot.z != 0.0F) RENDERER.rotate(rot.z, 0, 0, 1);
 			if(rot.x != 0.0F) RENDERER.rotate(rot.x, 1, 0, 0);
 			RenderUtil26.noco.submitText(stack, centered ? -font.width(text) * 0.5f : 0, 0, Component.literal(width > 0 ? font.plainSubstrByWidth(text, width) : text).getVisualOrderText(),
-				false, glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, light, data.sign().getColorChannel("text").packed - 16777216, 0, 0);
+				false, glow ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, light, color - 16777216, 0, 0);
 			RENDERER.pop();
 		}
 

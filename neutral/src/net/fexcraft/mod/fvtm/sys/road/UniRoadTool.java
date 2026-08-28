@@ -24,6 +24,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static net.fexcraft.lib.common.utils.Formatter.format;
 import static net.fexcraft.mod.fvtm.Config.MAX_ROAD_LENGTH;
@@ -122,46 +123,21 @@ public class UniRoadTool {
 		}
 		TagCW com = stack.directTag().getCompound(TAG_KEY);
 		int width  = com.getInteger("Width");
-		boolean bot_on = com.getBoolean("Ground");
-		boolean top_on = com.getBoolean("Top");
-		boolean lin_on = com.getBoolean("Lines");
+		//
+		SlabLayerFill road = new SlabLayerFill(width, com, "RoadFill", "SlabFill", "CustomRoadFill", "CustomSlabFill");
+		LayerFill ground = new LayerFill(width, com, "Ground", "BottomFill");
+		LayerFill top = new LayerFill(width, com, "Top", "TopFill", "CustomTopFill");
+		LayerFill line = new LayerFill(width, com, "Lines", "LinesFill", "CustomLinesFill");
+		//
 		int rheight  = com.getInteger("RHeight");
 		int lheight  = com.getInteger("LHeight");
-		//
-		StackWrapper top = null;
-		StackWrapper bot = null;
 		StackWrapper left = null;
 		StackWrapper righ = null;
-		StackWrapper line_b = null;
-		StackWrapper road_b = null;
-		StackWrapper slab_b = null;
-		ArrayList<QV3D> roof;
-		ArrayList<QV3D> ground = null;
 		ArrayList<QV3D> border_l = null;
 		ArrayList<QV3D> border_r = null;
-		ArrayList<QV3D> line;
-		ArrayList<QV3D> road;
 		int top_h = 0;
 		int border_hl = 0;
 		int border_hr = 0;
-		ArrayList<ArrayList<QV3D>> rooffill = null;
-		ArrayList<ArrayList<QV3D>> linefill = null;
-		ArrayList<ArrayList<QV3D>> roadfill = null;
-		ArrayList<ArrayList<QV3D>> slabfill = null;
-		boolean flnk = false;
-		boolean vani = false;
-		if(com.has("RoadFill")){
-			road_b = UniStack.createStack(com.getCompound("RoadFill"));
-			flnk = CompatUtil.isValidFurenikus(road_b.getIDL());
-			vani = !flnk && !road_b.getID().equals("fvtm:asphalt") && !road_b.isItemOf(ContentType.BLOCK.item_type);
-		}
-		if(com.has("SlabFill")){
-			slab_b = UniStack.createStack(com.getCompound("SlabFill"));
-		}
-		if(bot_on && com.has("BottomFill")){
-			bot = UniStack.createStack(com.getCompound("BottomFill"));
-			ground = new ArrayList<>();
-		}
 		if(lheight > 0 && com.has("SideLeftFill")){
 			left = UniStack.createStack(com.getCompound("SideLeftFill"));
 			border_hl = lheight;
@@ -172,110 +148,75 @@ public class UniRoadTool {
 			border_hr = rheight;
 			border_r = new ArrayList<>();
 		}
-		if(top_on && com.has("TopFill") && !com.has("CustomTopFill")){
-			top = UniStack.createStack(com.getCompound("TopFill"));
-		}
-		if(bot_on && com.has("LinesFill") && !com.has("CustomLinesFill")){
-			line_b = UniStack.createStack(com.getCompound("LinesFill"));
-		}
 		top_h = border_hl > border_hr ? border_hl : border_hr;
 		if(top_h == 0){
-			if(lin_on){
+			if(line.on()){
 				border_hl++;
 				border_hr++;
 				top_h = 2;
 			}
-			top_h = 1;
-		}
-		ArrayList<StackWrapper> roadfill_b = null;
-		ArrayList<StackWrapper> slabfill_b = null;
-		ArrayList<StackWrapper> rooffill_b = null;
-		ArrayList<StackWrapper> linefill_b = null;
-		if(com.has("CustomRoadFill")){
-			roadfill = new ArrayList<>();
-			roadfill_b = new ArrayList<>();
-			loadFill(roadfill, roadfill_b, width, com.getCompound("CustomRoadFill"));
-		}
-		if(com.has("CustomSlabFill")){
-			slabfill = new ArrayList<>();
-			slabfill_b = new ArrayList<>();
-			loadFill(slabfill, slabfill_b, width, com.getCompound("CustomSlabFill"));
-		}
-		if(top_on && com.has("CustomTopFill")){
-			rooffill = new ArrayList<>();
-			rooffill_b = new ArrayList<>();
-			loadFill(rooffill, rooffill_b, width, com.getCompound("CustomTopFill"));
-		}
-		if(lin_on && com.has("CustomLinesFill")){
-			linefill = new ArrayList<>();
-			linefill_b = new ArrayList<>();
-			loadFill(linefill, linefill_b, width, com.getCompound("CustomLinesFill"));
+			else top_h = 1;
 		}
 		V3I pos = new V3I();
-		V3D last;
-		V3D vec;
-		StateWrapper state;
+		V3D last, vec = _road.vecpath[0];
 		double angle;
 		double passed = 0.001;
 		double half = width * 0.5 - 0.5;
-		road = roadfill == null && road_b != null ? new ArrayList<>() : null;
-		roof = rooffill == null && top_on ? new ArrayList<>() : null;
-		line = linefill == null && lin_on ? new ArrayList<>() : null;
-		vec = _road.vecpath[0];
-		double off = roadfill == null ? 0 : 0.25;
 		while(passed < _road.length){
 			last = vec;
 			vec = _road.getVectorPosition(passed, false);
 			angle = Math.atan2(last.x - vec.x, last.z - vec.z);
-			for(double db = -half; db <= half; db += 0.25){
-				if(road != null) road.add(gen(vec, angle, db, 0));
-				if(ground != null) ground.add(gen(vec, angle, db + off, -1));
-				if(line != null) line.add(gen(vec, angle, db, 1));
-				if(roof != null) roof.add(gen(vec, angle, db, top_h));
-			}
-			if(roadfill != null){
-				for(int i = 0; i < roadfill.size(); i++){
-					roadfill.get(i).add(gen(vec, angle, -half + off + i, 0));
+			if(ground.on()){
+				for(int i = 0; i < width; i++){
+					ground.pos.get(i).add(gen(vec, angle, -half + i, -1));
 				}
 			}
-			if(linefill != null){
-				for(int i = 0; i < linefill.size(); i++){
-					linefill.get(i).add(gen(vec, angle, -half + off + i, 1));
+			if(road.on()){
+				for(int i = 0; i < width; i++){
+					road.pos.get(i).add(gen(vec, angle, -half + i, 0));
 				}
 			}
-			if(rooffill != null){
-				for(int i = 0; i < rooffill.size(); i++){
-					rooffill.get(i).add(gen(vec, angle, -half + off + i, top_h));
+			if(line.on()){
+				for(int i = 0; i < width; i++){
+					line.pos.get(i).add(gen(vec, angle, -half + i, 1));
 				}
 			}
-			if(border_l != null) border_l.add(gen(vec, angle, -half - 1 + off, 0));
-			if(border_r != null) border_r.add(gen(vec, angle, half + 1 + off, 0));
+			if(top.on()){
+				for(int i = 0; i < width; i++){
+					top.pos.get(i).add(gen(vec, angle, -half + i, top_h));
+				}
+			}
+			if(border_l != null) border_l.add(gen(vec, angle, -half - 1, 0));
+			if(border_r != null) border_r.add(gen(vec, angle, half + 1, 0));
 			if(passed < 0.1) passed = 0;
 			passed += 0.125;
 		}
 		WorldW world = pass.getWorld();
 		JsonMap map = new JsonMap();
-		if(road != null){
-			roadFill(world, pass, road, pos, road_b, slab_b, top_h, flnk, vani, map);
-		}
-		StackWrapper block = null;
-		if(roadfill != null){
-			for(int i = 0; i < roadfill.size(); i++){
-				block = roadfill_b.get(i);
-				StackWrapper slb = slabfill_b == null || slabfill_b.isEmpty() ? slab_b : slabfill_b.get(i);
-				flnk = CompatUtil.isValidFurenikus(block.getIDL());
-				vani = !flnk && !block.getID().equals("fvtm:asphalt") && !block.isItemOf(ContentType.BLOCK.item_type);;
-				roadFill(world, pass, roadfill.get(i), pos, block, slb, top_h, flnk, vani, map);
+		if(ground.on()){
+			for(int i = 0; i < width; i++){
+				//!((FvtmWorld)world).isFvtmRoad(wb) && !CompatUtil.isValidFurenikus(wb.getIDL())
+				basicFill(world, pass, ground.pos.get(i), pos, ground.blk.get(i), map);
 			}
 		}
-		if(linefill != null){
-			for(int i = 0; i < linefill.size(); i++){
-				basicFill(world, pass, linefill.get(i), pos, linefill_b.get(i), map);
+		if(road.on()){
+			StackWrapper block;
+			for(int i = 0; i < width; i++){
+				block = road.blk.get(i);
+				StackWrapper slb = road.son() ? road.slb.get(i) : StackWrapper.EMPTY;
+				road.flnk = CompatUtil.isValidFurenikus(block.getIDL());
+				road.vani = !road.flnk && !block.getID().equals("fvtm:asphalt") && !block.isItemOf(ContentType.BLOCK.item_type);;
+				roadFill(world, pass, road.pos.get(i), pos, block, slb, top_h, road.flnk, road.vani, map);
 			}
 		}
-		if(rooffill != null){
-			for(int i = 0; i < rooffill.size(); i++){
-				basicFill(world, pass, rooffill.get(i), pos, rooffill_b.get(i), map);
+		if(line.on()){
+			for(int i = 0; i < width; i++){
+				basicFill(world, pass, line.pos.get(i), pos, line.blk.get(i), map);
+			}
+		}
+		if(top.on()){
+			for(int i = 0; i < width; i++){
+				basicFill(world, pass, top.pos.get(i), pos, top.blk.get(i), map);
 			}
 		}
 		if(border_l != null){
@@ -283,35 +224,6 @@ public class UniRoadTool {
 		}
 		if(border_r != null){
 			borderFill(world, pass, border_r, pos, righ, border_hr, map);
-		}
-		if(ground != null){
-			for(QV3D v : ground){
-				pos.set(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
-				state = world.getStateAt(pos);
-				if(!((FvtmWorld)world).isFvtmRoad(state) && !CompatUtil.isValidFurenikus(state.getIDL())){
-					insert(map, pos, state);
-					world.setBlockState(pos, StateWrapper.from(bot, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true)));
-				}
-			}
-		}
-		if(line != null){
-			for(QV3D v : line){
-				pos.set(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
-				insert(map, pos, world.getStateAt(pos));
-				world.setBlockState(pos, StateWrapper.from(line_b, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true)));
-			}
-		}
-		if(roof != null){
-			for(QV3D v : roof){
-				pos.set(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
-				try{
-					insert(map, pos, world.getStateAt(pos));
-					world.setBlockState(pos, StateWrapper.from(top, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true)));
-				}
-				catch(Exception e){
-					FvtmLogger.log(e, "road top/ceiling creation");
-				}
-			}
 		}
 		pass.bar("interact.fvtm.road_tool.complete");
 		RoadPlacingCache.addEntry(pass.getUUID(), pass.getWorld().type().side_key(), map);
@@ -326,17 +238,6 @@ public class UniRoadTool {
 		array.add(state.getIDL().colon());
 		if(EnvInfo.is112()) array.add(state.get12Meta());
 		map.add(pos.asString(), array);
-	}
-
-	private static void loadFill(ArrayList<ArrayList<QV3D>> fill, ArrayList<StackWrapper> bill, int width, TagCW com){
-		for(int i = 0; i < width; i++){
-			fill.add(new ArrayList<>());
-			StackWrapper stack = StackWrapper.EMPTY;
-			if(com.has("Block" + i)){
-				stack = UniStack.createStack(com.getCompound("Block" + i));
-			}
-			bill.add(stack);
-		}
 	}
 
 	private static void roadFill(WorldW world, EntityW pass, ArrayList<QV3D> road, V3I pos, StackWrapper stack, StackWrapper slab, int th, boolean flnk, boolean vani, JsonMap map){
@@ -449,6 +350,103 @@ public class UniRoadTool {
 
 	public static QV3D gen(V3D vec, double rad, double x, double y){
 		return new QV3D(vec.add(grv(rad, x, y)));
+	}
+
+	public static class LayerFill {
+
+		protected ArrayList<ArrayList<QV3D>> pos = null;
+		protected ArrayList<StackWrapper> blk = null;
+
+		public LayerFill(){}
+
+		public LayerFill(int width, TagCW com, String key_on, String key_stack){
+			if(!com.getBoolean(key_on) || !com.has(key_stack)) return;
+			StackWrapper stk = UniStack.createStack(com.getCompound(key_stack));
+			pos = new ArrayList<>();
+			blk = new ArrayList<>();
+			for(int i = 0; i < width; i++){
+				pos.add(new ArrayList<>());
+				blk.add(stk);
+			}
+		}
+
+		public LayerFill(int width, TagCW com, String key_on, String key_stack, String key_custom){
+			if(!com.getBoolean(key_on)) return;
+			pos = new ArrayList<>();
+			blk = new ArrayList<>();
+			StackWrapper stk;
+			if(com.has(key_stack) && !com.has(key_custom)){
+				stk = UniStack.createStack(com.getCompound(key_stack));
+				for(int i = 0; i < width; i++){
+					pos.add(new ArrayList<>());
+					blk.add(stk);
+				}
+			}
+			else if(com.has(key_custom)){
+				for(int i = 0; i < width; i++){
+					pos.add(new ArrayList<>());
+					stk = StackWrapper.EMPTY;
+					if(com.has("Block" + i)){
+						stk = UniStack.createStack(com.getCompound("Block" + i));
+					}
+					blk.add(stk);
+				}
+			}
+		}
+
+		public boolean on(){
+			return blk != null;
+		}
+
+	}
+
+	public static class SlabLayerFill extends LayerFill {
+
+		protected ArrayList<StackWrapper> slb = null;
+		protected boolean vani;
+		protected boolean flnk;
+
+		public SlabLayerFill(int width, TagCW com, String key_road, String key_slab, String key_cr, String key_cs){
+			pos = new ArrayList<>();
+			blk = new ArrayList<>();
+			for(int i = 0; i < width; i++) pos.add(new ArrayList<>());
+			StackWrapper stk;
+			if(com.has(key_road) && !com.has(key_cr)){
+				stk = UniStack.createStack(com.getCompound(key_road));
+				flnk = CompatUtil.isValidFurenikus(stk.getIDL());
+				vani = !flnk && !stk.getID().equals("fvtm:asphalt") && !stk.isItemOf(ContentType.BLOCK.item_type);
+				for(int i = 0; i < width; i++) blk.add(stk);
+			}
+			else if(com.has(key_cr)){
+				for(int i = 0; i < width; i++){
+					stk = StackWrapper.EMPTY;
+					if(com.has("Block" + i)){
+						stk = UniStack.createStack(com.getCompound("Block" + i));
+					}
+					blk.add(stk);
+				}
+			}
+			if(com.has(key_slab) && !com.has(key_cs)){
+				slb = new ArrayList<>();
+				stk = UniStack.createStack(com.getCompound(key_slab));
+				for(int i = 0; i < width; i++) slb.add(stk);
+			}
+			else if(com.has(key_cs)){
+				slb = new ArrayList<>();
+				for(int i = 0; i < width; i++){
+					stk = StackWrapper.EMPTY;
+					if(com.has("Block" + i)){
+						stk = UniStack.createStack(com.getCompound("Block" + i));
+					}
+					slb.add(stk);
+				}
+			}
+		}
+
+		public boolean son(){
+			return slb != null;
+		}
+
 	}
 
 }

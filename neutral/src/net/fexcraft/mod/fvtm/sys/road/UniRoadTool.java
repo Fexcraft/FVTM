@@ -310,19 +310,15 @@ public class UniRoadTool {
 	}
 
 	public static void round(QV3D qv, V3I pos){
-		double x = qv.vec.x % 1d;
+		/*double x = qv.vec.x % 1d;
 		double z = qv.vec.z % 1d;
 		x = x < 0 ? x < -.5 ? -2 : -1 : x > .5 ? 1 : 0;
-		z = z < 0 ? z < -.5 ? -2 : -1 : z > .5 ? 1 : 0;
-		pos.set(qv.pos.x + (int)x, qv.pos.y + (qv.y > 0 ? 1 : 0), qv.pos.z + (int)z);
+		z = z < 0 ? z < -.5 ? -2 : -1 : z > .5 ? 1 : 0;*/
+		pos.set(qv.pos.x + (qv.pos.x < 0 ? -1 : 0), qv.pos.y + (qv.y > 0 ? 1 : 0), qv.pos.z + (qv.pos.z < 0 ? -1 : 0));
 	}
 
 	public static QV3D round(V3D vec){
-		double x = vec.x % 1d;
-		double z = vec.z % 1d;
-		x = x < 0 ? x < -.5 ? -2 : -1 : x > .5 ? 1 : 0;
-		z = z < 0 ? z < -.5 ? -2 : -1 : z > .5 ? 1 : 0;
-		return new QV3D((int)vec.x + x, vec.y, (int)vec.z + z);
+		return new QV3D((int)vec.x + (vec.x < 0 ? -1 : 0), vec.y, (int)vec.z + (vec.z < 0 ? -1 : 0));
 	}
 
 	private static boolean isRoad(WorldW world, StateWrapper state, StateWrapper block){

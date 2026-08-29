@@ -195,9 +195,14 @@ public class UniRoadTool {
 		JsonMap map = new JsonMap();
 		if(ground.on()){
 			for(int i = 0; i < width; i++){
-				//!((FvtmWorld)world).isFvtmRoad(wb) && !CompatUtil.isValidFurenikus(wb.getIDL())
-				basicFill(world, pass, ground.pos.get(i), pos, ground.blk.get(i), map);
+				basicFill(world, pass, ground.pos.get(i), pos, ground.blk.get(i), map, true);
 			}
+		}
+		if(border_l != null){
+			borderFill(world, pass, border_l, pos, left, border_hl, map);
+		}
+		if(border_r != null){
+			borderFill(world, pass, border_r, pos, righ, border_hr, map);
 		}
 		if(road.on()){
 			StackWrapper block;
@@ -211,19 +216,13 @@ public class UniRoadTool {
 		}
 		if(line.on()){
 			for(int i = 0; i < width; i++){
-				basicFill(world, pass, line.pos.get(i), pos, line.blk.get(i), map);
+				basicFill(world, pass, line.pos.get(i), pos, line.blk.get(i), map, false);
 			}
 		}
 		if(top.on()){
 			for(int i = 0; i < width; i++){
-				basicFill(world, pass, top.pos.get(i), pos, top.blk.get(i), map);
+				basicFill(world, pass, top.pos.get(i), pos, top.blk.get(i), map, false);
 			}
-		}
-		if(border_l != null){
-			borderFill(world, pass, border_l, pos, left, border_hl, map);
-		}
-		if(border_r != null){
-			borderFill(world, pass, border_r, pos, righ, border_hr, map);
 		}
 		pass.bar("interact.fvtm.road_tool.complete");
 		RoadPlacingCache.addEntry(pass.getUUID(), pass.getWorld().type().side_key(), map);
@@ -247,7 +246,7 @@ public class UniRoadTool {
 		StateWrapper sslab;
 		for(QV3D vec : road){
 			height = vec.y;
-			pos.set(vec.pos.x, vec.pos.y + (vec.y > 0 ? 1 : 0), vec.pos.z);
+			round(vec, pos);
 			state = world.getStateAt(pos);
 			block = StateWrapper.from(stack, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true));
 			if(!isRoad(world, state, block) || isLower(world, state, height)){
@@ -281,13 +280,14 @@ public class UniRoadTool {
 		}
 	}
 
-	private static void basicFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, JsonMap map){
+	private static void basicFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, JsonMap map, boolean rc){
 		StateWrapper state;
 		StateWrapper block;
 		for(QV3D v : vecs){
-			pos.set(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
+			round(v, pos);
 			block = StateWrapper.from(stack, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true));
 			state = world.getStateAt(pos);
+			if(rc && (((FvtmWorld)world).isFvtmRoad(state) || CompatUtil.isValidFurenikus(state.getIDL()))) continue;
 			if(state.getBlock() != block.getBlock()){
 				insert(map, pos, state);
 				world.setBlockState(pos, block);
@@ -296,14 +296,33 @@ public class UniRoadTool {
 	}
 
 	private static void borderFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, int top, JsonMap map){
+		StateWrapper state;
 		for(QV3D v : vecs){
-			pos.set(v.pos.x, v.pos.y + (v.y > 0 ? 1 : 0), v.pos.z);
+			round(v, pos);
 			for(int i = -1; i < top; i++){
 				V3I vp = pos.add(0, i, 0);
+				state = world.getStateAt(vp);
+				if(((FvtmWorld)world).isFvtmRoad(state) || CompatUtil.isValidFurenikus(state.getIDL())) break;
 				insert(map, vp, world.getStateAt(vp));
 				world.setBlockState(vp, StateWrapper.from(stack, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true)));
 			}
 		}
+	}
+
+	public static void round(QV3D qv, V3I pos){
+		double x = qv.vec.x % 1d;
+		double z = qv.vec.z % 1d;
+		x = x < 0 ? x < -.5 ? -2 : -1 : x > .5 ? 1 : 0;
+		z = z < 0 ? z < -.5 ? -2 : -1 : z > .5 ? 1 : 0;
+		pos.set(qv.pos.x + (int)x, qv.pos.y + (qv.y > 0 ? 1 : 0), qv.pos.z + (int)z);
+	}
+
+	public static QV3D round(V3D vec){
+		double x = vec.x % 1d;
+		double z = vec.z % 1d;
+		x = x < 0 ? x < -.5 ? -2 : -1 : x > .5 ? 1 : 0;
+		z = z < 0 ? z < -.5 ? -2 : -1 : z > .5 ? 1 : 0;
+		return new QV3D((int)vec.x + x, vec.y, (int)vec.z + z);
 	}
 
 	private static boolean isRoad(WorldW world, StateWrapper state, StateWrapper block){
@@ -322,10 +341,6 @@ public class UniRoadTool {
 
 		public Road(QV3D[] gridvecs){
 			super(gridvecs);
-		}
-
-		public Road(QV3D[] gridvecs, QV3D vector){
-			super(gridvecs, vector);
 		}
 
 		@Override
@@ -383,6 +398,7 @@ public class UniRoadTool {
 				}
 			}
 			else if(com.has(key_custom)){
+				com = com.getCompound(key_custom);
 				for(int i = 0; i < width; i++){
 					pos.add(new ArrayList<>());
 					stk = StackWrapper.EMPTY;
@@ -418,10 +434,11 @@ public class UniRoadTool {
 				for(int i = 0; i < width; i++) blk.add(stk);
 			}
 			else if(com.has(key_cr)){
+				TagCW cus = com.getCompound(key_cr);
 				for(int i = 0; i < width; i++){
 					stk = StackWrapper.EMPTY;
-					if(com.has("Block" + i)){
-						stk = UniStack.createStack(com.getCompound("Block" + i));
+					if(cus.has("Block" + i)){
+						stk = UniStack.createStack(cus.getCompound("Block" + i));
 					}
 					blk.add(stk);
 				}
@@ -433,10 +450,11 @@ public class UniRoadTool {
 			}
 			else if(com.has(key_cs)){
 				slb = new ArrayList<>();
+				TagCW cus = com.getCompound(key_cs);
 				for(int i = 0; i < width; i++){
 					stk = StackWrapper.EMPTY;
-					if(com.has("Block" + i)){
-						stk = UniStack.createStack(com.getCompound("Block" + i));
+					if(cus.has("Block" + i)){
+						stk = UniStack.createStack(cus.getCompound("Block" + i));
 					}
 					slb.add(stk);
 				}

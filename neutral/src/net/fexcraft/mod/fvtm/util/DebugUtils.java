@@ -131,10 +131,10 @@ public class DebugUtils {
 	public static void renderPane(float scale, int col){
 		RENDERER.bind(FvtmResources.WHITE_TEXTURE);
 		RENDERER.color(col);
-		float hs = scale * 0.5f;
+		//float hs = scale * 0.5f;
 		RENDERER.push();
 		RENDERER.scale(scale, 1, scale);
-		RENDERER.translate(-hs, 0, -hs);
+		//RENDERER.translate(-hs, 0, -hs);
 		PANE.render();
 		RENDERER.pop();
 		RENDERER.color(0xffffffff);

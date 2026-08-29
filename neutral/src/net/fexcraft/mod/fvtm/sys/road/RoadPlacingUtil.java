@@ -199,7 +199,7 @@ public class RoadPlacingUtil {
 			for(ArrayList<V3D> vecs : preview){
 				ArrayList<QV3D> list = new ArrayList<>();
 				for(V3D v : vecs){
-					QV3D pos = new QV3D(v);
+					QV3D pos = new QV3D(UniRoadTool.round(v));
 					if(list.contains(pos)) continue;
 					list.add(pos);
 				}

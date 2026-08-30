@@ -200,13 +200,22 @@ public class RoadPlacingUtil {
 				ArrayList<QV3D> list = new ArrayList<>();
 				for(V3D v : vecs){
 					QV3D pos = new QV3D(UniRoadTool.round(v));
-					if(list.contains(pos)) continue;
+					if(contains(coords, pos)) continue;
 					list.add(pos);
 				}
 				coords.add(list);
 			}
 		}
-		
+
+		private boolean contains(ArrayList<ArrayList<QV3D>> list, QV3D pos){
+			for(ArrayList<QV3D> vecs : list){
+				for(QV3D vec : vecs){
+					if(vec.pos.equals(pos.pos)) return true;
+				}
+			}
+			return false;
+		}
+
 	}
 
 }

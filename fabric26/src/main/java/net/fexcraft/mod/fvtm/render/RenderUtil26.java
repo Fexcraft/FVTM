@@ -147,10 +147,10 @@ public class RenderUtil26 extends RenderUtil {
 
 	public static void renderPane(float scale, int col){
 		Renderer26.type = FvtmRenderTypes.white();
-		float hs = scale * 0.5f;
+		//float hs = scale * 0.5f;
 		RENDERER.push();
 		RENDERER.scale(scale, 1, scale);
-		RENDERER.translate(-hs, 0, -hs);
+		//RENDERER.translate(-hs, 0, -hs);
 		int lig = Renderer26.light;
 		noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (last, cons) -> {
 			RENDERER.color(col);

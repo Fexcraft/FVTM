@@ -314,7 +314,7 @@ public class UniRoadTool {
 		double z = qv.vec.z % 1d;
 		x = x < 0 ? x < -.5 ? -2 : -1 : x > .5 ? 1 : 0;
 		z = z < 0 ? z < -.5 ? -2 : -1 : z > .5 ? 1 : 0;*/
-		pos.set(qv.pos.x + (qv.pos.x < 0 ? -1 : 0), qv.pos.y + (qv.y > 0 ? 1 : 0), qv.pos.z + (qv.pos.z < 0 ? -1 : 0));
+		pos.set(qv.pos.x + (qv.vec.x < 0 ? -1 : 0), qv.pos.y + (qv.y > 0 ? 1 : 0), qv.pos.z + (qv.vec.z < 0 ? -1 : 0));
 	}
 
 	public static QV3D round(V3D vec){

@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.data.SignData;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.item.SignItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.sign.SignInstance;
 import net.fexcraft.mod.fvtm.sys.sign.SignSystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -26,6 +25,7 @@ import org.joml.Matrix4f;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fcl.util.Renderer20.AY;
+import static net.fexcraft.mod.fcl.util.Renderer20.LIGHT_FULL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_ORG;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
@@ -50,7 +50,7 @@ public class SignRenderer {
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
-		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), LIGHT_FULL);
 		holding = Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem && ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var == ToolboxType.SIGN_ADJREM.idx;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);

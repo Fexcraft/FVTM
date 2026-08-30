@@ -95,6 +95,7 @@ public class UniRoadTool {
 				stack = UniStack.createStack(com.getCompound("LinesFill"));
 				list.add(format(translator.apply("tooltip.fvtm.road_tool.lines_fill", new Object[]{ stack.getName(), stack.count() })));
 			}
+			list.add(format(translator.apply("tooltip.fvtm.road_tool.replace", new Object[]{ com.getBoolean("ReplaceRoad") })));
 			list.add(format(translator.apply("tooltip.fvtm.road_tool.undo", NA)));
 		}
 	}
@@ -123,6 +124,7 @@ public class UniRoadTool {
 		}
 		TagCW com = stack.directTag().getCompound(TAG_KEY);
 		int width  = com.getInteger("Width");
+		boolean nore = !com.getBoolean("ReplaceRoad");
 		//
 		SlabLayerFill road = new SlabLayerFill(width, com, "RoadFill", "SlabFill", "CustomRoadFill", "CustomSlabFill");
 		LayerFill ground = new LayerFill(width, com, "Ground", "BottomFill");
@@ -199,10 +201,10 @@ public class UniRoadTool {
 			}
 		}
 		if(border_l != null){
-			borderFill(world, pass, border_l, pos, left, border_hl, map);
+			borderFill(world, pass, border_l, pos, left, border_hl, map, nore);
 		}
 		if(border_r != null){
-			borderFill(world, pass, border_r, pos, righ, border_hr, map);
+			borderFill(world, pass, border_r, pos, righ, border_hr, map, nore);
 		}
 		if(road.on()){
 			StackWrapper block;
@@ -295,14 +297,14 @@ public class UniRoadTool {
 		}
 	}
 
-	private static void borderFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, int top, JsonMap map){
+	private static void borderFill(WorldW world, EntityW pass, ArrayList<QV3D> vecs, V3I pos, StackWrapper stack, int top, JsonMap map, boolean nrp){
 		StateWrapper state;
 		for(QV3D v : vecs){
 			round(v, pos);
 			for(int i = -1; i < top; i++){
 				V3I vp = pos.add(0, i, 0);
 				state = world.getStateAt(vp);
-				if(((FvtmWorld)world).isFvtmRoad(state) || CompatUtil.isValidFurenikus(state.getIDL())) break;
+				if(nrp && (((FvtmWorld)world).isFvtmRoad(state) || CompatUtil.isValidFurenikus(state.getIDL()))) break;
 				insert(map, vp, world.getStateAt(vp));
 				world.setBlockState(vp, StateWrapper.from(stack, new StateWrapper.PlacingContext(world, pos, HCENTER, null, pass, true)));
 			}

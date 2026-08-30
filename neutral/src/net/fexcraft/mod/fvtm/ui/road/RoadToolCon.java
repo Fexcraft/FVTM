@@ -139,6 +139,11 @@ public class RoadToolCon extends ContainerInterface {
 				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
+			case "reroad":{
+				stack.updateTag(tag -> tag.getCompound(TAG_KEY).set("ReplaceRoad", com.getBoolean("reroad")));
+				if(!client) SEND_TO_CLIENT.accept(com, player);
+				break;
+			}
 		}
 	}
 

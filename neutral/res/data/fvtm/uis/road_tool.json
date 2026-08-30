@@ -18,7 +18,8 @@
 				"edit_road", "rem_road",
 				"edit_slab", "rem_slab",
 				"edit_top", "rem_top",
-				"edit_lines", "rem_lines"
+				"edit_lines", "rem_lines",
+				"reroad_on", "reroad_off"
 			],
 			"texts": [
 				"road",
@@ -147,6 +148,16 @@
 			"pos": [ 137, 46 ],
 			"size": [ 8, 8 ],
 			"tooltip": "ui.fvtm.road_tool.remove_custom_lines"
+		},
+		"reroad_on": {
+			"pos": [ 77, 46 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.replace_road_on"
+		},
+		"reroad_off": {
+			"pos": [ 87, 46 ],
+			"size": [ 8, 8 ],
+			"tooltip": "ui.fvtm.road_tool.replace_road_off"
 		}
 	},
 	"texts": {

@@ -289,6 +289,8 @@
     "ui.fvtm.road_tool.remove_custom_slab": "Remove Custom Slab Layer",
     "ui.fvtm.road_tool.remove_custom_top": "Remove Custom Top/Ceiling Layer",
     "ui.fvtm.road_tool.remove_custom_lines": "Remove Custom Lines Layer",
+	"ui.fvtm.road_tool.replace_road_on": "Enable Walls replacing existing Roads",
+	"ui.fvtm.road_tool.replace_road_off": "Disable Walls replacing existing Roads",
     "ui.fvtm.road_tool.road_slot_info0": "\u00A76Valid blocks are:",
     "ui.fvtm.road_tool.road_slot_info1": "\u00A7b- FVTM",
     "ui.fvtm.road_tool.road_slot_info2": "\u00A77-> Asphalt Blocks",
@@ -399,6 +401,7 @@
     "tooltip.fvtm.road_tool.lines_fill": "\u00A76Line Layer Fill: \u00A7b%s \u00A77x%s",
     "tooltip.fvtm.road_tool.lines_fill_custom": "\u00A76Line Layer Fill: \u00A7bCUSTOM \u00A77x%s",
     "tooltip.fvtm.road_tool.undo": "\u00A77Use \u00A76/fvtm undo road \u00A77to undo last road.",
+	"tooltip.fvtm.road_tool.replace": "\u00A76Walls replace existing roads: \u00A77%s",
     "tooltip.fvtm.road_tool.creative": "\u00A79This is a \u00A76CREATIVE \u00A79mode tool.",
     "tooltip.fvtm.road_tool.created": "\u00A7o> Road Created.",
 

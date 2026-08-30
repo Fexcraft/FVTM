@@ -47,7 +47,7 @@ public class RoadRenderer {
 		for(ArrayList<QV3D> coords : nroad.coords){
 			for(QV3D coord : coords){
 				pose.pushPose();
-				pose.translate(coord.pos.x + 1, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 1);
+				pose.translate(coord.pos.x + 0.5, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5);
 				RenderUtil26.renderPane(0.5f, COL_CYN);
 				pose.popPose();
 			}

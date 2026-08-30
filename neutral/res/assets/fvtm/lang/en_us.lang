@@ -202,6 +202,8 @@ ui.fvtm.road_tool.remove_custom_road=Remove Custom Road Layer
 ui.fvtm.road_tool.remove_custom_slab=Remove Custom Slab Layer
 ui.fvtm.road_tool.remove_custom_top=Remove Custom Top/Ceiling Layer
 ui.fvtm.road_tool.remove_custom_lines=Remove Custom Lines Layer
+ui.fvtm.road_tool.replace_road_on=Enable Walls replacing existing Roads
+ui.fvtm.road_tool.replace_road_off=Disable Walls replacing existing Roads
 ui.fvtm.road_tool.road_slot_info0=&6Valid blocks are:
 ui.fvtm.road_tool.road_slot_info1=&b- FVTM
 ui.fvtm.road_tool.road_slot_info2=&7-> Asphalt Blocks
@@ -450,6 +452,7 @@ tooltip.fvtm.road_tool.top_fill_custom=&6Top/Roof Fill: &bCUSTOM &7x%s
 tooltip.fvtm.road_tool.lines_fill=&6Line Layer Fill: &b%s &7x%s
 tooltip.fvtm.road_tool.lines_fill_custom=&6Line Layer Fill: &bCUSTOM &7x%s
 tooltip.fvtm.road_tool.undo=&7Use &6/fvtm undo road &7to undo last road.
+tooltip.fvtm.road_tool.replace=&6Walls replace existing roads: &7%s
 tooltip.fvtm.road_tool.creative=&9This is a &6CREATIVE &9mode tool.
 tooltip.fvtm.road_tool.created=&o> Road Created.
 

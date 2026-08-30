@@ -199,6 +199,20 @@ public class RoadToolUI extends UserInterface {
 				container.SEND_TO_SERVER.accept(compound);
 				return true;
 			}
+			case "reroad_on":{
+				sendToServer(com -> {
+					com.set("cargo", "reroad");
+					com.set("reroad", true);
+				});
+				return true;
+			}
+			case "reroad_off":{
+				sendToServer(com -> {
+					com.set("cargo", "reroad");
+					com.set("reroad", false);
+				});
+				return true;
+			}
 		}
 		return false;
 	}

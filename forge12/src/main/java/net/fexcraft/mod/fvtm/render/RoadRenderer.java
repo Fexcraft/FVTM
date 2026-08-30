@@ -62,7 +62,7 @@ public class RoadRenderer {
 		for(ArrayList<QV3D> coords : nroad.coords){
 			for(QV3D coord : coords){
 				GL11.glPushMatrix();
-				GL11.glTranslatef(coord.pos.x + 1, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 1);
+				GL11.glTranslatef(coord.pos.x + 0.5f, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5f);
 				DebugUtils.renderPane(0.5f, COL_CYN);
 				GL11.glPopMatrix();
 			}

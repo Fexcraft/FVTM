@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
+import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -23,6 +24,7 @@ import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,6 +38,7 @@ import java.util.HashMap;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.common.Static.thirtysecondth;
+import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -71,27 +74,24 @@ public class ForgeClientEvents {
 	@SubscribeEvent
 	public static void renderRoad(RenderLevelStageEvent event){
 		if(RoadPlacingUtil.CL_CURRENT == null || RoadPlacingUtil.CL_CURRENT.points.size() < 2) return;
-		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
+		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
 		Camera camera = event.getCamera();
 		double cx = camera.getPosition().x;
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
-		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
-		Renderer20.set(pose, cons, 0);
-		FvtmRenderTypes.setLines();
+		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), Renderer20.LIGHT_FULL);
+		FvtmRenderTypes.setCutout(WHITE_TEXTURE);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;
-		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
 		if(nroad.coords == null) nroad.genpreview();
 		Renderer20.setColor(COL_BLU);
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
 			vec0 = nroad.road.vecpath[j];
 			vec1 = nroad.road.vecpath[j + 1];
-			LINE_POLY.vertices[0].pos(vec0.x, vec0.y + 1.25, vec0.z);
-			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
-			LINE.render();
+			DebugUtils.renderLine2D(vec0.x, vec0.y + 1.25, vec0.z, vec1.x, vec1.y + 1.25, vec1.z);
 		}
 		int size = RoadPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
@@ -99,14 +99,12 @@ public class ForgeClientEvents {
 		for(int i = 1; i < size - 1; i++){
 			arr = nroad.road.getPosition((nroad.road.length / (size - 1)) * i);
 			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
-			LINE_POLY.vertices[0].pos(arr[0], arr[1] + 1.25, arr[2]);
-			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 1.25, vec1.z);
-			LINE.render();
+			DebugUtils.renderLine2D(arr[0], arr[1] + 1.25, arr[2], vec1.x, vec1.y + 1.25, vec1.z);
 		}
 		for(ArrayList<QV3D> coords : nroad.coords){
 			for(QV3D coord : coords){
 				pose.pushPose();
-				pose.translate(coord.pos.x + 1, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 1);
+				pose.translate(coord.pos.x + 0.5, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5);
 				DebugUtils.renderPane(0.5f, COL_CYN);
 				pose.popPose();
 			}

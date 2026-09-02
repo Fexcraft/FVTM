@@ -49,6 +49,7 @@ public class Config extends ConfigBase {
 	public static boolean RENDER_VEHICLES_SEPARATELY;
 	public static boolean RENDER_BLOCKS_SEPARATELY;
 	public static boolean DISABLE_PARTICLES;
+	public static boolean RENDER_ROAD_PREVIEW_PANES;
 	public static int SIGNAL_INTERVAL;
 	//uni/proto
 	public static boolean LAND_PROTOTYPE;
@@ -210,6 +211,9 @@ public class Config extends ConfigBase {
 		entries.add(new ConfigEntry(this, c_clt, "decoration_view_distance", new JsonValue(128))
 			.info("View distance for decorations.").rang(1, 40960)
 			.cons((con, map) -> DECO_VIEW_DISTANCE = con.getInteger(map)));
+		entries.add(new ConfigEntry(this, c_clt, "render_road_preview_panes", new JsonValue(true))
+			.info("Should road preview panes be shown when using the road tool/markers?")
+			.cons((con, map) -> RENDER_ROAD_PREVIEW_PANES = con.getBoolean(map)));
 
 		//general vehicle
 		entries.add(new ConfigEntry(this, c_veh, "land_prototype", new JsonValue(false))

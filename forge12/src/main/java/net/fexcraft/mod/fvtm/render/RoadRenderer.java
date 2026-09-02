@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,6 @@ public class RoadRenderer {
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         V3D vec0, vec1;
 		NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
-		if(nroad.coords == null) nroad.genpreview();
         GL11.glPushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -58,13 +58,16 @@ public class RoadRenderer {
             bufferbuilder.pos(vec1.x, vec1.y + 1.25, vec1.z).color(0, 1, 1, 1F).endVertex();
             tessellator.draw();
 		}
-		GL11.glTranslated(-cx, -cy, -cz);
-		for(ArrayList<QV3D> coords : nroad.coords){
-			for(QV3D coord : coords){
-				GL11.glPushMatrix();
-				GL11.glTranslatef(coord.pos.x + 0.5f, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5f);
-				DebugUtils.renderPane(0.5f, COL_CYN);
-				GL11.glPopMatrix();
+		if(Config.RENDER_ROAD_PREVIEW_PANES){
+			if(nroad.coords == null) nroad.genpreview();
+			GL11.glTranslated(-cx, -cy, -cz);
+			for(ArrayList<QV3D> coords : nroad.coords){
+				for(QV3D coord : coords){
+					GL11.glPushMatrix();
+					GL11.glTranslatef(coord.pos.x + 0.5f, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5f);
+					DebugUtils.renderPane(0.5f, COL_CYN);
+					GL11.glPopMatrix();
+				}
 			}
 		}
 		//

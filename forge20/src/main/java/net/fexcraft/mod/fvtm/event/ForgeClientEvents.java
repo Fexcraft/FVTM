@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fexcraft.lib.common.math.*;
 import net.fexcraft.mod.fcl.util.Renderer20;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -86,7 +87,6 @@ public class ForgeClientEvents {
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;
-		if(nroad.coords == null) nroad.genpreview();
 		Renderer20.setColor(COL_BLU);
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
 			vec0 = nroad.road.vecpath[j];
@@ -101,12 +101,15 @@ public class ForgeClientEvents {
 			vec1 = RoadPlacingUtil.CL_CURRENT.points.get(i).vec;
 			DebugUtils.renderLine2D(arr[0], arr[1] + 1.25, arr[2], vec1.x, vec1.y + 1.25, vec1.z);
 		}
-		for(ArrayList<QV3D> coords : nroad.coords){
-			for(QV3D coord : coords){
-				pose.pushPose();
-				pose.translate(coord.pos.x + 0.5, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5);
-				DebugUtils.renderPane(0.5f, COL_CYN);
-				pose.popPose();
+		if(Config.RENDER_ROAD_PREVIEW_PANES){
+			if(nroad.coords == null) nroad.genpreview();
+			for(ArrayList<QV3D> coords : nroad.coords){
+				for(QV3D coord : coords){
+					pose.pushPose();
+					pose.translate(coord.pos.x + 0.5, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5);
+					DebugUtils.renderPane(0.5f, COL_CYN);
+					pose.popPose();
+				}
 			}
 		}
 		pose.popPose();

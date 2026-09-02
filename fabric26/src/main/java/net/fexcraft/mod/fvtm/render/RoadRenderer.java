@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.mod.fcl.util.Renderer26;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
 import net.minecraft.util.LightCoordsUtil;
@@ -27,7 +28,6 @@ public class RoadRenderer {
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		RoadPlacingUtil.NewRoad nroad = RoadPlacingUtil.CL_CURRENT;
-		if(nroad.coords == null) nroad.genpreview();
 		Renderer26.setColor(COL_BLU);
 		for(int j = 0; j < nroad.road.vecpath.length - 1; j++){
 			RenderUtil26.renderLine(
@@ -44,12 +44,15 @@ public class RoadRenderer {
 				arr[0], arr[1] + 1.25, arr[2],
 				vec.x, vec.y + 1.25f, vec.z);
 		}
-		for(ArrayList<QV3D> coords : nroad.coords){
-			for(QV3D coord : coords){
-				pose.pushPose();
-				pose.translate(coord.pos.x + 0.5, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5);
-				RenderUtil26.renderPane(0.5f, COL_CYN);
-				pose.popPose();
+		if(Config.RENDER_ROAD_PREVIEW_PANES){
+			if(nroad.coords == null) nroad.genpreview();
+			for(ArrayList<QV3D> coords : nroad.coords){
+				for(QV3D coord : coords){
+					pose.pushPose();
+					pose.translate(coord.pos.x + 0.5, coord.pos.y + 1 + coord.y * sixteenth, coord.pos.z + 0.5);
+					RenderUtil26.renderPane(0.5f, COL_CYN);
+					pose.popPose();
+				}
 			}
 		}
 		pose.popPose();

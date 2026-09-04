@@ -13,12 +13,16 @@ public class BakedPrograms {
 
     public static UVLock UVLOCK;
     public static UVLock UVLOCK_FULL;
+    public static Tint TINT_GRASS;
+    public static Tint TINT_FOLIAGE;
 
     public static void init(){
         ModelGroup.PROGRAMS.add(new TextureSetter("minecraft:textures/blocks/stone.png"));
         ModelGroup.PROGRAMS.add(new ColorSetter(0x32a852));
         ModelGroup.PROGRAMS.add(UVLOCK = new UVLock(false));
         ModelGroup.PROGRAMS.add(UVLOCK_FULL = new UVLock(true));
+        ModelGroup.PROGRAMS.add(TINT_GRASS = new Tint(true));
+        ModelGroup.PROGRAMS.add(TINT_FOLIAGE = new Tint(false));
     }
 
     public static abstract class BakedProgram implements Program {
@@ -109,6 +113,26 @@ public class BakedPrograms {
             case 0:
             default: return new float[]{ u, v };
         }
+    }
+
+    public static class Tint extends BakedProgram {
+
+        public boolean grass;
+
+        public Tint(boolean bool){
+            grass = bool;
+        }
+
+        @Override
+        public String id(){
+            return "fvtm:baked_tint";
+        }
+
+        @Override
+        public Program parse(String[] args){
+            return args.length == 0 || args[0].toLowerCase().equals("grass") ? TINT_GRASS : TINT_FOLIAGE;
+        }
+
     }
 
 }

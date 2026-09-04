@@ -44,6 +44,7 @@ public class BakedModelImpl implements IBakedModel {
     protected Float normal;
     private static BakedPrograms.ColorSetter colorprog = null;
     private static BakedPrograms.UVLock uvlockprog = null;
+    private static BakedPrograms.Tint tintprog = null;
     private static int uvrot;
 
     public BakedModelImpl(ResourceLocation modellocation, ModelImpl state, VertexFormat vformat, BlockModel blockmodel) {
@@ -106,6 +107,7 @@ public class BakedModelImpl implements IBakedModel {
         for(ModelGroup group : groups){
             colorprog = group.getProgram("fvtm:set_color");
             uvlockprog = group.getProgram("fvtm:baked_uv_lock");
+            tintprog = group.getProgram("fvtm:baked_tint");
             if(model.grouptexname){
                 sprite = getTex(root, group.name);
             }
@@ -139,6 +141,7 @@ public class BakedModelImpl implements IBakedModel {
                     UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
                     builder.setContractUVs(true);
                     builder.setQuadOrientation(EnumFacing.getFacingFromVector(vec2.x, vec2.y, vec2.z));
+                    if(tintprog != null) builder.setQuadTint(1);
                     builder.setTexture(sprite);
                     putVertexData(model, builder, poly, poli, 0, vec2, sprite, bk, colorprog);
                     putVertexData(model, builder, poly, poli, 1, vec2, sprite, bk, colorprog);

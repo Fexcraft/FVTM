@@ -46,7 +46,7 @@ public class RoadPlacingUtil {
 			compound.set("uuid_m", newid.getLeastSignificantBits());
 			compound.set("width", width);
 			vector.write(compound, "vector");
-			Packets.sendToAll(PKT_TAG, "road_tool_new", compound);
+			Packets.sendTo(PKT_TAG, pass, "road_tool_new", compound);
 			//
 			FvtmResources.INSTANCE.spawnRoadMarker(world, vector, newid);
 			return;
@@ -60,7 +60,7 @@ public class RoadPlacingUtil {
 		compound.set("uuid_m", roadid.getLeastSignificantBits());
 		compound.set("width", width);
 		vector.write(compound, "vector");
-		Packets.sendToAll(PKT_TAG, "road_tool_add", compound);
+		Packets.sendTo(PKT_TAG, pass, "road_tool_add", compound);
 		//
 		FvtmResources.INSTANCE.spawnRoadMarker(world, vector, roadid);
 	}
@@ -109,7 +109,7 @@ public class RoadPlacingUtil {
 			compound.set("selected", selected);
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
-			Packets.sendToAll(PKT_TAG, "road_tool_selected", compound);
+			Packets.sendTo(PKT_TAG, pass, "road_tool_selected", compound);
 		}
 
 		public void remove(EntityW pass, QV3D vector){
@@ -128,25 +128,26 @@ public class RoadPlacingUtil {
 			coords = null;
 			//
 			if(points.size() == 0){
-				reset();
+				reset(pass);
 				return;
 			}
 			//
+			if(pass.isOnClient()) return;
 			TagCW compound = TagCW.create();
 			compound.set("remove", rem);
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
 			vector.write(TagCW.wrap(compound), "vector");
-			Packets.sendToAll(PKT_TAG, "road_tool_remove", compound);
+			Packets.sendTo(PKT_TAG, pass, "road_tool_remove", compound);
 		}
 		
-		public void reset(){
+		public void reset(EntityW pass){
 			QUEUE.remove(id);
 			CURRENT.entrySet().removeIf(entry -> entry.getValue().equals(id));
 			TagCW compound = TagCW.create();
 			compound.set("uuid_l", id.getMostSignificantBits());
 			compound.set("uuid_m", id.getLeastSignificantBits());
-			Packets.sendToAll(PKT_TAG, "road_tool_reset", compound);
+			Packets.sendTo(PKT_TAG, pass, "road_tool_reset", compound);
 		}
 
 		public int indexOf(QV3D vector){
@@ -171,7 +172,7 @@ public class RoadPlacingUtil {
 			}
 			if(!UniRoadTool.placeRoad(pass, stack, new Road(nroad.points.toArray(new QV3D[0])))) return;
 			pass.send("interact.fvtm.road_tool.complete");
-			nroad.reset();
+			nroad.reset(pass);
 		}
 
 		public void genpreview(){

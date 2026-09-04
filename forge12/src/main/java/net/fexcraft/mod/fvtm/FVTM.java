@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.event.Registerer12;
 import net.fexcraft.mod.fvtm.event.RenderViewHandler;
 import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.render.*;
@@ -273,6 +272,10 @@ public class FVTM {
 		FvtmRegistry.BLOCKS.forEach(blk -> FvtmResources.INSTANCE.linkItemContainer(blk.getItemWrapper()));
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		//
+		if(event.getSide().isClient()){
+			net.fexcraft.mod.fvtm.render.block.FvtmBlockModelLoader.registerTint();
+		}
 	}
 
 	@Mod.EventHandler

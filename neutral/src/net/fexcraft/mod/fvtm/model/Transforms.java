@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -48,8 +48,8 @@ public class Transforms {
 		return false;
 	}
 
-	public Vec3f getBakedTranslate(){
-		Vec3f vec = new Vec3f();
+	public V3F getBakedTranslate(){
+		V3F vec = new V3F();
 		for(Transformer trn : transformers){
 			if(trn instanceof TF_Translate){
 				TF_Translate tf = (TF_Translate)trn;
@@ -66,14 +66,14 @@ public class Transforms {
 		return false;
 	}
 
-	public Vec3f getBakedScale(){
+	public V3F getBakedScale(){
 		for(Transformer trn : transformers){
 			if(trn instanceof TF_Scale){
 				TF_Scale tf = (TF_Scale)trn;
-				return new Vec3f(tf.x, tf.y, tf.z);
+				return new V3F(tf.x, tf.y, tf.z);
 			}
 		}
-		return new Vec3f();
+		return new V3F();
 	}
 
 	public void add(Transformer transformer){

@@ -2,16 +2,16 @@ package net.fexcraft.mod.fvtm.util;
 
 import java.util.TreeMap;
 
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 
-public class TransformMap extends TreeMap<String, Vec3f> {
+public class TransformMap extends TreeMap<String, V3F> {
 
 	public static String[] TYPES = new String[]{ "null" };
 
 	public TransformMap(int gltype){
 		super();
 		for(String type : TYPES){
-			Vec3f vector = new Vec3f();
+			V3F vector = new V3F();
 			if(gltype == 0){
 				vector.x = vector.y = vector.z = .125f;
 			}
@@ -31,7 +31,7 @@ public class TransformMap extends TreeMap<String, Vec3f> {
 		}
 	}
 	
-	public void set(String type, Vec3f vector){
+	public void set(String type, V3F vector){
 		put(type, vector);
 	}
 	

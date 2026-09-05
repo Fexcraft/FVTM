@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.model.loaders;
 
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.*;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -34,7 +34,7 @@ public class BEOModelLoader implements ModelLoader {
 	private static final int UV = 5;
 	private static final int NORMAL = 6;
 	private static final int FACE = 7;
-	private static ArrayList<Vec3f> vecs = new ArrayList<>();
+	private static ArrayList<V3F> vecs = new ArrayList<>();
 	private static ArrayList<float[]> uvs = new ArrayList<>();
 
 	@Override
@@ -129,7 +129,7 @@ public class BEOModelLoader implements ModelLoader {
 					}
 					case VECTOR:{
 						float[] fl = readFloats(stream, 3);
-						vecs.add(new Vec3f(fl[0], fl[1], fl[2]));
+						vecs.add(new V3F(fl[0], fl[1], fl[2]));
 						continue;
 					}
 					case UV:{
@@ -145,7 +145,7 @@ public class BEOModelLoader implements ModelLoader {
 						int[] ids = readIntegers(stream, len + len);
 						TexturedVertex[] verts = new TexturedVertex[len];
 						for(int i = 0; i < len; i++){
-							Vec3f vec = vecs.get(ids[i]);
+							V3F vec = vecs.get(ids[i]);
 							float[] uv = uvs.get(ids[i + len]);
 							verts[i] = new TexturedVertex(vec.x, vec.y, vec.z, uv[0], uv[1]);
 						}

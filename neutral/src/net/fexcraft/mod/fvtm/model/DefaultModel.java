@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.Material;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
@@ -219,8 +219,8 @@ public class DefaultModel implements Model {
 				if(!groups.contains(args[0])) continue;
 				try{
 					ModelGroup group = groups.get(args[0]);
-					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-					Vec3f rotation = new Vec3f(
+					V3F vector = new V3F(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					V3F rotation = new V3F(
 							args.length > 4 ? Float.parseFloat(args[4]) : 0,
 							args.length > 5 ? Float.parseFloat(args[5]) : 0,
 							args.length > 6 ? Float.parseFloat(args[6]) : 0
@@ -246,7 +246,7 @@ public class DefaultModel implements Model {
 				if(!groups.contains(args[0])) continue;
 				try{
 					ModelGroup group = groups.get(args[0]);
-					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					V3F vector = new V3F(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
 					for(Polyhedron poly : group){
 						for(Polygon poli : poly.polygons){
 							for(Vertex vert : poli.vertices){

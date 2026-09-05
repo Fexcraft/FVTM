@@ -2,34 +2,34 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class AttrVector extends Attribute<Vec3f> {
+public class AttrVector extends Attribute<V3F> {
 
 	public AttrVector(String id, JsonMap map){
 		this(id, tovec(map.has("value") ? map.getArray("value") : null));
 		value = initial.copy();
 	}
 
-	private static Vec3f tovec(JsonArray arr){
-		if(arr == null) return new Vec3f();
-		else return new Vec3f(arr.get(0).float_value(), arr.get(1).float_value(), arr.get(2).float_value());
+	private static V3F tovec(JsonArray arr){
+		if(arr == null) return new V3F();
+		else return new V3F(arr.get(0).float_value(), arr.get(1).float_value(), arr.get(2).float_value());
 	}
 
-	public AttrVector(String aid, Vec3f val){
+	public AttrVector(String aid, V3F val){
 		super(aid, AttrValueType.VECTOR, val);
 	}
 
 	@Override
-	public Vec3f validate(Object val){
-		Vec3f vec = null;
-		if(val == null) vec = new Vec3f();
-		else if(val instanceof Vec3f) vec = ((Vec3f)val).copy();
+	public V3F validate(Object val){
+		V3F vec = null;
+		if(val == null) vec = new V3F();
+		else if(val instanceof V3F) vec = ((V3F)val).copy();
 		else if(val instanceof Number){
 			vec.x = ((Number)val).floatValue();
 			vec.y = ((Number)val).floatValue();
@@ -46,10 +46,10 @@ public class AttrVector extends Attribute<Vec3f> {
 	}
 
 	@Override
-	public Vec3f parse(String val){
-		Vec3f vec = null;
+	public V3F parse(String val){
+		V3F vec = null;
 		if(val.contains(",")){
-			vec = new Vec3f();
+			vec = new V3F();
 			String[] split = val.split(",");
 			vec.x = Float.parseFloat(split[0]);
 			vec.y = Float.parseFloat(split[1]);
@@ -95,7 +95,7 @@ public class AttrVector extends Attribute<Vec3f> {
 	}
 
 	@Override
-	public Attribute<Vec3f> newInstance(){
+	public Attribute<V3F> newInstance(){
 		return new AttrVector(id, initial.copy());
 	}
 

@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.BoxBuilder;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -97,14 +97,14 @@ public class SMPTBJavaModelLoader implements ModelLoader {
             		builder.setOffset(parseF(array[0]), parseF(array[1]), parseF(array[2]));
             		builder.setSize(parseF(array[3]), parseF(array[4]), parseF(array[5]));
             		if(shapebox){
-            			builder.setCorner(0, newVec3f(array[7], array[8], array[9]));
-            			builder.setCorner(1, newVec3f(array[10], array[11], array[12]));
-            			builder.setCorner(2, newVec3f(array[13], array[14], array[15]));
-            			builder.setCorner(3, newVec3f(array[16], array[17], array[18]));
-            			builder.setCorner(4, newVec3f(array[19], array[20], array[21]));
-            			builder.setCorner(5, newVec3f(array[22], array[23], array[24]));
-            			builder.setCorner(6, newVec3f(array[25], array[26], array[27]));
-            			builder.setCorner(7, newVec3f(array[28], array[29], array[30]));
+            			builder.setCorner(0, newV3F(array[7], array[8], array[9]));
+            			builder.setCorner(1, newV3F(array[10], array[11], array[12]));
+            			builder.setCorner(2, newV3F(array[13], array[14], array[15]));
+            			builder.setCorner(3, newV3F(array[16], array[17], array[18]));
+            			builder.setCorner(4, newV3F(array[19], array[20], array[21]));
+            			builder.setCorner(5, newV3F(array[22], array[23], array[24]));
+            			builder.setCorner(6, newV3F(array[25], array[26], array[27]));
+            			builder.setCorner(7, newV3F(array[28], array[29], array[30]));
             		}
             		model.groups.get(poly.group).add(new Polyhedron().importMRT(builder.build(), false, 0.0625f));
             		continue;
@@ -161,8 +161,8 @@ public class SMPTBJavaModelLoader implements ModelLoader {
 		return true;
 	}
 	
-	private Vec3f newVec3f(String string1, String string2, String string3){
-		return new Vec3f(parseF(string1), parseF(string2), parseF(string3));
+	private V3F newV3F(String string1, String string2, String string3){
+		return new V3F(parseF(string1), parseF(string2), parseF(string3));
 	}
 
 	private static final class TemporaryPolygon {

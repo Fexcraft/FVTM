@@ -47,7 +47,7 @@ public class DebugModels {
 		group0 = new ModelGroup("group0");
 		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16).newCylinderBuilder()
 			.setPosition(0, 0, 0).setRadius(6, 5).setLength(3).setSegments(8, 0).setScale(1, 1).setDirection(4)
-			.setRadialTexture(3, 1).setTopOffset(null).setTopRotation(new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, 0.0)).build()
+			.setRadialTexture(3, 1).setTopOffset(null).setTopRotation(new net.fexcraft.lib.common.math.V3F(0.0, 0.0, 0.0)).build()
 			.setRotationPoint(0, -5, 0).setRotationAngle(0, 0, 0)
 		);
 		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16)

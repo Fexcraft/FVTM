@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -129,8 +129,8 @@ public abstract class Attribute<V> {
 		else return asBoolean();
 	}
 
-	public Vec3f asVector(){
-		return new Vec3f(asFloat(), 0, 0);
+	public V3F asVector(){
+		return new V3F(asFloat(), 0, 0);
 	}
 
 	public <R> R tristate(R n, R t, R f){

@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.mod.uni.tag.TagCW;
 import org.lwjgl.opengl.GL11;
 
@@ -77,7 +77,7 @@ public class Rot {
         if(vec.y != 0f) GL11.glRotated(-vec.y, 0.0F, 1.0F, 0.0F);
 	}
 
-	public void set(Vec3f rot){
+	public void set(V3F rot){
 		vec.x = rot.x;
 		vec.y = rot.y;
 		vec.z = rot.z;

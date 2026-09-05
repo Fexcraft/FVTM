@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.common.math.AxisRotator;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.*;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.FvtmLogger;
@@ -132,9 +132,9 @@ public class BakedModelImpl implements IBakedModel {
                 bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
                 for(Polygon poli : poly.polygons){
                     boolean tri = poli.vertices.length == 3;
-                    Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
-                    Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
-                    Vec3f vec2 = vec1.cross(vec0).normalize();
+                    V3F vec0 = new V3F(poli.vertices[1].vector.sub(poli.vertices[0].vector));
+                    V3F vec1 = new V3F(poli.vertices[1].vector.sub(poli.vertices[2].vector));
+                    V3F vec2 = vec1.cross(vec0).normalize();
                     vec2 = bk.rot_poly.getRelativeVector(vec2);
                     if(model.defrot) vec2 = bk.rot_meta.getRelativeVector(vec2);
                     if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
@@ -186,12 +186,12 @@ public class BakedModelImpl implements IBakedModel {
         return root.tex_sprites.get(tempres.get(name));
     }
 
-    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron poly, Polygon poli, int vi, Vec3f norm, TextureAtlasSprite texture, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+    private void putVertexData(BlockModel model, UnpackedBakedQuad.Builder builder, Polyhedron poly, Polygon poli, int vi, V3F norm, TextureAtlasSprite texture, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
         Vertex vert = poli.vertices[vi];
         for(int e = 0; e < format.getElementCount(); e++){
             switch(format.getElement(e).getUsage()){
                 case POSITION:
-                    Vec3f vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
+                    V3F vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
                     if(model.defrot) vec = bk.rot_meta.getRelativeVector(vec);
                     if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec = rot.getRelativeVector(vec);
                     builder.put(e,
@@ -202,7 +202,7 @@ public class BakedModelImpl implements IBakedModel {
                 case COLOR:
                     boolean set = false;
                     if(vert instanceof ColoredVertex){
-                        Vec3f color = vert.color();
+                        V3F color = vert.color();
                         if(color.x != 1f || color.y != 1f || color.z != 1f){
                             builder.put(e, color.x, color.y, color.z, 1f);
                             set = true;

@@ -88,7 +88,7 @@ public class PathModelGenerator {
 								double dx = (verts[m].vector.x) + vec.x - cen.x;
 								double dy = (verts[m].vector.y) + vec.y - cen.y;
 								double dz = (verts[m].vector.z) + vec.z - cen.z;
-								verts[m].vector = new Vec3f(dx, dy, dz);
+								verts[m].vector = new V3F(dx, dy, dz);
 							}
 							tarp.hedrons[(int)accu].importMRT(new TexturedPolygon(verts), 1f);
 						}

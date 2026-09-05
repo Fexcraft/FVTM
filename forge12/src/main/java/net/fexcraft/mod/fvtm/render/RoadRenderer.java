@@ -3,14 +3,11 @@ package net.fexcraft.mod.fvtm.render;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.QV3D;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.minecraft.client.renderer.BufferBuilder;

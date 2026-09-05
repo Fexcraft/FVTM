@@ -1,7 +1,7 @@
 //FMT-Marker FVTM-1.6
 package net.fexcraft.mod.fvtm.model.block;
 
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
@@ -58,7 +58,7 @@ public class Lift2024Model extends DefaultModel {
 		groups.add(struct);
 		//
 		lift = new ModelGroup("lift");
-		lift.add(new ModelRendererTurbo(lift, 111, 9, tex_width, tex_height).addCylinder(0, -0.2f, 0, 2, 4, 12, 1, 1, 4, new Vec3f(0.0, 0.1, 0.0))
+		lift.add(new ModelRendererTurbo(lift, 111, 9, tex_width, tex_height).addCylinder(0, -0.2f, 0, 2, 4, 12, 1, 1, 4, new V3F(0.0, 0.1, 0.0))
 			.setRotationPoint(12, 0, -6).setRotationAngle(0, 0, 0)
 		);
 		lift.add(new ModelRendererTurbo(lift, 111, 0, tex_width, tex_height)
@@ -78,7 +78,7 @@ public class Lift2024Model extends DefaultModel {
 		lift.add(new ModelRendererTurbo(lift, 78, 21, tex_width, tex_height).addBox(0, -0.2f, 0, 3, 2, 6)
 			.setRotationPoint(9, 2, -3).setRotationAngle(0, 0, 0)
 		);
-		lift.add(new ModelRendererTurbo(lift, 54, 0, tex_width, tex_height).addCylinder(0, -0.2f, 0, 2, 4, 12, 1, 1, 4, new Vec3f(0.0, 0.1, 0.0))
+		lift.add(new ModelRendererTurbo(lift, 54, 0, tex_width, tex_height).addCylinder(0, -0.2f, 0, 2, 4, 12, 1, 1, 4, new V3F(0.0, 0.1, 0.0))
 			.setRotationPoint(12, 0, 6).setRotationAngle(0, 0, 0)
 		);
 		groups.add(lift);
@@ -198,7 +198,7 @@ public class Lift2024Model extends DefaultModel {
 		center = new ModelGroup("center");
 		center.add(new ModelRendererTurbo(center, 55, 38, tex_width, tex_height).newCylinderBuilder()
 			.setPosition(0, 0, 0).setRadius(8, 6).setLength(1).setSegments(20, 0).setScale(1, 0.95f).setDirection(4)
-			.setTopOffset(null).setTopRotation(new Vec3f(0.0, 0.0, 0.0)).build());
+			.setTopOffset(null).setTopRotation(new V3F(0.0, 0.0, 0.0)).build());
 		groups.add(center);
 	}
 

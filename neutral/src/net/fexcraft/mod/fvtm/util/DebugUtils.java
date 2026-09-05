@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
@@ -76,10 +76,10 @@ public class DebugUtils {
 			.addShapeBox(-4, 0, 1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0), false, sixteenth);
 		JUNC_SIG_STATE.importMRT(new ModelRendererTurbo(JUNC_SIG_STATE, 0, 0, 1, 1)
 			.addShapeBox(-4, 0, -1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), false, sixteenth);
-		LINE_POLY = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()) });
+		LINE_POLY = new Polygon(new Vertex[]{ new ColoredVertex(new V3F()), new ColoredVertex(new V3F()) });
 		LINE.polygons.add(LINE_POLY);
-		LINE_POLY_2D[0] = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()) });
-		LINE_POLY_2D[1] = new Polygon(new Vertex[]{ new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()), new ColoredVertex(new Vec3f()) });
+		LINE_POLY_2D[0] = new Polygon(new Vertex[]{ new ColoredVertex(new V3F()), new ColoredVertex(new V3F()), new ColoredVertex(new V3F()), new ColoredVertex(new V3F()) });
+		LINE_POLY_2D[1] = new Polygon(new Vertex[]{ new ColoredVertex(new V3F()), new ColoredVertex(new V3F()), new ColoredVertex(new V3F()), new ColoredVertex(new V3F()) });
 		LINE_2D.polygons.add(LINE_POLY_2D[0]);
 		LINE_2D.polygons.add(LINE_POLY_2D[1]);
 	}

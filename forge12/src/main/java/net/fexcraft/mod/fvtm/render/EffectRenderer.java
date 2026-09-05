@@ -416,7 +416,7 @@ public class EffectRenderer {
 	}
 
 	/** Method version for cases where wrapper and holder isn't the same entity (e.g. compat mods). */
-	public static void renderContainerInfo(World world, ContainerHolderWrapper entity, ContainerHolder holder, Vec3f rot){
+	public static void renderContainerInfo(World world, ContainerHolderWrapper entity, ContainerHolder holder, V3F rot){
         if((tempholder = holder) != null) tempholder.render(0, 0, 0, rot.x, rot.y, rot.z);
         if(!Command.CONTAINER) return;
     	//if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.x, rot.y, rot.z);

@@ -8,7 +8,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.AxisRotator;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.model.*;
 
@@ -163,8 +163,8 @@ public class BlockModel extends DefaultModel {
 		public AxisRotator rot_poly;
 		public AxisRotator rot_meta;
 		public AxisRotator[] rot_tf;
-		public Vec3f translate;
-		public Vec3f scale;
+		public V3F translate;
+		public V3F scale;
 
 	}
 

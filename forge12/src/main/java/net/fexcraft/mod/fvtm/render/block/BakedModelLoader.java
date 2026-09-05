@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.lib.common.math.AxisRotator;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.mc.utils.Axis3DL;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.model.*;
@@ -57,11 +57,11 @@ public class BakedModelLoader {
         if(model.transforms.hasTranslate()){
             bk.translate = model.transforms.getBakedTranslate();
         }
-        else bk.translate = new Vec3f();
+        else bk.translate = new V3F();
         if(model.transforms.hasScale()){
             bk.scale = model.transforms.getBakedScale();
         }
-        else bk.scale = new Vec3f(1, 1, 1);
+        else bk.scale = new V3F(1, 1, 1);
         //
         for(ArrayList<BlockModel> val : model.state_models.values()){
             for(BlockModel v : val) convertTransforms(v, bk, block, state);

@@ -11,7 +11,7 @@ import java.util.List;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.BoxBuilder;
 import net.fexcraft.lib.tmt.CustomUVBuilder;
@@ -109,7 +109,7 @@ public class FMFParser {
 	private static void readPolygons(InputStream stream, ModelGroup group, int tx, int ty) throws IOException {
 		int r = -1, tv = 0;
 		ArrayList<TexturedVertex> verts = new ArrayList<>();
-		ArrayList<Vec3f> norms = new ArrayList<>();
+		ArrayList<V3F> norms = new ArrayList<>();
 		ModelRendererTurbo mrt = null;
 		BoxBuilder box = null;
 		CylinderBuilder cyl = null;
@@ -290,7 +290,7 @@ public class FMFParser {
 						}
 						case PN:{
 							float[] fl = readFloats(stream, 3);
-							norms.add(new Vec3f(fl[0], fl[1], fl[2]));
+							norms.add(new V3F(fl[0], fl[1], fl[2]));
 							break;
 						}
 					}

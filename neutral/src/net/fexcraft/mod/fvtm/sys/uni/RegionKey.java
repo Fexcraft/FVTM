@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.mod.fvtm.util.QV3D;
 
 public class RegionKey implements Comparable<RegionKey> {
@@ -68,7 +68,7 @@ public class RegionKey implements Comparable<RegionKey> {
 		return getRegionXZ(vec.pos.x >> 4, vec.pos.z >> 4);
 	}
 
-	public static int[] getRegionXZ(Vec3f pos){
+	public static int[] getRegionXZ(V3F pos){
 		return getRegionXZ((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 

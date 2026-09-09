@@ -169,7 +169,7 @@ public class ContainerSlot {
 			float off = i + (type.length() / 2f) - (length / 2f);
 			org.lwjgl.opengl.GL11.glTranslatef(off, (bool ? .0625f : 0), 0);
 			net.fexcraft.lib.common.math.RGB.glColorReset();
-			net.fexcraft.mod.fvtm.model.DebugModels.CONTAINER[type.ordinal()].render();
+			//net.fexcraft.mod.fvtm.model.DebugModels.CONTAINER[type.ordinal()].render();
 			org.lwjgl.opengl.GL11.glTranslatef(-off, (bool ? -.0625f : 0), 0);
 			i += type.length();
 			bool = !bool;

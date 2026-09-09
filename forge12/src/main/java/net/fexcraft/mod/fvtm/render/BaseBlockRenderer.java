@@ -4,8 +4,8 @@ import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.block.properties.IProperty;
@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 
 import static net.fexcraft.mod.fvtm.Config.RENDER_BLOCKS_SEPARATELY;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 
 @fTESR
 public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity> {
@@ -32,7 +33,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity
         if(model == null){
             GL11.glPushMatrix();
             GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-            DebugModels.SPHERE_RED.render(0.5f);
+            DebugUtils.renderSphere(0.5f, COL_RED);
             GL11.glPopMatrix();
             return;
         }

@@ -6,14 +6,16 @@ import net.fexcraft.lib.frl.ColoredVertex;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
+import net.fexcraft.lib.frl.gen.AxisDir;
 import net.fexcraft.lib.frl.gen.Generator;
-import net.fexcraft.lib.frl.gen.Generator_Sphere;
-import net.fexcraft.lib.frl.gen.ValueMap;
+import net.fexcraft.lib.frl.gen.Generator.Type;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmResources;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
+import static net.fexcraft.lib.frl.gen.Generator.Type.CUBOID;
+import static net.fexcraft.lib.frl.gen.Generator.Type.CYLINDER;
 import static net.fexcraft.lib.frl.gen.Generator.Values.*;
 
 /**
@@ -36,13 +38,13 @@ public class DebugUtils {
 	public static int COL_GRY = 0xcdcdcd;
 	public static int COL_ORG = 0xeb8500;
 	//
-	public static Polyhedron SPHERE = new Generator(null).set(TYPE, Generator.Type.SPHERE).set(RADIUS1, 1f).set(SEGMENTS, 16).set(CIRCLES, 16).make();
-	public static Polyhedron LLBB0 = new Polyhedron();
-	public static Polyhedron LLBB1 = new Polyhedron();
-	public static Polyhedron LLBB2 = new Polyhedron();
-	public static Polyhedron PANE = new Polyhedron();
-	public static Polyhedron JUNC_CORE = new Polyhedron();
-	public static Polyhedron JUNC_LINE = new Polyhedron();
+	public static Polyhedron SPHERE = new Generator(Type.SPHERE).set(RADIUS1, 1f).set(SEGMENTS, 16).set(CIRCLES, 16).make();
+	public static Polyhedron LLBB0 = new Generator(CUBOID).set(OFF_X, -8f).set(OFF_Y, -0.1f).set(OFF_Z, -0.1f).set(WIDTH, 16f).set(HEIGHT, 0.2f).set(DEPTH, 0.2f).set(SCALE, sixteenth).make();
+	public static Polyhedron LLBB1 = new Generator(CUBOID).set(OFF_X, -0.1f).set(OFF_Y, -8f).set(OFF_Z, -0.1f).set(WIDTH, 0.2f).set(HEIGHT, 16f).set(DEPTH, 0.2f).set(SCALE, sixteenth).make();
+	public static Polyhedron LLBB2 = new Generator(CUBOID).set(OFF_X, -0.1f).set(OFF_Y, -0.1f).set(OFF_Z, -8f).set(WIDTH, 0.2f).set(HEIGHT, 0.2f).set(DEPTH, 16f).set(SCALE, sixteenth).make();
+	public static Polyhedron PANE = new Generator(CUBOID).set(OFF_X, -8f).set(OFF_Y, 0f).set(OFF_Z, -8f).set(WIDTH, 16f).set(HEIGHT, 0.2f).set(DEPTH, 16f).set(SCALE, sixteenth).make();
+	public static Polyhedron JUNC_CORE = new Generator(CYLINDER).set(RADIUS1, 0.5f).set(RADIUS2, 0.125f).set(LENGTH, 0.5f).set(SEGMENTS, 8).set(TOP_SCALE, 1.1f).set(BASE_SCALE, 1.1f).set(AXIS_DIR, AxisDir.Y_NEGATIVE).set(SCALE, sixteenth).make();
+	public static Polyhedron JUNC_LINE = new Generator(CUBOID).set(OFF_X, -0.125f).set(OFF_Y, 0f).set(OFF_Z, -0.5f).set(WIDTH, 0.25f).set(HEIGHT, 0.25f).set(DEPTH, 8f).set(SCALE, sixteenth).make();
 	public static Polyhedron JUNC_DIR = new Polyhedron();
 	public static Polyhedron JUNC_SIG_STATE = new Polyhedron();
 	public static Polyhedron JUNC_SIG_DIR = new Polyhedron();
@@ -51,13 +53,6 @@ public class DebugUtils {
 	public static Polygon LINE_POLY;
 	public static Polygon[] LINE_POLY_2D = new Polygon[2];
 	static{
-		LLBB0.importMRT(new ModelRendererTurbo(LLBB0, 0, 0, 1, 1).addBox(-8, -0.1f, -0.1f, 16, 0.2f, 0.2f), false, sixteenth);
-		LLBB1.importMRT(new ModelRendererTurbo(LLBB1, 0, 0, 1, 1).addBox(-0.1f, -8, -0.1f, 0.2f, 16, 0.2f), false, sixteenth);
-		LLBB2.importMRT(new ModelRendererTurbo(LLBB2, 0, 0, 1, 1).addBox(-0.1f, -0.1f, -8, 0.2f, 0.2f, 16), false, sixteenth);
-		PANE.importMRT(new ModelRendererTurbo(PANE, 0, 0, 1, 1).addBox(-8, 0, -8, 16, 0.2f, 16), false, sixteenth);
-		JUNC_CORE.importMRT(new ModelRendererTurbo(JUNC_CORE, 0, 0, 1, 1).newCylinderBuilder()
-			.setPosition(0, 0, 0).setRadius(0.5f, 0.125f).setLength(0.5f).setSegments(8, 0).setScale(1.1f, 1.1f).setDirection(4).build(), false, sixteenth);
-		JUNC_LINE.importMRT(new ModelRendererTurbo(JUNC_LINE, 0, 0, 1, 1).addBox(-0.125f, 0, 0.5f, 0.25f, 0.25f, 8), false, sixteenth);
 		JUNC_DIR.importMRT(new ModelRendererTurbo(JUNC_DIR, 0, 0, 1, 1)
 			.addShapeBox(-0.25f, 0, 0, 0.5f, 0.5f, 2, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-0, 0, 0.5f), false, sixteenth);

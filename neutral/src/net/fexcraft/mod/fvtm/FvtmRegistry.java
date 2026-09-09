@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
+import net.fexcraft.lib.common.math.M4DW;
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -22,6 +23,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroupList;
 import net.fexcraft.mod.fvtm.model.ModelLoader;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.util.M4DImpl;
 import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Registry;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
@@ -91,6 +93,7 @@ public class FvtmRegistry {
 		CONFIG_DIR = conf;
 		if(!CONFIG_DIR.exists()) CONFIG_DIR.mkdirs();
 		CONFIG = new Config(new File(conf, "fvtm.json"));
+		M4DW.SUPPLIER = M4DImpl::new;
 		//
 		INTERNAL_ADDON_ID = IDLManager.getIDLCached("fvtm:fvtm");
 		AIR = IDLManager.getIDLCached("minecraft:air");

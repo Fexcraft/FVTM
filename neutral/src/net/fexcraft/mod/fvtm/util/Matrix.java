@@ -23,6 +23,12 @@ public class Matrix {
 		m0[0] = m1[1] = m2[2] = 1f;
 	}
 
+	public void set(float x, float y, float z){
+		m0[0] = x;
+		m1[0] = y;
+		m2[0] = z;
+	}
+
 	public void rotate(float am, float x, float y, float z){
 		float cos = (float)Math.cos(am);
 		float sin = (float)Math.sin(am);

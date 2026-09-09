@@ -9,9 +9,7 @@ import net.fexcraft.mod.fvtm.data.block.JackEntity;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.Model;
-import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.Command;
@@ -34,6 +32,8 @@ import static net.fexcraft.mod.fvtm.Config.RENDER_VEHICLES_SEPARATELY;
 import static net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint.DEFAULT;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.JACKS;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.SEP_VEH_CACHE;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_GRY;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_RED;
 import static net.fexcraft.mod.fvtm.util.GLUtils112.translate;
 import static net.fexcraft.mod.fvtm.util.GLUtils112.translateR;
 
@@ -70,7 +70,7 @@ public class VehicleRenderer {
 				for(SwivelPoint point : vehicle.vehicle.data.getRotationPoints().values()){
 					V3D vec = point.getRelativeVector(0, 0.1f, 0);
 					GL11.glTranslated(vec.x, vec.y, vec.z);
-					DebugModels.SPHERE_GRY.render(0.5f);
+					DebugUtils.renderSphere(0.5f, COL_GRY);
 					GL11.glTranslated(-vec.x, -vec.y, -vec.z);
 				}
 			}
@@ -94,7 +94,7 @@ public class VehicleRenderer {
 			}
 			else {
 				TexUtil.bindTexture(vehicle.vehicle.data.getCurrentTexture());
-				DebugModels.SPHERE_RED.render(0.5f);
+				DebugUtils.renderSphere(0.5f, COL_RED);
 			}
 			EffectRenderer.renderVehicleInfo(vehicle.vehicle, vehicle.vehicle.entity.getPos(), vehicle.vehicle.data);
             GL11.glPopMatrix();

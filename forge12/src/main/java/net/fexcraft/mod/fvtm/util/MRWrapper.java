@@ -1,10 +1,7 @@
-package net.fexcraft.mod.fvtm.model;
+package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.ClothItem;
-import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.TexUtil;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.model.ModelBase;
@@ -16,6 +13,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
+import static net.fexcraft.mod.fvtm.util.DebugUtils.COL_CYN;
+
 /** @author Ferdinand Calo' (FEX___96) */
 public class MRWrapper extends ModelRenderer {
 	
@@ -23,14 +22,14 @@ public class MRWrapper extends ModelRenderer {
 	private ArrayList<ArrayList<String>> cloth_models = new ArrayList<>();
 	private ArrayList<ClothItem> cloth_items = new ArrayList<>();
 	private ArrayList<String> cloth_groups = new ArrayList<>();
-	private RenderLivingBase<?> renderer;
+	//private RenderLivingBase<?> renderer;
 	private EntityLivingBase entity;
 	private String id;
 
 	public MRWrapper(ModelBase base, ModelRenderer parent, RenderLivingBase<?> renderer, String id){
 		super(base);
 		this.parent = parent;
-		this.renderer = renderer;
+		//this.renderer = renderer;
 		this.id = id;
 	}
 	
@@ -66,7 +65,7 @@ public class MRWrapper extends ModelRenderer {
 		cloth_items.clear();
 		cloth_models.clear();
 		cloth_groups.clear();
-    	if(Command.OTHER) DebugModels.center.render();
+    	if(Command.OTHER) DebugUtils.renderAxe(1, COL_CYN);
     	RGB.glColorReset();
     	GL11.glRotatef(90, 0, -1, 0);
     	GlStateManager.bindTexture(deftex);

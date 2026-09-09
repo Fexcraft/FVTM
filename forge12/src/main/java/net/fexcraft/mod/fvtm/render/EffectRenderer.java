@@ -26,7 +26,7 @@ import net.fexcraft.mod.fvtm.event.ResizeHandler;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.item.*;
-import net.fexcraft.mod.fvtm.model.MRWrapper;
+import net.fexcraft.mod.fvtm.util.MRWrapper;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.sys.uni.RootVehicle;

@@ -21,12 +21,12 @@ public class DebugModels {
 		}
 	}
 
-	public static final ModelRendererTurbo SPHERE_GRY = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xcdcdcd));
+	/*public static final ModelRendererTurbo SPHERE_GRY = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xcdcdcd));
 	public static final ModelRendererTurbo SPHERE_RED = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xff0000));
 	public static final ModelRendererTurbo SPHERE_GRN = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0x00ff00));
 	public static final ModelRendererTurbo SPHERE_BLU = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0x0000ff));
 	public static final ModelRendererTurbo SPHERE_YLW = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xffff00));
-	public static final ModelRendererTurbo SPHERE_CYN = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0x00ffff));
+	public static final ModelRendererTurbo SPHERE_CYN = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0x00ffff));*/
 	/*public static final ModelRendererTurbo CUBE_CYN = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1).setLines(new RGB(0x00ffff));
 	public static final ModelRendererTurbo CUBE_RED = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1).setLines(new RGB(0xff0000));
 	public static final ModelRendererTurbo CUBE_GRN = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1).setLines(new RGB(0x00ff00));

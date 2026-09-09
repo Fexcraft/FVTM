@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.fexcraft.lib.common.math.AxisRotator;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
@@ -133,9 +133,9 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 						bk.rot_poly.setAngles(-poly.rotY, -poly.rotZ, -poly.rotX);
 						for(Polygon poli : poly.polygons){
 							boolean tri = poli.vertices.length == 3;
-							Vec3f vec0 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[0].vector));
-							Vec3f vec1 = new Vec3f(poli.vertices[1].vector.sub(poli.vertices[2].vector));
-							Vec3f vec2 = vec1.cross(vec0).normalize();
+							V3F vec0 = new V3F(poli.vertices[1].vector.sub(poli.vertices[0].vector));
+							V3F vec1 = new V3F(poli.vertices[1].vector.sub(poli.vertices[2].vector));
+							V3F vec2 = vec1.cross(vec0).normalize();
 							vec2 = bk.rot_poly.getRelativeVector(vec2);
 							if(model.defrot) vec2 = bk.rot_meta.getRelativeVector(vec2);
 							if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec2 = rot.getRelativeVector(vec2);
@@ -159,9 +159,9 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 			return quads;
 		}
 
-		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Polygon poli, int vi, Vec3f norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
+		private void addVertex(QuadBakingVertexConsumer.Buffered builder, Polyhedron poly, Polygon poli, int vi, V3F norm, TextureAtlasSprite sprite, BakedTransformData bk, BakedPrograms.ColorSetter colorprog){
 			Vertex vert = poli.vertices[vi];
-			Vec3f vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
+			V3F vec = bk.rot_poly.getRelativeVector(vert.vector).add(poly.posX, poly.posY, poly.posZ);
 			if(model.defrot) vec = bk.rot_meta.getRelativeVector(vec);
 			if(bk.rot_tf != null) for(AxisRotator rot : bk.rot_tf) vec = rot.getRelativeVector(vec);
 			builder.vertex(
@@ -267,11 +267,11 @@ public class BakedModelLoader implements IGeometryLoader<BakedModelLoader.Unbake
 		if(model.transforms.hasTranslate()){
 			bk.translate = model.transforms.getBakedTranslate();
 		}
-		else bk.translate = new Vec3f();
+		else bk.translate = new V3F();
 		if(model.transforms.hasScale()){
 			bk.scale = model.transforms.getBakedScale();
 		}
-		else bk.scale = new Vec3f(1, 1, 1);
+		else bk.scale = new V3F(1, 1, 1);
 		//
 		for(ArrayList<BlockModel> val : model.state_models.values()){
 			for(BlockModel v : val) convertTransforms(v, bk, state);

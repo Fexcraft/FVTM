@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.math.V3F;
 import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.model.content.VehicleModel;
 import net.fexcraft.mod.fvtm.util.VehItemApp;
@@ -34,7 +34,7 @@ public class ItemRenderers {
 				pose.pushPose();
 				//
 				pose.translate(0.5, 0.5, 0);
-				Vec3f translate = model.item_translate.get(context.name());
+				V3F translate = model.item_translate.get(context.name());
 				pose.translate(translate.x, translate.y, translate.z);
 				if(via.data.getType().isTrailer() && !via.data.getType().getVehicleType().isRailVehicle()){
 					if(context == ItemDisplayContext.GUI){
@@ -44,12 +44,12 @@ public class ItemRenderers {
 						pose.translate(0, 0, -0.5);
 					}
 				}
-				Vec3f rotate = model.item_rotate.get(context.name());
+				V3F rotate = model.item_rotate.get(context.name());
 				pose.mulPose(new Quaternionf()
 					.rotateAxis(Static.toRadians(rotate.y), AY)
 					.rotateAxis(Static.toRadians(rotate.x), AX)
 					.rotateAxis(Static.toRadians(rotate.z), AZ));
-				Vec3f scale = model.item_scale.get(context.name());
+				V3F scale = model.item_scale.get(context.name());
 				pose.scale(scale.x, scale.y, scale.z);
 				//
 				pose.pushPose();

@@ -67,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static net.fexcraft.mod.fvtm.model.DebugModels.*;
 import static net.fexcraft.mod.fvtm.render.SeparateRenderCache.*;
 import static net.fexcraft.mod.fvtm.render.VehicleRenderer.renderPointSep;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
@@ -180,7 +179,7 @@ public class EffectRenderer {
 	}
 
 	public static void renderVehicleInfo(VehicleInstance inst, V3D vehpos, VehicleData data){
-		preMeshCalls();
+		//preMeshCalls();
 		V3D ply = new V3D(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
 		SwivelPoint point;
 		//boolean inrange;
@@ -190,7 +189,7 @@ public class EffectRenderer {
 			if(Command.TOGGABLE){
 				V3D pos = zone.pos(data);
 				GLUtils112.translate(pos);
-				(zone.inRange(data, vehpos, ply) ? SPHERE_GRN : SPHERE_GRY).render(zone.range);
+				DebugUtils.renderSphere(zone.range, zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
 				GLUtils112.translateR(pos);
 				RGB.glColorReset();
 			}
@@ -326,7 +325,7 @@ public class EffectRenderer {
 				}
 			}
 		}
-		postMeshCalls();
+		//postMeshCalls();
 		if(Command.HOTSWAP && Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox()){
 			for(Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();

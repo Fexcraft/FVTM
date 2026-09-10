@@ -24,13 +24,6 @@ import static net.fexcraft.lib.frl.gen.Generator.Values.*;
  */
 public class DebugUtils {
 
-	public static float[] CYNCOLOR = new float[]{ 0, 1, 1 };
-	public static float[] REDCOLOR = new float[]{ 1, 0, 0 };
-	public static float[] GRNCOLOR = new float[]{ 0, 1, 0 };
-	public static float[] YLWCOLOR = new float[]{ 1, 1, 0 };
-	public static float[] GRYCOLOR = new float[]{ .8f, .8f, .8f };
-	public static float[] ORGCOLOR = new float[]{ .92f, .52f, 0 };
-	//
 	public static int COL_RED = 0xff0000;
 	public static int COL_GRN = 0x00ff00;
 	public static int COL_BLU = 0x0000ff;

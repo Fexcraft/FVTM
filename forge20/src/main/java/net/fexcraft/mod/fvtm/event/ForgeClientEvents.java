@@ -63,8 +63,7 @@ public class ForgeClientEvents {
 				@Override
 				public void render(PoseStack pose, VertexConsumer cons, int i, int j, float k, float l, float m, float n){
 					Renderer20.set(pose, cons, i, j);
-					FvtmRenderTypes.setLines();
-					SPHERE.render();
+					DebugUtils.renderSphere(0.25f, COL_BLU);
 				}
 			});
 		}
@@ -124,7 +123,6 @@ public class ForgeClientEvents {
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return;
 		PoseStack pose = event.getPoseStack();
 		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
-		FvtmRenderTypes.setLines();
 		QV3D vec = new QV3D(event.getTarget().getLocation().x, event.getTarget().getLocation().y, event.getTarget().getLocation().z);
 		BlockPos pos = BlockPos.containing(event.getTarget().getLocation());
 		double cx = event.getCamera().getPosition().x;
@@ -193,7 +191,6 @@ public class ForgeClientEvents {
 		PoseStack pose = event.getPoseStack();
 		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
 		Renderer20.set(pose, cons, 0);
-		FvtmRenderTypes.setLines();
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;

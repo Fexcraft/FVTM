@@ -149,7 +149,6 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	}
 
 	public static boolean isInRange(PoseStack pose, V3D vehpos, VehicleData data){
-		FvtmRenderTypes.setLineStrip();
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
@@ -159,10 +158,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			}
 			if(Config.DEBUG_ACTIVE){
 				pose.pushPose();
-				Renderer20.setColor(zone.inRange(data, vehpos, ply) ? GRNCOLOR : GRYCOLOR);
-				pose.scale(zone.range, zone.range, zone.range);
-				DebugUtils.SPHERE.render();
-				Renderer20.resetColor();
+				DebugUtils.renderSphere(zone.range, zone.inRange(data, vehpos, ply) ? COL_GRN : COL_GRY);
 				pose.popPose();
 			}
 		}

@@ -9,8 +9,9 @@ import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.lib.frl.gen.AxisDir;
 import net.fexcraft.lib.frl.gen.Generator;
 import net.fexcraft.lib.frl.gen.Generator.Type;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmResources;
+
+import java.util.Arrays;
 
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
@@ -45,21 +46,17 @@ public class DebugUtils {
 	public static Polyhedron PANE = new Generator(CUBOID).set(OFF_X, -8f).set(OFF_Y, 0f).set(OFF_Z, -8f).set(WIDTH, 16f).set(HEIGHT, 0.2f).set(DEPTH, 16f).set(SCALE, sixteenth).make();
 	public static Polyhedron JUNC_CORE = new Generator(CYLINDER).set(RADIUS1, 0.5f).set(RADIUS2, 0.125f).set(LENGTH, 0.5f).set(SEGMENTS, 8).set(TOP_SCALE, 1.1f).set(BASE_SCALE, 1.1f).set(AXIS_DIR, AxisDir.Y_NEGATIVE).set(SCALE, sixteenth).make();
 	public static Polyhedron JUNC_LINE = new Generator(CUBOID).set(OFF_X, -0.125f).set(OFF_Y, 0f).set(OFF_Z, -0.5f).set(WIDTH, 0.25f).set(HEIGHT, 0.25f).set(DEPTH, 8f).set(SCALE, sixteenth).make();
-	public static Polyhedron JUNC_DIR = new Polyhedron();
-	public static Polyhedron JUNC_SIG_STATE = new Polyhedron();
-	public static Polyhedron JUNC_SIG_DIR = new Polyhedron();
+	public static Polyhedron JUNC_DIR = new Generator(CUBOID).set(OFF_X, -0.25f).set(OFF_Y, -0.125f).set(OFF_Z, -0.5f).set(WIDTH, 0.5f).set(HEIGHT, 0.5f).set(DEPTH, 2f).set(SCALE, sixteenth)
+		.set(CORNERS, Arrays.asList(new V3F(1, 0, 0), new V3F(1, 0, 0), V3F.NULL, V3F.NULL, new V3F(1, 0, 0), new V3F(1, 0, 0), V3F.NULL, V3F.NULL))
+		.make().pos(0f, 0f, 0.5f);
+	public static Polyhedron JUNC_SIG_STATE = new Generator(CUBOID).set(OFF_X, -4f).set(OFF_Z, -1f).set(WIDTH, 2f).set(HEIGHT, 0.5f).set(DEPTH, 2f).set(SCALE, sixteenth).make();
+	public static Polyhedron JUNC_SIG_DIR = new Generator(CUBOID).set(OFF_X, -4f).set(OFF_Z, 1f).set(WIDTH, 2f).set(HEIGHT, 0.5f).set(DEPTH, 2f).set(SCALE, sixteenth)
+		.set(CORNERS, Arrays.asList(V3F.NULL, V3F.NULL, new V3F(-1, 0, 0), new V3F(-1, 0, 0), V3F.NULL, V3F.NULL, new V3F(-1, 0, 0), new V3F(-1, 0, 0))).make();
 	public static Polyhedron LINE = new Polyhedron();
 	public static Polyhedron LINE_2D = new Polyhedron();
 	public static Polygon LINE_POLY;
 	public static Polygon[] LINE_POLY_2D = new Polygon[2];
 	static{
-		JUNC_DIR.importMRT(new ModelRendererTurbo(JUNC_DIR, 0, 0, 1, 1)
-			.addShapeBox(-0.25f, 0, 0, 0.5f, 0.5f, 2, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0)
-			.setRotationPoint(-0, 0, 0.5f), false, sixteenth);
-		JUNC_SIG_DIR.importMRT(new ModelRendererTurbo(JUNC_SIG_DIR, 0, 0, 1, 1)
-			.addShapeBox(-4, 0, 1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0), false, sixteenth);
-		JUNC_SIG_STATE.importMRT(new ModelRendererTurbo(JUNC_SIG_STATE, 0, 0, 1, 1)
-			.addShapeBox(-4, 0, -1, 2, 0.5f, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), false, sixteenth);
 		LINE_POLY = new Polygon(new Vertex[]{ new ColoredVertex(new V3F()), new ColoredVertex(new V3F()) });
 		LINE.polygons.add(LINE_POLY);
 		LINE_POLY_2D[0] = new Polygon(new Vertex[]{ new ColoredVertex(new V3F()), new ColoredVertex(new V3F()), new ColoredVertex(new V3F()), new ColoredVertex(new V3F()) });

@@ -84,14 +84,6 @@ public class FvtmRenderTypes {
 		Renderer20.rentype = type;
 	}
 
-	public static void setLines(){
-		Renderer20.rentype = RenderType.lines();
-	}
-
-	public static void setLineStrip(){
-		Renderer20.rentype = RenderType.lineStrip();
-	}
-
 	public static void setDef(RenderType type){
 		Renderer20.rentype = type;
 	}

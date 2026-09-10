@@ -361,7 +361,6 @@ public abstract class FvtmResources {
 
 	public void initModelLoaders(){
 		MODEL_LOADERS.add(new BlankModelLoader());
-		MODEL_LOADERS.add(new JTMTModelLoader());
 		MODEL_LOADERS.add(new FMFModelLoader());
 		MODEL_LOADERS.add(new ObjModelLoader());
 		MODEL_LOADERS.add(new SMPTBJavaModelLoader());

@@ -9,15 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.V3F;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.tmt.BoxBuilder;
-import net.fexcraft.lib.tmt.CustomUVBuilder;
-import net.fexcraft.lib.tmt.CylinderBuilder;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.lib.tmt.RotationOrder;
+import net.fexcraft.lib.frl.*;
+import net.fexcraft.lib.frl.gen.AxisDir;
+import net.fexcraft.lib.frl.gen.Generator;
+
+import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.frl.gen.Generator.Values.*;
 
 /**
  * "Fex's Model Format" Parser <br>
@@ -108,101 +106,103 @@ public class FMFParser {
 	
 	private static void readPolygons(InputStream stream, ModelGroup group, int tx, int ty) throws IOException {
 		int r = -1, tv = 0;
-		ArrayList<TexturedVertex> verts = new ArrayList<>();
+		ArrayList<Vertex> verts = new ArrayList<>();
 		ArrayList<V3F> norms = new ArrayList<>();
-		ModelRendererTurbo mrt = null;
-		BoxBuilder box = null;
-		CylinderBuilder cyl = null;
-		CustomUVBuilder cuv = null;
+		Polyhedron hedron = null;
+		Generator gen = null;
 		while(true){
 			if((r = stream.read()) == -1) break;
 			if(r == PE || r > PO) break;
 			int type = r;
-			mrt = new ModelRendererTurbo(group, 0, 0, tx, ty);
-			if(r == PB) cuv = box = new BoxBuilder(mrt);
-			else if(r == PC) cuv = cyl = new CylinderBuilder(mrt);
+			hedron = new Polyhedron();
+			if(r == PB) gen = new Generator(hedron, Generator.Type.CUBOID);
+			else if(r == PC) gen = new Generator(hedron, Generator.Type.CYLINDER);
+			if(gen != null){
+				gen.set(SCALE, sixteenth).set(TEXTURE_WIDTH, (float)tx).set(TEXTURE_HEIGHT, (float)ty);
+			}
 			//
 			while(true){
 				if((r = stream.read()) == -1) break;
 				if(r == PE){
-					if(type == PB) group.add(new Polyhedron().importMRT(box.build(), false, 0.0625f));
-					else if(type == PC) group.add(new Polyhedron().importMRT(cyl.build(), false, 0.0625f));
-					else if(type == PO) group.add(new Polyhedron().importMRT(mrt, false, 0.0625f));
+					if(type == PB || type == PC){
+						hedron.posX *= sixteenth;
+						hedron.posY *= sixteenth;
+						hedron.posZ *= sixteenth;
+						group.add(gen.make());
+					}
+					else /*if(type == PO)*/{
+						group.add(hedron.rescale(sixteenth));
+					}
 					break;
 				}
 				switch(r){
 					case PP:{
 						float[] fl = readFloats(stream, 3);
-						mrt.setRotationPoint(fl[0], fl[1], fl[2]);
+						hedron.pos(fl[0], fl[1], fl[2]);
 						continue;
 					}
 					case PR:{
 						float[] fl = readFloats(stream, 3);
-						mrt.setRotationAngle(fl[0], fl[1], fl[2]);
+						hedron.rot(fl[0], fl[1], fl[2]);
 						continue;
 					}
 					case PT:{
 						if(type == PO){
 							float[] fl = readFloats(stream, 2);
-							TexturedVertex vert = verts.get(tv).setTexturePosition(fl[0], fl[1]);
+							Vertex vert = verts.get(tv).uv(fl[0], fl[1]);
 							verts.set(tv++, vert);
 							continue;
 						}
 						int[] in = readIntegers(stream, 2);
-						mrt.setTextureOffset(in[0], in[1]);
+						hedron.texU = in[0];
+						hedron.texV = in[1];
 						continue;
 					}
 					case PL:{
-						mrt.setColor(new RGB(readIntegers(stream, 1)[0]));
+						hedron.color(new RGB(readIntegers(stream, 1)[0]));
 						continue;
 					}
 					case PDF:{
 						if(type == PO){
-							TexturedPolygon poly = new TexturedPolygon(verts.toArray(new TexturedVertex[0]));
-							if(norms.size() > 0) poly.getNormalVerts().addAll(norms);
-							mrt.copyTo(poly);
+							if(norms.size() > 0){
+								for(int i = 0; i < norms.size(); i++){
+									if(i >= verts.size()) break;
+									verts.get(i).norm(norms.get(i));
+								}
+							}
+							Polygon poly = new Polygon(verts);
+							DefaultRenderer.genNorm(poly);
+							hedron.polygons.add(poly);
 							verts.clear();
 							norms.clear();
 							tv = 0;
 							continue;
 						}
-						boolean[] arr = new boolean[6];
-						arr[0] = stream.read() > 0;
-						arr[1] = stream.read() > 0;
-						arr[2] = stream.read() > 0;
-						arr[3] = stream.read() > 0;
-						arr[4] = stream.read() > 0;
-						arr[5] = stream.read() > 0;
-						cuv.removePolygons(arr);
+						gen.set(REMOVE_POLYGONS, readIntegerArray(stream, 6));
 						continue;
 					}
 					case PDU:{
-						boolean[] arr = new boolean[6];
-						arr[0] = stream.read() > 0;
-						arr[1] = stream.read() > 0;
-						arr[2] = stream.read() > 0;
-						arr[3] = stream.read() > 0;
-						arr[4] = stream.read() > 0;
-						arr[5] = stream.read() > 0;
-						cuv.setDetachedUV(arr);
+						gen.set(DETACHED_UV, readIntegerArray(stream, 6));
 						continue;
 					}
 					case PCU:{
 						int in = stream.read();
-						cuv.setPolygonUV(in, readFloats(stream, stream.read()));
+						if(!gen.getMap().has(UV)){
+							List<float[]> arr = new ArrayList<>();
+							for(int i = 0; i < 6; i++) arr.add(new float[0]);
+							gen.set(UV, arr);
+						}
+						List<float[]> uv = gen.getMap().getArray(UV);
+						uv.set(in, readFloats(stream, stream.read()));
 						continue;
 					}
 					case PM:{
-						mrt.boxName = readString(stream);
+						hedron.name = readString(stream);
 						continue;
 					}
 					case PRO:{
 						int[] ro = new int[]{ stream.read(), stream.read(), stream.read() };
-						mrt.setRotationOrder(getRotationOrder(ro));
-						continue;
-					}
-					case PTM:{
-						mrt.texName = readString(stream);
+						hedron.rotOrder = getRotationOrder(ro);
 						continue;
 					}
 					default: break;
@@ -211,22 +211,32 @@ public class FMFParser {
 					switch(r){
 						case PF:{
 							float[] fl = readFloats(stream, 3);
-							box.setOffset(fl[0], fl[1], fl[2]);
+							gen.set(OFF_X, fl[0]);
+							gen.set(OFF_Y, fl[1]);
+							gen.set(OFF_Z, fl[2]);
 							break;
 						}
 						case PBS:{
 							float[] fl = readFloats(stream, 3);
-							box.setSize(fl[0], fl[1], fl[2]);
+							gen.set(WIDTH, fl[0]);
+							gen.set(HEIGHT, fl[1]);
+							gen.set(DEPTH, fl[2]);
 							break;
 						}
 						case PBC:{
 							int in = stream.read();
 							float[] fl = readFloats(stream, 3);
-							box.setCorner(in, fl[0], fl[1], fl[2]);
+							if(!gen.getMap().has(CORNERS)){
+								List<V3F> corners = new ArrayList<>();
+								for(int i = 0; i < 8; i++) corners.add(new V3F());
+								gen.set(CORNERS, corners);
+							}
+							V3F vec = (V3F)gen.getMap().getArray(CORNERS).get(in);
+							vec.set(fl[0], fl[1], fl[2]);
 							break;
 						}
 						case PBE:{
-							box.setExpansion(readFloats(stream, 1)[0]);
+							gen.set(EXPANSION, readFloats(stream, 1)[0]);
 							break;
 						}
 						default: break;
@@ -236,56 +246,63 @@ public class FMFParser {
 					switch(r){
 						case PF:{
 							float[] fl = readFloats(stream, 3);
-							cyl.setPosition(fl[0], fl[1], fl[2]);
+							gen.set(OFF_X, fl[0]);
+							gen.set(OFF_Y, fl[1]);
+							gen.set(OFF_Z, fl[2]);
 							break;
 						}
 						case PCRL:{
 							float[] fl = readFloats(stream, 3);
-							cyl.setRadius(fl[0], fl[1]);
-							cyl.setLength(fl[2]);
+							gen.set(RADIUS1, fl[0]);
+							gen.set(RADIUS2, fl[1]);
+							gen.set(LENGTH, fl[2]);
 							break;
 						}
 						case PCD:{
-							cyl.setDirection(readIntegers(stream, 1)[0]);
+							gen.set(AXIS_DIR, AxisDir.values()[readIntegers(stream, 1)[0]]);
 							break;
 						}
 						case PCSG:{
 							int[] in = readIntegers(stream, 2);
-							cyl.setSegments(in[0], in[1]);
+							gen.set(SEGMENTS, in[0]);
+							gen.set(SEG_LIMIT, in[1]);
 							break;
 						}
 						case PCSL:{
 							float[] fl = readFloats(stream, 2);
-							cyl.setScale(fl[0], fl[1]);
+							gen.set(BASE_SCALE, fl[1]);
+							gen.set(TOP_SCALE, fl[1]);
 							break;
 						}
 						case PCTO:{
 							float[] fl = readFloats(stream, 3);
-							cyl.setTopOffset(fl[0], fl[1], fl[2]);
+							gen.set(TOP_OFFSET, new V3F(fl[0], fl[1], fl[2]));
 							break;
 						}
 						case PCTR:{
 							float[] fl = readFloats(stream, 3);
-							cyl.setTopRotation(fl[0], fl[1], fl[2]);
+							gen.set(TOP_ROTATION, new V3F(fl[0], fl[1], fl[2]));
 							break;
 						}
 						case PCRT:{
 							float[] fl = readFloats(stream, 2);
-							cyl.setRadialTexture(fl[0], fl[1]);
+							gen.set(RADIAL, true);
+							gen.set(SEG_WIDTH, fl[0]);
+							gen.set(SEG_HEIGHT, fl[1]);
 							break;
 						}
 						case 23:{
-							cyl.setSegmentOffset(readFloats(stream, 1)[0]);
+							gen.set(SEG_OFFSET, readFloats(stream, 1)[0]);
 							break;
 						}
 						default: break;
 					}
 				}
-				else if(type == PO){
+				else /*if(type == PO)*/{
 					switch(r){
 						case PF:{
 							float[] fl = readFloats(stream, 3);
-							verts.add(new TexturedVertex(fl[0], fl[1], fl[2], 0, 0));
+							verts.add(new Vertex(fl[0], fl[1], fl[2]));
 							break;
 						}
 						case PN:{
@@ -317,6 +334,17 @@ public class FMFParser {
 			int r = stream.read(bit);
 			if(r < 0) return arr;//error
 			arr[i] = ByteBuffer.wrap(bit).getInt();
+		}
+		return arr;
+	}
+
+	private static List<Integer> readIntegerArray(InputStream stream, int t) throws IOException {
+		List<Integer> arr = new ArrayList<>();
+		for(int i = 0; i < t; i++){
+			byte[] bit = new byte[4];
+			int r = stream.read(bit);
+			if(r < 0) return arr;//error
+			arr.add(ByteBuffer.wrap(bit).getInt());
 		}
 		return arr;
 	}

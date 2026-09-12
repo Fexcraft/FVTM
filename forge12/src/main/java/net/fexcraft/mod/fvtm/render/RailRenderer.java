@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
+import static net.fexcraft.mod.fvtm.model.InternalModels.RAIL_MARKER_ARROW;
 import static net.fexcraft.mod.fvtm.render.EffectRenderer.drawString;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.JUNC_DIR;
@@ -19,7 +20,6 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
-import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -136,7 +136,7 @@ public class RailRenderer {
 				qv = new QV3D(VecUtil.rotByDeg(deg, preset.path[i].vec));
 				GLUtils112.translate(qv.vec);
 				GL11.glTranslated(0, -1, 0);
-				RailMarkerModel.INST.arrow.render();
+				RAIL_MARKER_ARROW.render();
 				GL11.glTranslated(0, 1, 0);
 				GLUtils112.translateR(qv.vec);
 			}

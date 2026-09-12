@@ -1,9 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.WireCompItem;
@@ -30,23 +27,6 @@ import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
 import static net.fexcraft.mod.fvtm.render.UniWireRenderer.DATA;
 
 public class WireRenderer {
-
-	protected static final ModelRendererTurbo model, model0, model1;
-	protected static final ModelRendererTurbo[] all;
-	static{
-		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 2, 6, 6, 1, 1).setLines(new RGB(0x00ddff));
-		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
-		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(123, 245, 126));
-		all = new ModelRendererTurbo[]{ model, model0, model1 };
-		for(ModelRendererTurbo turbo : all){
-			for(TexturedPolygon poly : turbo.getFaces()){
-				poly.setColor(turbo.polygonColor);
-			}
-		}
-	}
 
 	private static WireSystem wiredata;
 	private static ItemStack held;

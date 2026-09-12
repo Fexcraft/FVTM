@@ -516,7 +516,7 @@ public abstract class FvtmResources {
 	public static class InputStreamWithFallback {
 
 		protected InputStream stream;
-		protected Closeable[] close;
+		public Closeable[] close;
 
 		public InputStreamWithFallback(InputStream stream){
 			this.stream = stream;

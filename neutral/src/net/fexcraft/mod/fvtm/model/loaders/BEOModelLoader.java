@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
 import net.fexcraft.lib.frl.*;
-import net.fexcraft.lib.tmt.*;
+import net.fexcraft.lib.frl.CompactParserBEO;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.*;

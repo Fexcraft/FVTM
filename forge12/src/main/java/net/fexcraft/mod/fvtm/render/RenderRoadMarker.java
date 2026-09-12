@@ -4,7 +4,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
-import net.fexcraft.mod.fvtm.model.entity.RoadMarkerModel;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil.NewRoad;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -12,6 +11,9 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+
+import static net.fexcraft.mod.fvtm.model.InternalModels.ROAD_MARKER_ARROW;
+import static net.fexcraft.mod.fvtm.model.InternalModels.ROAD_MARKER_MAIN;
 
 public class RenderRoadMarker extends Render<RoadMarker> implements IRenderFactory<RoadMarker> {
 
@@ -30,14 +32,14 @@ public class RenderRoadMarker extends Render<RoadMarker> implements IRenderFacto
         GL11.glPushMatrix();
 	    TexUtil.bindTexture(texture);
 	    GL11.glRotatef(180, 0, 0, 1);
-	    RoadMarkerModel.INST.marker.render();
+		ROAD_MARKER_MAIN.render();
 	    NewRoad road = RoadPlacingUtil.QUEUE.get(entity.queueid);
 	    if(road != null){
 	    	int index = road.indexOf(entity.position);
 	    	boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 	    	if(arrow){
 				(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED).glColorApply();
-				RoadMarkerModel.INST.arrow.render();
+				ROAD_MARKER_ARROW.render();
 				RGB.glColorReset();
 	    	}
 	    }

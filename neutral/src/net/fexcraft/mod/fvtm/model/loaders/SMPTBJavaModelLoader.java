@@ -10,8 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.fexcraft.lib.common.math.V3F;
-import net.fexcraft.lib.frl.DefaultRenderer;
-import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.gen.Generator;
 import net.fexcraft.mod.fvtm.FvtmResources;
@@ -115,8 +113,7 @@ public class SMPTBJavaModelLoader implements ModelLoader {
             			corners.add(newV3F(array[25], array[26], array[27]));
             			corners.add(newV3F(array[28], array[29], array[30]));
             		}
-            		model.groups.get(poly.group).add(gen.make());
-					for(Polygon p : poly.hedron.polygons) DefaultRenderer.genNorm(p);
+            		model.groups.get(poly.group).add(gen.make().genNorm());
 					poly.hedron.posX *= sixteenth;
 					poly.hedron.posY *= sixteenth;
 					poly.hedron.posZ *= sixteenth;

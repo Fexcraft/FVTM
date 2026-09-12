@@ -63,7 +63,7 @@ public class PathModelGenerator {
 				vert3 = new Vertex(path.get((k + 1) * 2 + 1), nbuf * u, vv[0]);
 				poly0 = new Polygon(new Vertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.hedrons.length) pess = tarp.hedrons.length - 1;
-				tarp.hedrons[pess].polygons.add(poly0);
+				tarp.hedrons[pess].polygons.add(poly0.genNorm());
 				passed += track.vecpath[k].dis(track.vecpath[k + 1]);
 				obuf = nbuf;
 			}
@@ -90,7 +90,7 @@ public class PathModelGenerator {
 								double dz = (verts[m].vector.z) + vec.z - cen.z;
 								verts[m].vector = new V3F(dx, dy, dz);
 							}
-							tarp.hedrons[(int)accu].polygons.add(new Polygon(verts));
+							tarp.hedrons[(int)accu].polygons.add(new Polygon(verts).genNorm());
 						}
 					}
 				}
@@ -146,7 +146,7 @@ public class PathModelGenerator {
 				poly0 = new Polygon(new Vertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed;
 				if(pess >= tarp.hedrons.length) pess = tarp.hedrons.length - 1;
-				tarp.hedrons[pess].polygons.add(poly0);
+				tarp.hedrons[pess].polygons.add(poly0.genNorm());
 				passed += wire.vecpath[k].dis(wire.vecpath[k + 1]);
 				obuf = nbuf;
 			}

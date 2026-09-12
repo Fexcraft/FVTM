@@ -11,10 +11,8 @@ import static net.fexcraft.mod.fvtm.util.DebugUtils.JUNC_DIR;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -35,7 +33,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -70,7 +67,7 @@ public class RailRenderer {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPushMatrix();
             GL11.glTranslated(vec.vec.x - x, vec.vec.y - y, vec.vec.z - z);
-            model1.render();
+			DebugUtils.renderSphere(0.5f, 0x7bf57e);
             GL11.glPopMatrix();
             //
             GL11.glPushMatrix();
@@ -145,31 +142,6 @@ public class RailRenderer {
 		}
     }
 
-	protected static final ModelRendererTurbo model, model0, model1, junction_core, railentcore;
-	public static final ModelRendererTurbo junction_signal;
-	protected static final ModelRendererTurbo[] all;
-	static{
-		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, 0, 0, 0.4f, 8, 32, 1, 1, ModelRendererTurbo.MR_TOP).setColor(RGB.RED);
-		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
-		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(123, 245, 126));
-		junction_core = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(120, 120, 120));//35rgb
-		junction_signal = new ModelRendererTurbo(null, 0, 0, 32, 32).setRotationAngle(0, 0, 0)
-			.addCylinder(0, -.5f, 0, 0.9f, 1, 3, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(35, 35, 35));
-		railentcore = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addHollowCylinder(0, -4, 0, 8, 4, 8, 8, 0, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(128, 128, 128));
-		all = new ModelRendererTurbo[]{ model, model0, model1, junction_core, railentcore };
-		for(ModelRendererTurbo turbo : all){
-			for(TexturedPolygon poly : turbo.getFaces()){
-				poly.setColor(turbo.polygonColor);
-			}
-		}
-	}
-	
-	public static final ResourceLocation WOOLTEX = new ResourceLocation("minecraft:textures/blocks/wool_colored_white.png");
 	private static RailSystem raildata;
     
     //@SubscribeEvent

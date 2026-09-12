@@ -170,9 +170,7 @@ public class FMFParser {
 									verts.get(i).norm(norms.get(i));
 								}
 							}
-							Polygon poly = new Polygon(verts);
-							DefaultRenderer.genNorm(poly);
-							hedron.polygons.add(poly);
+							hedron.polygons.add(new Polygon(verts).genNorm());
 							verts.clear();
 							norms.clear();
 							tv = 0;

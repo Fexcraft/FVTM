@@ -128,10 +128,10 @@ public class FMFParser {
 						hedron.posX *= sixteenth;
 						hedron.posY *= sixteenth;
 						hedron.posZ *= sixteenth;
-						group.add(gen.make());
+						group.add(gen.make().genNorm());
 					}
 					else /*if(type == PO)*/{
-						group.add(hedron.rescale(sixteenth));
+						group.add(hedron.rescale(sixteenth).genNorm());
 					}
 					break;
 				}
@@ -170,7 +170,7 @@ public class FMFParser {
 									verts.get(i).norm(norms.get(i));
 								}
 							}
-							hedron.polygons.add(new Polygon(verts).genNorm());
+							hedron.polygons.add(new Polygon(verts));
 							verts.clear();
 							norms.clear();
 							tv = 0;

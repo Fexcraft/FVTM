@@ -10,8 +10,8 @@ import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.model.InternalModels;
 import net.fexcraft.mod.fvtm.model.content.RailGaugeModel;
-import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.render.state.OutlineRS;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
@@ -35,6 +35,7 @@ import static net.fexcraft.lib.common.Static.*;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
 import static net.fexcraft.mod.fvtm.FVTMC.OUTLINE_RS_KEY;
+import static net.fexcraft.mod.fvtm.model.InternalModels.RAIL_MARKER_ARROW;
 import static net.fexcraft.mod.fvtm.render.RenderUtil.RENDER_UTIL;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
@@ -213,7 +214,7 @@ public class RailRenderer {
 			for(int i = 0; i < preset.path.length; i++){
 				qv = new QV3D(VecUtil.rotByDeg(deg, preset.path[i].vec));
 				pose.translate(qv.vec.x, qv.vec.y - 1, qv.vec.z);
-				RENDER_UTIL.render(RailMarkerModel.INST.arrow);
+				RENDER_UTIL.render(RAIL_MARKER_ARROW);
 				pose.translate(-qv.vec.x, -qv.vec.y + 1, -qv.vec.z);
 			}
 			pose.popPose();

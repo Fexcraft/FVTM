@@ -389,6 +389,7 @@ public abstract class FvtmResources {
 	public static void initModelSystem(){
 		FvtmResources.INSTANCE.initModelLoaders();
 		FvtmResources.INSTANCE.initModelPrograms();
+		InternalModels.load();
 		initialmodelload = true;
 		reloadModels();
 		initialmodelload = false;

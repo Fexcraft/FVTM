@@ -30,8 +30,8 @@ public class PathModelGenerator {
 		float nbuf = 0;
 		V3D last, vec, cen = track.vecpath[0];
 		ArrayList<V3D> path = new ArrayList<>();
-		TexturedVertex vert0, vert1, vert2, vert3;
-		TexturedPolygon poly0;
+		Vertex vert0, vert1, vert2, vert3;
+		Polygon poly0;
 		//
 		PathModelPositioned tarp = new PathModelPositioned(track, RGB.WHITE);
 		for(int p = 0; p < model.rail_model.size(); p++){
@@ -57,13 +57,13 @@ public class PathModelGenerator {
 					nbuf -= 1f;
 					obuf -= 1f;
 				}
-				vert0 = new TexturedVertex(path.get(k * 2), obuf * u, vv[1]);
-				vert1 = new TexturedVertex(path.get(k * 2 + 1), obuf * u, vv[0]);
-				vert2 = new TexturedVertex(path.get((k + 1) * 2), nbuf * u, vv[1]);
-				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), nbuf * u, vv[0]);
-				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
+				vert0 = new Vertex(path.get(k * 2), obuf * u, vv[1]);
+				vert1 = new Vertex(path.get(k * 2 + 1), obuf * u, vv[0]);
+				vert2 = new Vertex(path.get((k + 1) * 2), nbuf * u, vv[1]);
+				vert3 = new Vertex(path.get((k + 1) * 2 + 1), nbuf * u, vv[0]);
+				poly0 = new Polygon(new Vertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.hedrons.length) pess = tarp.hedrons.length - 1;
-				tarp.hedrons[pess].importMRT(poly0, 1f);
+				tarp.hedrons[pess].polygons.add(poly0);
 				passed += track.vecpath[k].dis(track.vecpath[k + 1]);
 				obuf = nbuf;
 			}
@@ -81,16 +81,16 @@ public class PathModelGenerator {
 				if(model.get("ties") != null){
 					for(Polyhedron hedron : model.get("ties")){
 						for(Polygon poly : hedron.polygons){
-							TexturedVertex[] verts = new TexturedVertex[poly.vertices.length];
+							Vertex[] verts = new Vertex[poly.vertices.length];
 							for(int m = 0; m < verts.length; m++){
 								Vertex org = poly.vertices[m];
-								verts[m] = new TexturedVertex(rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
+								verts[m] = new Vertex(rotByRad(angle, org.vector.x, org.vector.y, org.vector.z), org.u, org.v);
 								double dx = (verts[m].vector.x) + vec.x - cen.x;
 								double dy = (verts[m].vector.y) + vec.y - cen.y;
 								double dz = (verts[m].vector.z) + vec.z - cen.z;
 								verts[m].vector = new V3F(dx, dy, dz);
 							}
-							tarp.hedrons[(int)accu].importMRT(new TexturedPolygon(verts), 1f);
+							tarp.hedrons[(int)accu].polygons.add(new Polygon(verts));
 						}
 					}
 				}
@@ -108,8 +108,8 @@ public class PathModelGenerator {
 		float arad = 0;
 		V3D last, vec, cen = wire.vecpath[0];
 		ArrayList<V3D> path = new ArrayList<>();
-		TexturedVertex vert0, vert1, vert2, vert3;
-		TexturedPolygon poly0;
+		Vertex vert0, vert1, vert2, vert3;
+		Polygon poly0;
 		//
 		PathModelPositioned tarp = new PathModelPositioned(wire, RGB.WHITE);
 		for(int p = 0; p < model.wire_model.size(); p++){
@@ -139,14 +139,14 @@ public class PathModelGenerator {
 					nbuf -= 1f;
 					obuf -= 1f;
 				}
-				vert0 = new TexturedVertex(path.get(k * 2), obuf * u, vv[1]);
-				vert1 = new TexturedVertex(path.get(k * 2 + 1), obuf * u, vv[0]);
-				vert2 = new TexturedVertex(path.get((k + 1) * 2), nbuf * u, vv[1]);
-				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), nbuf * u, vv[0]);
-				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
+				vert0 = new Vertex(path.get(k * 2), obuf * u, vv[1]);
+				vert1 = new Vertex(path.get(k * 2 + 1), obuf * u, vv[0]);
+				vert2 = new Vertex(path.get((k + 1) * 2), nbuf * u, vv[1]);
+				vert3 = new Vertex(path.get((k + 1) * 2 + 1), nbuf * u, vv[0]);
+				poly0 = new Polygon(new Vertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed;
 				if(pess >= tarp.hedrons.length) pess = tarp.hedrons.length - 1;
-				tarp.hedrons[pess].importMRT(poly0, 1f);
+				tarp.hedrons[pess].polygons.add(poly0);
 				passed += wire.vecpath[k].dis(wire.vecpath[k + 1]);
 				obuf = nbuf;
 			}

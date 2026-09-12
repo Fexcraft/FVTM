@@ -27,6 +27,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
@@ -37,6 +38,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -218,15 +220,16 @@ public class Resources20 extends FvtmResources {
 	@Override
 	public InputStream getAssetInputStream(IDL loc, boolean log){
 		try{
-			InputStream stream = Minecraft.getInstance().getResourceManager().getResource((ResourceLocation)loc).get().open();
-			if(stream != null){
+			Optional<Resource> stream = Minecraft.getInstance().getResourceManager().getResource((ResourceLocation)loc);
+			if(stream.isPresent()){
+				InputStream in = stream.get().open();
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				byte[] buffer = new byte[1024];
 				int read;
-				while((read = stream.read(buffer)) != -1) out.write(buffer, 0, read);
-				stream = new ByteArrayInputStream(out.toByteArray());
+				while((read = in.read(buffer)) != -1) out.write(buffer, 0, read);
+				return new ByteArrayInputStream(out.toByteArray());
 			}
-			return stream;
+			return null;
 		}
 		catch(Throwable e){
 			e.printStackTrace();

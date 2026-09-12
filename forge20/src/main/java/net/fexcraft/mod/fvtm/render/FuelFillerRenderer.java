@@ -3,12 +3,10 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fcl.util.Renderer20;
-import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.FuelFillerEntity;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.ModelData;
+import net.fexcraft.mod.fvtm.model.InternalModels;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -36,9 +34,7 @@ public class FuelFillerRenderer implements BlockEntityRenderer<FuelFillerEntity>
 		pose.translate(0.5, 0, 0.5);
 		Direction dir = tile.getBlockState().getValue(FACING);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(dir.getAxis() == Direction.Axis.Z ? dir.toYRot() + 90 : dir.toYRot() - 90), AY));
-		if(MODEL == null) MODEL = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.fmf", new ModelData(), BlockModel.class);
-		if(MODEL != null) MODEL.render(DefaultModel.RENDERDATA_BLANK);
-		else DebugUtils.SPHERE.render();
+		InternalModels.FUEL_FILLER.render(DefaultModel.RENDERDATA_BLANK);
 		pose.popPose();
 	}
 

@@ -10,9 +10,7 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
-import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
-import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.*;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -25,7 +23,6 @@ import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,6 +37,7 @@ import java.util.HashMap;
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.common.Static.thirtysecondth;
 import static net.fexcraft.mod.fvtm.FvtmResources.WHITE_TEXTURE;
+import static net.fexcraft.mod.fvtm.model.InternalModels.RAIL_MARKER_ARROW;
 import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 
 /**
@@ -173,7 +171,7 @@ public class ForgeClientEvents {
 			for(int i = 0; i < preset.path.length; i++){
 				qv = new QV3D(VecUtil.rotByDeg(deg, preset.path[i].vec));
 				pose.translate(qv.vec.x, qv.vec.y - 1, qv.vec.z);
-				RailMarkerModel.INST.arrow.render();
+				RAIL_MARKER_ARROW.render();
 				pose.translate(-qv.vec.x, -qv.vec.y + 1, -qv.vec.z);
 			}
 			pose.popPose();

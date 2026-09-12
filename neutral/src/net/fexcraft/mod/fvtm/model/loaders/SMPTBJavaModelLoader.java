@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model.loaders;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.frl.gen.Generator.Values.*;
 import static net.fexcraft.mod.fvtm.FvtmLogger.LOGGER;
 
 import java.util.ArrayList;
@@ -8,9 +10,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.fexcraft.lib.common.math.V3F;
+import net.fexcraft.lib.frl.DefaultRenderer;
+import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.tmt.BoxBuilder;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.frl.gen.Generator;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
@@ -80,11 +83,9 @@ public class SMPTBJavaModelLoader implements ModelLoader {
             		TemporaryPolygon poly = new TemporaryPolygon();
             		poly.group = matcher.group(1);
             		poly.index = parseI(matcher.group(2));
-            		poly.mrt.texoffx = parseI(matcher.group(3));
-            		poly.mrt.texoffy = parseI(matcher.group(4));
-            		poly.mrt.boxName = matcher.group(5).replace(" // ", "");
-            		poly.mrt.textureWidth = model.tex_width;
-            		poly.mrt.textureHeight = model.tex_height;
+            		poly.hedron.texU = parseI(matcher.group(3));
+            		poly.hedron.texV = parseI(matcher.group(4));
+            		poly.hedron.name = matcher.group(5).replace(" // ", "");
             		polis.add(poly);
             		continue;
             	}
@@ -93,38 +94,50 @@ public class SMPTBJavaModelLoader implements ModelLoader {
             		boolean shapebox = line.contains("ShapeBox");
             		TemporaryPolygon poly = get(matcher.group(1), matcher.group(2), polis);
             		String[] array = matcher.group(3).split(", ");
-            		BoxBuilder builder = new BoxBuilder(poly.mrt);
-            		builder.setOffset(parseF(array[0]), parseF(array[1]), parseF(array[2]));
-            		builder.setSize(parseF(array[3]), parseF(array[4]), parseF(array[5]));
+					Generator gen = new Generator(poly.hedron, Generator.Type.CUBOID);
+					gen.set(TEXTURE_WIDTH, model.tex_width);
+					gen.set(TEXTURE_HEIGHT, model.tex_height);
+					gen.set(SCALE, sixteenth);
+					gen.set(OFF_X, parseF(array[0]));
+					gen.set(OFF_Y, parseF(array[1]));
+					gen.set(OFF_Z, parseF(array[2]));
+					gen.set(WIDTH, parseF(array[3]));
+					gen.set(HEIGHT, parseF(array[4]));
+					gen.set(DEPTH, parseF(array[5]));
             		if(shapebox){
-            			builder.setCorner(0, newV3F(array[7], array[8], array[9]));
-            			builder.setCorner(1, newV3F(array[10], array[11], array[12]));
-            			builder.setCorner(2, newV3F(array[13], array[14], array[15]));
-            			builder.setCorner(3, newV3F(array[16], array[17], array[18]));
-            			builder.setCorner(4, newV3F(array[19], array[20], array[21]));
-            			builder.setCorner(5, newV3F(array[22], array[23], array[24]));
-            			builder.setCorner(6, newV3F(array[25], array[26], array[27]));
-            			builder.setCorner(7, newV3F(array[28], array[29], array[30]));
+						ArrayList<V3F> corners = new ArrayList<>();
+            			corners.add(newV3F(array[7], array[8], array[9]));
+            			corners.add(newV3F(array[10], array[11], array[12]));
+            			corners.add(newV3F(array[13], array[14], array[15]));
+            			corners.add(newV3F(array[16], array[17], array[18]));
+            			corners.add(newV3F(array[19], array[20], array[21]));
+            			corners.add(newV3F(array[22], array[23], array[24]));
+            			corners.add(newV3F(array[25], array[26], array[27]));
+            			corners.add(newV3F(array[28], array[29], array[30]));
             		}
-            		model.groups.get(poly.group).add(new Polyhedron().importMRT(builder.build(), false, 0.0625f));
+            		model.groups.get(poly.group).add(gen.make());
+					for(Polygon p : poly.hedron.polygons) DefaultRenderer.genNorm(p);
+					poly.hedron.posX *= sixteenth;
+					poly.hedron.posY *= sixteenth;
+					poly.hedron.posZ *= sixteenth;
             		continue;
             	}
             	matcher = rotpoint.matcher(line);
             	if(matcher.matches()){
             		TemporaryPolygon poly = get(matcher.group(1), matcher.group(2), polis);
             		String[] array = matcher.group(3).split(", ");
-            		poly.mrt.rotationAngleX = parseF(array[0]);
-            		poly.mrt.rotationAngleY = parseF(array[1]);
-            		poly.mrt.rotationAngleZ = parseF(array[2]);
+            		poly.hedron.rotX = parseF(array[0]);
+            		poly.hedron.rotY = parseF(array[1]);
+            		poly.hedron.rotZ = parseF(array[2]);
             		continue;
             	}
             	matcher = pospoint.matcher(line);
             	if(matcher.matches()){
             		TemporaryPolygon poly = get(matcher.group(1), matcher.group(2), polis);
             		String[] array = matcher.group(3).split(", ");
-            		poly.mrt.rotationPointX = parseF(array[0]);
-            		poly.mrt.rotationPointY = parseF(array[1]);
-            		poly.mrt.rotationPointZ = parseF(array[2]);
+            		poly.hedron.posX = parseF(array[0]);
+            		poly.hedron.posY = parseF(array[1]);
+            		poly.hedron.posZ = parseF(array[2]);
             		continue;
             	}
             	matcher = rotangle.matcher(line);
@@ -134,15 +147,15 @@ public class SMPTBJavaModelLoader implements ModelLoader {
             		float value = parseF(matcher.group(4));
             		switch(axis){
             			case "x":{
-            				poly.mrt.rotationAngleX = (float)Math.toDegrees(value);
+            				poly.hedron.rotX = (float)Math.toDegrees(value);
             				break;
             			}
             			case "y":{
-            				poly.mrt.rotationAngleY = (float)Math.toDegrees(value);
+            				poly.hedron.rotY = (float)Math.toDegrees(value);
             				break;
             			}
             			case "z":{
-            				poly.mrt.rotationAngleZ = (float)Math.toDegrees(value);
+            				poly.hedron.rotZ = (float)Math.toDegrees(value);
             				break;
             			}
             		}
@@ -165,11 +178,11 @@ public class SMPTBJavaModelLoader implements ModelLoader {
 		return new V3F(parseF(string1), parseF(string2), parseF(string3));
 	}
 
-	private static final class TemporaryPolygon {
-		
+	public static final class TemporaryPolygon {
+
+		public Polyhedron hedron = new Polyhedron();
 		public String group;
 		public int index;
-		public ModelRendererTurbo mrt = new ModelRendererTurbo(null);
 		
 	}
 	

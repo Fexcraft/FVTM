@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
 import net.fexcraft.lib.common.math.*;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -168,13 +167,13 @@ public class EffectRenderer {
 
 	public static void preMeshCalls(){
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		TexturedPolygon.TRIANGULATED_QUADS = false;
+		//TRIANGULATED_QUADS = false;
 		GL11.glLineWidth(4f);
 	}
 
 	public static void postMeshCalls(){
 		GL11.glLineWidth(1f);
-		TexturedPolygon.TRIANGULATED_QUADS = true;
+		//TRIANGULATED_QUADS = true;
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
@@ -611,8 +610,7 @@ public class EffectRenderer {
 		if(event.getEntity() instanceof EntityPlayer) return;
 		GlStateManager.popMatrix();
     }
-    
-    private static final ModelRendererTurbo blkpreview = new ModelRendererTurbo(null).addBox(0, 0, 0, 14, 14, 14);
+
     private static ItemStack stack;
 
 	@SubscribeEvent
@@ -638,7 +636,7 @@ public class EffectRenderer {
 		for(V3I vec : poslist){
 			GL11.glPushMatrix();
 	        GL11.glTranslated(vec.x, vec.y, vec.z);
-	        blkpreview.render();
+			DebugUtils.renderBB(0.9f, COL_YLW);
 	        GL11.glPopMatrix();
 		}
 		GL11.glPopMatrix();

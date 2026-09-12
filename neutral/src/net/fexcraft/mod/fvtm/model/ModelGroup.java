@@ -3,10 +3,8 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
@@ -226,10 +224,6 @@ public class ModelGroup extends ArrayList<Polyhedron> {
 			if(set) rotation.z = value;
 			else rotation.z += value;
 		}
-	}
-
-	public boolean add(ModelRendererTurbo mrt){
-		return add(new Polyhedron().importMRT(mrt, false, 0.0625f));
 	}
 
     public <P extends Program> P getProgram(String key){

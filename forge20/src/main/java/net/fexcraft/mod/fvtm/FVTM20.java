@@ -104,12 +104,6 @@ public class FVTM20 {
 		FvtmResources.INSTANCE.searchContent();
 		FvtmResources.INSTANCE.createContentBlocks();
 		FvtmResources.INSTANCE.createContentItems();
-		if(EnvInfo.CLIENT){
-			FvtmResources.initModelSystem();
-			if(DefaultPrograms.SIGNAL_TIMER[0] == null){
-				DefaultPrograms.setupSignalTimer();
-			}
-		}
 	}
 
 	public static LiteralArgumentBuilder<CommandSourceStack> genCommand(){

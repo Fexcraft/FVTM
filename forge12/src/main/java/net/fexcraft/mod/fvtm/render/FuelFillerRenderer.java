@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.FuelFillerEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.model.InternalModels;
 import net.fexcraft.mod.fvtm.model.ModelData;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -17,7 +18,6 @@ import org.lwjgl.opengl.GL11;
 public class FuelFillerRenderer extends TileEntitySpecialRenderer<FuelFillerEntity> {
 
 	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/block/fuelfiller.png");
-	public static BlockModel MODEL;
 
 	@Override
 	public void render(FuelFillerEntity tile, double x, double y, double z, float ticks, int stage, float a){
@@ -25,8 +25,7 @@ public class FuelFillerRenderer extends TileEntitySpecialRenderer<FuelFillerEnti
 		GL11.glTranslated(x + 0.5, y, z + 0.5);
 		GL11.glRotated(BlockType.GENERIC_4ROT.getRotationFor(tile.getBlockMetadata()) - 180, 0, 1, 0);
 		TexUtil.bindTexture(TEXTURE);
-		if(MODEL == null) MODEL = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.bob", new ModelData(), BlockModel.class);
-		if(MODEL != null) MODEL.render(DefaultModel.RENDERDATA_BLANK);
+		InternalModels.FUEL_FILLER.render(DefaultModel.RENDERDATA_BLANK);
 		GL11.glPopMatrix();
 	}
 

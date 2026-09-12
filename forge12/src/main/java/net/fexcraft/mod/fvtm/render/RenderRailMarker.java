@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
-import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil.NewTrack;
 import net.fexcraft.mod.fvtm.util.TexUtil;
@@ -17,6 +16,8 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+
+import static net.fexcraft.mod.fvtm.model.InternalModels.*;
 
 public class RenderRailMarker extends Render<RailMarker> implements IRenderFactory<RailMarker> {
 
@@ -38,19 +39,19 @@ public class RenderRailMarker extends Render<RailMarker> implements IRenderFacto
         GL11.glTranslated(x, y, z);
         GL11.glPushMatrix();
 	    TexUtil.bindTexture(texture);
-	    RailMarkerModel.INST.base.render();
-		DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
-		RailMarkerModel.INST.glow.render();
-		DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
+		RAIL_MARKER_BASE.render();
+		DefaultPrograms.GLOW.pre(null, DefaultModel.RENDERDATA_BLANK);
+		RAIL_MARKER_GLOW.render();
+		DefaultPrograms.GLOW.post(null, DefaultModel.RENDERDATA_BLANK);
 	    NewTrack track = RailPlacingUtil.QUEUE.get(entity.queueid);
 	    if(track != null){
 	    	int index = track.indexOf(entity.position);
 	    	boolean arrow = index == track.selected || index == 0 || index == track.points.size() - 1;
 	    	if(arrow){
 				(index == track.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED).glColorApply();
-				DefaultPrograms.GLOW.pre(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
-				RailMarkerModel.INST.arrow.render();
-				DefaultPrograms.GLOW.post(RailMarkerModel.INST.glow, DefaultModel.RENDERDATA_BLANK);
+				DefaultPrograms.GLOW.pre(null, DefaultModel.RENDERDATA_BLANK);
+				RAIL_MARKER_ARROW.render();
+				DefaultPrograms.GLOW.post(null, DefaultModel.RENDERDATA_BLANK);
 				RGB.glColorReset();
 	    	}
 	    }

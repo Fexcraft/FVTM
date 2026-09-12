@@ -14,13 +14,20 @@ public class InternalModels {
 	public static BlockModel FUEL_FILLER;
 	public static Polyhedron ROAD_MARKER_MAIN;
 	public static Polyhedron ROAD_MARKER_ARROW;
+	public static Polyhedron RAIL_MARKER_BASE;
+	public static Polyhedron RAIL_MARKER_GLOW;
+	public static Polyhedron RAIL_MARKER_ARROW;
 
 	public static void load(){
 		FUEL_FILLER = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.bob", new ModelData(), BlockModel.class);
 		try{
-			CompactModel roadmarker = CompactParserBEO.parse(FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/roadmarker.bob").stream(), 0.0625f, false);
-			ROAD_MARKER_MAIN = roadmarker.groups.get("main").polyhedrons.get(0);
-			ROAD_MARKER_ARROW = roadmarker.groups.get("arrow").polyhedrons.get(0);
+			CompactModel compact = CompactParserBEO.parse(FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/roadmarker.bob").stream(), 0.0625f, false);
+			ROAD_MARKER_MAIN = compact.groups.get("main").polyhedrons.get(0);
+			ROAD_MARKER_ARROW = compact.groups.get("arrow").polyhedrons.get(0);
+			compact = CompactParserBEO.parse(FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/railmarker.bob").stream(), 0.0625f, false);
+			RAIL_MARKER_BASE = compact.groups.get("base").polyhedrons.get(0);
+			RAIL_MARKER_GLOW = compact.groups.get("glow").polyhedrons.get(0);
+			RAIL_MARKER_ARROW = compact.groups.get("arrow").polyhedrons.get(0);
 		}
 		catch(Exception e){
 			e.printStackTrace();

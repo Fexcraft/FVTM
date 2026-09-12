@@ -23,6 +23,7 @@ import net.fexcraft.mod.uni.inv.UniStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -120,7 +121,7 @@ public class ForgeClientEvents {
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof JunctionGridItem == false) return;
 		if(!((JunctionGridItem)Minecraft.getInstance().player.getMainHandItem().getItem()).showJunctionGrid()) return;
 		PoseStack pose = event.getPoseStack();
-		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 255);
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), LightTexture.FULL_BRIGHT);
 		QV3D vec = new QV3D(event.getTarget().getLocation().x, event.getTarget().getLocation().y, event.getTarget().getLocation().z);
 		BlockPos pos = BlockPos.containing(event.getTarget().getLocation());
 		double cx = event.getCamera().getPosition().x;
@@ -187,20 +188,18 @@ public class ForgeClientEvents {
 		double cy = camera.getPosition().y;
 		double cz = camera.getPosition().z;
 		PoseStack pose = event.getPoseStack();
-		VertexConsumer cons = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
-		Renderer20.set(pose, cons, 0);
+		Renderer20.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), LightTexture.FULL_BRIGHT);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		V3D vec0, vec1;
 		RailPlacingUtil.NewTrack conn = RailPlacingUtil.CL_CURRENT;
 		if(conn.preview == null) conn.genpreview();
 		Renderer20.setColor(COL_BLU);
+		FvtmRenderTypes.setCutout(WHITE_TEXTURE);
 		for(int j = 0; j < conn.track.vecpath.length - 1; j++){
 			vec0 = conn.track.vecpath[j];
 			vec1 = conn.track.vecpath[j + 1];
-			LINE_POLY.vertices[0].pos(vec0.x, vec0.y + 0.1f, vec0.z);
-			LINE_POLY.vertices[1].pos(vec1.x, vec1.y + 0.1f, vec1.z);
-			LINE.render();
+			DebugUtils.renderLine2D(vec0.x, vec0.y + 0.1, vec0.z, vec1.x, vec1.y + 0.1, vec1.z);
 		}
 		int size = RailPlacingUtil.CL_CURRENT.points.size();
 		double[] arr;
@@ -208,16 +207,14 @@ public class ForgeClientEvents {
 		for(int i = 1; i < size - 1; i++){
 			arr = conn.track.getPosition((conn.track.length / (size - 1)) * i);
 			vec1 = RailPlacingUtil.CL_CURRENT.points.get(i).vec;
-			LINE_POLY.vertices[0].pos(arr[0], arr[1] - 0.05f, arr[2]);
-			LINE_POLY.vertices[1].pos(vec1.x, vec1.y - 0.05f, vec1.z);
-			LINE.render();
+			DebugUtils.renderLine2D(arr[0], arr[1] - 0.05, arr[2], vec1.x, vec1.y - 0.05, vec1.z);
 		}
 		Renderer20.setColor(COL_ORG);
 		for(ArrayList<V3D> l : conn.preview){
 			for(int j = 0; j < l.size() - 1; j++){
-				LINE_POLY.vertices[0].pos((vec0 = l.get(j)).x, vec0.y + conn.gauge.getHeight() - .01, vec0.z);
-				LINE_POLY.vertices[1].pos((vec1 = l.get(j + 1)).x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
-				LINE.render();
+				vec0 = l.get(j);
+				vec1 = l.get(j + 1);
+				DebugUtils.renderLine2D(vec0.x, vec0.y + conn.gauge.getHeight() - .01, vec0.z, vec1.x, vec1.y + conn.gauge.getHeight() - .01, vec1.z);
 			}
 		}
 		Renderer20.resetColor();

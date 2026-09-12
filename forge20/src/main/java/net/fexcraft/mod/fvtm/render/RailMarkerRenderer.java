@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fcl.util.Renderer20;
 import net.fexcraft.mod.fvtm.entity.RailMarker;
-import net.fexcraft.mod.fvtm.model.DefaultModel;
-import net.fexcraft.mod.fvtm.model.entity.RailMarkerModel;
 import net.fexcraft.mod.fvtm.sys.rail.RailPlacingUtil;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
@@ -13,6 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+
+import static net.fexcraft.mod.fvtm.model.InternalModels.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,13 +32,12 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 		pose.pushPose();
 		Renderer20.set(pose, buffer, light);
 		FvtmRenderTypes.setCutout(texture);
-		RailMarkerModel.INST.base.render();
-		FvtmRenderTypes.setGlow(texture);
-		RailMarkerModel.INST.glow.render();
-		FvtmRenderTypes.setGlow(texture);
+		RAIL_MARKER_BASE.render();
+		//FvtmRenderTypes.setGlow(texture);
+		RAIL_MARKER_GLOW.render();
 		if(marker.queueid == null){
 			Renderer20.setColor(RGB.BLACK);
-			RailMarkerModel.INST.arrow.render();
+			RAIL_MARKER_ARROW.render();
 		}
 		else{
 			RailPlacingUtil.NewTrack road = RailPlacingUtil.QUEUE.get(marker.queueid);
@@ -47,9 +46,7 @@ public class RailMarkerRenderer extends EntityRenderer<RailMarker> {
 				boolean arrow = index == road.selected || index == 0 || index == road.points.size() - 1;
 				if(arrow){
 					Renderer20.setColor(index == road.selected ? CYAN : index == 0 ? RGB.GREEN : RGB.RED);
-					FvtmRenderTypes.setGlow(texture.local());
-					RailMarkerModel.INST.arrow.render();
-					FvtmRenderTypes.setCutout(texture);
+					RAIL_MARKER_ARROW.render();
 				}
 			}
 		}

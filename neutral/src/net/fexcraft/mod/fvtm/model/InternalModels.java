@@ -4,6 +4,7 @@ import net.fexcraft.lib.frl.CompactModel;
 import net.fexcraft.lib.frl.CompactParserBEO;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.FvtmResources.InputStreamWithFallback;
 import net.fexcraft.mod.fvtm.model.content.BlockModel;
 
 /**
@@ -19,15 +20,19 @@ public class InternalModels {
 	public static Polyhedron RAIL_MARKER_ARROW;
 
 	public static void load(){
-		FUEL_FILLER = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.bob", new ModelData(), BlockModel.class);
 		try{
-			CompactModel compact = CompactParserBEO.parse(FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/roadmarker.bob").stream(), 0.0625f, false);
+			FUEL_FILLER = (BlockModel)FvtmResources.getModel("fvtm:models/block/fuelfiller.bob", new ModelData(), BlockModel.class);
+			InputStreamWithFallback iswf = FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/roadmarker.bob");
+			CompactModel compact = CompactParserBEO.parse(iswf.stream(), 0.0625f, false);
 			ROAD_MARKER_MAIN = compact.groups.get("main").polyhedrons.get(0);
 			ROAD_MARKER_ARROW = compact.groups.get("arrow").polyhedrons.get(0);
-			compact = CompactParserBEO.parse(FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/railmarker.bob").stream(), 0.0625f, false);
+			iswf.close();
+			iswf = FvtmResources.getAssetInputStreamWithFallback("fvtm:models/entity/railmarker.bob");
+			compact = CompactParserBEO.parse(iswf.stream(), 0.0625f, false);
 			RAIL_MARKER_BASE = compact.groups.get("base").polyhedrons.get(0);
 			RAIL_MARKER_GLOW = compact.groups.get("glow").polyhedrons.get(0);
 			RAIL_MARKER_ARROW = compact.groups.get("arrow").polyhedrons.get(0);
+			iswf.close();
 		}
 		catch(Exception e){
 			e.printStackTrace();

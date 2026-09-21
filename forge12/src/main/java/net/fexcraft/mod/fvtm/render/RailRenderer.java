@@ -67,7 +67,7 @@ public class RailRenderer {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPushMatrix();
             GL11.glTranslated(vec.vec.x - x, vec.vec.y - y, vec.vec.z - z);
-			DebugUtils.renderSphere(0.5f, 0x7bf57e);
+			DebugUtils.renderSphere(thirtysecondth, 0x7bf57e);
             GL11.glPopMatrix();
             //
             GL11.glPushMatrix();

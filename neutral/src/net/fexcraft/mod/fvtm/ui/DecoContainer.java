@@ -61,7 +61,6 @@ public class DecoContainer extends ContainerInterface {
 					SEND_TO_CLIENT.accept(com, player);
 				}
 				else{
-					((DecoEditor)ui).updateEntries();
 					((DecoEditor)ui).select(-1, -1);
 				}
 				return;

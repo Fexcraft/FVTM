@@ -22,7 +22,6 @@ public class DecoEditor extends UserInterface {
 
 	private static final int rows = 12;
 	private static ArrayList<String> colors = new ArrayList<>();
-	private int scroll;
 	public int selected = -1;
 	public int selcol;
 
@@ -32,7 +31,6 @@ public class DecoEditor extends UserInterface {
 
 	@Override
 	public void init(){
-		updateEntries();
 		select(-1, -1);
 	}
 
@@ -40,17 +38,6 @@ public class DecoEditor extends UserInterface {
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
 		boolean found = true;
 		switch(id){
-			case "list_up":{
-				scroll--;
-				if(scroll < 0) scroll = 0;
-				updateEntries();
-				break;
-			}
-			case "list_down":{
-				scroll++;
-				updateEntries();
-				break;
-			}
 			case "tex_prev":{
 				if(selected < 0 || selected >= (int)container.get("decos.size")) return true;
 				TagCW com = TagCW.create();
@@ -148,7 +135,7 @@ public class DecoEditor extends UserInterface {
 			}
 		}
 		if(!found){
-			if(id.startsWith("entry_")){
+			/*if(id.startsWith("entry_")){
 				int idx = Integer.parseInt(id.substring(6));
 				select(selected = scroll + idx, selcol);
 				updateEntries();
@@ -162,7 +149,7 @@ public class DecoEditor extends UserInterface {
 				container.SEND_TO_SERVER.accept(com);
 				return true;
 			}
-			else if(id.startsWith("pos")){
+			else*/ if(id.startsWith("pos")){
 				int ax = Integer.parseInt(id.substring(3));
 				TagCW com = TagCW.create();
 				com.set("task", "pos");
@@ -248,19 +235,6 @@ public class DecoEditor extends UserInterface {
 		fields.get("hex").text("#" + Integer.toHexString(color.packed));
 	}
 
-	public void updateEntries(){
-		int j = 0;
-		boolean over;
-		for(int i = 0; i < rows; i++){
-			j = scroll + i;
-			over = j >= (int)container.get("decos.size");
-			buttons.get("entry_" + i).text.value(over ? "" : container.get("decos.key", j).toString());
-			buttons.get("entry_" + i).text.translate();
-			buttons.get("rem_" + i).visible(true);
-			buttons.get("entry_" + i).enabled(selected != j);
-		}
-	}
-
 	@Override
 	public void predraw(float ticks, int mx, int my){
 		//
@@ -273,11 +247,11 @@ public class DecoEditor extends UserInterface {
 
 	@Override
 	public void scrollwheel(int a, int x, int y){
-		if(x > 1 && x < 139 && y > 20 && y < 188){
+		/*if(x > 1 && x < 139 && y > 20 && y < 188){
 			scroll += a > 0 ? 1 : -1;
 			if(scroll < 0) scroll = 0;
 			updateEntries();
-		}
+		}*/
 	}
 
 }

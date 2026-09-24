@@ -5,379 +5,242 @@
 	"tabs": {
 		"left": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
-			"size": [ 209, 237 ],
+			"size": [ 209, 225 ],
 			"pos": [ 0, 0 ],
 			"absolute": true,
-			"buttons": []
+			"buttons": [
+				"sel_rem", "sel_copy", "sel_prev", "sel_next",
+				"tex_pro_prev", "tex_pro_next",
+				"tex_cus_int", "tex_cus_ext", "tex_cus_set",
+				"col_picker", "col_prev", "col_next", "col_save", "col_set",
+				"clear_all", "import_all", "export_all", "import_one", "export_one"
+			],
+			"texts": [
+				"deco_count", "deco_current", "texture_provided", "texture_custom"
+			]
 		},
 		"right": {
 			"texture": "fvtm:textures/gui/deco_editor_right.png",
-			"size": [ 187, 230 ],
+			"size": [ 187, 192 ],
 			"pos": [ -187, 0 ],
 			"uv": [ 69, 0 ],
 			"absolute": true,
 			"buttons": [],
-			"texts": [],
+			"texts": [
+				"pos", "rot", "scale",
+				"uv_channel", "uv_offset", "uv_scale",
+				"editor_rate"
+			],
 			"fields": []
 		}
 	},
 	"buttons": {
-		"list_up": {
+		"sel_rem": {
 			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 131, 21 ]
-		},
-		"list_down": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 131, 175 ]
-		},
-		"entry_0": {
-			"texture": "fvtm:textures/gui/deco_editor_left.png",
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 21 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_1": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 35 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_2": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 49 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_3": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 63 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_4": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 77 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_5": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 91 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_6": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 105 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_7": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 119 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_8": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 133 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_9": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 147 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_10": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 161 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"entry_11": {
-			"absolute": true,
-			"size": [ 120, 12 ],
-			"pos": [ 2, 175 ],
-			"text": {
-				"size": [ 116, 8 ],
-				"pos": [ 2, 2 ],
-				"autoscale": true,
-				"color": "000000"
-			}
-		},
-		"rem_0": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 21 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_1": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 35 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_2": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 49 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_3": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 63 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_4": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 77 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_5": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 91 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_6": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 105 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_7": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 119 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_8": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 133 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_9": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 147 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_10": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 161 ],
-			"uv": [ 146, 44 ]
-		},
-		"rem_11": {
-			"absolute": true,
-			"size": [ 7, 12 ],
-			"pos": [ 123, 175 ],
-			"uv": [ 146, 44 ]
-		},
-		"pos0": {
-			"absolute": true,
+			"pos": [ 156, 2 ],
 			"size": [ 10, 10 ],
-			"pos": [ -105, 17 ],
-			"uv": [ 197, 17 ]
+			"tooltip": "ui.fvtm.decoration_editor.remove_selected"
 		},
-		"pos1": {
+		"sel_copy": {
 			"absolute": true,
+			"pos": [ 168, 2 ],
 			"size": [ 10, 10 ],
-			"pos": [ -59, 17 ],
-			"uv": [ 197, 17 ]
+			"tooltip": "ui.fvtm.decoration_editor.copy_selected"
 		},
-		"pos2": {
+		"sel_prev": {
 			"absolute": true,
+			"pos": [ 180, 2 ],
 			"size": [ 10, 10 ],
-			"pos": [ -13, 17 ],
-			"uv": [ 197, 17 ]
+			"tooltip": "ui.fvtm.decoration_editor.select_previous"
 		},
-		"rot0": {
+		"sel_next": {
 			"absolute": true,
+			"pos": [ 192, 2 ],
 			"size": [ 10, 10 ],
-			"pos": [ -105, 45 ],
-			"uv": [ 197, 45 ]
+			"tooltip": "ui.fvtm.decoration_editor.select_next"
 		},
-		"rot1": {
+		"tex_pro_prev": {
 			"absolute": true,
+			"pos": [ 173, 39 ],
 			"size": [ 10, 10 ],
-			"pos": [ -59, 45 ],
-			"uv": [ 197, 45 ]
+			"tooltip": "ui.fvtm.decoration_editor.texture_previous"
 		},
-		"rot2": {
+		"tex_pro_next": {
 			"absolute": true,
+			"pos": [ 184, 39 ],
 			"size": [ 10, 10 ],
-			"pos": [ -13, 45 ],
-			"uv": [ 197, 45 ]
+			"tooltip": "ui.fvtm.decoration_editor.texture_next"
 		},
-		"scl0": {
+		"tex_cus_int": {
 			"absolute": true,
+			"pos": [ 162, 61 ],
 			"size": [ 10, 10 ],
-			"pos": [ -105, 73 ],
-			"uv": [ 197, 73 ]
+			"tooltip": "ui.fvtm.decoration_editor.texture_internal"
 		},
-		"scl1": {
+		"tex_cus_ext": {
 			"absolute": true,
+			"pos": [ 173, 61 ],
 			"size": [ 10, 10 ],
-			"pos": [ -59, 73 ],
-			"uv": [ 197, 73 ]
+			"tooltip": "ui.fvtm.decoration_editor.texture_external"
 		},
-		"scl2": {
+		"tex_cus_set": {
 			"absolute": true,
+			"pos": [ 184, 61 ],
 			"size": [ 10, 10 ],
-			"pos": [ -13, 73 ],
-			"uv": [ 197, 73 ]
+			"tooltip": "ui.fvtm.decoration_editor.texture_set"
 		},
-		"tex_prev": {
+		"col_picker": {
 			"absolute": true,
-			"size": [ 10, 10 ],
-			"pos": [ -25, 101 ],
-			"uv": [ 231, 101 ]
-		},
-		"tex_next": {
-			"absolute": true,
-			"size": [ 10, 10 ],
-			"pos": [ -13, 101 ],
-			"uv": [ 243, 101 ]
-		},
-		"ch_prev": {
-			"absolute": true,
-			"size": [ 10, 10 ],
-			"pos": [ -25, 126 ],
-			"uv": [ 231, 126 ]
-		},
-		"ch_next": {
-			"absolute": true,
-			"size": [ 10, 10 ],
-			"pos": [ -13, 126 ],
-			"uv": [ 243, 126 ]
-		},
-		"rgb": {
-			"absolute": true,
-			"size": [ 10, 10 ],
-			"pos": [ -13, 146 ],
-			"uv": [ 243, 146 ]
-		},
-		"hex": {
-			"absolute": true,
-			"size": [ 10, 10 ],
-			"pos": [ -13, 166 ],
-			"uv": [ 243, 166 ]
-		},
-		"colorpicker": {
-			"absolute": true,
+			"pos": [ 187, 78 ],
 			"size": [ 6, 6 ],
-			"pos": [ -10, 118 ],
-			"uv": [ 246, 118 ]
+			"tooltip": "ui.fvtm.decoration_editor.color_picker"
+		},
+		"col_prev": {
+			"absolute": true,
+			"pos": [ 173, 86 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.decoration_editor.channel_previous"
+		},
+		"col_next": {
+			"absolute": true,
+			"pos": [ 184, 86 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.decoration_editor.channel_next"
+		},
+		"col_save": {
+			"absolute": true,
+			"pos": [ 169, 129 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.color_add"
+		},
+		"col_set": {
+			"absolute": true,
+			"pos": [ 183, 129 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.color_set"
+		},
+		"clear_all": {
+			"absolute": true,
+			"pos": [ 141, 217 ],
+			"size": [ 7, 7 ],
+			"tooltip": "ui.fvtm.decoration_editor.clear_all"
+		},
+		"import_all": {
+			"absolute": true,
+			"pos": [ 152, 217 ],
+			"size": [ 7, 7 ],
+			"tooltip": "ui.fvtm.decoration_editor.import_all"
+		},
+		"export_all": {
+			"absolute": true,
+			"pos": [ 161, 217 ],
+			"size": [ 7, 7 ],
+			"tooltip": "ui.fvtm.decoration_editor.export_all"
+		},
+		"import_one": {
+			"absolute": true,
+			"pos": [ 172, 217 ],
+			"size": [ 7, 7 ],
+			"tooltip": "ui.fvtm.decoration_editor.import_one"
+		},
+		"export_one": {
+			"absolute": true,
+			"pos": [ 181, 217 ],
+			"size": [ 7, 7 ],
+			"tooltip": "ui.fvtm.decoration_editor.export_one"
 		}
 	},
 	"texts": {
+		"deco_count": {
+			"absolute": true,
+			"pos": [ 5, 3 ],
+			"size": [ 146, 8 ],
+			"autoscale": true
+		},
+		"deco_current": {
+			"absolute": true,
+			"pos": [ 5, 15 ],
+			"size": [ 194, 8 ],
+			"autoscale": true
+		},
+		"texture_provided": {
+			"absolute": true,
+			"pos": [ 3, 30 ],
+			"size": [ 190, 6 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.texture_provided",
+			"color": "404040"
+		},
+		"texture_custom": {
+			"absolute": true,
+			"pos": [ 3, 52 ],
+			"size": [ 190, 6 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.texture_custom",
+			"color": "404040"
+		},
 		"pos": {
 			"absolute": true,
-			"size": [ 132, 8 ],
-			"pos": [ -136, 5 ],
+			"size": [ 176, 6 ],
+			"pos": [ -179, 2 ],
+			"scale": 0.8,
 			"value": "ui.fvtm.decoration_editor.position",
+			"color": "404040",
 			"translate": true
 		},
 		"rot": {
 			"absolute": true,
-			"size": [ 132, 8 ],
-			"pos": [ -136, 33 ],
+			"size": [ 176, 6 ],
+			"pos": [ -179, 24 ],
+			"scale": 0.8,
 			"value": "ui.fvtm.decoration_editor.rotation",
+			"color": "404040",
 			"translate": true
 		},
-		"scl": {
+		"scale": {
 			"absolute": true,
-			"size": [ 132, 8 ],
-			"pos": [ -136, 61 ],
+			"size": [ 176, 6 ],
+			"pos": [ -179, 46 ],
+			"scale": 0.8,
 			"value": "ui.fvtm.decoration_editor.scale",
+			"color": "404040",
 			"translate": true
 		},
-		"tex": {
+		"uv_channel": {
 			"absolute": true,
-			"size": [ 132, 8 ],
-			"pos": [ -136, 89 ],
-			"value": "ui.fvtm.decoration_editor.texture",
+			"size": [ 176, 6 ],
+			"pos": [ -179, 74 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.uv_channel",
+			"color": "404040",
 			"translate": true
 		},
-		"texc": {
+		"uv_offset": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -136, 102 ],
-			"autoscale": true,
-			"color": "cfcfcf",
-			"value": "-"
+			"size": [ 176, 6 ],
+			"pos": [ -179, 97 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.uv_offset",
+			"color": "404040",
+			"translate": true
 		},
-		"channel": {
+		"uv_scale": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -136, 127 ],
-			"autoscale": true,
-			"color": "cfcfcf",
-			"value": "-"
+			"size": [ 176, 6 ],
+			"pos": [ -179, 119 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.uv_scale",
+			"color": "404040",
+			"translate": true
+		},
+		"editor_rate": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 147 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.editor_rate",
+			"color": "404040",
+			"translate": true
 		}
 	},
 	"fields": {

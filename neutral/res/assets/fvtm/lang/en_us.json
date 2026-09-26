@@ -88,6 +88,8 @@
 	"ui.fvtm.decoration_editor.uv_offset": "UV Offset (*if supported)",
 	"ui.fvtm.decoration_editor.uv_scale": "UV Scale (*if supported)",
 	"ui.fvtm.decoration_editor.rate": "Editor Scroll Input Rate",
+	"ui.fvtm.decoration_editor.no_decorations": "No Decorations At Location",
+	"ui.fvtm.decoration_editor.decoration_count": "%s of %s",
 	"ui.fvtm.decoration_editor.no_color_channels": "No Color Channels",
 
 	"ui.fvtm.sign_editor.com_prev": "Previous Component",

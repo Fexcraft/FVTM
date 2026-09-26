@@ -38,10 +38,16 @@
 			],
 			"texts": [
 				"pos", "rot", "scale",
-				"uv_channel", "uv_offset", "uv_scale",
+				"uv_channel", "uv_selected", "uv_offset", "uv_scale",
 				"rate", "rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
 			],
-			"fields": []
+			"fields": [
+				"pos_x", "pos_y", "pos_z",
+				"rot_x", "rot_y", "rot_z",
+				"scl_x", "scl_y", "scl_z",
+				"u_off", "v_off", "u_scl", "v_scl",
+				"rate"
+			]
 		}
 	},
 	"buttons": {
@@ -389,6 +395,13 @@
 			"color": "404040",
 			"translate": true
 		},
+		"uv_selected": {
+			"absolute": true,
+			"size": [ 150, 8 ],
+			"pos": [ -177, 84 ],
+			"autoscale": true,
+			"value": "..."
+		},
 		"uv_offset": {
 			"absolute": true,
 			"size": [ 176, 6 ],
@@ -470,8 +483,7 @@
 			"absolute": true,
 			"pos": [ 4, 62 ],
 			"size": [ 155, 8 ],
-			"background": false,
-			"numberfield": true
+			"background": false
 		},
 		"col_r": {
 			"absolute": true,
@@ -501,80 +513,103 @@
 			"background": false,
 			"numberfield": true
 		},
-		"pos0": {
+		"pos_x": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -135, 18 ],
+			"size": [ 43, 8 ],
+			"pos": [ -178, 12 ],
 			"background": false,
 			"numberfield": true
 		},
-		"pos1": {
+		"pos_y": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -89, 18 ],
+			"size": [ 43, 8 ],
+			"pos": [ -118, 12 ],
 			"background": false,
 			"numberfield": true
 		},
-		"pos2": {
+		"pos_z": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -43, 18 ],
+			"size": [ 43, 8 ],
+			"pos": [ -58, 12 ],
 			"background": false,
 			"numberfield": true
 		},
-		"rot0": {
+		"rot_x": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -135, 46 ],
+			"size": [ 43, 8 ],
+			"pos": [ -178, 34 ],
 			"background": false,
 			"numberfield": true
 		},
-		"rot1": {
+		"rot_y": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -89, 46 ],
+			"size": [ 43, 8 ],
+			"pos": [ -118, 34 ],
 			"background": false,
 			"numberfield": true
 		},
-		"rot2": {
+		"rot_z": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -43, 46 ],
+			"size": [ 43, 8 ],
+			"pos": [ -58, 34 ],
 			"background": false,
 			"numberfield": true
 		},
-		"scl0": {
+		"scl_x": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -135, 74 ],
+			"size": [ 43, 8 ],
+			"pos": [ -178, 56 ],
 			"background": false,
 			"numberfield": true
 		},
-		"scl1": {
+		"scl_y": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -89, 74 ],
+			"size": [ 43, 8 ],
+			"pos": [ -118, 56 ],
 			"background": false,
 			"numberfield": true
 		},
-		"scl2": {
+		"scl_z": {
 			"absolute": true,
-			"size": [ 27, 8 ],
-			"pos": [ -43, 74 ],
+			"size": [ 43, 8 ],
+			"pos": [ -58, 56 ],
 			"background": false,
 			"numberfield": true
 		},
-		"rgb": {
+		"u_off": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -135, 147 ],
-			"background": false
+			"size": [ 73, 8 ],
+			"pos": [ -178, 107 ],
+			"background": false,
+			"numberfield": true
 		},
-		"hex": {
+		"v_off": {
 			"absolute": true,
-			"size": [ 107, 8 ],
-			"pos": [ -135, 167 ],
-			"background": false
+			"size": [ 73, 8 ],
+			"pos": [ -88, 107 ],
+			"background": false,
+			"numberfield": true
+		},
+		"u_scl": {
+			"absolute": true,
+			"size": [ 73, 8 ],
+			"pos": [ -178, 129 ],
+			"background": false,
+			"numberfield": true
+		},
+		"v_scl": {
+			"absolute": true,
+			"size": [ 73, 8 ],
+			"pos": [ -88, 129 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rate": {
+			"absolute": true,
+			"size": [ 84, 8 ],
+			"pos": [ -178, 157 ],
+			"background": false,
+			"numberfield": true
 		}
 	}
 }

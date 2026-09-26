@@ -61,7 +61,7 @@ public class DecoContainer extends ContainerInterface {
 					SEND_TO_CLIENT.accept(com, player);
 				}
 				else{
-					((DecoEditor)ui).select(-1, -1);
+					((DecoEditor)ui).select(-1);
 				}
 				return;
 			}
@@ -108,7 +108,7 @@ public class DecoContainer extends ContainerInterface {
 					if(!client) SEND_TO_CLIENT.accept(com, player);
 					else{
 						DecoEditor editor = (DecoEditor)ui;
-						editor.select(editor.selected, editor.selcol);
+						editor.select(editor.sel_idx);
 					}
 				}
 				break;
@@ -119,7 +119,7 @@ public class DecoContainer extends ContainerInterface {
 				if(!client) SEND_TO_CLIENT.accept(com, player);
 				else{
 					DecoEditor editor = (DecoEditor)ui;
-					editor.select(editor.selected, editor.selcol);
+					editor.select(editor.sel_idx);
 				}
 				break;
 			}

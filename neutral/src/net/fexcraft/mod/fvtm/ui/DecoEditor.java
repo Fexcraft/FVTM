@@ -1,14 +1,10 @@
 package net.fexcraft.mod.fvtm.ui;
 
-import java.awt.*;
 import java.util.ArrayList;
-
-import javax.swing.*;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
@@ -20,25 +16,30 @@ import static net.fexcraft.lib.common.Static.sixteenth;
  */
 public class DecoEditor extends UserInterface {
 
-	private static final int rows = 12;
-	private static ArrayList<String> colors = new ArrayList<>();
-	public int selected = -1;
-	public int selcol;
+	private ArrayList<String> colors = new ArrayList<>();
+	public static String[] axes = new String[]{ "x", "y", "z" };
+	protected DecorationData sel;
+	protected DecoContainer con;
+	public int sel_idx;
+	public int sel_tex;
+	public int sel_col;
+	public int sel_uv;
 
 	public DecoEditor(JsonMap map, ContainerInterface con) throws Exception {
 		super(map, con);
+		this.con = (DecoContainer)con;
 	}
 
 	@Override
 	public void init(){
-		select(-1, -1);
+		select(-1);
 	}
 
 	@Override
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
 		boolean found = true;
 		switch(id){
-			case "tex_prev":{
+			/*case "tex_prev":{
 				if(selected < 0 || selected >= (int)container.get("decos.size")) return true;
 				TagCW com = TagCW.create();
 				com.set("task", "tex");
@@ -128,7 +129,7 @@ public class DecoEditor extends UserInterface {
 					e.printStackTrace();
 				}
 				break;
-			}
+			}*/
 			default:{
 				found = false;
 				break;
@@ -149,7 +150,7 @@ public class DecoEditor extends UserInterface {
 				container.SEND_TO_SERVER.accept(com);
 				return true;
 			}
-			else*/ if(id.startsWith("pos")){
+			else if(id.startsWith("pos")){
 				int ax = Integer.parseInt(id.substring(3));
 				TagCW com = TagCW.create();
 				com.set("task", "pos");
@@ -178,7 +179,7 @@ public class DecoEditor extends UserInterface {
 				com.set("value", fields.get(id).number());
 				container.SEND_TO_SERVER.accept(com);
 				return true;
-			}
+			}*/
 		}
 		return found;
 	}
@@ -212,27 +213,44 @@ public class DecoEditor extends UserInterface {
 		return false;
 	}
 
-	public void select(int idx, int colidx){
-		selected = idx;
+	public void select(int idx){
 		colors.clear();
-		int decos = (int)container.get("decos.size");
-		DecorationData data = idx < 0 || idx >= decos ? null : (DecorationData)container.get("decos.at", idx);
-		boolean miss = data == null;
-		for(int i = 0; i < 3; i++){
-			fields.get("pos" + i).text(miss ? "0" : (i == 0 ? data.offset.x : i == 1 ? data.offset.y : data.offset.z) + "");
-			fields.get("rot" + i).text(miss ? "0" : (i == 0 ? data.rotx : i == 1 ? data.roty : data.rotz) + "");
-			fields.get("scl" + i).text(miss ? "0" : (i == 0 ? data.sclx : i == 1 ? data.scly : data.sclz) + "");
+		if(idx < 0 && con.decos.size() > 0) idx = 0;
+		sel_idx = idx;
+		sel = idx < 0 ? null : con.decos.get(sel_idx);
+		boolean miss = sel == null;
+		if(miss){
+			sel_tex = 0;
+			texts.get("deco_count").transval("...");
+			texts.get("deco_current").transval("ui.fvtm.decoration_editor.no_decorations");
+			texts.get("texture_selected").transval("");
+			for(int i = 0; i < 3; i++){
+				fields.get("pos" + axes[i]).text("0");
+				fields.get("rot" + axes[i]).text("0");
+				fields.get("scl" + axes[i]).text("0");
+			}
 		}
-		texts.get("texc").value(miss ? "" : data.getCurrentTexture().name());
-		selcol = colidx;
-		if(!miss) colors.addAll(data.getColorChannels().keySet());
-		if(selcol >= colors.size() || selcol < 0) selcol = 0;
-		texts.get("channel").value(miss ? "" : colors.isEmpty() ? "gui.fvtm.decoration_editor.no_color_channels" : colors.get(selcol));
-		texts.get("channel").translate();
-		RGB color = miss || colors.isEmpty() ? RGB.WHITE : data.getColorChannel(colors.get(selcol));
+		else{
+			sel_tex = sel.getTexture().getSelected();
+			texts.get("deco_count").transval("ui.fvtm.decoration_editor.decoration_count", sel_idx + 1, con.decos.size());
+			texts.get("deco_current").transval(sel.getType().getName());
+			texts.get("texture_selected").transval(sel.getTexture().isExternal() ? "" : sel.getTexture().getTexture().name());
+			for(int i = 0; i < 3; i++){
+				fields.get("pos_" + axes[i]).text((i == 0 ? sel.offset.x : i == 1 ? sel.offset.y : sel.offset.z) + "");
+				fields.get("rot_" + axes[i]).text((i == 0 ? sel.rotx : i == 1 ? sel.roty : sel.rotz) + "");
+				fields.get("scl_" + axes[i]).text((i == 0 ? sel.sclx : i == 1 ? sel.scly : sel.sclz) + "");
+			}
+		}
+		if(!miss) colors.addAll(sel.getColorChannels().keySet());
+		sel_col = 0;
+		sel_uv = 0;
+		texts.get("color_channel").transval(miss ? "" : colors.isEmpty() ? "gui.fvtm.decoration_editor.no_color_channels" : colors.get(sel_col));
+		RGB color = miss || colors.isEmpty() ? RGB.WHITE : sel.getColorChannel(colors.get(sel_col));
 		byte[] ar = color.toByteArray();
-		fields.get("rgb").text((ar[0] + 128) + ", " + (ar[1] + 128) + ", " + (ar[2] + 128));
-		fields.get("hex").text("#" + Integer.toHexString(color.packed));
+		fields.get("col_r").text((ar[0] + 128));
+		fields.get("col_g").text((ar[1] + 128));
+		fields.get("col_b").text((ar[2] + 128));
+		fields.get("col_hex").text("#" + Integer.toHexString(color.packed));
 	}
 
 	@Override

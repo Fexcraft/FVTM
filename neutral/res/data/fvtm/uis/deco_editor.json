@@ -5,7 +5,7 @@
 	"tabs": {
 		"left": {
 			"texture": "fvtm:textures/gui/deco_editor_left.png",
-			"size": [ 209, 225 ],
+			"size": [ 209, 201 ],
 			"pos": [ 0, 0 ],
 			"absolute": true,
 			"buttons": [
@@ -16,7 +16,10 @@
 				"clear_all", "import_all", "export_all", "import_one", "export_one"
 			],
 			"texts": [
-				"deco_count", "deco_current", "texture_provided", "texture_custom"
+				"deco_count", "deco_current", "texture_provided", "texture_selected", "texture_custom", "color_channel"
+			],
+			"fields": [
+				"texture", "col_r", "col_g", "col_b", "col_hex"
 			]
 		},
 		"right": {
@@ -116,43 +119,43 @@
 		},
 		"col_save": {
 			"absolute": true,
-			"pos": [ 169, 129 ],
+			"pos": [ 169, 125 ],
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.decoration_editor.color_add"
 		},
 		"col_set": {
 			"absolute": true,
-			"pos": [ 183, 129 ],
+			"pos": [ 183, 125 ],
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.decoration_editor.color_set"
 		},
 		"clear_all": {
 			"absolute": true,
-			"pos": [ 141, 217 ],
+			"pos": [ 141, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.clear_all"
 		},
 		"import_all": {
 			"absolute": true,
-			"pos": [ 152, 217 ],
+			"pos": [ 152, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.import_all"
 		},
 		"export_all": {
 			"absolute": true,
-			"pos": [ 161, 217 ],
+			"pos": [ 161, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.export_all"
 		},
 		"import_one": {
 			"absolute": true,
-			"pos": [ 172, 217 ],
+			"pos": [ 172, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.import_one"
 		},
 		"export_one": {
 			"absolute": true,
-			"pos": [ 181, 217 ],
+			"pos": [ 181, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.export_one"
 		},
@@ -328,6 +331,13 @@
 			"value": "ui.fvtm.decoration_editor.texture_provided",
 			"color": "404040"
 		},
+		"texture_selected": {
+			"absolute": true,
+			"pos": [ 5, 40 ],
+			"size": [ 165, 8 ],
+			"autoscale": true,
+			"value": "..."
+		},
 		"texture_custom": {
 			"absolute": true,
 			"pos": [ 3, 52 ],
@@ -335,6 +345,13 @@
 			"scale": 0.8,
 			"value": "ui.fvtm.decoration_editor.texture_custom",
 			"color": "404040"
+		},
+		"color_channel": {
+			"absolute": true,
+			"pos": [ 5, 87 ],
+			"size": [ 165, 8 ],
+			"autoscale": true,
+			"value": "..."
 		},
 		"pos": {
 			"absolute": true,
@@ -449,6 +466,41 @@
 		}
 	},
 	"fields": {
+		"texture": {
+			"absolute": true,
+			"pos": [ 4, 62 ],
+			"size": [ 155, 8 ],
+			"background": false,
+			"numberfield": true
+		},
+		"col_r": {
+			"absolute": true,
+			"pos": [ 4, 107 ],
+			"size": [ 30, 8 ],
+			"background": false,
+			"numberfield": true
+		},
+		"col_g": {
+			"absolute": true,
+			"pos": [ 40, 107 ],
+			"size": [ 30, 8 ],
+			"background": false,
+			"numberfield": true
+		},
+		"col_b": {
+			"absolute": true,
+			"pos": [ 76, 107 ],
+			"size": [ 30, 8 ],
+			"background": false,
+			"numberfield": true
+		},
+		"col_hex": {
+			"absolute": true,
+			"pos": [ 115, 107 ],
+			"size": [ 78, 8 ],
+			"background": false,
+			"numberfield": true
+		},
 		"pos0": {
 			"absolute": true,
 			"size": [ 27, 8 ],

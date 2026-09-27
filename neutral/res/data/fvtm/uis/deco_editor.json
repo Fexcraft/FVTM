@@ -13,6 +13,7 @@
 				"tex_pro_prev", "tex_pro_next",
 				"tex_cus_int", "tex_cus_ext", "tex_cus_set",
 				"col_picker", "col_prev", "col_next", "col_save", "col_set",
+				"col_val", "col_cur", "col_parse", "pal_hor", "pal_sha", "pal_save",
 				"clear_all", "import_all", "export_all", "import_one", "export_one"
 			],
 			"texts": [
@@ -123,6 +124,12 @@
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.decoration_editor.channel_next"
 		},
+		"col_parse": {
+			"absolute": true,
+			"pos": [ 183, 105 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.color_parse"
+		},
 		"col_save": {
 			"absolute": true,
 			"pos": [ 169, 125 ],
@@ -134,6 +141,41 @@
 			"pos": [ 183, 125 ],
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.decoration_editor.color_set"
+		},
+		"col_cur": {
+			"absolute": true,
+			"pos": [ 130, 126 ],
+			"size": [ 15, 10 ],
+			"color": "ffffff",
+			"palette": [ 1, 1, 15, 10 ]
+		},
+		"col_val": {
+			"absolute": true,
+			"pos": [ 151, 126 ],
+			"size": [ 15, 10 ],
+			"color": "ffffff",
+			"palette": [ 1, 1, 15, 10 ]
+		},
+		"pal_hor": {
+			"absolute": true,
+			"pos": [ 3, 126 ],
+			"size": [ 120, 10 ],
+			"color": "ffffff",
+			"palette": [ 1, 24, 5, 10 ]
+		},
+		"pal_sha": {
+			"absolute": true,
+			"pos": [ 3, 140 ],
+			"size": [ 190, 40 ],
+			"color": "ffffff",
+			"palette": [ 8, 19, 10, 5 ]
+		},
+		"pal_save": {
+			"absolute": true,
+			"pos": [ 3, 184 ],
+			"size": [ 190, 5 ],
+			"color": "ffffff",
+			"palette": [ 1, 19, 5, 5 ]
 		},
 		"clear_all": {
 			"absolute": true,
@@ -509,7 +551,7 @@
 		"col_hex": {
 			"absolute": true,
 			"pos": [ 115, 107 ],
-			"size": [ 78, 8 ],
+			"size": [ 64, 8 ],
 			"background": false,
 			"numberfield": true
 		},

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.DecorationData;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
@@ -37,29 +38,25 @@ public class DecoEditor extends UserInterface {
 
 	@Override
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
-		boolean found = true;
+		if(sel == null) return true;
+		TagCW com = TagCW.create();
 		switch(id){
-			/*case "tex_prev":{
-				if(selected < 0 || selected >= (int)container.get("decos.size")) return true;
-				TagCW com = TagCW.create();
+			case "tex_pro_prev":
+			case "tex_pro_next":{
+				int idx = sel.getTexture().getSelected();
+				if(idx < 0) idx = 0;
+				if(id.endsWith("next")){
+					if(++idx >= sel.getTexHolder().getDefaultTextures().size()) idx = 0;
+				}
+				else{
+					if(--idx < 0) idx = sel.getTexHolder().getDefaultTextures().size() - 1;
+				}
 				com.set("task", "tex");
-				com.set("idx", selected);
-				DecorationData data = (DecorationData)container.get("decos.at", selected);
-				com.set("sel", data.getTexture().getSelected() - 1 < 0 ? data.getType().getDefaultTextures().size() - 1 : data.getTexture().getSelected() - 1);
-				container.SEND_TO_SERVER.accept(com);
+				com.set("deco", sel_idx);
+				com.set("sel", idx);
 				break;
 			}
-			case "tex_next":{
-				if(selected < 0 || selected >= (int)container.get("decos.size")) return true;
-				TagCW com = TagCW.create();
-				com.set("task", "tex");
-				com.set("idx", selected);
-				DecorationData data = (DecorationData)container.get("decos.at", selected);
-				com.set("sel", data.getTexture().getSelected() + 1 < data.getType().getDefaultTextures().size() ? data.getTexture().getSelected() + 1 : 0);
-				container.SEND_TO_SERVER.accept(com);
-				break;
-			}
-			case "ch_prev":{
+			/*case "ch_prev":{
 				if(colors.isEmpty()) return true;
 				selcol--;
 				if(selcol < 0) selcol = colors.size() - 1;
@@ -130,12 +127,8 @@ public class DecoEditor extends UserInterface {
 				}
 				break;
 			}*/
-			default:{
-				found = false;
-				break;
-			}
 		}
-		if(!found){
+		//if(!found){
 			/*if(id.startsWith("entry_")){
 				int idx = Integer.parseInt(id.substring(6));
 				select(selected = scroll + idx, selcol);
@@ -180,8 +173,9 @@ public class DecoEditor extends UserInterface {
 				container.SEND_TO_SERVER.accept(com);
 				return true;
 			}*/
-		}
-		return found;
+		//}
+		ContainerInterface.SEND_TO_SERVER.accept(com);
+		return true;
 	}
 
 	@Override
@@ -224,6 +218,7 @@ public class DecoEditor extends UserInterface {
 			texts.get("deco_count").transval("...");
 			texts.get("deco_current").transval("ui.fvtm.decoration_editor.no_decorations");
 			texts.get("texture_selected").transval("");
+			fields.get("texture").text("");
 			for(int i = 0; i < 3; i++){
 				fields.get("pos" + axes[i]).text("0");
 				fields.get("rot" + axes[i]).text("0");
@@ -234,7 +229,7 @@ public class DecoEditor extends UserInterface {
 			sel_tex = sel.getTexture().getSelected();
 			texts.get("deco_count").transval("ui.fvtm.decoration_editor.decoration_count", sel_idx + 1, con.decos.size());
 			texts.get("deco_current").transval(sel.getType().getName());
-			texts.get("texture_selected").transval(sel.getTexture().isExternal() ? "" : sel.getTexture().getTexture().name());
+			updateTexture();
 			for(int i = 0; i < 3; i++){
 				fields.get("pos_" + axes[i]).text((i == 0 ? sel.offset.x : i == 1 ? sel.offset.y : sel.offset.z) + "");
 				fields.get("rot_" + axes[i]).text((i == 0 ? sel.rotx : i == 1 ? sel.roty : sel.rotz) + "");
@@ -244,13 +239,18 @@ public class DecoEditor extends UserInterface {
 		if(!miss) colors.addAll(sel.getColorChannels().keySet());
 		sel_col = 0;
 		sel_uv = 0;
-		texts.get("color_channel").transval(miss ? "" : colors.isEmpty() ? "gui.fvtm.decoration_editor.no_color_channels" : colors.get(sel_col));
+		texts.get("color_channel").transval(miss ? "" : colors.isEmpty() ? "ui.fvtm.decoration_editor.no_color_channels" : colors.get(sel_col));
 		RGB color = miss || colors.isEmpty() ? RGB.WHITE : sel.getColorChannel(colors.get(sel_col));
 		byte[] ar = color.toByteArray();
 		fields.get("col_r").text((ar[0] + 128));
 		fields.get("col_g").text((ar[1] + 128));
 		fields.get("col_b").text((ar[2] + 128));
 		fields.get("col_hex").text("#" + Integer.toHexString(color.packed));
+	}
+
+	protected void updateTexture(){
+		texts.get("texture_selected").transval(sel.getTexture().getSelected() < 0 ? "" : sel.getTexture().getTexture().name());
+		fields.get("texture").text(sel.getTexture().getCustom());
 	}
 
 	@Override

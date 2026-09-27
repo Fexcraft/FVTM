@@ -60,6 +60,7 @@
 	"ui.fvtm.decoration_editor.color_picker": "Open System Color Picker (*may not work)",
 	"ui.fvtm.decoration_editor.channel_prev": "Select Previous Color Channel",
 	"ui.fvtm.decoration_editor.channel_next": "Select Next Color Channel",
+	"ui.fvtm.decoration_editor.color_parse": "Parse from RGB/HEX Input",
 	"ui.fvtm.decoration_editor.color_add": "Add Color to Custom Palette",
 	"ui.fvtm.decoration_editor.color_set": "Apply Color",
 	"ui.fvtm.decoration_editor.clear_all": "Remove all Decorations from Location",
@@ -91,6 +92,7 @@
 	"ui.fvtm.decoration_editor.no_decorations": "No Decorations At Location",
 	"ui.fvtm.decoration_editor.decoration_count": "%s of %s",
 	"ui.fvtm.decoration_editor.no_color_channels": "No Color Channels",
+	"ui.fvtm.decoration_editor.creative_only": "Currently only available in Creative Mode",
 
 	"ui.fvtm.sign_editor.com_prev": "Previous Component",
 	"ui.fvtm.sign_editor.com_next": "Next Component",

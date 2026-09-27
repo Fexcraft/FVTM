@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonMap;
@@ -9,6 +10,8 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
 import net.fexcraft.mod.uni.ui.UserInterface;
+
+import javax.swing.*;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 
@@ -34,13 +37,33 @@ public class DecoEditor extends UserInterface {
 	@Override
 	public void init(){
 		select(-1);
+		ToolboxPainter.setupSpectrum(buttons.get("pal_hor"));
+		ToolboxPainter.setupShadePalette(RGB.WHITE, buttons.get("pal_sha"));
 	}
 
 	@Override
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
 		if(sel == null) return true;
 		TagCW com = TagCW.create();
+		com.set("deco", sel_idx);
 		switch(id){
+			case "sel_rem":{
+				com.set("task", "rem");
+				break;
+			}
+			case "sel_copy":{
+				com.set("task", "copy");
+				break;
+			}
+			case "sel_prev":
+			case "sel_next":{
+				int idx = sel_idx;
+				idx += id.endsWith("next") ? 1 : -1;
+				if(idx < 0) idx = con.decos.size() - 1;
+				else if(idx >= con.decos.size()) idx = 0;
+				select(idx);
+				break;
+			}
 			case "tex_pro_prev":
 			case "tex_pro_next":{
 				int idx = sel.getTexture().getSelected();
@@ -52,81 +75,65 @@ public class DecoEditor extends UserInterface {
 					if(--idx < 0) idx = sel.getTexHolder().getDefaultTextures().size() - 1;
 				}
 				com.set("task", "tex");
-				com.set("deco", sel_idx);
 				com.set("sel", idx);
 				break;
 			}
-			/*case "ch_prev":{
+			case "tex_cus_int":{
+				com.set("task", "tex_ext");
+				com.set("ext", false);
+				break;
+			}
+			case "tex_cus_ext":{
+				com.set("task", "tex_ext");
+				com.set("ext", true);
+				break;
+			}
+			case "tex_cus_set":{
+				com.set("task", "tex_cus");
+				com.set("custom", fields.get("texture").text());
+				break;
+			}
+			case "col_picker":{
+				try{
+					new Thread(null, () -> {
+						updateColor(new RGB(JColorChooser.showDialog(null, "select color", new Color(sel.getColorChannel(colors.get(sel_col)).packed)).getRGB()), false);
+					}, "FVTM Decoration Editor Color Chooser Thread").start();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				break;
+			}
+			case "col_prev":
+			case "col_next":{
 				if(colors.isEmpty()) return true;
-				selcol--;
-				if(selcol < 0) selcol = colors.size() - 1;
-				select(selected, selcol);
+				sel_col += id.endsWith("next") ? 1 : -1;
+				if(sel_col < 0) sel_col = colors.size() - 1;
+				if(sel_col >= colors.size()) sel_col = 0;
+				updateColor(sel.getColorChannel(colors.get(sel_col)), true);
 				break;
 			}
-			case "ch_next":{
-				if(colors.isEmpty()) return true;
-				selcol++;
-				if(selcol >= colors.size()) selcol = 0;
-				select(selected, selcol);
+			case "col_parse":{
+				int r = Integer.parseInt(fields.get("col_r").text().trim());
+				int g = Integer.parseInt(fields.get("col_g").text().trim());
+				int b = Integer.parseInt(fields.get("col_b").text().trim());
+				RGB rgb = new RGB(r, g, b);
+				String str = fields.get("col_hex").text().trim().replace("#", "").replace("0x", "");
+				if(str.length() > 6) str = str.substring(0, 6);
+				RGB hex = new RGB(Integer.parseInt(str, 16));
+				updateColor(rgb.packed == buttons.get("col_cur").palette[0][0].packed ? hex : rgb, false);
 				break;
 			}
-			case "rgb":{
-				if(selected < 0 || selected >= (int)container.get("decos.size") || colors.isEmpty()) return true;
-				TagCW com = TagCW.create();
+			case "col_save":{
+
+				break;
+			}
+			case "col_set":{
 				com.set("task", "color");
-				com.set("idx", selected);
-				com.set("channel", colors.get(selcol));
-				RGB rgb = RGB.WHITE;
-				try{
-					String[] arr = fields.get("rgb").text().split("\\,");
-					int r = Integer.parseInt(arr[0].trim());
-					int g = Integer.parseInt(arr[1].trim());
-					int b = Integer.parseInt(arr[2].trim());
-					rgb = new RGB(r, g, b);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-				com.set("rgb", rgb.packed);
-				container.SEND_TO_SERVER.accept(com);
+				com.set("channel", colors.get(sel_col));
+				com.set("rgb", buttons.get("col_cur").palette[0][0].packed);
 				break;
 			}
-			case "hex":{
-				if(selected < 0 || selected >= (int)container.get("decos.size") || colors.isEmpty()) return true;
-				TagCW com = TagCW.create();
-				com.set("task", "color");
-				com.set("idx", selected);
-				com.set("channel", colors.get(selcol));
-				RGB rgb = RGB.WHITE;
-				try{
-					rgb = new RGB(fields.get("hex").text());
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-				com.set("rgb", rgb.packed);
-				container.SEND_TO_SERVER.accept(com);
-				break;
-			}
-			case "colorpicker":{
-				if(selected < 0 || selected >= (int)container.get("decos.size") || colors.isEmpty()) return true;
-				try{
-					new Thread(){
-						@Override
-						public void run(){
-							Color color = JColorChooser.showDialog(null, "select color", new Color(((DecorationData)container.get("decos.at", selected)).getColorChannel(colors.get(selcol)).packed));
-							RGB rgb = new RGB(color.getRGB());
-							byte[] ar = rgb.toByteArray();
-							fields.get("rgb").text((ar[0] + 128) + ", " + (ar[1] + 128) + ", " + (ar[2] + 128));
-							fields.get("hex").text("#" + Integer.toHexString(rgb.packed).substring(2));
-						}
-					}.start();
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-				break;
-			}*/
 		}
 		//if(!found){
 			/*if(id.startsWith("entry_")){
@@ -239,13 +246,7 @@ public class DecoEditor extends UserInterface {
 		if(!miss) colors.addAll(sel.getColorChannels().keySet());
 		sel_col = 0;
 		sel_uv = 0;
-		texts.get("color_channel").transval(miss ? "" : colors.isEmpty() ? "ui.fvtm.decoration_editor.no_color_channels" : colors.get(sel_col));
-		RGB color = miss || colors.isEmpty() ? RGB.WHITE : sel.getColorChannel(colors.get(sel_col));
-		byte[] ar = color.toByteArray();
-		fields.get("col_r").text((ar[0] + 128));
-		fields.get("col_g").text((ar[1] + 128));
-		fields.get("col_b").text((ar[2] + 128));
-		fields.get("col_hex").text("#" + Integer.toHexString(color.packed));
+		updateColor(miss || colors.isEmpty() ? RGB.WHITE : sel.getColorChannel(colors.get(sel_col)), true);
 	}
 
 	protected void updateTexture(){
@@ -253,14 +254,18 @@ public class DecoEditor extends UserInterface {
 		fields.get("texture").text(sel.getTexture().getCustom());
 	}
 
-	@Override
-	public void predraw(float ticks, int mx, int my){
-		//
-	}
-
-	@Override
-	public void postdraw(float ticks, int mx, int my){
-		//
+	protected void updateColor(RGB nv, boolean cc){
+		texts.get("color_channel").transval(colors.isEmpty() ? "ui.fvtm.decoration_editor.no_color_channels" : colors.get(sel_col));
+		byte[] ar = nv.toByteArray();
+		fields.get("col_r").text((ar[0] + 128));
+		fields.get("col_g").text((ar[1] + 128));
+		fields.get("col_b").text((ar[2] + 128));
+		fields.get("col_hex").text("#" + Integer.toHexString(nv.packed));
+		if(!cc){
+			buttons.get("col_cur").palette[0][0].packed = nv.packed;
+			ToolboxPainter.setupShadePalette(nv, buttons.get("pal_sha"));
+		}
+		else buttons.get("col_val").palette[0][0].packed = nv.packed;
 	}
 
 	@Override

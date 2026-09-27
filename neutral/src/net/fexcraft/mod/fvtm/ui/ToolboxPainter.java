@@ -36,16 +36,15 @@ public class ToolboxPainter extends UserInterface {
 	public void init(){
 		channels.addAll((Collection<? extends String>)container.get("channel_keys"));
 		selchan = channels.get(0);
-		setupSpectrum();
-		setupShadePalette();
+		setupSpectrum(buttons.get("pal_hor"));
+		setupShadePalette(current, buttons.get("pal_shade"));
 		updateColors();
 		cachedcolors = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/custom_palette.fvtm");
 		if(!cachedcolors.exists()) cachedcolors.getParentFile().mkdirs();
 		loadColorCache();
 	}
 
-	private void setupSpectrum(){
-		UIButton spec = buttons.get("pal_hor");
+	public static void setupSpectrum(UIButton spec){
 		for(int i = 0; i < spec.palette[0].length; i++){
 			float c = i * (1f / spec.palette[0].length);
 			int r, g, b;
@@ -206,11 +205,10 @@ public class ToolboxPainter extends UserInterface {
 		fields.get("hex").text(Integer.toHexString(current.packed));
 		byte[] arr = current.toByteArray();
 		fields.get("rgb").text((arr[0] + 128) + ", " + (arr[1] + 128) + ", " + (arr[2] + 128));
-		if(shade) setupShadePalette();
+		if(shade) setupShadePalette(current, buttons.get("pal_shade"));
 	}
 
-	private void setupShadePalette(){
-		UIButton shade = buttons.get("pal_shade");
+	public static void setupShadePalette(RGB current, UIButton shade){
 		byte[] arr = current.toByteArray();
 		int[] err = new int[] { arr[0] + 128, arr[1] + 128, arr[2] + 128 };
 		for(int x = 0; x < shade.palette.length; x++){

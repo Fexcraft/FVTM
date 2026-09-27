@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
+import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class DecoContainer extends ContainerInterface {
 	protected DecoSystem system;
 	protected ArrayList<DecorationData> decos = new ArrayList<>();
 	protected DecoInstance inst;
+	protected DecoEditor editor;
 
 	public DecoContainer(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
@@ -35,25 +37,25 @@ public class DecoContainer extends ContainerInterface {
 	}
 
 	@Override
-	public Object get(String key, Object... objs){
-		switch(key){
-			case "decos.size":{
-				return decos.size();
-			}
-			case "decos.key":{
-				return decos.get((int)objs[0]).getType().getIDS();
-			}
-			case "decos.at":{
-				return decos.get((int)objs[0]);
-			}
-		}
-		return null;
+	public ContainerInterface set(UserInterface ui){
+		editor = (DecoEditor)ui;
+		return super.set(ui);
 	}
 
 	@Override
 	public void packet(TagCW com, boolean client){
 		String task = com.getString("task");
 		switch(task){
+			case "tex":{
+				DecorationData deco = decos.get(com.getInteger("deco"));
+				int sel = com.getInteger("sel");
+				if(sel >= 0 && sel < deco.getType().getDefaultTextures().size()){
+					deco.getTexture().setSelectedTexture(sel, null, false);
+					if(!client) SEND_TO_CLIENT.accept(com, player);
+					else editor.updateTexture();
+				}
+				break;
+			}
 			case "rem":{
 				DecorationData deco = decos.remove(com.getInteger("idx"));
 				if(deco != null) inst.decorations.remove(deco);
@@ -98,19 +100,6 @@ public class DecoContainer extends ContainerInterface {
 					default: return;
 				}
 				if(!client) SEND_TO_CLIENT.accept(com, player);
-				break;
-			}
-			case "tex":{
-				DecorationData deco = decos.get(com.getInteger("idx"));
-				int sel = com.getInteger("sel");
-				if(sel >= 0 && sel < deco.getType().getDefaultTextures().size()){
-					deco.getTexture().setSelectedTexture(sel, null, false);
-					if(!client) SEND_TO_CLIENT.accept(com, player);
-					else{
-						DecoEditor editor = (DecoEditor)ui;
-						editor.select(editor.sel_idx);
-					}
-				}
 				break;
 			}
 			case "color":{

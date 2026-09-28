@@ -35,6 +35,7 @@
 				"scl_x", "scl_y", "scl_z",
 				"uv_prev", "uv_next", "u_off", "v_off", "u_scl", "v_scl",
 				"rate_set", "rate_save", "rate_prev", "rate_next",
+				"rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5",
 				"reset_val", "import_val", "export_val"
 			],
 			"texts": [
@@ -335,6 +336,42 @@
 			"uv": [ 242, 155 ],
 			"size": [ 12, 12 ],
 			"tooltip": "ui.fvtm.decoration_editor.rate_next"
+		},
+		"rate_0": {
+			"absolute": true,
+			"pos": [ -180, 169 ],
+			"uv": [ 76, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_1": {
+			"absolute": true,
+			"pos": [ -150, 169 ],
+			"uv": [ 106, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_2": {
+			"absolute": true,
+			"pos": [ -120, 169 ],
+			"uv": [ 136, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_3": {
+			"absolute": true,
+			"pos": [ -90, 169 ],
+			"uv": [ 166, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_4": {
+			"absolute": true,
+			"pos": [ -60, 169 ],
+			"uv": [ 196, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_5": {
+			"absolute": true,
+			"pos": [ -30, 169 ],
+			"uv": [ 226, 169 ],
+			"size": [ 28, 12 ]
 		},
 		"reset_val": {
 			"absolute": true,

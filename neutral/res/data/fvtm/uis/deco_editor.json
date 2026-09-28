@@ -173,9 +173,9 @@
 		"pal_save": {
 			"absolute": true,
 			"pos": [ 3, 184 ],
-			"size": [ 190, 5 ],
+			"size": [ 182, 5 ],
 			"color": "ffffff",
-			"palette": [ 1, 19, 5, 5 ]
+			"palette": [ 1, 26, 7, 5 ]
 		},
 		"clear_all": {
 			"absolute": true,

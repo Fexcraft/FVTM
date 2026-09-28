@@ -318,7 +318,6 @@ ui.fvtm.decoration_editor.color_set=Apply Color
 ui.fvtm.decoration_editor.clear_all=Remove all Decorations from Location
 ui.fvtm.decoration_editor.import_all=Import ALL Decorations from Clipboard
 ui.fvtm.decoration_editor.export_all=Export ALL Decorations to Clipboard
-ui.fvtm.decoration_editor.import_one=Import ONE Decoration from Clipboard
 ui.fvtm.decoration_editor.export_one=Export ONE Decoration to Clipboard
 ui.fvtm.decoration_editor.position_set=Apply Position (Scroll Input Button)
 ui.fvtm.decoration_editor.rotation_set=Apply Rotation (Scroll Input Button)

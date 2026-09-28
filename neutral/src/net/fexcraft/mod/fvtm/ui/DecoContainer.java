@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
@@ -52,7 +53,7 @@ public class DecoContainer extends ContainerInterface {
 			case "rem":{
 				int idx = com.getInteger("deco");
 				if(deco != null) inst.decorations.remove(deco);
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				else editor.select(idx >= decos.size() ? decos.size() - 1 : idx);
 				return;
 			}
@@ -66,7 +67,7 @@ public class DecoContainer extends ContainerInterface {
 					inst.decorations.add(data);
 					decos.add(data);
 				}
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				else editor.select(decos.size() - 1);
 				return;
 			}
@@ -74,27 +75,27 @@ public class DecoContainer extends ContainerInterface {
 				int sel = com.getInteger("sel");
 				if(sel >= 0 && sel < deco.getType().getDefaultTextures().size()){
 					deco.getTexture().setSelectedTexture(sel, null, false);
-					if(!client) SEND_TO_CLIENT.accept(com, player);
+					if(!client) mirror(com);
 					else editor.updateTexture();
 				}
 				break;
 			}
 			case "tex_ext":{
 				deco.getTexture().setSelectedTexture(deco.getSelectedTexture(), deco.getCustomTexture(), com.getBoolean("ext"));
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				else editor.updateTexture();
 				break;
 			}
 			case "tex_cus":{
 				deco.getTexture().setSelectedTexture(-1, com.getString("custom"), deco.getTexture().isExternal());
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				else editor.updateTexture();
 				break;
 			}
 			case "color":{
 				RGB ch = deco.getColorChannel(com.getString("channel"));
 				ch.packed = com.getInteger("rgb");
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				else editor.updateColor(ch, true);
 				break;
 			}
@@ -107,7 +108,7 @@ public class DecoContainer extends ContainerInterface {
 					default: return;
 				}
 				deco.offset = pos;
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				break;
 			}
 			case "rot":{
@@ -117,7 +118,7 @@ public class DecoContainer extends ContainerInterface {
 					case "z": deco.rotz = com.getFloat("val"); break;
 					default: return;
 				}
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
 				break;
 			}
 			case "scl":{
@@ -127,10 +128,33 @@ public class DecoContainer extends ContainerInterface {
 					case "z": deco.sclz = com.getFloat("val"); break;
 					default: return;
 				}
-				if(!client) SEND_TO_CLIENT.accept(com, player);
+				if(!client) mirror(com);
+				break;
+			}
+			case "reset":{
+				deco.offset.set(0, 0, 0);
+				deco.rotx = deco.roty = deco.rotz = 0;
+				deco.sclx = deco.scly = deco.sclz = 1;
+				if(!client) mirror(com);
+				else editor.select(editor.sel_idx);
+				break;
+			}
+			case "import_val":{
+				try{
+					deco.readTransformJson(JsonHandler.parse(com.getString("cb"), true).asMap());
+					if(!client) mirror(com);
+					else editor.select(editor.sel_idx);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				break;
 			}
 		}
+	}
+
+	private void mirror(TagCW com){
+		SEND_TO_CLIENT.accept(com, player);
 	}
 
 	@Override

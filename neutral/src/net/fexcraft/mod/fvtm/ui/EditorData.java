@@ -16,7 +16,7 @@ public class EditorData {
 
 	private static File editor_file;
 	public static float[] RATES = new float[]{ sixteenth, 0.25f, 0.5f, 1f, 0.01f, 16f };
-	public static float RATE;
+	public static float RATE = sixteenth;
 
 	public static void load(){
 		editor_file = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/editor_data.fvtm");

@@ -99,11 +99,11 @@ public class DecoContainer extends ContainerInterface {
 				break;
 			}
 			case "pos":{
-				V3D pos = null;
-				switch(com.getInteger("axis")){
-					case 0: pos = new V3D(com.getFloat("value"), deco.offset.y, deco.offset.z); break;
-					case 1: pos = new V3D(deco.offset.x, com.getFloat("value"), deco.offset.z); break;
-					case 2: pos = new V3D(deco.offset.x, deco.offset.y, com.getFloat("value")); break;
+				V3D pos;
+				switch(com.getString("axe")){
+					case "x": pos = new V3D(com.getFloat("val"), deco.offset.y, deco.offset.z); break;
+					case "y": pos = new V3D(deco.offset.x, com.getFloat("val"), deco.offset.z); break;
+					case "z": pos = new V3D(deco.offset.x, deco.offset.y, com.getFloat("val")); break;
 					default: return;
 				}
 				deco.offset = pos;
@@ -111,20 +111,20 @@ public class DecoContainer extends ContainerInterface {
 				break;
 			}
 			case "rot":{
-				switch(com.getInteger("axis")){
-					case 0: deco.rotx = com.getFloat("value"); break;
-					case 1: deco.roty = com.getFloat("value"); break;
-					case 2: deco.rotz = com.getFloat("value"); break;
+				switch(com.getString("axe")){
+					case "x": deco.rotx = com.getFloat("val"); break;
+					case "y": deco.roty = com.getFloat("val"); break;
+					case "z": deco.rotz = com.getFloat("val"); break;
 					default: return;
 				}
 				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			}
-			case "scale":{
-				switch(com.getInteger("axis")){
-					case 0: deco.sclx = com.getFloat("value"); break;
-					case 1: deco.scly = com.getFloat("value"); break;
-					case 2: deco.sclz = com.getFloat("value"); break;
+			case "scl":{
+				switch(com.getString("axe")){
+					case "x": deco.sclx = com.getFloat("val"); break;
+					case "y": deco.scly = com.getFloat("val"); break;
+					case "z": deco.sclz = com.getFloat("val"); break;
 					default: return;
 				}
 				if(!client) SEND_TO_CLIENT.accept(com, player);

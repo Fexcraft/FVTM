@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
@@ -118,4 +119,27 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 		return renderdata;
 	}
 
+	public JsonMap writeTransformJson(){
+		JsonMap map = new JsonMap();
+		map.add("off", new JsonArray.Flat(offset.x, offset.y, offset.z));
+		map.add("rot", new JsonArray.Flat(rotx, roty, rotz));
+		map.add("scl", new JsonArray.Flat(sclx, scly, sclz));
+		return map;
+	}
+
+	public void readTransformJson(JsonMap map){
+		JsonArray arr = map.getArray("off");
+		offset.x = arr.get(0).float_value();
+		offset.y = arr.get(1).float_value();
+		offset.z = arr.get(2).float_value();
+		arr = map.getArray("rot");
+		rotx = arr.get(0).float_value();
+		roty = arr.get(1).float_value();
+		rotz = arr.get(2).float_value();
+		arr = map.getArray("scl");
+		sclx = arr.get(0).float_value();
+		scly = arr.get(1).float_value();
+		sclz = arr.get(2).float_value();
+	}
+	
 }

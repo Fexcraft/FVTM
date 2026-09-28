@@ -39,6 +39,7 @@ public class DecoEditor extends UserInterface {
 		select(-1);
 		ToolboxPainter.setupSpectrum(buttons.get("pal_hor"));
 		ToolboxPainter.setupShadePalette(RGB.WHITE, buttons.get("pal_sha"));
+		ColorPaletteUtil.load(buttons.get("pal_save"));
 	}
 
 	@Override
@@ -121,17 +122,39 @@ public class DecoEditor extends UserInterface {
 				String str = fields.get("col_hex").text().trim().replace("#", "").replace("0x", "");
 				if(str.length() > 6) str = str.substring(0, 6);
 				RGB hex = new RGB(Integer.parseInt(str, 16));
-				updateColor(rgb.packed == buttons.get("col_cur").palette[0][0].packed ? hex : rgb, false);
+				updateColor(rgb.packed == current_color().packed ? hex : rgb, false);
 				break;
 			}
 			case "col_save":{
-
+				ColorPaletteUtil.save(buttons.get("pal_save"), current_color());
 				break;
 			}
 			case "col_set":{
 				com.set("task", "color");
 				com.set("channel", colors.get(sel_col));
-				com.set("rgb", buttons.get("col_cur").palette[0][0].packed);
+				com.set("rgb", current_color().packed);
+				break;
+			}
+			case "pal_hor":
+			case "pal_save": {
+				int idx = (x - button.x) / button.palsize[0];
+				if(idx < 0) idx = 0;
+				if(idx >= button.palette[0].length) idx = button.palette[0].length - 1;
+				RGB rgb = button.palette[0][idx];
+				current_color().packed = rgb.packed;
+				updateColor(rgb, false);
+				break;
+			}
+			case "pal_sha":{
+				int ix = (x - button.x) / button.palsize[0];
+				int iy = (y - button.y) / button.palsize[1];
+				if(ix < 0) ix = 0;
+				if(ix >= button.palette[0].length) ix = button.palette[0].length - 1;
+				if(iy < 0) iy = 0;
+				if(iy >= button.palette.length) iy = button.palette.length - 1;
+				RGB rgb = button.palette[iy][ix];
+				current_color().packed = rgb.packed;
+				updateColor(rgb, false);
 				break;
 			}
 		}
@@ -262,10 +285,14 @@ public class DecoEditor extends UserInterface {
 		fields.get("col_b").text((ar[2] + 128));
 		fields.get("col_hex").text("#" + Integer.toHexString(nv.packed));
 		if(!cc){
-			buttons.get("col_cur").palette[0][0].packed = nv.packed;
+			current_color().packed = nv.packed;
 			ToolboxPainter.setupShadePalette(nv, buttons.get("pal_sha"));
 		}
 		else buttons.get("col_val").palette[0][0].packed = nv.packed;
+	}
+
+	public RGB current_color(){
+		return buttons.get("col_cur").palette[0][0];
 	}
 
 	@Override

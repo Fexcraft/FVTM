@@ -13,7 +13,8 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 
 import javax.swing.*;
 
-import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.mod.fvtm.ui.EditorData.RATE;
+import static net.fexcraft.mod.fvtm.ui.EditorData.RATES;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -40,13 +41,15 @@ public class DecoEditor extends UserInterface {
 		ToolboxPainter.setupSpectrum(buttons.get("pal_hor"));
 		ToolboxPainter.setupShadePalette(RGB.WHITE, buttons.get("pal_sha"));
 		ColorPaletteUtil.load(buttons.get("pal_save"));
+		EditorData.load();
+		fields.get("rate").text(RATE);
+		updateRates();
 	}
 
 	@Override
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
 		if(sel == null) return true;
 		TagCW com = TagCW.create();
-		com.set("deco", sel_idx);
 		switch(id){
 			case "sel_rem":{
 				com.set("task", "rem");
@@ -157,80 +160,72 @@ public class DecoEditor extends UserInterface {
 				updateColor(rgb, false);
 				break;
 			}
+			case "pos_x":
+			case "pos_y":
+			case "pos_z":
+			case "rot_x":
+			case "rot_y":
+			case "rot_z":
+			case "scl_x":
+			case "scl_y":
+			case "scl_z":{
+				com.set("task", id.substring(0, 3));
+				com.set("axe", id.substring(4));
+				com.set("val", fields.get(id).number());
+				break;
+			}
+			case "rate_set":{
+				RATE = fields.get("rate").number();
+				break;
+			}
+			case "rate_save":{
+				for(int i = RATES.length - 1; i > 0; i--){
+					RATES[i] = RATES[i - 1];
+				}
+				RATES[0] = fields.get("rate").number();
+				updateRates();
+				EditorData.save();
+				break;
+			}
+			case "rate_prev":
+			case "rate_next":{
+				int idx = 0;
+				for(int i = 0; i < RATES.length; i++){
+					if(RATE == RATES[i]){
+						idx = i;
+						break;
+					}
+				}
+				idx += id.endsWith("next") ? 1 : -1;
+				if(idx < 0) idx = RATES.length - 1;
+				if(idx >= RATES.length) idx = 0;
+				RATE = RATES[idx];
+				fields.get("rate").text(RATE);
+				break;
+			}
+			case "rate_0":
+			case "rate_1":
+			case "rate_2":
+			case "rate_3":
+			case "rate_4":
+			case "rate_5":{
+				RATE = RATES[Integer.parseInt(id.substring(5))];
+				fields.get("rate").text(RATE);
+				break;
+			}
 		}
-		//if(!found){
-			/*if(id.startsWith("entry_")){
-				int idx = Integer.parseInt(id.substring(6));
-				select(selected = scroll + idx, selcol);
-				updateEntries();
-				return true;
-			}
-			else if(id.startsWith("rem_")){
-				int idx = Integer.parseInt(id.substring(4));
-				TagCW com = TagCW.create();
-				com.set("task", "rem");
-				com.set("idx", scroll + idx);
-				container.SEND_TO_SERVER.accept(com);
-				return true;
-			}
-			else if(id.startsWith("pos")){
-				int ax = Integer.parseInt(id.substring(3));
-				TagCW com = TagCW.create();
-				com.set("task", "pos");
-				com.set("axis", ax);
-				com.set("idx", selected);
-				com.set("value", fields.get(id).number());
-				container.SEND_TO_SERVER.accept(com);
-				return true;
-			}
-			else if(id.startsWith("rot")){
-				int ax = Integer.parseInt(id.substring(3));
-				TagCW com = TagCW.create();
-				com.set("task", "rot");
-				com.set("axis", ax);
-				com.set("idx", selected);
-				com.set("value", fields.get(id).number());
-				container.SEND_TO_SERVER.accept(com);
-				return true;
-			}
-			else if(id.startsWith("scl")){
-				int ax = Integer.parseInt(id.substring(3));
-				TagCW com = TagCW.create();
-				com.set("task", "scale");
-				com.set("axis", ax);
-				com.set("idx", selected);
-				com.set("value", fields.get(id).number());
-				container.SEND_TO_SERVER.accept(com);
-				return true;
-			}*/
-		//}
+		if(com.empty()) return true;
+		com.set("deco", sel_idx);
 		ContainerInterface.SEND_TO_SERVER.accept(com);
 		return true;
 	}
 
 	@Override
 	public boolean onScroll(UIButton button, String id, int mx, int my, int am) {
-		if(id.startsWith("pos")){
-			int ax = Integer.parseInt(id.substring(3));
+		if(id.startsWith("pos") || id.startsWith("rot") || id.startsWith("scl")){
 			float val = fields.get(id).number();
-			val += am > 0 ? -sixteenth : sixteenth;
-			fields.get("pos" + ax).text(val + "");
-			onAction(button, id, mx, my, 0);
-			return true;
-		}
-		else if(id.startsWith("rot")){
-			int ax = Integer.parseInt(id.substring(3));
-			float val = fields.get(id).number();
-			val += am > 0 ? -1 : 1;
-			fields.get("rot" + ax).text(val + "");
-			onAction(button, id, mx, my, 0);
-			return true;
-		}
-		else if(id.startsWith("scl")){
-			int ax = Integer.parseInt(id.substring(3));
-			float val = fields.get(id).number();
-			val += am > 0 ? -sixteenth : sixteenth;
-			fields.get("scl" + ax).text(val + "");
+			val += am > 0 ? -RATE : RATE;
+			fields.get(id).text(val + "");
 			onAction(button, id, mx, my, 0);
 			return true;
 		}
@@ -295,13 +290,10 @@ public class DecoEditor extends UserInterface {
 		return buttons.get("col_cur").palette[0][0];
 	}
 
-	@Override
-	public void scrollwheel(int a, int x, int y){
-		/*if(x > 1 && x < 139 && y > 20 && y < 188){
-			scroll += a > 0 ? 1 : -1;
-			if(scroll < 0) scroll = 0;
-			updateEntries();
-		}*/
+	public void updateRates(){
+		for(int i = 0; i < RATES.length; i++){
+			texts.get("rate_" + i).value(RATES[i] + "");
+		}
 	}
 
 }

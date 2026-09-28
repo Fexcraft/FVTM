@@ -26,7 +26,6 @@ public class ToolboxPainter extends UserInterface {
 	private ArrayList<String> channels = new ArrayList<>();
 	public String selchan;
 	public RGB current = new RGB();
-	private File cachedcolors = null;
 
 	public ToolboxPainter(JsonMap map, ContainerInterface con) throws Exception {
 		super(map, con);
@@ -39,9 +38,7 @@ public class ToolboxPainter extends UserInterface {
 		setupSpectrum(buttons.get("pal_hor"));
 		setupShadePalette(current, buttons.get("pal_shade"));
 		updateColors();
-		cachedcolors = new File(FvtmRegistry.CONFIG_DIR, "/fvtm/custom_palette.fvtm");
-		if(!cachedcolors.exists()) cachedcolors.getParentFile().mkdirs();
-		loadColorCache();
+		ColorPaletteUtil.load(buttons.get("pal_save"));
 	}
 
 	public static void setupSpectrum(UIButton spec){
@@ -181,7 +178,7 @@ public class ToolboxPainter extends UserInterface {
 				break;
 			}
 			case "save":{
-				saveColorCache();
+				ColorPaletteUtil.save(buttons.get("pal_save"), current);
 				break;
 			}
 			case "help":{
@@ -222,44 +219,6 @@ public class ToolboxPainter extends UserInterface {
 				int l = (int)Math.abs((e * err[2]) + ((1 - f) * h));
 				shade.palette[x][z] = new RGB(r, g, l);
 			}
-		}
-	}
-
-	private void loadColorCache(){
-		try{
-			if(!cachedcolors.exists()) return;
-			FileInputStream stream = new FileInputStream(cachedcolors);
-			UIButton button = buttons.get("pal_save");
-			int r = 0, i = 0;
-			while(r >= 0 || i >= button.palette[0].length){
-				byte[] bit = new byte[4];
-				r = stream.read(bit);
-				if(r < 0) break;
-				button.palette[0][i++].packed = ByteBuffer.wrap(bit).getInt();
-			}
-			stream.close();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-	}
-
-	private void saveColorCache(){
-		try{
-			UIButton button = buttons.get("pal_save");
-			for(int i = button.palette[0].length - 2; i >= 0; i--){
-				button.palette[0][i + 1].packed = button.palette[0][i].packed;
-			}
-			button.palette[0][0].packed = current.packed;
-			FileOutputStream stream = new FileOutputStream(cachedcolors);
-			for(RGB color : button.palette[0]){
-				stream.write(ByteBuffer.allocate(4).putInt(color.packed).array());
-			}
-			stream.flush();
-			stream.close();
-		}
-		catch(IOException e){
-			e.printStackTrace();
 		}
 	}
 

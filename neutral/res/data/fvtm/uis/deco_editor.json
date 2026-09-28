@@ -513,7 +513,6 @@
 			"size": [ 24, 8 ],
 			"pos": [ -178, 171 ],
 			"centered": true,
-			"autoscale": true,
 			"value": "..."
 		},
 		"rate_1": {
@@ -521,7 +520,6 @@
 			"size": [ 24, 8 ],
 			"pos": [ -148, 171 ],
 			"centered": true,
-			"autoscale": true,
 			"value": "..."
 		},
 		"rate_2": {
@@ -529,7 +527,6 @@
 			"size": [ 24, 8 ],
 			"pos": [ -118, 171 ],
 			"centered": true,
-			"autoscale": true,
 			"value": "..."
 		},
 		"rate_3": {
@@ -537,7 +534,6 @@
 			"size": [ 24, 8 ],
 			"pos": [ -88, 171 ],
 			"centered": true,
-			"autoscale": true,
 			"value": "..."
 		},
 		"rate_4": {
@@ -545,7 +541,6 @@
 			"size": [ 24, 8 ],
 			"pos": [ -58, 171 ],
 			"centered": true,
-			"autoscale": true,
 			"value": "..."
 		},
 		"rate_5": {
@@ -553,7 +548,6 @@
 			"size": [ 24, 8 ],
 			"pos": [ -28, 171 ],
 			"centered": true,
-			"autoscale": true,
 			"value": "..."
 		}
 	},

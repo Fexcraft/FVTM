@@ -213,6 +213,19 @@ public class DecoEditor extends UserInterface {
 				fields.get("rate").text(RATE);
 				break;
 			}
+			case "reset_val":{
+				com.set("task", "reset");
+				break;
+			}
+			case "import_val":{
+				com.set("task", "import_val");
+				com.set("cb", root.getClipboard());
+				break;
+			}
+			case "export_val":{
+				root.setClipboard(sel.writeTransformJson().toString());
+				break;
+			}
 		}
 		if(com.empty()) return true;
 		com.set("deco", sel_idx);

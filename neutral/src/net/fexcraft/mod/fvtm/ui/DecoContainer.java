@@ -52,7 +52,12 @@ public class DecoContainer extends ContainerInterface {
 		switch(task){
 			case "rem":{
 				int idx = com.getInteger("deco");
-				if(deco != null) inst.decorations.remove(deco);
+				if(deco != null){
+					inst.decorations.remove(deco);
+					if(!client && !player.entity.isCreative()){
+						player.entity.getWorld().drop(deco.getNewStack(), inst.vec.vec);
+					}
+				}
 				if(!client) mirror(com);
 				else editor.select(idx >= decos.size() ? decos.size() - 1 : idx);
 				return;
@@ -97,6 +102,28 @@ public class DecoContainer extends ContainerInterface {
 				ch.packed = com.getInteger("rgb");
 				if(!client) mirror(com);
 				else editor.updateColor(ch, true);
+				break;
+			}
+			case "rem_all":{
+				if(!client && !player.entity.isCreative()){
+					for(DecorationData d : inst.decorations){
+						player.entity.getWorld().drop(d.getNewStack(), inst.vec.vec);
+					}
+				}
+				inst.decorations.clear();
+				decos.clear();
+				if(!client) mirror(com);
+				else editor.select(-1);
+				break;
+			}
+			case "import_all":{
+				try{
+					JsonMap map = JsonHandler.parse(com.getString("cb"), true).asMap();
+
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				break;
 			}
 			case "pos":{

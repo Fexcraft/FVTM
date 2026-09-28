@@ -14,7 +14,7 @@
 				"tex_cus_int", "tex_cus_ext", "tex_cus_set",
 				"col_picker", "col_prev", "col_next", "col_save", "col_set",
 				"col_val", "col_cur", "col_parse", "pal_hor", "pal_sha", "pal_save",
-				"clear_all", "import_all", "export_all", "import_one", "export_one"
+				"clear_all", "import_all", "export_all", "export_one"
 			],
 			"texts": [
 				"deco_count", "deco_current", "texture_provided", "texture_selected", "texture_custom", "color_channel"
@@ -180,27 +180,21 @@
 		},
 		"clear_all": {
 			"absolute": true,
-			"pos": [ 141, 193 ],
+			"pos": [ 152, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.clear_all"
 		},
 		"import_all": {
 			"absolute": true,
-			"pos": [ 152, 193 ],
+			"pos": [ 163, 193 ],
 			"size": [ 7, 7 ],
 			"tooltip": "ui.fvtm.decoration_editor.import_all"
 		},
 		"export_all": {
 			"absolute": true,
-			"pos": [ 161, 193 ],
-			"size": [ 7, 7 ],
-			"tooltip": "ui.fvtm.decoration_editor.export_all"
-		},
-		"import_one": {
-			"absolute": true,
 			"pos": [ 172, 193 ],
 			"size": [ 7, 7 ],
-			"tooltip": "ui.fvtm.decoration_editor.import_one"
+			"tooltip": "ui.fvtm.decoration_editor.export_all"
 		},
 		"export_one": {
 			"absolute": true,

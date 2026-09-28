@@ -3,8 +3,10 @@ package net.fexcraft.mod.fvtm.ui;
 import java.awt.*;
 import java.util.ArrayList;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -160,6 +162,23 @@ public class DecoEditor extends UserInterface {
 				updateColor(rgb, false);
 				break;
 			}
+			case "clear_all":{
+				com.set("task", "rem_all");
+				break;
+			}
+			case "import_all":{
+				com.set("task", "import_all");
+				com.set("cb", root.getClipboard());
+				break;
+			}
+			case "export_all":{
+				export(false);
+				break;
+			}
+			case "export_one":{
+				export(true);
+				break;
+			}
 			case "pos_x":
 			case "pos_y":
 			case "pos_z":
@@ -258,9 +277,9 @@ public class DecoEditor extends UserInterface {
 			texts.get("texture_selected").transval("");
 			fields.get("texture").text("");
 			for(int i = 0; i < 3; i++){
-				fields.get("pos" + axes[i]).text("0");
-				fields.get("rot" + axes[i]).text("0");
-				fields.get("scl" + axes[i]).text("0");
+				fields.get("pos_" + axes[i]).text("0");
+				fields.get("rot_" + axes[i]).text("0");
+				fields.get("scl_" + axes[i]).text("0");
 			}
 		}
 		else{
@@ -307,6 +326,19 @@ public class DecoEditor extends UserInterface {
 		for(int i = 0; i < RATES.length; i++){
 			texts.get("rate_" + i).value(RATES[i] + "");
 		}
+	}
+
+	private void export(boolean one){
+		JsonMap map = new JsonMap();
+		map.add("info", "FVTM Decoration Json");
+		map.add("time", Time.getAsString(null, true));
+		JsonArray decos = new JsonArray();
+		for(int i = 0; i < con.decos.size(); i++){
+			if(one && i != sel_idx) continue;
+			decos.add(con.decos.get(i).toJson());
+		}
+		map.add("decos", decos);
+		root.setClipboard(map.toString());
 	}
 
 }

@@ -15,6 +15,7 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 
 import javax.swing.*;
 
+import static net.fexcraft.mod.fvtm.data.SignData.f;
 import static net.fexcraft.mod.fvtm.ui.EditorData.RATE;
 import static net.fexcraft.mod.fvtm.ui.EditorData.RATES;
 
@@ -191,18 +192,18 @@ public class DecoEditor extends UserInterface {
 			case "scl_z":{
 				com.set("task", id.substring(0, 3));
 				com.set("axe", id.substring(4));
-				com.set("val", fields.get(id).number());
+				com.set("val", f(fields.get(id).number()));
 				break;
 			}
 			case "rate_set":{
-				RATE = fields.get("rate").number();
+				RATE = f(fields.get("rate").number());
 				break;
 			}
 			case "rate_save":{
 				for(int i = RATES.length - 1; i > 0; i--){
 					RATES[i] = RATES[i - 1];
 				}
-				RATES[0] = fields.get("rate").number();
+				RATES[0] = f(fields.get("rate").number());
 				updateRates();
 				EditorData.save();
 				break;
@@ -256,7 +257,7 @@ public class DecoEditor extends UserInterface {
 	@Override
 	public boolean onScroll(UIButton button, String id, int mx, int my, int am) {
 		if(id.startsWith("pos") || id.startsWith("rot") || id.startsWith("scl")){
-			float val = fields.get(id).number();
+			float val = f(fields.get(id).number());
 			val += am > 0 ? -RATE : RATE;
 			fields.get(id).text(val + "");
 			onAction(button, id, mx, my, 0);

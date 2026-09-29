@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -12,6 +13,8 @@ import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.model.ModelRenderData.DecorationRD;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.uni.tag.TagCW;
+
+import static net.fexcraft.mod.fvtm.data.SignData.f;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -95,13 +98,55 @@ public class DecorationData extends ContentData<Decoration, DecorationData> impl
 
 	@Override
 	public DecorationData parse(JsonMap map){
-		//
+		JsonArray arr;
+		if(map.has("off")){
+			arr = map.getArray("off");
+			offset.x = arr.get(0).float_value();
+			offset.y = arr.get(1).float_value();
+			offset.z = arr.get(2).float_value();
+		}
+		if(map.has("rot")){
+			arr = map.getArray("rot");
+			rotx = arr.get(0).float_value();
+			roty = arr.get(1).float_value();
+			rotz = arr.get(2).float_value();
+		}
+		if(map.has("scl")){
+			arr = map.getArray("scl");
+			sclx = arr.get(0).float_value();
+			scly = arr.get(1).float_value();
+			sclz = arr.get(2).float_value();
+		}
+		texture.load(map);
+		if(map.has("rgb")){
+			JsonMap rgb = map.getMap("rgb");
+			for(Entry<String, JsonValue<?>> entry : rgb.entries()){
+				int col = Integer.parseInt(entry.getValue().string_value(), 16);
+				if(channels.containsKey(entry.getKey())){
+					channels.get(entry.getKey()).packed = col;
+				}
+				else channels.put(entry.getKey(), new RGB(col));
+			}
+		}
 		return this;
 	}
 
 	@Override
 	public JsonMap toJson(){
-		return new JsonMap();
+		JsonMap map = new JsonMap();
+		map.add("type", type.getIDS());
+		if(!offset.isNull()) map.add("off", new JsonArray.Flat(f(offset.x), f(offset.y), f(offset.z)));
+		if(rotx != 0f || roty != 0f || rotz != 0f) map.add("rot", new JsonArray.Flat(f(rotx), f(roty), f(rotz)));
+		if(sclx != 1f || scly != 1f || sclz != 1f) map.add("scl", new JsonArray.Flat(f(sclx), f(scly), f(sclz)));
+		JsonMap sub = texture.save();
+		if(!sub.empty()) map.add("tex", sub);
+		sub = new JsonMap();
+		for(String str : channels.keySet()){
+			if(channels.get(str).packed == type.getDefaultColorChannels().get(str).packed) continue;
+			sub.add(str, Integer.toHexString(channels.get(str).packed));
+		}
+		if(!sub.empty()) map.add("rgb", sub);
+		return map;
 	}
 
 	@Override

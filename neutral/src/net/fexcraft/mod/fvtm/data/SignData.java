@@ -208,7 +208,7 @@ public class SignData extends ContentData<Sign, SignData> implements TextureUser
 		return map;
 	}
 
-	private float f(Number v){
+	public static float f(Number v){
 		try{
 			return UIField.nf.parse(UIField.df.format(v)).floatValue();
 		}

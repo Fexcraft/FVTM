@@ -50,6 +50,12 @@ public class DecoEditor extends UserInterface {
 
 	@Override
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
+		if(id.equals("import_all")){
+			TagCW com = TagCW.create();
+			com.set("task", "import_all");
+			com.set("cb", root.getClipboard());
+			ContainerInterface.SEND_TO_SERVER.accept(com);
+		}
 		if(sel == null) return true;
 		TagCW com = TagCW.create();
 		switch(id){
@@ -164,11 +170,6 @@ public class DecoEditor extends UserInterface {
 			}
 			case "clear_all":{
 				com.set("task", "rem_all");
-				break;
-			}
-			case "import_all":{
-				com.set("task", "import_all");
-				com.set("cb", root.getClipboard());
 				break;
 			}
 			case "export_all":{

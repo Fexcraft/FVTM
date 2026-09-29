@@ -1,10 +1,14 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.Decoration;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.sys.deco.DecoInstance;
 import net.fexcraft.mod.fvtm.sys.deco.DecoSystem;
@@ -46,8 +50,31 @@ public class DecoContainer extends ContainerInterface {
 
 	@Override
 	public void packet(TagCW com, boolean client){
-		if(decos.isEmpty()) return;
 		String task = com.getString("task");
+		if(task.equals("import_all")){
+			try{
+				JsonArray arr = JsonHandler.parse(com.getString("cb"), true).asMap().getArray("decos");
+				for(JsonValue<?> jsn : arr.value){
+					try{
+						JsonMap map = jsn.asMap();
+						Decoration dt = FvtmRegistry.DECORATIONS.get(map.get("type").string_value());
+						DecorationData nd = new DecorationData(dt).parse(map);
+						inst.decorations.add(nd);
+						decos.add(nd);
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+				if(!client) mirror(com);
+				else editor.select(decos.size() - 1);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return;
+		}
+		if(decos.isEmpty()) return;
 		DecorationData deco = decos.get(com.getInteger("deco"));
 		switch(task){
 			case "rem":{
@@ -114,16 +141,6 @@ public class DecoContainer extends ContainerInterface {
 				decos.clear();
 				if(!client) mirror(com);
 				else editor.select(-1);
-				break;
-			}
-			case "import_all":{
-				try{
-					JsonMap map = JsonHandler.parse(com.getString("cb"), true).asMap();
-
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
 				break;
 			}
 			case "pos":{

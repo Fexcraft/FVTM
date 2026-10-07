@@ -1,0 +1,167 @@
+{
+	"_info_": "Decoration Editor UI",
+	"background": false,
+	"size": [ 256, 256 ],
+	"tabs": {
+		"left": {
+			"texture": "fvtm:textures/gui/texture_editor_left.png",
+			"size": [ 209, 228 ],
+			"pos": [ 0, 0 ],
+			"absolute": true,
+			"buttons": [
+
+			],
+			"texts": [
+
+			],
+			"fields": [
+
+			]
+		},
+		"right": {
+			"texture": "fvtm:textures/gui/texture_editor_right.png",
+			"size": [ 187, 192 ],
+			"pos": [ -187, 0 ],
+			"uv": [ 69, 0 ],
+			"absolute": true,
+			"buttons": [
+				"rate_set", "rate_save", "rate_prev", "rate_next",
+				"rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
+			],
+			"texts": [
+				"rate", "rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
+			],
+			"fields": [
+				"rate"
+			]
+		}
+	},
+	"buttons": {
+		"rate_set": {
+			"absolute": true,
+			"pos": [ -90, 155 ],
+			"uv": [ 166, 155 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.rate_set"
+		},
+		"rate_save": {
+			"absolute": true,
+			"pos": [ -74, 155 ],
+			"uv": [ 182, 155 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.rate_save"
+		},
+		"rate_prev": {
+			"absolute": true,
+			"pos": [ -30, 155 ],
+			"uv": [ 226, 155 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.rate_prev"
+		},
+		"rate_next": {
+			"absolute": true,
+			"pos": [ -14, 155 ],
+			"uv": [ 242, 155 ],
+			"size": [ 12, 12 ],
+			"tooltip": "ui.fvtm.decoration_editor.rate_next"
+		},
+		"rate_0": {
+			"absolute": true,
+			"pos": [ -180, 169 ],
+			"uv": [ 76, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_1": {
+			"absolute": true,
+			"pos": [ -150, 169 ],
+			"uv": [ 106, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_2": {
+			"absolute": true,
+			"pos": [ -120, 169 ],
+			"uv": [ 136, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_3": {
+			"absolute": true,
+			"pos": [ -90, 169 ],
+			"uv": [ 166, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_4": {
+			"absolute": true,
+			"pos": [ -60, 169 ],
+			"uv": [ 196, 169 ],
+			"size": [ 28, 12 ]
+		},
+		"rate_5": {
+			"absolute": true,
+			"pos": [ -30, 169 ],
+			"uv": [ 226, 169 ],
+			"size": [ 28, 12 ]
+		}
+	},
+	"texts": {
+		"rate": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 147 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.decoration_editor.rate",
+			"color": "404040",
+			"translate": true
+		},
+		"rate_0": {
+			"absolute": true,
+			"size": [ 24, 8 ],
+			"pos": [ -178, 171 ],
+			"centered": true,
+			"value": "..."
+		},
+		"rate_1": {
+			"absolute": true,
+			"size": [ 24, 8 ],
+			"pos": [ -148, 171 ],
+			"centered": true,
+			"value": "..."
+		},
+		"rate_2": {
+			"absolute": true,
+			"size": [ 24, 8 ],
+			"pos": [ -118, 171 ],
+			"centered": true,
+			"value": "..."
+		},
+		"rate_3": {
+			"absolute": true,
+			"size": [ 24, 8 ],
+			"pos": [ -88, 171 ],
+			"centered": true,
+			"value": "..."
+		},
+		"rate_4": {
+			"absolute": true,
+			"size": [ 24, 8 ],
+			"pos": [ -58, 171 ],
+			"centered": true,
+			"value": "..."
+		},
+		"rate_5": {
+			"absolute": true,
+			"size": [ 24, 8 ],
+			"pos": [ -28, 171 ],
+			"centered": true,
+			"value": "..."
+		}
+	},
+	"fields": {
+		"rate": {
+			"absolute": true,
+			"size": [ 84, 8 ],
+			"pos": [ -178, 157 ],
+			"background": false,
+			"numberfield": true
+		}
+	}
+}

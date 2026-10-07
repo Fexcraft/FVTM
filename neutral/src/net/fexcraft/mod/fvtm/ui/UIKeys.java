@@ -17,6 +17,7 @@ public class UIKeys {
 	public static final int ID12_TOOLBOX_COLORS = 600;
 	public static final int ID12_TOOLBOX_TEXTURE = 601;
 	public static final int ID12_VEHICLE_CATALOG = 610;
+	public static final int ID12_TEXTURE_EDITOR = 620;
 	public static final int ID12_RAIL_JUNCTION = 701;
 	public static final int ID12_RAIL_JUNC_EVENTS = 706;
 	public static final int ID12_RAIL_SIGNAL = 704;
@@ -47,6 +48,7 @@ public class UIKeys {
 	public static final int ID12_SIGN_EDITOR = 709;
 	public static final UIKey TOOLBOX_COLORS = new UIKey(ID12_TOOLBOX_COLORS, "fvtm:toolbox_colors");
 	public static final UIKey TOOLBOX_TEXTURE = new UIKey(ID12_TOOLBOX_TEXTURE, "fvtm:toolbox_texture");
+	public static final UIKey TEXTURE_EDITOR = new UIKey(ID12_TEXTURE_EDITOR, "fvtm:texture_editor");
 	public static final UIKey RAIL_JUNCTION = new UIKey(ID12_RAIL_JUNCTION, "fvtm:rail_junction");
 	public static final UIKey RAIL_SIGNAL = new UIKey(ID12_RAIL_SIGNAL, "fvtm:rail_signal");
 	public static final UIKey RAIL_JUNC_EVENTS = new UIKey(ID12_RAIL_JUNC_EVENTS, "fvtm:rail_junc_events");
@@ -78,6 +80,7 @@ public class UIKeys {
 	public static final UIKey SIGN_EDITOR = new UIKey(ID12_SIGN_EDITOR, "fvtm:sign_editor");
 	//
 	public static Class<? extends VehicleCatalog> VEHICLE_CATALOG_IMPL;
+	public static Class<? extends TextureEditor> TEXTURE_EDITOR_IMPL;
 
 	public static void register(){
 		UniReg.registerUI(TOOLBOX_COLORS, ToolboxPainter.class);
@@ -90,6 +93,8 @@ public class UIKeys {
 		UniReg.registerMenu(FUEL_FILLER, "fvtm:uis/fuel_filler", FuelFillerCon.class);
 		UniReg.registerUI(SIGN_EDITOR, SignEditor.class);
 		UniReg.registerMenu(SIGN_EDITOR, "fvtm:uis/sign_editor", SignContainer.class);
+		UniReg.registerUI(TEXTURE_EDITOR, TEXTURE_EDITOR_IMPL);
+		UniReg.registerMenu(TEXTURE_EDITOR, "fvtm:uis/texture_editor", TextureContainer.class);
 		//
 		UniReg.registerUI(RAIL_JUNCTION, RailJunction.class);
 		UniReg.registerMenu(RAIL_JUNCTION, "fvtm:uis/rail_junction", RailJunctionContainer.class);

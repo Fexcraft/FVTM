@@ -512,6 +512,11 @@ public class Command extends CommandBase {
 				}
 				break;
 			}
+			case "texture":{
+				EntityW ent = UniEntity.getEntity(sender);
+				ent.openUI(UIKeys.TEXTURE_EDITOR, V3I.NULL);
+				break;
+			}
             default: {
                 Print.chat(sender, "null [0]");
                 break;

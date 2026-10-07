@@ -31,9 +31,7 @@ import net.fexcraft.mod.fvtm.sys.pro.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.UniWheel;
-import net.fexcraft.mod.fvtm.ui.RoadSlot;
-import net.fexcraft.mod.fvtm.ui.UIKeys;
-import net.fexcraft.mod.fvtm.ui.VehicleCatalogImpl;
+import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
@@ -228,6 +226,7 @@ public class FVTM {
 		//
 		UniReg.registerMod(MODID, INSTANCE);
 		UIKeys.VEHICLE_CATALOG_IMPL = VehicleCatalogImpl.class;
+		UIKeys.TEXTURE_EDITOR_IMPL = TextureEditorImpl.class;
 		UIKeys.register();
 		UISlot.GETTERS.put("fvtm:roadfill", args -> new RoadSlot(args));
 		UniWheel.SET_STEP = uw -> {

@@ -29,6 +29,9 @@
 			"uv": [ 69, 0 ],
 			"absolute": true,
 			"buttons": [
+				"pos_x", "pos_y", "pos_z",
+				"rot_x", "rot_y", "rot_z",
+				"scl_x", "scl_y", "scl_z",
 				"rate_set", "rate_save", "rate_prev", "rate_next",
 				"rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
 			],
@@ -222,6 +225,69 @@
 			"colorbased": true,
 			"color": "ffffff",
 			"palette": [ 1, 26, 5, 5 ]
+		},
+		"pos_x": {
+			"absolute": true,
+			"pos": [ -133, 11 ],
+			"uv": [ 123, 11 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.position_set"
+		},
+		"pos_y": {
+			"absolute": true,
+			"pos": [ -73, 11 ],
+			"uv": [ 183, 11 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.position_set"
+		},
+		"pos_z": {
+			"absolute": true,
+			"pos": [ -13, 11 ],
+			"uv": [ 243, 11 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.position_set"
+		},
+		"rot_x": {
+			"absolute": true,
+			"pos": [ -133, 33 ],
+			"uv": [ 123, 33 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.rotation_set"
+		},
+		"rot_y": {
+			"absolute": true,
+			"pos": [ -73, 33 ],
+			"uv": [ 183, 33 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.rotation_set"
+		},
+		"rot_z": {
+			"absolute": true,
+			"pos": [ -13, 33 ],
+			"uv": [ 243, 33 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.rotation_set"
+		},
+		"scl_x": {
+			"absolute": true,
+			"pos": [ -133, 55 ],
+			"uv": [ 123, 55 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.scale_set"
+		},
+		"scl_y": {
+			"absolute": true,
+			"pos": [ -73, 55 ],
+			"uv": [ 183, 55 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.scale_set"
+		},
+		"scl_z": {
+			"absolute": true,
+			"pos": [ -13, 55 ],
+			"uv": [ 243, 55 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.scale_set"
 		},
 		"rate_set": {
 			"absolute": true,

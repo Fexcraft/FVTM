@@ -4,6 +4,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.io.File;
 
@@ -51,6 +52,12 @@ public class EditorData {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+		}
+	}
+
+	public static void updateRates(UserInterface ui){
+		for(int i = 0; i < RATES.length; i++){
+			ui.texts.get("rate_" + i).value(RATES[i] + "");
 		}
 	}
 

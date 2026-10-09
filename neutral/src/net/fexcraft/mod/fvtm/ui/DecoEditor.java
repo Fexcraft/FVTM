@@ -46,7 +46,7 @@ public class DecoEditor extends UserInterface {
 		ColorPaletteUtil.load(buttons.get("pal_save"));
 		EditorData.load();
 		fields.get("rate").text(RATE);
-		updateRates();
+		EditorData.updateRates(this);
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class DecoEditor extends UserInterface {
 					RATES[i] = RATES[i - 1];
 				}
 				RATES[0] = f(fields.get("rate").number());
-				updateRates();
+				EditorData.updateRates(this);
 				EditorData.save();
 				break;
 			}
@@ -322,12 +322,6 @@ public class DecoEditor extends UserInterface {
 
 	public RGB current_color(){
 		return buttons.get("col_cur").palette[0][0];
-	}
-
-	public void updateRates(){
-		for(int i = 0; i < RATES.length; i++){
-			texts.get("rate_" + i).value(RATES[i] + "");
-		}
 	}
 
 	private void export(boolean one){

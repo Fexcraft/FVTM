@@ -17,7 +17,6 @@ import javax.swing.*;
 
 import static net.fexcraft.mod.fvtm.data.SignData.f;
 import static net.fexcraft.mod.fvtm.ui.EditorData.RATE;
-import static net.fexcraft.mod.fvtm.ui.EditorData.RATES;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -57,6 +56,7 @@ public class DecoEditor extends UserInterface {
 			com.set("cb", root.getClipboard());
 			ContainerInterface.SEND_TO_SERVER.accept(com);
 		}
+		if(EditorData.isRateButton(this, id)) return true;
 		if(sel == null) return true;
 		TagCW com = TagCW.create();
 		switch(id){
@@ -193,45 +193,6 @@ public class DecoEditor extends UserInterface {
 				com.set("task", id.substring(0, 3));
 				com.set("axe", id.substring(4));
 				com.set("val", f(fields.get(id).number()));
-				break;
-			}
-			case "rate_set":{
-				RATE = f(fields.get("rate").number());
-				break;
-			}
-			case "rate_save":{
-				for(int i = RATES.length - 1; i > 0; i--){
-					RATES[i] = RATES[i - 1];
-				}
-				RATES[0] = f(fields.get("rate").number());
-				EditorData.updateRates(this);
-				EditorData.save();
-				break;
-			}
-			case "rate_prev":
-			case "rate_next":{
-				int idx = 0;
-				for(int i = 0; i < RATES.length; i++){
-					if(RATE == RATES[i]){
-						idx = i;
-						break;
-					}
-				}
-				idx += id.endsWith("next") ? 1 : -1;
-				if(idx < 0) idx = RATES.length - 1;
-				if(idx >= RATES.length) idx = 0;
-				RATE = RATES[idx];
-				fields.get("rate").text(RATE);
-				break;
-			}
-			case "rate_0":
-			case "rate_1":
-			case "rate_2":
-			case "rate_3":
-			case "rate_4":
-			case "rate_5":{
-				RATE = RATES[Integer.parseInt(id.substring(5))];
-				fields.get("rate").text(RATE);
 				break;
 			}
 			case "reset_val":{

@@ -9,6 +9,7 @@ import net.fexcraft.mod.uni.ui.UserInterface;
 import java.io.File;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.mod.fvtm.data.SignData.f;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -59,6 +60,51 @@ public class EditorData {
 		for(int i = 0; i < RATES.length; i++){
 			ui.texts.get("rate_" + i).value(RATES[i] + "");
 		}
+	}
+
+	public static boolean isRateButton(UserInterface ui, String id){
+		switch(id){
+			case "rate_set":{
+				RATE = f(ui.fields.get("rate").number());
+				return true;
+			}
+			case "rate_save":{
+				for(int i = RATES.length - 1; i > 0; i--){
+					RATES[i] = RATES[i - 1];
+				}
+				RATES[0] = f(ui.fields.get("rate").number());
+				updateRates(ui);
+				save();
+				return true;
+			}
+			case "rate_prev":
+			case "rate_next":{
+				int idx = 0;
+				for(int i = 0; i < RATES.length; i++){
+					if(RATE == RATES[i]){
+						idx = i;
+						break;
+					}
+				}
+				idx += id.endsWith("next") ? 1 : -1;
+				if(idx < 0) idx = RATES.length - 1;
+				if(idx >= RATES.length) idx = 0;
+				RATE = RATES[idx];
+				ui.fields.get("rate").text(RATE);
+				return true;
+			}
+			case "rate_0":
+			case "rate_1":
+			case "rate_2":
+			case "rate_3":
+			case "rate_4":
+			case "rate_5":{
+				RATE = RATES[Integer.parseInt(id.substring(5))];
+				ui.fields.get("rate").text(RATE);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

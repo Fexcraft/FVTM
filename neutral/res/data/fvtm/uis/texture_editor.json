@@ -41,6 +41,9 @@
 				"rate", "rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
 			],
 			"fields": [
+				"pos_x", "pos_y", "pos_z",
+				"rot_x", "rot_y", "rot_z",
+				"scl_x", "scl_y", "scl_z",
 				"rate"
 			]
 		}
@@ -461,6 +464,69 @@
 		}
 	},
 	"fields": {
+		"pos_x": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -178, 12 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos_y": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -118, 12 ],
+			"background": false,
+			"numberfield": true
+		},
+		"pos_z": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -58, 12 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot_x": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -178, 34 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot_y": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -118, 34 ],
+			"background": false,
+			"numberfield": true
+		},
+		"rot_z": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -58, 34 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl_x": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -178, 56 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl_y": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -118, 56 ],
+			"background": false,
+			"numberfield": true
+		},
+		"scl_z": {
+			"absolute": true,
+			"size": [ 43, 8 ],
+			"pos": [ -58, 56 ],
+			"background": false,
+			"numberfield": true
+		},
 		"rate": {
 			"absolute": true,
 			"size": [ 84, 8 ],

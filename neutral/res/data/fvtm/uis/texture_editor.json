@@ -9,7 +9,7 @@
 			"pos": [ 0, 0 ],
 			"absolute": true,
 			"buttons": [
-				"sel_del", "sel_copy", "sel_prev", "sel_next",
+				"sel_del", "sel_copy", "ref_copy", "sel_prev", "sel_next",
 				"ref_prev", "ref_next", "ref_set", "tex_save", "tex_export",
 				"width-", "width+", "width=", "height-", "height+", "height=",
 				"tool_pencil", "tool_bucket", "tool_eraser", "tool_brush", "tool_picker", "tool_none",
@@ -32,6 +32,8 @@
 				"pos_x", "pos_y", "pos_z",
 				"rot_x", "rot_y", "rot_z",
 				"scl_x", "scl_y", "scl_z",
+				"wheel_on", "wheel_off", "so_on", "so_off", "cam_on", "cam_off",
+				"slot_prev", "slot_next", "aux_prev", "aux_next",
 				"rate_set", "rate_save", "rate_prev", "rate_next",
 				"rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
 			],
@@ -229,65 +231,116 @@
 		"pos_x": {
 			"absolute": true,
 			"pos": [ -133, 11 ],
-			"uv": [ 123, 11 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.position_set"
 		},
 		"pos_y": {
 			"absolute": true,
 			"pos": [ -73, 11 ],
-			"uv": [ 183, 11 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.position_set"
 		},
 		"pos_z": {
 			"absolute": true,
 			"pos": [ -13, 11 ],
-			"uv": [ 243, 11 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.position_set"
 		},
 		"rot_x": {
 			"absolute": true,
 			"pos": [ -133, 33 ],
-			"uv": [ 123, 33 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.rotation_set"
 		},
 		"rot_y": {
 			"absolute": true,
 			"pos": [ -73, 33 ],
-			"uv": [ 183, 33 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.rotation_set"
 		},
 		"rot_z": {
 			"absolute": true,
 			"pos": [ -13, 33 ],
-			"uv": [ 243, 33 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.rotation_set"
 		},
 		"scl_x": {
 			"absolute": true,
 			"pos": [ -133, 55 ],
-			"uv": [ 123, 55 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.scale_set"
 		},
 		"scl_y": {
 			"absolute": true,
 			"pos": [ -73, 55 ],
-			"uv": [ 183, 55 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.scale_set"
 		},
 		"scl_z": {
 			"absolute": true,
 			"pos": [ -13, 55 ],
-			"uv": [ 243, 55 ],
 			"size": [ 10, 10 ],
 			"tooltip": "ui.fvtm.texture_editor.scale_set"
+		},
+		"wheel_on": {
+			"absolute": true,
+			"pos": [ -180, 82 ],
+			"size": [ 28, 12 ],
+			"tooltip": "ui.fvtm.texture_editor.wheels_on"
+		},
+		"wheel_off": {
+			"absolute": true,
+			"pos": [ -150, 82 ],
+			"size": [ 28, 12 ],
+			"tooltip": "ui.fvtm.texture_editor.wheels_off"
+		},
+		"so_on": {
+			"absolute": true,
+			"pos": [ -120, 82 ],
+			"size": [ 28, 12 ],
+			"tooltip": "ui.fvtm.texture_editor.selection_only_on"
+		},
+		"so_off": {
+			"absolute": true,
+			"pos": [ -90, 82 ],
+			"size": [ 28, 12 ],
+			"tooltip": "ui.fvtm.texture_editor.selection_only_off"
+		},
+		"cam_on": {
+			"absolute": true,
+			"pos": [ -60, 82 ],
+			"size": [ 28, 12 ],
+			"tooltip": "ui.fvtm.texture_editor.camera_move_on"
+		},
+		"cam_off": {
+			"absolute": true,
+			"pos": [ -30, 82 ],
+			"size": [ 28, 12 ],
+			"tooltip": "ui.fvtm.texture_editor.camera_move_off"
+		},
+		"slot_prev": {
+			"absolute": true,
+			"pos": [ -24, 106 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.slot_prev"
+		},
+		"slot_next": {
+			"absolute": true,
+			"pos": [ -13, 106 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.slot_next"
+		},
+		"aux_prev": {
+			"absolute": true,
+			"pos": [ -24, 128 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.wip"
+		},
+		"aux_next": {
+			"absolute": true,
+			"pos": [ -13, 128 ],
+			"size": [ 10, 10 ],
+			"tooltip": "ui.fvtm.texture_editor.wip"
 		},
 		"rate_set": {
 			"absolute": true,

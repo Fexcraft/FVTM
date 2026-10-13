@@ -16,7 +16,7 @@
 				"col_save", "col_parse", "col_cur", "col_val", "pal_hor", "pal_sha", "pal_sav"
 			],
 			"texts": [
-
+				"sel", "ref", "tex_name", "tex_size"
 			],
 			"fields": [
 
@@ -38,6 +38,8 @@
 				"rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
 			],
 			"texts": [
+				"pos", "rot", "scale",
+				"wheels", "sel_only", "camera", "slot", "aux",
 				"rate", "rate_0", "rate_1", "rate_2", "rate_3", "rate_4", "rate_5"
 			],
 			"fields": [
@@ -411,6 +413,111 @@
 		}
 	},
 	"texts": {
+		"sel": {
+			"absolute": true,
+			"size": [ 136, 8 ],
+			"pos": [ 4, 3 ],
+			"value": "..."
+		},
+		"ref": {
+			"absolute": true,
+			"size": [ 196, 6 ],
+			"pos": [ 4, 14 ],
+			"value": "ui.fvtm.texture_editor.reference",
+			"translate": true,
+			"color": "404040",
+			"scale": 0.8
+		},
+		"tex_name": {
+			"absolute": true,
+			"size": [ 196, 6 ],
+			"pos": [ 4, 36 ],
+			"value": "ui.fvtm.texture_editor.texture_name",
+			"translate": true,
+			"color": "404040",
+			"scale": 0.8
+		},
+		"tex_size": {
+			"absolute": true,
+			"size": [ 128, 6 ],
+			"pos": [ 4, 59 ],
+			"value": "ui.fvtm.texture_editor.texture_size",
+			"translate": true,
+			"color": "404040",
+			"scale": 0.8
+		},
+		"pos": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 2 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.position",
+			"color": "404040",
+			"translate": true
+		},
+		"rot": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 24 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.rotation",
+			"color": "404040",
+			"translate": true
+		},
+		"scale": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 46 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.scale",
+			"color": "404040",
+			"translate": true
+		},
+		"wheels": {
+			"absolute": true,
+			"size": [ 56, 6 ],
+			"pos": [ -179, 74 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.wheels",
+			"color": "404040",
+			"translate": true
+		},
+		"sel_only": {
+			"absolute": true,
+			"size": [ 56, 6 ],
+			"pos": [ -119, 74 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.selection_only",
+			"color": "404040",
+			"translate": true
+		},
+		"camera": {
+			"absolute": true,
+			"size": [ 56, 6 ],
+			"pos": [ -59, 74 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.camera_move",
+			"color": "404040",
+			"translate": true
+		},
+		"slot": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 97 ],
+			"scale": 0.8,
+			"value": "ui.fvtm.texture_editor.slot",
+			"color": "404040",
+			"translate": true
+		},
+		"aux": {
+			"absolute": true,
+			"size": [ 176, 6 ],
+			"pos": [ -179, 119 ],
+			"scale": 0.8,
+			"value": "-",
+			"color": "404040",
+			"translate": true
+		},
 		"rate": {
 			"absolute": true,
 			"size": [ 176, 6 ],

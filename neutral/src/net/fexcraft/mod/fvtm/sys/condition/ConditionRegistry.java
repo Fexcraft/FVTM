@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
 import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -14,7 +13,7 @@ public class ConditionRegistry {
 	public static HashMap<String, CondKey> KEY_REG = new HashMap<>();
 	private static HashMap<String, Condition> CONDITIONS = new HashMap<>();
 	private static HashMap<CondKey, Conditional> CONDITIONALS = new HashMap<>();
-	public static Function<CondKey, Conditional> BUILDER = CondBuilder.run();
+	public static Function<CondKey, Conditional> BUILDER = CondBuilderRoot.run();
 	public static final Conditional COND_FALSE = (con, data) -> false;
 	public static final Conditional COND_TRUE = (con, data) -> true;
 	static {

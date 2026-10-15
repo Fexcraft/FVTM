@@ -26,7 +26,7 @@ public class AnimationPrograms {
 
 	}
 
-	public static abstract class AttrAnimation extends DefaultPrograms12.AttributeBased implements AnimationRoot {
+	public static abstract class AttrAnimation extends DefaultPrograms.AttributeBased implements AnimationRoot {
 
 		protected HashMap<V3I, Program> progs = new HashMap<>();
 		protected ArrayList<Program> active = new ArrayList<>();

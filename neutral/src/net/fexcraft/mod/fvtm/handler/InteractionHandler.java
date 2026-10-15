@@ -45,7 +45,7 @@ import java.util.Map.Entry;
 
 import static java.util.stream.Collectors.toList;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
-import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
+import static net.fexcraft.mod.fvtm.data.ToolboxType.ToolboxTypeItem.getToolboxType;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

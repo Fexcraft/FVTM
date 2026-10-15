@@ -25,7 +25,7 @@ import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ToolboxItem extends Item {
+public class ToolboxItem extends Item implements ToolboxType.ToolboxTypeItem {
 
 	public final int var;
 
@@ -72,12 +72,9 @@ public class ToolboxItem extends Item {
 		}
 	}
 
-	public static int getToolboxType(ItemStack stack){
-		return ((ToolboxItem)stack.getItem()).var;
-	}
-
-	public static int getToolboxType(StackWrapper stack){
-		return ((ToolboxItem)stack.getItem().local()).var;
+	@Override
+	public int getType(StackWrapper stack){
+		return ((ToolboxItem)stack.getItem().direct()).var;
 	}
 
 	@Override

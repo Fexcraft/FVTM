@@ -31,7 +31,7 @@ import static net.fexcraft.mod.fvtm.Config.infoIfNoPerm;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ToolboxItem extends Item {
+public class ToolboxItem extends Item implements ToolboxType.ToolboxTypeItem {
 
 	public static ToolboxItem INSTANCE;
 
@@ -92,12 +92,9 @@ public class ToolboxItem extends Item {
 		}
 	}
 
-	public static int getToolboxType(StackWrapper stack){
+	@Override
+	public int getType(StackWrapper stack){
 		return stack.damage();
-	}
-
-	public static int getToolboxType(ItemStack stack){
-		return stack.getItemDamage();
 	}
 
 	@Override

@@ -93,7 +93,7 @@ public class FvtmRegistry {
 		CONFIG_DIR = conf;
 		if(!CONFIG_DIR.exists()) CONFIG_DIR.mkdirs();
 		CONFIG = new Config(new File(conf, "fvtm.json"));
-		M4DW.SUPPLIER = M4DImpl::new;
+		if(M4DW.SUPPLIER == null) M4DW.SUPPLIER = M4DImpl::new;
 		//
 		INTERNAL_ADDON_ID = IDLManager.getIDLCached("fvtm:fvtm");
 		AIR = IDLManager.getIDLCached("minecraft:air");

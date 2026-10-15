@@ -26,7 +26,6 @@ import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.render.block.BakedModelLoader;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
-import net.fexcraft.mod.fvtm.sys.impl.CondBuilder;
 import net.fexcraft.mod.fvtm.sys.pro.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.pro.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -150,7 +149,6 @@ public class FVTM {
 		if(EnvInfo.CLIENT){
 			CONFIG.addListener(DefaultPrograms::setupSignalTimer);
 			CTab.IMPL[0] = net.fexcraft.mod.fvtm.data.impl.AddonTab.class;
-			ConditionRegistry.BUILDER = CondBuilder.run();
 		}
 		//
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallablePacks());

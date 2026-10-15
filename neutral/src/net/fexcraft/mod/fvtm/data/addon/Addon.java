@@ -59,7 +59,7 @@ public class Addon extends Content<Addon> {
 		if(map.has("Author")) authors.add(map.get("Author").string_value());
 		website = map.getString("Website", "http://fexcraft.net/minecraft/content");
 		license = map.getString("License", "All Rights Reserved");
-		if(EnvInfo.CLIENT || EnvInfo.is121()){
+		if((EnvInfo.CLIENT || EnvInfo.is121()) && !EnvInfo.isFMT()){
 			if(!map.has("CreativeTabs")){
 				creativetabs.put(CTab.DEFAULT, CTab.create(this, CTab.DEFAULT, "fvtm:decoration"));
 			}

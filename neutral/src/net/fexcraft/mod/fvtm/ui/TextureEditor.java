@@ -56,6 +56,43 @@ public class TextureEditor extends UserInterface {
 	public boolean onAction(UIButton button, String id, int x, int y, int mb){
 		if(EditorData.isRateButton(this, id)) return true;
 		switch(id){
+			case "col_parse":{
+				int r = Integer.parseInt(fields.get("col_r").text().trim());
+				int g = Integer.parseInt(fields.get("col_g").text().trim());
+				int b = Integer.parseInt(fields.get("col_b").text().trim());
+				RGB rgb = new RGB(r, g, b);
+				String str = fields.get("col_hex").text().trim().replace("#", "").replace("0x", "");
+				if(str.length() > 6) str = str.substring(0, 6);
+				RGB hex = new RGB(Integer.parseInt(str, 16));
+				updateColor(rgb.packed == current_color().packed ? hex : rgb, false);
+				break;
+			}
+			case "col_save":{
+				ColorPaletteUtil.save(buttons.get("pal_sav"), current_color());
+				break;
+			}
+			case "pal_hor":
+			case "pal_sav": {
+				int idx = (x - button.x) / button.palsize[0];
+				if(idx < 0) idx = 0;
+				if(idx >= button.palette[0].length) idx = button.palette[0].length - 1;
+				RGB rgb = button.palette[0][idx];
+				current_color().packed = rgb.packed;
+				updateColor(rgb, false);
+				break;
+			}
+			case "pal_sha":{
+				int ix = (x - button.x) / button.palsize[0];
+				int iy = (y - button.y) / button.palsize[1];
+				if(ix < 0) ix = 0;
+				if(ix >= button.palette[0].length) ix = button.palette[0].length - 1;
+				if(iy < 0) iy = 0;
+				if(iy >= button.palette.length) iy = button.palette.length - 1;
+				RGB rgb = button.palette[iy][ix];
+				current_color().packed = rgb.packed;
+				updateColor(rgb, false);
+				break;
+			}
 			case "wheel_on":
 			case "wheel_off":{
 				wheels = id.endsWith("_on");
@@ -108,6 +145,23 @@ public class TextureEditor extends UserInterface {
 
 	protected void select(int idx){
 
+	}
+
+	protected void updateColor(RGB nv, boolean cc){
+		byte[] ar = nv.toByteArray();
+		fields.get("col_r").text((ar[0] + 128));
+		fields.get("col_g").text((ar[1] + 128));
+		fields.get("col_b").text((ar[2] + 128));
+		fields.get("col_hex").text("#" + Integer.toHexString(nv.packed));
+		if(!cc){
+			current_color().packed = nv.packed;
+			ToolboxPainter.setupShadePalette(nv, buttons.get("pal_sha"));
+		}
+		else buttons.get("col_val").palette[0][0].packed = nv.packed;
+	}
+
+	public RGB current_color(){
+		return buttons.get("col_cur").palette[0][0];
 	}
 
 }

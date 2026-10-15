@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.function.part.InventoryFunction;
+import net.fexcraft.mod.uni.inv.UniStack;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -48,7 +49,7 @@ public class InvSlot extends Slot {
                 return false;
             }
         }
-        return handler.getFilter() == null ? true : handler.getFilter().isValid(stack);
+        return handler.getFilter() == null ? true : handler.getFilter().isValid(UniStack.getStack(stack));
 	}
 	
 	@Override

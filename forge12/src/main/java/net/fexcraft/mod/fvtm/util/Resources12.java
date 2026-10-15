@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.ToolboxType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockUtil;
@@ -86,25 +85,6 @@ public class Resources12 extends FvtmResources {
 
 	public Resources12(ASMDataTable asmdata){
 		this.asmdata = asmdata;
-	}
-
-	@Override
-	public void searchASMPacks(){
-		asmdata.getAll(AddonClass.class.getCanonicalName()).forEach(entry -> {
-			try{
-				Class<?> clazz = Class.forName(entry.getClassName());
-				AddonClass adn = clazz.getAnnotation(AddonClass.class);
-				String regname = adn.registryname();
-				if(regname.contains(":")) regname = regname.split(":")[1];
-				String res = clazz.getClassLoader().getResource("assets/" + regname + "/addonpack.fvtm").toString();
-				res = res.substring(res.indexOf("file:/") + 6, res.indexOf("!"));
-				JsonMap map = JsonHandler.parse(clazz.getClassLoader().getResourceAsStream("assets/" + regname + "/addonpack.fvtm"));
-				ADDONS.add(new Addon(new File(res), regname.equals("fvtm") ? AddonLocation.INTERNAL : AddonLocation.MODJAR).parse(map));
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		});
 	}
 
 	@Override

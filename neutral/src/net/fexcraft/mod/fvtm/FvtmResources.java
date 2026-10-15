@@ -81,7 +81,6 @@ public abstract class FvtmResources {
 		map.add("CreativeTabs", ctabs);
 		ADDONS.register(new Addon(null, AddonLocation.INTERNAL).parse(map));
 		//
-		INSTANCE.searchASMPacks();
 		boolean failed = searchPacksInResourcePacks();
 		if(!EnvInfo.CLIENT || failed){
 			searchPacksInFolder(new File(FvtmRegistry.CONFIG_DIR.getParentFile(), "/resourcepacks/"), AddonLocation.RESOURCEPACK, false);
@@ -94,8 +93,6 @@ public abstract class FvtmResources {
 		searchPacksInFolder(new File(FVTM_CONFIG_DIR, "packs/"), AddonLocation.CONFIGPACK, true);
 		if(EnvInfo.CLIENT) loadPackTextures();
 	}
-
-	public abstract void searchASMPacks();
 
 	public abstract boolean searchPacksInResourcePacks();
 

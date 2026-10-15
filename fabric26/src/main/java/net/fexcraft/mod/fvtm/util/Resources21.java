@@ -87,9 +87,6 @@ public class Resources21 extends FvtmResources {
 	}
 
 	@Override
-	public void searchASMPacks(){}
-
-	@Override
 	public boolean searchPacksInResourcePacks(){
 		return true;
 	}

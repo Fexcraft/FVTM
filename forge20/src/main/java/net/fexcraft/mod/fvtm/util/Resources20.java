@@ -63,9 +63,6 @@ public class Resources20 extends FvtmResources {
 	public static ConcurrentHashMap<IDL, Block[]> ROAD_BLOCKS = new ConcurrentHashMap<>();
 
 	@Override
-	public void searchASMPacks(){}
-
-	@Override
 	public boolean searchPacksInResourcePacks(){
 		return true;
 	}

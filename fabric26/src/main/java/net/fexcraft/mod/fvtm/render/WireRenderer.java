@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 
 import static net.fexcraft.mod.fvtm.FVTMC.LEVEL_RS_KEY;
 import static net.fexcraft.mod.fvtm.data.ToolboxType.*;
-import static net.fexcraft.mod.fvtm.item.ToolboxItem.getToolboxType;
 import static net.fexcraft.mod.fvtm.render.UniWireRenderer.DATA;
 
 /**
@@ -31,9 +30,9 @@ public class WireRenderer {
 		held = Minecraft.getInstance().player.getMainHandItem();
 		DATA.ih_wire = held.getItem() instanceof WireItem;
 		if(DATA.ih_wire) DATA.wiretype = ((WireItem)held.getItem()).getContent();
-		DATA.ih_tb_rem = held.getItem() instanceof ToolboxItem && WIRE_REMOVAL.eq(getToolboxType(held));
-		DATA.ih_tb_slack = held.getItem() instanceof ToolboxItem && WIRE_SLACK.eq(getToolboxType(held));
-		DATA.ih_tb_comp = held.getItem() instanceof ToolboxItem && WIRE_COMPONENT.eq(getToolboxType(held));
+		DATA.ih_tb_rem = held.getItem() instanceof ToolboxItem ti && WIRE_REMOVAL.eq(ti.var);
+		DATA.ih_tb_slack = held.getItem() instanceof ToolboxItem ti && WIRE_SLACK.eq(ti.var);
+		DATA.ih_tb_comp = held.getItem() instanceof ToolboxItem ti&& WIRE_COMPONENT.eq(ti.var);
 		if(held.getItem() instanceof WireCompItem){
 			DATA.comp = ((WireCompItem)held.getItem()).getContent();
 			DATA.ih_comp_relay = DATA.comp.getType().equals("relay");

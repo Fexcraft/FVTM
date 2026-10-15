@@ -22,7 +22,7 @@ public class ItemStackHandler implements IItemHandler {
 	}
 
 	private boolean isValid(ItemStack stack){
-		return handler.filter == null ? true : handler.filter.isValid(stack);
+		return handler.filter == null ? true : handler.filter.isValid(UniStack.getStack(stack));
 	}
 
 	public static boolean isContainerPart(ItemStack stack){

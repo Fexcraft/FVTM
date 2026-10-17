@@ -46,6 +46,8 @@ public class FvtmRegistry {
 	public static boolean is112;
 	public static boolean is120;
 	public static boolean is121;
+	public static boolean isFMT;
+	public static boolean notFMT;
 	//
 	public static IDL INTERNAL_ADDON_ID;
 	public static IDL NONE_CLOTH_MAT;
@@ -90,6 +92,7 @@ public class FvtmRegistry {
 		is112 = EnvInfo.is112();
 		is120 = EnvInfo.is120();
 		is121 = EnvInfo.is121();
+		notFMT = !(isFMT = loadver.equals("FMT"));
 		CONFIG_DIR = conf;
 		if(!CONFIG_DIR.exists()) CONFIG_DIR.mkdirs();
 		CONFIG = new Config(new File(conf, "fvtm.json"));

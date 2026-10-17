@@ -16,11 +16,13 @@ import net.fexcraft.mod.fvtm.model.ModelGroupList.SeparateModelGroupList;
 import net.fexcraft.mod.fvtm.model.Program.ConditionalProgram;
 import net.fexcraft.mod.fvtm.model.program.AnimationPrograms.AnimationRoot;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms.ConditionBased;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.notFMT;
 import static net.fexcraft.mod.fvtm.model.ModelGroup.COND_PROGRAMS;
 
 /**
@@ -74,7 +76,7 @@ public class DefaultModel implements Model {
 	@Override
 	public Model parse(ModelData data){
 		smooth_shading = data.getBoolean(SMOOTHSHADING, false);
-		if(data.has(PROGRAMS)){
+		if(data.has(PROGRAMS) && notFMT){
 			JsonArray programs = data.getArray(PROGRAMS);
 			for(JsonValue<?> val : programs.value){
 				if(val.isArray()){
@@ -143,7 +145,7 @@ public class DefaultModel implements Model {
 				}
 			}
 		}
-		if(data.has(CONDPROGRAMS)){
+		if(data.has(CONDPROGRAMS) && notFMT){
 			JsonArray programs = data.getArray(CONDPROGRAMS);
 			for(JsonValue<?> val : programs.value){
 				if(val.isMap()){
@@ -210,7 +212,12 @@ public class DefaultModel implements Model {
 		}
 		if(data.has(TRANSFORMS)){
 			for(JsonValue<?> val : data.getArray(TRANSFORMS).value){
-				transforms.parse(val.string_value().trim().split(" "));
+				try{
+					transforms.parse(val.string_value().trim().split(" "));
+				}
+				catch(Exception e){
+					if(notFMT) e.printStackTrace();
+				}
 			}
 		}
 		if(data.has(PIVOTS)){

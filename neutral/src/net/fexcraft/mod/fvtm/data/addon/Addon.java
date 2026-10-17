@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.notFMT;
 import static net.fexcraft.mod.uni.IDL.conid;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class Addon extends Content<Addon> {
 		if(map.has("Author")) authors.add(map.get("Author").string_value());
 		website = map.getString("Website", "http://fexcraft.net/minecraft/content");
 		license = map.getString("License", "All Rights Reserved");
-		if((EnvInfo.CLIENT || EnvInfo.is121()) && !EnvInfo.isFMT()){
+		if((EnvInfo.CLIENT || EnvInfo.is121()) && notFMT){
 			if(!map.has("CreativeTabs")){
 				creativetabs.put(CTab.DEFAULT, CTab.create(this, CTab.DEFAULT, "fvtm:decoration"));
 			}
@@ -80,7 +81,7 @@ public class Addon extends Content<Addon> {
 					clothmats.put(entry.getKey(), ClothMaterial.create(IDLManager.getIDLCached(conid(id, entry.getKey())), entry.getValue().asMap()));
 				}
 				catch(Exception e){
-					e.printStackTrace();
+					if(notFMT) e.printStackTrace();
 				}
 			});
 		}

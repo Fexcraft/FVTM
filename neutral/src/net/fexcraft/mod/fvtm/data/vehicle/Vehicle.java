@@ -40,6 +40,8 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.notFMT;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -250,7 +252,7 @@ public class Vehicle extends Content<Vehicle> implements TextureHolder, ColorHol
 					definvs.put(entry.getKey(), type.newInv().init(mep));
 				}
 				catch(Exception e){
-					FvtmLogger.log(e, "vehicle inventory parsing");
+					if(notFMT) FvtmLogger.log(e, "vehicle inventory parsing");
 				}
 			}
 		}

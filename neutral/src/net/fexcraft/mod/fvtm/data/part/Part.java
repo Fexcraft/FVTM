@@ -30,6 +30,8 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.notFMT;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -93,7 +95,14 @@ public class Part extends Content<Part> implements TextureHolder, SoundHolder, W
 			JsonMap funcs = map.getMap("Functions");
 			for(Entry<String, JsonValue<?>> entry : funcs.entries()){
 				PartFunction fun = FvtmResources.getFunction(entry.getKey());
-				if(fun != null) functions.add(fun.init(this, entry.getValue()));
+				if(fun != null){
+					try{
+						functions.add(fun.init(this, entry.getValue()));
+					}
+					catch(Exception e){
+						if(notFMT) e.printStackTrace();
+					}
+				}
 			}
 		}
 		//

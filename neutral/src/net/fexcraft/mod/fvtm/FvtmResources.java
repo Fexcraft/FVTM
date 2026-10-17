@@ -386,7 +386,7 @@ public abstract class FvtmResources {
 	public static void initModelSystem(){
 		FvtmResources.INSTANCE.initModelLoaders();
 		FvtmResources.INSTANCE.initModelPrograms();
-		InternalModels.load();
+		if(notFMT) InternalModels.load();
 		initialmodelload = true;
 		reloadModels();
 		initialmodelload = false;
@@ -560,7 +560,7 @@ public abstract class FvtmResources {
 			return PART_FUNCTIONS.get(key).newInstance();
 		}
 		catch(Exception e){
-			if(EnvInfo.DEV) e.printStackTrace();
+			if(EnvInfo.DEV && notFMT) e.printStackTrace();
 			return null;
 		}
 	}

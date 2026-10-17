@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import static net.fexcraft.mod.fvtm.FvtmRegistry.isFMT;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -275,6 +277,7 @@ public class Block extends Content<Block> implements TextureHolder, ColorHolder,
 			functions.add(func.parse(elm));
 		}
 		catch(Exception e){
+			if(isFMT) return;
 			FvtmLogger.log("Failed to load BlockFunction for '" + id.colon() + "' with JSON: " + elm);
 			e.printStackTrace();
 		}
